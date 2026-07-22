@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실거래가 조회</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.3rem; }
+  form { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  input, select, button { padding: .45rem .6rem; font-size: .95rem; }
+  button { cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { border-bottom: 1px solid #8884; padding: .4rem .5rem; text-align: left; white-space: nowrap; }
+  td.num, th.num { text-align: right; }
+  #meta { color: #888; font-size: .85rem; margin: .5rem 0; }
+  .wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>아파트 실거래가 조회</h1>
+<form id="f">
+  <select id="lawd"><option value="">전체 지역</option></select>
+  <input id="ymd" placeholder="거래연월 YYYYMM" pattern="\d{6}" size="12">
+  <input id="apt" placeholder="단지명" size="12">
+  <input id="umd" placeholder="법정동" size="10">
+  <button>검색</button>
+</form>
+<div id="meta"></div>
+<div class="wrap">
+<table>
+  <thead><tr>
+    <th>거래일</th><th>법정동</th><th>단지</th>
+    <th class="num">전용(㎡)</th><th class="num">층</th>
+    <th class="num">금액(만원)</th><th>구분</th>
+  </tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => n == null ? "" : Number(n).toLocaleString("ko-KR");
+
+async function loadRegions() {
+  const data = await (await fetch("/api/regions")).json();
+  const seen = new Map();
+  data.forEach(r => seen.set(r.lawd_cd, r.region_name || r.lawd_cd));
+  for (const [cd, name] of seen) {
+    const o = document.createElement("option");
+    o.value = cd; o.textContent = `${name} (${cd})`;
+    $("lawd").appendChild(o);
+  }
+}
+
+async function search(e) {
+  if (e) e.preventDefault();
+  const p = new URLSearchParams();
+  if ($("lawd").value) p.set("lawd_cd", $("lawd").value);
+  if ($("ymd").value) p.set("deal_ymd", $("ymd").value);
+  if ($("apt").value) p.set("apt", $("apt").value);
+  if ($("umd").value) p.set("umd", $("umd").value);
+  const data = await (await fetch("/api/trades?" + p)).json();
+  $("meta").textContent = `총 ${fmt(data.total)}건 중 ${data.items.length}건 표시`;
+  $("rows").innerHTML = data.items.map(t => `<tr>
+    <td>${t.deal_date ?? ""}</td><td>${t.umd_nm ?? ""}</td><td>${t.apt_nm ?? ""}</td>
+    <td class="num">${t.exclu_use_ar ?? ""}</td><td class="num">${t.floor ?? ""}</td>
+    <td class="num">${fmt(t.deal_amount)}</td><td>${t.dealing_gbn ?? ""}</td>
+  </tr>`).join("");
+}
+
+$("f").addEventListener("submit", search);
+loadRegions().then(search);
+</script>
+</body>
+</html>
