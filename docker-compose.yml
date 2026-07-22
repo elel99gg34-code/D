@@ -1,0 +1,20 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    # 127.0.0.1 바인딩: 외부 공개는 반드시 리버스 프록시(Caddy/nginx)를 거친다 (DEPLOY.md)
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data
+
+  # 수집기 — 상시 실행이 아니라 cron에서 호출:
+  #   docker compose run --rm collector
+  collector:
+    build: .
+    profiles: ["collect"]
+    environment:
+      SERVICE_KEY: ${SERVICE_KEY}
+    volumes:
+      - ./data:/app/data
+    command: python3 -m pipeline.collect --regions ${REGIONS:-11680,11710}

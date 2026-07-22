@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-"""실거래가 수집 파이프라인 CLI.
+"""실거래가 수집 파이프라인 CLI (매매 + 전월세).
 
 사용법:
     export SERVICE_KEY="일반 인증키(Decoding)"
+    # 매매+전월세 API는 같은 키로 각각 활용신청 필요 (phase0/README.md)
 
-    # 강남·송파 최근 3개월 수집 (기본)
+    # 강남·송파 최근 3개월, 매매+전월세 모두 수집 (기본)
     python3 -m pipeline.collect --regions 11680,11710
 
-    # 특정 구간 지정
+    # 매매만 / 전월세만
+    python3 -m pipeline.collect --dataset trade
+    python3 -m pipeline.collect --dataset rent
+
+    # 특정 구간 백필
     python3 -m pipeline.collect --regions 11680 --from-ymd 202501 --to-ymd 202506
 
     # 네트워크/키 없이 샘플 데이터로 전 과정(수집→정규화→DB) 검증
@@ -26,8 +31,12 @@ from pathlib import Path
 from . import collector, db
 from .regions import KNOWN_LAWD
 
-DEFAULT_DB = Path(__file__).resolve().parent.parent / "data" / "trades.db"
-SAMPLE_XML = Path(__file__).resolve().parent.parent / "phase0" / "sample_response.xml"
+ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_DB = ROOT / "data" / "trades.db"
+SAMPLE_XML = {
+    "trade": ROOT / "phase0" / "sample_response.xml",
+    "rent": ROOT / "phase0" / "sample_rent_response.xml",
+}
 
 
 def month_range(from_ymd: str, to_ymd: str) -> list[str]:
@@ -54,8 +63,8 @@ def recent_months(n: int, today=None) -> list[str]:
     return sorted(out)
 
 
-def sample_fetcher(lawd_cd: str, deal_ymd: str, page_no: int) -> str:
-    return SAMPLE_XML.read_text(encoding="utf-8")
+def sample_fetcher(dataset: str, lawd_cd: str, deal_ymd: str, page_no: int) -> str:
+    return SAMPLE_XML[dataset].read_text(encoding="utf-8")
 
 
 def main() -> int:
@@ -63,6 +72,8 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", default="11680",
                     help="법정동코드 5자리, 콤마 구분 (기본: 11680 강남구)")
+    ap.add_argument("--dataset", choices=["trade", "rent", "both"], default="both",
+                    help="수집 대상: trade 매매 / rent 전월세 / both (기본)")
     ap.add_argument("--from-ymd", help="시작 YYYYMM (생략 시 최근 N개월)")
     ap.add_argument("--to-ymd", help="끝 YYYYMM")
     ap.add_argument("--recent", type=int, default=3,
@@ -82,29 +93,32 @@ def main() -> int:
             return 1
         fetcher = partial(collector.fetch_page, service_key)
 
-    if args.from_ymd and args.to_ymd:
-        months = month_range(args.from_ymd, args.to_ymd)
-    else:
-        months = recent_months(args.recent)
+    if bool(args.from_ymd) != bool(args.to_ymd):
+        print("--from-ymd와 --to-ymd는 함께 지정해야 합니다.", file=sys.stderr)
+        return 1
+    months = (month_range(args.from_ymd, args.to_ymd)
+              if args.from_ymd else recent_months(args.recent))
+    datasets = ["trade", "rent"] if args.dataset == "both" else [args.dataset]
 
     regions = [r.strip() for r in args.regions.split(",") if r.strip()]
     conn = db.connect(args.db)
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
-    print(f"수집 대상: 지역 {len(regions)}개 × 월 {len(months)}개 → DB {args.db}")
+    print(f"수집 대상: {'+'.join(datasets)} × 지역 {len(regions)}개 × 월 {len(months)}개 → DB {args.db}")
     total_rows, failures = 0, 0
-    for lawd_cd in regions:
-        name = KNOWN_LAWD.get(lawd_cd, "")
-        for ymd in months:
-            try:
-                rows, raw_pages = collector.collect_month(fetcher, lawd_cd, ymd)
-                n = db.replace_month(conn, lawd_cd, ymd, rows, raw_pages, now)
-                total_rows += n
-                print(f"  ok   {lawd_cd} {name} {ymd}: {n}건")
-            except Exception as e:  # 한 (지역,월) 실패가 전체를 중단시키지 않게
-                failures += 1
-                db.log_error(conn, lawd_cd, ymd, str(e), now)
-                print(f"  FAIL {lawd_cd} {name} {ymd}: {e}", file=sys.stderr)
+    for dataset in datasets:
+        for lawd_cd in regions:
+            name = KNOWN_LAWD.get(lawd_cd, "")
+            for ymd in months:
+                try:
+                    rows, raw_pages = collector.collect_month(fetcher, dataset, lawd_cd, ymd)
+                    n = db.replace_month(conn, dataset, lawd_cd, ymd, rows, raw_pages, now)
+                    total_rows += n
+                    print(f"  ok   [{dataset}] {lawd_cd} {name} {ymd}: {n}건")
+                except Exception as e:  # 한 단위 실패가 전체를 중단시키지 않게
+                    failures += 1
+                    db.log_error(conn, dataset, lawd_cd, ymd, str(e), now)
+                    print(f"  FAIL [{dataset}] {lawd_cd} {name} {ymd}: {e}", file=sys.stderr)
 
     print(f"\n완료: {total_rows}건 적재, 실패 {failures}건 (collect_log 참고)")
     return 1 if failures else 0

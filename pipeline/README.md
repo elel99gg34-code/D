@@ -1,13 +1,16 @@
-# Phase 1 — 실거래가 수집 파이프라인
+# Phase 1 — 실거래가 수집 파이프라인 (매매 + 전월세)
 
 `PLAN.md` Phase 1: 매일 자동으로 실거래가를 수집해 DB에 적재하는 파이프라인.
 
 ```
 [국토부 API] → collector.py (호출·페이징·정규화) → db.py (SQLite) → data/trades.db
-                                                      ├─ apt_trades     정규화 거래 데이터
+  ├ 매매  RTMSDataSvcAptTrade                         ├─ apt_trades     매매 거래
+  └ 전월세 RTMSDataSvcAptRent                          ├─ apt_rents      전월세 (monthly_rent=0이면 전세)
                                                       ├─ raw_responses  원본 XML 보관 (재처리용)
                                                       └─ collect_log    수집 성공/실패 이력
 ```
+
+전월세 API는 같은 인증키로 공공데이터포털에서 **"아파트 전월세 자료" 활용신청을 추가**해야 한다.
 
 ## 실행
 
@@ -15,9 +18,13 @@
 # 키 없이 전 과정 검증 (샘플 데이터)
 python3 -m pipeline.collect --sample
 
-# 실전: 강남·송파 최근 3개월
+# 실전: 강남·송파 최근 3개월, 매매+전월세 (기본)
 export SERVICE_KEY="일반 인증키(Decoding)"
 python3 -m pipeline.collect --regions 11680,11710
+
+# 매매만 / 전월세만
+python3 -m pipeline.collect --dataset trade
+python3 -m pipeline.collect --dataset rent
 
 # 과거 구간 백필
 python3 -m pipeline.collect --regions 11680 --from-ymd 202401 --to-ymd 202506
@@ -42,7 +49,7 @@ python3 -m pipeline.collect --regions 11680 --from-ymd 202401 --to-ymd 202506
 - **부분 실패 허용**: 한 (지역, 월) 실패가 전체 배치를 중단시키지 않고 `collect_log`에 기록됨.
 - **SQLite → PostgreSQL**: MVP는 SQLite. 스키마는 표준 타입만 사용해 Postgres 이관 대비.
 
-## 다음 단계 (Phase 2 후보)
+## 다음 단계 후보
 
-- 조회용 서비스 API (FastAPI) 또는 조건 알림
-- 전월세 API 추가 (같은 구조로 `RTMSDataSvcAptRent` 수집기만 추가하면 됨)
+- 조건 알림 (특정 단지 신규 거래 등록 시 텔레그램 등) — 실데이터 수집 후
+- 전세가율 통계 (같은 단지 매매가 대비 전세 보증금 비율)

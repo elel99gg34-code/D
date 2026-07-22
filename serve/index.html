@@ -6,7 +6,7 @@
 <title>실거래가 조회</title>
 <style>
   :root { color-scheme: light dark; }
-  body { font-family: system-ui, -apple-system, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
   h1 { font-size: 1.3rem; }
   form { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
   input, select, button { padding: .45rem .6rem; font-size: .95rem; }
@@ -16,31 +16,53 @@
   td.num, th.num { text-align: right; }
   #meta { color: #888; font-size: .85rem; margin: .5rem 0; }
   .wrap { overflow-x: auto; }
+  label.chk { display: inline-flex; align-items: center; gap: .3rem; font-size: .9rem; }
 </style>
 </head>
 <body>
 <h1>아파트 실거래가 조회</h1>
 <form id="f">
+  <select id="ds">
+    <option value="trade">매매</option>
+    <option value="rent">전월세</option>
+  </select>
   <select id="lawd"><option value="">전체 지역</option></select>
   <input id="ymd" placeholder="거래연월 YYYYMM" pattern="\d{6}" size="12">
   <input id="apt" placeholder="단지명" size="12">
   <input id="umd" placeholder="법정동" size="10">
+  <label class="chk" id="jeonseWrap" hidden><input type="checkbox" id="jeonse">전세만</label>
   <button>검색</button>
 </form>
 <div id="meta"></div>
 <div class="wrap">
 <table>
-  <thead><tr>
-    <th>거래일</th><th>법정동</th><th>단지</th>
-    <th class="num">전용(㎡)</th><th class="num">층</th>
-    <th class="num">금액(만원)</th><th>구분</th>
-  </tr></thead>
+  <thead id="head"></thead>
   <tbody id="rows"></tbody>
 </table>
 </div>
 <script>
 const $ = id => document.getElementById(id);
 const fmt = n => n == null ? "" : Number(n).toLocaleString("ko-KR");
+const esc = s => String(s ?? "").replace(/[&<>"]/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const HEADS = {
+  trade: `<tr><th>거래일</th><th>법정동</th><th>단지</th>
+    <th class="num">전용(㎡)</th><th class="num">층</th>
+    <th class="num">금액(만원)</th><th>구분</th></tr>`,
+  rent: `<tr><th>거래일</th><th>법정동</th><th>단지</th>
+    <th class="num">전용(㎡)</th><th class="num">층</th>
+    <th class="num">보증금(만원)</th><th class="num">월세(만원)</th><th>계약</th></tr>`,
+};
+
+function rowHtml(ds, t) {
+  const base = `<td>${esc(t.deal_date)}</td><td>${esc(t.umd_nm)}</td><td>${esc(t.apt_nm)}</td>
+    <td class="num">${esc(t.exclu_use_ar)}</td><td class="num">${esc(t.floor)}</td>`;
+  if (ds === "trade")
+    return `<tr>${base}<td class="num">${fmt(t.deal_amount)}</td><td>${esc(t.dealing_gbn)}</td></tr>`;
+  return `<tr>${base}<td class="num">${fmt(t.deposit)}</td>
+    <td class="num">${fmt(t.monthly_rent)}</td><td>${esc(t.contract_type)}</td></tr>`;
+}
 
 async function loadRegions() {
   const data = await (await fetch("/api/regions")).json();
@@ -55,21 +77,23 @@ async function loadRegions() {
 
 async function search(e) {
   if (e) e.preventDefault();
+  const ds = $("ds").value;
+  $("jeonseWrap").hidden = ds !== "rent";
   const p = new URLSearchParams();
   if ($("lawd").value) p.set("lawd_cd", $("lawd").value);
   if ($("ymd").value) p.set("deal_ymd", $("ymd").value);
   if ($("apt").value) p.set("apt", $("apt").value);
   if ($("umd").value) p.set("umd", $("umd").value);
-  const data = await (await fetch("/api/trades?" + p)).json();
+  if (ds === "rent" && $("jeonse").checked) p.set("jeonse_only", "true");
+  const url = ds === "trade" ? "/api/trades?" : "/api/rents?";
+  const data = await (await fetch(url + p)).json();
   $("meta").textContent = `총 ${fmt(data.total)}건 중 ${data.items.length}건 표시`;
-  $("rows").innerHTML = data.items.map(t => `<tr>
-    <td>${t.deal_date ?? ""}</td><td>${t.umd_nm ?? ""}</td><td>${t.apt_nm ?? ""}</td>
-    <td class="num">${t.exclu_use_ar ?? ""}</td><td class="num">${t.floor ?? ""}</td>
-    <td class="num">${fmt(t.deal_amount)}</td><td>${t.dealing_gbn ?? ""}</td>
-  </tr>`).join("");
+  $("head").innerHTML = HEADS[ds];
+  $("rows").innerHTML = data.items.map(t => rowHtml(ds, t)).join("");
 }
 
 $("f").addEventListener("submit", search);
+$("ds").addEventListener("change", search);
 loadRegions().then(search);
 </script>
 </body>
