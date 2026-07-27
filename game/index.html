@@ -120,6 +120,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
+.topbtn.skill{color:#e6d6ff;background:rgba(120,60,200,.24);border-color:#a879e8}
+.topbtn.skill:hover{background:rgba(120,60,200,.46)}
 .topbtn.fuse{color:#ffd9e0;background:rgba(190,40,80,.22);border-color:#d84a70}
 .topbtn.fuse:hover{background:rgba(190,40,80,.45)}
 .topbtn.fuse.ready{animation:ssxGlow 1.4s ease-in-out infinite}
@@ -650,6 +652,42 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dexgrid .dextile.unknown b,.dexgrid .dextile.unknown span{color:#6f6553}
 .dexgrid .dextile.unknown:hover{transform:none;box-shadow:none}
 
+/* ══ 비기 ════════════════════════════════════════════════ */
+#skillbtn{pointer-events:auto;position:absolute;left:20px;bottom:92px;width:70px;height:70px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  background:linear-gradient(160deg,#5c1b30,#2a0d18);border:2px solid #ff2d55;color:#ffdce3;
+  box-shadow:0 0 18px rgba(255,45,85,.5);transition:.16s}
+#skillbtn b{font-size:27px;font-weight:400;line-height:1}
+#skillbtn small{font-size:9.5px;letter-spacing:.1em;opacity:.8}
+#skillbtn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 0 30px rgba(255,45,85,.9)}
+#skillbtn.ready{animation:ssxGlow 1.4s ease-in-out infinite}
+#skillbtn.used,#skillbtn.none{filter:grayscale(.85);opacity:.42;box-shadow:none;animation:none;cursor:default}
+#skillbtn.used::after{content:'사용함';position:absolute;font-size:10px;color:#ffb3c2;bottom:-15px;letter-spacing:.1em}
+@media(max-width:1100px){#skillbtn{left:8px;width:58px;height:58px}#skillbtn b{font-size:22px}}
+
+.skillgrid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:min(900px,92vw)}
+.stile{width:150px;padding:13px 10px;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:linear-gradient(160deg,#efe4cb,#cdbb96);border:2px solid #6b6053;cursor:pointer;transition:.16s}
+.stile:hover{transform:translateY(-5px);box-shadow:0 10px 22px rgba(0,0,0,.5)}
+.stile b{font-size:32px;color:#22190f;font-weight:400;line-height:1}
+.stile .sn{font-size:13.5px;color:#22190f}
+.stile .sd{font-size:11px;color:#4a4234;text-align:center;line-height:1.4;word-break:keep-all}
+.stile .sg{font-size:9.5px;padding:1px 7px;border-radius:3px;background:var(--gc);color:#fff;
+  border:1px solid rgba(255,255,255,.4)}
+.stile.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
+.stile.g-ssx{border-color:#ff2d55;background:linear-gradient(160deg,#ffe9ee,#f3c3ce);animation:ssxGlow 1.25s ease-in-out infinite}
+.stile.g-unknown{border-color:#b98cff;background:linear-gradient(160deg,#efe6ff,#c9b6ee);
+  box-shadow:0 0 20px rgba(150,90,255,.8)}
+.stile.on{outline:3px solid #6fe0a8;outline-offset:3px}
+.stile .eq{font-size:10.5px;color:#1e6a48;letter-spacing:.1em}
+
+/* 이번 턴 받을 피해 */
+.incoming{position:absolute;left:50%;transform:translateX(-50%);bottom:-4px;white-space:nowrap;
+  font-size:12.5px;color:#8b1f24;background:rgba(240,232,212,.9);padding:2px 9px;border-radius:10px;
+  border:1px solid rgba(168,39,44,.35)}
+.incoming.safe{color:#1e4744;border-color:rgba(44,95,90,.4)}
+.incoming b{font-size:14px}
+
 /* ══ 유물 ════════════════════════════════════════════════ */
 .relic.g-uncommon{border-color:#2f6d8f}
 .relic.g-rare{border-color:#b8912f;box-shadow:0 0 9px rgba(184,145,47,.6)}
@@ -1124,7 +1162,10 @@ const STATUS = {
   dbl:      { n: '분신',   g: '分', kind: 'buff',   d: '다음에 내는 공격 카드가 한 번 더 발동한다.' },
   afterimg: { n: '잔상',   g: '殘', kind: 'buff',   d: '다음 턴 시작 시 수치만큼 방어도를 얻고 사라진다.' },
   focus:    { n: '집중',   g: '集', kind: 'buff',   d: '턴 시작 시 기를 수치만큼 더 얻는다.' },
-  curse:    { n: '저주',   g: '呪', kind: 'debuff', d: '턴 종료 시 수치만큼 체력을 잃는다.' }
+  curse:    { n: '저주',   g: '呪', kind: 'debuff', d: '턴 종료 시 수치만큼 체력을 잃는다.' },
+  endblock: { n: '철심',   g: '芯', kind: 'buff',   d: '턴 종료 시 수치만큼 방어도를 얻는다.' },
+  turnblock:{ n: '태산',   g: '山', kind: 'buff',   d: '턴 시작 시 수치만큼 방어도를 얻는다.' },
+  rebirth:  { n: '불사',   g: '鳳', kind: 'buff',   d: '쓰러질 때 수치만큼의 체력으로 되살아난다. (한 번)' }
 };
 function statusTip(k, v) {
   const s = STATUS[k]; return `<b>${s.n} ${v}</b><br>${s.d}`;
@@ -1142,12 +1183,13 @@ const G = {
 };
 const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
-let META = { best: 0, wins: 0, runs: 0, speed: 1, sound: true, dex: { cards: {}, relics: {}, enemies: {} } };
+let META = { best: 0, wins: 0, runs: 0, speed: 1, sound: true, dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
 function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY)); if (m) META = Object.assign(META, m); } catch (e) {}
   SPEED = META.speed || 1;
   if (META.sound === false) SND.on = false;
   META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
-  META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {}; META.dex.enemies = META.dex.enemies || {}; }
+  META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
+  META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {}; }
 function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
 function saveRun() {
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
@@ -1166,6 +1208,7 @@ function adoptRun(obj) {
   if (G.run.dia == null) G.run.dia = 0;
   if (G.run.summons == null) G.run.summons = 0;
   if (G.run.banner == null) G.run.banner = 3;
+  if (!G.run.skills) { G.run.skills = []; gainSkill('qiwave', true); }
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -1535,6 +1578,78 @@ defCard({ id: 'kalpa', n: '겁멸', g: '劫', type: 'attack', rar: 'ssx', cost: 
   play: async c => { screenFlash('rgba(255,120,60,.5)', 500);
     for (const e of alive()) atk(e, c.v.d, { fx: 'fire' }); } });
 
+/* --- S급 추가 --- */
+defCard({ id: 'starfall', n: '유성락', g: '隕', type: 'attack', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 11 : 8, n: 3 }),
+  txt: v => `무작위 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break;
+    atk(pick(a), c.v.d, { fx: 'lightning' }); await wait(120); } } });
+defCard({ id: 'ironheart', n: '철심', g: '芯', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ x: u ? 4 : 3 }),
+  txt: v => `턴 종료 시 <i>${v.x * 3}</i>의 방어도를 얻고, <b>가시</b> ${v.x}을 얻는다.`,
+  play: c => { st(P(), 'thorns', c.v.x); st(P(), 'endblock', c.v.x * 3); } });
+defCard({ id: 'sealarray', n: '봉마진', g: '陣', type: 'skill', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ k: u ? 2 : 1 }),
+  txt: v => `모든 적에게 <b>무력</b>을 부여해 다음 행동을 막는다.${v.k > 1 ? ' <b>취약</b> 3도 부여한다.' : ''} 소멸.`,
+  exhaust: true,
+  play: c => { SND.bell(); for (const e of alive()) { st(e, 'stun', 1); if (c.v.k > 1) st(e, 'vuln', 3); } } });
+defCard({ id: 'bloodpact', n: '혈맹', g: '盟', type: 'skill', rar: 'special', cost: 0,
+  v: u => ({ h: u ? 5 : 8, e: 2 }),
+  txt: v => `체력을 ${v.h} 잃고 기를 ${v.e} 얻는다. 카드를 1장 뽑는다.`,
+  play: c => { lose(c.v.h); energy(c.v.e); drawCards(1); } });
+
+/* --- SSX급 추가 --- */
+defCard({ id: 'ghostparade', n: '백귀야행', g: '百', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
+  v: u => ({ d: u ? 14 : 11, n: 5 }),
+  txt: v => `무작위 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
+  play: async c => { skillBanner('百 鬼 夜 行', true);
+    for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break;
+      atk(pick(a), c.v.d, { fx: 'petal' }); await wait(110); } } });
+defCard({ id: 'soulcut', n: '단혼검', g: '斷', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
+  v: u => ({ d: u ? 45 : 35 }),
+  txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 대상의 <b>이로운 효과</b>를 모두 지운다. 소멸.`,
+  play: c => { for (const k in c.t.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete c.t.s[k];
+    atk(c.t, c.v.d, { pierce: true, fx: 'void' }); } });
+defCard({ id: 'timeflow', n: '역류', g: '流', type: 'skill', rar: 'ssx', cost: 1, exhaust: true,
+  v: u => ({ n: u ? 3 : 2 }),
+  txt: v => `버린 더미에서 부적 ${v.n}장을 손으로 되돌리고, 그 부적들의 기 소모가 이번 턴 0이 된다.`,
+  play: async c => { const b = G.b;
+    for (let i = 0; i < c.v.n && b.discardPile.length; i++) {
+      if (b.hand.length >= 10) break;
+      b.hand.push(b.discardPile.pop());
+    }
+    b.freeTurn = true; SND.bell(); syncAll(); } });
+defCard({ id: 'thousandarms', n: '천수관음', g: '手', type: 'power', rar: 'ssx', cost: 2,
+  v: u => ({ x: u ? 2 : 1 }),
+  txt: v => `<b>기공</b> ${v.x}과 <b>집중</b> ${v.x}을 얻는다. 매 턴 카드와 기를 ${v.x}씩 더 얻는다.`,
+  play: c => { st(P(), 'flow', c.v.x); st(P(), 'focus', c.v.x); } });
+defCard({ id: 'ironmountain', n: '태산', g: '山', type: 'power', rar: 'ssx', cost: 2,
+  v: u => ({ b: u ? 14 : 10 }),
+  txt: v => `<b>금강</b> 상태가 되고, 턴 시작 시 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { st(P(), 'barricade', 1); st(P(), 'turnblock', c.v.b); } });
+defCard({ id: 'nineheaven', n: '구천뇌옥', g: '獄', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
+  v: u => ({ d: u ? 30 : 24, k: 3 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b>과 <b>약화</b>를 ${v.k}씩 부여한다. 소멸.`,
+  play: async c => { screenFlash('rgba(180,220,255,.5)', 520); SND.thunder();
+    for (const e of alive()) { atk(e, c.v.d, { fx: 'lightning' }); st(e, 'vuln', c.v.k); st(e, 'weak', c.v.k); } } });
+defCard({ id: 'lifedrain', n: '흡천대법', g: '天', type: 'power', rar: 'ssx', cost: 2,
+  v: u => ({ x: u ? 9 : 6 }),
+  txt: v => `<b>흡성</b> ${v.x}을 얻고 <b>힘</b>을 3 얻는다.`,
+  play: c => { st(P(), 'drain', c.v.x); st(P(), 'str', 3); } });
+defCard({ id: 'karmablade', n: '업보검', g: '業', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 5 : 4 }),
+  txt: v => `이번 전투에서 잃은 체력 ÷ 2 + <em>${v.d}</em>만큼의 피해를 준다.`,
+  play: c => { const lost = Math.max(0, (G.b.startHp || P().maxHp) - P().hp);
+    atk(c.t, Math.floor(lost / 2) + c.v.d, { fx: 'slash2' }); } });
+defCard({ id: 'sealheaven', n: '천봉인', g: '封', type: 'skill', rar: 'ssx', cost: 2, tgt: 'all', exhaust: true,
+  v: u => ({ n: u ? 2 : 1 }),
+  txt: v => `모든 적을 ${v.n}턴 동안 <b>무력</b>하게 만들고, 방어도를 없앤다. 소멸.`,
+  play: c => { SND.gong(); for (const e of alive()) { st(e, 'stun', c.v.n); e.block = 0; } syncAll(); } });
+defCard({ id: 'phoenix', n: '불사조', g: '鳳', type: 'power', rar: 'ssx', cost: 2, exhaust: true,
+  v: u => ({ h: u ? 40 : 30 }),
+  txt: v => `이 전투에서 쓰러질 때 체력 ${v.h}로 되살아난다. (한 번) 소멸.`,
+  play: c => { st(P(), 'rebirth', c.v.h); SND.power(); flash('불사조'); } });
+
 /* ---------- ?급 — 세상에 단 하나 ---------- */
 defCard({ id: 'genesis', n: '천지개벽', g: '闢', type: 'skill', rar: 'unknown', cost: 3, exhaust: true,
   v: u => ({ n: u ? 4 : 3, e: u ? 3 : 2 }),
@@ -1567,6 +1682,8 @@ function mkCard(id, up) { return { uid: _uid++, id, up: !!up }; }
 function cdef(c) { return CARDS[c.id]; }
 function cval(c) { return cdef(c).v(c.up); }
 function ccost(c) { const d = cdef(c); return d.costOf ? d.costOf(c.up) : d.cost; }
+/* 실제로 치르는 값 — 무념무상 같은 효과를 반영한다 */
+function ecost(c) { const k = ccost(c); return (G.b && G.b.freeTurn && k > 0) ? 0 : k; }
 function cname(c) { return cdef(c).n + (c.up ? '+' : ''); }
 /* 등급 — 4등급이 가장 낮고 ?급이 가장 높다. ?급은 아직 어디에도 없다. */
 const GRADE = {
@@ -1606,7 +1723,8 @@ const UNLOCK = [
   { at: 7,  r: 'uncommon', n: '2등급' },
   { at: 18, r: 'rare',     n: '1등급' }
 ];
-function progress() { const r = G.run; return r ? (r.act - 1) * 12 + r.floor : 0; }
+const ACT_SPAN = 12;
+function progress() { const r = G.run; return r ? (r.act - 1) * ACT_SPAN + r.floor : 0; }
 function unlockedGrades(boost) {
   const p = progress();
   let list = UNLOCK.filter(u => p >= u.at).map(u => u.r);
@@ -1837,9 +1955,19 @@ function gainRelic(id, silent) {
   if (!silent) { SND.power(); toast(`유물 획득 — ${d.n}`); }
   return true;
 }
-/* 자리가 꽉 찼을 때 — 무엇을 버릴지 고르게 한다 */
-function relicOverflow(newId) {
+/* 자리가 꽉 찼을 때 — 무엇을 버릴지 고르게 한다.
+   지금 떠 있는 창(보상·상점 등)이 닫히거나 다시 그려진 뒤에 띄워야
+   그 과정에서 창이 지워지지 않는다. */
+function relicOverflow(newId) { setTimeout(() => showRelicOverflow(newId), 90); }
+function showRelicOverflow(newId) {
   const run = G.run, d = RELICS[newId];
+  if (run.relics.length < RELIC_SLOTS) {           /* 그 사이 자리가 났다면 그냥 준다 */
+    const r = { id: newId, used: false, isNew: true };
+    run.relics.push(r);
+    if (d.h && d.h.onGain) d.h.onGain(r);
+    dexAdd('relics', newId); SND.power(); toast(`유물 획득 — ${d.n}`);
+    renderTop(); saveRun(); return;
+  }
   const p = modal(`<h2>유물 자리가 없다</h2>
     <div class="hint">유물은 ${RELIC_SLOTS}개까지만 지닐 수 있다 · 하나를 버리거나, 새 유물을 포기한다</div>
     <div class="relicgrid" id="ro_old"></div>
@@ -1872,6 +2000,95 @@ function randomRelic(rar) {
   const cand = [];
   for (const p of pools) for (const id of RELIC_POOL[p]) if (!owned.has(id)) cand.push(id);
   return cand.length ? pick(cand) : null;
+}
+
+/* ══════════════════════════════════════════════════════════
+   4-B. 비기(祕技)
+   ──────────────────────────────────────────────────────────
+   기(氣)를 쓰지 않는 필살기. 하나만 장착할 수 있고
+   전투 한 번에 딱 한 번만 쓸 수 있다.
+   ══════════════════════════════════════════════════════════ */
+const SKILLS = {};
+function defSkill(o) { SKILLS[o.id] = o; return o; }
+
+/* --- S급 --- */
+defSkill({ id: 'qiwave', n: '기공파', g: '氣', rar: 'special',
+  d: '모든 적에게 <em>32</em>의 피해를 준다.',
+  use: async () => { screenFlash('rgba(120,220,240,.4)', 420); SND.holyhit();
+    for (const e of alive()) atk(e, 32, { fx: 'wind' }); } });
+defSkill({ id: 'ironwall', n: '철벽', g: '鐵', rar: 'special',
+  d: '<i>45</i>의 방어도를 얻고, 이번 턴 받는 피해가 절반이 된다.',
+  use: async () => { blk(45, true); G.b.halved = true; SND.block(); flash('철벽'); } });
+defSkill({ id: 'rush', n: '속공', g: '速', rar: 'special',
+  d: '카드를 5장 뽑고 기를 3 얻는다.',
+  use: async () => { drawCards(5); energy(3); SND.power(); } });
+
+/* --- SSX급 --- */
+defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
+  d: '<b>기의 제한을 깨고</b> 뽑을 더미와 버린 더미의 <b>모든 부적을 태운다.</b><br>' +
+     '태운 장수 × <em>9</em>의 피해를 모든 적에게 준다.',
+  use: async () => {
+    const b = G.b;
+    const burn = b.drawPile.concat(b.discardPile);
+    b.drawPile = []; b.discardPile = [];
+    for (const c of burn) { b.exhaustPile.push(c); fire('onExhaust', c); }
+    const n = burn.length;
+    skillBanner('萬 天 鬼 葬', true);
+    screenFlash('radial-gradient(circle,rgba(255,230,180,.85),rgba(120,20,40,.85))', 800);
+    SND.gong(); SND.thunder();
+    syncAll();
+    await wait(320);
+    for (const e of alive()) atk(e, n * 9, { fx: 'fire' });
+    shake(true);
+  } });
+defSkill({ id: 'nomind', n: '무념무상', g: '空', rar: 'ssx',
+  d: '이번 턴 동안 <b>모든 부적의 기 소모가 0</b>이 된다.',
+  use: async () => { G.b.freeTurn = true; SND.power(); flash('무념무상'); syncAll(); } });
+defSkill({ id: 'defy', n: '역천', g: '逆', rar: 'ssx',
+  d: '모든 적의 이로운 효과를 지우고, 각자의 <b>현재 체력의 40%</b>를 없앤다.',
+  use: async () => {
+    skillBanner('逆 天', true); SND.voidhit();
+    for (const e of alive()) {
+      for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k];
+      impact('void', e);
+      pure(e, Math.ceil(e.hp * .4));
+      await wait(90);
+    }
+    syncAll();
+  } });
+
+/* --- ?급 --- */
+defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
+  d: '체력을 <b>전투가 시작될 때</b>로 되돌리고, 손패를 7장으로 채우며 기를 5 얻는다.',
+  use: async () => {
+    const b = G.b, p = P();
+    skillBanner('廻 光 返 照', true);
+    screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(120,60,220,.7))', 900);
+    SND.gong(); SND.heal();
+    const back = Math.min(p.maxHp, b.startHp || p.maxHp);
+    if (back > p.hp) { const d = back - p.hp; p.hp = back; G.run.hp = back; healFx(p, d); }
+    const need = Math.max(0, 7 - b.hand.length);
+    if (need) drawCards(need);
+    energy(5); syncAll();
+  } });
+
+const SKILL_POOL = { special: [], ssx: [], unknown: [] };
+for (const k in SKILLS) SKILL_POOL[SKILLS[k].rar].push(k);
+const ALL_SKILLS = Object.keys(SKILLS);
+function randomSkill(rar) {
+  const owned = new Set((G.run && G.run.skills) || []);
+  const pool = (rar ? SKILL_POOL[rar] : ALL_SKILLS).filter(id => !owned.has(id));
+  return pool.length ? pick(pool) : null;
+}
+function gainSkill(id, silent) {
+  const run = G.run;
+  run.skills = run.skills || [];
+  if (run.skills.indexOf(id) >= 0) return false;
+  run.skills.push(id);
+  if (!run.skill) run.skill = id;
+  dexAdd('skills', id);
+  if (!silent) { SND.gong(); toast(`비기 획득 — ${SKILLS[id].n}`); }
+  return true;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1919,7 +2136,7 @@ defEnemy({ id: 'wisp', n: '도깨비불', g: '燐', hp: [11, 15], col: '#3f6f86'
            lure: { t: 'atkdeb', label: '홀리기', d: 4, deb: { weak: 1 } } },
   next: e => lastIs(e, 'burn', 2) ? 'lure' : (rnd() < .6 ? 'burn' : 'lure') });
 
-defEnemy({ id: 'boar', n: '멧돼지 요괴', g: '猪', hp: [23, 28], col: '#7a5230',
+defEnemy({ id: 'boar', n: '멧돼지 요괴', g: '猪', hp: [20, 25], col: '#7a5230',
   moves: { snort: { t: 'buff', label: '씩씩거리기', self: { str: 2 } },
            charge: { t: 'attack', label: '돌진', d: 10, fx: 'blunt' },
            guard: { t: 'defend', label: '웅크리기', blk: 7 } },
@@ -1931,7 +2148,7 @@ defEnemy({ id: 'spirit', n: '원귀', g: '怨', hp: [16, 21], col: '#5b4a70',
            curse: { t: 'debuff', label: '저주', deb: { weak: 2, vuln: 1 } } },
   next: e => lastIs(e, 'curse') ? (rnd() < .5 ? 'grudge' : 'wail') : rnd() < .3 ? 'curse' : rnd() < .5 ? 'grudge' : 'wail' });
 
-defEnemy({ id: 'straw', n: '허수아비 요괴', g: '藁', hp: [26, 31], col: '#8a7434',
+defEnemy({ id: 'straw', n: '허수아비 요괴', g: '藁', hp: [23, 28], col: '#8a7434',
   moves: { swing: { t: 'attack', label: '후려치기', d: 9, fx: 'blunt' },
            harden: { t: 'defend', label: '굳히기', blk: 9, self: { dex: 1 } } },
   next: e => lastIs(e, 'swing', 2) ? 'harden' : rnd() < .65 ? 'swing' : 'harden' });
@@ -1953,8 +2170,8 @@ defEnemy({ id: 'bat', n: '흡혈 박쥐', g: '蝠', hp: [13, 17], col: '#4a3a52'
            flit: { t: 'defend', label: '날갯짓', blk: 6, self: { dex: 2 } } },
   next: e => lastIs(e, 'drink', 3) ? 'flit' : rnd() < .8 ? 'drink' : 'flit' });
 
-defEnemy({ id: 'stoneman', n: '석귀', g: '石', hp: [32, 38], col: '#5f5a52',
-  moves: { smash: { t: 'attack', label: '내려찍기', d: 13, fx: 'blunt' },
+defEnemy({ id: 'stoneman', n: '석귀', g: '石', hp: [28, 34], col: '#5f5a52',
+  moves: { smash: { t: 'attack', label: '내려찍기', d: 11, fx: 'blunt' },
            fortify: { t: 'defend', label: '암화', blk: 13 } },
   next: e => lastIs(e, 'smash') ? 'fortify' : 'smash' });
 
@@ -1970,16 +2187,16 @@ defEnemy({ id: 'serpent', n: '화사', g: '蛇', hp: [28, 34], col: '#3f7346',
            coil: { t: 'defend', label: '똬리', blk: 9, self: { str: 2 } } },
   next: e => lastIs(e, 'fang', 2) ? 'coil' : rnd() < .7 ? 'fang' : 'coil' });
 
-defEnemy({ id: 'ghostmonk', n: '요승', g: '僧', hp: [36, 42], col: '#7a4a3a',
+defEnemy({ id: 'ghostmonk', n: '요승', g: '僧', hp: [33, 39], col: '#7a4a3a',
   moves: { chant: { t: 'attack', label: '염불', d: 8, n: 2 },
            barrier: { t: 'defend', label: '결계', blk: 15 },
            hex: { t: 'debuff', label: '주박', deb: { weak: 2, vuln: 2 } } },
   next: e => e.hist.length === 0 ? 'hex' : lastIs(e, 'chant') ? 'barrier' : rnd() < .55 ? 'chant' : rnd() < .6 ? 'hex' : 'barrier' });
 
-defEnemy({ id: 'yaksha', n: '야차', g: '叉', hp: [42, 48], col: '#8c2f3a',
+defEnemy({ id: 'yaksha', n: '야차', g: '叉', hp: [38, 44], col: '#8c2f3a',
   moves: { rampage: { t: 'attack', label: '광란', d: 7, n: 3 },
            roar: { t: 'buff', label: '포효', self: { str: 3 } },
-           cleave: { t: 'attack', label: '가르기', d: 15, fx: 'slash2' } },
+           cleave: { t: 'attack', label: '가르기', d: 13, fx: 'slash2' } },
   next: e => e.hist.length === 0 ? 'roar' : lastIs(e, 'rampage') ? 'cleave' : rnd() < .5 ? 'rampage' : rnd() < .6 ? 'cleave' : 'roar' });
 
 defEnemy({ id: 'willow', n: '버들귀', g: '柳', hp: [32, 38], col: '#4a7040',
@@ -1993,43 +2210,43 @@ defEnemy({ id: 'shadow', n: '그림자', g: '影', hp: [26, 32], col: '#2e2b33',
   next: e => lastIs(e, 'split', 2) ? 'hide' : rnd() < .72 ? 'split' : 'hide' });
 
 /* ---------- 엘리트 ---------- */
-defEnemy({ id: 'imugi', n: '이무기', g: '蟒', hp: [78, 86], col: '#2b6b5e', elite: true, big: true,
+defEnemy({ id: 'imugi', n: '이무기', g: '蟒', hp: [66, 74], col: '#2b6b5e', elite: true, big: true,
   moves: { mist: { t: 'atkdeb', label: '독무', d: 6, fx: 'poison', extra: e => st(P(), 'poison', 5) },
-           tail: { t: 'attack', label: '꼬리치기', d: 17, fx: 'blunt' },
+           tail: { t: 'attack', label: '꼬리치기', d: 14, fx: 'blunt' },
            coil: { t: 'defend', label: '용트림', blk: 16, self: { str: 2 } } },
   next: e => e.hist.length === 0 ? 'mist' : lastIs(e, 'tail') ? (rnd() < .5 ? 'coil' : 'mist') : rnd() < .45 ? 'tail' : rnd() < .6 ? 'mist' : 'coil' });
 
-defEnemy({ id: 'geuseundae', n: '그슨대', g: '暗', hp: [72, 80], col: '#242030', elite: true, big: true,
+defEnemy({ id: 'geuseundae', n: '그슨대', g: '暗', hp: [62, 70], col: '#242030', elite: true, big: true,
   init: e => { e.s.rage = 2; },
   moves: { engulf: { t: 'attack', label: '어둠 잠식', d: 10 },
            stretch: { t: 'atkdef', label: '늘어나기', d: 6, blk: 10 } },
   next: e => lastIs(e, 'engulf', 2) ? 'stretch' : rnd() < .65 ? 'engulf' : 'stretch' });
 
-defEnemy({ id: 'jangseung', n: '장승 수호신', g: '柱', hp: [95, 104], col: '#6b4a2a', elite: true, big: true,
+defEnemy({ id: 'jangseung', n: '장승 수호신', g: '柱', hp: [80, 88], col: '#6b4a2a', elite: true, big: true,
   init: e => { e.s.thorns = 5; },
-  moves: { stomp: { t: 'attack', label: '천하대장군', d: 21, fx: 'blunt' },
-           root: { t: 'defend', label: '지하여장군', blk: 22, self: { thorns: 2 } },
+  moves: { stomp: { t: 'attack', label: '천하대장군', d: 17, fx: 'blunt' },
+           root: { t: 'defend', label: '지하여장군', blk: 18, self: { thorns: 2 } },
            glare: { t: 'debuff', label: '노려보기', deb: { weak: 2, vuln: 2 } } },
   next: e => e.hist.length === 0 ? 'root' : lastIs(e, 'stomp') ? (rnd() < .6 ? 'root' : 'glare') : rnd() < .55 ? 'stomp' : rnd() < .6 ? 'root' : 'glare' });
 
-defEnemy({ id: 'hwangryeong', n: '황령', g: '靈', hp: [68, 75], col: '#8a7a2c', elite: true, big: true,
-  moves: { devour: { t: 'attack', label: '혼 흡수', d: 13, heal: 13 },
+defEnemy({ id: 'hwangryeong', n: '황령', g: '靈', hp: [60, 67], col: '#8a7a2c', elite: true, big: true,
+  moves: { devour: { t: 'attack', label: '혼 흡수', d: 11, heal: 9 },
            curse: { t: 'debuff', label: '업화', deb: { weak: 2, vuln: 2 }, extra: () => st(P(), 'curse', 2) },
            blast: { t: 'attack', label: '혼백 폭발', d: 8, n: 2 } },
   next: e => e.hist.length === 0 ? 'curse' : lastIs(e, 'devour') ? 'blast' : rnd() < .45 ? 'devour' : rnd() < .65 ? 'blast' : 'curse' });
 
 /* ---------- 보스 ---------- */
-defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [170, 170], col: '#a8272c', boss: true, big: true,
+defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [128, 128], col: '#a8272c', boss: true, big: true,
   init: e => { e.phase = 1; },
   moves: {
-    charm:  { t: 'atkdeb', label: '요혹', d: 10, deb: { weak: 2 } },
-    dance:  { t: 'attack', label: '구미난무', d: 5, n: 3 },
-    devour: { t: 'attack', label: '혼 흡수', d: 12, heal: 10 },
-    veil:   { t: 'defend', label: '월광 결계', blk: 14, self: { str: 2 } },
-    ruin:   { t: 'attack', label: '구천낙화', d: 23, fx: 'petal' }
+    charm:  { t: 'atkdeb', label: '요혹', d: 8, deb: { weak: 1 } },
+    dance:  { t: 'attack', label: '구미난무', d: 4, n: 3 },
+    devour: { t: 'attack', label: '혼 흡수', d: 10, heal: 5 },
+    veil:   { t: 'defend', label: '월광 결계', blk: 10, self: { str: 1 } },
+    ruin:   { t: 'attack', label: '구천낙화', d: 17, fx: 'petal' }
   },
-  onTurnEnd: e => { e.tails = (e.tails || 0) + 1; if (e.tails % 2 === 0) st(e, 'str', 1); },  // 두 턴에 꼬리 하나
-  onHalf: e => { e.phase = 2; st(e, 'str', 2); flash('꼬리 아홉이 모두 깨어났다'); },
+  onTurnEnd: e => { e.tails = (e.tails || 0) + 1; if (e.tails % 3 === 0) st(e, 'str', 1); },  // 세 턴에 꼬리 하나
+  onHalf: e => { e.phase = 2; st(e, 'str', 1); flash('꼬리 아홉이 모두 깨어났다'); },
   next: e => {
     if (e.phase === 2 && !lastIs(e, 'ruin') && rnd() < .3) return 'ruin';
     if (lastIs(e, 'devour')) return 'veil';
@@ -2037,16 +2254,16 @@ defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [170, 170], col: '#a8272c
     return r < .3 ? 'charm' : r < .6 ? 'dance' : r < .82 ? 'devour' : 'veil';
   } });
 
-defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [225, 225], col: '#c07a1f', boss: true, big: true,
+defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [195, 195], col: '#c07a1f', boss: true, big: true,
   init: e => { e.charge = 0; },
   moves: {
     roar:   { t: 'debuff', label: '포효', deb: { weak: 2, vuln: 2 }, self: { str: 2 } },
     claw:   { t: 'attack', label: '발톱질', d: 9, n: 2 },
     echo:   { t: 'atkdef', label: '산울림', d: 8, blk: 13 },
-    gather: { t: 'buff', label: '기 모으기', blk: 18, self: { str: 2 }, extra: e => { e.charge = 1; flash('산군이 힘을 모은다'); } },
-    ascend: { t: 'attack', label: '승천격', d: 30, fx: 'blunt', extra: e => { e.charge = 0; } }
+    gather: { t: 'buff', label: '기 모으기', blk: 14, self: { str: 1 }, extra: e => { e.charge = 1; flash('산군이 힘을 모은다'); } },
+    ascend: { t: 'attack', label: '승천격', d: 26, fx: 'blunt', extra: e => { e.charge = 0; } }
   },
-  onHalf: e => { st(e, 'str', 2); st(e, 'thorns', 2); flash('산군이 포효한다'); },
+  onHalf: e => { st(e, 'str', 1); st(e, 'thorns', 2); flash('산군이 포효한다'); },
   next: e => {
     if (e.charge) return 'ascend';
     if (e.hist.length === 0) return 'roar';
@@ -2074,8 +2291,8 @@ defEnemy({ id: 'hellfire', n: '겁화귀', g: '焰', hp: [42, 49], col: '#b4531f
            heat: { t: 'buff', label: '열기', self: { str: 2, dex: 2 } } },
   next: e => lastIs(e, 'flame') ? (rnd() < .5 ? 'pyre' : 'heat') : rnd() < .5 ? 'flame' : rnd() < .65 ? 'pyre' : 'heat' });
 
-defEnemy({ id: 'warlord', n: '귀장군', g: '將', hp: [54, 62], col: '#4a4f70',
-  moves: { greatsword: { t: 'attack', label: '참마도', d: 20, fx: 'slash2' },
+defEnemy({ id: 'warlord', n: '귀장군', g: '將', hp: [48, 56], col: '#4a4f70',
+  moves: { greatsword: { t: 'attack', label: '참마도', d: 17, fx: 'slash2' },
            command: { t: 'atkdef', label: '호령', d: 8, blk: 14, self: { str: 3 } },
            sweep: { t: 'attack', label: '횡소천군', d: 11, n: 2 } },
   next: e => e.hist.length === 0 ? 'command' : lastIs(e, 'greatsword') ? (rnd() < .5 ? 'command' : 'sweep')
@@ -2094,33 +2311,33 @@ defEnemy({ id: 'stonelion', n: '해태', g: '獬', hp: [50, 58], col: '#5c6b4a',
   next: e => lastIs(e, 'pounce', 2) ? 'roarl' : rnd() < .5 ? 'pounce' : rnd() < .7 ? 'roarl' : 'gaze' });
 
 /* ---------- 3막 엘리트 ---------- */
-defEnemy({ id: 'rakshasaking', n: '나찰왕', g: '羅', hp: [130, 142], col: '#7a1f3d', elite: true, big: true,
+defEnemy({ id: 'rakshasaking', n: '나찰왕', g: '羅', hp: [115, 126], col: '#7a1f3d', elite: true, big: true,
   init: e => { e.s.rage = 2; e.s.thorns = 3; },
   moves: { rend: { t: 'attack', label: '찢어발기기', d: 12, n: 2 },
-           inferno: { t: 'attack', label: '업화 폭발', d: 26, fx: 'fire' },
+           inferno: { t: 'attack', label: '업화 폭발', d: 22, fx: 'fire' },
            bulwark: { t: 'defend', label: '나찰갑', blk: 20, self: { dex: 2 } } },
   next: e => lastIs(e, 'inferno') ? 'bulwark' : rnd() < .5 ? 'rend' : rnd() < .75 ? 'inferno' : 'bulwark' });
 
-defEnemy({ id: 'gatekeeper', n: '구천 문지기', g: '門', hp: [148, 160], col: '#3a4657', elite: true, big: true,
+defEnemy({ id: 'gatekeeper', n: '구천 문지기', g: '門', hp: [128, 140], col: '#3a4657', elite: true, big: true,
   init: e => { e.s.thorns = 6; },
-  moves: { hammer: { t: 'attack', label: '천주 강타', d: 24, fx: 'blunt' },
+  moves: { hammer: { t: 'attack', label: '천주 강타', d: 20, fx: 'blunt' },
            seal: { t: 'debuff', label: '봉문', deb: { weak: 3, vuln: 3 }, self: { str: 3 } },
-           bar: { t: 'defend', label: '철문 잠그기', blk: 26 } },
+           bar: { t: 'defend', label: '철문 잠그기', blk: 21 } },
   next: e => e.hist.length === 0 ? 'seal' : lastIs(e, 'hammer') ? (rnd() < .55 ? 'bar' : 'seal')
     : rnd() < .5 ? 'hammer' : rnd() < .75 ? 'bar' : 'seal' });
 
 /* ---------- 3막 보스 ---------- */
-defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [285, 285], col: '#23283a', boss: true, big: true,
+defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [250, 250], col: '#23283a', boss: true, big: true,
   init: e => { e.charge = 0; },
   moves: {
     talon:  { t: 'attack', label: '용조', d: 10, n: 2 },
     scale:  { t: 'atkdef', label: '역린', d: 9, blk: 18, self: { thorns: 2 } },
-    gather: { t: 'buff', label: '흑염 응축', blk: 22, self: { str: 3 },
+    gather: { t: 'buff', label: '흑염 응축', blk: 18, self: { str: 2 },
               extra: e => { e.charge = 1; flash('흑룡이 숨을 들이쉰다'); } },
-    breath: { t: 'attack', label: '흑염 브레스', d: 33, fx: 'fire', extra: e => { e.charge = 0; st(P(), 'weak', 2); } },
+    breath: { t: 'attack', label: '흑염 브레스', d: 28, fx: 'fire', extra: e => { e.charge = 0; st(P(), 'weak', 2); } },
     wing:   { t: 'atkdeb', label: '날갯짓', d: 10, deb: { vuln: 2 } }
   },
-  onHalf: e => { st(e, 'str', 3); flash('흑룡의 비늘이 곤두선다'); },
+  onHalf: e => { st(e, 'str', 2); flash('흑룡의 비늘이 곤두선다'); },
   next: e => {
     if (e.charge) return 'breath';
     if (e.hist.length === 0) return 'wing';
@@ -2130,22 +2347,208 @@ defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [285, 285], c
     return r < .42 ? 'talon' : r < .68 ? 'scale' : 'wing';
   } });
 
-defEnemy({ id: 'yeomra', n: '염라', g: '閻', hp: [270, 270], col: '#4a1f2a', boss: true, big: true,
+defEnemy({ id: 'yeomra', n: '염라', g: '閻', hp: [238, 238], col: '#4a1f2a', boss: true, big: true,
   init: e => { e.judged = 0; },
   moves: {
     judge:  { t: 'attack', label: '심판', d: 12, fx: 'holy', extra: () => st(P(), 'curse', 2) },
     chain:  { t: 'atkdeb', label: '업의 사슬', d: 7, n: 2, deb: { weak: 2, vuln: 2 } },
-    ledger: { t: 'defend', label: '명부 펼치기', blk: 20, self: { str: 2 } },
-    verdict:{ t: 'attack', label: '최후의 판결', d: 25, fx: 'lightning' }
+    ledger: { t: 'defend', label: '명부 펼치기', blk: 16, self: { str: 1 } },
+    verdict:{ t: 'attack', label: '최후의 판결', d: 21, fx: 'lightning' }
   },
   onTurnEnd: e => { e.judged++; if (e.judged % 4 === 0) st(e, 'str', 2); },
-  onHalf: e => { st(e, 'str', 2); st(e, 'regenP', 4); flash('명부가 불타오른다'); },
+  onHalf: e => { st(e, 'str', 1); st(e, 'regenP', 3); flash('명부가 불타오른다'); },
   next: e => {
     if (e.hist.length === 0) return 'chain';
     if (lastIs(e, 'verdict')) return 'ledger';
     if (e.turnCount % 5 === 0) return 'verdict';
     const r = rnd();
     return r < .38 ? 'judge' : r < .68 ? 'chain' : 'ledger';
+  } });
+
+/* ══ 4막 — 명계 관문 ══════════════════════════════════════ */
+defEnemy({ id: 'reaper', n: '저승사자', g: '使', hp: [56, 64], col: '#2b2b3a',
+  moves: { scythe: { t: 'attack', label: '낫질', d: 19, fx: 'slash2' },
+           summon: { t: 'debuff', label: '명부 호명', deb: { weak: 2, vuln: 2 }, extra: () => st(P(), 'curse', 2) },
+           veil:   { t: 'defend', label: '검은 삿갓', blk: 20, self: { dex: 2 } } },
+  next: e => e.hist.length === 0 ? 'summon' : lastIs(e, 'scythe') ? (rnd() < .5 ? 'veil' : 'summon')
+    : rnd() < .55 ? 'scythe' : rnd() < .6 ? 'summon' : 'veil' });
+
+defEnemy({ id: 'oxhead', n: '우두나찰', g: '牛', hp: [66, 74], col: '#6b3a24',
+  moves: { gore:  { t: 'attack', label: '들이받기', d: 22, fx: 'blunt' },
+           trample: { t: 'attack', label: '짓밟기', d: 9, n: 3 },
+           bellow: { t: 'atkdef', label: '울부짖기', d: 8, blk: 18, self: { str: 3 } } },
+  next: e => lastIs(e, 'gore') ? (rnd() < .5 ? 'bellow' : 'trample')
+    : rnd() < .45 ? 'gore' : rnd() < .7 ? 'trample' : 'bellow' });
+
+defEnemy({ id: 'horseface', n: '마두나찰', g: '馬', hp: [58, 66], col: '#4a3a52',
+  moves: { kick:  { t: 'attack', label: '뒷발질', d: 12, n: 2 },
+           chain: { t: 'atkdeb', label: '쇠사슬', d: 10, deb: { weak: 3 } },
+           haste: { t: 'buff', label: '질주', self: { dex: 4, str: 2 } } },
+  next: e => e.hist.length === 0 ? 'haste' : lastIs(e, 'kick') ? 'chain' : rnd() < .5 ? 'kick' : rnd() < .75 ? 'chain' : 'haste' });
+
+defEnemy({ id: 'torturer', n: '형벌귀', g: '刑', hp: [62, 70], col: '#7a2030',
+  moves: { brand: { t: 'atkdeb', label: '낙인', d: 13, fx: 'fire', extra: () => st(P(), 'poison', 6) },
+           rack:  { t: 'attack', label: '고문대', d: 24, fx: 'blunt' },
+           mock:  { t: 'debuff', label: '조롱', deb: { vuln: 3 }, self: { str: 2 } } },
+  next: e => lastIs(e, 'rack') ? (rnd() < .5 ? 'brand' : 'mock')
+    : rnd() < .4 ? 'rack' : rnd() < .7 ? 'brand' : 'mock' });
+
+defEnemy({ id: 'clerk', n: '명부 서기', g: '簿', hp: [48, 56], col: '#3f5a4a',
+  moves: { record: { t: 'debuff', label: '이름 적기', deb: { curse: 3 }, self: { dex: 3 } },
+           ink:    { t: 'attack', label: '먹물 뿌리기', d: 8, n: 2, fx: 'poison' },
+           erase:  { t: 'defend', label: '지우기', blk: 22, heal: 10 } },
+  next: e => e.hist.length === 0 ? 'record' : lastIs(e, 'ink', 2) ? 'erase' : rnd() < .5 ? 'ink' : rnd() < .7 ? 'record' : 'erase' });
+
+defEnemy({ id: 'jailer', n: '옥졸', g: '獄', hp: [70, 80], col: '#4a4438', elite: true, big: true,
+  init: e => { e.s.thorns = 6; },
+  moves: { lock:  { t: 'debuff', label: '족쇄', deb: { weak: 3, vuln: 3 } },
+           smash: { t: 'attack', label: '철퇴', d: 26, fx: 'blunt' },
+           wall:  { t: 'defend', label: '옥문 걸기', blk: 28, self: { thorns: 3 } } },
+  next: e => e.hist.length === 0 ? 'lock' : lastIs(e, 'smash') ? 'wall' : rnd() < .5 ? 'smash' : rnd() < .75 ? 'wall' : 'lock' });
+
+defEnemy({ id: 'ghostgeneral', n: '귀왕', g: '鬼', hp: [150, 164], col: '#5a1f3a', elite: true, big: true,
+  init: e => { e.s.rage = 2; },
+  moves: { command: { t: 'atkbuff', label: '귀병 소집', d: 10, self: { str: 4, dex: 2 } },
+           sweep:   { t: 'attack', label: '귀참', d: 13, n: 2, fx: 'slash2' },
+           roar:    { t: 'debuff', label: '귀곡성', deb: { weak: 2, vuln: 2, curse: 2 } } },
+  next: e => e.hist.length === 0 ? 'command' : lastIs(e, 'sweep') ? (rnd() < .5 ? 'roar' : 'command')
+    : rnd() < .55 ? 'sweep' : rnd() < .8 ? 'command' : 'roar' });
+
+defEnemy({ id: 'gangrim', n: '강림도령', g: '降', hp: [330, 330], col: '#1f1f2e', boss: true, big: true,
+  init: e => { e.marks = 0; },
+  moves: {
+    summons: { t: 'debuff', label: '소환장', deb: { curse: 3, vuln: 2 }, self: { str: 2 } },
+    reap:    { t: 'attack', label: '수확', d: 15, n: 2, fx: 'slash2' },
+    ledger:  { t: 'atkdef', label: '명부 대조', d: 12, blk: 24 },
+    judge:   { t: 'attack', label: '저승 선고', d: 34, fx: 'lightning',
+               extra: () => { st(P(), 'weak', 2); st(P(), 'vuln', 2); } }
+  },
+  onTurnEnd: e => { e.marks++; if (e.marks % 3 === 0) st(e, 'str', 2); },
+  onHalf: e => { st(e, 'str', 3); st(e, 'thorns', 4); flash('저승의 문이 열린다'); },
+  next: e => {
+    if (e.hist.length === 0) return 'summons';
+    if (e.turnCount % 5 === 0) return 'judge';
+    if (lastIs(e, 'reap')) return 'ledger';
+    const r = rnd();
+    return r < .45 ? 'reap' : r < .75 ? 'ledger' : 'summons';
+  } });
+
+/* ══ 5막 — 구천 상계 ══════════════════════════════════════ */
+defEnemy({ id: 'skysoldier', n: '천병', g: '兵', hp: [70, 80], col: '#4a6a8c',
+  moves: { spear: { t: 'attack', label: '천창', d: 21, fx: 'pierce' },
+           shield: { t: 'defend', label: '천갑', blk: 24, self: { dex: 3 } },
+           volley: { t: 'attack', label: '일제 사격', d: 8, n: 3 } },
+  next: e => lastIs(e, 'spear') ? (rnd() < .5 ? 'shield' : 'volley') : rnd() < .45 ? 'spear' : rnd() < .75 ? 'volley' : 'shield' });
+
+defEnemy({ id: 'thundergod', n: '뇌공', g: '雷', hp: [76, 86], col: '#5f6fa8',
+  moves: { bolt:   { t: 'attack', label: '벼락', d: 25, fx: 'lightning' },
+           charge2:{ t: 'buff', label: '뇌기 축적', self: { str: 4 }, blk: 16 },
+           chain:  { t: 'atkdeb', label: '연쇄 낙뢰', d: 10, n: 2, deb: { vuln: 2 }, fx: 'lightning' } },
+  next: e => e.hist.length === 0 ? 'charge2' : lastIs(e, 'bolt') ? 'charge2' : rnd() < .45 ? 'bolt' : rnd() < .75 ? 'chain' : 'charge2' });
+
+defEnemy({ id: 'windlord', n: '풍백', g: '風', hp: [64, 72], col: '#5a8c7a',
+  moves: { gale:  { t: 'attack', label: '질풍', d: 9, n: 3, fx: 'wind' },
+           blow:  { t: 'atkdeb', label: '삭풍', d: 14, deb: { weak: 3 }, fx: 'wind' },
+           swirl: { t: 'defend', label: '회오리', blk: 22, self: { dex: 4 } } },
+  next: e => lastIs(e, 'gale', 2) ? 'swirl' : rnd() < .5 ? 'gale' : rnd() < .78 ? 'blow' : 'swirl' });
+
+defEnemy({ id: 'rainmaster', n: '우사', g: '雨', hp: [68, 78], col: '#3f7a8c',
+  moves: { deluge: { t: 'attack', label: '폭우', d: 12, n: 2, fx: 'wind' },
+           mist:   { t: 'atkdeb', label: '독무', d: 10, extra: () => st(P(), 'poison', 8), fx: 'poison' },
+           calm:   { t: 'defend', label: '잔잔함', blk: 26, heal: 14 } },
+  next: e => lastIs(e, 'mist') ? (rnd() < .5 ? 'deluge' : 'calm') : rnd() < .45 ? 'deluge' : rnd() < .78 ? 'mist' : 'calm' });
+
+defEnemy({ id: 'fairy', n: '선녀', g: '仙', hp: [58, 66], col: '#8c6a9a',
+  moves: { ribbon: { t: 'atkdeb', label: '비단 자락', d: 11, deb: { weak: 2, vuln: 2 } },
+           dance:  { t: 'attack', label: '천무', d: 7, n: 4, fx: 'petal' },
+           bless:  { t: 'buff', label: '가피', self: { str: 3, dex: 3 }, heal: 12 } },
+  next: e => lastIs(e, 'dance') ? 'bless' : rnd() < .45 ? 'dance' : rnd() < .75 ? 'ribbon' : 'bless' });
+
+defEnemy({ id: 'skygeneral', n: '천장군', g: '將', hp: [170, 184], col: '#3a4f7a', elite: true, big: true,
+  init: e => { e.s.rage = 3; },
+  moves: { charge3: { t: 'attack', label: '천마 돌격', d: 28, fx: 'blunt' },
+           banner:  { t: 'atkbuff', label: '군기 세우기', d: 10, self: { str: 4, dex: 3 } },
+           rain:    { t: 'attack', label: '창우', d: 11, n: 3, fx: 'pierce' } },
+  next: e => e.hist.length === 0 ? 'banner' : lastIs(e, 'charge3') ? 'banner' : rnd() < .45 ? 'charge3' : rnd() < .78 ? 'rain' : 'banner' });
+
+defEnemy({ id: 'starmage', n: '칠성 도인', g: '星', hp: [140, 152], col: '#5a4a8c', elite: true, big: true,
+  moves: { starfall: { t: 'attack', label: '유성', d: 15, n: 2, fx: 'lightning' },
+           hexstar:  { t: 'debuff', label: '흉성', deb: { weak: 3, vuln: 3, curse: 3 } },
+           shield2:  { t: 'defend', label: '북두 결계', blk: 30, self: { regenP: 6 } } },
+  next: e => e.hist.length === 0 ? 'hexstar' : lastIs(e, 'starfall') ? 'shield2' : rnd() < .5 ? 'starfall' : rnd() < .78 ? 'shield2' : 'hexstar' });
+
+defEnemy({ id: 'chiyou', n: '치우천왕', g: '蚩', hp: [420, 420], col: '#8c2020', boss: true, big: true,
+  init: e => { e.fury = 0; },
+  moves: {
+    axe:    { t: 'attack', label: '전부', d: 17, n: 2, fx: 'slash2' },
+    armor:  { t: 'atkdef', label: '동두철액', d: 12, blk: 30, self: { thorns: 4 } },
+    war:    { t: 'buff', label: '전신 강림', self: { str: 5, dex: 3 }, blk: 20,
+              extra: e => { e.fury = 1; flash('치우가 전신을 부른다'); } },
+    doom:   { t: 'attack', label: '천지분쇄', d: 40, fx: 'blunt', extra: e => { e.fury = 0; } },
+    fog:    { t: 'debuff', label: '오리무중', deb: { weak: 3, vuln: 3 } }
+  },
+  onHalf: e => { st(e, 'str', 4); st(e, 'rage', 1); flash('치우천왕이 각성한다'); },
+  next: e => {
+    if (e.fury) return 'doom';
+    if (e.hist.length === 0) return 'fog';
+    if (e.turnCount % 5 === 0) return 'war';
+    if (lastIs(e, 'axe', 2)) return 'armor';
+    const r = rnd();
+    return r < .45 ? 'axe' : r < .75 ? 'armor' : 'fog';
+  } });
+
+/* ══ 6막 — 무간 ═══════════════════════════════════════════ */
+defEnemy({ id: 'voidling', n: '공허 조각', g: '虛', hp: [80, 92], col: '#25232e',
+  moves: { erase: { t: 'attack', label: '지우기', d: 24, fx: 'void' },
+           split: { t: 'attack', label: '분열', d: 10, n: 3 },
+           null_: { t: 'defend', label: '무화', blk: 28, self: { dex: 4 } } },
+  next: e => lastIs(e, 'erase') ? (rnd() < .5 ? 'split' : 'null_') : rnd() < .45 ? 'erase' : rnd() < .78 ? 'split' : 'null_' });
+
+defEnemy({ id: 'karmaflame', n: '겁화왕', g: '劫', hp: [88, 100], col: '#a83a1a',
+  moves: { pyre2: { t: 'attack', label: '겁화 기둥', d: 27, fx: 'fire' },
+           burn:  { t: 'atkdeb', label: '업화', d: 12, extra: () => st(P(), 'poison', 10), fx: 'fire' },
+           feed:  { t: 'buff', label: '연료 삼키기', self: { str: 5 }, heal: 18 } },
+  next: e => e.hist.length === 0 ? 'feed' : lastIs(e, 'pyre2') ? 'burn' : rnd() < .45 ? 'pyre2' : rnd() < .78 ? 'burn' : 'feed' });
+
+defEnemy({ id: 'nameless', n: '이름 없는 것', g: '匿', hp: [76, 88], col: '#33304a',
+  moves: { whisper: { t: 'debuff', label: '속삭임', deb: { curse: 4, weak: 3 } },
+           reach:   { t: 'attack', label: '뻗어오기', d: 13, n: 2, fx: 'void' },
+           consume: { t: 'attack', label: '삼키기', d: 22, heal: 22, fx: 'void' } },
+  next: e => e.hist.length === 0 ? 'whisper' : lastIs(e, 'consume') ? 'reach' : rnd() < .4 ? 'consume' : rnd() < .75 ? 'reach' : 'whisper' });
+
+defEnemy({ id: 'mirrorself', n: '거울 속의 나', g: '鏡', hp: [110, 122], col: '#4a5a5a', elite: true, big: true,
+  init: e => { e.s.thorns = 8; },
+  moves: { copy:   { t: 'attack', label: '같은 수', d: 16, n: 2, fx: 'slash2' },
+           mirror: { t: 'atkdef', label: '되비추기', d: 14, blk: 26, self: { thorns: 4 } },
+           doubt:  { t: 'debuff', label: '의심', deb: { weak: 4, vuln: 4 } } },
+  next: e => e.hist.length === 0 ? 'doubt' : lastIs(e, 'copy') ? 'mirror' : rnd() < .5 ? 'copy' : rnd() < .8 ? 'mirror' : 'doubt' });
+
+defEnemy({ id: 'gatewarden', n: '무간의 파수', g: '間', hp: [200, 218], col: '#2e2a3c', elite: true, big: true,
+  init: e => { e.s.rage = 3; e.s.thorns = 5; },
+  moves: { seal2:  { t: 'debuff', label: '봉인', deb: { weak: 4, vuln: 4, curse: 3 } },
+           crush2: { t: 'attack', label: '으깨기', d: 32, fx: 'blunt' },
+           gate:   { t: 'defend', label: '문 닫기', blk: 36 } },
+  next: e => e.hist.length === 0 ? 'seal2' : lastIs(e, 'crush2') ? 'gate' : rnd() < .5 ? 'crush2' : rnd() < .8 ? 'gate' : 'seal2' });
+
+defEnemy({ id: 'mugan', n: '무간', g: '無', hp: [560, 560], col: '#16141f', boss: true, big: true,
+  init: e => { e.phase = 1; e.cycle = 0; },
+  moves: {
+    unmake:  { t: 'attack', label: '해체', d: 20, n: 2, fx: 'void' },
+    silence: { t: 'debuff', label: '적막', deb: { weak: 3, vuln: 3, curse: 4 } },
+    coil:    { t: 'atkdef', label: '휘감기', d: 16, blk: 40, self: { thorns: 5 } },
+    gather2: { t: 'buff', label: '무(無)를 모은다', blk: 46, self: { str: 6 },
+               extra: e => { e.cycle = 1; flash('무간이 숨을 들이쉰다'); } },
+    end:     { t: 'attack', label: '끝', d: 52, fx: 'void',
+               extra: e => { e.cycle = 0; st(P(), 'weak', 3); } }
+  },
+  onHalf: e => { e.phase = 2; st(e, 'str', 5); st(e, 'rage', 1); flash('무간이 눈을 뜬다'); },
+  next: e => {
+    if (e.cycle) return 'end';
+    if (e.hist.length === 0) return 'silence';
+    if (e.turnCount % 5 === 0) return 'gather2';
+    if (lastIs(e, 'unmake', 2)) return 'coil';
+    const r = rnd();
+    return r < .45 ? 'unmake' : r < .72 ? 'coil' : 'silence';
   } });
 
 /* ---------- 조우(인카운터) 구성 ---------- */
@@ -2171,6 +2574,30 @@ const ENCOUNTERS = {
              ['yaksha', 'warlord'], ['ghostmonk', 'stonelion']],
     elite:  [['rakshasaking'], ['gatekeeper'], ['hwangryeong', 'wraith'], ['jangseung', 'rakshasa']],
     boss:   ['blackdragon', 'yeomra']
+  },
+  4: {
+    weak:   [['reaper'], ['clerk', 'horseface'], ['torturer', 'wraith']],
+    normal: [['oxhead', 'horseface'], ['reaper', 'torturer'], ['clerk', 'clerk', 'reaper'],
+             ['oxhead', 'clerk'], ['torturer', 'horseface'], ['reaper', 'reaper'],
+             ['warlord', 'oxhead'], ['rakshasa', 'torturer']],
+    elite:  [['jailer', 'clerk'], ['ghostgeneral'], ['gatekeeper', 'reaper'], ['jailer', 'horseface']],
+    boss:   ['gangrim']
+  },
+  5: {
+    weak:   [['skysoldier'], ['fairy', 'windlord'], ['rainmaster', 'skysoldier']],
+    normal: [['thundergod'], ['skysoldier', 'skysoldier'], ['windlord', 'rainmaster'],
+             ['fairy', 'thundergod'], ['skysoldier', 'fairy', 'windlord'], ['rainmaster', 'thundergod'],
+             ['oxhead', 'skysoldier'], ['windlord', 'windlord', 'fairy']],
+    elite:  [['skygeneral'], ['starmage'], ['skygeneral', 'skysoldier'], ['starmage', 'fairy']],
+    boss:   ['chiyou']
+  },
+  6: {
+    weak:   [['voidling'], ['nameless', 'wraith'], ['karmaflame']],
+    normal: [['voidling', 'nameless'], ['karmaflame', 'voidling'], ['nameless', 'nameless'],
+             ['karmaflame', 'nameless'], ['voidling', 'voidling'], ['mirrorself'],
+             ['karmaflame', 'karmaflame'], ['voidling', 'karmaflame', 'nameless']],
+    elite:  [['mirrorself'], ['gatewarden'], ['mirrorself', 'voidling'], ['gatewarden', 'nameless']],
+    boss:   ['mugan']
   }
 };
 
@@ -2190,7 +2617,10 @@ function calcAtk(src, tgt, base) {
 }
 /* 실제 피해 적용. {hp: 체력으로 들어간 피해, blocked: 막은 양} */
 function applyDamage(ent, dmg, pierce) {
-  if (ent.isPlayer) dmg = pipe('modTaken', dmg);
+  if (ent.isPlayer) {
+    if (G.b && G.b.halved) dmg = Math.ceil(dmg / 2);
+    dmg = pipe('modTaken', dmg);
+  }
   let d = Math.max(0, dmg), blocked = 0;
   if (!pierce && ent.block > 0) { blocked = Math.min(ent.block, d); ent.block -= blocked; d -= blocked; }
   ent.hp = Math.max(0, ent.hp - d);
@@ -2239,7 +2669,7 @@ function eblk(e, n) { const v = Math.max(0, n + (e.s.dex || 0)); e.block += v; S
 function st(ent, key, n) {
   if (!n || !ent) return;
   ent.s[key] = (ent.s[key] || 0) + n;
-  const noNeg = ['vuln', 'weak', 'poison', 'stun', 'dbl', 'regen', 'regenP', 'afterimg', 'thorns', 'drain', 'edge', 'rage', 'flow', 'sword', 'focus', 'curse'];
+  const noNeg = ['vuln', 'weak', 'poison', 'stun', 'dbl', 'regen', 'regenP', 'afterimg', 'thorns', 'drain', 'edge', 'rage', 'flow', 'sword', 'focus', 'curse', 'endblock', 'turnblock', 'rebirth'];
   if (ent.s[key] === 0 || (noNeg.indexOf(key) >= 0 && ent.s[key] <= 0)) delete ent.s[key];
   if (n > 0) statusFx(ent, key);
   syncAll();
@@ -2284,7 +2714,8 @@ function startBattle(enemyIds, kind) {
     p: { isPlayer: true, hp: run.hp, maxHp: run.maxHp, block: 0, s: {}, el: null },
     enemies: [], hand: [], drawPile: [], discardPile: [], exhaustPile: [],
     energy: 0, maxEnergy: run.maxEnergy, turn: 0, played: 0, attacked: false,
-    drawMod: 0, busy: true, over: false, kind: kind || 'normal', sel: null, curCard: null
+    drawMod: 0, busy: true, over: false, kind: kind || 'normal', sel: null, curCard: null,
+    skillUsed: false, freeTurn: false, halved: false, startHp: run.hp
   };
   let ux = 1;
   for (const id of enemyIds) {
@@ -2317,12 +2748,14 @@ function pickIntent(e) {
 async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
+  b.freeTurn = false; b.halved = false;
   const p = P();
   if (!p.s.barricade) p.block = 0;
   b.energy = b.maxEnergy + (p.s.focus || 0);
 
   if (p.s.rage) st(p, 'str', p.s.rage);
   if (p.s.afterimg) { blk(p.s.afterimg, true); delete p.s.afterimg; }
+  if (p.s.turnblock) blk(p.s.turnblock, true);
   if (p.s.poison) { const d = p.s.poison; SND.poison(); pure(p, d); st(p, 'poison', -1); if (await checkOver()) return; }
   if (p.s.sword) { for (let i = 0; i < p.s.sword; i++) { const a = alive(); if (a.length) pure(pick(a), 4); } }
   fire('turnStart');
@@ -2342,7 +2775,7 @@ async function startPlayerTurn() {
 async function playCard(card, target) {
   const b = G.b, p = P();
   if (b.busy || b.over) return;
-  const d = cdef(card), cost = ccost(card);
+  const d = cdef(card), cost = ecost(card);
   if (cost === -2) { SND.err(); toast('사용할 수 없는 카드다'); return; }
   const isX = cost === -1;
   const need = isX ? 1 : cost;
@@ -2415,6 +2848,7 @@ async function endTurn() {
   for (const c of b.hand.slice()) if (c.id === 'curse_grudge') { lose(2); }
   if (p.s.regen) { heal(p.s.regen); st(p, 'regen', -1); }
   if (p.s.regenP) heal(p.s.regenP);
+  if (p.s.endblock) blk(p.s.endblock, true);
   if (p.s.curse) { pure(p, p.s.curse); }
   if (await checkOver()) return;
 
@@ -2502,7 +2936,15 @@ async function checkDeaths() {
 }
 async function checkOver() {
   const b = G.b; if (!b || b.over) return !!(b && b.over);
-  if (P().hp <= 0) { b.over = true; await wait(500); gameOver(); return true; }
+  const p = P();
+  if (p.hp <= 0 && p.s.rebirth) {                 /* 불사조 */
+    const h = p.s.rebirth; delete p.s.rebirth;
+    p.hp = Math.min(p.maxHp, h); G.run.hp = p.hp;
+    screenFlash('rgba(255,190,90,.65)', 700); SND.victory(); flash('불사조가 날아오른다');
+    healFx(p, h); syncAll(); await wait(600);
+    return false;
+  }
+  if (p.hp <= 0) { b.over = true; await wait(500); gameOver(); return true; }
   if (!alive().length) { b.over = true; await wait(420); winBattle(); return true; }
   return false;
 }
@@ -2566,6 +3008,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
+      <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
       <button class="topbtn box" id="boxbtn" title="특별 상자">匣<em></em></button>
@@ -2599,6 +3042,7 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
+    t.querySelector('#skilltop').onclick = () => openSkills();
     t.querySelector('#fusebtn').onclick = () => openFuse();
     t.querySelector('#shopbtn').onclick = () => openShop();
     t.querySelector('#boxbtn').onclick = () => openBoxes();
@@ -2618,6 +3062,9 @@ function renderTop() {
   const fb = t.querySelector('#fusebtn'), ready = canFuse().length;
   fb.querySelector('em').textContent = ready || '';
   fb.classList.toggle('ready', ready > 0);
+  const sb = t.querySelector('#skilltop');
+  sb.querySelector('em').textContent = (run.skills || []).length || '';
+  sb.title = run.skill ? '비기 — ' + SKILLS[run.skill].n : '비기 없음';
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -2646,6 +3093,7 @@ function renderBattle() {
          <div class="pile" id="drawpile"><b>0</b>뽑을 더미</div>
          <div class="pile" id="discardpile"><b>0</b>버린 더미</div>
        </div>
+       <button id="skillbtn"><b></b><small></small></button>
        <div id="energy" title="기"><span><b id="ev">0</b><small>/<b id="emv">3</b></small></span></div>
        <button id="endturn">턴 종료</button>
      </div>
@@ -2655,6 +3103,7 @@ function renderBattle() {
   buildPlayer();
   buildEnemies();
   $('#endturn').onclick = () => endTurn();
+  $('#skillbtn').onclick = () => useSkill();
   $('#drawpile').onclick = () => showCardList(G.b.drawPile, '뽑을 더미 (무작위 순서)', true);
   $('#discardpile').onclick = () => showCardList(G.b.discardPile, '버린 더미');
   bindTip($('#energy'), () => `<b>기 (氣)</b><br>카드를 사용하는 데 쓰인다. 매 턴 회복된다.`);
@@ -2762,6 +3211,8 @@ function syncPiles() {
   if (emv) emv.textContent = G.b.maxEnergy + (P().s.focus || 0);
   const et = $('#endturn');
   if (et) et.disabled = G.b.busy || G.b.over;
+  syncSkill();
+  syncIncoming();
 }
 
 /* --- 카드 DOM --- */
@@ -2828,7 +3279,7 @@ function syncHand() {
     node.style.zIndex = i + 1;
     node.style.transform = `translate(${x}px,${y - (sel ? 54 : 0)}px) rotate(${sel ? 0 : ang}deg) scale(${sel ? 1.08 : sc})`;
     node.classList.toggle('sel', !!sel);
-    const cost = ccost(c);
+    const cost = ecost(c);
     const playable = cost !== -2 && (cost === -1 ? b.energy >= 1 : b.energy >= cost);
     node.classList.toggle('unplayable', !playable);
     node.onmouseenter = () => {
@@ -2842,7 +3293,7 @@ function syncHand() {
 /* --- 입력: 카드 선택 / 조준 --- */
 function onCardClick(c) {
   const b = G.b; if (b.busy || b.over) return;
-  const d = cdef(c), cost = ccost(c);
+  const d = cdef(c), cost = ecost(c);
   if (cost === -2) { SND.err(); toast('사용할 수 없는 카드다'); return; }
   if (cost >= 0 && b.energy < cost) { SND.err(); toast('기가 부족하다'); return; }
   if (cost === -1 && b.energy < 1) { SND.err(); toast('기가 부족하다'); return; }
@@ -2912,6 +3363,56 @@ function lunge(e) {
   b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
   setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
 }
+/* ── 비기 ────────────────────────────────────────────────── */
+function syncSkill() {
+  const btn = $('#skillbtn'); if (!btn || !G.b) return;
+  const id = G.run.skill, d = id && SKILLS[id];
+  btn.querySelector('b').textContent = d ? d.g : '—';
+  btn.querySelector('small').textContent = d ? d.n : '비기 없음';
+  btn.className = !d ? 'none' : G.b.skillUsed ? 'used' : 'ready';
+  btn.disabled = !d || G.b.skillUsed || G.b.busy || G.b.over;
+  btn.onmouseenter = () => {
+    const r = btn.getBoundingClientRect();
+    tipShow(d ? `<b>${d.n}</b> · <span style="color:${GRADE[d.rar].c}">${GRADE[d.rar].n} 비기</span><br>${d.d}
+      <br><span style="color:#9a8d74">기를 쓰지 않는다 · 전투당 한 번</span>${G.b.skillUsed ? '<br><b>이미 썼다</b>' : ''}`
+      : '<b>비기가 없다</b><br>보스를 잡거나 비기 상자에서 얻는다', r.left + r.width / 2, r.top);
+  };
+  btn.onmouseleave = tipHide;
+}
+async function useSkill() {
+  const b = G.b; if (!b || b.busy || b.over || b.skillUsed) return;
+  const id = G.run.skill, d = id && SKILLS[id];
+  if (!d) { SND.err(); toast('장착한 비기가 없다'); return; }
+  b.skillUsed = true; b.busy = true; b.sel = null; hideArrow(); clearPreview(); syncAll();
+  try { await d.use(); } catch (e) { console.error('비기 오류', id, e); }
+  await checkDeaths();
+  b.busy = false; syncAll();
+  await checkOver();
+}
+/* 이번 턴 적들에게 받을 피해 합계 */
+function incomingTotal() {
+  if (!G.b) return 0;
+  let t = 0;
+  for (const e of alive()) {
+    if (e.s.stun || !e.mv || !e.mv.d) continue;
+    t += calcAtk(e, P(), e.mv.d) * (e.mv.n || 1);
+  }
+  if (G.b.halved) t = Math.ceil(t / 2);
+  return t;
+}
+function syncIncoming() {
+  const p = P(); if (!p || !p.el) return;
+  let box = p.el.querySelector('.incoming');
+  const total = incomingTotal();
+  if (!total) { if (box) box.remove(); return; }
+  if (!box) { box = el('div', 'incoming'); p.el.querySelector('.body').appendChild(box); }
+  const through = Math.max(0, total - p.block);
+  box.className = 'incoming' + (through === 0 ? ' safe' : '');
+  box.innerHTML = through === 0
+    ? `막아냄 <b>${total}</b>`
+    : `받을 피해 <b>${through}</b>` + (p.block ? ` <span style="opacity:.6">(${total}−${p.block})</span>` : '');
+}
+
 /* ── 예상치 미리보기 ─────────────────────────────────────────
    손패의 부적에 마우스를 올리면 그 부적이 실제로 낼 수치를
    힘·검기·약화·취약까지 계산해서 적 머리 위에 띄운다. */
@@ -3152,8 +3653,9 @@ const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', sho
 /* ══════════════════════════════════════════════════════════
    10. 모험 진행
    ══════════════════════════════════════════════════════════ */
-const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑' };
-const LAST_ACT = 3;
+const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
+                   4: '명계 관문', 5: '구천 상계', 6: '무간' };
+const LAST_ACT = 6;
 function newRun(asc) {
   G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
@@ -3164,17 +3666,19 @@ function newRun(asc) {
   ['strike', 'defend', 'ward'].forEach(id => dexAdd('cards', id));
   G.run = {
     asc: asc || 0,
-    maxHp: 72 - (asc || 0) * 3, hp: 72 - (asc || 0) * 3,
-    gold: 99, dia: 0, summons: 0, banner: 3, maxEnergy: 4, potSlots: 2,
+    maxHp: 80 - (asc || 0) * 3, hp: 80 - (asc || 0) * 3,
+    gold: 99, dia: 0, summons: 0, banner: 3, maxEnergy: 4, potSlots: 3,
     deck, relics: [], potions: [],
     act: 1, floor: 0, rewardCut: 0,
     map: null, mapCur: -1, mapDone: [], bossPick: null,
+    skills: [], skill: null,
     stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
   };
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
   restockShop();
+  gainSkill('qiwave', true);
   G.run.map = genMap(1);
   META.runs++; saveMeta();
   SND.ambience(false);
@@ -3325,7 +3829,9 @@ function showRewards(kind) {
   G.scene = 'reward';
   const run = G.run;
   const gold = kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22);
-  const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다', act: it => { run.gold += gold; run.stats.gold += gold; SND.coin(); } }];
+  const dia = kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28);
+  const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다', act: it => { run.gold += gold; run.stats.gold += gold; SND.coin(); } },
+    { ic: '玉', t: `다이아 ${dia}`, s: '상자를 여는 값', act: () => { run.dia = (run.dia || 0) + dia; SND.coin(); } }];
   const potChance = kind === 'elite' ? .62 : kind === 'boss' ? 1 : .42;
   if (rnd() < potChance && run.potions.length < run.potSlots) {
     const pid = randomPotion();
@@ -3338,6 +3844,7 @@ function showRewards(kind) {
   }
   if (kind === 'boss') {
     items.push({ ic: '寶', t: '보스의 유물', s: '셋 중 하나를 고른다', act: async () => { await pickBossRelic(); } });
+    if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
   }
   const n = Math.max(1, 3 - (run.rewardCut || 0));
   const cards = rewardCards(n, kind === 'normal' ? null : kind);
@@ -3368,12 +3875,29 @@ function showRewards(kind) {
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
-      const key = act >= LAST_ACT ? ('end_' + (G.run.bossPick || 'blackdragon')) : ('act' + act);
+      const key = act >= LAST_ACT ? 'end_mugan' : ('act' + act);
       showStory(STORY[key] ? key : null).then(() => { if (act >= LAST_ACT) victory(); else nextAct(); });
     }
     else showMap();
   };
   renderTop();
+}
+async function pickSkill() {
+  const cand = sample(ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0), 3);
+  if (!cand.length) { G.run.dia = (G.run.dia || 0) + 300; toast('다이아 300을 얻었다'); return; }
+  return new Promise(res => {
+    const p = modal(`<h2>비기 전수</h2><div class="hint">하나만 익힐 수 있다</div>
+      <div class="skillgrid"></div>`);
+    const g = p.querySelector('.skillgrid');
+    for (const id of cand) {
+      const d = SKILLS[id];
+      const n = el('div', 'stile g-' + d.rar,
+        `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div><b>${d.g}</b>
+         <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>/g, ' ')}</div>`);
+      n.onclick = () => { gainSkill(id); G.run.skill = id; closeTop(); renderTop(); res(); };
+      g.appendChild(n);
+    }
+  });
 }
 async function pickBossRelic() {
   const owned = new Set(G.run.relics.map(r => r.id));
@@ -3386,7 +3910,7 @@ async function pickBossRelic() {
     for (const id of three) {
       const d = RELICS[id];
       const n = el('div', 'rewitem', `<div class="ic">${d.g}</div><div class="t"><b>${d.n}</b><small>${d.d.replace(/<[^>]+>/g, '')}</small></div>`);
-      n.onclick = () => { gainRelic(id); closeTop(); renderTop(); res(); };
+      n.onclick = () => { closeTop(); gainRelic(id); renderTop(); res(); };
       row.appendChild(n);
     }
   });
@@ -3418,7 +3942,7 @@ function showTreasure() {
 function showRest() {
   G.scene = 'rest';
   const run = G.run;
-  const healAmt = Math.ceil(run.maxHp * .32);
+  const healAmt = Math.ceil(run.maxHp * .38);
   const canPurge = hasRelic('censer') || hasRelic('immortalpill');
   const p = overlay(`<h2>야 영 지</h2><div class="hint">모닥불이 타오른다. 하나만 할 수 있다.</div>
     <div class="restrow">
@@ -3438,6 +3962,39 @@ function showRest() {
     if (c) { run.deck.splice(run.deck.findIndex(x => x.uid === c.uid), 1); SND.ui(); toast(`${CARDS[c.id].n} 제거`); done(); }
   };
   function done() { closeOverlay(); saveRun(); showMap(); }
+}
+
+/* ── 비기 장착 화면 ─────────────────────────────────────── */
+function openSkills() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 바꿀 수 없다'); return; }
+  SND.ui(); showSkills();
+}
+function showSkills() {
+  const run = G.run;
+  run.skills = run.skills || [];
+  const p = modal(`<h2>비 기</h2>
+    <div class="hint">기를 쓰지 않는 한 수 · <b>하나만 장착</b>할 수 있고 <b>전투당 한 번</b> 쓴다
+      · 익힌 비기 <b>${run.skills.length} / ${ALL_SKILLS.length}</b></div>
+    <div class="skillgrid" id="sk_mine"></div>
+    <div class="hint" style="margin-top:8px">아직 익히지 못한 것</div>
+    <div class="skillgrid" id="sk_rest"></div>
+    <button class="brush-btn" id="sk_close">닫기</button>`);
+  const mine = p.querySelector('#sk_mine'), rest = p.querySelector('#sk_rest');
+  if (!run.skills.length) mine.innerHTML = '<div style="color:#8f846d">아직 익힌 비기가 없다 — 보스를 잡거나 비기 상자에서 얻는다</div>';
+  for (const id of ALL_SKILLS) {
+    const d = SKILLS[id], own = run.skills.indexOf(id) >= 0, on = run.skill === id;
+    const n = el('div', 'stile g-' + d.rar + (on ? ' on' : '') + (own ? '' : ' dim'),
+      `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div>
+       <b>${own ? d.g : '?'}</b>
+       <div class="sn">${own ? d.n : '???'}</div>
+       <div class="sd">${own ? d.d.replace(/<br>/g, ' ') : '아직 익히지 못했다'}</div>
+       ${on ? '<div class="eq">장 착 중</div>' : ''}`);
+    if (own) n.onclick = () => { run.skill = id; SND.power(); toast(`${d.n} 장착`); saveRun(); closeTop(); showSkills(); };
+    else { n.style.opacity = '.45'; n.style.cursor = 'default'; }
+    (own ? mine : rest).appendChild(n);
+  }
+  if (!rest.children.length) rest.innerHTML = '<div style="color:#8f846d">전부 익혔다</div>';
+  p.querySelector('#sk_close').onclick = closeTop;
 }
 
 /* ── 유물 조합 화면 ─────────────────────────────────────── */
@@ -3601,16 +4158,18 @@ function showShop() {
    ═══════════════════════════════════════════════════════════ */
 const BOX_FREE = true;
 const BANNERS = [
-  { n: '작은 상자',     g: '匣', sub: '한 줌의 운',     price: 3,  tier: 0,
+  { n: '작은 상자',     g: '匣', sub: '한 줌의 운',     price: 150,  tier: 0,
     desc: '다이아 · 부적 · 물약 · 보물이 고루 나온다.' },
-  { n: '보통 상자',     g: '匣', sub: '제법 묵직하다',  price: 5,  tier: 1,
+  { n: '보통 상자',     g: '匣', sub: '제법 묵직하다',  price: 400,  tier: 1,
     desc: '부적이 나올 확률이 오른다.' },
-  { n: '큰 상자',       g: '匱', sub: '값어치를 한다',  price: 8,  tier: 2,
+  { n: '큰 상자',       g: '匱', sub: '값어치를 한다',  price: 900,  tier: 2,
     desc: '희귀 부적과 보물이 자주 나온다.' },
-  { n: '특대급 상자!',  g: '櫃', sub: '전설이 잠들었다', price: 20, tier: 3, hot: true,
+  { n: '특대급 상자!',  g: '櫃', sub: '전설이 잠들었다', price: 2500, tier: 3, hot: true,
     desc: '<b>특별 부적만 나온다!</b>' },
-  { n: '유물 상자',     g: '寶', sub: '기물이 담겨 있다',  price: 12, tier: 4, relic: true,
-    desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' }
+  { n: '유물 상자',     g: '寶', sub: '기물이 담겨 있다',  price: 1100, tier: 4, relic: true,
+    desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' },
+  { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
+    desc: '<b>비기만 나온다.</b> S급 80% · SSX급 19% · ?급 1%' }
 ];
 const MILESTONES = [
   { at: 30,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
@@ -3623,6 +4182,17 @@ const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 /* 상자 하나에서 나오는 것 */
 function boxLoot(tier) {
   const run = G.run;
+  /* 비기 상자 */
+  if (tier === 5) {
+    const r = rnd();
+    const grade = r < .01 ? 'unknown' : r < .20 ? 'ssx' : 'special';
+    let id = randomSkill(grade) || randomSkill();
+    if (!id) { const g = ri(200, 320); return { g: '金', n: `골드 ${g}`, d: '더 배울 비기가 없다', take: () => { run.gold += g; } }; }
+    const sd = SKILLS[id];
+    return { g: sd.g, n: sd.n, grade: sd.rar,
+      d: `<b style="color:${GRADE[sd.rar].c}">${GRADE[sd.rar].n} 비기</b> — ` + sd.d.replace(/<[^>]+>/g, ''),
+      take: () => gainSkill(id, true) };
+  }
   /* 유물 상자 — 유물만 나온다 */
   if (tier === 4) {
     const w = [{ w: 52, r: 'common' }, { w: 33, r: 'uncommon' }, { w: 15, r: 'rare' }];
@@ -3653,7 +4223,7 @@ function boxLoot(tier) {
   ][tier];
   const kind = pickWeighted(w).t;
   if (kind === 'dia') {
-    const n = ri(1 + tier, 3 + tier * 2);
+    const n = ri(40 + tier * 40, 90 + tier * 90);
     return { g: '玉', n: `다이아 ${n}`, d: '맑고 단단한 돌. 뽑기의 값으로 쓰인다.',
       take: () => { run.dia = (run.dia || 0) + n; } };
   }
@@ -3679,7 +4249,7 @@ function boxLoot(tier) {
 
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
-  if (tier === 4) return [];
+  if (tier === 4 || tier === 5) return [];
   if (tier === 3) return GRADE_POOL.special.concat(GRADE_POOL.ssx, GRADE_POOL.unknown);
   const base = POOL.rare.slice();
   if (tier >= 1) return base.concat(GRADE_POOL.special);
@@ -3690,6 +4260,8 @@ function bannerRates(tier) {
     { g: 'special', p: '89.9%' }, { g: 'ssx', p: '10%' }, { g: 'unknown', p: '0.1%' }];
   if (tier === 4) return [
     { g: 'common', p: '52%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '15%' }];
+  if (tier === 5) return [
+    { g: 'special', p: '80%' }, { g: 'ssx', p: '19%' }, { g: 'unknown', p: '1%' }];
   return null;
 }
 
@@ -3791,6 +4363,19 @@ function showSpecialShop(refill) {
 
     /* 등장 목록 */
     const gp = p.querySelector('.gpool');
+    if (B.skill) {
+      const owned = new Set(run.skills || []);
+      for (const id of ALL_SKILLS) {
+        const d = SKILLS[id], got = owned.has(id);
+        const u = el('div', 'gunit u-' + d.rar + (got ? ' owned' : ''),
+          `<div class="ub" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
+           <div class="ug">${d.g}</div><div class="un">${d.n}</div>`);
+        bindTip(u, () => `<b>${d.n}</b> · ${GRADE[d.rar].n} 비기<br>${d.d}` + (got ? '<br><span style="color:#6fe0a8">이미 익혔다</span>' : ''));
+        gp.appendChild(u);
+      }
+      renderBonus(p, cur);
+      return;
+    }
     if (B.relic) {
       const owned = new Set(run.relics.map(r => r.id));
       for (const rar of ['common', 'uncommon', 'rare']) for (const id of RELIC_POOL[rar]) {
@@ -4191,6 +4776,24 @@ const STORY = {
     { scene: 'tiger', who: '산군', t: '"천 년을 지켰는데,\n위에서 부르는 소리를 견디지 못했다.\n\n……너는 견딜 수 있겠느냐."' },
     { scene: 'gate', t: '봉우리 너머,\n구천으로 오르는 벼랑이 드러났다.\n\n문은 아직 열려 있다.' }
   ],
+  act3: [
+    { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 내가 아니다."\n\n"나도 이 아래에서 쫓겨 올라온 것뿐."' },
+    { scene: 'gate', t: '벼랑 끝에 또 다른 문이 있었다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
+  ],
+  act4: [
+    { scene: 'gate', who: '강림도령', t: '"명부에 네 이름이 세 번 적혔다가 세 번 지워졌다."\n\n"누가 지운 줄 아느냐."' },
+    { scene: 'moon', t: '저승사자가 흩어지자\n명계의 천장이 갈라지며 빛이 쏟아졌다.\n\n위로, 더 위로 가야 한다.' }
+  ],
+  act5: [
+    { scene: 'tiger', who: '치우천왕', t: '"하늘도 저것을 막지 못했다."\n\n구리 이마가 갈라지며 피가 흐른다.' },
+    { scene: 'dragon', who: '치우천왕', t: '"문 너머에는 아무것도 없다.\n아무것도 없는 것이 있다."\n\n"그것이 네 이름을 지웠다."' },
+    { scene: 'gate', t: '구천의 끝, 무간(無間)의 입구가 열렸다.\n\n소리도, 빛도, 냄새도 없다.' }
+  ],
+  end_mugan: [
+    { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
+    { scene: 'dragon', t: '부적이 한 장씩 타들어 갔다.\n마지막 한 장을 붙였을 때,\n\n비로소 소리가 돌아왔다.' },
+    { scene: 'dawn', t: '문이 닫혔다.\n\n산은 다시 잠들었고, 백 년이 흘렀다.\n누군가 다시 오를 것이다.' }
+  ],
   end_blackdragon: [
     { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 나다."\n\n"백 년마다 닫는 손이 지겨웠을 뿐."' },
     { scene: 'gate', t: '흑룡이 무너지자\n문이 스스로 닫히기 시작했다.\n\n부적을 마지막 한 장까지 붙였다.' },
@@ -4338,6 +4941,7 @@ function showMenu() {
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
       <button class="brush-btn" id="m_sound">소리 ${SND.on ? '켜짐' : '꺼짐'}</button>
       <button class="brush-btn" id="m_speed">진행 속도 ${SPEED_NAME()}</button>
+      <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_shop">상점 가기</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
@@ -4357,6 +4961,7 @@ function showMenu() {
     e.target.textContent = `진행 속도 ${SPEED_NAME()}`;
   };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
+  p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
   p.querySelector('#m_shop').onclick = () => { closeTop(); openShop(); };
   p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
   p.querySelector('#m_dex').onclick = showDex;
@@ -4414,6 +5019,8 @@ function showDex() {
       ${secs}
       <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i>
         <em>등급순 · SSX급은 조합으로만 얻는다</em></h3><div class="dexgrid" id="dx_r"></div></div>
+      <div class="dexsec"><h3>비기 <i>${dexCount('skills', ALL_SKILLS.length)}</i>
+        <em>기를 쓰지 않는 한 수 · 전투당 1회</em></h3><div class="dexgrid" id="dx_s"></div></div>
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
     </div>
     <button class="brush-btn" id="dx_close">닫기</button>`);
@@ -4438,6 +5045,12 @@ function showDex() {
       (d.rar === 'fused' ? ' <span style="color:#ffd76a">(합성)</span>' : '') + `<br>${d.d}`,
       'gd_' + g));
   });
+  const gs = p.querySelector('#dx_s');
+  for (const id of ALL_SKILLS) {
+    const d = SKILLS[id], known = !!META.dex.skills[id];
+    gs.appendChild(dexTile(known, d.g, d.n,
+      `<b>${d.n}</b> · <span style="color:${GRADE[d.rar].c}">${GRADE[d.rar].n} 비기</span><br>${d.d}`, 'gd_' + d.rar));
+  }
   const ge = p.querySelector('#dx_e');
   for (const id of enemyIds) {
     const d = ENEMIES[id], known = !!META.dex.enemies[id];
@@ -4539,7 +5152,7 @@ const GUIDE = {
       <tr><td>2. 전투</td><td>손에 든 부적을 내서 요괴를 쓰러뜨린다.</td></tr>
       <tr><td>3. 보상</td><td>골드와 부적을 얻는다. <b>부적은 3장 중 1장만</b> 고를 수 있다.
         나오는 등급은 오를수록 좋아진다 (지도 탭 참고).</td></tr>
-      <tr><td>4. 반복</td><td>12층을 올라 보스를 잡으면 다음 막으로. 3막까지 있다.</td></tr>
+      <tr><td>4. 반복</td><td>12층을 올라 보스를 잡으면 다음 막으로. <b>6막</b>까지 있다.</td></tr>
     </table>
     <div class="tip"><b>쓰러져도 처음부터가 아니다.</b> 갈림길에 들어설 때마다 그 순간이 저장된다.
     패배 화면에서 <b>그 갈림길로 돌아간다</b>를 누르면 그 길에 들어서기 직전으로 되돌아간다.</div>
@@ -4557,8 +5170,11 @@ const GUIDE = {
       <div><i>4</i><span><b>기(氣)</b> — 부적을 내는 값. 매 턴 <b>4</b>로 돌아온다.</span></div>
       <div><i>5</i><span><b>손패</b> — 매 턴 5장을 뽑는다. 남은 것은 턴이 끝나면 버려진다.</span></div>
       <div><i>6</i><span><b>턴 종료</b> — 누르면 적이 의도대로 움직인다.</span></div>
-      <div><i>7</i><span><b>조합 · 상점 · 뽑기</b> — 전투가 아닐 때 언제든 갈 수 있다.</span></div>
+      <div><i>7</i><span><b>비기 · 조합 · 상점 · 뽑기</b> — 전투가 아닐 때 언제든 갈 수 있다.</span></div>
     </div>
+    <h3>받을 피해가 미리 보인다</h3>
+    <p>내 발밑에 <b>이번 턴에 받을 피해</b>가 뜬다. 방어도를 올리면 숫자가 줄고,
+    다 막아내면 <b>막아냄</b>으로 바뀐다. 이것만 보고 방어를 얼마나 올릴지 정하면 된다.</p>
     <h3>예상치가 보인다</h3>
     <p>손패의 부적에 <b>마우스를 올리면</b> 그 부적이 실제로 낼 수치가 적 머리 위에 뜬다.
     힘·검기·약화·취약을 전부 계산한 값이라 <u>그냥 보이는 숫자를 믿으면 된다</u>.
@@ -4640,6 +5256,8 @@ const GUIDE = {
       <tr><td>7층부터</td><td>3등급 · <b>2등급</b></td></tr>
       <tr><td>2막 6층부터</td><td>3등급 · 2등급 · <b>1등급</b></td></tr>
     </table>
+    <p>산은 <b>6막</b>까지 이어진다 —
+    요괴 숲 → 안개 봉우리 → 구천 벼랑 → 명계 관문 → 구천 상계 → <b>무간</b>.</p>
     <p>기본(4등급) 부적은 보상에 <b>절대 나오지 않는다.</b>
     <b>엘리트와 보스</b>는 한 등급 위까지 미리 내주고, <b>상인</b>도 한 등급 앞서 판다.</p>
 `,
@@ -4651,7 +5269,10 @@ const GUIDE = {
       <tr><td>작은 · 보통 · 큰 상자</td><td>다이아 · 부적 · 물약 · 보물이 나온다. 클수록 좋다.</td></tr>
       <tr><td>특대급 상자!</td><td><b>반드시 특별 부적</b> — S급 기본, SSX급 10%, ?급 0.1%</td></tr>
       <tr><td>유물 상자</td><td><b>유물만</b> 나온다. 조합 재료를 모으기 좋다. 상인도 하나씩 판다.</td></tr>
+      <tr><td>비기 상자</td><td><b>비기만</b> 나온다. S급 80% · SSX급 19% · ?급 1%</td></tr>
     </table>
+    <p>값은 <b>다이아</b>로 치른다. 다이아는 전투 보상과 상자에서 나온다.
+    특대급 상자는 다이아 <b>2500</b>으로 가장 비싸다.</p>
     <h3>누적 보너스</h3>
     <p>뽑을 때마다 아래 막대가 찬다.
     <b>30회 · 60회에서 S급</b>, <b>100회에서 SSX급</b> 부적을 확정으로 하나 더 준다.
@@ -4661,6 +5282,29 @@ const GUIDE = {
     <h3>상인</h3>
     <p>위쪽 <b>商</b> 단추. 재고는 저장되어 있어 닫았다 다시 열어도 같은 물건이다.
     지도의 商 을 밟거나 막이 바뀌면 새로 채워진다.</p>`,
+
+  '비기': () => {
+    let rows = '';
+    for (const id of ALL_SKILLS) {
+      const d = SKILLS[id];
+      rows += `<tr><td><span class="gradechip" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</span> ${d.n}</td><td>${d.d}</td></tr>`;
+    }
+    return `
+    <h3>비기(祕技)</h3>
+    <p>기(氣)를 <b>쓰지 않는</b> 한 수다. 화면 왼쪽 아래의 붉은 단추를 누르면 발동한다.</p>
+    <div class="warn">
+      <b>하나만 장착</b>할 수 있고, <b>전투 한 번에 딱 한 번</b>만 쓸 수 있다.<br>
+      기가 모자라도, 손패가 나빠도 쓸 수 있다 — <u>판을 뒤집는 마지막 수</u>다.
+    </div>
+    <h3>어디서 얻나</h3>
+    <p>시작할 때 <b>기공파</b> 하나를 들고 출발한다.
+    <b>보스를 잡으면</b> 셋 중 하나를 전수받고, <b>비기 상자</b>에서도 나온다.
+    화면 위쪽 <b>祕</b> 단추에서 갈아 낄 수 있다. (전투 중에는 못 바꾼다)</p>
+    <h3>익힐 수 있는 비기</h3>
+    <table><tr><th>이름</th><th>효과</th></tr>${rows}</table>
+    <div class="tip">보스전에서는 <b>아껴 두었다가</b> 가장 위험한 턴에 쓰는 편이 좋다.
+    특히 <b>만천귀장</b>은 더미가 두꺼울수록 세지니, 전투 후반보다 <u>초반</u>이 강하다.</div>`;
+  },
 
   '유물': () => {
     let rows = '';
@@ -4700,6 +5344,7 @@ const GUIDE = {
       <tr><td>오른쪽 클릭</td><td>고른 부적 취소</td></tr>
     </table>
     <h3>화면 위쪽 단추</h3>
+    <div class="icoline"><b>祕</b><span>비기 장착 — 하나만, 전투당 한 번</span></div>
     <div class="icoline"><b>合</b><span>유물 조합 — 재료가 모이면 숫자가 뜬다</span></div>
     <div class="icoline"><b>商</b><span>상인에게 간다</span></div>
     <div class="icoline"><b>匣</b><span>부적 뽑기. 곁의 숫자는 다음 누적 보너스까지 남은 횟수</span></div>
@@ -4739,10 +5384,15 @@ function setBg(act) {
   const k = 'a' + act;
   if (_bgKey === k) return;
   _bgKey = k;
-  const far = act >= 3 ? '#9d95a8' : act >= 2 ? '#b9ac92' : '#c3b79d',
-        mid = act >= 3 ? '#7d7488' : act >= 2 ? '#9c9078' : '#a89c82',
-        near = act >= 3 ? '#4e4857' : act >= 2 ? '#6d6555' : '#7b7260';
-  $('#bg').innerHTML = `<div class="sky"${act >= 3 ? ' style="background:linear-gradient(#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%)"' : ''}></div>
+  const PAL = {
+    1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
+    3: ['#9d95a8', '#7d7488', '#4e4857'], 4: ['#7f7a8e', '#5f5a70', '#38344a'],
+    5: ['#a9bcd0', '#87a0bc', '#5a6f8e'], 6: ['#6e6a78', '#4a4652', '#2a2732']
+  }[Math.min(6, act)] || ['#c3b79d', '#a89c82', '#7b7260'];
+  const far = PAL[0], mid = PAL[1], near = PAL[2];
+  const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
+                5: '#e8f0fb 0%,#cfe0f2 55%,#adc4e0 100%', 6: '#c6c2ce 0%,#a49fb0 55%,#7c7789 100%' }[act];
+  $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      <g opacity=".55">
        <path fill="${far}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/>
@@ -4753,9 +5403,12 @@ function setBg(act) {
      <g opacity=".75">
        <path fill="${near}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
      </g>
-     ${act >= 3 ? '<g opacity=".34"><circle cx="118" cy="76" r="44" fill="#cfd6ea"/><circle cx="136" cy="66" r="40" fill="#9d95a8"/></g>'
-       : act >= 2 ? '<g opacity=".3"><circle cx="118" cy="78" r="42" fill="#efe6d0"/></g>'
-                  : '<g opacity=".22"><circle cx="112" cy="74" r="38" fill="#c9585c"/></g>'}
+     ${act >= 6 ? '<g opacity=".4"><circle cx="500" cy="150" r="86" fill="#0d0b12"/><circle cx="500" cy="150" r="96" fill="none" stroke="#b98cff" stroke-width="2" opacity=".6"/></g>'
+       : act === 5 ? '<g opacity=".5"><circle cx="820" cy="110" r="54" fill="#fff4c8"/><circle cx="820" cy="110" r="96" fill="#fff4c8" opacity=".18"/></g>'
+       : act === 4 ? '<g opacity=".42"><circle cx="118" cy="80" r="46" fill="#2a2438"/><circle cx="118" cy="80" r="52" fill="none" stroke="#7b4bd8" stroke-width="2"/></g>'
+       : act === 3 ? '<g opacity=".34"><circle cx="118" cy="76" r="44" fill="#cfd6ea"/><circle cx="136" cy="66" r="40" fill="#9d95a8"/></g>'
+       : act === 2 ? '<g opacity=".3"><circle cx="118" cy="78" r="42" fill="#efe6d0"/></g>'
+                   : '<g opacity=".22"><circle cx="112" cy="74" r="38" fill="#c9585c"/></g>'}
    </svg>`;
 }
 
