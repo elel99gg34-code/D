@@ -114,6 +114,18 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .relic:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 4px 10px rgba(0,0,0,.4)}
 .relic.new{animation:relicPop .6s ease}
 @keyframes relicPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.4) rotate(10deg)}100%{transform:none}}
+.topbtn{position:relative;width:34px;height:34px;border-radius:5px;font-size:16px;line-height:1;
+  display:grid;place-items:center;color:#f2e7cc;background:rgba(157,124,46,.22);
+  border:1.5px solid #9d7c2e;transition:.15s}
+.topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
+.topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
+  box-shadow:0 0 12px rgba(111,208,232,.35)}
+.topbtn.box:hover{background:rgba(47,127,153,.5)}
+.topbtn em{position:absolute;right:-5px;top:-5px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;
+  background:var(--red);color:#fff;font-size:10px;font-style:normal;display:grid;place-items:center;line-height:1}
+.topbtn em:empty{display:none}
+.topbtn.empty{opacity:.42;box-shadow:none}
+.topbtn.busy{opacity:.3;cursor:default;transform:none!important}
 #potbar{display:flex;gap:6px}
 .potion{width:30px;height:30px;border-radius:4px;display:grid;place-items:center;font-size:14px;color:#2a2219;
   background:#efe4cb;border:1.5px solid var(--jade);cursor:pointer;transition:.15s;line-height:1}
@@ -252,7 +264,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 #energy small{font-size:12px;opacity:.75}
 #energy.flash{animation:eflash .4s}
 @keyframes eflash{50%{transform:scale(1.18);box-shadow:0 0 40px rgba(90,190,175,.9)}}
-#turnlabel{position:absolute;left:50%;top:11%;transform:translateX(-50%);font-size:56px;letter-spacing:.3em;
+#turnlabel{position:absolute;left:50%;top:8%;transform:translateX(-50%);font-size:56px;letter-spacing:.3em;
   color:var(--ink);opacity:0;pointer-events:none;z-index:15;margin-left:.3em;text-shadow:0 4px 20px rgba(255,255,255,.7)}
 #turnlabel.show{animation:turnShow 1.15s ease-out}
 @keyframes turnShow{0%{opacity:0;transform:translateX(-50%) scale(.7)}
@@ -324,6 +336,104 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .restopt small{color:var(--ink3);font-size:12.5px;line-height:1.5;display:block}
 .restopt.dis{opacity:.4;cursor:default;transform:none!important}
 
+/* ── 타격 연출 ─────────────────────────────────────────── */
+.impact{position:absolute;z-index:8;pointer-events:none;transform:translate(-50%,-50%);width:0;height:0}
+.impact i{position:absolute;display:block;transform-origin:50% 50%}
+.flashlayer{position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0}
+@keyframes scrFlash{0%{opacity:0}12%{opacity:.85}100%{opacity:0}}
+
+/* 베기 */
+@keyframes slashGo{0%{transform:rotate(var(--a)) translateX(-40px) scaleX(0);opacity:0}
+  25%{opacity:1}60%{transform:rotate(var(--a)) translateX(10px) scaleX(1);opacity:1}
+  100%{transform:rotate(var(--a)) translateX(38px) scaleX(1);opacity:0}}
+.ik-slash i,.ik-slash2 i,.ik-spin i{width:210px;height:7px;margin:-3px 0 0 -105px;border-radius:4px;
+  background:linear-gradient(90deg,transparent,#fff 30%,#fff 70%,transparent);
+  box-shadow:0 0 14px rgba(255,255,255,.95),0 0 26px rgba(168,39,44,.7);
+  animation:slashGo .3s cubic-bezier(.2,.8,.3,1) forwards}
+.ik-spin i{width:250px;margin-left:-125px}
+
+/* 찌르기 */
+@keyframes pierceGo{0%{transform:translateX(-190px) scaleX(.2);opacity:0}
+  30%{opacity:1}55%{transform:translateX(0) scaleX(1);opacity:1}100%{transform:translateX(44px) scaleX(.6);opacity:0}}
+.ik-pierce i.lance{width:230px;height:5px;margin:-2px 0 0 -115px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,#ffe9c9 40%,#fff 85%,#fff);
+  box-shadow:0 0 12px rgba(255,220,170,.95);animation:pierceGo .26s ease-out forwards}
+
+/* 강타 — 충격파 고리 */
+@keyframes ringOut{0%{transform:scale(.15);opacity:0}18%{opacity:1}100%{transform:scale(2.6);opacity:0}}
+.ik-blunt i,.ik-holy i.ring,.ik-void i{width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;
+  border:7px solid rgba(23,19,15,.85);animation:ringOut .5s cubic-bezier(.1,.7,.3,1) forwards}
+.ik-blunt i:nth-child(2){animation-delay:.09s;border-width:4px;border-color:rgba(23,19,15,.5)}
+
+/* 무(無) — 안으로 빨려드는 고리 */
+@keyframes ringIn{0%{transform:scale(3.2) rotate(0);opacity:0}25%{opacity:1}
+  100%{transform:scale(.05) rotate(140deg);opacity:.9}}
+.ik-void i{border:6px solid rgba(20,16,14,.95);box-shadow:0 0 30px rgba(0,0,0,.8) inset,0 0 22px rgba(120,0,40,.7);
+  animation:ringIn .55s cubic-bezier(.6,0,.4,1) forwards}
+.ik-void i:nth-child(2){animation-delay:.1s;border-color:rgba(255,45,85,.8)}
+.ik-void i:nth-child(3){animation-delay:.2s;border-color:rgba(20,16,14,.7)}
+
+/* 화염 */
+@keyframes flameUp{0%{transform:translate(var(--x),20px) scale(.4);opacity:0}
+  20%{opacity:1}100%{transform:translate(calc(var(--x)*1.7),-120px) scale(1.5);opacity:0}}
+.ik-fire i{width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50% 50% 45% 45%;filter:blur(7px);
+  background:radial-gradient(circle at 50% 70%,#fff2c0,#ff9b30 45%,#d4360f 80%,transparent);
+  animation:flameUp .62s ease-out forwards}
+
+/* 번개 */
+@keyframes boltFlash{0%{opacity:0}10%{opacity:1}22%{opacity:.2}34%{opacity:1}100%{opacity:0}}
+.ik-lightning svg{position:absolute;left:-90px;top:-360px;width:180px;height:400px;
+  animation:boltFlash .42s steps(1,end) forwards;filter:drop-shadow(0 0 10px rgba(180,230,255,.95))}
+
+/* 빛 */
+@keyframes rayGrow{0%{transform:rotate(var(--a)) scaleY(0);opacity:0}
+  25%{opacity:1}100%{transform:rotate(var(--a)) scaleY(1.5);opacity:0}}
+.ik-holy i.ray{width:8px;height:170px;margin:-85px 0 0 -4px;border-radius:4px;
+  background:linear-gradient(#fff5cf,rgba(255,220,120,0));animation:rayGrow .55s ease-out forwards}
+.ik-holy i.ring{border-color:rgba(240,205,110,.95);box-shadow:0 0 30px rgba(255,225,140,.8)}
+
+/* 독 */
+@keyframes bubbleUp{0%{transform:translate(var(--x),16px) scale(.3);opacity:0}
+  25%{opacity:.95}100%{transform:translate(calc(var(--x)*1.4),-84px) scale(1.15);opacity:0}}
+.ik-poison i{width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#c9f28a,#4d8f2f 70%,#1f4a17);
+  box-shadow:0 0 10px rgba(120,200,80,.7);animation:bubbleUp .7s ease-out forwards}
+
+/* 바람 / 꽃잎 */
+@keyframes arcSweep{0%{transform:rotate(var(--a)) translateX(-70px);opacity:0}
+  30%{opacity:.95}100%{transform:rotate(var(--a)) translateX(90px);opacity:0}}
+.ik-wind i{width:130px;height:4px;margin:-2px 0 0 -65px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,rgba(220,235,240,.95),transparent);
+  animation:arcSweep .5s ease-out forwards}
+@keyframes petalFall{0%{transform:translate(0,-60px) rotate(0);opacity:0}
+  20%{opacity:1}100%{transform:translate(var(--x),90px) rotate(540deg);opacity:0}}
+.ik-petal i{width:16px;height:22px;margin:-11px 0 0 -8px;border-radius:60% 0 60% 0;
+  background:linear-gradient(150deg,#ffd8e2,#e0708f);box-shadow:0 0 8px rgba(220,110,140,.6);
+  animation:petalFall .8s ease-out forwards}
+
+/* 부적 던지기 */
+@keyframes talisFly{0%{transform:translate(-260px,-40px) rotate(-25deg);opacity:0}
+  20%{opacity:1}75%{transform:translate(0,0) rotate(8deg);opacity:1}100%{transform:translate(14px,4px) scale(1.5);opacity:0}}
+.ik-talisman i{width:34px;height:56px;margin:-28px 0 0 -17px;border-radius:2px;
+  background:linear-gradient(#f6ecd4,#e6d3ae);border:1.5px solid #a8272c;
+  box-shadow:0 0 12px rgba(168,39,44,.6);animation:talisFly .38s ease-out forwards}
+
+/* 발톱 (요괴) */
+@keyframes clawGo{0%{transform:rotate(var(--a)) translateX(-30px) scaleX(0);opacity:0}
+  30%{opacity:1}100%{transform:rotate(var(--a)) translateX(30px) scaleX(1);opacity:0}}
+.ik-claw i{width:120px;height:5px;margin:-2px 0 0 -60px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,#b8343a,#f0a0a4);
+  box-shadow:0 0 10px rgba(184,52,58,.9);animation:clawGo .3s ease-out forwards}
+
+/* 기술 이름 배너 */
+@keyframes skillName{0%{opacity:0;transform:translate(-50%,10px) scale(.86)}
+  18%{opacity:1;transform:translate(-50%,0) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-16px) scale(1.04)}}
+.skillname{position:absolute;z-index:9;pointer-events:none;left:50%;
+  font-size:27px;letter-spacing:.2em;margin-left:.2em;color:#fff;
+  text-shadow:0 0 12px rgba(168,39,44,.95),0 2px 6px rgba(0,0,0,.7),0 0 30px rgba(255,180,90,.6);
+  animation:skillName .95s ease-out forwards;white-space:nowrap}
+.skillname.ssx{color:#ffdce3;text-shadow:0 0 16px #ff2d55,0 0 40px #ff8a00,0 2px 6px rgba(0,0,0,.8)}
+
 /* 특별 상자 */
 .boxrow{display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
 .giftbox{width:190px;padding:20px 14px;border-radius:6px;text-align:center;cursor:pointer;transition:.2s;
@@ -342,6 +452,26 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   box-shadow:none;transform:none!important}
 .giftbox.opened:hover{transform:none!important;box-shadow:none}
 
+/* 특대급 상자 */
+@keyframes hugePulse{0%,100%{box-shadow:0 0 26px rgba(255,190,70,.55),0 0 60px rgba(255,120,40,.28)}
+  50%{box-shadow:0 0 46px rgba(255,215,110,.95),0 0 100px rgba(255,140,50,.5)}}
+@keyframes hugeSpin{to{transform:rotate(360deg)}}
+.giftbox.huge{width:224px;background:linear-gradient(160deg,#5c3a12,#2e1f0c);border-color:#ffd76a;
+  animation:hugePulse 1.5s ease-in-out infinite;position:relative;overflow:hidden}
+.giftbox.huge::after{content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,rgba(255,220,130,.28) 30deg,transparent 70deg);
+  animation:hugeSpin 4s linear infinite}
+.giftbox.huge>*{position:relative;z-index:1}
+.giftbox.huge .bx{width:112px;height:112px;background:radial-gradient(circle at 38% 30%,#ffca62,#7a4a12)}
+.giftbox.huge .bx span{font-size:52px;color:#fff6dd}
+.giftbox.huge .bt{color:#ffe7ac;font-size:16.5px}
+.giftbox.huge .bp{color:#e0b96a}
+.giftbox.got-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
+.giftbox.got-ssx{border-color:#ff2d55;animation:ssxGlow 1.25s ease-in-out infinite}
+.giftbox.got-unknown{border-color:#b98cff;
+  box-shadow:0 0 30px rgba(150,90,255,.85),0 0 70px rgba(60,220,255,.4)}
+.giftbox.opened.huge::after{display:none}
+
 /* 도감 */
 .dexwrap{display:flex;flex-direction:column;gap:16px;max-height:62vh;overflow-y:auto;padding:4px 10px;max-width:min(1080px,94vw)}
 .dexwrap::-webkit-scrollbar{width:8px}.dexwrap::-webkit-scrollbar-thumb{background:rgba(220,200,160,.35);border-radius:4px}
@@ -359,6 +489,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dextile.gd_special{border-color:#e2622a;background:#fbeade;animation:flameGlow 1.7s ease-in-out infinite}
 .dextile.gd_ssx{border-color:#ff2d55;background:#ffe6ea;animation:ssxGlow 1.25s ease-in-out infinite}
 .dextile.gd_ssx b{color:#8e0f2c}
+.dextile.gd_unknown{border-color:#b98cff;background:#efe6ff;
+  box-shadow:0 0 16px rgba(150,90,255,.7),0 0 34px rgba(60,220,255,.3)}
+.dextile.gd_unknown b{color:#5324a8}
 .dextile.gd_curse{border-color:#5b3b6b;background:#ded0e0}
 .dextile.locked{border-color:#7b4bd8!important;border-style:dashed}
 .dexsec h3 .gradechip{margin-right:6px}
@@ -630,6 +763,23 @@ const SND = {
     this.blip(65, { dur: 3, type: 'sine', vol: .1, delay: .3, rev: .9 });
   },
 
+  /* 연출별 악센트 */
+  fire()    { this.hiss({ dur: .42, vol: .16, freq: 900, to: 160, filter: 'lowpass', rev: .4 });
+              this.blip(this.vary(110), { dur: .3, type: 'sawtooth', vol: .07, to: 55, rev: .3 }); },
+  thunder() { this.hiss({ dur: .1, vol: .22, freq: 9000, to: 2000, filter: 'highpass', rev: .3 });
+              this.blip(this.vary(70), { dur: 1.1, type: 'sine', vol: .2, to: 34, rev: .8 });
+              this.hiss({ dur: .8, vol: .1, freq: 1600, to: 200, delay: .05, rev: .8 }); },
+  holyhit() { [784, 1046, 1568].forEach((f, i) => this.blip(f, { dur: .8, type: 'sine', vol: .09, delay: i * .03, rev: .9 }));
+              this.hiss({ dur: .35, vol: .06, freq: 3000, to: 8000, filter: 'bandpass', q: 1.5, rev: .6 }); },
+  voidhit() { this.blip(this.vary(58), { dur: 1.6, type: 'sine', vol: .2, to: 26, rev: .9 });
+              this.blip(this.vary(1900), { dur: .5, type: 'sine', vol: .07, to: 120, rev: .8 });
+              this.hiss({ dur: .9, vol: .1, freq: 300, to: 60, rev: .9 }); },
+  windhit() { this.hiss({ dur: .34, vol: .13, freq: 5200, to: 700, filter: 'bandpass', q: .8, rev: .35 }); },
+  pierceS() { this.hiss({ dur: .09, vol: .13, freq: 8000, to: 2200, filter: 'bandpass', q: 2, rev: .25 });
+              this.blip(2100, { dur: .1, type: 'sine', vol: .06, to: 700 }); },
+  bluntS()  { this.blip(this.vary(74), { dur: .42, type: 'sine', vol: .2, to: 32, rev: .4 });
+              this.hiss({ dur: .22, vol: .16, freq: 800, to: 120, rev: .4 }); },
+
   /* 배경 바람 — 아주 낮게 깔아 둔다 */
   ambience(on, strong) {
     if (!this.ok()) return;
@@ -783,6 +933,7 @@ function adoptRun(obj) {
   G.run.stats = G.run.stats || { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 };
   if (G.run.stats.revives == null) G.run.stats.revives = 0;
   if (G.run.dia == null) G.run.dia = 0;
+  if (!G.run.boxes) restockBoxes();
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -1095,6 +1246,36 @@ defCard({ id: 'mu', n: '없을 무', g: '無', type: 'skill', rar: 'ssx', cost: 
     syncAll();
   } });
 
+defCard({ id: 'skyweb', n: '천라지망', g: '網', type: 'skill', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 16 : 12, k: u ? 4 : 3 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b>과 <b>약화</b>를 각각 ${v.k} 부여한다.`,
+  play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'wind' }); st(e, 'vuln', c.v.k); st(e, 'weak', c.v.k); } } });
+
+defCard({ id: 'cleaver', n: '일도양단', g: '斷', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy', exhaust: true,
+  v: u => ({ d: u ? 44 : 34 }),
+  txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 소멸.`,
+  play: c => atk(c.t, c.v.d, { pierce: true, fx: 'slash2' }) });
+
+defCard({ id: 'ironbody', n: '금강호신', g: '護', type: 'skill', rar: 'special', cost: 2,
+  v: u => ({ b: u ? 34 : 26 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>금강</b> 상태가 되어 방어도가 사라지지 않는다.`,
+  play: c => { blk(c.v.b); st(P(), 'barricade', 1); } });
+
+defCard({ id: 'purgatory', n: '연옥화', g: '獄', type: 'attack', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 16 : 12, p: u ? 10 : 8 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>중독</b> ${v.p}을 부여한다.`,
+  play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'fire' }); st(e, 'poison', c.v.p); } } });
+
+defCard({ id: 'godstep', n: '신행백변', g: '變', type: 'skill', rar: 'special', cost: 1, exhaust: true,
+  v: u => ({ n: u ? 5 : 4, e: 2 }),
+  txt: v => `카드를 ${v.n}장 뽑고 기를 ${v.e} 얻는다. 소멸.`,
+  play: c => { drawCards(c.v.n); energy(c.v.e); } });
+
+defCard({ id: 'immovemind', n: '부동심', g: '心', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ x: u ? 5 : 4 }),
+  txt: v => `<b>힘</b>과 <b>민첩</b>을 각각 ${v.x} 얻는다.`,
+  play: c => { st(P(), 'str', c.v.x); st(P(), 'dex', c.v.x); } });
+
 defCard({ id: 'nirvana', n: '적멸', g: '寂', type: 'power', rar: 'special', cost: 2,
   v: u => ({ x: u ? 3 : 2 }),
   txt: v => `<b>검기</b> ${v.x}과 <b>민첩</b> ${v.x}을 얻고, 턴 시작 시 카드를 1장 더 뽑는다.`,
@@ -1104,6 +1285,43 @@ defCard({ id: 'ouroboros', n: '자강불식', g: '循', type: 'power', rar: 'spe
   v: u => ({ x: u ? 2 : 1 }),
   txt: v => `<b>폭주</b> ${v.x}과 <b>집중</b>을 얻는다. 매 턴 힘이 오르고 기를 1 더 얻는다. 소멸.`,
   play: c => { st(P(), 'rage', c.v.x); st(P(), 'focus', 1); SND.power(); } });
+
+defCard({ id: 'samsara', n: '윤회', g: '輪', type: 'skill', rar: 'ssx', cost: 1, exhaust: true,
+  v: u => ({ n: u ? 8 : 7, e: u ? 4 : 3 }),
+  txt: v => `버린 더미를 모두 되돌려 섞고, 손패를 ${v.n}장으로 채운 뒤 기를 ${v.e} 얻는다. 소멸.`,
+  play: c => {
+    const b = G.b;
+    b.drawPile = shuffle(b.drawPile.concat(b.discardPile)); b.discardPile = [];
+    const need = Math.max(0, c.v.n - b.hand.length);
+    if (need) drawCards(need);
+    energy(c.v.e); SND.bell();
+  } });
+
+defCard({ id: 'kalpa', n: '겁멸', g: '劫', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
+  v: u => ({ d: u ? 40 : 30 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다. 소멸.`,
+  play: async c => { screenFlash('rgba(255,120,60,.5)', 500);
+    for (const e of alive()) atk(e, c.v.d, { fx: 'fire' }); } });
+
+/* ---------- ?급 — 세상에 단 하나 ---------- */
+defCard({ id: 'genesis', n: '천지개벽', g: '闢', type: 'skill', rar: 'unknown', cost: 3, exhaust: true,
+  v: u => ({ n: u ? 4 : 3, e: u ? 3 : 2 }),
+  txt: v => `<b>모든 적</b>의 이로운 효과와 방어도를 없애고, 각자의 남은 체력의 절반을 없앤다.
+    그 후 카드를 ${v.n}장 뽑고 기를 ${v.e} 얻는다. 소멸.`,
+  play: async c => {
+    skillBanner('天 地 開 闢', true);
+    screenFlash('radial-gradient(circle,rgba(255,255,255,.9),rgba(120,60,220,.75))', 750);
+    SND.gong(); SND.thunder();
+    for (const e of alive()) {
+      for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k];
+      e.block = 0;
+      impact('void', e);
+      pure(e, Math.ceil(e.hp / 2));
+      await wait(90);
+    }
+    shake(true);
+    drawCards(c.v.n); energy(c.v.e); syncAll();
+  } });
 
 /* ---------- 저주 ---------- */
 defCard({ id: 'curse_grudge', n: '원귀의 원한', g: '怨', type: 'curse', rar: 'curse', cost: -2,
@@ -1126,7 +1344,7 @@ const GRADE = {
   rare:     { n: '1등급', s: '1', c: '#b8912f', desc: '귀한 부적' },
   special:  { n: 'S급',   s: 'S', c: '#e2622a', desc: '특별 상자에서만 나오는 불타는 부적' },
   ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
-  unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '아직 아무도 본 적이 없다. 상자에도 들어 있지 않다.' },
+  unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.1% 확률로만 모습을 드러낸다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
 const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'special', 'ssx', 'unknown'];
@@ -1136,8 +1354,13 @@ const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'special' ? ' g-s' :
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* 보상 풀 */
 const POOL = { common: [], uncommon: [], rare: [] };
-const SPECIAL_CARDS = [];
-for (const k in CARDS) { const c = CARDS[k]; if (POOL[c.rar]) POOL[c.rar].push(k); else if (c.rar === 'special' || c.rar === 'ssx') SPECIAL_CARDS.push(k); }
+const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전부 */
+const GRADE_POOL = { special: [], ssx: [], unknown: [] };
+for (const k in CARDS) {
+  const c = CARDS[k];
+  if (POOL[c.rar]) POOL[c.rar].push(k);
+  else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k); if (c.rar !== 'unknown') SPECIAL_CARDS.push(k); }
+}
 function randomCard(rarWeights) {
   const r = pickWeighted(rarWeights).r;
   return pick(POOL[r]);
@@ -1305,13 +1528,13 @@ const lastIs = (e, k, n = 1) => { const h = e.hist; if (h.length < n) return fal
 
 /* ---------- 1막 잡졸 ---------- */
 defEnemy({ id: 'wisp', n: '도깨비불', g: '燐', hp: [11, 15], col: '#3f6f86',
-  moves: { burn: { t: 'attack', label: '점화', d: 6 },
+  moves: { burn: { t: 'attack', label: '점화', d: 6, fx: 'fire' },
            lure: { t: 'atkdeb', label: '홀리기', d: 4, deb: { weak: 1 } } },
   next: e => lastIs(e, 'burn', 2) ? 'lure' : (rnd() < .6 ? 'burn' : 'lure') });
 
 defEnemy({ id: 'boar', n: '멧돼지 요괴', g: '猪', hp: [23, 28], col: '#7a5230',
   moves: { snort: { t: 'buff', label: '씩씩거리기', self: { str: 2 } },
-           charge: { t: 'attack', label: '돌진', d: 10 },
+           charge: { t: 'attack', label: '돌진', d: 10, fx: 'blunt' },
            guard: { t: 'defend', label: '웅크리기', blk: 7 } },
   next: e => e.hist.length === 0 ? 'snort' : lastIs(e, 'charge', 2) ? 'guard' : rnd() < .68 ? 'charge' : 'snort' });
 
@@ -1322,13 +1545,13 @@ defEnemy({ id: 'spirit', n: '원귀', g: '怨', hp: [16, 21], col: '#5b4a70',
   next: e => lastIs(e, 'curse') ? (rnd() < .5 ? 'grudge' : 'wail') : rnd() < .3 ? 'curse' : rnd() < .5 ? 'grudge' : 'wail' });
 
 defEnemy({ id: 'straw', n: '허수아비 요괴', g: '藁', hp: [26, 31], col: '#8a7434',
-  moves: { swing: { t: 'attack', label: '후려치기', d: 9 },
+  moves: { swing: { t: 'attack', label: '후려치기', d: 9, fx: 'blunt' },
            harden: { t: 'defend', label: '굳히기', blk: 9, self: { dex: 1 } } },
   next: e => lastIs(e, 'swing', 2) ? 'harden' : rnd() < .65 ? 'swing' : 'harden' });
 
 defEnemy({ id: 'drowned', n: '물귀신', g: '溺', hp: [19, 24], col: '#2f6a6a',
   moves: { pull: { t: 'atkdeb', label: '끌어당기기', d: 5, deb: { weak: 2 } },
-           splash: { t: 'attack', label: '물세례', d: 9 },
+           splash: { t: 'attack', label: '물세례', d: 9, fx: 'wind' },
            dive: { t: 'defend', label: '잠수', blk: 11 } },
   next: e => lastIs(e, 'pull') ? (rnd() < .6 ? 'splash' : 'dive') : rnd() < .45 ? 'pull' : rnd() < .7 ? 'splash' : 'dive' });
 
@@ -1344,19 +1567,19 @@ defEnemy({ id: 'bat', n: '흡혈 박쥐', g: '蝠', hp: [13, 17], col: '#4a3a52'
   next: e => lastIs(e, 'drink', 3) ? 'flit' : rnd() < .8 ? 'drink' : 'flit' });
 
 defEnemy({ id: 'stoneman', n: '석귀', g: '石', hp: [32, 38], col: '#5f5a52',
-  moves: { smash: { t: 'attack', label: '내려찍기', d: 13 },
+  moves: { smash: { t: 'attack', label: '내려찍기', d: 13, fx: 'blunt' },
            fortify: { t: 'defend', label: '암화', blk: 13 } },
   next: e => lastIs(e, 'smash') ? 'fortify' : 'smash' });
 
 /* ---------- 2막 잡졸 ---------- */
 defEnemy({ id: 'skeleton', n: '해골 병사', g: '骸', hp: [30, 36], col: '#6d6553',
-  moves: { pierce: { t: 'attack', label: '창격', d: 12 },
+  moves: { pierce: { t: 'attack', label: '창격', d: 12, fx: 'pierce' },
            shield: { t: 'defend', label: '방패 세우기', blk: 12 },
            frenzy: { t: 'attack', label: '연격', d: 6, n: 2 } },
   next: e => lastIs(e, 'pierce') ? (rnd() < .5 ? 'shield' : 'frenzy') : rnd() < .5 ? 'pierce' : rnd() < .6 ? 'frenzy' : 'shield' });
 
 defEnemy({ id: 'serpent', n: '화사', g: '蛇', hp: [28, 34], col: '#3f7346',
-  moves: { fang: { t: 'atkdeb', label: '독니', d: 8, extra: e => st(P(), 'poison', 4) },
+  moves: { fang: { t: 'atkdeb', label: '독니', d: 8, fx: 'poison', extra: e => st(P(), 'poison', 4) },
            coil: { t: 'defend', label: '똬리', blk: 9, self: { str: 2 } } },
   next: e => lastIs(e, 'fang', 2) ? 'coil' : rnd() < .7 ? 'fang' : 'coil' });
 
@@ -1369,7 +1592,7 @@ defEnemy({ id: 'ghostmonk', n: '요승', g: '僧', hp: [36, 42], col: '#7a4a3a',
 defEnemy({ id: 'yaksha', n: '야차', g: '叉', hp: [42, 48], col: '#8c2f3a',
   moves: { rampage: { t: 'attack', label: '광란', d: 7, n: 3 },
            roar: { t: 'buff', label: '포효', self: { str: 3 } },
-           cleave: { t: 'attack', label: '가르기', d: 15 } },
+           cleave: { t: 'attack', label: '가르기', d: 15, fx: 'slash2' } },
   next: e => e.hist.length === 0 ? 'roar' : lastIs(e, 'rampage') ? 'cleave' : rnd() < .5 ? 'rampage' : rnd() < .6 ? 'cleave' : 'roar' });
 
 defEnemy({ id: 'willow', n: '버들귀', g: '柳', hp: [32, 38], col: '#4a7040',
@@ -1384,8 +1607,8 @@ defEnemy({ id: 'shadow', n: '그림자', g: '影', hp: [26, 32], col: '#2e2b33',
 
 /* ---------- 엘리트 ---------- */
 defEnemy({ id: 'imugi', n: '이무기', g: '蟒', hp: [78, 86], col: '#2b6b5e', elite: true, big: true,
-  moves: { mist: { t: 'atkdeb', label: '독무', d: 6, extra: e => st(P(), 'poison', 5) },
-           tail: { t: 'attack', label: '꼬리치기', d: 17 },
+  moves: { mist: { t: 'atkdeb', label: '독무', d: 6, fx: 'poison', extra: e => st(P(), 'poison', 5) },
+           tail: { t: 'attack', label: '꼬리치기', d: 17, fx: 'blunt' },
            coil: { t: 'defend', label: '용트림', blk: 16, self: { str: 2 } } },
   next: e => e.hist.length === 0 ? 'mist' : lastIs(e, 'tail') ? (rnd() < .5 ? 'coil' : 'mist') : rnd() < .45 ? 'tail' : rnd() < .6 ? 'mist' : 'coil' });
 
@@ -1397,7 +1620,7 @@ defEnemy({ id: 'geuseundae', n: '그슨대', g: '暗', hp: [72, 80], col: '#2420
 
 defEnemy({ id: 'jangseung', n: '장승 수호신', g: '柱', hp: [95, 104], col: '#6b4a2a', elite: true, big: true,
   init: e => { e.s.thorns = 5; },
-  moves: { stomp: { t: 'attack', label: '천하대장군', d: 21 },
+  moves: { stomp: { t: 'attack', label: '천하대장군', d: 21, fx: 'blunt' },
            root: { t: 'defend', label: '지하여장군', blk: 22, self: { thorns: 2 } },
            glare: { t: 'debuff', label: '노려보기', deb: { weak: 2, vuln: 2 } } },
   next: e => e.hist.length === 0 ? 'root' : lastIs(e, 'stomp') ? (rnd() < .6 ? 'root' : 'glare') : rnd() < .55 ? 'stomp' : rnd() < .6 ? 'root' : 'glare' });
@@ -1409,17 +1632,17 @@ defEnemy({ id: 'hwangryeong', n: '황령', g: '靈', hp: [68, 75], col: '#8a7a2c
   next: e => e.hist.length === 0 ? 'curse' : lastIs(e, 'devour') ? 'blast' : rnd() < .45 ? 'devour' : rnd() < .65 ? 'blast' : 'curse' });
 
 /* ---------- 보스 ---------- */
-defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [200, 200], col: '#a8272c', boss: true, big: true,
+defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [170, 170], col: '#a8272c', boss: true, big: true,
   init: e => { e.phase = 1; },
   moves: {
-    charm:  { t: 'atkdeb', label: '요혹', d: 13, deb: { weak: 2 } },
-    dance:  { t: 'attack', label: '구미난무', d: 7, n: 3 },
-    devour: { t: 'attack', label: '혼 흡수', d: 16, heal: 16 },
-    veil:   { t: 'defend', label: '월광 결계', blk: 18, self: { str: 3 } },
-    ruin:   { t: 'attack', label: '구천낙화', d: 32 }
+    charm:  { t: 'atkdeb', label: '요혹', d: 10, deb: { weak: 2 } },
+    dance:  { t: 'attack', label: '구미난무', d: 5, n: 3 },
+    devour: { t: 'attack', label: '혼 흡수', d: 12, heal: 10 },
+    veil:   { t: 'defend', label: '월광 결계', blk: 14, self: { str: 2 } },
+    ruin:   { t: 'attack', label: '구천낙화', d: 23, fx: 'petal' }
   },
-  onTurnEnd: e => { st(e, 'str', 1); },                        // 꼬리가 하나씩 깨어난다
-  onHalf: e => { e.phase = 2; st(e, 'str', 3); flash('꼬리 아홉이 모두 깨어났다'); },
+  onTurnEnd: e => { e.tails = (e.tails || 0) + 1; if (e.tails % 2 === 0) st(e, 'str', 1); },  // 두 턴에 꼬리 하나
+  onHalf: e => { e.phase = 2; st(e, 'str', 2); flash('꼬리 아홉이 모두 깨어났다'); },
   next: e => {
     if (e.phase === 2 && !lastIs(e, 'ruin') && rnd() < .3) return 'ruin';
     if (lastIs(e, 'devour')) return 'veil';
@@ -1427,16 +1650,16 @@ defEnemy({ id: 'gumiho', n: '구미호', g: '狐', hp: [200, 200], col: '#a8272c
     return r < .3 ? 'charm' : r < .6 ? 'dance' : r < .82 ? 'devour' : 'veil';
   } });
 
-defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [265, 265], col: '#c07a1f', boss: true, big: true,
+defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [225, 225], col: '#c07a1f', boss: true, big: true,
   init: e => { e.charge = 0; },
   moves: {
     roar:   { t: 'debuff', label: '포효', deb: { weak: 2, vuln: 2 }, self: { str: 2 } },
-    claw:   { t: 'attack', label: '발톱질', d: 11, n: 2 },
-    echo:   { t: 'atkdef', label: '산울림', d: 10, blk: 16 },
-    gather: { t: 'buff', label: '기 모으기', blk: 24, self: { str: 4 }, extra: e => { e.charge = 1; flash('산군이 힘을 모은다'); } },
-    ascend: { t: 'attack', label: '승천격', d: 42, extra: e => { e.charge = 0; } }
+    claw:   { t: 'attack', label: '발톱질', d: 9, n: 2 },
+    echo:   { t: 'atkdef', label: '산울림', d: 8, blk: 13 },
+    gather: { t: 'buff', label: '기 모으기', blk: 18, self: { str: 2 }, extra: e => { e.charge = 1; flash('산군이 힘을 모은다'); } },
+    ascend: { t: 'attack', label: '승천격', d: 30, fx: 'blunt', extra: e => { e.charge = 0; } }
   },
-  onHalf: e => { st(e, 'str', 4); st(e, 'thorns', 4); flash('산군이 포효한다'); },
+  onHalf: e => { st(e, 'str', 2); st(e, 'thorns', 2); flash('산군이 포효한다'); },
   next: e => {
     if (e.charge) return 'ascend';
     if (e.hist.length === 0) return 'roar';
@@ -1448,24 +1671,24 @@ defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [265, 265], col: '#c07a1f', 
 
 /* ---------- 3막 잡졸 ---------- */
 defEnemy({ id: 'rakshasa', n: '나찰', g: '羅', hp: [46, 54], col: '#8f2f52',
-  moves: { blaze: { t: 'attack', label: '겁화', d: 15 },
+  moves: { blaze: { t: 'attack', label: '겁화', d: 15, fx: 'fire' },
            claws: { t: 'attack', label: '나찰조', d: 7, n: 3 },
            laugh: { t: 'buff', label: '광소', self: { str: 4 } } },
   next: e => e.hist.length === 0 ? 'laugh' : lastIs(e, 'claws') ? 'blaze' : rnd() < .45 ? 'claws' : rnd() < .7 ? 'blaze' : 'laugh' });
 
 defEnemy({ id: 'bonehorse', n: '백골마', g: '骨', hp: [40, 47], col: '#8a8574',
-  moves: { trample: { t: 'attack', label: '짓밟기', d: 18 },
+  moves: { trample: { t: 'attack', label: '짓밟기', d: 18, fx: 'blunt' },
            bulwark: { t: 'defend', label: '백골 방벽', blk: 18, self: { thorns: 2 } } },
   next: e => lastIs(e, 'trample') ? 'bulwark' : rnd() < .7 ? 'trample' : 'bulwark' });
 
 defEnemy({ id: 'hellfire', n: '겁화귀', g: '焰', hp: [42, 49], col: '#b4531f',
-  moves: { flame: { t: 'atkdeb', label: '화염', d: 12, extra: () => st(P(), 'poison', 4) },
-           pyre: { t: 'attack', label: '불기둥', d: 9, n: 2 },
+  moves: { flame: { t: 'atkdeb', label: '화염', d: 12, fx: 'fire', extra: () => st(P(), 'poison', 4) },
+           pyre: { t: 'attack', label: '불기둥', d: 9, n: 2, fx: 'fire' },
            heat: { t: 'buff', label: '열기', self: { str: 2, dex: 2 } } },
   next: e => lastIs(e, 'flame') ? (rnd() < .5 ? 'pyre' : 'heat') : rnd() < .5 ? 'flame' : rnd() < .65 ? 'pyre' : 'heat' });
 
 defEnemy({ id: 'warlord', n: '귀장군', g: '將', hp: [54, 62], col: '#4a4f70',
-  moves: { greatsword: { t: 'attack', label: '참마도', d: 20 },
+  moves: { greatsword: { t: 'attack', label: '참마도', d: 20, fx: 'slash2' },
            command: { t: 'atkdef', label: '호령', d: 8, blk: 14, self: { str: 3 } },
            sweep: { t: 'attack', label: '횡소천군', d: 11, n: 2 } },
   next: e => e.hist.length === 0 ? 'command' : lastIs(e, 'greatsword') ? (rnd() < .5 ? 'command' : 'sweep')
@@ -1487,30 +1710,30 @@ defEnemy({ id: 'stonelion', n: '해태', g: '獬', hp: [50, 58], col: '#5c6b4a',
 defEnemy({ id: 'rakshasaking', n: '나찰왕', g: '羅', hp: [130, 142], col: '#7a1f3d', elite: true, big: true,
   init: e => { e.s.rage = 2; e.s.thorns = 3; },
   moves: { rend: { t: 'attack', label: '찢어발기기', d: 12, n: 2 },
-           inferno: { t: 'attack', label: '업화 폭발', d: 26 },
+           inferno: { t: 'attack', label: '업화 폭발', d: 26, fx: 'fire' },
            bulwark: { t: 'defend', label: '나찰갑', blk: 20, self: { dex: 2 } } },
   next: e => lastIs(e, 'inferno') ? 'bulwark' : rnd() < .5 ? 'rend' : rnd() < .75 ? 'inferno' : 'bulwark' });
 
 defEnemy({ id: 'gatekeeper', n: '구천 문지기', g: '門', hp: [148, 160], col: '#3a4657', elite: true, big: true,
   init: e => { e.s.thorns = 6; },
-  moves: { hammer: { t: 'attack', label: '천주 강타', d: 24 },
+  moves: { hammer: { t: 'attack', label: '천주 강타', d: 24, fx: 'blunt' },
            seal: { t: 'debuff', label: '봉문', deb: { weak: 3, vuln: 3 }, self: { str: 3 } },
            bar: { t: 'defend', label: '철문 잠그기', blk: 26 } },
   next: e => e.hist.length === 0 ? 'seal' : lastIs(e, 'hammer') ? (rnd() < .55 ? 'bar' : 'seal')
     : rnd() < .5 ? 'hammer' : rnd() < .75 ? 'bar' : 'seal' });
 
 /* ---------- 3막 보스 ---------- */
-defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [340, 340], col: '#23283a', boss: true, big: true,
+defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [285, 285], col: '#23283a', boss: true, big: true,
   init: e => { e.charge = 0; },
   moves: {
-    talon:  { t: 'attack', label: '용조', d: 13, n: 2 },
-    scale:  { t: 'atkdef', label: '역린', d: 11, blk: 22, self: { thorns: 3 } },
-    gather: { t: 'buff', label: '흑염 응축', blk: 30, self: { str: 5 },
+    talon:  { t: 'attack', label: '용조', d: 10, n: 2 },
+    scale:  { t: 'atkdef', label: '역린', d: 9, blk: 18, self: { thorns: 2 } },
+    gather: { t: 'buff', label: '흑염 응축', blk: 22, self: { str: 3 },
               extra: e => { e.charge = 1; flash('흑룡이 숨을 들이쉰다'); } },
-    breath: { t: 'attack', label: '흑염 브레스', d: 46, extra: e => { e.charge = 0; st(P(), 'weak', 2); } },
+    breath: { t: 'attack', label: '흑염 브레스', d: 33, fx: 'fire', extra: e => { e.charge = 0; st(P(), 'weak', 2); } },
     wing:   { t: 'atkdeb', label: '날갯짓', d: 10, deb: { vuln: 2 } }
   },
-  onHalf: e => { st(e, 'str', 5); st(e, 'rage', 1); flash('흑룡의 비늘이 곤두선다'); },
+  onHalf: e => { st(e, 'str', 3); flash('흑룡의 비늘이 곤두선다'); },
   next: e => {
     if (e.charge) return 'breath';
     if (e.hist.length === 0) return 'wing';
@@ -1520,16 +1743,16 @@ defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [340, 340], c
     return r < .42 ? 'talon' : r < .68 ? 'scale' : 'wing';
   } });
 
-defEnemy({ id: 'yeomra', n: '염라', g: '閻', hp: [320, 320], col: '#4a1f2a', boss: true, big: true,
+defEnemy({ id: 'yeomra', n: '염라', g: '閻', hp: [270, 270], col: '#4a1f2a', boss: true, big: true,
   init: e => { e.judged = 0; },
   moves: {
-    judge:  { t: 'attack', label: '심판', d: 15, extra: () => st(P(), 'curse', 2) },
-    chain:  { t: 'atkdeb', label: '업의 사슬', d: 9, n: 2, deb: { weak: 2, vuln: 2 } },
-    ledger: { t: 'defend', label: '명부 펼치기', blk: 26, self: { str: 4 } },
-    verdict:{ t: 'attack', label: '최후의 판결', d: 34 }
+    judge:  { t: 'attack', label: '심판', d: 12, fx: 'holy', extra: () => st(P(), 'curse', 2) },
+    chain:  { t: 'atkdeb', label: '업의 사슬', d: 7, n: 2, deb: { weak: 2, vuln: 2 } },
+    ledger: { t: 'defend', label: '명부 펼치기', blk: 20, self: { str: 2 } },
+    verdict:{ t: 'attack', label: '최후의 판결', d: 25, fx: 'lightning' }
   },
-  onTurnEnd: e => { e.judged++; if (e.judged % 3 === 0) st(e, 'str', 2); },
-  onHalf: e => { st(e, 'str', 4); st(e, 'regenP', 8); flash('명부가 불타오른다'); },
+  onTurnEnd: e => { e.judged++; if (e.judged % 4 === 0) st(e, 'str', 2); },
+  onHalf: e => { st(e, 'str', 2); st(e, 'regenP', 4); flash('명부가 불타오른다'); },
   next: e => {
     if (e.hist.length === 0) return 'chain';
     if (lastIs(e, 'verdict')) return 'ledger';
@@ -1605,6 +1828,7 @@ function atk(t, base, opts) {
   const dmg = calcAtk(P(), t, base);
   const r = applyDamage(t, dmg, opts.pierce);
   G.b.attacked = true;
+  impact(opts.fx || (G.b.curCard ? CARD_FX[G.b.curCard.id] : null) || 'slash', t);
   hitFx(t, r.hp, r.blocked, true);
   const dr = P().s.drain || 0;
   if (dr && r.hp + r.blocked > 0) heal(dr);
@@ -1747,6 +1971,7 @@ async function playCard(card, target) {
   if (d.type === 'attack') SND.slash();
 
   b.curCard = card;
+  if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
   const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
@@ -1838,13 +2063,14 @@ async function endTurn() {
 async function doMove(e, m) {
   if (!m) return;
   const b = G.b;
-  floatText(e, m.label, 'blk');
+  if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
   await wait(160);
   if (m.d) {
     for (let i = 0; i < (m.n || 1); i++) {
       if (b.over || P().hp <= 0) return;
       const dmg = calcAtk(e, P(), m.d);
       const r = applyDamage(P(), dmg);
+      impact(m.fx || 'claw', P());
       hitFx(P(), r.hp, r.blocked, true);
       SND.hit(dmg > 14 ? 2 : 1); shake(dmg > 14);
       lunge(e);
@@ -1950,6 +2176,8 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
+      <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
+      <button class="topbtn box" id="boxbtn" title="특별 상자">匣<em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
       <button class="brush-btn ghost" id="menubtn" style="padding:6px 12px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c">≡</button>`;
     const rb = t.querySelector('#relicbar');
@@ -1973,6 +2201,8 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
+    t.querySelector('#shopbtn').onclick = () => openShop();
+    t.querySelector('#boxbtn').onclick = () => openBoxes();
   }
   t.querySelector('.hpbar i').style.width = (run.hp / run.maxHp * 100) + '%';
   t.querySelector('.hpbar span').textContent = run.hp + ' / ' + run.maxHp;
@@ -1980,6 +2210,20 @@ function renderTop() {
   t.querySelector('#diav').textContent = run.dia || 0;
   t.querySelector('#floorv').textContent = run.act + '-' + run.floor;
   t.querySelector('#deckbtn').textContent = '덱 ' + run.deck.length;
+  const bb = t.querySelector('#boxbtn'), left = (run.boxes || []).filter(b => !b.opened).length;
+  bb.querySelector('em').textContent = left || '';
+  bb.classList.toggle('empty', left === 0);
+  t.querySelector('#shopbtn').classList.toggle('busy', !!G.b);
+  bb.classList.toggle('busy', !!G.b);
+}
+/* 전투 중이 아니면 언제든 열 수 있다 */
+function openShop() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showShop();
+}
+function openBoxes() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 열 수 없다'); return; }
+  SND.ui(); showSpecialShop();
 }
 
 /* --- 전투 화면 뼈대 --- */
@@ -2261,6 +2505,102 @@ function lunge(e) {
   b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
   setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
 }
+/* ══ 타격 연출 ══════════════════════════════════════════════
+   카드/행동 이름에 어울리는 모션을 대상 위에 그린다. */
+const CARD_FX = {
+  strike: 'slash', ward: 'talisman', twin: 'slash2', whirl: 'spin', vein: 'pierce',
+  venom: 'poison', crush: 'blunt', chain: 'claw', exorcise: 'holy', roc: 'blunt',
+  bloodcut: 'slash', formless: 'void_slash', immovable: 'blunt', lotus: 'petal',
+  stormtal: 'wind', madness: 'slash2', hunt: 'pierce', brilliant: 'holy',
+  demonblade: 'slash2', ninetail: 'slash2', thunder: 'lightning', rainflower: 'petal',
+  vajra: 'blunt', shadowblade: 'slash2', mu: 'void', seal: 'talisman', healtalis: 'talisman',
+  skyweb: 'wind', cleaver: 'slash2', purgatory: 'fire', kalpa: 'fire', genesis: 'void'
+};
+/* 이름을 크게 띄울 만한 카드 (희귀 이상이거나 무거운 것) */
+function worthBanner(card) {
+  const d = cdef(card);
+  return d.rar === 'rare' || d.rar === 'special' || d.rar === 'ssx' || (d.cost >= 2 && d.type === 'attack');
+}
+function skillBanner(text, ssx) {
+  const n = el('div', 'skillname' + (ssx ? ' ssx' : ''), text);
+  n.style.top = Math.max(64, innerHeight * .145) + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 1000);
+}
+function screenFlash(color, ms) {
+  const n = el('div', 'flashlayer');
+  n.style.background = color;
+  n.style.animation = `scrFlash ${ms || 420}ms ease-out forwards`;
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), (ms || 420) + 60);
+}
+function impact(kind, ent) {
+  if (!kind || !ent || !ent.el) return;
+  const r = ent.el.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  /* 무형검처럼 두 연출을 겹치는 것 */
+  if (kind === 'void_slash') { impact('slash', ent); kind = 'void'; }
+  const box = el('div', 'impact ik-' + kind);
+  box.style.left = cx + 'px'; box.style.top = cy + 'px';
+  const add = (cls, style) => { const i = el('i', cls || ''); if (style) i.style.cssText = style; box.appendChild(i); };
+  const rr = (a, b) => a + Math.random() * (b - a);
+
+  switch (kind) {
+    case 'slash':
+      add('', `--a:${rr(-46, -18)}deg`); break;
+    case 'slash2':
+      for (let k = 0; k < 3; k++) add('', `--a:${rr(-60, 40)}deg;animation-delay:${k * .07}s`);
+      break;
+    case 'spin':
+      for (let k = 0; k < 2; k++) add('', `--a:${k ? 14 : -14}deg;animation-delay:${k * .06}s`);
+      SND.windhit(); break;
+    case 'pierce':
+      add('lance'); FX.spark(cx, cy, 12, '255,220,170'); SND.pierceS(); break;
+    case 'blunt':
+      add(); add(); FX.ink(cx, cy, 16); SND.bluntS(); shake(true); break;
+    case 'void':
+      add(); add(); add();
+      FX.burst(cx, cy, 26, '20,16,14', 4, 52, 5);
+      screenFlash('radial-gradient(circle at ' + cx + 'px ' + cy + 'px, rgba(255,45,85,.5), rgba(10,8,8,.9))', 620);
+      SND.voidhit(); shake(true); break;
+    case 'fire':
+      for (let k = 0; k < 7; k++) add('', `--x:${rr(-40, 40)}px;animation-delay:${k * .045}s`);
+      FX.burst(cx, cy + 10, 20, '230,120,40', 4, 46, 4);
+      SND.fire(); break;
+    case 'lightning': {
+      let d = 'M90,0';
+      for (let y = 40; y <= 360; y += 40) d += ` L${90 + rr(-34, 34)},${y}`;
+      box.innerHTML = `<svg viewBox="0 0 180 400"><path d="${d}" fill="none" stroke="#eaf7ff" stroke-width="7"
+        stroke-linecap="round"/><path d="${d}" fill="none" stroke="#8fd8ff" stroke-width="14" opacity=".45"
+        stroke-linecap="round"/></svg>`;
+      screenFlash('rgba(220,245,255,.8)', 300);
+      FX.spark(cx, cy, 22, '190,235,255'); SND.thunder(); shake(true); break;
+    }
+    case 'holy':
+      add('ring');
+      for (let k = 0; k < 8; k++) add('ray', `--a:${k * 45}deg;animation-delay:${k * .022}s`);
+      screenFlash('rgba(255,240,200,.55)', 380);
+      FX.gold(cx, cy, 22); SND.holyhit(); break;
+    case 'poison':
+      for (let k = 0; k < 6; k++) add('', `--x:${rr(-30, 30)}px;animation-delay:${k * .06}s`);
+      SND.poison(); break;
+    case 'wind':
+      for (let k = 0; k < 4; k++) add('', `--a:${rr(-25, 25)}deg;animation-delay:${k * .05}s`);
+      SND.windhit(); break;
+    case 'petal':
+      for (let k = 0; k < 9; k++) add('', `--x:${rr(-70, 70)}px;animation-delay:${k * .04}s`);
+      break;
+    case 'talisman':
+      add(); FX.burst(cx, cy, 12, '168,39,44', 4, 40, 4); break;
+    case 'claw':
+    default:
+      for (let k = 0; k < 3; k++) add('', `--a:${rr(-30, 30)}deg;animation-delay:${k * .05}s`);
+      break;
+  }
+  $('#app').appendChild(box);
+  setTimeout(() => box.remove(), 1100);
+}
+
 function highlight(e, on) { if (e.el) e.el.style.filter = on ? 'drop-shadow(0 0 14px rgba(168,39,44,.7))' : ''; }
 function showTurnLabel(t) {
   const n = $('#turnlabel'); if (!n) return;
@@ -2363,6 +2703,7 @@ function newRun(asc) {
   };
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
+  restockBoxes(); restockShop();
   G.run.map = genMap(1);
   META.runs++; saveMeta();
   showMap();
@@ -2373,6 +2714,7 @@ function nextAct() {
   run.floor = 0;
   run.map = genMap(run.act);
   run.mapCur = -1; run.mapDone = []; run.bossPick = null;
+  run.shop = null; restockBoxes();
   healRun(Math.ceil(run.maxHp * .25));
   saveRun();
   showMap();
@@ -2438,9 +2780,9 @@ function enterNode(n) {
       break;
     }
     case 'rest': showRest(); break;
-    case 'shop': showShop(); break;
+    case 'shop': restockShop(); showShop(); break;
     case 'treasure': showTreasure(); break;
-    case 'special': showSpecialShop(); break;
+    case 'special': showSpecialShop(true); break;
     case 'event': showEvent(); break;
   }
 }
@@ -2617,86 +2959,123 @@ function showRest() {
   function done() { closeOverlay(); saveRun(); showMap(); }
 }
 
-/* --- 상점 --- */
+/* --- 상점 ---------------------------------------------------
+   재고는 모험 상태에 저장된다. 창을 닫았다 다시 열어도 같은 물건이며,
+   막이 바뀌거나 지도의 상점 노드를 밟으면 새로 채워진다.
+   ----------------------------------------------------------- */
+function restockShop() {
+  const run = G.run, price = v => pipe('modPrice', v);
+  const cards = [], seen = new Set();
+  const w = [{ w: 60, r: 'common' }, { w: 32, r: 'uncommon' }, { w: 8, r: 'rare' }];
+  let guard = 0;
+  while (cards.length < 5 && guard++ < 200) {
+    const id = randomCard(w); if (seen.has(id)) continue; seen.add(id);
+    const up = rnd() < .12;
+    const base = { common: 52, uncommon: 78, rare: 135 }[CARDS[id].rar];
+    cards.push({ id, up, p: price(Math.round(base * (up ? 1.5 : 1) * (.9 + rnd() * .3))), sold: false });
+  }
+  const relics = [];
+  for (let i = 0; i < 2; i++) {
+    const id = randomRelic();
+    if (id && !relics.some(r => r.id === id))
+      relics.push({ id, p: price({ common: 145, uncommon: 190, rare: 265, boss: 300 }[RELICS[id].rar]), sold: false });
+  }
+  const pots = [];
+  for (let i = 0; i < 3; i++) {
+    const id = randomPotion();
+    pots.push({ id, p: price({ common: 52, uncommon: 78, rare: 112 }[POTIONS[id].rar]), sold: false });
+  }
+  run.shop = { cards, relics, pots, purged: false };
+}
 function showShop() {
   G.scene = 'shop';
   const run = G.run;
-  const price = v => pipe('modPrice', v);
-  const cardsForSale = [];
-  const w = [{ w: 60, r: 'common' }, { w: 32, r: 'uncommon' }, { w: 8, r: 'rare' }];
-  const seen = new Set();
-  let guard = 0;
-  while (cardsForSale.length < 5 && guard++ < 200) {
-    const id = randomCard(w); if (seen.has(id)) continue; seen.add(id);
-    const c = mkCard(id, rnd() < .12);
-    const base = { common: 52, uncommon: 78, rare: 135 }[CARDS[id].rar];
-    cardsForSale.push({ c, p: price(Math.round(base * (c.up ? 1.5 : 1) * (.9 + rnd() * .3))) });
-  }
-  const relicsForSale = [];
-  for (let i = 0; i < 2; i++) {
-    const id = randomRelic();
-    if (id && !relicsForSale.some(r => r.id === id))
-      relicsForSale.push({ id, p: price({ common: 145, uncommon: 190, rare: 265, boss: 300 }[RELICS[id].rar]) });
-  }
-  const potsForSale = [];
-  for (let i = 0; i < 3; i++) {
-    const id = randomPotion();
-    potsForSale.push({ id, p: price({ common: 52, uncommon: 78, rare: 112 }[POTIONS[id].rar]) });
-  }
-  let purgePrice = price(72 + (run.purges || 0) * 20);
+  if (!run.shop) restockShop();
+  const sh = run.shop;
+  const purgePrice = pipe('modPrice', 72 + (run.purges || 0) * 20);
 
   function draw() {
-    const p = overlay(`<h2>떠돌이 상인</h2><div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b></div>
+    const p = overlay(`<h2>떠돌이 상인</h2><div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
+        · 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
       <div class="shopgrid">
         <div class="shopcol"><h3>부 적</h3><div class="cardgrid" style="max-width:640px;max-height:52vh"></div></div>
         <div class="shopcol"><h3>물 건</h3><div class="rewardrow" style="width:330px"></div></div>
       </div>
       <button class="brush-btn red" id="sh_leave">떠난다</button>`);
     const g = p.querySelector('.cardgrid');
-    cardsForSale.forEach(it => {
+    sh.cards.forEach(it => {
       const holder = el('div', 'priced');
-      const n = cardNode(it.c);
-      if (it.sold) { n.classList.add('dim'); }
+      const card = { uid: -100 - sh.cards.indexOf(it), id: it.id, up: it.up };
+      const n = cardNode(card);
+      if (it.sold) n.classList.add('dim');
       holder.appendChild(n);
       holder.appendChild(el('div', 'pricetag' + (run.gold < it.p || it.sold ? ' no' : ''), it.sold ? '판매됨' : it.p + ' 골드'));
-      if (!it.sold) { n.classList.add('pick'); n.onclick = () => buy(it.p, () => { it.sold = true; run.deck.push(mkCard(it.c.id, it.c.up)); run.stats.cards++; dexAdd('cards', it.c.id); toast(`${cname(it.c)} 구입`); }); }
+      if (!it.sold) {
+        n.classList.add('pick');
+        n.onclick = () => buy(it.p, () => {
+          it.sold = true; run.deck.push(mkCard(it.id, it.up)); run.stats.cards++;
+          dexAdd('cards', it.id); toast(`${cname(card)} 구입`);
+        });
+      }
       g.appendChild(holder);
     });
     const row = p.querySelector('.rewardrow');
-    const addRow = (ic, t, s, pr, sold, fn) => {
+    const addRow = (ic, t, sub, pr, sold, fn) => {
       const n = el('div', 'rewitem' + (sold ? ' taken' : ''),
-        `<div class="ic">${ic}</div><div class="t"><b>${t}</b><small>${s}</small></div>
+        `<div class="ic">${ic}</div><div class="t"><b>${t}</b><small>${sub}</small></div>
          <div style="color:${run.gold >= pr && !sold ? '#9d7c2e' : '#b0553f'};font-size:14px;white-space:nowrap">${sold ? '판매됨' : pr + ' 골드'}</div>`);
       if (!sold) n.onclick = () => buy(pr, fn);
       row.appendChild(n);
     };
-    relicsForSale.forEach(it => addRow(RELICS[it.id].g, RELICS[it.id].n, RELICS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
+    sh.relics.forEach(it => addRow(RELICS[it.id].g, RELICS[it.id].n, RELICS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
       () => { it.sold = true; gainRelic(it.id); }));
-    potsForSale.forEach(it => addRow(POTIONS[it.id].g, POTIONS[it.id].n, POTIONS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
+    sh.pots.forEach(it => addRow(POTIONS[it.id].g, POTIONS[it.id].n, POTIONS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
       () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; } it.sold = true; run.potions.push(it.id); }));
-    addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, run.purgedHere,
+    addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, sh.purged,
       async () => {
         const c = await pickFromList(run.deck, '없앨 카드를 고르시오', { cancel: true });
         if (!c) { draw(); return false; }
         run.deck.splice(run.deck.findIndex(x => x.uid === c.uid), 1);
-        run.purges = (run.purges || 0) + 1; run.purgedHere = true;
+        run.purges = (run.purges || 0) + 1; sh.purged = true;
         toast(`${CARDS[c.id].n} 제거`);
       });
-    p.querySelector('#sh_leave').onclick = () => { run.purgedHere = false; closeOverlay(); saveRun(); showMap(); };
+    p.querySelector('#sh_leave').onclick = () => { closeOverlay(); saveRun(); showMap(); };
   }
   async function buy(cost, fn) {
     if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
     const r = await fn();
     if (r === false) return;
-    run.gold -= cost; SND.coin(); renderTop(); draw();
+    run.gold -= cost; SND.coin(); saveRun(); renderTop(); draw();
   }
   draw();
 }
 
 /* --- 특별 상자 상점 --- */
-const BOX_PRICE = [3, 5, 8];                      /* 훗날 다이아로 받을 값 (지금은 시험 중이라 무료) */
+const BOX_PRICE = [3, 5, 8, 20];                  /* 훗날 다이아로 받을 값 (지금은 시험 중이라 무료) */
+const BOX_TIERS = 4;
 const BOX_FREE = true;
 function boxLoot(tier) {
+  const run = G.run;
+  /* 특대급 상자 — 반드시 특별 등급 부적이 나온다.
+     ?급 0.1% · SSX급 10% · 나머지는 S급 */
+  if (tier === 3) {
+    const r = rnd();
+    const grade = r < .001 && GRADE_POOL.unknown.length ? 'unknown'
+                : r < .101 && GRADE_POOL.ssx.length ? 'ssx' : 'special';
+    const id = pick(GRADE_POOL[grade]);
+    const up = grade === 'special' && rnd() < .35;
+    const c = mkCard(id, up);
+    return { g: CARDS[id].g, n: cname(c), grade,
+      d: `<b style="color:${GRADE[grade].c}">${GRADE[grade].n}</b> — ` + CARDS[id].txt(cval(c), up).replace(/<[^>]+>/g, ''),
+      card: c,
+      take: () => {
+        run.deck.push(mkCard(id, up)); run.stats.cards++; dexAdd('cards', id);
+        if (grade === 'unknown') { flash('?급 — 천지개벽'); SND.gong(); SND.thunder();
+          screenFlash('radial-gradient(circle,rgba(255,255,255,.9),rgba(120,60,220,.7))', 900); }
+        else if (grade === 'ssx') { flash('SSX급'); SND.gong(); }
+        else SND.power();
+      } };
+  }
   /* tier 0~2 — 위로 갈수록 좋은 것이 나온다 */
   const w = [
     [{ w: 34, t: 'dia' }, { w: 26, t: 'card' }, { w: 26, t: 'potion' }, { w: 14, t: 'treasure' }],
@@ -2704,7 +3083,6 @@ function boxLoot(tier) {
     [{ w: 20, t: 'dia' }, { w: 42, t: 'card' }, { w: 10, t: 'potion' }, { w: 28, t: 'treasure' }]
   ][tier];
   const kind = pickWeighted(w).t;
-  const run = G.run;
   if (kind === 'dia') {
     const n = ri(1 + tier, 3 + tier * 2);
     return { g: '玉', n: `다이아 ${n}`, d: '맑고 단단한 돌. 특별 상자의 값으로 쓰인다.',
@@ -2727,35 +3105,50 @@ function boxLoot(tier) {
   if (!rid) { const g = ri(80, 160); return { g: '金', n: `골드 ${g}`, d: '엽전 꾸러미', take: () => { run.gold += g; SND.coin(); } }; }
   return { g: RELICS[rid].g, n: RELICS[rid].n, d: RELICS[rid].d.replace(/<[^>]+>/g, ''), take: () => gainRelic(rid) };
 }
-function showSpecialShop() {
+/* 상자 상태는 모험에 저장된다 — 다시 열어도 이미 연 상자는 그대로다.
+   지도의 특별 상자 노드를 밟으면 새 상자로 채워진다. */
+function restockBoxes() { G.run.boxes = [0, 1, 2, 3].map(t => ({ tier: t, opened: false, loot: null })); }
+function showSpecialShop(refill) {
   G.scene = 'special';
   const run = G.run;
-  const boxes = [0, 1, 2].map(t => ({ tier: t, loot: boxLoot(t), opened: false }));
-  const TIER_NAME = ['작은 상자', '보통 상자', '큰 상자'];
+  if (refill || !run.boxes) restockBoxes();
+  const TIER_NAME = ['작은 상자', '보통 상자', '큰 상자', '특대급 상자!'];
+  const left = run.boxes.filter(b => !b.opened).length;
+
   const p = overlay(`<h2>특별 상자!</h2>
-    <div class="hint">${BOX_FREE ? '시험 중이라 지금은 <b style="color:#6fd0e8">무료</b>입니다. 마음껏 열어 보시오.' : '다이아로 값을 치른다'}</div>
+    <div class="hint">${BOX_FREE ? '시험 중이라 지금은 <b style="color:#6fd0e8">무료</b>입니다. 마음껏 열어 보시오.'
+      : '다이아로 값을 치른다'}<br>
+      <b style="color:#ffd76a">특대급 상자</b>에서는 반드시 특별 부적이 나온다 —
+      <b style="color:#e2622a">S급</b> 기본 · <b style="color:#ff2d55">SSX급</b> 10% ·
+      <b style="color:#b98cff">?급</b> 0.1%
+      ${left ? '' : '<br><b style="color:#c08a5a">남은 상자가 없다. 지도에서 匣 을 밟으면 새로 채워진다.</b>'}</div>
     <div class="boxrow"></div>
     <button class="brush-btn red" id="sp_leave">떠난다</button>`, 'specialshop');
   const row = p.querySelector('.boxrow');
-  boxes.forEach((b, i) => {
-    const n = el('div', 'giftbox',
-      `<div class="bx"><span>匣</span></div>
-       <div class="bt">${TIER_NAME[i]}</div>
-       <div class="bp">${BOX_FREE ? '무료 <s>다이아 ' + BOX_PRICE[i] + '</s>' : '다이아 ' + BOX_PRICE[i]}</div>`);
-    n.onclick = () => {
+  run.boxes.forEach((b, i) => {
+    const n = el('div', 'giftbox' + (b.tier === 3 ? ' huge' : '') + (b.opened ? ' opened' : '')
+        + (b.opened && b.loot.grade ? ' got-' + b.loot.grade : ''),
+      `<div class="bx"><span${b.opened ? ' class="loot"' : ''}>${b.opened ? b.loot.g : '匣'}</span></div>
+       <div class="bt">${b.opened ? b.loot.n : TIER_NAME[i]}</div>
+       <div class="bp">${b.opened ? '얻었다'
+         : BOX_FREE ? '무료 <s>다이아 ' + BOX_PRICE[i] + '</s>' : '다이아 ' + BOX_PRICE[i]}</div>`);
+    if (b.opened) bindTip(n, () => `<b>${b.loot.n}</b><br>${b.loot.d}`);
+    else n.onclick = () => {
       if (b.opened) return;
-      b.opened = true;
+      const loot = boxLoot(b.tier);
+      b.opened = true; b.loot = { g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || null };
       n.classList.add('opened');
+      if (loot.grade) n.classList.add('got-' + loot.grade);
       SND.bell(); SND.coin();
       const r = n.getBoundingClientRect();
       FX.gold(r.left + r.width / 2, r.top + r.height / 2, 30);
-      b.loot.take();
-      renderTop(); saveRun();
-      n.querySelector('.bx').innerHTML = `<span class="loot">${b.loot.g}</span>`;
-      n.querySelector('.bt').textContent = b.loot.n;
+      loot.take();
+      saveRun(); renderTop();
+      n.querySelector('.bx').innerHTML = `<span class="loot">${loot.g}</span>`;
+      n.querySelector('.bt').textContent = loot.n;
       n.querySelector('.bp').textContent = '얻었다';
-      bindTip(n, () => `<b>${b.loot.n}</b><br>${b.loot.d}`);
-      if (b.loot.card) toast(`${b.loot.n} — 덱에 넣었다`);
+      bindTip(n, () => `<b>${loot.n}</b><br>${loot.d}`);
+      if (loot.card) toast(`${loot.n} — 덱에 넣었다`);
     };
     row.appendChild(n);
   });
@@ -2914,8 +3307,6 @@ function gameOver() {
     <div class="stats">${runStatsHtml()}</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
-      <button class="brush-btn ${canReturn ? 'ghost' : 'red'}" id="ov_again"
-        ${canReturn ? 'style="color:#e9dfc9;border-color:#7a6f5c"' : ''}>새로 시작한다</button>
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
     ${canReturn ? '<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전 상태로 되돌아간다</div>' : ''}`;
@@ -2928,7 +3319,6 @@ function gameOver() {
     SND.bell(); toast('숨을 고르고 다시 선다');
     saveRun(); showMap();
   };
-  d.querySelector('#ov_again').onclick = () => { d.remove(); closeOverlay(); G.cp = null; clearSave(); newRun(0); };
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
 }
 function victory() {
@@ -2959,6 +3349,8 @@ function showMenu() {
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
       <button class="brush-btn" id="m_sound">소리 ${SND.on ? '켜짐' : '꺼짐'}</button>
       <button class="brush-btn" id="m_speed">진행 속도 ${SPEED_NAME()}</button>
+      <button class="brush-btn" id="m_shop">상점 가기</button>
+      <button class="brush-btn" id="m_box">특별 상자 (${G.run ? (G.run.boxes || []).filter(b => !b.opened).length : 0})</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">조작법</button>
@@ -2976,6 +3368,8 @@ function showMenu() {
     e.target.textContent = `진행 속도 ${SPEED_NAME()}`;
   };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
+  p.querySelector('#m_shop').onclick = () => { closeTop(); openShop(); };
+  p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
   p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = showHelp;
   p.querySelector('#m_quit').onclick = () => { if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
@@ -3016,15 +3410,13 @@ function showDex() {
 
   let secs = '';
   for (const gk of GRADE_ORDER.concat(['curse'])) {
-    if (gk === 'unknown') {
-      secs += `<div class="dexsec"><h3><span class="gradechip" style="--gc:${GRADE.unknown.c}">?</span> ?급 <i>0 / ?</i>
-        <em>아직 세상에 없다 — 상자에서도 나오지 않는다</em></h3><div class="dexgrid" id="dx_unknown"></div></div>`;
-      continue;
-    }
     if (!byGrade[gk].length) continue;
     const got = byGrade[gk].filter(id => META.dex.cards[id]).length;
+    const note = gk === 'unknown' ? '<em>특대급 상자에서 0.1% — 세상에 단 하나</em>'
+      : gk === 'ssx' ? '<em>특대급 상자에서 10%</em>'
+      : gk === 'special' ? '<em>특별 상자에서만</em>' : '';
     secs += `<div class="dexsec"><h3><span class="gradechip" style="--gc:${GRADE[gk].c}">${GRADE[gk].s}</span> ${GRADE[gk].n}
-      <i>${got} / ${byGrade[gk].length}</i></h3><div class="dexgrid" data-g="${gk}"></div></div>`;
+      <i>${got} / ${byGrade[gk].length}</i>${note}</h3><div class="dexgrid" data-g="${gk}"></div></div>`;
   }
   const p = modal(`<h2>도 감</h2>
     <div class="hint">모험을 거듭하며 만난 것들이 여기 남는다 · 부적을 누르면 자세히 볼 수 있다
@@ -3047,12 +3439,6 @@ function showDex() {
         'gd_' + d.rar, () => showCardDetail(id)));
     }
   }
-  /* ?급 자리 — 잠겨 있다 */
-  const ub = p.querySelector('#dx_unknown');
-  const lock = el('div', 'dextile unknown locked', `<b>?</b><span>봉인됨</span>`);
-  bindTip(lock, () => `<b>?급</b><br>${GRADE.unknown.desc}`);
-  ub.appendChild(lock);
-
   const gr = p.querySelector('#dx_r');
   for (const id of relicIds) {
     const d = RELICS[id], known = !!META.dex.relics[id];
@@ -3078,7 +3464,8 @@ function showHelp() {
       <b>기(氣)</b>는 매 턴 회복된다. 방어도는 <b>내 턴이 시작될 때</b> 사라진다.<br>
       <b>힘</b>은 공격 피해를, <b>민첩</b>은 방어도를 올린다.<br>
       <b>취약</b>은 받는 피해 +50%, <b>약화</b>는 주는 피해 -25%.<br>
-      적의 머리 위 표시는 <b>다음 턴에 할 행동</b>이다. 숫자에 마우스를 올려 보라.
+      적의 머리 위 표시는 <b>다음 턴에 할 행동</b>이다. 숫자에 마우스를 올려 보라.<br>
+      <b>상점(商)</b>과 <b>특별 상자(匣)</b>는 화면 위쪽 단추로 언제든 갈 수 있다. (전투 중에는 안 된다)
     </div>
     <button class="brush-btn" id="h_close">닫기</button>`).querySelector('#h_close').onclick = closeTop;
 }
