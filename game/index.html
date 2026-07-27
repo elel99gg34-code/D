@@ -120,6 +120,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
+.topbtn.fuse{color:#ffd9e0;background:rgba(190,40,80,.22);border-color:#d84a70}
+.topbtn.fuse:hover{background:rgba(190,40,80,.45)}
+.topbtn.fuse.ready{animation:ssxGlow 1.4s ease-in-out infinite}
 .topbtn.box:hover{background:rgba(47,127,153,.5)}
 .topbtn em{position:absolute;right:-5px;top:-5px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;
   background:var(--red);color:#fff;font-size:10px;font-style:normal;display:grid;place-items:center;line-height:1}
@@ -510,6 +513,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   border:1px solid rgba(255,255,255,.4)}
 .gunit.u-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
 .gunit.u-ssx{border-color:#ff2d55;animation:ssxGlow 1.25s ease-in-out infinite}
+.gunit.owned{opacity:.45}
 .gunit.u-unknown{border-color:#b98cff;background:linear-gradient(160deg,#efe6ff,#c9b6ee);
   box-shadow:0 0 18px rgba(150,90,255,.75),0 0 40px rgba(60,220,255,.3)}
 
@@ -645,6 +649,43 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dexgrid .dextile.unknown{background:rgba(255,255,255,.04);border-style:dashed;box-shadow:none;cursor:default}
 .dexgrid .dextile.unknown b,.dexgrid .dextile.unknown span{color:#6f6553}
 .dexgrid .dextile.unknown:hover{transform:none;box-shadow:none}
+
+/* ══ 유물 ════════════════════════════════════════════════ */
+.relic.g-uncommon{border-color:#2f6d8f}
+.relic.g-rare{border-color:#b8912f;box-shadow:0 0 9px rgba(184,145,47,.6)}
+.relic.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
+.relic.g-ssx{border-color:#ff2d55;animation:ssxGlow 1.25s ease-in-out infinite;background:#ffe6ea}
+#relicbar .cnt{align-self:center;font-size:11px;color:#a89a80;margin-left:2px;letter-spacing:.04em}
+#relicbar .cnt.full{color:#e0a06a}
+
+.relicgrid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:min(860px,92vw)}
+.rtile{width:84px;padding:10px 5px;border-radius:7px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:linear-gradient(160deg,#efe4cb,#cdbb96);border:2px solid #6b6053;cursor:pointer;transition:.15s}
+.rtile:hover{transform:translateY(-5px);box-shadow:0 8px 18px rgba(0,0,0,.5)}
+.rtile b{font-size:26px;color:#22190f;font-weight:400;line-height:1}
+.rtile span{font-size:10.5px;color:#4a4234;text-align:center;word-break:keep-all;line-height:1.2}
+.rtile.g-uncommon{border-color:#2f6d8f}
+.rtile.g-rare{border-color:#b8912f;box-shadow:0 0 10px rgba(184,145,47,.5)}
+.rtile.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
+.rtile.g-ssx{border-color:#ff2d55;background:linear-gradient(160deg,#ffe9ee,#f3c3ce);animation:ssxGlow 1.25s ease-in-out infinite}
+.rtile.fresh{border-color:#6fe0a8;box-shadow:0 0 16px rgba(111,224,168,.7)}
+.rtile.dim{opacity:.4;cursor:default}
+.rtile.dim:hover{transform:none;box-shadow:none}
+
+/* 조합 화면 */
+.fusewrap{display:flex;flex-direction:column;gap:14px;max-height:64vh;overflow-y:auto;padding:6px 10px;
+  max-width:min(940px,94vw)}
+.fusewrap::-webkit-scrollbar{width:8px}.fusewrap::-webkit-scrollbar-thumb{background:rgba(220,200,160,.35);border-radius:4px}
+.fuserow{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;
+  background:rgba(240,232,212,.1);border:1.5px solid rgba(200,170,110,.28);transition:.16s}
+.fuserow.ready{background:linear-gradient(100deg,rgba(255,200,90,.18),rgba(255,45,85,.12));
+  border-color:#ffd76a;box-shadow:0 0 20px rgba(255,200,90,.28)}
+.fuserow .plus,.fuserow .arrow{color:#c9b78a;font-size:19px;flex:none}
+.fuserow .fbtn{margin-left:auto;padding:9px 20px;border-radius:6px;font-size:14px;color:#2a1f0c;
+  background:linear-gradient(#ffe1a0,#d9a943);border:1.5px solid #fff0c8;box-shadow:0 3px 0 #8a6416}
+.fuserow .fbtn:hover{transform:translateY(-2px);box-shadow:0 5px 0 #8a6416}
+.fuserow .fbtn:disabled{background:#5b5344;color:#9a8f7a;border-color:#6b6053;box-shadow:none;transform:none}
+.fusehead{color:#e8c86a;font-size:13px;letter-spacing:.18em;margin:2px 0 -4px}
 
 /* ══ 안내서 ══════════════════════════════════════════════ */
 .guide{display:flex;flex-direction:column;gap:0;width:min(980px,94vw);max-height:82vh;
@@ -1690,8 +1731,90 @@ defRelic({ id: 'karma', n: '업경대', g: '業', rar: 'boss', d: '전투 시작
 defRelic({ id: 'guardians', n: '사신도', g: '四', rar: 'boss', d: '턴 시작 시 <i>4</i>의 방어도를 얻는다.',
   h: { turnStart: () => blk(4, true) } });
 
-const RELIC_POOL = { common: [], uncommon: [], rare: [], boss: [] };
+/* ── 유물 등급 ──────────────────────────────────────────────
+   부적과 같은 눈금을 쓴다. 합성으로만 얻는 것이 SSX급이다. */
+const RELIC_GRADE = { common: 'common', uncommon: 'uncommon', rare: 'rare', boss: 'special', fused: 'ssx' };
+const rgrade = id => RELIC_GRADE[RELICS[id].rar] || 'common';
+const RELIC_SLOTS = 10;
+
+/* ── 유물 합성 ──────────────────────────────────────────────
+   재료 둘을 태워 하나로 만든다. 결과물은 전부 SSX급. */
+const FUSIONS = [
+  { a: 'woodsword', b: 'redseal',  to: 'slayer' },
+  { a: 'mirror',    b: 'scale',    to: 'pagwae' },
+  { a: 'ginseng',   b: 'sari',     to: 'elixir' },
+  { a: 'flint',     b: 'jade',     to: 'firestick' },
+  { a: 'beads',     b: 'guardians', to: 'vajrabeads' },
+  { a: 'club',      b: 'goldbar',  to: 'goldclub' },
+  { a: 'pouch',     b: 'lantern',  to: 'ghostlamp' },
+  { a: 'claw',      b: 'smallbell', to: 'tigerbell' },
+  { a: 'crow',      b: 'fan',      to: 'crowfan' },
+  { a: 'hermit',    b: 'censer',   to: 'immortalpill' },
+  { a: 'foxbead',   b: 'tigerfang', to: 'ninthseal' }
+];
+
+/* ── 합성 결과물 (SSX급 유물) ─────────────────────────────── */
+defRelic({ id: 'slayer', n: '참마도', g: '斬', rar: 'fused',
+  d: '전투 시작 시 <b>힘</b> 3을 얻고, 전투마다 처음 사용하는 공격 카드의 피해가 10 증가한다.',
+  h: { battleStart: r => { r.used = false; st(P(), 'str', 3); },
+       modAtk: (r, d, card) => { if (card && cdef(card).type === 'attack' && !r.used) { r.used = true; return d + 10; } return d; } } });
+defRelic({ id: 'pagwae', n: '팔괘경', g: '卦', rar: 'fused',
+  d: '받는 모든 피해가 3 감소한다. (최소 1) 전투 시작 시 <b>가시</b> 5를 얻는다.',
+  h: { battleStart: () => st(P(), 'thorns', 5),
+       modTaken: (r, d) => d > 0 ? Math.max(1, d - 3) : d } });
+defRelic({ id: 'elixir', n: '불로초', g: '芝', rar: 'fused',
+  d: '획득 시 최대 체력이 15 증가한다. 전투가 끝날 때마다 체력을 12 회복한다.',
+  h: { onGain: () => { G.run.maxHp += 15; G.run.hp += 15; },
+       battleEnd: () => healRun(12) } });
+defRelic({ id: 'firestick', n: '화섭자', g: '燧', rar: 'fused',
+  d: '각 전투의 첫 턴에 카드를 2장 더 뽑는다. 물약을 쓰면 카드를 1장 뽑는다.',
+  h: { turnStart: () => { if (G.b.turn === 1) drawCards(2); },
+       onPotion: () => { if (G.b) drawCards(1); } } });
+defRelic({ id: 'vajrabeads', n: '금강염주', g: '珠', rar: 'fused',
+  d: '전투 시작 시 <i>12</i>의 방어도를 얻고, 턴 시작 시 <i>6</i>의 방어도를 얻는다.',
+  h: { battleStart: () => blk(12, true), turnStart: () => blk(6, true) } });
+defRelic({ id: 'goldclub', n: '황금 방망이', g: '棒', rar: 'fused',
+  d: '전투에서 승리하면 골드를 25, 엘리트라면 60을 더 얻는다.',
+  h: { battleEnd: (r, kind) => { G.run.gold += kind === 'elite' ? 60 : 25; SND.coin(); } } });
+defRelic({ id: 'ghostlamp', n: '귀문 등롱', g: '燈', rar: 'fused',
+  d: '전투 시작 시 기를 2 얻고, 두 턴마다 턴 시작 시 기를 1 얻는다.',
+  h: { battleStart: () => energy(2), turnStart: () => { if (G.b.turn % 2 === 0) energy(1); } } });
+defRelic({ id: 'tigerbell', n: '백호령', g: '虎', rar: 'fused',
+  d: '전투 시작 시 <b>힘</b> 4를 얻고 모든 적에게 <b>약화</b> 2를 부여한다. (둘째 턴에 힘 4가 사라진다)',
+  h: { battleStart: () => { st(P(), 'str', 4); for (const e of alive()) st(e, 'weak', 2); },
+       turnStart: () => { if (G.b.turn === 2) st(P(), 'str', -4); } } });
+defRelic({ id: 'crowfan', n: '삼족오 부채', g: '扇', rar: 'fused',
+  d: '턴 시작 시 무작위 적에게 <em>7</em>의 피해를 준다. 한 턴에 세 번째 카드를 낼 때마다 카드를 1장 뽑는다.',
+  h: { turnStart: () => { const a = alive(); if (a.length) pure(pick(a), 7); },
+       cardPlay: () => { if (G.b.played === 3) drawCards(1); } } });
+defRelic({ id: 'immortalpill', n: '선단', g: '丹', rar: 'fused',
+  d: '전투 중 체력이 절반 이하로 떨어지면 체력을 35 회복한다. (전투당 1회) 휴식처에서 <b>정화</b>를 할 수 있다.',
+  h: { battleStart: r => r.used = false } });
+defRelic({ id: 'ninthseal', n: '구천의 인장', g: '九', rar: 'fused',
+  d: '최대 기가 1 증가하고, 전투 시작 시 <b>힘</b> 2와 <b>민첩</b> 2를 얻는다.',
+  h: { onGain: () => { G.run.maxEnergy++; },
+       battleStart: () => { st(P(), 'str', 2); st(P(), 'dex', 2); } } });
+
+const RELIC_POOL = { common: [], uncommon: [], rare: [], boss: [], fused: [] };
 for (const k in RELICS) RELIC_POOL[RELICS[k].rar].push(k);
+/* 합성 결과물은 무작위로 나오지 않는다 */
+function fusionFor(ids) {
+  const set = new Set(ids);
+  return FUSIONS.filter(f => set.has(f.a) && set.has(f.b));
+}
+function canFuse() { return G.run ? fusionFor(G.run.relics.map(r => r.id)) : []; }
+function doFuse(f) {
+  const run = G.run;
+  run.relics = run.relics.filter(r => r.id !== f.a && r.id !== f.b);
+  const r = { id: f.to, used: false, isNew: true };
+  run.relics.push(r);
+  const d = RELICS[f.to];
+  if (d.h && d.h.onGain) d.h.onGain(r);
+  dexAdd('relics', f.to);
+  SND.gong(); SND.power();
+  flash(d.n);
+  saveRun(); renderTop();
+}
 
 function fire(hook, ...args) {
   if (!G.run) return;
@@ -1705,6 +1828,7 @@ function pipe(hook, val, ...args) {
 function hasRelic(id) { return G.run && G.run.relics.some(r => r.id === id); }
 function gainRelic(id, silent) {
   if (hasRelic(id)) return false;
+  if (G.run.relics.length >= RELIC_SLOTS) { relicOverflow(id); return true; }
   const r = { id: id, used: false, isNew: true };
   G.run.relics.push(r);
   const d = RELICS[id];
@@ -1713,9 +1837,38 @@ function gainRelic(id, silent) {
   if (!silent) { SND.power(); toast(`유물 획득 — ${d.n}`); }
   return true;
 }
+/* 자리가 꽉 찼을 때 — 무엇을 버릴지 고르게 한다 */
+function relicOverflow(newId) {
+  const run = G.run, d = RELICS[newId];
+  const p = modal(`<h2>유물 자리가 없다</h2>
+    <div class="hint">유물은 ${RELIC_SLOTS}개까지만 지닐 수 있다 · 하나를 버리거나, 새 유물을 포기한다</div>
+    <div class="relicgrid" id="ro_old"></div>
+    <div class="hint" style="margin-top:6px">새로 얻은 것</div>
+    <div class="relicgrid" id="ro_new"></div>`);
+  const mk = (id, box, isNew) => {
+    const rd = RELICS[id];
+    const n = el('div', 'rtile g-' + rgrade(id) + (isNew ? ' fresh' : ''),
+      `<b>${rd.g}</b><span>${rd.n}</span>`);
+    bindTip(n, () => `<b>${rd.n}</b> · ${GRADE[rgrade(id)].n}<br>${rd.d}`);
+    n.onclick = () => {
+      if (isNew) { toast(`${d.n}을 두고 간다`); closeTop(); return; }
+      run.relics = run.relics.filter(x => x.id !== id);
+      const r = { id: newId, used: false, isNew: true };
+      run.relics.push(r);
+      if (RELICS[newId].h && RELICS[newId].h.onGain) RELICS[newId].h.onGain(r);
+      dexAdd('relics', newId);
+      SND.power(); toast(`${rd.n}을 버리고 ${d.n}을 얻었다`);
+      closeTop(); renderTop(); saveRun();
+    };
+    box.appendChild(n);
+  };
+  for (const r of run.relics) mk(r.id, p.querySelector('#ro_old'), false);
+  mk(newId, p.querySelector('#ro_new'), true);
+}
 function randomRelic(rar) {
   const owned = new Set(G.run.relics.map(r => r.id));
   let pools = rar ? [rar] : ['common', 'common', 'common', 'uncommon', 'uncommon', 'rare'];
+  pools = pools.filter(p => p !== 'fused');
   const cand = [];
   for (const p of pools) for (const id of RELIC_POOL[p]) if (!owned.has(id)) cand.push(id);
   return cand.length ? pick(cand) : null;
@@ -2050,8 +2203,11 @@ function applyDamage(ent, dmg, pierce) {
   return { hp: d, blocked };
 }
 function checkHermit() {
-  const r = G.run.relics.find(x => x.id === 'hermit');
-  if (r && !r.used && P().hp > 0 && P().hp * 2 <= P().maxHp) { r.used = true; heal(25); flash('표주박이 열렸다'); }
+  const r = G.run.relics.find(x => x.id === 'hermit' || x.id === 'immortalpill');
+  if (r && !r.used && P().hp > 0 && P().hp * 2 <= P().maxHp) {
+    r.used = true; heal(r.id === 'immortalpill' ? 35 : 25);
+    flash(r.id === 'immortalpill' ? '선단을 삼켰다' : '표주박이 열렸다');
+  }
 }
 
 /* --- 카드가 쓰는 기본 동작들 --- */
@@ -2410,6 +2566,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
+      <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
       <button class="topbtn box" id="boxbtn" title="특별 상자">匣<em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
@@ -2417,11 +2574,18 @@ function renderTop() {
     const rb = t.querySelector('#relicbar');
     for (const r of run.relics) {
       const d = RELICS[r.id];
-      const n = el('div', 'relic' + (r.isNew ? ' new' : ''), d.g);
+      const n = el('div', 'relic g-' + rgrade(r.id) + (r.isNew ? ' new' : ''), d.g);
       if (r.isNew) setTimeout(() => { r.isNew = false; }, 700);
-      bindTip(n, () => `<b>${d.n}</b><br>${d.d}`);
+      bindTip(n, () => `<b>${d.n}</b> · <span style="color:${GRADE[rgrade(r.id)].c}">${GRADE[rgrade(r.id)].n}</span><br>${d.d}`);
+      n.onclick = () => { tipHide(); openFuse(); };
       rb.appendChild(n);
     }
+    const cnt = el('div', 'cnt' + (run.relics.length >= RELIC_SLOTS ? ' full' : ''),
+      run.relics.length + '/' + RELIC_SLOTS);
+    bindTip(cnt, () => `유물은 ${RELIC_SLOTS}개까지 지닐 수 있다<br>눌러서 <b>조합</b>하기`);
+    cnt.style.cursor = 'pointer';
+    cnt.onclick = () => { tipHide(); openFuse(); };
+    rb.appendChild(cnt);
     const pb = t.querySelector('#potbar');
     for (let i = 0; i < run.potSlots && i < 8; i++) {
       const id = run.potions[i];
@@ -2435,6 +2599,7 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
+    t.querySelector('#fusebtn').onclick = () => openFuse();
     t.querySelector('#shopbtn').onclick = () => openShop();
     t.querySelector('#boxbtn').onclick = () => openBoxes();
   }
@@ -2450,6 +2615,9 @@ function renderTop() {
   bb.title = '부적 뽑기 — 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
   t.querySelector('#shopbtn').classList.toggle('busy', !!G.b);
   bb.classList.toggle('busy', !!G.b);
+  const fb = t.querySelector('#fusebtn'), ready = canFuse().length;
+  fb.querySelector('em').textContent = ready || '';
+  fb.classList.toggle('ready', ready > 0);
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -3251,7 +3419,7 @@ function showRest() {
   G.scene = 'rest';
   const run = G.run;
   const healAmt = Math.ceil(run.maxHp * .32);
-  const canPurge = hasRelic('censer');
+  const canPurge = hasRelic('censer') || hasRelic('immortalpill');
   const p = overlay(`<h2>야 영 지</h2><div class="hint">모닥불이 타오른다. 하나만 할 수 있다.</div>
     <div class="restrow">
       <div class="restopt" id="r_heal"><div class="ic">火</div><b>휴식</b><small>체력을 ${healAmt} 회복한다<br>(현재 ${run.hp}/${run.maxHp})</small></div>
@@ -3270,6 +3438,64 @@ function showRest() {
     if (c) { run.deck.splice(run.deck.findIndex(x => x.uid === c.uid), 1); SND.ui(); toast(`${CARDS[c.id].n} 제거`); done(); }
   };
   function done() { closeOverlay(); saveRun(); showMap(); }
+}
+
+/* ── 유물 조합 화면 ─────────────────────────────────────── */
+function openFuse() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 할 수 없다'); return; }
+  SND.ui(); showFuse();
+}
+function showFuse() {
+  const run = G.run;
+  const have = new Set(run.relics.map(r => r.id));
+  const ready = FUSIONS.filter(f => have.has(f.a) && have.has(f.b));
+
+  const p = modal(`<h2>유물 조합</h2>
+    <div class="hint">재료 둘을 태워 <b style="color:#ff2d55">SSX급</b> 유물 하나로 만든다 ·
+      지금 지닌 유물 <b>${run.relics.length} / ${RELIC_SLOTS}</b>
+      ${ready.length ? ` · <b style="color:#ffd76a">${ready.length}개 조합 가능</b>` : ''}</div>
+    <div class="fusehead">지 닌 유 물</div>
+    <div class="relicgrid" id="fz_mine"></div>
+    <div class="fusehead">조 합 표</div>
+    <div class="fusewrap" id="fz_list"></div>
+    <button class="brush-btn" id="fz_close">닫기</button>`);
+
+  const mine = p.querySelector('#fz_mine');
+  if (!run.relics.length) mine.innerHTML = '<div style="color:#8f846d">아직 유물이 없다</div>';
+  for (const r of run.relics) {
+    const d = RELICS[r.id];
+    const n = el('div', 'rtile g-' + rgrade(r.id), `<b>${d.g}</b><span>${d.n}</span>`);
+    bindTip(n, () => `<b>${d.n}</b> · ${GRADE[rgrade(r.id)].n}<br>${d.d}`);
+    mine.appendChild(n);
+  }
+
+  const list = p.querySelector('#fz_list');
+  const sorted = FUSIONS.slice().sort((x, y) => {
+    const rx = (have.has(x.a) && have.has(x.b)) ? 0 : (have.has(x.a) || have.has(x.b)) ? 1 : 2;
+    const ry = (have.has(y.a) && have.has(y.b)) ? 0 : (have.has(y.a) || have.has(y.b)) ? 1 : 2;
+    return rx - ry;
+  });
+  for (const f of sorted) {
+    const ok = have.has(f.a) && have.has(f.b);
+    const row = el('div', 'fuserow' + (ok ? ' ready' : ''));
+    const tile = (id, dim) => {
+      const d = RELICS[id];
+      const n = el('div', 'rtile g-' + rgrade(id) + (dim ? ' dim' : ''), `<b>${d.g}</b><span>${d.n}</span>`);
+      bindTip(n, () => `<b>${d.n}</b> · ${GRADE[rgrade(id)].n}<br>${d.d}`);
+      return n;
+    };
+    row.appendChild(tile(f.a, !have.has(f.a)));
+    row.appendChild(el('div', 'plus', '＋'));
+    row.appendChild(tile(f.b, !have.has(f.b)));
+    row.appendChild(el('div', 'arrow', '→'));
+    row.appendChild(tile(f.to, !ok));
+    const btn = el('button', 'fbtn', ok ? '조합한다' : '재료 부족');
+    btn.disabled = !ok;
+    btn.onclick = () => { closeTop(); doFuse(f); setTimeout(showFuse, 700); };
+    row.appendChild(btn);
+    list.appendChild(row);
+  }
+  p.querySelector('#fz_close').onclick = closeTop;
 }
 
 /* --- 상점 ---------------------------------------------------
@@ -3298,7 +3524,7 @@ function restockShop() {
     const id = randomPotion();
     pots.push({ id, p: price({ common: 52, uncommon: 78, rare: 112 }[POTIONS[id].rar]), sold: false });
   }
-  run.shop = { cards, relics, pots, purged: false };
+  run.shop = { cards, relics, pots, purged: false, boxSold: false };
 }
 function showShop() {
   G.scene = 'shop';
@@ -3306,6 +3532,7 @@ function showShop() {
   if (!run.shop) restockShop();
   const sh = run.shop;
   const purgePrice = pipe('modPrice', 72 + (run.purges || 0) * 20);
+  const relicBoxPrice = pipe('modPrice', 165);
 
   function draw() {
     const p = overlay(`<h2>떠돌이 상인</h2><div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
@@ -3344,6 +3571,10 @@ function showShop() {
       () => { it.sold = true; gainRelic(it.id); }));
     sh.pots.forEach(it => addRow(POTIONS[it.id].g, POTIONS[it.id].n, POTIONS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
       () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; } it.sold = true; run.potions.push(it.id); }));
+    addRow('寶', '유물 상자', '무작위 유물 하나가 나온다', relicBoxPrice, sh.boxSold,
+      () => { sh.boxSold = true;
+        const l = boxLoot(4); l.take();
+        toast(`${l.n} 획득`); SND.bell(); });
     addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, sh.purged,
       async () => {
         const c = await pickFromList(run.deck, '없앨 카드를 고르시오', { cancel: true });
@@ -3377,7 +3608,9 @@ const BANNERS = [
   { n: '큰 상자',       g: '匱', sub: '값어치를 한다',  price: 8,  tier: 2,
     desc: '희귀 부적과 보물이 자주 나온다.' },
   { n: '특대급 상자!',  g: '櫃', sub: '전설이 잠들었다', price: 20, tier: 3, hot: true,
-    desc: '<b>특별 부적만 나온다!</b>' }
+    desc: '<b>특별 부적만 나온다!</b>' },
+  { n: '유물 상자',     g: '寶', sub: '기물이 담겨 있다',  price: 12, tier: 4, relic: true,
+    desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' }
 ];
 const MILESTONES = [
   { at: 30,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
@@ -3390,6 +3623,17 @@ const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 /* 상자 하나에서 나오는 것 */
 function boxLoot(tier) {
   const run = G.run;
+  /* 유물 상자 — 유물만 나온다 */
+  if (tier === 4) {
+    const w = [{ w: 52, r: 'common' }, { w: 33, r: 'uncommon' }, { w: 15, r: 'rare' }];
+    let rid = null, guard = 0;
+    while (!rid && guard++ < 40) rid = randomRelic(pickWeighted(w).r);
+    if (!rid) rid = randomRelic();
+    if (!rid) { const g = ri(120, 200); return { g: '金', n: `골드 ${g}`, d: '가질 유물이 남지 않았다', take: () => { run.gold += g; } }; }
+    return { g: RELICS[rid].g, n: RELICS[rid].n, grade: rgrade(rid),
+      d: `<b style="color:${GRADE[rgrade(rid)].c}">${GRADE[rgrade(rid)].n} 유물</b> — ` + RELICS[rid].d.replace(/<[^>]+>/g, ''),
+      take: () => gainRelic(rid, true) };
+  }
   /* 특대급 — 반드시 특별 등급 부적. ?급 0.1% · SSX급 10% · 나머지 S급 */
   if (tier === 3) {
     const r = rnd();
@@ -3435,6 +3679,7 @@ function boxLoot(tier) {
 
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
+  if (tier === 4) return [];
   if (tier === 3) return GRADE_POOL.special.concat(GRADE_POOL.ssx, GRADE_POOL.unknown);
   const base = POOL.rare.slice();
   if (tier >= 1) return base.concat(GRADE_POOL.special);
@@ -3443,6 +3688,8 @@ function bannerPool(tier) {
 function bannerRates(tier) {
   if (tier === 3) return [
     { g: 'special', p: '89.9%' }, { g: 'ssx', p: '10%' }, { g: 'unknown', p: '0.1%' }];
+  if (tier === 4) return [
+    { g: 'common', p: '52%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '15%' }];
   return null;
 }
 
@@ -3544,6 +3791,19 @@ function showSpecialShop(refill) {
 
     /* 등장 목록 */
     const gp = p.querySelector('.gpool');
+    if (B.relic) {
+      const owned = new Set(run.relics.map(r => r.id));
+      for (const rar of ['common', 'uncommon', 'rare']) for (const id of RELIC_POOL[rar]) {
+        const d = RELICS[id], got = owned.has(id);
+        const u = el('div', 'gunit u-' + rgrade(id) + (got ? ' owned' : ''),
+          `<div class="ub" style="--gc:${GRADE[rgrade(id)].c}">${GRADE[rgrade(id)].s}</div>
+           <div class="ug">${d.g}</div><div class="un">${d.n}</div>`);
+        bindTip(u, () => `<b>${d.n}</b> · ${GRADE[rgrade(id)].n} 유물<br>${d.d}` + (got ? '<br><span style="color:#6fe0a8">이미 가지고 있다</span>' : ''));
+        gp.appendChild(u);
+      }
+      renderBonus(p, cur);
+      return;
+    }
     for (const id of shown) {
       const d = CARDS[id];
       const u = el('div', 'gunit u-' + d.rar,
@@ -3557,6 +3817,9 @@ function showSpecialShop(refill) {
     }
     if (!shown.length) gp.innerHTML = '<div style="color:#8f846d">비어 있다</div>';
 
+    renderBonus(p, cur);
+  }
+  function renderBonus(p, cur) {
     /* 누적 보너스 눈금 */
     const bar = p.querySelector('.gbar');
     MILESTONES.forEach(m => {
@@ -3567,6 +3830,7 @@ function showSpecialShop(refill) {
       bar.appendChild(n);
     });
 
+    const B = BANNERS[G.run.banner];
     p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
     p.querySelector('#g_one').onclick = () => doSummon(B, 1);
     p.querySelector('#g_ten').onclick = () => doSummon(B, 11);
@@ -4148,7 +4412,8 @@ function showDex() {
       <b style="color:#e8c86a">(부적 ${dexCount('cards', totalCards)})</b></div>
     <div class="dexwrap">
       ${secs}
-      <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i></h3><div class="dexgrid" id="dx_r"></div></div>
+      <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i>
+        <em>등급순 · SSX급은 조합으로만 얻는다</em></h3><div class="dexgrid" id="dx_r"></div></div>
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
     </div>
     <button class="brush-btn" id="dx_close">닫기</button>`);
@@ -4165,10 +4430,14 @@ function showDex() {
     }
   }
   const gr = p.querySelector('#dx_r');
-  for (const id of relicIds) {
-    const d = RELICS[id], known = !!META.dex.relics[id];
-    gr.appendChild(dexTile(known, d.g, d.n, `<b>${d.n}</b> · ${d.rar === 'boss' ? '보스 유물' : RARITY_NAME[d.rar] || d.rar}<br>${d.d}`, 'r_' + d.rar));
-  }
+  const rOrder = ['common', 'uncommon', 'rare', 'special', 'ssx'];
+  relicIds.slice().sort((a, b) => rOrder.indexOf(rgrade(a)) - rOrder.indexOf(rgrade(b))).forEach(id => {
+    const d = RELICS[id], known = !!META.dex.relics[id], g = rgrade(id);
+    gr.appendChild(dexTile(known, d.g, d.n,
+      `<b>${d.n}</b> · <span style="color:${GRADE[g].c}">${GRADE[g].n} 유물</span>` +
+      (d.rar === 'fused' ? ' <span style="color:#ffd76a">(합성)</span>' : '') + `<br>${d.d}`,
+      'gd_' + g));
+  });
   const ge = p.querySelector('#dx_e');
   for (const id of enemyIds) {
     const d = ENEMIES[id], known = !!META.dex.enemies[id];
@@ -4288,7 +4557,7 @@ const GUIDE = {
       <div><i>4</i><span><b>기(氣)</b> — 부적을 내는 값. 매 턴 <b>4</b>로 돌아온다.</span></div>
       <div><i>5</i><span><b>손패</b> — 매 턴 5장을 뽑는다. 남은 것은 턴이 끝나면 버려진다.</span></div>
       <div><i>6</i><span><b>턴 종료</b> — 누르면 적이 의도대로 움직인다.</span></div>
-      <div><i>7</i><span><b>상점 · 뽑기</b> — 전투가 아닐 때 언제든 갈 수 있다.</span></div>
+      <div><i>7</i><span><b>조합 · 상점 · 뽑기</b> — 전투가 아닐 때 언제든 갈 수 있다.</span></div>
     </div>
     <h3>예상치가 보인다</h3>
     <p>손패의 부적에 <b>마우스를 올리면</b> 그 부적이 실제로 낼 수치가 적 머리 위에 뜬다.
@@ -4360,6 +4629,9 @@ const GUIDE = {
     </table>
     <div class="tip"><b>뽑기(匣)는 지도에 없다.</b> 화면 위쪽 <b>匣</b> 단추로 언제든 간다.</div>
     <div class="tip">보스 직전 층은 항상 <b>야영지</b>다. 그 전에 체력을 아끼지 말고 써도 된다.</div>
+    <h3>유물</h3>
+    <p>엘리트를 잡거나 보물을 열면 나온다. <b>${RELIC_SLOTS}개까지</b> 지닐 수 있고,
+    둘을 태워 SSX급으로 <b>조합</b>할 수 있다. 자세한 것은 <b>유물</b> 탭을 보라.</p>
     <h3>부적 등급 해금</h3>
     <p>전투 보상에 나오는 부적은 <b>산을 오를수록 좋아진다.</b></p>
     <table>
@@ -4370,9 +4642,7 @@ const GUIDE = {
     </table>
     <p>기본(4등급) 부적은 보상에 <b>절대 나오지 않는다.</b>
     <b>엘리트와 보스</b>는 한 등급 위까지 미리 내주고, <b>상인</b>도 한 등급 앞서 판다.</p>
-    <h3>유물</h3>
-    <p>화면 위쪽에 동그랗게 붙는 것들. 한 번 얻으면 <b>그 판 내내</b> 계속 효과를 낸다.
-    마우스를 올리면 무슨 효과인지 나온다.</p>`,
+`,
 
   '뽑기': () => `
     <h3>부적 뽑기</h3>
@@ -4380,6 +4650,7 @@ const GUIDE = {
     <table>
       <tr><td>작은 · 보통 · 큰 상자</td><td>다이아 · 부적 · 물약 · 보물이 나온다. 클수록 좋다.</td></tr>
       <tr><td>특대급 상자!</td><td><b>반드시 특별 부적</b> — S급 기본, SSX급 10%, ?급 0.1%</td></tr>
+      <tr><td>유물 상자</td><td><b>유물만</b> 나온다. 조합 재료를 모으기 좋다. 상인도 하나씩 판다.</td></tr>
     </table>
     <h3>누적 보너스</h3>
     <p>뽑을 때마다 아래 막대가 찬다.
@@ -4391,6 +4662,34 @@ const GUIDE = {
     <p>위쪽 <b>商</b> 단추. 재고는 저장되어 있어 닫았다 다시 열어도 같은 물건이다.
     지도의 商 을 밟거나 막이 바뀌면 새로 채워진다.</p>`,
 
+  '유물': () => {
+    let rows = '';
+    for (const f of FUSIONS)
+      rows += `<tr><td>${RELICS[f.a].n} ＋ ${RELICS[f.b].n}</td>
+        <td><b style="color:#ff2d55">${RELICS[f.to].n}</b> — ${RELICS[f.to].d.replace(/<[^>]+>/g, '')}</td></tr>`;
+    return `
+    <h3>유물</h3>
+    <p>화면 위쪽에 동그랗게 붙는 것들. 한 번 얻으면 <b>그 판 내내</b> 계속 효과를 낸다.
+    엘리트·보물·상인·유물 상자에서 나온다.</p>
+    <div class="warn"><b>유물은 ${RELIC_SLOTS}개까지만</b> 지닐 수 있다.
+    자리가 꽉 찬 채로 새 유물을 얻으면 <u>무엇을 버릴지</u> 고르게 된다.</div>
+    <h3>등급</h3>
+    <table>
+      <tr><td style="color:#3f7346">3등급</td><td>흔한 기물</td></tr>
+      <tr><td style="color:#2f6d8f">2등급</td><td>쓸 만한 기물</td></tr>
+      <tr><td style="color:#b8912f">1등급</td><td>귀한 기물 — 테두리가 금빛으로 빛난다</td></tr>
+      <tr><td style="color:#e2622a">S급</td><td>보스가 남기는 것 — <b>불이 붙는다</b></td></tr>
+      <tr><td style="color:#ff2d55">SSX급</td><td><b>조합으로만</b> 얻는다</td></tr>
+    </table>
+    <h3>조합</h3>
+    <p>재료 유물 <b>둘을 태워</b> SSX급 유물 하나로 만든다.
+    화면 위쪽 <b>合</b> 단추(또는 유물 아이콘)를 누르면 조합표가 열린다.
+    재료가 모이면 단추에 숫자가 뜨고 붉게 빛난다.</p>
+    <div class="tip">조합하면 재료 둘이 <b>사라지므로</b> 유물 자리가 하나 비워진다.
+    자리가 부족할 때 조합은 좋은 정리법이기도 하다.</div>
+    <table><tr><th>재료</th><th>결과</th></tr>${rows}</table>`;
+  },
+
   '조작': () => `
     <h3>단축키</h3>
     <table>
@@ -4401,6 +4700,7 @@ const GUIDE = {
       <tr><td>오른쪽 클릭</td><td>고른 부적 취소</td></tr>
     </table>
     <h3>화면 위쪽 단추</h3>
+    <div class="icoline"><b>合</b><span>유물 조합 — 재료가 모이면 숫자가 뜬다</span></div>
     <div class="icoline"><b>商</b><span>상인에게 간다</span></div>
     <div class="icoline"><b>匣</b><span>부적 뽑기. 곁의 숫자는 다음 누적 보너스까지 남은 횟수</span></div>
     <div class="icoline"><b>덱</b><span>지금 내 덱 전부 보기</span></div>
