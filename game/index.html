@@ -1208,7 +1208,7 @@ function adoptRun(obj) {
   if (G.run.dia == null) G.run.dia = 0;
   if (G.run.summons == null) G.run.summons = 0;
   if (G.run.banner == null) G.run.banner = 3;
-  if (!G.run.skills) { G.run.skills = []; gainSkill('qiwave', true); }
+  if (!G.run.skills) { G.run.skills = []; gainSkill('shout', true); }
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -2011,6 +2011,26 @@ function randomRelic(rar) {
 const SKILLS = {};
 function defSkill(o) { SKILLS[o.id] = o; return o; }
 
+/* --- 4등급 (시작 비기) --- */
+defSkill({ id: 'shout', n: '기합', g: '喝', rar: 'basic',
+  d: '모든 적에게 <em>12</em>의 피해를 준다.',
+  use: async () => { SND.drum(); for (const e of alive()) atk(e, 12, { fx: 'wind' }); } });
+
+/* --- 3등급 --- */
+defSkill({ id: 'guardqi', n: '호신강기', g: '護', rar: 'common',
+  d: '<i>28</i>의 방어도를 얻는다.',
+  use: async () => { blk(28, true); SND.block(); } });
+
+/* --- 2등급 --- */
+defSkill({ id: 'gatherqi', n: '축기', g: '蓄', rar: 'uncommon',
+  d: '기를 4 얻는다.',
+  use: async () => { energy(4); SND.power(); } });
+
+/* --- 1등급 --- */
+defSkill({ id: 'chainhand', n: '연환수', g: '連', rar: 'rare',
+  d: '카드를 4장 뽑고 <b>힘</b> 3을 얻는다.',
+  use: async () => { drawCards(4); st(P(), 'str', 3); SND.power(); } });
+
 /* --- S급 --- */
 defSkill({ id: 'qiwave', n: '기공파', g: '氣', rar: 'special',
   d: '모든 적에게 <em>32</em>의 피해를 준다.',
@@ -2072,7 +2092,7 @@ defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
     energy(5); syncAll();
   } });
 
-const SKILL_POOL = { special: [], ssx: [], unknown: [] };
+const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], special: [], ssx: [], unknown: [] };
 for (const k in SKILLS) SKILL_POOL[SKILLS[k].rar].push(k);
 const ALL_SKILLS = Object.keys(SKILLS);
 function randomSkill(rar) {
@@ -3678,7 +3698,7 @@ function newRun(asc) {
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
   restockShop();
-  gainSkill('qiwave', true);
+  gainSkill('shout', true);
   G.run.map = genMap(1);
   META.runs++; saveMeta();
   SND.ambience(false);
@@ -3844,7 +3864,7 @@ function showRewards(kind) {
   }
   if (kind === 'boss') {
     items.push({ ic: '寶', t: '보스의 유물', s: '셋 중 하나를 고른다', act: async () => { await pickBossRelic(); } });
-    if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
+    if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '1등급 이상 셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
   }
   const n = Math.max(1, 3 - (run.rewardCut || 0));
   const cards = rewardCards(n, kind === 'normal' ? null : kind);
@@ -3883,7 +3903,10 @@ function showRewards(kind) {
   renderTop();
 }
 async function pickSkill() {
-  const cand = sample(ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0), 3);
+  const good = ['rare', 'special', 'ssx', 'unknown'];
+  let pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0 && good.indexOf(SKILLS[id].rar) >= 0);
+  if (!pool.length) pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0);
+  const cand = sample(pool, 3);
   if (!cand.length) { G.run.dia = (G.run.dia || 0) + 300; toast('다이아 300을 얻었다'); return; }
   return new Promise(res => {
     const p = modal(`<h2>비기 전수</h2><div class="hint">하나만 익힐 수 있다</div>
@@ -4169,7 +4192,7 @@ const BANNERS = [
   { n: '유물 상자',     g: '寶', sub: '기물이 담겨 있다',  price: 1100, tier: 4, relic: true,
     desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' },
   { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
-    desc: '<b>비기만 나온다.</b> S급 80% · SSX급 19% · ?급 1%' }
+    desc: '<b>비기만 나온다.</b>' }
 ];
 const MILESTONES = [
   { at: 30,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
@@ -4185,7 +4208,8 @@ function boxLoot(tier) {
   /* 비기 상자 */
   if (tier === 5) {
     const r = rnd();
-    const grade = r < .01 ? 'unknown' : r < .20 ? 'ssx' : 'special';
+    const grade = r < .005 ? 'unknown' : r < .05 ? 'ssx' : r < .26 ? 'special'
+                : r < .48 ? 'rare' : r < .72 ? 'uncommon' : 'common';
     let id = randomSkill(grade) || randomSkill();
     if (!id) { const g = ri(200, 320); return { g: '金', n: `골드 ${g}`, d: '더 배울 비기가 없다', take: () => { run.gold += g; } }; }
     const sd = SKILLS[id];
@@ -4261,7 +4285,8 @@ function bannerRates(tier) {
   if (tier === 4) return [
     { g: 'common', p: '52%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '15%' }];
   if (tier === 5) return [
-    { g: 'special', p: '80%' }, { g: 'ssx', p: '19%' }, { g: 'unknown', p: '1%' }];
+    { g: 'common', p: '28%' }, { g: 'uncommon', p: '24%' }, { g: 'rare', p: '22%' },
+    { g: 'special', p: '21%' }, { g: 'ssx', p: '4.5%' }, { g: 'unknown', p: '0.5%' }];
   return null;
 }
 
@@ -5297,8 +5322,8 @@ const GUIDE = {
       기가 모자라도, 손패가 나빠도 쓸 수 있다 — <u>판을 뒤집는 마지막 수</u>다.
     </div>
     <h3>어디서 얻나</h3>
-    <p>시작할 때 <b>기공파</b> 하나를 들고 출발한다.
-    <b>보스를 잡으면</b> 셋 중 하나를 전수받고, <b>비기 상자</b>에서도 나온다.
+    <p>시작할 때는 가장 낮은 <b>기합(4등급)</b> 하나뿐이다.
+    <b>보스를 잡으면 1등급 이상</b> 셋 중 하나를 전수받고, <b>비기 상자</b>에서도 나온다.
     화면 위쪽 <b>祕</b> 단추에서 갈아 낄 수 있다. (전투 중에는 못 바꾼다)</p>
     <h3>익힐 수 있는 비기</h3>
     <table><tr><th>이름</th><th>효과</th></tr>${rows}</table>
