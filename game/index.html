@@ -198,8 +198,37 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card .txt i{font-style:normal;color:var(--blue);font-weight:700}
 .card .kind{text-align:center;font-size:10px;letter-spacing:.24em;color:#6b6053;margin-left:.24em;
   border-top:1px solid rgba(23,19,15,.16);padding-top:4px}
-.card .rar{position:absolute;right:6px;top:6px;width:7px;height:7px;border-radius:50%;z-index:3}
-.card .rar.uncommon{background:var(--jade)}.card .rar.rare{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.card .grade{position:absolute;right:5px;top:5px;z-index:4;min-width:19px;height:18px;padding:0 4px;
+  display:grid;place-items:center;border-radius:3px;font-size:10.5px;letter-spacing:.02em;line-height:1;
+  color:#fff;background:var(--gc);box-shadow:0 1px 4px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.35)}
+.card.special .face{background:linear-gradient(155deg,#fdf1e6,#f3d9c2 55%,#e8bfa0);border-color:#a8420f}
+
+/* S급부터는 불이 붙는다 */
+@keyframes flameGlow{
+  0%,100%{box-shadow:0 0 13px 2px rgba(226,98,42,.6),0 5px 14px rgba(0,0,0,.34),inset 0 0 20px rgba(255,150,70,.20)}
+  50%    {box-shadow:0 0 26px 7px rgba(255,146,52,.92),0 5px 14px rgba(0,0,0,.34),inset 0 0 30px rgba(255,180,90,.36)}}
+@keyframes emberSpin{to{transform:rotate(360deg)}}
+@keyframes emberPulse{0%,100%{opacity:.55;filter:blur(7px)}50%{opacity:.95;filter:blur(11px)}}
+.card.g-s .face{animation:flameGlow 1.7s ease-in-out infinite}
+.card.g-s .grade{text-shadow:0 0 7px rgba(255,190,120,.95)}
+.card.g-s::before{content:'';position:absolute;inset:-5px;border-radius:9px;z-index:0;
+  background:conic-gradient(from 0deg,#ff8a00,#ffd24d,#e2622a,#ff8a00);
+  animation:emberSpin 4.5s linear infinite, emberPulse 1.7s ease-in-out infinite}
+
+@keyframes ssxGlow{
+  0%,100%{box-shadow:0 0 18px 4px rgba(255,45,85,.72),0 0 42px 10px rgba(255,140,0,.35),inset 0 0 24px rgba(255,120,150,.28)}
+  50%    {box-shadow:0 0 36px 12px rgba(255,80,120,1),0 0 70px 20px rgba(255,170,40,.55),inset 0 0 38px rgba(255,180,190,.45)}}
+.card.g-ssx .face{border-color:#ff2d55;background:linear-gradient(155deg,#fff2f4,#ffd9dd 50%,#f6b9c4);
+  animation:ssxGlow 1.25s ease-in-out infinite}
+.card.g-ssx .grade{font-weight:700;text-shadow:0 0 9px rgba(255,220,120,1)}
+.card.g-ssx .art .g{color:#8e0f2c;text-shadow:0 0 14px rgba(255,60,100,.75)}
+.card.g-ssx::before{content:'';position:absolute;inset:-8px;border-radius:12px;z-index:0;
+  background:conic-gradient(from 0deg,#ff2d55,#ff8a00,#ffe14d,#ff2d55,#c2185b,#ff2d55);
+  animation:emberSpin 2.6s linear infinite, emberPulse 1.25s ease-in-out infinite}
+.card.g-unknown .face{border-color:#7b4bd8}
+.card.g-unknown::before{content:'';position:absolute;inset:-7px;border-radius:11px;z-index:0;
+  background:conic-gradient(from 0deg,#7b4bd8,#2de1ff,#ff2d55,#ffe14d,#7b4bd8);
+  animation:emberSpin 3.4s linear infinite, emberPulse 1.5s ease-in-out infinite}
 .card:hover{z-index:20!important}
 .card.sel{z-index:25!important;filter:drop-shadow(0 0 12px rgba(168,39,44,.9))}
 .card.unplayable .face{filter:grayscale(.75) brightness(.82)}
@@ -242,6 +271,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .mapnode.avail:hover{transform:scale(1.18)}
 .mapnode.done{opacity:.42;filter:grayscale(.7)}
 .mapnode.cur{border-color:var(--gold);box-shadow:0 0 0 4px rgba(157,124,46,.3)}
+.mapnode.special{background:linear-gradient(150deg,#1d4a5c,#2b7d95);color:#eaf7fb;border-color:#6fd0e8;
+  box-shadow:0 0 0 3px rgba(111,208,232,.22),0 0 18px rgba(111,208,232,.5)}
+.mapnode.special.done{background:#3a4a50}
 .mapnode.boss{width:76px;height:76px;margin:-38px 0 0 -38px;font-size:32px;background:#2a1f17;color:#f0d9a0;border-color:var(--red)}
 #maphead{text-align:center;padding:22px 0 6px;font-size:15px;letter-spacing:.3em;color:var(--ink2);margin-left:.3em}
 #maphead .actname{font-size:27px;display:block;margin-top:6px;letter-spacing:.18em;margin-left:.18em}
@@ -291,6 +323,64 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .restopt b{display:block;font-size:18px;font-weight:400;margin-bottom:6px}
 .restopt small{color:var(--ink3);font-size:12.5px;line-height:1.5;display:block}
 .restopt.dis{opacity:.4;cursor:default;transform:none!important}
+
+/* 특별 상자 */
+.boxrow{display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+.giftbox{width:190px;padding:20px 14px;border-radius:6px;text-align:center;cursor:pointer;transition:.2s;
+  background:linear-gradient(160deg,#1e4e60,#123644);border:2px solid #6fd0e8;
+  box-shadow:0 0 22px rgba(111,208,232,.28)}
+.giftbox:hover{transform:translateY(-9px) scale(1.03);box-shadow:0 14px 34px rgba(0,0,0,.5),0 0 30px rgba(111,208,232,.5)}
+.giftbox .bx{width:96px;height:96px;margin:0 auto 12px;border-radius:6px;display:grid;place-items:center;
+  background:radial-gradient(circle at 38% 30%,#2f7f99,#123644);border:1.5px solid rgba(180,235,248,.5)}
+.giftbox .bx span{font-size:44px;color:#dff4fb;line-height:1}
+.giftbox .bx .loot{font-size:44px;color:#ffe9a8;animation:lootPop .55s cubic-bezier(.2,1.4,.4,1)}
+@keyframes lootPop{0%{transform:scale(0) rotate(-25deg);opacity:0}100%{transform:none;opacity:1}}
+.giftbox .bt{color:#eaf7fb;font-size:15px;margin-bottom:4px;word-break:keep-all}
+.giftbox .bp{color:#9fd8e8;font-size:12.5px}
+.giftbox .bp s{opacity:.55}
+.giftbox.opened{cursor:default;background:linear-gradient(160deg,#2a3f46,#1a282e);border-color:#5d7a83;
+  box-shadow:none;transform:none!important}
+.giftbox.opened:hover{transform:none!important;box-shadow:none}
+
+/* 도감 */
+.dexwrap{display:flex;flex-direction:column;gap:16px;max-height:62vh;overflow-y:auto;padding:4px 10px;max-width:min(1080px,94vw)}
+.dexwrap::-webkit-scrollbar{width:8px}.dexwrap::-webkit-scrollbar-thumb{background:rgba(220,200,160,.35);border-radius:4px}
+.dexsec h3{color:#cdbf9f;font-size:13px;letter-spacing:.22em;font-weight:400;margin:0 0 8px 2px}
+.dexsec h3 i{font-style:normal;color:#e8c86a;letter-spacing:0;margin-left:8px;font-size:12.5px}
+.dexgrid{display:flex;flex-wrap:wrap;gap:8px}
+.dextile{width:74px;height:74px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:#efe4cb;border:1.5px solid #6b6053;cursor:help;transition:.14s}
+.dextile:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.45)}
+.dextile b{font-size:23px;font-weight:400;color:#22190f;line-height:1}
+.dextile span{font-size:9.5px;color:#5b5344;text-align:center;line-height:1.2;padding:0 3px;word-break:keep-all}
+.dextile.clickable{cursor:pointer}
+.dextile.gd_common{border-color:#3f7346}.dextile.gd_uncommon{border-color:#2f6d8f}
+.dextile.gd_rare{border-color:#b8912f;box-shadow:0 0 9px rgba(184,145,47,.45)}
+.dextile.gd_special{border-color:#e2622a;background:#fbeade;animation:flameGlow 1.7s ease-in-out infinite}
+.dextile.gd_ssx{border-color:#ff2d55;background:#ffe6ea;animation:ssxGlow 1.25s ease-in-out infinite}
+.dextile.gd_ssx b{color:#8e0f2c}
+.dextile.gd_curse{border-color:#5b3b6b;background:#ded0e0}
+.dextile.locked{border-color:#7b4bd8!important;border-style:dashed}
+.dexsec h3 .gradechip{margin-right:6px}
+.dexsec h3 em{font-style:normal;color:#8a7f6b;font-size:11.5px;letter-spacing:.02em;margin-left:10px}
+.gradechip{display:inline-grid;place-items:center;min-width:20px;height:19px;padding:0 5px;border-radius:3px;
+  background:var(--gc);color:#fff;font-size:11px;line-height:1;vertical-align:middle;
+  border:1px solid rgba(255,255,255,.35);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+/* 카드 상세보기 */
+.detailrow{display:flex;gap:34px;justify-content:center;flex-wrap:wrap}
+.detailcol{display:flex;flex-direction:column;align-items:center;gap:10px}
+.detailcol h4{color:#cdbf9f;font-size:12.5px;letter-spacing:.2em;font-weight:400}
+.dslot{position:relative;width:var(--cw);height:var(--ch)}
+.dslot .card{position:absolute;left:0;top:0;margin:0;transform:none!important;cursor:default;transform-origin:50% 50%}
+.detailnote{color:#a2977f;font-size:13px;letter-spacing:.04em;text-align:center;max-width:520px}
+.dextile.r_uncommon{border-color:var(--jade)}.dextile.r_rare{border-color:var(--gold)}
+.dextile.r_boss{border-color:var(--red);background:#f0dcd2}
+.dextile.e_elite{border-color:var(--red)}.dextile.e_boss{border-color:var(--red);background:#2a1f17}
+.dextile.e_boss b{color:#f0d9a0}.dextile.e_boss span{color:#c8b48a}
+/* 미발견은 등급 색보다 우선한다 */
+.dexgrid .dextile.unknown{background:rgba(255,255,255,.04);border-style:dashed;box-shadow:none;cursor:default}
+.dexgrid .dextile.unknown b,.dexgrid .dextile.unknown span{color:#6f6553}
+.dexgrid .dextile.unknown:hover{transform:none;box-shadow:none}
 
 /* 결과 화면 */
 .endscreen{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
@@ -356,53 +446,215 @@ function pickWeighted(list) {                                         // [{w:숫
 }
 function sample(arr, n) { const c = arr.slice(); shuffle(c); return c.slice(0, n); }
 
-/* --- 사운드: WebAudio 실시간 합성 (외부 파일 없음) --- */
+/* --- 사운드: WebAudio 실시간 합성 (외부 파일 없음) ---------------------
+   master → 컴프레서 → 출력, 그리고 컨볼버(잔향)로 보내는 send 를 둔다.
+   같은 소리도 매번 음정·길이를 조금씩 흔들어 기계적으로 들리지 않게 한다.
+   ---------------------------------------------------------------------- */
 const SND = {
-  ctx: null, on: true,
-  init() { if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { this.on = false; } }
-           if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
-  tone(freq, dur, type = 'sine', vol = .18, slideTo = null, delay = 0) {
-    if (!this.on || !this.ctx) return;
-    const t0 = this.ctx.currentTime + delay;
-    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-    o.type = type; o.frequency.setValueAtTime(freq, t0);
-    if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), t0 + dur);
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(vol, t0 + .012);
-    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-    o.connect(g).connect(this.ctx.destination); o.start(t0); o.stop(t0 + dur + .05);
-  },
-  noise(dur = .18, vol = .16, filterFreq = 1400, delay = 0) {
-    if (!this.on || !this.ctx) return;
-    const t0 = this.ctx.currentTime + delay;
-    const n = Math.floor(this.ctx.sampleRate * dur);
-    const buf = this.ctx.createBuffer(1, n, this.ctx.sampleRate), d = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
-    const s = this.ctx.createBufferSource(); s.buffer = buf;
-    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.setValueAtTime(filterFreq, t0);
-    f.frequency.exponentialRampToValueAtTime(Math.max(120, filterFreq * .25), t0 + dur);
-    const g = this.ctx.createGain(); g.gain.setValueAtTime(vol, t0);
-    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-    s.connect(f).connect(g).connect(this.ctx.destination); s.start(t0);
-  },
-  // 효과음 모음
-  hit(power = 1) { this.noise(.16 + .06 * power, .22, 1100 + 400 * power); this.tone(150 - 30 * power, .16, 'triangle', .16, 55); },
-  slash() { this.noise(.13, .15, 4200); this.tone(880, .1, 'sawtooth', .05, 300); },
-  block() { this.tone(320, .2, 'triangle', .13, 210); this.tone(480, .18, 'sine', .08, 360, .02); },
-  cardPlay() { this.noise(.07, .09, 3600); this.tone(660, .07, 'sine', .07, 900); },
-  draw() { this.noise(.05, .06, 5200); },
-  heal() { this.tone(523, .22, 'sine', .11); this.tone(784, .3, 'sine', .09, null, .07); },
-  power() { this.tone(196, .5, 'sine', .12, 392); this.tone(294, .5, 'triangle', .07, 588, .04); },
-  coin() { this.tone(1180, .07, 'square', .07); this.tone(1560, .13, 'square', .06, null, .06); },
-  bell() { this.tone(880, .9, 'sine', .13, 440); this.tone(1320, .7, 'sine', .05, 660, .02); },
-  gong() { this.tone(110, 1.7, 'sine', .2, 66); this.tone(164, 1.4, 'triangle', .09, 90, .02); this.noise(.6, .1, 700); },
-  death() { this.tone(220, .55, 'sawtooth', .13, 60); this.noise(.4, .13, 900); },
-  err() { this.tone(150, .13, 'square', .1, 110); },
-  ui() { this.tone(760, .05, 'sine', .06); },
-  victory() { [523, 659, 784, 1046].forEach((f, i) => this.tone(f, .5, 'sine', .12, null, i * .11)); },
-  lose() { [392, 349, 294, 196].forEach((f, i) => this.tone(f, .7, 'triangle', .12, null, i * .19)); }
-};
+  ctx: null, on: true, master: null, revSend: null, noiseBuf: null, amb: null, ambGain: null,
 
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { this.on = false; return; }
+    const c = this.ctx;
+    const comp = c.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.knee.value = 26; comp.ratio.value = 5;
+    comp.attack.value = .004; comp.release.value = .22;
+    this.master = c.createGain(); this.master.gain.value = .85;
+    this.master.connect(comp).connect(c.destination);
+    /* 잔향: 잡음 임펄스를 만들어 컨볼버에 물린다 */
+    const conv = c.createConvolver();
+    conv.buffer = this.impulse(2.1, 3.1);
+    const revGain = c.createGain(); revGain.gain.value = .9;
+    conv.connect(revGain).connect(this.master);
+    this.revSend = c.createGain(); this.revSend.gain.value = 1;
+    this.revSend.connect(conv);
+    /* 재사용할 잡음 버퍼 */
+    const n = Math.floor(c.sampleRate * 2);
+    this.noiseBuf = c.createBuffer(1, n, c.sampleRate);
+    const d = this.noiseBuf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  },
+  impulse(dur, decay) {
+    const c = this.ctx, rate = c.sampleRate, len = Math.floor(rate * dur);
+    const buf = c.createBuffer(2, len, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+    }
+    return buf;
+  },
+  ok() { return this.on && this.ctx; },
+  vary(x, amt) { return x * (1 + (Math.random() * 2 - 1) * (amt == null ? .035 : amt)); },
+
+  /* 기본 알갱이 — 음 하나 */
+  blip(freq, o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0);
+    const dur = this.vary(o.dur || .2, .06);
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(this.vary(freq, o.jit == null ? .02 : o.jit), t0);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(Math.max(18, o.to), t0 + dur);
+    if (o.detune) osc.detune.setValueAtTime(o.detune, t0);
+    const vol = (o.vol == null ? .14 : o.vol);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + (o.atk || .006));
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(g); g.connect(this.master);
+    if (o.rev) { const r = c.createGain(); r.gain.value = o.rev; g.connect(r); r.connect(this.revSend); }
+    osc.start(t0); osc.stop(t0 + dur + .06);
+  },
+  /* 기본 알갱이 — 잡음 하나 */
+  hiss(o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0);
+    const dur = this.vary(o.dur || .18, .08);
+    const s = c.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true;
+    s.playbackRate.value = this.vary(1, .2);
+    const f = c.createBiquadFilter();
+    f.type = o.filter || 'lowpass';
+    f.Q.value = o.q || 1;
+    const f0 = this.vary(o.freq || 1400, .1);
+    f.frequency.setValueAtTime(f0, t0);
+    if (o.to) f.frequency.exponentialRampToValueAtTime(Math.max(80, o.to), t0 + dur);
+    const g = c.createGain(), vol = (o.vol == null ? .14 : o.vol);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + (o.atk || .004));
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    s.connect(f).connect(g); g.connect(this.master);
+    if (o.rev) { const r = c.createGain(); r.gain.value = o.rev; g.connect(r); r.connect(this.revSend); }
+    s.start(t0); s.stop(t0 + dur + .06);
+  },
+
+  /* 예전 호출부와의 호환 */
+  tone(freq, dur, type, vol, slideTo, delay) {
+    this.blip(freq, { dur: dur, type: type, vol: vol, to: slideTo, delay: delay, rev: .18 });
+  },
+  noise(dur, vol, filterFreq, delay) {
+    this.hiss({ dur: dur, vol: vol, freq: filterFreq, to: (filterFreq || 1400) * .25, delay: delay, rev: .15 });
+  },
+
+  /* ── 효과음 ───────────────────────────────────────────── */
+  ui()   { this.blip(1150, { dur: .045, type: 'sine', vol: .07 }); this.hiss({ dur: .03, vol: .04, freq: 5000, filter: 'highpass' }); },
+  select(){ this.hiss({ dur: .05, vol: .07, freq: 2600, filter: 'bandpass', q: 2 }); this.blip(880, { dur: .06, type: 'triangle', vol: .06, to: 1250 }); },
+  err()  { this.blip(140, { dur: .16, type: 'square', vol: .1, to: 96 }); this.hiss({ dur: .1, vol: .07, freq: 420 }); },
+
+  /* 종이·카드 */
+  cardPlay(type) {
+    this.hiss({ dur: .075, vol: .1, freq: 3800, filter: 'bandpass', q: .8, to: 1500 });
+    if (type === 'attack') this.blip(320, { dur: .07, type: 'triangle', vol: .07, to: 190 });
+    else if (type === 'power') { [392, 494, 587].forEach((f, i) => this.blip(f, { dur: .5, type: 'sine', vol: .06, delay: i * .045, rev: .5 })); }
+    else this.blip(660, { dur: .08, type: 'sine', vol: .06, to: 880 });
+  },
+  draw() {
+    for (let i = 0; i < 3; i++)
+      this.hiss({ dur: .035, vol: .055, freq: 4200 + Math.random() * 2500, filter: 'bandpass', q: 1.4, delay: i * .035 });
+  },
+
+  /* 타격 — 몸통(저역) + 살점(중역) + 파편(고역) 3층 */
+  slash() {
+    this.hiss({ dur: .13, vol: .16, freq: 7000, to: 900, filter: 'bandpass', q: .7, rev: .3 });
+    this.blip(1500, { dur: .09, type: 'sawtooth', vol: .05, to: 380, rev: .25 });
+  },
+  hit(power) {
+    const p = power || 1;
+    this.blip(this.vary(165 - 34 * p, .08), { dur: .17 + .05 * p, type: 'triangle', vol: .17, to: 42, rev: .2 });
+    this.hiss({ dur: .1 + .05 * p, vol: .17, freq: 1500 + 500 * p, to: 260, rev: .25 });
+    this.blip(this.vary(60, .1), { dur: .22, type: 'sine', vol: .13 + .05 * p, to: 30 });
+    if (p > 1.5) this.hiss({ dur: .3, vol: .08, freq: 700, to: 150, rev: .6, delay: .02 });
+  },
+  block() {
+    this.blip(this.vary(430), { dur: .16, type: 'triangle', vol: .12, to: 250, rev: .3 });
+    this.blip(this.vary(880), { dur: .1, type: 'sine', vol: .07, to: 620, delay: .012, rev: .3 });
+    this.hiss({ dur: .06, vol: .08, freq: 2400, filter: 'bandpass', q: 2 });
+  },
+  poison() {
+    for (let i = 0; i < 4; i++)
+      this.blip(this.vary(180 + i * 26, .12), { dur: .1, type: 'sine', vol: .07, to: 90, delay: i * .06, rev: .3 });
+  },
+  heal() {
+    [523, 659, 784, 1046].forEach((f, i) =>
+      this.blip(f, { dur: .55, type: 'sine', vol: .085, delay: i * .055, rev: .7 }));
+  },
+  power() {
+    [196, 294, 392, 587].forEach((f, i) =>
+      this.blip(f, { dur: .75, type: 'triangle', vol: .075, to: f * 1.5, delay: i * .05, rev: .8 }));
+    this.hiss({ dur: .5, vol: .05, freq: 600, to: 5000, filter: 'bandpass', q: 1.2, rev: .5 });
+  },
+  coin() {
+    for (let i = 0; i < 3; i++)
+      this.blip(this.vary(1250 + i * 260, .07), { dur: .1, type: 'square', vol: .055, delay: i * .045, rev: .35 });
+  },
+  potion() {
+    this.blip(this.vary(1750), { dur: .12, type: 'sine', vol: .07, rev: .45 });
+    this.hiss({ dur: .2, vol: .05, freq: 2800, filter: 'bandpass', q: 3, delay: .04 });
+  },
+  /* 종·징 — 배음을 어긋나게 쌓아야 쇠붙이처럼 들린다 */
+  bell() {
+    const f = this.vary(740, .02);
+    [[1, .12], [2.76, .05], [5.4, .028], [8.9, .015]].forEach(([m, v]) =>
+      this.blip(f * m, { dur: 1.5 / Math.sqrt(m), type: 'sine', vol: v, rev: .9, jit: .004 }));
+  },
+  gong() {
+    const f = this.vary(96, .03);
+    [[1, .2], [1.48, .1], [2.37, .07], [3.9, .04], [6.1, .022]].forEach(([m, v]) =>
+      this.blip(f * m, { dur: 2.6 / Math.pow(m, .35), type: 'sine', vol: v, rev: 1, jit: .005 }));
+    this.hiss({ dur: 1.1, vol: .09, freq: 900, to: 160, rev: .9 });
+  },
+  drum() {
+    this.blip(this.vary(92, .06), { dur: .3, type: 'sine', vol: .16, to: 46, rev: .3 });
+    this.hiss({ dur: .07, vol: .09, freq: 1100, to: 300 });
+  },
+  boss() {
+    this.gong();
+    this.blip(48, { dur: 2.4, type: 'sine', vol: .16, to: 34, rev: .7 });
+    this.hiss({ dur: 1.8, vol: .07, freq: 260, to: 70, rev: .8, delay: .1 });
+  },
+  death() {
+    this.blip(this.vary(300), { dur: .6, type: 'sawtooth', vol: .11, to: 52, rev: .5 });
+    this.hiss({ dur: .5, vol: .12, freq: 1100, to: 140, rev: .5 });
+    this.blip(this.vary(150), { dur: .8, type: 'sine', vol: .08, to: 40, delay: .05, rev: .6 });
+  },
+  victory() {
+    [523, 659, 784, 1046, 1318].forEach((f, i) =>
+      this.blip(f, { dur: .9, type: 'sine', vol: .1, delay: i * .1, rev: .85 }));
+    this.blip(261, { dur: 2, type: 'triangle', vol: .08, delay: .1, rev: .9 });
+  },
+  lose() {
+    [392, 349, 294, 196].forEach((f, i) =>
+      this.blip(f, { dur: 1.1, type: 'triangle', vol: .1, delay: i * .22, rev: .8 }));
+    this.blip(65, { dur: 3, type: 'sine', vol: .1, delay: .3, rev: .9 });
+  },
+
+  /* 배경 바람 — 아주 낮게 깔아 둔다 */
+  ambience(on, strong) {
+    if (!this.ok()) return;
+    const c = this.ctx;
+    if (!on) {
+      if (this.amb) {
+        this.ambGain.gain.linearRampToValueAtTime(.0001, c.currentTime + .6);
+        const a = this.amb; setTimeout(() => { try { a.stop(); } catch (e) {} }, 900);
+        this.amb = null;
+      }
+      return;
+    }
+    if (this.amb) { if (this.ambGain) this.ambGain.gain.linearRampToValueAtTime(strong ? .034 : .019, c.currentTime + 1.2); return; }
+    const s = c.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true;
+    s.playbackRate.value = .35;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .7;
+    const lfo = c.createOscillator(), lg = c.createGain();
+    lfo.frequency.value = .06; lg.gain.value = 210;
+    lfo.connect(lg).connect(f.frequency); lfo.start();
+    this.ambGain = c.createGain(); this.ambGain.gain.value = .0001;
+    this.ambGain.gain.linearRampToValueAtTime(strong ? .034 : .019, c.currentTime + 2.5);
+    s.connect(f).connect(this.ambGain).connect(this.master);
+    s.start(); this.amb = s;
+  }
+};
 /* --- 캔버스 먹물 파티클 --- */
 const FX = {
   cv: null, cx: null, ps: [], running: false,
@@ -504,18 +756,40 @@ const G = {
   scene: 'title',
   run: null,     // 진행 중인 모험
   b: null,       // 전투 상태
+  cp: null,      // 마지막 갈림길의 상태 (쓰러지면 여기로 돌아간다)
   seen: { events: [] }
 };
 const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
-let META = { best: 0, wins: 0, runs: 0, speed: 1 };
+let META = { best: 0, wins: 0, runs: 0, speed: 1, sound: true, dex: { cards: {}, relics: {}, enemies: {} } };
 function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY)); if (m) META = Object.assign(META, m); } catch (e) {}
-  SPEED = META.speed || 1; }
+  SPEED = META.speed || 1;
+  if (META.sound === false) SND.on = false;
+  META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
+  META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {}; META.dex.enemies = META.dex.enemies || {}; }
 function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
 function saveRun() {
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, scene: G.scene === 'battle' ? 'map' : G.scene })); } catch (e) {}
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, cp: G.cp })); } catch (e) {}
 }
+/* 갈림길에 들어서기 직전의 상태를 떠 둔다. 쓰러지면 여기로 돌아온다. */
+function markCheckpoint() { try { G.cp = JSON.stringify(G.run); } catch (e) { G.cp = null; } }
+/* 저장된 모험 객체를 현재 모험으로 받아들인다 (카드 고유번호 충돌 방지 포함) */
+function adoptRun(obj) {
+  G.run = obj;
+  let mx = 0;
+  for (const c of G.run.deck) mx = Math.max(mx, c.uid || 0);
+  _uid = mx + 1;
+  G.run.stats = G.run.stats || { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 };
+  if (G.run.stats.revives == null) G.run.stats.revives = 0;
+  if (G.run.dia == null) G.run.dia = 0;
+}
+/* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
+function dexAdd(kind, id) {
+  if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
+  return false;
+}
+function dexCount(kind, total) { return Object.keys(META.dex[kind]).length + ' / ' + total; }
 function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch (e) { return false; } }
 function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
 
@@ -768,6 +1042,69 @@ defCard({ id: 'ninetail', n: '구천현녀검', g: '玄', type: 'attack', rar: '
   txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
   play: async c => { for (let i = 0; i < c.v.n; i++) { if (c.t.hp <= 0 && alive().length) { } atk(c.t, c.v.d); await wait(115); } } });
 
+defCard({ id: 'thunder', n: '천둥벼락', g: '雷', type: 'attack', rar: 'rare', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 24 : 18, k: 2 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b> ${v.k}을 부여한다.`,
+  play: async c => { SND.gong(); for (const e of alive()) { atk(e, c.v.d); st(e, 'vuln', c.v.k); } } });
+
+defCard({ id: 'rainflower', n: '만천화우', g: '雨', type: 'attack', rar: 'rare', cost: 1, tgt: 'all',
+  v: u => ({ d: u ? 9 : 7 }),
+  txt: v => `손에 남은 카드를 모두 소멸시키고, 소멸한 장수 × <em>${v.d}</em>의 피해를 모든 적에게 준다.`,
+  play: async c => {
+    const rest = G.b.hand.slice();
+    for (const x of rest) exhaustCard(x);
+    const n = rest.length;
+    if (!n) return;
+    for (const e of alive()) atk(e, n * c.v.d);
+  } });
+
+defCard({ id: 'vajra', n: '금강저', g: '杵', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 32 : 25 }),
+  txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 이 카드로 적을 처치하면 최대 체력이 4 증가한다.`,
+  play: c => { atk(c.t, c.v.d, { pierce: true });
+    if (c.t.hp <= 0) { G.run.maxHp += 4; P().maxHp += 4; heal(4); flash('금강저가 울린다'); } } });
+
+defCard({ id: 'mountain', n: '태산압정', g: '泰', type: 'skill', rar: 'rare', cost: 2,
+  v: u => ({ b: u ? 32 : 25 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 카드를 1장 뽑는다.`,
+  play: c => { blk(c.v.b); drawCards(1); } });
+
+defCard({ id: 'insighteye', n: '심안', g: '眼', type: 'skill', rar: 'rare', cost: 0, exhaust: true,
+  v: u => ({ n: u ? 6 : 5 }),
+  txt: v => `손에 남은 카드를 모두 버리고 ${v.n}장을 뽑는다. 기를 1 얻는다. 소멸.`,
+  play: c => { for (const x of G.b.hand.slice()) if (x.uid !== c.card.uid) discardCard(x);
+    drawCards(c.v.n); energy(1); } });
+
+defCard({ id: 'shadowblade', n: '무영검', g: '影', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 10 : 8, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 타격할 때마다 <b>힘</b>을 1 얻는다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); st(P(), 'str', 1); await wait(130); } } });
+
+/* ---------- 특별 (특별 상자에서만 나온다) ---------- */
+defCard({ id: 'mu', n: '없을 무', g: '無', type: 'skill', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
+  v: u => ({ k: u ? 1 : 0 }),
+  txt: v => `대상의 <b>모든 이로운 효과와 방어도를 없애고</b>, 남은 체력의 절반을 없앤다.${v.k ? ' <b>무력</b>도 부여한다.' : ''} 소멸.`,
+  play: c => {
+    const t = c.t; if (!t || t.hp <= 0) return;
+    for (const k in t.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete t.s[k];
+    t.block = 0;
+    if (c.v.k) st(t, 'stun', 1);
+    const half = Math.ceil(t.hp / 2);
+    SND.gong(); flash('無');
+    pure(t, half);
+    syncAll();
+  } });
+
+defCard({ id: 'nirvana', n: '적멸', g: '寂', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>검기</b> ${v.x}과 <b>민첩</b> ${v.x}을 얻고, 턴 시작 시 카드를 1장 더 뽑는다.`,
+  play: c => { st(P(), 'edge', c.v.x); st(P(), 'dex', c.v.x); st(P(), 'flow', 1); } });
+
+defCard({ id: 'ouroboros', n: '자강불식', g: '循', type: 'power', rar: 'special', cost: 3, exhaust: true,
+  v: u => ({ x: u ? 2 : 1 }),
+  txt: v => `<b>폭주</b> ${v.x}과 <b>집중</b>을 얻는다. 매 턴 힘이 오르고 기를 1 더 얻는다. 소멸.`,
+  play: c => { st(P(), 'rage', c.v.x); st(P(), 'focus', 1); SND.power(); } });
+
 /* ---------- 저주 ---------- */
 defCard({ id: 'curse_grudge', n: '원귀의 원한', g: '怨', type: 'curse', rar: 'curse', cost: -2,
   v: () => ({}), txt: () => `사용할 수 없다. 손에 있는 채로 턴을 마치면 체력을 2 잃는다.`, play: () => {} });
@@ -781,11 +1118,26 @@ function cdef(c) { return CARDS[c.id]; }
 function cval(c) { return cdef(c).v(c.up); }
 function ccost(c) { const d = cdef(c); return d.costOf ? d.costOf(c.up) : d.cost; }
 function cname(c) { return cdef(c).n + (c.up ? '+' : ''); }
-const RARITY_NAME = { basic: '기본', common: '일반', uncommon: '고급', rare: '희귀', curse: '저주' };
+/* 등급 — 4등급이 가장 낮고 ?급이 가장 높다. ?급은 아직 어디에도 없다. */
+const GRADE = {
+  basic:    { n: '4등급', s: '4', c: '#7d7568', desc: '흔한 기본 부적' },
+  common:   { n: '3등급', s: '3', c: '#3f7346', desc: '쓸 만한 부적' },
+  uncommon: { n: '2등급', s: '2', c: '#2f6d8f', desc: '드문 부적' },
+  rare:     { n: '1등급', s: '1', c: '#b8912f', desc: '귀한 부적' },
+  special:  { n: 'S급',   s: 'S', c: '#e2622a', desc: '특별 상자에서만 나오는 불타는 부적' },
+  ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
+  unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '아직 아무도 본 적이 없다. 상자에도 들어 있지 않다.' },
+  curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
+};
+const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'special', 'ssx', 'unknown'];
+const RARITY_NAME = {};
+for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
+const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* 보상 풀 */
 const POOL = { common: [], uncommon: [], rare: [] };
-for (const k in CARDS) { const c = CARDS[k]; if (POOL[c.rar]) POOL[c.rar].push(k); }
+const SPECIAL_CARDS = [];
+for (const k in CARDS) { const c = CARDS[k]; if (POOL[c.rar]) POOL[c.rar].push(k); else if (c.rar === 'special' || c.rar === 'ssx') SPECIAL_CARDS.push(k); }
 function randomCard(rarWeights) {
   const r = pickWeighted(rarWeights).r;
   return pick(POOL[r]);
@@ -899,6 +1251,7 @@ function gainRelic(id, silent) {
   const r = { id: id, used: false, isNew: true };
   G.run.relics.push(r);
   const d = RELICS[id];
+  dexAdd('relics', id);
   if (d.h && d.h.onGain) d.h.onGain(r);
   if (!silent) { SND.power(); toast(`유물 획득 — ${d.n}`); }
   return true;
@@ -1093,6 +1446,98 @@ defEnemy({ id: 'sangun', n: '산군', g: '虎', hp: [265, 265], col: '#c07a1f', 
     return r < .5 ? 'claw' : r < .78 ? 'echo' : 'roar';
   } });
 
+/* ---------- 3막 잡졸 ---------- */
+defEnemy({ id: 'rakshasa', n: '나찰', g: '羅', hp: [46, 54], col: '#8f2f52',
+  moves: { blaze: { t: 'attack', label: '겁화', d: 15 },
+           claws: { t: 'attack', label: '나찰조', d: 7, n: 3 },
+           laugh: { t: 'buff', label: '광소', self: { str: 4 } } },
+  next: e => e.hist.length === 0 ? 'laugh' : lastIs(e, 'claws') ? 'blaze' : rnd() < .45 ? 'claws' : rnd() < .7 ? 'blaze' : 'laugh' });
+
+defEnemy({ id: 'bonehorse', n: '백골마', g: '骨', hp: [40, 47], col: '#8a8574',
+  moves: { trample: { t: 'attack', label: '짓밟기', d: 18 },
+           bulwark: { t: 'defend', label: '백골 방벽', blk: 18, self: { thorns: 2 } } },
+  next: e => lastIs(e, 'trample') ? 'bulwark' : rnd() < .7 ? 'trample' : 'bulwark' });
+
+defEnemy({ id: 'hellfire', n: '겁화귀', g: '焰', hp: [42, 49], col: '#b4531f',
+  moves: { flame: { t: 'atkdeb', label: '화염', d: 12, extra: () => st(P(), 'poison', 4) },
+           pyre: { t: 'attack', label: '불기둥', d: 9, n: 2 },
+           heat: { t: 'buff', label: '열기', self: { str: 2, dex: 2 } } },
+  next: e => lastIs(e, 'flame') ? (rnd() < .5 ? 'pyre' : 'heat') : rnd() < .5 ? 'flame' : rnd() < .65 ? 'pyre' : 'heat' });
+
+defEnemy({ id: 'warlord', n: '귀장군', g: '將', hp: [54, 62], col: '#4a4f70',
+  moves: { greatsword: { t: 'attack', label: '참마도', d: 20 },
+           command: { t: 'atkdef', label: '호령', d: 8, blk: 14, self: { str: 3 } },
+           sweep: { t: 'attack', label: '횡소천군', d: 11, n: 2 } },
+  next: e => e.hist.length === 0 ? 'command' : lastIs(e, 'greatsword') ? (rnd() < .5 ? 'command' : 'sweep')
+    : rnd() < .4 ? 'greatsword' : rnd() < .7 ? 'sweep' : 'command' });
+
+defEnemy({ id: 'wraith', n: '흑무당', g: '巫', hp: [38, 45], col: '#3d2b52',
+  moves: { hexbolt: { t: 'debuff', label: '주살', deb: { weak: 3, vuln: 3 } },
+           siphon: { t: 'attack', label: '혼 빨기', d: 13, heal: 13 },
+           veil: { t: 'defend', label: '검은 장막', blk: 16, self: { dex: 3 } } },
+  next: e => e.hist.length === 0 ? 'hexbolt' : lastIs(e, 'siphon') ? 'veil' : rnd() < .45 ? 'siphon' : rnd() < .7 ? 'hexbolt' : 'veil' });
+
+defEnemy({ id: 'stonelion', n: '해태', g: '獬', hp: [50, 58], col: '#5c6b4a',
+  moves: { gaze: { t: 'debuff', label: '법안', deb: { weak: 2 }, self: { thorns: 3 } },
+           pounce: { t: 'attack', label: '덮치기', d: 16 },
+           roarl: { t: 'atkdef', label: '사자후', d: 9, blk: 14 } },
+  next: e => lastIs(e, 'pounce', 2) ? 'roarl' : rnd() < .5 ? 'pounce' : rnd() < .7 ? 'roarl' : 'gaze' });
+
+/* ---------- 3막 엘리트 ---------- */
+defEnemy({ id: 'rakshasaking', n: '나찰왕', g: '羅', hp: [130, 142], col: '#7a1f3d', elite: true, big: true,
+  init: e => { e.s.rage = 2; e.s.thorns = 3; },
+  moves: { rend: { t: 'attack', label: '찢어발기기', d: 12, n: 2 },
+           inferno: { t: 'attack', label: '업화 폭발', d: 26 },
+           bulwark: { t: 'defend', label: '나찰갑', blk: 20, self: { dex: 2 } } },
+  next: e => lastIs(e, 'inferno') ? 'bulwark' : rnd() < .5 ? 'rend' : rnd() < .75 ? 'inferno' : 'bulwark' });
+
+defEnemy({ id: 'gatekeeper', n: '구천 문지기', g: '門', hp: [148, 160], col: '#3a4657', elite: true, big: true,
+  init: e => { e.s.thorns = 6; },
+  moves: { hammer: { t: 'attack', label: '천주 강타', d: 24 },
+           seal: { t: 'debuff', label: '봉문', deb: { weak: 3, vuln: 3 }, self: { str: 3 } },
+           bar: { t: 'defend', label: '철문 잠그기', blk: 26 } },
+  next: e => e.hist.length === 0 ? 'seal' : lastIs(e, 'hammer') ? (rnd() < .55 ? 'bar' : 'seal')
+    : rnd() < .5 ? 'hammer' : rnd() < .75 ? 'bar' : 'seal' });
+
+/* ---------- 3막 보스 ---------- */
+defEnemy({ id: 'blackdragon', n: '구천의 흑룡', g: '龍', hp: [340, 340], col: '#23283a', boss: true, big: true,
+  init: e => { e.charge = 0; },
+  moves: {
+    talon:  { t: 'attack', label: '용조', d: 13, n: 2 },
+    scale:  { t: 'atkdef', label: '역린', d: 11, blk: 22, self: { thorns: 3 } },
+    gather: { t: 'buff', label: '흑염 응축', blk: 30, self: { str: 5 },
+              extra: e => { e.charge = 1; flash('흑룡이 숨을 들이쉰다'); } },
+    breath: { t: 'attack', label: '흑염 브레스', d: 46, extra: e => { e.charge = 0; st(P(), 'weak', 2); } },
+    wing:   { t: 'atkdeb', label: '날갯짓', d: 10, deb: { vuln: 2 } }
+  },
+  onHalf: e => { st(e, 'str', 5); st(e, 'rage', 1); flash('흑룡의 비늘이 곤두선다'); },
+  next: e => {
+    if (e.charge) return 'breath';
+    if (e.hist.length === 0) return 'wing';
+    if (e.turnCount % 4 === 0) return 'gather';
+    if (lastIs(e, 'talon', 2)) return 'scale';
+    const r = rnd();
+    return r < .42 ? 'talon' : r < .68 ? 'scale' : 'wing';
+  } });
+
+defEnemy({ id: 'yeomra', n: '염라', g: '閻', hp: [320, 320], col: '#4a1f2a', boss: true, big: true,
+  init: e => { e.judged = 0; },
+  moves: {
+    judge:  { t: 'attack', label: '심판', d: 15, extra: () => st(P(), 'curse', 2) },
+    chain:  { t: 'atkdeb', label: '업의 사슬', d: 9, n: 2, deb: { weak: 2, vuln: 2 } },
+    ledger: { t: 'defend', label: '명부 펼치기', blk: 26, self: { str: 4 } },
+    verdict:{ t: 'attack', label: '최후의 판결', d: 34 }
+  },
+  onTurnEnd: e => { e.judged++; if (e.judged % 3 === 0) st(e, 'str', 2); },
+  onHalf: e => { st(e, 'str', 4); st(e, 'regenP', 8); flash('명부가 불타오른다'); },
+  next: e => {
+    if (e.hist.length === 0) return 'chain';
+    if (lastIs(e, 'verdict')) return 'ledger';
+    if (e.turnCount % 5 === 0) return 'verdict';
+    const r = rnd();
+    return r < .38 ? 'judge' : r < .68 ? 'chain' : 'ledger';
+  } });
+
 /* ---------- 조우(인카운터) 구성 ---------- */
 const ENCOUNTERS = {
   1: {
@@ -1108,6 +1553,14 @@ const ENCOUNTERS = {
              ['yaksha', 'shadow'], ['serpent', 'serpent', 'skeleton'], ['willow', 'ghostmonk'], ['stoneman', 'yaksha']],
     elite:  [['jangseung', 'wisp'], ['hwangryeong'], ['imugi', 'shadow'], ['geuseundae', 'serpent']],
     boss:   ['sangun']
+  },
+  3: {
+    weak:   [['rakshasa'], ['bonehorse', 'wraith'], ['hellfire', 'shadow']],
+    normal: [['warlord'], ['rakshasa', 'hellfire'], ['stonelion', 'wraith'], ['bonehorse', 'bonehorse'],
+             ['warlord', 'shadow'], ['hellfire', 'hellfire', 'wraith'], ['stonelion', 'rakshasa'],
+             ['yaksha', 'warlord'], ['ghostmonk', 'stonelion']],
+    elite:  [['rakshasaking'], ['gatekeeper'], ['hwangryeong', 'wraith'], ['jangseung', 'rakshasa']],
+    boss:   ['blackdragon', 'yeomra']
   }
 };
 
@@ -1226,11 +1679,14 @@ function startBattle(enemyIds, kind) {
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
                 hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false };
     if (d.init) d.init(e);
+    dexAdd('enemies', id);
     b.enemies.push(e);
   }
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
   G.scene = 'battle';
   renderBattle();
+  SND.ambience(true, true);
+  if (kind === 'boss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
   syncAll();
@@ -1253,7 +1709,7 @@ async function startPlayerTurn() {
 
   if (p.s.rage) st(p, 'str', p.s.rage);
   if (p.s.afterimg) { blk(p.s.afterimg, true); delete p.s.afterimg; }
-  if (p.s.poison) { const d = p.s.poison; pure(p, d); st(p, 'poison', -1); if (await checkOver()) return; }
+  if (p.s.poison) { const d = p.s.poison; SND.poison(); pure(p, d); st(p, 'poison', -1); if (await checkOver()) return; }
   if (p.s.sword) { for (let i = 0; i < p.s.sword; i++) { const a = alive(); if (a.length) pure(pick(a), 4); } }
   fire('turnStart');
   await checkDeaths();
@@ -1262,6 +1718,7 @@ async function startPlayerTurn() {
   const n = 5 + (p.s.flow || 0) + b.drawMod;
   b.drawMod = 0;
   drawCards(Math.max(0, n));
+  SND.drum();
   showTurnLabel('당신의 차례');
   b.busy = false;
   syncAll();
@@ -1286,8 +1743,8 @@ async function playCard(card, target) {
   if (i >= 0) b.hand.splice(i, 1);
   const cel = cardEls[card.uid];
   if (cel) { cel.classList.add('fly'); setTimeout(() => cel.remove(), 340); delete cardEls[card.uid]; }
-  SND.cardPlay();
-  if (d.type === 'attack') SND.slash(); else if (d.type === 'power') SND.power();
+  SND.cardPlay(d.type);
+  if (d.type === 'attack') SND.slash();
 
   b.curCard = card;
   const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
@@ -1323,7 +1780,7 @@ async function usePotion(idx, target) {
   if (G.b && (G.b.busy || G.b.over)) return;
   if (d.tgt === 'enemy' && !target) { startPotionTargeting(idx); return; }
   run.potions.splice(idx, 1);
-  SND.heal();
+  SND.potion();
   if (G.b) G.b.busy = true;
   try { d.use(target); } catch (e) { console.error(e); }
   fire('onPotion');
@@ -1358,7 +1815,7 @@ async function endTurn() {
     if (e.hp <= 0 || e.dead || b.over) continue;
     e.turnCount++;
     e.block = 0;
-    if (e.s.poison) { const d = e.s.poison; pure(e, d); st(e, 'poison', -1);
+    if (e.s.poison) { const d = e.s.poison; SND.poison(); pure(e, d); st(e, 'poison', -1);
       await wait(240); await checkDeaths(); if (e.hp <= 0 || b.over) continue; }
     if (e.s.stun) { st(e, 'stun', -1); floatText(e, '무력', 'blk'); await wait(420); decay(e); pickIntent(e); continue; }
     highlight(e, true);
@@ -1489,6 +1946,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">체력</span>
         <div class="hpbar"><i></i><span></span></div></div>
       <div class="grp"><span class="lbl">골드</span><b id="goldv" style="color:#e0bd63"></b></div>
+      <div class="grp"><span class="lbl">다이아</span><b id="diav" style="color:#6fd0e8"></b></div>
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
@@ -1519,6 +1977,7 @@ function renderTop() {
   t.querySelector('.hpbar i').style.width = (run.hp / run.maxHp * 100) + '%';
   t.querySelector('.hpbar span').textContent = run.hp + ' / ' + run.maxHp;
   t.querySelector('#goldv').textContent = run.gold;
+  t.querySelector('#diav').textContent = run.dia || 0;
   t.querySelector('#floorv').textContent = run.act + '-' + run.floor;
   t.querySelector('#deckbtn').textContent = '덱 ' + run.deck.length;
 }
@@ -1660,12 +2119,12 @@ function syncPiles() {
 function cardNode(c, opts) {
   opts = opts || {};
   const d = cdef(c), v = cval(c), cost = ccost(c);
-  const n = el('div', 'card ' + d.type + (c.up ? ' up' : ''));
+  const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssx' ? ' special' : '') + auraClass(d.rar) + (c.up ? ' up' : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, c.up) + '').replace(/<[^>]+>/g, '').length;
   n.innerHTML = `
     <div class="face">
-      <div class="rar ${d.rar}"></div>
+      <div class="grade" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
       <div class="cname${c.up ? ' up' : ''}">${cname(c)}</div>
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, c.up)}</span></div>
@@ -1740,7 +2199,7 @@ function onCardClick(c) {
   if (d.tgt === 'enemy') {
     const a = alive();
     if (a.length === 1) { playCard(c, a[0]); return; }
-    b.sel = c; b.potSel = null; showArrow(); syncHand(); syncEnemies();
+    b.sel = c; b.potSel = null; SND.select(); showArrow(); syncHand(); syncEnemies();
   } else playCard(c, null);
 }
 function onEnemyClick(e) {
@@ -1856,10 +2315,15 @@ function genMap(act) {
     if (n.r === 0) { n.type = 'battle'; continue; }
     if (n.r === TREASURE_ROW) { n.type = 'treasure'; continue; }
     if (n.r === REST_ROW) { n.type = 'rest'; continue; }
-    const w = [{ w: 45, t: 'battle' }, { w: 25, t: 'event' }, { w: 6, t: 'shop' }];
+    const w = [{ w: 42, t: 'battle' }, { w: 23, t: 'event' }, { w: 6, t: 'shop' }, { w: 8, t: 'special' }];
     if (n.r >= 3) w.push({ w: 11, t: 'rest' });
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
     n.type = pickWeighted(w).t;
+  }
+  /* 특별 상자는 막마다 최소 하나는 나오게 한다 */
+  if (!nodes.some(n => n.type === 'special')) {
+    const cand = nodes.filter(n => n.type === 'battle' && n.r >= 2 && n.r < MAP_H - 2);
+    if (cand.length) pick(cand).type = 'special';
   }
   /* 좌표 */
   const totalH = MAP_H * 108 + 190;
@@ -1871,27 +2335,30 @@ function genMap(act) {
   }
   return { nodes, h: totalH, act };
 }
-const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', boss: '魔' };
-const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', boss: '보스' };
+const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', boss: '魔' };
+const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', boss: '보스' };
 
 /* ══════════════════════════════════════════════════════════
    10. 모험 진행
    ══════════════════════════════════════════════════════════ */
-const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리' };
+const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑' };
+const LAST_ACT = 3;
 function newRun(asc) {
+  G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
   const deck = [];
   for (let i = 0; i < 5; i++) deck.push(mkCard('strike'));
   for (let i = 0; i < 4; i++) deck.push(mkCard('defend'));
   deck.push(mkCard('ward'));
+  ['strike', 'defend', 'ward'].forEach(id => dexAdd('cards', id));
   G.run = {
     asc: asc || 0,
     maxHp: 72 - (asc || 0) * 3, hp: 72 - (asc || 0) * 3,
-    gold: 99, maxEnergy: 3, potSlots: 2,
+    gold: 99, dia: 0, maxEnergy: 3, potSlots: 2,
     deck, relics: [], potions: [],
     act: 1, floor: 0, rewardCut: 0,
-    map: null, mapCur: -1, mapDone: [],
-    stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0 },
+    map: null, mapCur: -1, mapDone: [], bossPick: null,
+    stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
   };
   gainRelic('redseal', true);
@@ -1905,7 +2372,7 @@ function nextAct() {
   run.act++;
   run.floor = 0;
   run.map = genMap(run.act);
-  run.mapCur = -1; run.mapDone = [];
+  run.mapCur = -1; run.mapDone = []; run.bossPick = null;
   healRun(Math.ceil(run.maxHp * .25));
   saveRun();
   showMap();
@@ -1914,7 +2381,7 @@ function nextAct() {
 
 function showMap() {
   G.scene = 'map'; G.b = null;
-  clearFloaters(); hideArrow(); renderTop();
+  clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false);
   const run = G.run, m = run.map;
   const s = $('#scene');
   s.innerHTML = `<div id="map"><div id="maphead">제 ${run.act} 막<span class="actname">${ACT_NAME[run.act] || '심산유곡'}</span></div>
@@ -1938,7 +2405,9 @@ function showMap() {
     const isAvail = availIds.indexOf(n.id) >= 0;
     const b = el('div', 'mapnode ' + n.type + (isAvail ? ' avail' : '') + (done.has(n.id) ? ' done' : '') + (run.mapCur === n.id ? ' cur' : ''), NODE_ICON[n.type]);
     b.style.left = n.x + 'px'; b.style.top = n.y + 'px';
-    bindTip(b, () => `<b>${NODE_NAME[n.type]}</b>${n.type === 'boss' ? '<br>' + ENEMIES[ENCOUNTERS[run.act].boss[0]].n : ''}`);
+    if (n.type === 'boss') { const bl = ENCOUNTERS[run.act].boss;
+      if (!run.bossPick || bl.indexOf(run.bossPick) < 0) run.bossPick = pick(bl); }
+    bindTip(b, () => `<b>${NODE_NAME[n.type]}</b>${n.type === 'boss' ? '<br>' + ENEMIES[run.bossPick].n : ''}`);
     if (isAvail) b.onclick = () => { tipHide(); enterNode(n); };
     inner.appendChild(b);
   }
@@ -1952,6 +2421,7 @@ function availableNodes() {
 }
 function enterNode(n) {
   const run = G.run;
+  markCheckpoint();                       /* 쓰러져도 이 갈림길로 돌아올 수 있다 */
   run.mapCur = n.id; run.mapDone.push(n.id);
   run.floor = n.r + 1; run.stats.floors++;
   SND.ui(); saveRun();
@@ -1961,10 +2431,16 @@ function enterNode(n) {
       startBattle(pick(pool), 'normal'); break;
     }
     case 'elite': run.stats.elites++; startBattle(pick(ENCOUNTERS[run.act].elite), 'elite'); break;
-    case 'boss': startBattle(ENCOUNTERS[run.act].boss, 'boss'); break;
+    case 'boss': {
+      const bl = ENCOUNTERS[run.act].boss;
+      if (!run.bossPick || bl.indexOf(run.bossPick) < 0) run.bossPick = pick(bl);
+      startBattle([run.bossPick], 'boss');
+      break;
+    }
     case 'rest': showRest(); break;
     case 'shop': showShop(); break;
     case 'treasure': showTreasure(); break;
+    case 'special': showSpecialShop(); break;
     case 'event': showEvent(); break;
   }
 }
@@ -2052,13 +2528,13 @@ function showRewards(kind) {
   items.push({ ic: '牌', t: '카드 한 장 고르기', s: `${n}장 중 하나를 덱에 넣는다`,
     act: async () => {
       const c = await pickFromList(cards, '한 장을 고르시오', { cancel: true, hint: '건너뛰어도 좋다' });
-      if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; toast(`${cname(c)} 획득`); }
+      if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id); toast(`${cname(c)} 획득`); }
       return true;
     } });
 
   const p = overlay(`<h2>승 리</h2><div class="hint">전리품을 챙기시오</div>
      <div class="rewardrow"></div>
-     <button class="brush-btn red" id="rw_done">${kind === 'boss' && G.run.act >= 2 ? '정상으로' : '길을 나선다'}</button>`, '');
+     <button class="brush-btn red" id="rw_done">${kind === 'boss' && G.run.act >= LAST_ACT ? '정상으로' : '길을 나선다'}</button>`, '');
   const row = p.querySelector('.rewardrow');
   items.forEach((it, i) => {
     const n2 = el('div', 'rewitem', `<div class="ic">${it.ic}</div><div class="t"><b>${it.t}</b><small>${it.s}</small></div>`);
@@ -2071,7 +2547,7 @@ function showRewards(kind) {
   });
   p.querySelector('#rw_done').onclick = () => {
     closeOverlay(); saveRun();
-    if (kind === 'boss') { if (G.run.act >= 2) victory(); else nextAct(); }
+    if (kind === 'boss') { if (G.run.act >= LAST_ACT) victory(); else nextAct(); }
     else showMap();
   };
   renderTop();
@@ -2183,7 +2659,7 @@ function showShop() {
       if (it.sold) { n.classList.add('dim'); }
       holder.appendChild(n);
       holder.appendChild(el('div', 'pricetag' + (run.gold < it.p || it.sold ? ' no' : ''), it.sold ? '판매됨' : it.p + ' 골드'));
-      if (!it.sold) { n.classList.add('pick'); n.onclick = () => buy(it.p, () => { it.sold = true; run.deck.push(mkCard(it.c.id, it.c.up)); run.stats.cards++; toast(`${cname(it.c)} 구입`); }); }
+      if (!it.sold) { n.classList.add('pick'); n.onclick = () => buy(it.p, () => { it.sold = true; run.deck.push(mkCard(it.c.id, it.c.up)); run.stats.cards++; dexAdd('cards', it.c.id); toast(`${cname(it.c)} 구입`); }); }
       g.appendChild(holder);
     });
     const row = p.querySelector('.rewardrow');
@@ -2217,10 +2693,79 @@ function showShop() {
   draw();
 }
 
+/* --- 특별 상자 상점 --- */
+const BOX_PRICE = [3, 5, 8];                      /* 훗날 다이아로 받을 값 (지금은 시험 중이라 무료) */
+const BOX_FREE = true;
+function boxLoot(tier) {
+  /* tier 0~2 — 위로 갈수록 좋은 것이 나온다 */
+  const w = [
+    [{ w: 34, t: 'dia' }, { w: 26, t: 'card' }, { w: 26, t: 'potion' }, { w: 14, t: 'treasure' }],
+    [{ w: 26, t: 'dia' }, { w: 34, t: 'card' }, { w: 18, t: 'potion' }, { w: 22, t: 'treasure' }],
+    [{ w: 20, t: 'dia' }, { w: 42, t: 'card' }, { w: 10, t: 'potion' }, { w: 28, t: 'treasure' }]
+  ][tier];
+  const kind = pickWeighted(w).t;
+  const run = G.run;
+  if (kind === 'dia') {
+    const n = ri(1 + tier, 3 + tier * 2);
+    return { g: '玉', n: `다이아 ${n}`, d: '맑고 단단한 돌. 특별 상자의 값으로 쓰인다.',
+      take: () => { run.dia = (run.dia || 0) + n; SND.coin(); } };
+  }
+  if (kind === 'card') {
+    const id = (tier >= 1 && rnd() < .55) || rnd() < .3 ? pick(SPECIAL_CARDS) : pick(POOL.rare);
+    const up = tier >= 2 && rnd() < .4;
+    const c = mkCard(id, up);
+    return { g: CARDS[id].g, n: cname(c), d: CARDS[id].txt(cval(c), up).replace(/<[^>]+>/g, ''), card: c,
+      take: () => { run.deck.push(mkCard(id, up)); run.stats.cards++; dexAdd('cards', id); SND.power(); } };
+  }
+  if (kind === 'potion') {
+    const id = randomPotion();
+    return { g: POTIONS[id].g, n: POTIONS[id].n, d: POTIONS[id].d.replace(/<[^>]+>/g, ''),
+      take: () => { if (run.potions.length >= run.potSlots) { run.gold += 60; toast('자리가 없어 골드로 받았다'); }
+                    else run.potions.push(id); SND.potion(); } };
+  }
+  const rid = randomRelic(tier >= 2 ? 'rare' : null) || randomRelic();
+  if (!rid) { const g = ri(80, 160); return { g: '金', n: `골드 ${g}`, d: '엽전 꾸러미', take: () => { run.gold += g; SND.coin(); } }; }
+  return { g: RELICS[rid].g, n: RELICS[rid].n, d: RELICS[rid].d.replace(/<[^>]+>/g, ''), take: () => gainRelic(rid) };
+}
+function showSpecialShop() {
+  G.scene = 'special';
+  const run = G.run;
+  const boxes = [0, 1, 2].map(t => ({ tier: t, loot: boxLoot(t), opened: false }));
+  const TIER_NAME = ['작은 상자', '보통 상자', '큰 상자'];
+  const p = overlay(`<h2>특별 상자!</h2>
+    <div class="hint">${BOX_FREE ? '시험 중이라 지금은 <b style="color:#6fd0e8">무료</b>입니다. 마음껏 열어 보시오.' : '다이아로 값을 치른다'}</div>
+    <div class="boxrow"></div>
+    <button class="brush-btn red" id="sp_leave">떠난다</button>`, 'specialshop');
+  const row = p.querySelector('.boxrow');
+  boxes.forEach((b, i) => {
+    const n = el('div', 'giftbox',
+      `<div class="bx"><span>匣</span></div>
+       <div class="bt">${TIER_NAME[i]}</div>
+       <div class="bp">${BOX_FREE ? '무료 <s>다이아 ' + BOX_PRICE[i] + '</s>' : '다이아 ' + BOX_PRICE[i]}</div>`);
+    n.onclick = () => {
+      if (b.opened) return;
+      b.opened = true;
+      n.classList.add('opened');
+      SND.bell(); SND.coin();
+      const r = n.getBoundingClientRect();
+      FX.gold(r.left + r.width / 2, r.top + r.height / 2, 30);
+      b.loot.take();
+      renderTop(); saveRun();
+      n.querySelector('.bx').innerHTML = `<span class="loot">${b.loot.g}</span>`;
+      n.querySelector('.bt').textContent = b.loot.n;
+      n.querySelector('.bp').textContent = '얻었다';
+      bindTip(n, () => `<b>${b.loot.n}</b><br>${b.loot.d}`);
+      if (b.loot.card) toast(`${b.loot.n} — 덱에 넣었다`);
+    };
+    row.appendChild(n);
+  });
+  p.querySelector('#sp_leave').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+}
+
 /* ══════════════════════════════════════════════════════════
    12. 사건(이벤트)
    ══════════════════════════════════════════════════════════ */
-function addCard(id, up) { G.run.deck.push(mkCard(id, up)); G.run.stats.cards++; toast(`${CARDS[id].n}${up ? '+' : ''} 획득`); }
+function addCard(id, up) { G.run.deck.push(mkCard(id, up)); G.run.stats.cards++; dexAdd('cards', id); toast(`${CARDS[id].n}${up ? '+' : ''} 획득`); }
 const EVENTS = [
 { id: 'shrine', t: '길가의 사당', who: '이끼 낀 돌부처',
   d: '무너져 가는 사당 앞에 낡은 불상이 앉아 있다.\n누군가 오래전에 놓고 간 마른 꽃이 발치에 흩어져 있다.',
@@ -2349,6 +2894,7 @@ function runStatsHtml() {
     <div>엘리트<b>${r.stats.elites}</b></div>
     <div>덱의 부적<b>${r.deck.length}장</b></div>
     <div>유물<b>${r.relics.length}개</b></div>
+    <div>다시 선 횟수<b>${r.stats.revives || 0}회</b></div>
     <div>걸린 시간<b>${mins}분</b></div>`;
 }
 function gameOver() {
@@ -2356,19 +2902,34 @@ function gameOver() {
   const score = (G.run.act - 1) * 12 + G.run.floor;
   META.best = Math.max(META.best, score); saveMeta();
   G.scene = 'over';
+  G.b = null;
+  const canReturn = !!G.cp;
+  /* 모험은 지우지 않는다. 마지막 갈림길 상태를 저장해 두어 창을 닫았다 와도 이어진다. */
+  if (canReturn) { try { const cp = JSON.parse(G.cp);
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ run: cp, cp: G.cp })); } catch (e) {} }
   const s = $('#scene');
   const d = el('div', 'endscreen');
-  d.innerHTML = `<div class="big">패 배</div>
-    <div style="color:#9d9077;letter-spacing:.2em">산이 그대를 삼켰다</div>
+  d.innerHTML = `<div class="big">쓰 러 졌 다</div>
+    <div style="color:#9d9077;letter-spacing:.2em">${canReturn ? '허나 아직 끝은 아니다' : '산이 그대를 삼켰다'}</div>
     <div class="stats">${runStatsHtml()}</div>
-    <div style="display:flex;gap:12px">
-      <button class="brush-btn red" id="ov_again">다시 오른다</button>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
+      <button class="brush-btn ${canReturn ? 'ghost' : 'red'}" id="ov_again"
+        ${canReturn ? 'style="color:#e9dfc9;border-color:#7a6f5c"' : ''}>새로 시작한다</button>
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
-    </div>`;
+    </div>
+    ${canReturn ? '<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전 상태로 되돌아간다</div>' : ''}`;
   s.appendChild(d);
-  clearSave(); G.b = null;
-  d.querySelector('#ov_again').onclick = () => { closeOverlay(); newRun(0); };
-  d.querySelector('#ov_title').onclick = () => { closeOverlay(); G.run = null; showTitle(); };
+  const back = d.querySelector('#ov_back');
+  if (back) back.onclick = () => {
+    d.remove(); closeOverlay();
+    adoptRun(JSON.parse(G.cp));
+    G.run.stats.revives++;
+    SND.bell(); toast('숨을 고르고 다시 선다');
+    saveRun(); showMap();
+  };
+  d.querySelector('#ov_again').onclick = () => { d.remove(); closeOverlay(); G.cp = null; clearSave(); newRun(0); };
+  d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
 }
 function victory() {
   SND.victory(); setTimeout(() => SND.gong(), 400);
@@ -2386,7 +2947,7 @@ function victory() {
   s.appendChild(d);
   d.querySelector('#w_asc').onclick = () => {
     const r = G.run;
-    r.asc++; r.act = 0; r.maxHp = Math.max(30, r.maxHp - 3); r.hp = r.maxHp;
+    r.asc++; r.act = 0; r.bossPick = null; r.maxHp = Math.max(30, r.maxHp - 3); r.hp = r.maxHp;
     r.stats.floors = 0;
     d.remove(); nextAct();
     toast(`환생 ${r.asc}회 — 요괴들이 강해졌다`);
@@ -2399,20 +2960,113 @@ function showMenu() {
       <button class="brush-btn" id="m_sound">소리 ${SND.on ? '켜짐' : '꺼짐'}</button>
       <button class="brush-btn" id="m_speed">진행 속도 ${SPEED_NAME()}</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
+      <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">조작법</button>
       <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
-  p.querySelector('#m_sound').onclick = e => { SND.on = !SND.on; e.target.textContent = `소리 ${SND.on ? '켜짐' : '꺼짐'}`; if (SND.on) SND.ui(); };
+  p.querySelector('#m_sound').onclick = e => {
+    SND.on = !SND.on; META.sound = SND.on; saveMeta();
+    e.target.textContent = `소리 ${SND.on ? '켜짐' : '꺼짐'}`;
+    if (SND.on) { SND.ui(); SND.ambience(true, !!G.b); } else SND.ambience(false);
+  };
   p.querySelector('#m_speed').onclick = e => {
     SPEED = SPEED >= 1 ? .62 : SPEED >= .6 ? .38 : 1;
     META.speed = SPEED; saveMeta(); SND.ui();
     e.target.textContent = `진행 속도 ${SPEED_NAME()}`;
   };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
+  p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = showHelp;
   p.querySelector('#m_quit').onclick = () => { if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
   p.querySelector('#m_close').onclick = closeTop;
+}
+/* ── 도감 화면 ───────────────────────────────────────────── */
+function dexTile(known, glyph, name, tipHtml, cls, onClick) {
+  const n = el('div', 'dextile ' + (cls || '') + (known ? '' : ' unknown'),
+    `<b>${known ? glyph : '?'}</b><span>${known ? name : '???'}</span>`);
+  if (known) {
+    bindTip(n, () => tipHtml);
+    if (onClick) { n.classList.add('clickable'); n.onclick = () => { tipHide(); SND.ui(); onClick(); }; }
+  }
+  return n;
+}
+/* 카드 상세보기 — 기본과 강화를 나란히 보여 준다 */
+function showCardDetail(id) {
+  const d = CARDS[id], g = GRADE[d.rar];
+  const p = modal(`<h2>${d.n}</h2>
+    <div class="hint"><span class="gradechip" style="--gc:${g.c}">${g.s}</span> ${g.n} · ${TYPE_NAME[d.type]}
+      ${d.exhaust ? ' · 소멸' : ''} · 비용 ${ccost({ id, up: false }) === -1 ? 'X' : ccost({ id, up: false }) === -2 ? '없음' : ccost({ id, up: false })}</div>
+    <div class="detailrow">
+      <div class="detailcol"><h4>기본</h4><div class="dslot" id="dt_a"></div></div>
+      <div class="detailcol"><h4>강화 (+)</h4><div class="dslot" id="dt_b"></div></div>
+    </div>
+    <div class="detailnote">${g.desc}</div>
+    <button class="brush-btn" id="dt_close">닫기</button>`);
+  p.querySelector('#dt_a').appendChild(cardNode({ uid: -1, id, up: false }, { tip: false }));
+  p.querySelector('#dt_b').appendChild(cardNode({ uid: -2, id, up: true }, { tip: false }));
+  p.querySelector('#dt_close').onclick = closeTop;
+}
+function showDex() {
+  const byGrade = {};
+  for (const k of GRADE_ORDER.concat(['curse'])) byGrade[k] = [];
+  for (const id in CARDS) byGrade[CARDS[id].rar].push(id);
+  const relicIds = Object.keys(RELICS), enemyIds = Object.keys(ENEMIES);
+  const totalCards = Object.keys(CARDS).length;
+
+  let secs = '';
+  for (const gk of GRADE_ORDER.concat(['curse'])) {
+    if (gk === 'unknown') {
+      secs += `<div class="dexsec"><h3><span class="gradechip" style="--gc:${GRADE.unknown.c}">?</span> ?급 <i>0 / ?</i>
+        <em>아직 세상에 없다 — 상자에서도 나오지 않는다</em></h3><div class="dexgrid" id="dx_unknown"></div></div>`;
+      continue;
+    }
+    if (!byGrade[gk].length) continue;
+    const got = byGrade[gk].filter(id => META.dex.cards[id]).length;
+    secs += `<div class="dexsec"><h3><span class="gradechip" style="--gc:${GRADE[gk].c}">${GRADE[gk].s}</span> ${GRADE[gk].n}
+      <i>${got} / ${byGrade[gk].length}</i></h3><div class="dexgrid" data-g="${gk}"></div></div>`;
+  }
+  const p = modal(`<h2>도 감</h2>
+    <div class="hint">모험을 거듭하며 만난 것들이 여기 남는다 · 부적을 누르면 자세히 볼 수 있다
+      <b style="color:#e8c86a">(부적 ${dexCount('cards', totalCards)})</b></div>
+    <div class="dexwrap">
+      ${secs}
+      <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i></h3><div class="dexgrid" id="dx_r"></div></div>
+      <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
+    </div>
+    <button class="brush-btn" id="dx_close">닫기</button>`);
+
+  for (const gk of GRADE_ORDER.concat(['curse'])) {
+    const box = p.querySelector(`.dexgrid[data-g="${gk}"]`);
+    if (!box) continue;
+    for (const id of byGrade[gk]) {
+      const d = CARDS[id], known = !!META.dex.cards[id];
+      box.appendChild(dexTile(known, d.g, d.n,
+        `<b>${d.n}</b> · ${GRADE[d.rar].n} ${TYPE_NAME[d.type]}<br>${d.txt(d.v(false), false)}
+         <br><span style="color:#8f846d">눌러서 자세히 보기</span>`,
+        'gd_' + d.rar, () => showCardDetail(id)));
+    }
+  }
+  /* ?급 자리 — 잠겨 있다 */
+  const ub = p.querySelector('#dx_unknown');
+  const lock = el('div', 'dextile unknown locked', `<b>?</b><span>봉인됨</span>`);
+  bindTip(lock, () => `<b>?급</b><br>${GRADE.unknown.desc}`);
+  ub.appendChild(lock);
+
+  const gr = p.querySelector('#dx_r');
+  for (const id of relicIds) {
+    const d = RELICS[id], known = !!META.dex.relics[id];
+    gr.appendChild(dexTile(known, d.g, d.n, `<b>${d.n}</b> · ${d.rar === 'boss' ? '보스 유물' : RARITY_NAME[d.rar] || d.rar}<br>${d.d}`, 'r_' + d.rar));
+  }
+  const ge = p.querySelector('#dx_e');
+  for (const id of enemyIds) {
+    const d = ENEMIES[id], known = !!META.dex.enemies[id];
+    const moves = Object.keys(d.moves).map(k => d.moves[k].label).join(' · ');
+    ge.appendChild(dexTile(known, d.g, d.n,
+      `<b>${d.n}</b> · 체력 ${d.hp[0]}~${d.hp[1]}${d.boss ? ' · 보스' : d.elite ? ' · 엘리트' : ''}<br>행동: ${moves}`,
+      d.boss ? 'e_boss' : d.elite ? 'e_elite' : ''));
+  }
+  p.querySelector('#dx_close').onclick = closeTop;
 }
 function SPEED_NAME() { return SPEED >= 1 ? '보통' : SPEED >= .6 ? '빠름' : '아주 빠름'; }
 function showHelp() {
@@ -2437,8 +3091,10 @@ function setBg(act) {
   const k = 'a' + act;
   if (_bgKey === k) return;
   _bgKey = k;
-  const far = act >= 2 ? '#b9ac92' : '#c3b79d', mid = act >= 2 ? '#9c9078' : '#a89c82', near = act >= 2 ? '#6d6555' : '#7b7260';
-  $('#bg').innerHTML = `<div class="sky"></div>
+  const far = act >= 3 ? '#9d95a8' : act >= 2 ? '#b9ac92' : '#c3b79d',
+        mid = act >= 3 ? '#7d7488' : act >= 2 ? '#9c9078' : '#a89c82',
+        near = act >= 3 ? '#4e4857' : act >= 2 ? '#6d6555' : '#7b7260';
+  $('#bg').innerHTML = `<div class="sky"${act >= 3 ? ' style="background:linear-gradient(#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%)"' : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      <g opacity=".55">
        <path fill="${far}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/>
@@ -2449,8 +3105,9 @@ function setBg(act) {
      <g opacity=".75">
        <path fill="${near}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
      </g>
-     ${act >= 2 ? '<g opacity=".3"><circle cx="118" cy="78" r="42" fill="#efe6d0"/></g>'
-                : '<g opacity=".22"><circle cx="112" cy="74" r="38" fill="#c9585c"/></g>'}
+     ${act >= 3 ? '<g opacity=".34"><circle cx="118" cy="76" r="44" fill="#cfd6ea"/><circle cx="136" cy="66" r="40" fill="#9d95a8"/></g>'
+       : act >= 2 ? '<g opacity=".3"><circle cx="118" cy="78" r="42" fill="#efe6d0"/></g>'
+                  : '<g opacity=".22"><circle cx="112" cy="74" r="38" fill="#c9585c"/></g>'}
    </svg>`;
 }
 
@@ -2458,6 +3115,7 @@ function setBg(act) {
 function showTitle() {
   G.scene = 'title'; G.b = null; _bgKey = ''; setBg(1);
   const tb = $('#topbar'); if (tb) tb.remove();
+  SND.ambience(false);
   closeOverlay(); hideArrow();
   const s = $('#scene');
   s.innerHTML = `<div id="title-scene">
@@ -2468,12 +3126,14 @@ function showTitle() {
       <div class="menu">
         <button class="brush-btn red" id="t_new">새로운 모험</button>
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
+        <button class="brush-btn ghost" id="t_dex">도감</button>
         <button class="brush-btn ghost" id="t_help">조작법</button>
       </div>
       <div class="foot">${META.runs ? `등반 ${META.runs}회 · 등정 ${META.wins}회 · 최고 기록 ${META.best}` : '한 판에 30~45분'}</div>
     </div>`;
   s.querySelector('#t_new').onclick = () => { SND.init(); SND.gong(); clearSave(); newRun(0); };
   s.querySelector('#t_help').onclick = () => { SND.init(); showHelp(); };
+  s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
   const c = s.querySelector('#t_cont');
   if (c) c.onclick = () => { SND.init(); SND.ui(); resumeRun(); };
 }
@@ -2481,10 +3141,8 @@ function resumeRun() {
   try {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY));
     if (!d || !d.run) { toast('저장된 모험이 없다'); return; }
-    G.run = d.run;
-    /* uid 충돌 방지 */
-    let mx = 0; for (const c of G.run.deck) mx = Math.max(mx, c.uid || 0); _uid = mx + 1;
-    G.run.stats = G.run.stats || { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0 };
+    adoptRun(d.run);
+    G.cp = d.cp || null;
     showMap();
   } catch (e) { console.error(e); toast('저장된 기록을 읽을 수 없다'); }
 }
