@@ -652,6 +652,26 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dexgrid .dextile.unknown b,.dexgrid .dextile.unknown span{color:#6f6553}
 .dexgrid .dextile.unknown:hover{transform:none;box-shadow:none}
 
+/* ══ 처치 연출 ═══════════════════════════════════════════ */
+@keyframes killPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-12deg)}
+  30%{opacity:1;transform:translate(-50%,-50%) scale(1.25) rotate(3deg)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-90%) scale(1.1)}}
+.killmark{position:absolute;z-index:31;pointer-events:none;font-size:44px;letter-spacing:.14em;
+  color:#fff;text-shadow:0 0 18px #a8272c,0 0 40px #ff5a3c,0 3px 10px rgba(0,0,0,.8);
+  animation:killPop 1s cubic-bezier(.2,1.3,.4,1) forwards}
+.killmark.big{font-size:60px;text-shadow:0 0 26px #ffd76a,0 0 60px #ff8a00,0 3px 10px rgba(0,0,0,.85)}
+@keyframes shatter{0%{opacity:1;transform:scale(1) rotate(0)}
+  35%{opacity:1;transform:scale(1.22) rotate(-4deg);filter:brightness(2.4)}
+  100%{opacity:0;transform:scale(.35) rotate(16deg);filter:brightness(3)}}
+.unit.dying .body{animation:shatter .55s cubic-bezier(.4,0,.6,1) forwards}
+@keyframes comboPop{0%{opacity:0;transform:translateX(-50%) scale(.6)}
+  25%{opacity:1;transform:translateX(-50%) scale(1.15)}75%{opacity:1;transform:translateX(-50%) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) scale(1.05)}}
+.combomark{position:absolute;left:50%;z-index:31;pointer-events:none;font-size:26px;color:#ffd76a;
+  letter-spacing:.16em;text-shadow:0 0 16px #ff8a00,0 2px 8px rgba(0,0,0,.8);
+  animation:comboPop 1.1s ease-out forwards}
+
 /* ══ 비기 ════════════════════════════════════════════════ */
 #skillbtn{pointer-events:auto;position:absolute;left:20px;bottom:92px;width:70px;height:70px;border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
@@ -1522,39 +1542,39 @@ defCard({ id: 'mu', n: '없을 무', g: '無', type: 'skill', rar: 'ssx', cost: 
   } });
 
 defCard({ id: 'skyweb', n: '천라지망', g: '網', type: 'skill', rar: 'special', cost: 2, tgt: 'all',
-  v: u => ({ d: u ? 16 : 12, k: u ? 4 : 3 }),
+  v: u => ({ d: u ? 13 : 10, k: u ? 3 : 2 }),
   txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b>과 <b>약화</b>를 각각 ${v.k} 부여한다.`,
   play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'wind' }); st(e, 'vuln', c.v.k); st(e, 'weak', c.v.k); } } });
 
 defCard({ id: 'cleaver', n: '일도양단', g: '斷', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy', exhaust: true,
-  v: u => ({ d: u ? 44 : 34 }),
+  v: u => ({ d: u ? 36 : 28 }),
   txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 소멸.`,
   play: c => atk(c.t, c.v.d, { pierce: true, fx: 'slash2' }) });
 
 defCard({ id: 'ironbody', n: '금강호신', g: '護', type: 'skill', rar: 'special', cost: 2,
-  v: u => ({ b: u ? 34 : 26 }),
+  v: u => ({ b: u ? 26 : 20 }),
   txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>금강</b> 상태가 되어 방어도가 사라지지 않는다.`,
   play: c => { blk(c.v.b); st(P(), 'barricade', 1); } });
 
 defCard({ id: 'purgatory', n: '연옥화', g: '獄', type: 'attack', rar: 'special', cost: 2, tgt: 'all',
-  v: u => ({ d: u ? 16 : 12, p: u ? 10 : 8 }),
+  v: u => ({ d: u ? 13 : 10, p: u ? 8 : 6 }),
   txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>중독</b> ${v.p}을 부여한다.`,
   play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'fire' }); st(e, 'poison', c.v.p); } } });
 
 defCard({ id: 'godstep', n: '신행백변', g: '變', type: 'skill', rar: 'special', cost: 1, exhaust: true,
-  v: u => ({ n: u ? 5 : 4, e: 2 }),
+  v: u => ({ n: u ? 4 : 3, e: u ? 2 : 1 }),
   txt: v => `카드를 ${v.n}장 뽑고 기를 ${v.e} 얻는다. 소멸.`,
   play: c => { drawCards(c.v.n); energy(c.v.e); } });
 
 defCard({ id: 'immovemind', n: '부동심', g: '心', type: 'power', rar: 'special', cost: 2,
-  v: u => ({ x: u ? 5 : 4 }),
-  txt: v => `<b>힘</b>과 <b>민첩</b>을 각각 ${v.x} 얻는다.`,
-  play: c => { st(P(), 'str', c.v.x); st(P(), 'dex', c.v.x); } });
+  v: u => ({ x: u ? 4 : 3, y: u ? 3 : 2 }),
+  txt: v => `<b>힘</b>을 ${v.x}, <b>민첩</b>을 ${v.y} 얻는다.`,
+  play: c => { st(P(), 'str', c.v.x); st(P(), 'dex', c.v.y); } });
 
 defCard({ id: 'nirvana', n: '적멸', g: '寂', type: 'power', rar: 'special', cost: 2,
   v: u => ({ x: u ? 3 : 2 }),
-  txt: v => `<b>검기</b> ${v.x}과 <b>민첩</b> ${v.x}을 얻고, 턴 시작 시 카드를 1장 더 뽑는다.`,
-  play: c => { st(P(), 'edge', c.v.x); st(P(), 'dex', c.v.x); st(P(), 'flow', 1); } });
+  txt: v => `<b>검기</b> ${v.x}과 <b>민첩</b> ${v.x}을 얻는다.`,
+  play: c => { st(P(), 'edge', c.v.x); st(P(), 'dex', c.v.x); } });
 
 defCard({ id: 'ouroboros', n: '자강불식', g: '循', type: 'power', rar: 'special', cost: 3, exhaust: true,
   v: u => ({ x: u ? 2 : 1 }),
@@ -1562,7 +1582,7 @@ defCard({ id: 'ouroboros', n: '자강불식', g: '循', type: 'power', rar: 'spe
   play: c => { st(P(), 'rage', c.v.x); st(P(), 'focus', 1); SND.power(); } });
 
 defCard({ id: 'samsara', n: '윤회', g: '輪', type: 'skill', rar: 'ssx', cost: 1, exhaust: true,
-  v: u => ({ n: u ? 8 : 7, e: u ? 4 : 3 }),
+  v: u => ({ n: u ? 9 : 8, e: u ? 5 : 4 }),
   txt: v => `버린 더미를 모두 되돌려 섞고, 손패를 ${v.n}장으로 채운 뒤 기를 ${v.e} 얻는다. 소멸.`,
   play: c => {
     const b = G.b;
@@ -1573,7 +1593,7 @@ defCard({ id: 'samsara', n: '윤회', g: '輪', type: 'skill', rar: 'ssx', cost:
   } });
 
 defCard({ id: 'kalpa', n: '겁멸', g: '劫', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
-  v: u => ({ d: u ? 40 : 30 }),
+  v: u => ({ d: u ? 50 : 38 }),
   txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다. 소멸.`,
   play: async c => { screenFlash('rgba(255,120,60,.5)', 500);
     for (const e of alive()) atk(e, c.v.d, { fx: 'fire' }); } });
@@ -1585,69 +1605,72 @@ defCard({ id: 'starfall', n: '유성락', g: '隕', type: 'attack', rar: 'specia
   play: async c => { for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break;
     atk(pick(a), c.v.d, { fx: 'lightning' }); await wait(120); } } });
 defCard({ id: 'ironheart', n: '철심', g: '芯', type: 'power', rar: 'special', cost: 2,
-  v: u => ({ x: u ? 4 : 3 }),
+  v: u => ({ x: u ? 3 : 2 }),
   txt: v => `턴 종료 시 <i>${v.x * 3}</i>의 방어도를 얻고, <b>가시</b> ${v.x}을 얻는다.`,
   play: c => { st(P(), 'thorns', c.v.x); st(P(), 'endblock', c.v.x * 3); } });
-defCard({ id: 'sealarray', n: '봉마진', g: '陣', type: 'skill', rar: 'special', cost: 2, tgt: 'all',
-  v: u => ({ k: u ? 2 : 1 }),
-  txt: v => `모든 적에게 <b>무력</b>을 부여해 다음 행동을 막는다.${v.k > 1 ? ' <b>취약</b> 3도 부여한다.' : ''} 소멸.`,
+defCard({ id: 'sealarray', n: '봉마진', g: '陣', type: 'skill', rar: 'special', cost: 1, tgt: 'enemy',
+  v: u => ({ k: u ? 4 : 3 }),
+  txt: v => `대상에게 <b>무력</b>을 부여해 다음 행동을 막고 <b>취약</b> ${v.k}를 부여한다. 소멸.`,
   exhaust: true,
-  play: c => { SND.bell(); for (const e of alive()) { st(e, 'stun', 1); if (c.v.k > 1) st(e, 'vuln', 3); } } });
+  play: c => { SND.bell(); st(c.t, 'stun', 1); st(c.t, 'vuln', c.v.k); } });
 defCard({ id: 'bloodpact', n: '혈맹', g: '盟', type: 'skill', rar: 'special', cost: 0,
-  v: u => ({ h: u ? 5 : 8, e: 2 }),
+  v: u => ({ h: u ? 8 : 11, e: 2 }),
   txt: v => `체력을 ${v.h} 잃고 기를 ${v.e} 얻는다. 카드를 1장 뽑는다.`,
   play: c => { lose(c.v.h); energy(c.v.e); drawCards(1); } });
 
 /* --- SSX급 추가 --- */
 defCard({ id: 'ghostparade', n: '백귀야행', g: '百', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
-  v: u => ({ d: u ? 14 : 11, n: 5 }),
+  v: u => ({ d: u ? 16 : 13, n: 5 }),
   txt: v => `무작위 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
   play: async c => { skillBanner('百 鬼 夜 行', true);
     for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break;
       atk(pick(a), c.v.d, { fx: 'petal' }); await wait(110); } } });
 defCard({ id: 'soulcut', n: '단혼검', g: '斷', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
-  v: u => ({ d: u ? 45 : 35 }),
+  v: u => ({ d: u ? 64 : 50 }),
   txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 대상의 <b>이로운 효과</b>를 모두 지운다. 소멸.`,
   play: c => { for (const k in c.t.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete c.t.s[k];
     atk(c.t, c.v.d, { pierce: true, fx: 'void' }); } });
 defCard({ id: 'timeflow', n: '역류', g: '流', type: 'skill', rar: 'ssx', cost: 1, exhaust: true,
-  v: u => ({ n: u ? 3 : 2 }),
-  txt: v => `버린 더미에서 부적 ${v.n}장을 손으로 되돌리고, 그 부적들의 기 소모가 이번 턴 0이 된다.`,
+  v: u => ({ n: u ? 5 : 4, d: u ? 4 : 3 }),
+  txt: v => `버린 더미에서 부적 ${v.n}장을 손으로 되돌리고 카드를 ${v.d}장 뽑는다.
+    <b>이번 턴 모든 부적의 기 소모가 0</b>이 된다.`,
   play: async c => { const b = G.b;
     for (let i = 0; i < c.v.n && b.discardPile.length; i++) {
       if (b.hand.length >= 10) break;
       b.hand.push(b.discardPile.pop());
     }
+    drawCards(c.v.d);
     b.freeTurn = true; SND.bell(); syncAll(); } });
 defCard({ id: 'thousandarms', n: '천수관음', g: '手', type: 'power', rar: 'ssx', cost: 2,
   v: u => ({ x: u ? 2 : 1 }),
-  txt: v => `<b>기공</b> ${v.x}과 <b>집중</b> ${v.x}을 얻는다. 매 턴 카드와 기를 ${v.x}씩 더 얻는다.`,
-  play: c => { st(P(), 'flow', c.v.x); st(P(), 'focus', c.v.x); } });
+  txt: v => `<b>기공</b> ${v.x}과 <b>집중</b> ${v.x}을 얻고, <b>힘</b>과 <b>민첩</b>을 3씩 얻는다.`,
+  play: c => { st(P(), 'flow', c.v.x); st(P(), 'focus', c.v.x); st(P(), 'str', 3); st(P(), 'dex', 3); } });
 defCard({ id: 'ironmountain', n: '태산', g: '山', type: 'power', rar: 'ssx', cost: 2,
-  v: u => ({ b: u ? 14 : 10 }),
-  txt: v => `<b>금강</b> 상태가 되고, 턴 시작 시 <i>${v.b}</i>의 방어도를 얻는다.`,
-  play: c => { st(P(), 'barricade', 1); st(P(), 'turnblock', c.v.b); } });
+  v: u => ({ b: u ? 18 : 14 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>금강</b> 상태가 된다. 턴 시작 시 <i>${v.b}</i>의 방어도를 더 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'barricade', 1); st(P(), 'turnblock', c.v.b); } });
 defCard({ id: 'nineheaven', n: '구천뇌옥', g: '獄', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
-  v: u => ({ d: u ? 30 : 24, k: 3 }),
+  v: u => ({ d: u ? 38 : 30, k: 3 }),
   txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b>과 <b>약화</b>를 ${v.k}씩 부여한다. 소멸.`,
   play: async c => { screenFlash('rgba(180,220,255,.5)', 520); SND.thunder();
     for (const e of alive()) { atk(e, c.v.d, { fx: 'lightning' }); st(e, 'vuln', c.v.k); st(e, 'weak', c.v.k); } } });
 defCard({ id: 'lifedrain', n: '흡천대법', g: '天', type: 'power', rar: 'ssx', cost: 2,
-  v: u => ({ x: u ? 9 : 6 }),
-  txt: v => `<b>흡성</b> ${v.x}을 얻고 <b>힘</b>을 3 얻는다.`,
-  play: c => { st(P(), 'drain', c.v.x); st(P(), 'str', 3); } });
+  v: u => ({ x: u ? 11 : 8 }),
+  txt: v => `<b>흡성</b> ${v.x}을 얻고 <b>힘</b>과 <b>민첩</b>을 4씩 얻는다.`,
+  play: c => { st(P(), 'drain', c.v.x); st(P(), 'str', 4); st(P(), 'dex', 4); } });
 defCard({ id: 'karmablade', n: '업보검', g: '業', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 5 : 4 }),
-  txt: v => `이번 전투에서 잃은 체력 ÷ 2 + <em>${v.d}</em>만큼의 피해를 준다.`,
+  v: u => ({ d: u ? 32 : 24 }),
+  txt: v => `이번 전투에서 잃은 체력만큼 + <em>${v.d}</em>의 피해를 준다.`,
   play: c => { const lost = Math.max(0, (G.b.startHp || P().maxHp) - P().hp);
-    atk(c.t, Math.floor(lost / 2) + c.v.d, { fx: 'slash2' }); } });
+    atk(c.t, lost + c.v.d, { fx: 'slash2' }); } });
 defCard({ id: 'sealheaven', n: '천봉인', g: '封', type: 'skill', rar: 'ssx', cost: 2, tgt: 'all', exhaust: true,
-  v: u => ({ n: u ? 2 : 1 }),
-  txt: v => `모든 적을 ${v.n}턴 동안 <b>무력</b>하게 만들고, 방어도를 없앤다. 소멸.`,
-  play: c => { SND.gong(); for (const e of alive()) { st(e, 'stun', c.v.n); e.block = 0; } syncAll(); } });
+  v: u => ({ n: u ? 3 : 2 }),
+  txt: v => `모든 적을 ${v.n}턴 동안 <b>무력</b>하게 만들고, 방어도와 이로운 효과를 없앤다. 소멸.`,
+  play: c => { SND.gong(); for (const e of alive()) { st(e, 'stun', c.v.n); e.block = 0;
+    for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k]; } syncAll(); } });
 defCard({ id: 'phoenix', n: '불사조', g: '鳳', type: 'power', rar: 'ssx', cost: 2, exhaust: true,
-  v: u => ({ h: u ? 40 : 30 }),
-  txt: v => `이 전투에서 쓰러질 때 체력 ${v.h}로 되살아난다. (한 번) 소멸.`,
+  v: u => ({ h: u ? 70 : 55 }),
+  txt: v => `이 전투에서 쓰러질 때 체력 ${v.h}과 <i>20</i>의 방어도로 되살아난다. (한 번) 소멸.`,
   play: c => { st(P(), 'rebirth', c.v.h); SND.power(); flash('불사조'); } });
 
 /* ---------- ?급 — 세상에 단 하나 ---------- */
@@ -2196,37 +2219,37 @@ defEnemy({ id: 'stoneman', n: '석귀', g: '石', hp: [28, 34], col: '#5f5a52',
   next: e => lastIs(e, 'smash') ? 'fortify' : 'smash' });
 
 /* ---------- 2막 잡졸 ---------- */
-defEnemy({ id: 'skeleton', n: '해골 병사', g: '骸', hp: [30, 36], col: '#6d6553',
-  moves: { pierce: { t: 'attack', label: '창격', d: 12, fx: 'pierce' },
-           shield: { t: 'defend', label: '방패 세우기', blk: 12 },
+defEnemy({ id: 'skeleton', n: '해골 병사', g: '骸', hp: [25, 30], col: '#6d6553',
+  moves: { pierce: { t: 'attack', label: '창격', d: 10, fx: 'pierce' },
+           shield: { t: 'defend', label: '방패 세우기', blk: 10 },
            frenzy: { t: 'attack', label: '연격', d: 6, n: 2 } },
   next: e => lastIs(e, 'pierce') ? (rnd() < .5 ? 'shield' : 'frenzy') : rnd() < .5 ? 'pierce' : rnd() < .6 ? 'frenzy' : 'shield' });
 
-defEnemy({ id: 'serpent', n: '화사', g: '蛇', hp: [28, 34], col: '#3f7346',
-  moves: { fang: { t: 'atkdeb', label: '독니', d: 8, fx: 'poison', extra: e => st(P(), 'poison', 4) },
+defEnemy({ id: 'serpent', n: '화사', g: '蛇', hp: [24, 29], col: '#3f7346',
+  moves: { fang: { t: 'atkdeb', label: '독니', d: 7, fx: 'poison', extra: e => st(P(), 'poison', 3) },
            coil: { t: 'defend', label: '똬리', blk: 9, self: { str: 2 } } },
   next: e => lastIs(e, 'fang', 2) ? 'coil' : rnd() < .7 ? 'fang' : 'coil' });
 
-defEnemy({ id: 'ghostmonk', n: '요승', g: '僧', hp: [33, 39], col: '#7a4a3a',
-  moves: { chant: { t: 'attack', label: '염불', d: 8, n: 2 },
-           barrier: { t: 'defend', label: '결계', blk: 15 },
+defEnemy({ id: 'ghostmonk', n: '요승', g: '僧', hp: [28, 33], col: '#7a4a3a',
+  moves: { chant: { t: 'attack', label: '염불', d: 6, n: 2 },
+           barrier: { t: 'defend', label: '결계', blk: 12 },
            hex: { t: 'debuff', label: '주박', deb: { weak: 2, vuln: 2 } } },
   next: e => e.hist.length === 0 ? 'hex' : lastIs(e, 'chant') ? 'barrier' : rnd() < .55 ? 'chant' : rnd() < .6 ? 'hex' : 'barrier' });
 
-defEnemy({ id: 'yaksha', n: '야차', g: '叉', hp: [38, 44], col: '#8c2f3a',
-  moves: { rampage: { t: 'attack', label: '광란', d: 7, n: 3 },
-           roar: { t: 'buff', label: '포효', self: { str: 3 } },
-           cleave: { t: 'attack', label: '가르기', d: 13, fx: 'slash2' } },
+defEnemy({ id: 'yaksha', n: '야차', g: '叉', hp: [34, 39], col: '#8c2f3a',
+  moves: { rampage: { t: 'attack', label: '광란', d: 6, n: 3 },
+           roar: { t: 'buff', label: '포효', self: { str: 2 } },
+           cleave: { t: 'attack', label: '가르기', d: 11, fx: 'slash2' } },
   next: e => e.hist.length === 0 ? 'roar' : lastIs(e, 'rampage') ? 'cleave' : rnd() < .5 ? 'rampage' : rnd() < .6 ? 'cleave' : 'roar' });
 
-defEnemy({ id: 'willow', n: '버들귀', g: '柳', hp: [32, 38], col: '#4a7040',
+defEnemy({ id: 'willow', n: '버들귀', g: '柳', hp: [27, 32], col: '#4a7040',
   moves: { bind: { t: 'atkdeb', label: '휘감기', d: 7, deb: { weak: 2 } },
-           siphon: { t: 'attack', label: '흡정', d: 10, heal: 10 } },
+           siphon: { t: 'attack', label: '흡정', d: 8, heal: 6 } },
   next: e => lastIs(e, 'siphon') ? 'bind' : rnd() < .55 ? 'siphon' : 'bind' });
 
-defEnemy({ id: 'shadow', n: '그림자', g: '影', hp: [26, 32], col: '#2e2b33',
-  moves: { split: { t: 'attack', label: '분신 연격', d: 5, n: 3 },
-           hide: { t: 'defend', label: '은신', blk: 12, self: { dex: 2 } } },
+defEnemy({ id: 'shadow', n: '그림자', g: '影', hp: [22, 27], col: '#2e2b33',
+  moves: { split: { t: 'attack', label: '분신 연격', d: 4, n: 3 },
+           hide: { t: 'defend', label: '은신', blk: 10, self: { dex: 2 } } },
   next: e => lastIs(e, 'split', 2) ? 'hide' : rnd() < .72 ? 'split' : 'hide' });
 
 /* ---------- 엘리트 ---------- */
@@ -2583,7 +2606,7 @@ const ENCOUNTERS = {
   2: {
     weak:   [['skeleton', 'shadow'], ['serpent', 'willow'], ['ghostmonk']],
     normal: [['yaksha'], ['skeleton', 'skeleton'], ['ghostmonk', 'serpent'], ['shadow', 'shadow', 'willow'],
-             ['yaksha', 'shadow'], ['serpent', 'serpent', 'skeleton'], ['willow', 'ghostmonk'], ['stoneman', 'yaksha']],
+             ['yaksha', 'shadow'], ['serpent', 'skeleton'], ['willow', 'ghostmonk'], ['stoneman', 'shadow']],
     elite:  [['jangseung', 'wisp'], ['hwangryeong'], ['imugi', 'shadow'], ['geuseundae', 'serpent']],
     boss:   ['sangun']
   },
@@ -2784,7 +2807,9 @@ async function startPlayerTurn() {
 
   const n = 5 + (p.s.flow || 0) + b.drawMod;
   b.drawMod = 0;
+  b.fortuneRolled = false;
   drawCards(Math.max(0, n));
+  await tryFortune();
   SND.drum();
   showTurnLabel('당신의 차례');
   b.busy = false;
@@ -2939,13 +2964,20 @@ function decay(ent) {
 async function checkDeaths() {
   const b = G.b; if (!b) return;
   let any = false;
+  let killed = 0;
   for (const e of b.enemies) {
     if (e.hp <= 0 && !e.dead) {
-      e.dead = true; any = true;
+      e.dead = true; any = true; killed++;
       fire('onKill', e);
-      if (e.el) { const c = centerOf(e.el); FX.ink(c.x, c.y, 26); e.el.classList.add('dying'); }
-      SND.death();
+      killFx(e);
+      dropOnKill(e);
     }
+  }
+  if (killed >= 2) {                                  /* 한 번에 여럿을 눕히면 더 요란하게 */
+    const n = el('div', 'combomark', killed + '연속 처치!');
+    n.style.top = (innerHeight * .26) + 'px';
+    $('#app').appendChild(n); setTimeout(() => n.remove(), 1200);
+    SND.victory(); shake(true);
   }
   if (any) {
     await wait(430);
@@ -2959,7 +2991,7 @@ async function checkOver() {
   const p = P();
   if (p.hp <= 0 && p.s.rebirth) {                 /* 불사조 */
     const h = p.s.rebirth; delete p.s.rebirth;
-    p.hp = Math.min(p.maxHp, h); G.run.hp = p.hp;
+    p.hp = Math.min(p.maxHp, h); G.run.hp = p.hp; p.block += 20;
     screenFlash('rgba(255,190,90,.65)', 700); SND.victory(); flash('불사조가 날아오른다');
     healFx(p, h); syncAll(); await wait(600);
     return false;
@@ -3383,6 +3415,84 @@ function lunge(e) {
   b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
   setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
 }
+/* ── 처치 연출 ───────────────────────────────────────────── */
+function killFx(e) {
+  const big = !!(e.def.boss || e.def.elite);
+  if (e.el) {
+    const c = centerOf(e.el);
+    FX.ink(c.x, c.y, big ? 44 : 26);
+    FX.blood(c.x, c.y, big ? 34 : 18);
+    if (big) FX.gold(c.x, c.y, 26);
+    e.el.classList.add('dying');
+    const m = el('div', 'killmark' + (big ? ' big' : ''), big ? '토 벌' : '처 치');
+    m.style.left = c.x + 'px'; m.style.top = c.y + 'px';
+    $('#app').appendChild(m); setTimeout(() => m.remove(), 1000);
+  }
+  SND.death();
+  if (big) { screenFlash('rgba(255,210,120,.42)', 520); SND.gong(); shake(true); }
+  else shake();
+}
+/* 처치할 때 이따금 물약이 떨어진다 */
+function dropOnKill(e) {
+  const run = G.run; if (!run) return;
+  const big = !!(e.def.boss || e.def.elite);
+  const chance = big ? .55 : .10;
+  if (rnd() >= chance) return;
+  if (run.potions.length >= run.potSlots) return;
+  /* 좋은 물약이 나올 확률은 상대가 셀수록 높다 */
+  const pool = POT_POOL.filter(id => {
+    const r = POTIONS[id].rar;
+    return big ? true : r !== 'rare';
+  });
+  const id = pickWeighted(pool.map(x => ({
+    w: POTIONS[x].rar === 'common' ? 10 : POTIONS[x].rar === 'uncommon' ? (big ? 8 : 4) : (big ? 4 : 1), id: x
+  }))).id;
+  run.potions.push(id);
+  const d = POTIONS[id];
+  if (e.el) { const c = centerOf(e.el); FX.spark(c.x, c.y, 16, '120,200,180'); }
+  SND.potion();
+  toast(`${d.n} 을(를) 떨어뜨렸다`);
+  renderTop();
+}
+
+/* ── 천운(天運) — 카드를 뽑을 때 아주 드물게 터진다 ─────────── */
+const FORTUNE_CHANCE = 0.02;
+async function tryFortune() {
+  const b = G.b;
+  if (!b || b.fortuneRolled || b.over) return false;
+  b.fortuneRolled = true;                       /* 한 턴에 한 번만 굴린다 */
+  if (rnd() >= FORTUNE_CHANCE) return false;
+  const pool = b.drawPile.concat(b.discardPile)
+    .filter(c => { const t = cdef(c).type; return t === 'skill' || t === 'power'; });
+  if (!pool.length) return false;
+  b.busy = true;
+  skillBanner('天 運', true);
+  screenFlash('radial-gradient(circle,rgba(255,255,220,.9),rgba(255,150,40,.7))', 900);
+  SND.gong(); SND.victory();
+  toast(`천운! 덱의 기술 ${pool.length}장이 저절로 펼쳐진다`);
+  await wait(500);
+  for (const c of pool) {
+    const i1 = b.drawPile.indexOf(c); if (i1 >= 0) b.drawPile.splice(i1, 1);
+    const i2 = b.discardPile.indexOf(c); if (i2 >= 0) b.discardPile.splice(i2, 1);
+    const d = cdef(c);
+    b.curCard = c;
+    try {
+      const t = d.tgt === 'enemy' ? (alive()[0] || null) : null;
+      if (d.tgt === 'enemy' && !t) { b.exhaustPile.push(c); continue; }
+      await d.play({ v: cval(c), u: c.up, t, card: c, x: 0 });
+    } catch (err) { console.error('천운 처리 오류', d.id, err); }
+    b.curCard = null;
+    b.exhaustPile.push(c);
+    await checkDeaths();
+    if (b.over) break;
+    await wait(110);
+  }
+  FX.gold(innerWidth / 2, innerHeight / 2, 40);
+  syncAll();
+  b.busy = false;
+  return true;
+}
+
 /* ── 비기 ────────────────────────────────────────────────── */
 function syncSkill() {
   const btn = $('#skillbtn'); if (!btn || !G.b) return;
@@ -5197,6 +5307,15 @@ const GUIDE = {
       <div><i>6</i><span><b>턴 종료</b> — 누르면 적이 의도대로 움직인다.</span></div>
       <div><i>7</i><span><b>비기 · 조합 · 상점 · 뽑기</b> — 전투가 아닐 때 언제든 갈 수 있다.</span></div>
     </div>
+    <h3>천운(天運)</h3>
+    <p>턴을 시작하며 카드를 뽑을 때 <b>2% 확률</b>로 천운이 터진다.
+    덱과 버린 더미에 남은 <b>기술·심법 부적이 전부 저절로 펼쳐진다.</b>
+    노릴 수는 없지만, 터지면 그 전투는 이긴 것이나 다름없다.</p>
+    <h3>처치</h3>
+    <p>요괴를 눕히면 <b>처치</b>가 뜨고 먹물이 튄다. 엘리트·보스는 <b>토벌</b>과 함께 화면이 번쩍인다.
+    한 번에 둘 이상 눕히면 <b>연속 처치</b>가 뜬다.</p>
+    <p>요괴는 이따금 <b>물약을 떨어뜨린다</b> — 잡졸 10%, 엘리트·보스 55%.
+    센 상대일수록 좋은 물약이 나온다.</p>
     <h3>받을 피해가 미리 보인다</h3>
     <p>내 발밑에 <b>이번 턴에 받을 피해</b>가 뜬다. 방어도를 올리면 숫자가 줄고,
     다 막아내면 <b>막아냄</b>으로 바뀐다. 이것만 보고 방어를 얼마나 올릴지 정하면 된다.</p>
