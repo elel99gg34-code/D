@@ -120,6 +120,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
+.topbtn.arena{color:#ffd9c8;background:rgba(200,80,40,.24);border-color:#e2622a}
+.topbtn.arena:hover{background:rgba(200,80,40,.5)}
+.topbtn.arena.ready{animation:flameGlow 1.7s ease-in-out infinite}
+.topbtn.arena.locked{opacity:.4}
 .topbtn.skill{color:#e6d6ff;background:rgba(120,60,200,.24);border-color:#a879e8}
 .topbtn.skill:hover{background:rgba(120,60,200,.46)}
 .topbtn.fuse{color:#ffd9e0;background:rgba(190,40,80,.22);border-color:#d84a70}
@@ -273,6 +277,39 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:var(--red);color:#fff;border-radius:3px;box-shadow:0 4px 0 #6f1a1e;transition:.15s;margin-left:.14em}
 #endturn:hover{background:var(--red2);transform:translateY(-2px);box-shadow:0 6px 0 #6f1a1e}
 #endturn:disabled{background:#7a7263;box-shadow:0 4px 0 #55503f;opacity:.7;transform:none}
+/* 자동 플레이 */
+#autobtn{pointer-events:auto;position:absolute;right:22px;bottom:140px;padding:8px 16px;font-size:13px;letter-spacing:.12em;
+  background:rgba(23,19,15,.82);color:#d8cbaa;border:1.5px solid #6d6250;border-radius:3px;transition:.15s}
+#autobtn b{font-size:11px;opacity:.9;margin-left:3px}
+#autobtn:hover{border-color:#c8a94e;color:#f2e6c4}
+#autobtn.on{background:#2c5f5a;border-color:#7fd3c6;color:#eafff9;box-shadow:0 0 14px rgba(70,190,175,.45);
+  animation:autopulse 1.8s ease-in-out infinite}
+#autobtn.locked{opacity:.5;border-style:dashed}
+#autobtn.locked:hover{border-color:#8a7f68;color:#d8cbaa}
+@keyframes autopulse{50%{box-shadow:0 0 24px rgba(70,190,175,.85)}}
+#autochip{position:fixed;left:50%;top:56px;transform:translate(-50%,-16px);z-index:70;display:none;align-items:center;gap:9px;
+  padding:7px 15px 7px 11px;border-radius:22px;background:rgba(18,44,42,.94);border:1.5px solid #6ec3b6;
+  color:#e6fff9;font-size:12.5px;letter-spacing:.14em;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.45);
+  transition:transform .2s,opacity .2s;opacity:0}
+#autochip.on{display:flex;transform:translate(-50%,0);opacity:1}
+#autochip i{width:9px;height:9px;border-radius:50%;background:#7fe6cf;animation:autoblink 1.1s infinite}
+#autochip b{font-weight:400;font-size:11px;color:#9fd8cd;letter-spacing:.1em;border-left:1px solid rgba(150,220,205,.35);padding-left:9px}
+#autochip:hover{background:rgba(28,64,60,.98)}
+@keyframes autoblink{50%{opacity:.25}}
+/* 설정 */
+.optlist{display:flex;flex-direction:column;gap:2px;width:min(520px,88vw);max-height:58vh;overflow-y:auto;padding-right:6px}
+.optlist::-webkit-scrollbar{width:8px}.optlist::-webkit-scrollbar-thumb{background:rgba(220,200,160,.3);border-radius:4px}
+.optrow{display:flex;align-items:center;gap:14px;padding:11px 4px;border-bottom:1px solid rgba(220,200,160,.14)}
+.optrow .lb{flex:1;text-align:left}
+.optrow .lb b{display:block;font-weight:400;font-size:14.5px;color:#f0e6cd;letter-spacing:.06em}
+.optrow .lb small{display:block;font-size:11.5px;color:#9d927b;margin-top:2px;letter-spacing:.02em}
+.optrow .val{flex:none;min-width:104px;padding:7px 12px;font-size:12.5px;letter-spacing:.1em;border-radius:3px;
+  background:rgba(23,19,15,.55);border:1.5px solid #6d6250;color:#dccfae;transition:.14s;text-align:center}
+.optrow .val:hover{border-color:#c8a94e;color:#f6ecd0}
+.optrow .val.yes{border-color:#4f9c8f;color:#a7ecdd;background:rgba(30,70,66,.5)}
+.optrow .val.no{opacity:.55}
+.optrow input[type=range]{flex:none;width:150px;accent-color:#a8272c}
+.opthead{margin:16px 0 2px;font-size:12px;letter-spacing:.3em;color:#c8a94e;text-align:left;border-bottom:1px solid rgba(200,169,78,.3);padding-bottom:6px}
 #energy{pointer-events:auto;position:absolute;left:96px;bottom:88px;width:78px;height:78px;border-radius:50%;
   display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#4a8a83,#1e4642);color:#f3ecd8;
   font-size:22px;border:2.5px solid #d6c8a6;box-shadow:0 0 22px rgba(44,95,90,.55),0 4px 10px rgba(0,0,0,.35);cursor:help}
@@ -298,6 +335,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .mapnode.avail:hover{transform:scale(1.18)}
 .mapnode.done{opacity:.42;filter:grayscale(.7)}
 .mapnode.cur{border-color:var(--gold);box-shadow:0 0 0 4px rgba(157,124,46,.3)}
+.mapnode.janggi{background:linear-gradient(150deg,#5c4a1d,#957d2b);color:#fbf3ea;border-color:#e8cf94;
+  box-shadow:0 0 0 3px rgba(232,207,148,.2),0 0 16px rgba(232,207,148,.45)}
+.mapnode.janggi.done{background:#4a4438}
 .mapnode.special{background:linear-gradient(150deg,#1d4a5c,#2b7d95);color:#eaf7fb;border-color:#6fd0e8;
   box-shadow:0 0 0 3px rgba(111,208,232,.22),0 0 18px rgba(111,208,232,.5)}
 .mapnode.special.done{background:#3a4a50}
@@ -488,6 +528,93 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gbanner.hot.on{box-shadow:0 0 26px rgba(255,200,90,.6),inset 0 0 26px rgba(255,190,80,.2)}
 .gbanner .tag{position:absolute;right:-4px;top:-7px;background:var(--red);color:#fff;font-size:9.5px;
   padding:2px 6px;border-radius:8px;letter-spacing:.06em;border:1px solid rgba(255,220,180,.5)}
+/* ── VIP ─────────────────────────────────────────────── */
+.gbanner.vipnav{background:linear-gradient(120deg,#3b2352,#1b1030);border-color:rgba(200,150,255,.5)}
+.gbanner.vipnav .bg{background:radial-gradient(circle at 35% 30%,#c79bff,#4a2a7a);color:#fff;
+  box-shadow:0 0 12px rgba(180,120,255,.6)}
+.gbanner.vipnav .bn b{color:#f0dcff;letter-spacing:.08em}
+.gbanner.vipnav.on{border-color:#e0bcff;box-shadow:0 0 26px rgba(180,110,255,.55),inset 0 0 26px rgba(160,90,255,.2)}
+.vipwrap{display:flex;gap:26px;align-items:flex-start;padding:8px 4px 4px;flex-wrap:wrap;justify-content:center}
+/* 구매 카드 — 아우라 */
+.vipcard{position:relative;width:262px;height:376px;flex:none;border-radius:16px;overflow:hidden;isolation:isolate;
+  background:linear-gradient(160deg,#241634 0%,#120b1e 45%,#2b1a3c 100%);
+  box-shadow:0 22px 50px rgba(0,0,0,.6),0 0 40px rgba(150,90,255,.32);animation:vfloat 5.5s ease-in-out infinite}
+@keyframes vfloat{50%{transform:translateY(-9px)}}
+.vipcard .vaura{position:absolute;inset:-58%;z-index:0;opacity:.85;
+  background:conic-gradient(from 0deg,#ff2d55,#ffd76a,#6fe6ff,#b98cff,#ff2d55);
+  animation:vspin 6.5s linear infinite;filter:blur(11px)}
+@keyframes vspin{to{transform:rotate(360deg)}}
+.vipcard .vedge{position:absolute;inset:5px;z-index:1;border-radius:12px;pointer-events:none;
+  background:linear-gradient(160deg,#251737 0%,#100a1b 48%,#2a1a3b 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,220,150,.5),inset 0 0 34px rgba(190,120,255,.28)}
+.vipcard .vfoil{position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(105deg,transparent 36%,rgba(255,255,255,.34) 47%,rgba(190,240,255,.22) 52%,transparent 63%);
+  background-size:260% 100%;animation:vfoil 3.6s ease-in-out infinite}
+@keyframes vfoil{0%{background-position:190% 0}55%,100%{background-position:-90% 0}}
+.vipcard .vinner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:9px;padding:22px 18px;text-align:center}
+.vipcard .vtop{font-size:11px;letter-spacing:.42em;color:#e7c9ff;text-indent:.42em;opacity:.9}
+.vipcard .vseal{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;margin:4px 0 2px;
+  background:radial-gradient(circle at 34% 28%,#fff0c0,#e0a93c 42%,#7a4a12);
+  box-shadow:0 0 34px rgba(255,200,90,.75),inset 0 -6px 16px rgba(90,50,0,.5);position:relative}
+.vipcard .vseal:after{content:'';position:absolute;inset:-9px;border-radius:50%;border:1.5px solid rgba(255,220,140,.55);
+  animation:vring 2.6s ease-out infinite}
+@keyframes vring{0%{transform:scale(.94);opacity:.9}100%{transform:scale(1.3);opacity:0}}
+.vipcard .vseal span{font-size:46px;color:#3a2408;text-shadow:0 1px 0 rgba(255,240,200,.6)}
+.vipcard .vname{font-size:23px;letter-spacing:.16em;color:#fff4dd;text-indent:.16em;
+  text-shadow:0 0 20px rgba(255,200,120,.6)}
+.vipcard .vsub{font-size:11.5px;color:#c0a8d8;letter-spacing:.06em;line-height:1.6}
+.vipcard .vprice{margin-top:8px;font-size:15px;color:#ffe3a8;letter-spacing:.1em;display:flex;gap:9px;align-items:baseline}
+.vipcard .vprice em{font-style:normal;color:#7fe6b0;font-size:19px;text-shadow:0 0 16px rgba(90,240,170,.6)}
+.vipcard .vprice s{color:#8a7b9a;font-size:12.5px}
+.vipcard .vmote{position:absolute;bottom:-8px;z-index:2;width:4px;height:4px;border-radius:50%;background:#ffdf9a;
+  box-shadow:0 0 8px #ffcf7a;opacity:0;animation:vmote 4.6s linear infinite;pointer-events:none}
+@keyframes vmote{0%{opacity:0;transform:translateY(0) scale(.6)}
+  12%{opacity:.95}70%{opacity:.7}100%{opacity:0;transform:translateY(-330px) scale(1.15)}}
+.vipcard.owned .vaura{animation-duration:11s;opacity:.62}
+.vipcard.owned:before{content:'보유 중';position:absolute;z-index:4;top:20px;right:-42px;width:156px;text-align:center;
+  white-space:nowrap;transform:rotate(38deg);background:linear-gradient(90deg,#2c7a5e,#4fd3a0);color:#04231a;
+  font-size:11.5px;letter-spacing:.22em;text-indent:.22em;padding:5px 0;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.vipinfo{flex:1;min-width:300px;max-width:460px;text-align:left}
+.vipinfo h3{font-size:13px;letter-spacing:.34em;color:#e0bcff;margin-bottom:12px;text-indent:.34em;
+  border-bottom:1px solid rgba(200,150,255,.3);padding-bottom:8px}
+.viplist{display:flex;flex-direction:column;gap:8px;max-height:54vh;overflow-y:auto;padding-right:4px}
+.viplist::-webkit-scrollbar{width:7px}.viplist::-webkit-scrollbar-thumb{background:rgba(200,150,255,.35);border-radius:4px}
+.vperk{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;border-radius:9px;
+  background:linear-gradient(120deg,rgba(58,38,80,.7),rgba(24,16,36,.7));border:1px solid rgba(170,120,220,.28)}
+.vperk .pg{width:36px;height:36px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:18px;
+  background:radial-gradient(circle at 35% 30%,#6b4a92,#2a1a40);color:#f0dcff;border:1px solid rgba(210,170,255,.45)}
+.vperk .pt b{display:block;font-weight:400;font-size:14px;color:#f6ecff;letter-spacing:.05em;margin-bottom:3px}
+.vperk .pt small{display:block;font-size:11.8px;line-height:1.65;color:#b6a6c8;word-break:keep-all}
+.vperk .pt small b{display:inline;color:#ffd98a;font-size:11.8px}
+.vperk.hot{border-color:rgba(255,90,130,.55);box-shadow:0 0 18px rgba(255,60,110,.18)}
+.vperk.hot .pg{background:radial-gradient(circle at 35% 30%,#ff6e8e,#7a1030);color:#fff;
+  box-shadow:0 0 14px rgba(255,60,110,.55)}
+.vipbuy{margin-top:16px;display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+.vipbtn{padding:13px 26px;font-size:15px;letter-spacing:.12em;border-radius:6px;color:#2a1206;
+  background:linear-gradient(120deg,#ffd76a,#ffb03a);box-shadow:0 5px 0 #a3701c,0 0 26px rgba(255,190,90,.45);
+  transition:.14s;border:none}
+.vipbtn b{font-weight:400;color:#7a1030}
+.vipbtn:hover{transform:translateY(-2px);box-shadow:0 7px 0 #a3701c,0 0 34px rgba(255,200,110,.7)}
+.vipbtn.free{background:linear-gradient(120deg,#7fe6cf,#38ad92);box-shadow:0 5px 0 #1f6b58,0 0 26px rgba(90,230,200,.4)}
+.vipbtn.free:hover{box-shadow:0 7px 0 #1f6b58,0 0 34px rgba(90,230,200,.6)}
+.vipbtn.cool,.vipbtn:disabled{background:linear-gradient(120deg,#6b6455,#4a4438);color:#c9bda2;
+  box-shadow:0 5px 0 #34301f;transform:none;cursor:default}
+.vipbtn.ghost2{background:transparent;color:#e0bcff;border:1.5px solid rgba(200,150,255,.5);box-shadow:none;
+  font-size:13px;padding:9px 18px}
+.vipbtn.ghost2:hover{background:rgba(160,100,220,.18);transform:none;box-shadow:none}
+.viphint{font-size:11.5px;color:#9d8fb0;letter-spacing:.04em}
+/* 자동 플레이 개방 안내 */
+.autogift{display:flex;gap:18px;align-items:center;max-width:520px;margin:6px 0 4px;text-align:left}
+.agseal{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:40px;color:#03251d;
+  background:radial-gradient(circle at 34% 28%,#c7fff0,#4fd3a0 45%,#1c7a60);
+  box-shadow:0 0 30px rgba(90,230,190,.6),inset 0 -5px 14px rgba(0,60,45,.45)}
+.agtxt b{display:block;font-weight:400;font-size:16px;color:#eafff9;letter-spacing:.08em;margin-bottom:7px}
+.agtxt span{display:block;font-size:12.8px;color:#a9bdb6;line-height:1.85}
+.agtxt em{font-style:normal;color:#ffd98a}
+.rewitem.gift{background:linear-gradient(100deg,#effff9,#d9f5ea);box-shadow:0 0 22px rgba(70,200,170,.45)}
+.rewitem.gift .ic{background:radial-gradient(circle at 35% 30%,#4fd3a0,#14624e);color:#eafff9}
+.rewitem.gift .t b{color:#14503f}
 
 /* 가운데 */
 .gmain{flex:1;min-width:0;padding:16px 20px 12px;display:flex;flex-direction:column;gap:10px}
@@ -652,6 +779,116 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dexgrid .dextile.unknown b,.dexgrid .dextile.unknown span{color:#6f6553}
 .dexgrid .dextile.unknown:hover{transform:none;box-shadow:none}
 
+/* ══ 장기 상점 ═══════════════════════════════════════════ */
+.janggi{position:absolute;inset:0;display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#2a2117 0%,#3a2e1e 45%,#181309 100%)}
+.jhead{position:relative;height:54px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:linear-gradient(rgba(12,9,5,.94),rgba(40,32,20,.84));border-bottom:1px solid rgba(220,190,120,.3)}
+.jhead h2{color:#f6ecd2;font-size:17px;letter-spacing:.22em;font-weight:400;margin-left:.22em}
+.jhead .jcur{margin-left:auto;display:flex;gap:16px;align-items:center;font-size:15px;color:#efe4cb}
+.jhead .jcur i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;color:#1d1710}
+.jhead .jcur .gold i{background:linear-gradient(140deg,#ffd76a,#b6821c)}
+.jhead .jcur .dia i{background:linear-gradient(140deg,#8ee6ff,#2f9fc4)}
+.jbody{position:relative;flex:1;display:flex;min-height:0;align-items:center;justify-content:center;gap:26px;padding:18px}
+.jside{width:240px;flex:none;display:flex;flex-direction:column;gap:10px}
+.jside h3{color:#e8cf94;font-size:13px;letter-spacing:.2em;font-weight:400}
+.jside p{color:#c3ad80;font-size:12.5px;line-height:1.8}
+.jside .note{padding:12px 14px;border-radius:8px;background:rgba(10,8,4,.5);border:1px solid rgba(220,190,120,.25)}
+
+/* 장기판 */
+.jboard{position:relative;width:min(560px,52vw);aspect-ratio:9/10;border-radius:6px;flex:none;
+  background:linear-gradient(160deg,#e8d5a8,#d6bd88);border:3px solid #6b4a1e;
+  box-shadow:0 14px 40px rgba(0,0,0,.6),inset 0 0 40px rgba(120,80,20,.18)}
+.jboard svg{position:absolute;inset:0;width:100%;height:100%}
+.jpiece{position:absolute;width:13%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:22%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.16s;
+  background:radial-gradient(circle at 36% 30%,#f6e6bc,#d2b276);border:2.5px solid #8a2b2b;
+  box-shadow:0 3px 8px rgba(0,0,0,.45)}
+.jpiece.green{border-color:#1f6b4a}
+.jpiece b{font-size:clamp(15px,2.1vw,26px);color:#8a2b2b;font-weight:400;line-height:1}
+.jpiece.green b{color:#1f6b4a}
+.jpiece:hover{transform:translate(-50%,-56%) scale(1.1);box-shadow:0 8px 18px rgba(0,0,0,.6);z-index:3}
+.jpiece .tagp{position:absolute;bottom:-16px;font-size:10px;color:#4a3a18;white-space:nowrap;letter-spacing:.02em}
+.jpiece.todo{filter:grayscale(.55);opacity:.75;cursor:default}
+.jpiece.todo:hover{transform:translate(-50%,-50%);box-shadow:0 3px 8px rgba(0,0,0,.45)}
+.jpiece.sold{filter:grayscale(1);opacity:.4;cursor:default}
+.jpiece.sold:hover{transform:translate(-50%,-50%)}
+.jpiece.buyable{animation:jpulse 1.8s ease-in-out infinite}
+@keyframes jpulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,.45)}
+  50%{box-shadow:0 3px 8px rgba(0,0,0,.45),0 0 18px 4px rgba(255,200,90,.7)}}
+
+/* ══ 대전투장 ════════════════════════════════════════════ */
+.arena{position:absolute;inset:0;display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#1a0f10 0%,#2a1418 45%,#120a0c 100%)}
+.arena::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background:radial-gradient(ellipse at 72% 38%,rgba(200,50,60,.22),transparent 55%),
+             radial-gradient(ellipse at 14% 74%,rgba(255,160,60,.14),transparent 55%)}
+.ahead{position:relative;height:54px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:linear-gradient(rgba(10,6,6,.94),rgba(40,18,20,.84));border-bottom:1px solid rgba(220,120,110,.3)}
+.ahead .gback{width:34px;height:34px;border-radius:6px;background:rgba(220,120,110,.16);
+  border:1px solid rgba(220,120,110,.45);color:#f6e2e0;font-size:18px}
+.ahead .gback:hover{background:rgba(220,120,110,.34)}
+.ahead h2{color:#f8e6e2;font-size:17px;letter-spacing:.22em;font-weight:400;margin-left:.22em}
+.ahead .acur{margin-left:auto;display:flex;gap:16px;align-items:center;font-size:15px;color:#f0e0dc}
+.ahead .acur i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;color:#1d1710;background:linear-gradient(140deg,#8ee6ff,#2f9fc4)}
+
+.abody{position:relative;flex:1;display:flex;min-height:0}
+.anav{width:214px;flex:none;padding:14px 10px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
+.anav::-webkit-scrollbar{width:6px}.anav::-webkit-scrollbar-thumb{background:rgba(220,140,120,.3);border-radius:3px}
+.atab{position:relative;display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:8px;text-align:left;
+  background:linear-gradient(120deg,#3a2020,#241214);border:1.5px solid rgba(220,120,110,.3);transition:.16s}
+.atab:hover{transform:translateX(4px);border-color:rgba(255,150,130,.8)}
+.atab .ag{width:38px;height:38px;flex:none;border-radius:7px;display:grid;place-items:center;font-size:20px;
+  background:radial-gradient(circle at 35% 30%,#7a3030,#2c1414);color:#ffdcd6;border:1px solid rgba(255,160,140,.45)}
+.atab .an{flex:1;min-width:0}
+.atab .an b{display:block;color:#f8e6e2;font-size:14px;font-weight:400}
+.atab .an small{color:#b08a84;font-size:11px}
+.atab.on{background:linear-gradient(120deg,#7a2020,#3a1012);border-color:#ff6a5a;
+  box-shadow:0 0 20px rgba(255,90,70,.4),inset 0 0 22px rgba(255,90,70,.12)}
+.atab.locked{opacity:.45}
+.atab.locked:hover{transform:none}
+
+.amain{flex:1;min-width:0;padding:18px 24px 14px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.amain::-webkit-scrollbar{width:7px}.amain::-webkit-scrollbar-thumb{background:rgba(220,140,120,.35);border-radius:4px}
+.atitle{color:#ffdcd2;font-size:28px;letter-spacing:.16em;margin-left:.16em;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.asub{color:#d9a8a0;font-size:13.5px;line-height:1.8;letter-spacing:.02em}
+.asub b{color:#ff9c7a}
+.abox{padding:14px 18px;border-radius:9px;background:rgba(10,6,6,.5);border:1px solid rgba(220,120,110,.26)}
+.abox h4{color:#e8b0a0;font-size:12.5px;letter-spacing:.2em;font-weight:400;margin-bottom:8px}
+.arow{display:flex;align-items:center;gap:10px;padding:6px 0;color:#efdedb;font-size:13.5px;
+  border-bottom:1px dotted rgba(220,150,140,.2)}
+.arow:last-child{border-bottom:none}
+.arow .k{width:96px;flex:none;color:#c09a92;font-size:12.5px}
+.arow b{color:#ffd0b8}
+.aenemies{display:flex;flex-wrap:wrap;gap:9px}
+.aenemy{width:76px;padding:9px 4px;border-radius:7px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:linear-gradient(160deg,#3a2020,#221213);border:1.5px solid rgba(220,120,110,.4)}
+.aenemy b{font-size:22px;color:#ffdcd6;font-weight:400;line-height:1}
+.aenemy span{font-size:9.5px;color:#c9a49e;text-align:center;word-break:keep-all;line-height:1.2}
+.aenemy.elite{border-color:#ff6a5a}.aenemy.boss{border-color:#ffd76a;background:linear-gradient(160deg,#5c3a12,#2e1f0c)}
+.abtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.aenter{min-width:230px;padding:14px 26px;border-radius:9px;font-size:17px;color:#2a0f0c;letter-spacing:.06em;
+  background:linear-gradient(#ffb08a,#e2622a);border:1.5px solid #ffd9c0;
+  box-shadow:0 4px 0 #8a3410,0 6px 20px rgba(0,0,0,.5);transition:.15s}
+.aenter:hover{transform:translateY(-2px);box-shadow:0 6px 0 #8a3410,0 10px 26px rgba(0,0,0,.55)}
+.aenter:disabled{filter:grayscale(.75);opacity:.5;transform:none!important;cursor:default}
+.adanger{display:flex;align-items:center;gap:8px;font-size:13px;color:#e8a898}
+.adanger .bar{position:relative;flex:1;height:9px;border-radius:5px;background:#2e1618;border:1px solid rgba(220,120,110,.3)}
+.adanger .bar i{position:absolute;inset:0;border-radius:5px;transition:width .4s;
+  background:linear-gradient(90deg,#ffd76a,#ff8a4a,#ff2d55,#b02a6a)}
+.alock{color:#ff9c7a;font-size:13px;letter-spacing:.02em}
+.aart{width:280px;flex:none;position:relative;display:none}
+@media(min-width:1200px){.aart{display:block}}
+.aart .ring{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:240px;height:240px}
+.aart .glyph{position:absolute;right:88px;top:50%;transform:translateY(-50%);font-size:98px;color:#ffb8a0;
+  text-shadow:0 0 34px rgba(255,90,60,.75),0 6px 20px rgba(0,0,0,.75)}
+.aart .sub{position:absolute;right:22px;bottom:60px;color:#b08a84;font-size:12px;letter-spacing:.3em;writing-mode:vertical-rl}
+.aroundbig{position:absolute;left:50%;top:16%;transform:translateX(-50%);font-size:62px;letter-spacing:.2em;
+  color:#ffd0b8;z-index:26;pointer-events:none;text-shadow:0 0 30px rgba(255,90,60,.9),0 4px 16px rgba(0,0,0,.8);
+  animation:turnShow 1.5s ease-out}
+
 /* ══ 처치 연출 ═══════════════════════════════════════════ */
 @keyframes killPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-12deg)}
   30%{opacity:1;transform:translate(-50%,-50%) scale(1.25) rotate(3deg)}
@@ -673,14 +910,28 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   animation:comboPop 1.1s ease-out forwards}
 
 /* ══ 비기 ════════════════════════════════════════════════ */
+/* 장착한 비기의 등급 색을 따른다 (--sc 를 코드에서 넣어 준다) */
 #skillbtn{pointer-events:auto;position:absolute;left:20px;bottom:92px;width:70px;height:70px;border-radius:12px;
+  --sc:#7d7568;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-  background:linear-gradient(160deg,#5c1b30,#2a0d18);border:2px solid #ff2d55;color:#ffdce3;
-  box-shadow:0 0 18px rgba(255,45,85,.5);transition:.16s}
-#skillbtn b{font-size:27px;font-weight:400;line-height:1}
-#skillbtn small{font-size:9.5px;letter-spacing:.1em;opacity:.8}
-#skillbtn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 0 30px rgba(255,45,85,.9)}
-#skillbtn.ready{animation:ssxGlow 1.4s ease-in-out infinite}
+  background:linear-gradient(160deg,color-mix(in srgb,var(--sc) 42%,#160d10),#1c1216);
+  border:2px solid var(--sc);color:#f6ece8;
+  box-shadow:0 0 16px color-mix(in srgb,var(--sc) 55%,transparent);transition:.16s}
+#skillbtn b{font-size:27px;font-weight:400;line-height:1;
+  text-shadow:0 0 12px color-mix(in srgb,var(--sc) 80%,transparent)}
+#skillbtn small{font-size:9.5px;letter-spacing:.1em;opacity:.85}
+#skillbtn:hover{transform:translateY(-3px) scale(1.05);
+  box-shadow:0 0 30px color-mix(in srgb,var(--sc) 85%,transparent)}
+@keyframes skillPulse{0%,100%{box-shadow:0 0 16px color-mix(in srgb,var(--sc) 55%,transparent)}
+  50%{box-shadow:0 0 34px 6px color-mix(in srgb,var(--sc) 95%,transparent)}}
+#skillbtn.ready{animation:skillPulse 1.6s ease-in-out infinite}
+/* 특별 등급은 저마다 다른 결을 준다 */
+#skillbtn.sg-special.ready{animation:flameGlow 1.7s ease-in-out infinite}
+#skillbtn.sg-ssx.ready{animation:ssxGlow 1.25s ease-in-out infinite}
+@keyframes unknownGlow{
+  0%,100%{box-shadow:0 0 20px 3px rgba(150,90,255,.75),0 0 44px 8px rgba(60,220,255,.3)}
+  50%    {box-shadow:0 0 38px 10px rgba(180,120,255,1),0 0 72px 18px rgba(80,235,255,.5)}}
+#skillbtn.sg-unknown.ready{animation:unknownGlow 1.5s ease-in-out infinite}
 #skillbtn.used,#skillbtn.none{filter:grayscale(.85);opacity:.42;box-shadow:none;animation:none;cursor:default}
 #skillbtn.used::after{content:'사용함';position:absolute;font-size:10px;color:#ffb3c2;bottom:-15px;letter-spacing:.1em}
 @media(max-width:1100px){#skillbtn{left:8px;width:58px;height:58px}#skillbtn b{font-size:22px}}
@@ -851,7 +1102,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 const $ = s => document.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 let SPEED = 1;                       /* 연출 속도 배율 (설정에서 조절) */
-const wait = ms => new Promise(r => setTimeout(r, ms * SPEED));
+/* VIP 2배속 — 켜져 있으면 모든 연출이 절반의 시간에 흐른다 */
+const turboX = () => (typeof OPT === 'object' && OPT && OPT.turbo && vipOn() ? .5 : 1);
+const wait = ms => new Promise(r => setTimeout(r, ms * SPEED * turboX()));
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
 /* --- 시드 기반 난수 (mulberry32) --- */
@@ -891,7 +1144,7 @@ const SND = {
     const comp = c.createDynamicsCompressor();
     comp.threshold.value = -14; comp.knee.value = 26; comp.ratio.value = 5;
     comp.attack.value = .004; comp.release.value = .22;
-    this.master = c.createGain(); this.master.gain.value = .85;
+    this.master = c.createGain(); this.master.gain.value = (typeof OPT === 'object' && OPT ? OPT.vol : .85);
     this.master.connect(comp).connect(c.destination);
     /* 잔향: 잡음 임펄스를 만들어 컨볼버에 물린다 */
     const conv = c.createConvolver();
@@ -1111,6 +1364,7 @@ const FX = {
     rz(); addEventListener('resize', rz);
   },
   burst(x, y, n, color, spd = 5, life = 42, size = 4) {
+    if (!OPT.particles) return;
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2, s = spd * (.35 + Math.random());
       this.ps.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.2,
@@ -1144,6 +1398,7 @@ const FX = {
 };
 function centerOf(node) { const r = node.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
 function shake(big) {
+  if (!OPT.shake) return;
   const a = $('#app'); a.classList.remove('shake', 'shake-lg'); void a.offsetWidth;
   a.classList.add(big ? 'shake-lg' : 'shake');
   setTimeout(() => a.classList.remove('shake', 'shake-lg'), 520);
@@ -1152,6 +1407,7 @@ function shake(big) {
 /* --- 툴팁 --- */
 let tipEl;
 function tipShow(html, x, y) {
+  if (!OPT.tips) return;
   tipEl = tipEl || $('#tip');
   tipEl.innerHTML = html; tipEl.style.display = 'block';
   const r = tipEl.getBoundingClientRect();
@@ -1211,13 +1467,38 @@ const G = {
 };
 const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
-let META = { best: 0, wins: 0, runs: 0, speed: 1, sound: true, dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
+let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, autoUnlocked: false,
+  vip: { owned: false, at: 0, freeBoxAt: 0 }, dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
+/* VIP · 자동 플레이 개방 여부 */
+const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
+function vipOn() { return !!(META.vip && META.vip.owned); }
+function autoOk() { return !!META.autoUnlocked || vipOn(); }
+function vipFreeBoxLeft() { return Math.max(0, VIP_FREEBOX_MS - (Date.now() - (META.vip.freeBoxAt || 0))); }
+/* --- 설정 (기본값) --- */
+const OPT_DEF = {
+  vol: .85,                 /* 음량 */
+  shake: true,              /* 화면 흔들림 */
+  particles: true,          /* 먹물 파편 */
+  tips: true,               /* 설명 풍선 */
+  banner: true,             /* 큰 기술 이름 연출 */
+  autoScope: 'battle',      /* battle = 전투만 · run = 지도까지 스스로 나아간다 */
+  autoPace: 'normal',       /* slow · normal · fast */
+  autoPotion: true,         /* 위급할 때 물약을 쓴다 */
+  autoSkill: true,          /* 비기를 알아서 쓴다 */
+  turbo: false              /* VIP 2배속 */
+};
+let OPT = Object.assign({}, OPT_DEF);
 function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY)); if (m) META = Object.assign(META, m); } catch (e) {}
   SPEED = META.speed || 1;
   if (META.sound === false) SND.on = false;
+  META.opt = Object.assign({}, OPT_DEF, META.opt || {});
+  OPT = META.opt;
+  META.vip = Object.assign({ owned: false, at: 0, freeBoxAt: 0 }, META.vip || {});
+  META.autoUnlocked = !!META.autoUnlocked;
   META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
   META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
   META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {}; }
+function applyVol() { try { if (SND.master) SND.master.gain.value = OPT.vol; } catch (e) {} }
 function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
 function saveRun() {
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
@@ -1237,6 +1518,7 @@ function adoptRun(obj) {
   if (G.run.summons == null) G.run.summons = 0;
   if (G.run.banner == null) G.run.banner = 3;
   if (!G.run.skills) { G.run.skills = []; gainSkill('shout', true); }
+  if (!G.run.arena) G.run.arena = { best: 0, cleared: 0 };
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -2655,7 +2937,7 @@ const ENCOUNTERS = {
 /* ══════════════════════════════════════════════════════════
    7. 전투 엔진
    ══════════════════════════════════════════════════════════ */
-const P = () => G.b.p;
+const P = () => (G.b ? G.b.p : null);
 const alive = () => G.b ? G.b.enemies.filter(e => e.hp > 0 && !e.dead) : [];
 
 function calcAtk(src, tgt, base) {
@@ -2759,8 +3041,9 @@ function exhaustCard(c) {
 }
 
 /* --- 전투 시작 --- */
-function startBattle(enemyIds, kind) {
+function startBattle(enemyIds, kind, opts) {
   const run = G.run;
+  opts = opts || {};
   const b = G.b = {
     p: { isPlayer: true, hp: run.hp, maxHp: run.maxHp, block: 0, s: {}, el: null },
     enemies: [], hand: [], drawPile: [], discardPile: [], exhaustPile: [],
@@ -2771,10 +3054,13 @@ function startBattle(enemyIds, kind) {
   let ux = 1;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
-    const hp = ri(d.hp[0], d.hp[1]) + Math.floor((run.asc || 0) * 0.08 * d.hp[0]);
+    let hp = ri(d.hp[0], d.hp[1]) + Math.floor((run.asc || 0) * 0.08 * d.hp[0]);
+    if (opts.hpMul) hp = Math.round(hp * opts.hpMul);
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
                 hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false };
     if (d.init) d.init(e);
+    if (opts.str) e.s.str = (e.s.str || 0) + opts.str;
+    if (opts.dex) e.s.dex = (e.s.dex || 0) + opts.dex;
     dexAdd('enemies', id);
     b.enemies.push(e);
   }
@@ -2940,11 +3226,12 @@ async function endTurn() {
 async function doMove(e, m) {
   if (!m) return;
   const b = G.b;
+  if (!b || b.over) return;                 /* 도중에 전투가 사라졌을 수 있다 */
   if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
   await wait(160);
   if (m.d) {
     for (let i = 0; i < (m.n || 1); i++) {
-      if (b.over || P().hp <= 0) return;
+      if (!G.b || b.over || !P() || P().hp <= 0) return;
       const dmg = calcAtk(e, P(), m.d);
       const r = applyDamage(P(), dmg);
       impact(m.fx || 'claw', P());
@@ -2956,9 +3243,10 @@ async function doMove(e, m) {
       await wait(m.n > 1 ? 240 : 160);
     }
   }
+  if (!G.b || b.over) return;
   if (m.blk) { eblk(e, m.blk); syncAll(); await wait(180); }
   if (m.self) { for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
-  if (m.deb) { for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
+  if (m.deb && P()) { for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
   if (m.heal) { eheal(e, m.heal); await wait(160); }
   if (m.extra) { await m.extra(e); await wait(160); }
   syncAll();
@@ -3004,7 +3292,11 @@ async function checkOver() {
     healFx(p, h); syncAll(); await wait(600);
     return false;
   }
-  if (p.hp <= 0) { b.over = true; await wait(500); gameOver(); return true; }
+  if (p.hp <= 0) {
+    b.over = true; await wait(500);
+    if (b.kind === 'arena') arenaLose(); else gameOver();
+    return true;
+  }
   if (!alive().length) { b.over = true; await wait(420); winBattle(); return true; }
   return false;
 }
@@ -3015,8 +3307,275 @@ function winBattle() {
   fire('battleEnd', b.kind);
   SND.victory();
   const kind = b.kind;
+  if (kind === 'arena') { arenaWin(); return; }
   G.b = null;
   showRewards(kind);
+}
+
+/* ══════════════════════════════════════════════════════════
+   7-B. 자동 플레이 — 스스로 싸운다
+   ──────────────────────────────────────────────────────────
+   원칙: 좋은 부적일수록 먼저 나간다.
+   등급 차이는 1000점, 상황 판단은 ±400점으로 묶어 두었으므로
+   등급이 한 칸이라도 높으면 어떤 상황에서도 먼저 쓰인다.
+   같은 등급 안에서만 상황(마무리 일격·받을 피해·심법)이 순서를 가른다.
+   ══════════════════════════════════════════════════════════ */
+const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0, rewLeft: -1, rewStall: 0, wait: 0 };
+const AUTO_PACE = { slow: 640, normal: 300, fast: 90 };
+const autoDelay = () => AUTO_PACE[OPT.autoPace] || 300;
+/* 등급 서열 — 이 값이 곧 우선순위다 */
+const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, special: 4, ssx: 5, unknown: 6 };
+
+/* 손에 든 한 장을 저울질한다. 쓸 수 없으면 null */
+function autoScore(c) {
+  const b = G.b, p = P(), d = cdef(c);
+  if (!b || !d || d.rar === 'curse' || d.type === 'curse') return null;
+  const cost = ecost(c);
+  if (cost === -2) return null;
+  const need = cost === -1 ? 1 : cost;
+  if (need > b.energy) return null;
+  const foes = alive();
+  if (d.tgt === 'enemy' && !foes.length) return null;
+
+  const v = cval(c) || {};
+  /* ① 등급 — 압도적인 첫 번째 잣대 */
+  let s = (AUTO_RANK[d.rar] || 0) * 1000;
+  /* ② 같은 등급 안에서의 눈치 (±400 을 넘지 않는다) */
+  let t = c.up ? 14 : 0;
+  if (d.type === 'power') t += 150 - b.turn * 14;              /* 심법은 이를수록 값지다 */
+  const through = Math.max(0, incomingTotal() - p.block);
+  if (typeof v.b === 'number') t += Math.min(240, v.b * (through > 0 ? 8 : 1.1));
+  let target = null;
+  if (typeof v.d === 'number' && foes.length) {
+    let best = null, bv = -1;
+    for (const e of foes) {
+      const dmg = calcAtk(p, e, v.d) * (v.n || 1);
+      let ev = Math.min(dmg, e.hp + e.block) * 1.4;
+      if (dmg >= e.hp + e.block) ev += 170;                    /* 마무리 일격 */
+      if (e.def.boss || e.def.elite) ev += 10;
+      if (e.mv && e.mv.d && !e.s.stun) ev += 8;                /* 때리려는 놈부터 */
+      if (ev > bv) { bv = ev; best = e; }
+    }
+    target = best; t += Math.min(260, bv);
+  }
+  if (d.exhaust) t -= 12;
+  if (d.tgt === 'enemy' && !target) target = foes[0];
+  return { c, target: d.tgt === 'enemy' ? target : null, score: s + clamp(t, -400, 400) };
+}
+/* 위급할 때만 물약을 딴다 */
+function autoPotionIdx() {
+  const run = G.run, p = P();
+  if (!run.potions.length) return -1;
+  const through = Math.max(0, incomingTotal() - p.block);
+  const danger = p.hp <= p.maxHp * .32 || through >= p.hp;
+  if (!danger) return -1;
+  for (const id of ['heal', 'iron', 'smoke', 'fire', 'qi']) {
+    const i = run.potions.indexOf(id);
+    if (i >= 0) return i;
+  }
+  return 0;
+}
+function autoSkillWorth() {
+  const b = G.b, p = P();
+  if (b.turn < 2) return false;
+  if (b.turn >= 6) return true;
+  if (b.kind === 'boss' || b.kind === 'elite' || b.kind === 'arena') return b.turn >= 3;
+  return p.hp < p.maxHp * .55 || Math.max(0, incomingTotal() - p.block) >= p.hp * .3;
+}
+/* 전투에서의 한 수 — 기다리지 않고 던진다 (효과가 창을 띄우면 고리가 받아 준다) */
+function autoBattleStep() {
+  const b = G.b, run = G.run;
+  if (OPT.autoPotion) {
+    const i = autoPotionIdx();
+    if (i >= 0) {
+      const pd = POTIONS[run.potions[i]];
+      const foes = alive();
+      if (!(pd.tgt === 'enemy' && !foes.length)) {
+        usePotion(i, pd.tgt === 'enemy' ? foes.slice().sort((a, z) => a.hp - z.hp)[0] : null);
+        return;
+      }
+    }
+  }
+  if (OPT.autoSkill && run.skill && !b.skillUsed && autoSkillWorth()) { useSkill(); return; }
+  const cands = [];
+  for (const c of b.hand) { const r = autoScore(c); if (r) cands.push(r); }
+  if (cands.length) {
+    cands.sort((a, z) => z.score - a.score);
+    AUTO.cards++;
+    playCard(cands[0].c, cands[0].target);
+    return;
+  }
+  AUTO.turns++;
+  endTurn();
+}
+/* 타일의 g-<등급> 딱지에서 서열을 읽는다 */
+function autoTileRank(n) {
+  for (const k in AUTO_RANK) if (n.classList.contains('g-' + k)) return AUTO_RANK[k];
+  return 0;
+}
+/* 열려 있는 창을 대신 처리한다 — 아는 창만 건드린다 */
+function autoOverlay(panel) {
+  if (!panel) return;
+  if (panel.dataset.noauto) return;                            /* 메뉴·설정은 손대지 않는다 */
+  const q = s => panel.querySelector(s);
+  /* 상점에서는 아무것도 사지 않고 나온다 — 돈 쓰는 일은 사람 몫이다 */
+  if (panel.dataset.shop) {
+    if (OPT.autoScope === 'run' && q('#sh_leave')) q('#sh_leave').click();
+    else if (OPT.autoScope !== 'run') autoStop('상점에 들렀다');
+    return;
+  }
+  /* 부적 고르기 — 여기서도 등급이 높은 쪽을 집는다 */
+  const picks = [...panel.querySelectorAll('.cardgrid .card.pick')];
+  if (picks.length) {
+    const wantWorst = /버릴|없앨|덜어/.test(panel.querySelector('h2') ? panel.querySelector('h2').textContent : '');
+    let best = picks[0], bv = wantWorst ? 1e9 : -1e9;
+    for (const n of picks) {
+      const id = n.dataset.cid, d = id && CARDS[id];
+      const v = d ? (AUTO_RANK[d.rar] != null ? AUTO_RANK[d.rar] : 0) + (n.dataset.up === '1' ? .5 : 0)
+                  : (d && d.rar === 'curse' ? -1 : 0);
+      if (wantWorst ? v < bv : v > bv) { bv = v; best = n; }
+    }
+    best.click(); return;
+  }
+  /* 비기 고르기 — 등급이 높은 쪽 */
+  const stiles = [...panel.querySelectorAll('.skillgrid .stile')];
+  if (stiles.length) {
+    stiles.sort((a, z) => autoTileRank(z) - autoTileRank(a));
+    stiles[0].click(); return;
+  }
+  /* 유물 자리가 없을 때 — 가장 낮은 등급을 내주고, 새것이 더 낮으면 두고 간다 */
+  const olds = [...panel.querySelectorAll('#ro_old .rtile')], fresh = q('#ro_new .rtile');
+  if (olds.length && fresh) {
+    olds.sort((a, z) => autoTileRank(a) - autoTileRank(z));
+    (autoTileRank(olds[0]) < autoTileRank(fresh) ? olds[0] : fresh).click();
+    return;
+  }
+  /* 보스 유물처럼 창 안에서 고르는 것 */
+  if (panel.dataset.modal && q('.rewardrow .rewitem:not(.taken)')) { q('.rewardrow .rewitem:not(.taken)').click(); return; }
+  if (q('#pk_cancel')) { q('#pk_cancel').click(); return; }
+  /* 여기서부터는 화면 단위 — '모험까지' 일 때만 나선다 */
+  if (OPT.autoScope !== 'run') { if (!panel.dataset.modal) autoStop('전투가 끝났다'); return; }
+  /* 챙길 수 없는 전리품(가득 찬 물약 따위)에 매달리지 않도록 헛도는 횟수를 센다 */
+  const rew = q('.rewardrow .rewitem:not(.taken)');
+  if (rew) {
+    const left = panel.querySelectorAll('.rewardrow .rewitem:not(.taken)').length;
+    if (left === AUTO.rewLeft) AUTO.rewStall++; else { AUTO.rewLeft = left; AUTO.rewStall = 0; }
+    if (AUTO.rewStall < 8) { rew.click(); return; }
+  } else { AUTO.rewLeft = -1; AUTO.rewStall = 0; }
+  for (const sel of ['#rw_done', '.evtbox .opt:not(:disabled)', '#r_heal', '#tr_done', '#sh_leave']) {
+    const n = q(sel);
+    if (n) { n.click(); return; }
+  }
+  /* 모르는 화면(장기 상점·뽑기·대전투장…)에서는 잠시 지켜보다 조용히 물러난다 */
+  if (!panel.dataset.modal) {
+    AUTO.wait++;
+    if (AUTO.wait > 10) {
+      const back = q('#jg_back, #g_back, #ar_back');
+      if (back) { AUTO.wait = 0; back.click(); return; }
+      autoStop('여긴 스스로 정할 자리다');
+    }
+  }
+}
+/* 지도에서 다음 갈림길을 고른다 */
+function autoMapStep() {
+  const run = G.run, ids = availableNodes();
+  if (!ids.length) return;
+  const ratio = run.hp / Math.max(1, run.maxHp);
+  const W = { rest: ratio < .72 ? 120 : 26, treasure: 78, elite: ratio > .82 ? 60 : 12,
+              shop: 44, event: 46, battle: 52, boss: 200, special: 24, janggi: 24 };
+  let best = null, bv = -1;
+  for (const id of ids) {
+    const n = run.map.nodes[id];
+    const v = (W[n.type] != null ? W[n.type] : 30) + rnd() * 9;
+    if (v > bv) { bv = v; best = n; }
+  }
+  if (best) enterNode(best);
+}
+async function autoLoop() {
+  if (AUTO.loop) return;
+  AUTO.loop = true;
+  try {
+    while (AUTO.on) {
+      await new Promise(r => setTimeout(r, autoDelay()));
+      if (!AUTO.on) break;
+      if (!G.run || G.scene === 'title' || G.scene === 'over' || G.scene === 'win') { autoStop(); break; }
+      /* 이야기는 읽을 틈을 두고 넘긴다 */
+      const story = $('#app > .story:not(.fadeout)');
+      if (story) {
+        const now = Date.now();
+        if (!AUTO.storyAt) AUTO.storyAt = now;
+        if (now - AUTO.storyAt > 2600) { AUTO.storyAt = now; story.click(); }
+        continue;
+      }
+      AUTO.storyAt = 0;
+      const o = $('#overlay');
+      if (o.style.display === 'block' && o.lastElementChild) { autoOverlay(o.lastElementChild); continue; }
+      AUTO.wait = 0;
+      if (G.b) {
+        if (G.b.busy || G.b.over) continue;
+        try { autoBattleStep(); } catch (e) { console.error('자동 플레이 오류', e); autoStop('길을 잃었다'); }
+        continue;
+      }
+      if (G.scene === 'map' && OPT.autoScope === 'run') { AUTO.fights++; autoMapStep(); continue; }
+    }
+  } finally { AUTO.loop = false; syncAuto(); }
+}
+function autoStart() {
+  if (AUTO.on) return;
+  if (!G.run) { toast('모험 중에만 쓸 수 있다'); return; }
+  if (!autoOk()) { SND.err(); toast('자동 플레이는 제1막을 넘어선 자에게 열린다 (VIP는 곧바로)'); return; }
+  AUTO.on = true; SND.ui();
+  toast(OPT.autoScope === 'run' ? '자동 플레이 — 지도까지 스스로 나아간다' : '자동 플레이 — 전투를 대신한다');
+  syncAuto(); autoLoop();
+}
+function autoStop(why) {
+  if (!AUTO.on) return;
+  AUTO.on = false;
+  if (why) toast('자동 플레이 멈춤 · ' + why);
+  syncAuto();
+}
+function autoToggle() { AUTO.on ? autoStop('직접 하기로 했다') : autoStart(); }
+/* 화면 어디서나 보이는 표식 + 전투 단추 */
+function syncAuto() {
+  let chip = $('#autochip');
+  if (!chip) {
+    chip = el('div', '', '<i></i><span>자동 플레이</span><b>멈춤</b>');
+    chip.id = 'autochip';
+    chip.onclick = () => autoStop('직접 하기로 했다');
+    $('#app').appendChild(chip);
+  }
+  chip.classList.toggle('on', AUTO.on);
+  chip.querySelector('b').textContent = OPT.autoScope === 'run' ? '지도까지' : '전투만';
+  const btn = $('#autobtn');
+  if (btn) {
+    const ok = autoOk();
+    btn.classList.toggle('on', AUTO.on);
+    btn.classList.toggle('locked', !ok);
+    btn.innerHTML = !ok ? '자동 <b>鎖</b>' : AUTO.on ? '자동 <b>■</b>' : '자동 <b>▶</b>';
+  }
+}
+/* 제1막을 넘어서면 열린다 (VIP는 사자마자) */
+function unlockAuto(quiet) {
+  if (META.autoUnlocked) return false;
+  META.autoUnlocked = true; saveMeta(); syncAuto();
+  if (!quiet) {
+    SND.power(); screenFlash('rgba(120,220,200,.35)', 700);
+    const p = modal(`<h2>자 동 플 레 이</h2>
+      <div class="hint">제1막을 넘어선 자에게만 주어지는 권한</div>
+      <div class="autogift">
+        <div class="agseal">自</div>
+        <div class="agtxt">
+          <b>이제 대신 싸워 준다.</b>
+          <span>등급이 높은 부적을 먼저 쓰는 방식으로 손을 놀린다.</span>
+          <span>전투 화면의 <em>자동 ▶</em> 단추 · 아무 때나 <em>A</em> 키 · ≡ 메뉴</span>
+          <span>설정에서 <em>전투만 / 지도까지</em>를 고를 수 있다.</span>
+        </div>
+      </div>
+      <button class="brush-btn" id="ag_ok">알겠다</button>`);
+    p.dataset.noauto = '1';
+    p.querySelector('#ag_ok').onclick = closeTop;
+  }
+  return true;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -3068,6 +3627,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
+      <button class="topbtn arena" id="arenabtn" title="대전투장">鬪<em></em></button>
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
@@ -3102,6 +3662,7 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
+    t.querySelector('#arenabtn').onclick = () => openArena();
     t.querySelector('#skilltop').onclick = () => openSkills();
     t.querySelector('#fusebtn').onclick = () => openFuse();
     t.querySelector('#shopbtn').onclick = () => openShop();
@@ -3122,6 +3683,11 @@ function renderTop() {
   const fb = t.querySelector('#fusebtn'), ready = canFuse().length;
   fb.querySelector('em').textContent = ready || '';
   fb.classList.toggle('ready', ready > 0);
+  const ab = t.querySelector('#arenabtn'), ok = arenaReady();
+  ab.querySelector('em').textContent = ok ? '!' : '';
+  ab.classList.toggle('ready', ok);
+  ab.classList.toggle('locked', !ok);
+  ab.title = ok ? '대전투장 — 들어갈 수 있다' : `대전투장 — SSX급 부적 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`;
   const sb = t.querySelector('#skilltop');
   sb.querySelector('em').textContent = (run.skills || []).length || '';
   sb.title = run.skill ? '비기 — ' + SKILLS[run.skill].n : '비기 없음';
@@ -3155,6 +3721,7 @@ function renderBattle() {
        </div>
        <button id="skillbtn"><b></b><small></small></button>
        <div id="energy" title="기"><span><b id="ev">0</b><small>/<b id="emv">3</b></small></span></div>
+       <button id="autobtn">자동 <b>▶</b></button>
        <button id="endturn">턴 종료</button>
      </div>
      <div id="turnlabel"></div>
@@ -3164,6 +3731,15 @@ function renderBattle() {
   buildEnemies();
   $('#endturn').onclick = () => endTurn();
   $('#skillbtn').onclick = () => useSkill();
+  const ab = $('#autobtn');
+  ab.onclick = () => autoToggle();
+  bindTip(ab, () => autoOk()
+    ? `<b>자동 플레이</b> <span style="color:#9a8d74">(A)</span><br>
+       좋은 등급의 부적을 먼저 쓰는 방식으로 대신 싸운다.<br>
+       지금 범위: <b>${OPT.autoScope === 'run' ? '지도까지' : '전투만'}</b> · 설정에서 바꿀 수 있다.`
+    : `<b>자동 플레이 — 아직 잠겨 있다</b><br>제1막의 보스를 넘어서면 보상으로 열린다.<br>
+       <span style="color:#e0bcff">VIP 패키지를 얻으면 곧바로 쓸 수 있다.</span>`);
+  syncAuto();
   $('#drawpile').onclick = () => showCardList(G.b.drawPile, '뽑을 더미 (무작위 순서)', true);
   $('#discardpile').onclick = () => showCardList(G.b.discardPile, '버린 더미');
   bindTip($('#energy'), () => `<b>기 (氣)</b><br>카드를 사용하는 데 쓰인다. 매 턴 회복된다.`);
@@ -3292,6 +3868,7 @@ function cardNode(c, opts) {
     </div>
     <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>`;
   n.dataset.uid = c.uid;
+  n.dataset.cid = c.id; n.dataset.up = c.up ? '1' : '0';
   if (opts.tip !== false) {
     n.addEventListener('mouseenter', () => {
       const kws = keywordsIn(d, v, c.up);
@@ -3507,7 +4084,8 @@ function syncSkill() {
   const id = G.run.skill, d = id && SKILLS[id];
   btn.querySelector('b').textContent = d ? d.g : '—';
   btn.querySelector('small').textContent = d ? d.n : '비기 없음';
-  btn.className = !d ? 'none' : G.b.skillUsed ? 'used' : 'ready';
+  btn.className = (d ? 'sg-' + d.rar + ' ' : '') + (!d ? 'none' : G.b.skillUsed ? 'used' : 'ready');
+  btn.style.setProperty('--sc', d ? GRADE[d.rar].c : '#7d7568');
   btn.disabled = !d || G.b.skillUsed || G.b.busy || G.b.over;
   btn.onmouseenter = () => {
     const r = btn.getBoundingClientRect();
@@ -3637,6 +4215,7 @@ function worthBanner(card) {
   return d.rar === 'rare' || d.rar === 'special' || d.rar === 'ssx' || (d.cost >= 2 && d.type === 'attack');
 }
 function skillBanner(text, ssx) {
+  if (!OPT.banner) return;
   const n = el('div', 'skillname' + (ssx ? ' ssx' : ''), text);
   n.style.top = Math.max(64, innerHeight * .145) + 'px';
   $('#app').appendChild(n);
@@ -3770,7 +4349,7 @@ function genMap(act) {
     if (n.r === 0) { n.type = 'battle'; continue; }
     if (n.r === TREASURE_ROW) { n.type = 'treasure'; continue; }
     if (n.r === REST_ROW) { n.type = 'rest'; continue; }
-    const w = [{ w: 46, t: 'battle' }, { w: 25, t: 'event' }, { w: 8, t: 'shop' }];
+    const w = [{ w: 44, t: 'battle' }, { w: 23, t: 'event' }, { w: 8, t: 'shop' }, { w: 6, t: 'janggi' }];
     if (n.r >= 3) w.push({ w: 11, t: 'rest' });
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
     n.type = pickWeighted(w).t;
@@ -3785,8 +4364,8 @@ function genMap(act) {
   }
   return { nodes, h: totalH, act };
 }
-const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', boss: '魔' };
-const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', boss: '보스' };
+const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', janggi: '將', boss: '魔' };
+const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', janggi: '장기 상점', boss: '보스' };
 
 /* ══════════════════════════════════════════════════════════
    10. 모험 진행
@@ -3810,9 +4389,11 @@ function newRun(asc) {
     act: 1, floor: 0, rewardCut: 0,
     map: null, mapCur: -1, mapDone: [], bossPick: null,
     skills: [], skill: null,
+    arena: { best: 0, cleared: 0 }, arenaRound: 1, arenaDia: 0, arenaHp: null,
     stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
   };
+  applyVipRun();
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
   restockShop();
@@ -3821,6 +4402,26 @@ function newRun(asc) {
   META.runs++; saveMeta();
   SND.ambience(false);
   showStory('opening').then(() => { SND.ambience(true, false); showMap(); });
+}
+/* ── VIP 혜택 ─────────────────────────────────────────────
+   영구 보너스 · SSX 부적 5종 · 한 달 한 번 무료 특대급 상자
+   · 2배속 · 자동 플레이 즉시 개방
+   ────────────────────────────────────────────────────────── */
+const VIP_PRICE = 12000;                    /* 원래 값 — 지금은 받지 않는다 */
+const VIP_FREE = true;
+/* 덱에 넣어 줄 SSX 5종 */
+function vipSsxIds() {
+  const pool = GRADE_POOL.ssx.slice();
+  return sample(pool, Math.min(5, pool.length));
+}
+function applyVipRun() {
+  if (!vipOn() || !G.run) return;
+  const run = G.run;
+  run.vip = true;
+  run.maxHp += 15; run.hp += 15;             /* 영구 보너스 */
+  run.gold += 250; run.dia = (run.dia || 0) + 1000;
+  run.potSlots += 1;
+  for (const id of vipSsxIds()) { run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
 }
 function nextAct() {
   const run = G.run;
@@ -3899,6 +4500,7 @@ function enterNode(n) {
     case 'shop': restockShop(); showShop(); break;
     case 'treasure': showTreasure(); break;
     case 'special': showSpecialShop(true); break;
+    case 'janggi': showJanggi(); break;
     case 'event': showEvent(); break;
   }
 }
@@ -3966,8 +4568,9 @@ function chooseCards(list, n, title) {
 function showRewards(kind) {
   G.scene = 'reward';
   const run = G.run;
-  const gold = kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22);
-  const dia = kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28);
+  const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
+  const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * vm);
+  const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * vm);
   const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다', act: it => { run.gold += gold; run.stats.gold += gold; SND.coin(); } },
     { ic: '玉', t: `다이아 ${dia}`, s: '상자를 여는 값', act: () => { run.dia = (run.dia || 0) + dia; SND.coin(); } }];
   const potChance = kind === 'elite' ? .62 : kind === 'boss' ? 1 : .42;
@@ -3979,6 +4582,10 @@ function showRewards(kind) {
   if (kind === 'elite') {
     const rid = randomRelic();
     if (rid) items.push({ ic: RELICS[rid].g, t: RELICS[rid].n, s: RELICS[rid].d.replace(/<[^>]+>/g, ''), act: () => gainRelic(rid) });
+  }
+  if (kind === 'boss' && run.act === 1 && !autoOk()) {
+    items.push({ ic: '自', t: '자동 플레이 개방', s: '제1막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다',
+      cls: 'gift', act: () => { unlockAuto(); } });
   }
   if (kind === 'boss') {
     items.push({ ic: '寶', t: '보스의 유물', s: '셋 중 하나를 고른다', act: async () => { await pickBossRelic(); } });
@@ -4001,7 +4608,7 @@ function showRewards(kind) {
      <button class="brush-btn red" id="rw_done">${kind === 'boss' && G.run.act >= LAST_ACT ? '정상으로' : '길을 나선다'}</button>`, '');
   const row = p.querySelector('.rewardrow');
   items.forEach((it, i) => {
-    const n2 = el('div', 'rewitem', `<div class="ic">${it.ic}</div><div class="t"><b>${it.t}</b><small>${it.s}</small></div>`);
+    const n2 = el('div', 'rewitem' + (it.cls ? ' ' + it.cls : ''), `<div class="ic">${it.ic}</div><div class="t"><b>${it.t}</b><small>${it.s}</small></div>`);
     n2.onclick = async () => {
       if (n2.classList.contains('taken')) return;
       const r = await it.act(it);
@@ -4010,6 +4617,8 @@ function showRewards(kind) {
     row.appendChild(n2);
   });
   p.querySelector('#rw_done').onclick = () => {
+    /* 그냥 지나쳤더라도 제1막을 넘었으면 자동 플레이는 준다 */
+    if (kind === 'boss' && run.act === 1) unlockAuto(true);
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
@@ -4138,6 +4747,330 @@ function showSkills() {
   p.querySelector('#sk_close').onclick = closeTop;
 }
 
+/* ══ 장기 상점 ═════════════════════════════════════════════
+   장기판 위에 말이 놓여 있고, 말 하나가 물건 하나를 판다.
+   물건은 아래 표만 채우면 된다 — todo:true 인 자리는 '준비 중'.
+   { piece:'車', side:'red'|'green', x:0~8, y:0~9,
+     n:'이름', d:'설명', price:골드, dia:다이아, buy(){ ... } }
+   ═══════════════════════════════════════════════════════════ */
+const JANGGI_GOODS = [
+  { piece: '車', side: 'red',   x: 0, y: 0, todo: true },
+  { piece: '馬', side: 'red',   x: 2, y: 0, todo: true },
+  { piece: '包', side: 'red',   x: 4, y: 2, todo: true },
+  { piece: '象', side: 'red',   x: 6, y: 0, todo: true },
+  { piece: '楚', side: 'red',   x: 4, y: 1, todo: true },
+  { piece: '卒', side: 'green', x: 2, y: 6, todo: true },
+  { piece: '兵', side: 'green', x: 6, y: 6, todo: true },
+  { piece: '士', side: 'green', x: 4, y: 8, todo: true },
+  { piece: '漢', side: 'green', x: 4, y: 9, todo: true }
+];
+function janggiBoardSvg() {
+  /* 9줄 × 10줄, 양쪽 궁(宮)에 대각선 */
+  let g = '';
+  for (let i = 0; i < 9; i++) g += `<line x1="${i}" y1="0" x2="${i}" y2="9" stroke="#6b4a1e" stroke-width=".045"/>`;
+  for (let j = 0; j < 10; j++) g += `<line x1="0" y1="${j}" x2="8" y2="${j}" stroke="#6b4a1e" stroke-width=".045"/>`;
+  const palace = (y0) => `<line x1="3" y1="${y0}" x2="5" y2="${y0 + 2}" stroke="#6b4a1e" stroke-width=".045"/>
+    <line x1="5" y1="${y0}" x2="3" y2="${y0 + 2}" stroke="#6b4a1e" stroke-width=".045"/>`;
+  g += palace(0) + palace(7);
+  return `<svg viewBox="-0.5 -0.5 9 10" preserveAspectRatio="none">${g}</svg>`;
+}
+function openJanggi() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showJanggi();
+}
+function showJanggi() {
+  G.scene = 'janggi';
+  const run = G.run;
+  run.janggiSold = run.janggiSold || {};
+  const ready = JANGGI_GOODS.filter(g => !g.todo).length;
+
+  const p = overlay(`<div class="janggi">
+    <div class="jhead">
+      <button class="gback" id="jg_back" style="width:34px;height:34px;border-radius:6px;
+        background:rgba(220,190,120,.15);border:1px solid rgba(220,190,120,.4);color:#f4ead0;font-size:18px">←</button>
+      <h2>장기 상점</h2>
+      <div class="jcur"><span class="gold"><i>金</i>${run.gold}</span><span class="dia"><i>玉</i>${run.dia || 0}</span></div>
+    </div>
+    <div class="jbody">
+      <div class="jside">
+        <h3>장 기 商</h3>
+        <div class="note">
+          <p>노인이 장기판을 펴 놓고 앉아 있다.<br>
+          말 하나하나가 물건이라 한다.</p>
+        </div>
+        <div class="note">
+          <p><b style="color:#e8cf94">말을 누르면 산다.</b><br>
+          한 판에 말 하나는 한 번만 팔린다.</p>
+        </div>
+        ${ready ? '' : `<div class="note"><p style="color:#d8a45a">아직 <b>물건이 들어오지 않았다.</b><br>
+          말 자리는 ${JANGGI_GOODS.length}개가 놓여 있다.</p></div>`}
+        <button class="brush-btn red" id="jg_leave">떠난다</button>
+      </div>
+      <div class="jboard">${janggiBoardSvg()}</div>
+      <div class="jside" style="width:200px">
+        <h3>말 자 리</h3>
+        <div class="note"><p>${JANGGI_GOODS.map(g =>
+          `${g.piece} — ${g.todo ? '<span style="color:#8a7a52">준비 중</span>' : g.n}`).join('<br>')}</p></div>
+      </div>
+    </div>
+  </div>`, 'janggipanel');
+
+  const board = p.querySelector('.jboard');
+  for (const g of JANGGI_GOODS) {
+    const sold = !!run.janggiSold[g.piece + g.x + g.y];
+    const canBuy = !g.todo && !sold && (g.price == null || run.gold >= g.price) && (g.dia == null || (run.dia || 0) >= g.dia);
+    const n = el('div', 'jpiece ' + (g.side === 'green' ? 'green ' : '') +
+      (g.todo ? 'todo' : sold ? 'sold' : canBuy ? 'buyable' : ''),
+      `<b>${g.piece}</b>${g.todo ? '' : `<span class="tagp">${sold ? '판매됨'
+        : (g.price != null ? g.price + ' 골드' : '') + (g.dia != null ? ' 玉' + g.dia : '')}</span>`}`);
+    /* 판 좌표(0~8, 0~9)를 화면 비율로 */
+    n.style.left = ((g.x / 8) * 88 + 6) + '%';
+    n.style.top = ((g.y / 9) * 88 + 6) + '%';
+    bindTip(n, () => g.todo
+      ? `<b>${g.piece}</b><br><span style="color:#9a8d74">아직 물건이 정해지지 않았다</span>`
+      : `<b>${g.n}</b><br>${g.d}` + (sold ? '<br><b>이미 팔렸다</b>' : ''));
+    if (!g.todo && !sold) n.onclick = () => {
+      if (g.price != null && run.gold < g.price) { SND.err(); toast('골드가 모자란다'); return; }
+      if (g.dia != null && (run.dia || 0) < g.dia) { SND.err(); toast('다이아가 모자란다'); return; }
+      const r = g.buy ? g.buy() : undefined;
+      if (r === false) return;
+      if (g.price != null) run.gold -= g.price;
+      if (g.dia != null) run.dia -= g.dia;
+      run.janggiSold[g.piece + g.x + g.y] = 1;
+      SND.coin(); toast(`${g.n} 구입`);
+      saveRun(); renderTop();
+      closeOverlay(); showJanggi();
+    };
+    board.appendChild(n);
+  }
+  const leave = () => { closeOverlay(); saveRun(); showMap(); };
+  p.querySelector('#jg_back').onclick = leave;
+  p.querySelector('#jg_leave').onclick = leave;
+}
+
+/* ══ 대전투장(大鬪場) ══════════════════════════════════════
+   SSX급 부적 셋을 갖춘 자만 들어간다. 라운드를 넘길수록 요괴가
+   늘고 강해지며, 한 라운드마다 다이아 30이 적립된다.
+   스스로 물러나면 적립분을 전액, 쓰러지면 절반만 받는다.
+   체력은 들어오기 전으로 되돌아가므로 모험 자체는 끝나지 않는다.
+   ═══════════════════════════════════════════════════════════ */
+const ARENA_DIA = 30;
+const ARENA_REQ = 3;
+function ssxCount() {
+  if (!G.run) return 0;
+  const seen = new Set();
+  for (const c of G.run.deck) if (CARDS[c.id] && CARDS[c.id].rar === 'ssx') seen.add(c.id);
+  return seen.size;
+}
+function arenaReady() { return ssxCount() >= ARENA_REQ; }
+
+/* 라운드 편성 — 다섯 판마다 보스가 선다 */
+function arenaWave(n) {
+  const bossRound = n % 5 === 0;
+  const pool = [];
+  for (const a of [1, 2, 3, 4, 5, 6]) {
+    const w = ENCOUNTERS[a];
+    for (const g of w.normal) for (const id of g) pool.push(id);
+    if (n >= 3) for (const g of w.elite) for (const id of g) pool.push(id);
+  }
+  const uniq = [...new Set(pool)];
+  if (bossRound) {
+    const bosses = [];
+    for (const a of [1, 2, 3, 4, 5, 6]) bosses.push(...ENCOUNTERS[a].boss);
+    const id = bosses[Math.min(bosses.length - 1, Math.floor((n / 5 - 1) % bosses.length))];
+    return { ids: [id], boss: true };
+  }
+  const count = Math.min(5, 2 + Math.floor(n / 2));
+  const ids = [];
+  for (let i = 0; i < count; i++) ids.push(pick(uniq));
+  return { ids, boss: false };
+}
+function arenaScale(n) {
+  return { hpMul: +(1 + 0.30 * (n - 1)).toFixed(2), str: Math.floor((n - 1) / 2), dex: Math.floor((n - 1) / 3) };
+}
+function arenaPreview(n) {
+  const w = arenaWave(n), sc = arenaScale(n);
+  return { w, sc };
+}
+
+function openArena() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showArena('도전');
+}
+function showArena(tab) {
+  G.scene = 'arena';
+  const run = G.run;
+  run.arena = run.arena || { best: 0, cleared: 0 };
+  const cur = (run.arenaRound || 1);
+  const ready = arenaReady(), have = ssxCount();
+  const TABS = [
+    { k: '도전', g: '鬪', sub: '지금 들어간다' },
+    { k: '규칙', g: '則', sub: '어떻게 굴러가나' },
+    { k: '전리품', g: '賞', sub: '무엇을 얻나' },
+    { k: '기록', g: '碑', sub: '여기까지 갔다' }
+  ];
+  tab = tab || '도전';
+
+  const p = overlay(`<div class="arena">
+    <div class="ahead">
+      <button class="gback" id="ar_back">←</button>
+      <h2>대전투장</h2>
+      <div class="acur"><span><i>玉</i>${run.dia || 0}</span></div>
+    </div>
+    <div class="abody">
+      <div class="anav"></div>
+      <div class="amain" id="ar_main"></div>
+      <div class="aart">
+        <svg class="ring" viewBox="0 0 100 100">
+          <path d="M72,24 A40,40 0 1 0 79,44" fill="none" stroke="#e2622a" stroke-width="6"
+            stroke-linecap="round" opacity=".85"/>
+          <path d="M72,24 A40,40 0 1 0 79,44" fill="none" stroke="#ffb08a" stroke-width="2"
+            stroke-linecap="round" opacity=".5" transform="scale(1.06) translate(-3,-3)"/>
+        </svg>
+        <div class="glyph">鬪</div>
+        <div class="sub">大 鬪 場</div>
+      </div>
+    </div>
+  </div>`, 'arenapanel');
+
+  const nav = p.querySelector('.anav');
+  for (const t of TABS) {
+    const n = el('button', 'atab' + (t.k === tab ? ' on' : ''),
+      `<div class="ag">${t.g}</div><div class="an"><b>${t.k}</b><small>${t.sub}</small></div>`);
+    n.onclick = () => { if (t.k !== tab) { SND.ui(); closeOverlay(); showArena(t.k); } };
+    nav.appendChild(n);
+  }
+
+  const main = p.querySelector('#ar_main');
+  if (tab === '도전') {
+    const { w, sc } = arenaPreview(cur);
+    main.innerHTML = `
+      <div class="atitle">제 ${cur} 라운드${w.boss ? ' · 보스' : ''}</div>
+      <div class="asub">이길수록 요괴가 <b>늘고 강해진다.</b> 체력은 라운드가 넘어가도 회복되지 않는다.</div>
+      <div class="abox"><h4>이번 판 상대</h4><div class="aenemies" id="ar_foes"></div></div>
+      <div class="abox">
+        <div class="arow"><span class="k">요괴 수</span><b>${w.ids.length}</b></div>
+        <div class="arow"><span class="k">체력 배율</span><b>×${sc.hpMul}</b></div>
+        <div class="arow"><span class="k">덤</span><b>힘 +${sc.str} · 민첩 +${sc.dex}</b></div>
+        <div class="arow"><span class="k">적립</span><b>다이아 ${(run.arenaDia || 0)}</b>
+          <span style="color:#c09a92;font-size:12px">(이기면 +${ARENA_DIA})</span></div>
+      </div>
+      <div class="adanger"><span>위험도</span><div class="bar"><i style="width:${Math.min(100, cur * 7)}%"></i></div>
+        <span>${cur < 4 ? '험하다' : cur < 8 ? '아주 험하다' : cur < 14 ? '지옥이다' : '살아 돌아온 자가 없다'}</span></div>
+      <div class="abtns">
+        ${ready ? `<button class="aenter" id="ar_go">${(run.arenaRound || 1) > 1 ? '다음 라운드' : '들어간다'}</button>` : ''}
+        ${(run.arenaDia || 0) > 0 ? '<button class="brush-btn ghost" id="ar_quit" style="color:#f0d8d2;border-color:#a06a60">물러난다 (다이아 ' + run.arenaDia + ' 수령)</button>' : ''}
+        ${ready ? '' : `<div class="alock">SSX급 부적이 <b>${ARENA_REQ}종</b> 있어야 들어갈 수 있다 — 지금 <b>${have}종</b></div>`}
+      </div>`;
+    const foes = main.querySelector('#ar_foes');
+    for (const id of w.ids) {
+      const d = ENEMIES[id];
+      const n = el('div', 'aenemy' + (d.boss ? ' boss' : d.elite ? ' elite' : ''), `<b>${d.g}</b><span>${d.n}</span>`);
+      bindTip(n, () => `<b>${d.n}</b><br>체력 ${Math.round(d.hp[0] * sc.hpMul)}~${Math.round(d.hp[1] * sc.hpMul)}`);
+      foes.appendChild(n);
+    }
+    const go = main.querySelector('#ar_go');
+    if (go) go.onclick = () => startArenaRound();
+    const q = main.querySelector('#ar_quit');
+    if (q) q.onclick = () => arenaRetire();
+  } else if (tab === '규칙') {
+    main.innerHTML = `
+      <div class="atitle">규 칙</div>
+      <div class="abox">
+        <div class="arow"><span class="k">입장 조건</span><b>SSX급 부적 ${ARENA_REQ}종</b> 이상을 덱에 지녀야 한다</div>
+        <div class="arow"><span class="k">라운드</span>이길 때마다 요괴가 늘고 체력·힘이 오른다 (다섯 판마다 보스)</div>
+        <div class="arow"><span class="k">회복</span><b>없다.</b> 라운드가 넘어가도 체력은 그대로다</div>
+        <div class="arow"><span class="k">비기</span>라운드마다 한 번씩 다시 쓸 수 있다</div>
+        <div class="arow"><span class="k">물러나기</span>언제든 그만두고 <b>적립한 다이아를 전액</b> 받는다</div>
+        <div class="arow"><span class="k">쓰러지면</span>적립분의 <b>절반만</b> 받는다</div>
+        <div class="arow"><span class="k">모험</span>여기서 쓰러져도 <b>모험은 끝나지 않는다.</b>
+          체력은 들어오기 전으로 되돌아간다</div>
+      </div>
+      <div class="asub">한 판이라도 더 버티면 다이아가 쌓인다. 다만 <b>욕심이 목을 조른다.</b></div>`;
+  } else if (tab === '전리품') {
+    let rows = '';
+    for (let i = 1; i <= 10; i++)
+      rows += `<div class="arow"><span class="k">${i} 라운드</span>누적 <b>다이아 ${i * ARENA_DIA}</b>
+        <span style="color:#c09a92;font-size:12px">· 체력 ×${arenaScale(i).hpMul}${i % 5 === 0 ? ' · 보스' : ''}</span></div>`;
+    main.innerHTML = `<div class="atitle">전 리 품</div>
+      <div class="asub">한 라운드를 넘길 때마다 <b>다이아 ${ARENA_DIA}</b>이 적립된다. 특대급 상자가 2500이니, 여든네 판이면 하나다.</div>
+      <div class="abox">${rows}</div>`;
+  } else {
+    main.innerHTML = `<div class="atitle">기 록</div>
+      <div class="abox">
+        <div class="arow"><span class="k">이번 모험 최고</span><b>${run.arena.best || 0} 라운드</b></div>
+        <div class="arow"><span class="k">역대 최고</span><b>${META.arenaBest || 0} 라운드</b></div>
+        <div class="arow"><span class="k">깬 라운드 수</span><b>${run.arena.cleared || 0}</b></div>
+        <div class="arow"><span class="k">지닌 SSX급</span><b>${have}종</b></div>
+      </div>
+      <div class="asub">${(META.arenaBest || 0) >= 10 ? '이 정도면 이름을 남길 만하다.' : '아직 갈 길이 멀다.'}</div>`;
+  }
+  p.querySelector('#ar_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+}
+
+function startArenaRound() {
+  const run = G.run;
+  if (!arenaReady()) { SND.err(); toast(`SSX급 부적이 ${ARENA_REQ}종 있어야 한다`); return; }
+  run.arenaRound = run.arenaRound || 1;
+  if (run.arenaHp == null) run.arenaHp = run.hp;      /* 들어오기 전 체력을 기억한다 */
+  if (run.arenaDia == null) run.arenaDia = 0;
+  const { w, sc } = arenaPreview(run.arenaRound);
+  closeOverlay();
+  startBattle(w.ids, 'arena', sc);
+  setTimeout(() => {
+    const n = el('div', 'aroundbig', '제 ' + run.arenaRound + ' 라운드');
+    $('#app').appendChild(n); setTimeout(() => n.remove(), 1600);
+    SND.gong();
+  }, 260);
+}
+function arenaWin() {
+  const run = G.run;
+  run.hp = P().hp;
+  run.arenaDia = (run.arenaDia || 0) + ARENA_DIA;
+  run.arena.cleared = (run.arena.cleared || 0) + 1;
+  run.arena.best = Math.max(run.arena.best || 0, run.arenaRound);
+  META.arenaBest = Math.max(META.arenaBest || 0, run.arenaRound); saveMeta();
+  run.arenaRound++;
+  G.b = null;
+  SND.victory();
+  const p = modal(`<h2>제 ${run.arenaRound - 1} 라운드 돌파</h2>
+    <div class="hint">다이아 <b style="color:#6fd0e8">+${ARENA_DIA}</b> 적립 · 누적 <b style="color:#6fd0e8">${run.arenaDia}</b>
+      · 체력 <b>${run.hp} / ${run.maxHp}</b></div>
+    <div class="hint" style="color:#e0a06a">다음은 제 ${run.arenaRound} 라운드 — 요괴가 더 늘어난다</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <button class="brush-btn red" id="aw_go">계속 싸운다</button>
+      <button class="brush-btn ghost" id="aw_stop" style="color:#e9dfc9;border-color:#8a7f68">물러난다 (${run.arenaDia} 수령)</button>
+    </div>`);
+  p.querySelector('#aw_go').onclick = () => { closeTop(); startArenaRound(); };
+  p.querySelector('#aw_stop').onclick = () => { closeTop(); arenaRetire(); };
+  saveRun();
+}
+function arenaLose() {
+  const run = G.run;
+  const half = Math.floor((run.arenaDia || 0) / 2);
+  const round = run.arenaRound || 1;
+  run.hp = Math.max(1, run.arenaHp || run.maxHp);     /* 들어오기 전 체력으로 */
+  run.dia = (run.dia || 0) + half;
+  run.arenaDia = 0; run.arenaRound = 1; run.arenaHp = null;
+  G.b = null;
+  SND.lose();
+  const p = modal(`<h2>쓰 러 졌 다</h2>
+    <div class="hint">제 ${round} 라운드에서 멈췄다 · 적립분의 절반 <b style="color:#6fd0e8">다이아 ${half}</b>만 받는다</div>
+    <div class="hint">체력은 들어오기 전으로 되돌아간다 — <b>모험은 끝나지 않았다</b></div>
+    <button class="brush-btn red" id="al_ok">돌아간다</button>`);
+  p.querySelector('#al_ok').onclick = () => { closeTop(); renderTop(); saveRun(); showMap(); };
+}
+function arenaRetire() {
+  const run = G.run;
+  const got = run.arenaDia || 0;
+  run.dia = (run.dia || 0) + got;
+  run.hp = Math.max(1, Math.min(run.hp, run.arenaHp || run.hp));
+  run.arenaDia = 0; run.arenaRound = 1; run.arenaHp = null;
+  closeOverlay();
+  SND.coin(); toast(`다이아 ${got} 을(를) 챙겨 물러났다`);
+  renderTop(); saveRun(); showMap();
+}
+
 /* ── 유물 조합 화면 ─────────────────────────────────────── */
 function openFuse() {
   if (G.b) { SND.err(); toast('싸우는 중에는 할 수 없다'); return; }
@@ -4240,6 +5173,7 @@ function showShop() {
         <div class="shopcol"><h3>물 건</h3><div class="rewardrow" style="width:330px"></div></div>
       </div>
       <button class="brush-btn red" id="sh_leave">떠난다</button>`);
+    p.dataset.shop = '1';                     /* 자동 플레이는 남의 지갑을 열지 않는다 */
     const g = p.querySelector('.cardgrid');
     sh.cards.forEach(it => {
       const holder = el('div', 'priced');
@@ -4310,7 +5244,9 @@ const BANNERS = [
   { n: '유물 상자',     g: '寶', sub: '기물이 담겨 있다',  price: 1100, tier: 4, relic: true,
     desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' },
   { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
-    desc: '<b>비기만 나온다.</b>' }
+    desc: '<b>비기만 나온다.</b>' },
+  { n: 'VIP 패키지',    g: '貴', sub: '단 한 번의 결단',   price: 0,    tier: 9, vip: true,
+    desc: '퇴마사의 격을 영원히 올린다.' }
 ];
 const MILESTONES = [
   { at: 30,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
@@ -4491,8 +5427,11 @@ function showSpecialShop(refill) {
         `<div class="bg">${b.g}</div><div class="bn"><b>${b.n}</b><small>${b.sub}</small></div>
          ${b.hot ? '<div class="tag">HOT</div>' : ''}`);
       n.onclick = () => { if (i === bi) return; run.banner = i; tabGrade = 'all'; SND.ui(); draw(); };
+      if (b.vip) n.classList.add('vipnav');
       nav.appendChild(n);
     });
+
+    if (B.vip) { renderVip(p); return; }
 
     /* 등급 탭 */
     const tabs = p.querySelector('.gtabs');
@@ -4546,6 +5485,79 @@ function showSpecialShop(refill) {
     if (!shown.length) gp.innerHTML = '<div style="color:#8f846d">비어 있다</div>';
 
     renderBonus(p, cur);
+  }
+  /* ── VIP 패키지 ─────────────────────────────────────── */
+  function renderVip(p) {
+    const owned = vipOn();
+    const left = vipFreeBoxLeft();
+    const days = Math.ceil(left / (24 * 3600 * 1000));
+    const perks = [
+      { g: '恒', t: '영구 보너스', d: '모든 모험에서 최대 체력 <b>+15</b> · 시작 골드 <b>+250</b> · 시작 다이아 <b>+1000</b> · 물약 자리 <b>+1</b> · 전리품 <b>+20%</b>' },
+      { g: 'S', t: 'SSX급 부적 5종', d: '사는 즉시 덱에 들어가고, <b>새 모험을 시작할 때마다</b> 다시 다섯 장을 얹어 준다', hot: true },
+      { g: '櫃', t: '특대급 상자 무료', d: '<b>한 달에 한 번</b>, 값을 치르지 않고 특대급 상자를 연다' },
+      { g: '疾', t: '2배속 플레이', d: '모든 연출이 절반의 시간에 흐른다 · 설정에서 켜고 끈다' },
+      { g: '自', t: '자동 플레이 즉시 개방', d: '제1막을 넘지 않았어도 <b>곧바로</b> 쓸 수 있다' }
+    ];
+    const main = p.querySelector('.gmain');
+    main.innerHTML = `<div class="vipwrap">
+      <div class="vipcard${owned ? ' owned' : ''}">
+        <div class="vaura"></div><div class="vfoil"></div>
+        <div class="vedge"></div>
+        <div class="vinner">
+          <div class="vtop">貴 人 之 證</div>
+          <div class="vseal"><span>貴</span></div>
+          <div class="vname">VIP 패키지</div>
+          <div class="vsub">퇴마사의 격을 영원히 올린다</div>
+          <div class="vprice">${owned ? '<em>보유 중</em>'
+            : VIP_FREE ? `<em>무료</em><s>玉 ${VIP_PRICE.toLocaleString()}</s>` : `玉 ${VIP_PRICE.toLocaleString()}`}</div>
+        </div>
+        ${[...Array(10)].map((_, i) =>
+          `<i class="vmote" style="--i:${i};left:${6 + i * 9.4}%;animation-delay:${(i * .37).toFixed(2)}s"></i>`).join('')}
+      </div>
+      <div class="vipinfo">
+        <h3>혜 택</h3>
+        <div class="viplist">${perks.map(k => `<div class="vperk${k.hot ? ' hot' : ''}">
+          <div class="pg">${k.g}</div><div class="pt"><b>${k.t}</b><small>${k.d}</small></div></div>`).join('')}</div>
+        <div class="vipbuy" id="v_buy"></div>
+      </div>
+    </div>`;
+    const buy = main.querySelector('#v_buy');
+    if (!owned) {
+      const b = el('button', 'vipbtn', VIP_FREE
+        ? '지금은 <b>무료</b> · 받는다' : `玉 ${VIP_PRICE.toLocaleString()} 로 산다`);
+      b.onclick = () => doVipBuy();
+      buy.appendChild(b);
+      buy.appendChild(el('div', 'viphint', '출시 기념 · 값을 받지 않는다'));
+    } else {
+      const fb = el('button', 'vipbtn free' + (left ? ' cool' : ''),
+        left ? `무료 특대급 상자 · <b>${days}일</b> 남음` : '무료 특대급 상자를 연다');
+      fb.disabled = !!left;
+      fb.onclick = () => {
+        META.vip.freeBoxAt = Date.now(); saveMeta();
+        SND.bell(); doSummon(BANNERS[3], 1);
+      };
+      buy.appendChild(fb);
+      const t = el('button', 'vipbtn ghost2', `2배속 ${OPT.turbo ? '켜짐' : '꺼짐'}`);
+      t.onclick = () => { OPT.turbo = !OPT.turbo; saveMeta(); SND.ui(); t.innerHTML = `2배속 ${OPT.turbo ? '켜짐' : '꺼짐'}`; };
+      buy.appendChild(t);
+      buy.appendChild(el('div', 'viphint',
+        `${new Date(META.vip.at || Date.now()).toLocaleDateString()} 부터 · 혜택은 모든 모험에 남는다`));
+    }
+    p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+  }
+  async function doVipBuy() {
+    if (vipOn()) return;
+    META.vip.owned = true; META.vip.at = Date.now(); META.vip.freeBoxAt = 0;
+    saveMeta();
+    unlockAuto(true);
+    applyVipRun();
+    saveRun(); renderTop(); syncAuto();
+    SND.victory(); setTimeout(() => SND.gong(), 260);
+    screenFlash('rgba(255,214,120,.5)', 900);
+    FX.gold(innerWidth / 2, innerHeight / 2, 70);
+    for (let i = 1; i <= 5; i++) setTimeout(() => FX.gold(innerWidth * (.2 + i * .12), innerHeight * .45, 30), i * 130);
+    toast('VIP — 퇴마사의 격이 올랐다');
+    draw();
   }
   function renderBonus(p, cur) {
     /* 누적 보너스 눈금 */
@@ -5026,7 +6038,7 @@ function runStatsHtml() {
     <div>걸린 시간<b>${mins}분</b></div>`;
 }
 function gameOver() {
-  SND.lose();
+  SND.lose(); autoStop('쓰러졌다');
   const score = (G.run.act - 1) * 12 + G.run.floor;
   META.best = Math.max(META.best, score); saveMeta();
   G.scene = 'over';
@@ -5057,7 +6069,7 @@ function gameOver() {
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
 }
 function victory() {
-  SND.victory(); setTimeout(() => SND.gong(), 400);
+  autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
   META.wins++; META.best = Math.max(META.best, 30 + (G.run.asc || 0) * 5); saveMeta();
   G.scene = 'win';
   const s = $('#scene');
@@ -5082,8 +6094,10 @@ function victory() {
 function showMenu() {
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
-      <button class="brush-btn" id="m_sound">소리 ${SND.on ? '켜짐' : '꺼짐'}</button>
-      <button class="brush-btn" id="m_speed">진행 속도 ${SPEED_NAME()}</button>
+      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (1막 클리어)'}</button>
+      <button class="brush-btn" id="m_set">설정</button>
+      <button class="brush-btn" id="m_arena">대전투장</button>
+      <button class="brush-btn" id="m_janggi">장기 상점</button>
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_shop">상점 가기</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
@@ -5093,24 +6107,134 @@ function showMenu() {
       <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
-  p.querySelector('#m_sound').onclick = e => {
-    SND.on = !SND.on; META.sound = SND.on; saveMeta();
-    e.target.textContent = `소리 ${SND.on ? '켜짐' : '꺼짐'}`;
-    if (SND.on) { SND.ui(); SND.ambience(true, !!G.b); } else SND.ambience(false);
+  p.dataset.noauto = '1';
+  p.querySelector('#m_auto').onclick = e => {
+    autoToggle();
+    if (autoOk()) e.target.textContent = `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}`;
+    if (AUTO.on) closeTop();
   };
-  p.querySelector('#m_speed').onclick = e => {
-    SPEED = SPEED >= 1 ? .62 : SPEED >= .6 ? .38 : 1;
-    META.speed = SPEED; saveMeta(); SND.ui();
-    e.target.textContent = `진행 속도 ${SPEED_NAME()}`;
-  };
+  p.querySelector('#m_set').onclick = () => showSettings();
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
+  p.querySelector('#m_arena').onclick = () => { closeTop(); openArena(); };
+  p.querySelector('#m_janggi').onclick = () => { closeTop(); openJanggi(); };
   p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
   p.querySelector('#m_shop').onclick = () => { closeTop(); openShop(); };
   p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
   p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = () => showHelp();
-  p.querySelector('#m_quit').onclick = () => { if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
+  p.querySelector('#m_quit').onclick = () => { autoStop(); if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
   p.querySelector('#m_close').onclick = closeTop;
+}
+/* ── 설정 ────────────────────────────────────────────────── */
+const SCOPE_NAME = { battle: '전투만', run: '지도까지' };
+const PACE_NAME = { slow: '느긋', normal: '보통', fast: '빠름' };
+function showSettings() {
+  const p = modal(`<h2>설 정</h2>
+    <div class="hint">언제든 바꿀 수 있다 · 설정은 저장된다</div>
+    <div class="optlist" id="optl"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="brush-btn ghost" id="op_reset" style="color:#e9dfc9;border-color:#8a7f68">기본값으로</button>
+      <button class="brush-btn" id="op_close">닫기</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  const list = p.querySelector('#optl');
+  const head = t => list.appendChild(el('div', 'opthead', t));
+  /* 켜고 끄는 줄 */
+  const row = (label, desc, get, set) => {
+    const n = el('div', 'optrow', `<div class="lb"><b>${label}</b><small>${desc}</small></div>`);
+    const btn = el('button', 'val');
+    const paint = () => {
+      const v = get();
+      btn.textContent = v ? '켜짐' : '꺼짐';
+      btn.className = 'val ' + (v ? 'yes' : 'no');
+    };
+    btn.onclick = () => { set(!get()); saveMeta(); SND.ui(); paint(); };
+    paint(); n.appendChild(btn); list.appendChild(n); return n;
+  };
+  /* 여러 값을 돌려 가며 고르는 줄 */
+  const cycle = (label, desc, keys, names, get, set) => {
+    const n = el('div', 'optrow', `<div class="lb"><b>${label}</b><small>${desc}</small></div>`);
+    const btn = el('button', 'val yes');
+    const paint = () => { btn.textContent = names[get()]; };
+    btn.onclick = () => {
+      const i = keys.indexOf(get());
+      set(keys[(i + 1) % keys.length]); saveMeta(); SND.ui(); paint(); syncAuto();
+    };
+    paint(); n.appendChild(btn); list.appendChild(n); return n;
+  };
+
+  head('소 리');
+  row('소리', '모든 소리를 켜고 끈다', () => SND.on, v => {
+    SND.on = v; META.sound = v;
+    if (v) { SND.init(); SND.ui(); SND.ambience(true, !!G.b); } else SND.ambience(false);
+  });
+  {
+    const n = el('div', 'optrow', `<div class="lb"><b>음량</b><small>지금 <span id="op_volv">${Math.round(OPT.vol * 100)}</span>%</small></div>`);
+    const sl = el('input'); sl.type = 'range'; sl.min = '0'; sl.max = '100'; sl.step = '5';
+    sl.value = String(Math.round(OPT.vol * 100));
+    sl.oninput = () => {
+      OPT.vol = +sl.value / 100; applyVol();
+      n.querySelector('#op_volv').textContent = sl.value;
+    };
+    sl.onchange = () => { saveMeta(); if (SND.on) SND.ui(); };
+    n.appendChild(sl); list.appendChild(n);
+  }
+
+  head('화 면');
+  cycle('진행 속도', '전투 연출이 흐르는 빠르기', ['1', '0.62', '0.38'],
+    { '1': '보통', '0.62': '빠름', '0.38': '아주 빠름' },
+    () => (SPEED >= 1 ? '1' : SPEED >= .6 ? '0.62' : '0.38'),
+    v => { SPEED = +v; META.speed = SPEED; });
+  {
+    const n = row('2배속 (VIP)', vipOn() ? '모든 연출이 절반의 시간에 흐른다' : 'VIP 패키지를 가진 자만 켤 수 있다',
+      () => OPT.turbo && vipOn(), v => { if (!vipOn()) { SND.err(); toast('VIP 패키지가 있어야 한다'); return; } OPT.turbo = v; });
+    if (!vipOn()) n.querySelector('.val').classList.add('no');
+  }
+  row('화면 흔들림', '묵직한 일격에 화면이 흔들린다', () => OPT.shake, v => { OPT.shake = v; if (v) shake(); });
+  row('먹물 파편', '피와 먹이 튀는 입자 연출', () => OPT.particles, v => {
+    OPT.particles = v;
+    if (v) FX.ink(innerWidth / 2, innerHeight / 2, 18); else FX.ps.length = 0;
+  });
+  row('큰 이름 연출', '귀한 부적을 쓸 때 이름이 크게 지나간다', () => OPT.banner, v => { OPT.banner = v; });
+  row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
+
+  head('자 동 플 레 이');
+  {
+    const n = el('div', 'optrow',
+      `<div class="lb"><b>어떻게 고르는가</b><small>등급이 높은 부적이 언제나 먼저 나간다.
+        같은 등급 안에서만 마무리 일격 · 받을 피해 · 심법을 따진다.</small></div>`);
+    list.appendChild(n);
+  }
+  cycle('범위', '전투만 대신할지, 지도까지 스스로 나아갈지', ['battle', 'run'], SCOPE_NAME,
+    () => OPT.autoScope, v => { OPT.autoScope = v; });
+  cycle('속도', '한 수를 두는 간격', ['slow', 'normal', 'fast'], PACE_NAME,
+    () => OPT.autoPace, v => { OPT.autoPace = v; });
+  row('물약 자동 사용', '체력이 위태로울 때만 딴다', () => OPT.autoPotion, v => { OPT.autoPotion = v; });
+  row('비기 자동 사용', '싸움이 길어지면 알아서 쓴다', () => OPT.autoSkill, v => { OPT.autoSkill = v; });
+
+  head('기 록');
+  {
+    const n = el('div', 'optrow',
+      `<div class="lb"><b>도감과 기록 지우기</b><small>모은 도감 · 최고 기록이 모두 사라진다 (진행 중인 모험은 남는다)</small></div>`);
+    const btn = el('button', 'val'); btn.textContent = '지우기';
+    let armed = false;
+    btn.onclick = () => {
+      if (!armed) { armed = true; btn.textContent = '정말?'; btn.classList.add('yes'); SND.err(); return; }
+      META.dex = { cards: {}, relics: {}, enemies: {}, skills: {} };
+      META.best = 0; META.wins = 0; META.runs = 0; META.arenaBest = 0;
+      saveMeta(); toast('도감과 기록을 지웠다');
+      btn.textContent = '지웠다'; btn.disabled = true;
+    };
+    n.appendChild(btn); list.appendChild(n);
+  }
+
+  p.querySelector('#op_reset').onclick = () => {
+    Object.assign(OPT, OPT_DEF);
+    SPEED = 1; META.speed = 1; SND.on = true; META.sound = true;
+    applyVol(); saveMeta(); SND.ui(); closeTop(); showSettings();
+    toast('기본값으로 되돌렸다');
+  };
+  p.querySelector('#op_close').onclick = closeTop;
 }
 /* ── 도감 화면 ───────────────────────────────────────────── */
 function dexTile(known, glyph, name, tipHtml, cls, onClick) {
@@ -5394,6 +6518,7 @@ const GUIDE = {
       <tr><td>商 상인</td><td>부적·유물·물약을 사고, 돈을 내고 부적을 <b>없앨</b> 수 있다.</td></tr>
       <tr><td>? 사건</td><td>선택지가 있는 이야기. 좋을 수도, 나쁠 수도.</td></tr>
       <tr><td>寶 보물</td><td>공짜 유물과 골드.</td></tr>
+      <tr><td>將 장기 상점</td><td>장기판 위의 말 하나하나가 물건이다. 말은 한 번씩만 팔린다.</td></tr>
     </table>
     <div class="tip"><b>뽑기(匣)는 지도에 없다.</b> 화면 위쪽 <b>匣</b> 단추로 언제든 간다.</div>
     <div class="tip">보스 직전 층은 항상 <b>야영지</b>다. 그 전에 체력을 아끼지 말고 써도 된다.</div>
@@ -5566,7 +6691,7 @@ function setBg(act) {
 
 /* --- 타이틀 --- */
 function showTitle() {
-  G.scene = 'title'; G.b = null; _bgKey = ''; setBg(1);
+  G.scene = 'title'; G.b = null; _bgKey = ''; setBg(1); autoStop();
   const tb = $('#topbar'); if (tb) tb.remove();
   SND.ambience(false);
   closeOverlay(); hideArrow();
@@ -5581,6 +6706,7 @@ function showTitle() {
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
         <button class="brush-btn ghost" id="t_dex">도감</button>
         <button class="brush-btn ghost" id="t_help">안내서</button>
+        <button class="brush-btn ghost" id="t_set">설정</button>
       </div>
       <div class="foot">${META.runs ? `등반 ${META.runs}회 · 등정 ${META.wins}회 · 최고 기록 ${META.best}` : '한 판에 30~45분'}</div>
     </div>`;
@@ -5592,6 +6718,7 @@ function showTitle() {
       n.textContent = '안내서 (처음이신가요?)'; }
   }, 900);
   s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
+  s.querySelector('#t_set').onclick = () => { SND.init(); SND.ui(); showSettings(); };
   const c = s.querySelector('#t_cont');
   if (c) c.onclick = () => { SND.init(); SND.ui(); resumeRun(); };
 }
@@ -5614,6 +6741,7 @@ addEventListener('keydown', e => {
     if (G.run) showMenu();
     return;
   }
+  if ((e.key === 'a' || e.key === 'A') && G.run && $('#overlay').style.display !== 'block') { autoToggle(); return; }
   if (!G.b || G.b.busy || G.b.over || $('#overlay').style.display === 'block') return;
   if (e.key >= '1' && e.key <= '9') {
     const c = G.b.hand[+e.key - 1];
@@ -5628,6 +6756,7 @@ addEventListener('pointerdown', () => SND.init(), { once: true });
 loadMeta();
 FX.init();
 showTitle();
+syncAuto();
 console.log('%c백귀야행 百鬼夜行', 'font-size:20px;color:#a8272c', '\n카드', Object.keys(CARDS).length,
   '· 유물', Object.keys(RELICS).length, '· 물약', Object.keys(POTIONS).length, '· 요괴', Object.keys(ENEMIES).length);
 
