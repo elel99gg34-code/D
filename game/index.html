@@ -618,7 +618,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dextile{width:74px;height:74px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   background:#efe4cb;border:1.5px solid #6b6053;cursor:help;transition:.14s}
 .dextile:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.45)}
-.dextile b{font-size:23px;font-weight:400;color:#22190f;line-height:1}
+.dextile > b{font-size:23px;font-weight:400;color:#22190f;line-height:1}
 .dextile span{font-size:9.5px;color:#5b5344;text-align:center;line-height:1.2;padding:0 3px;word-break:keep-all}
 .dextile.clickable{cursor:pointer}
 .dextile.gd_common{border-color:#3f7346}.dextile.gd_uncommon{border-color:#2f6d8f}
@@ -685,13 +685,20 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 #skillbtn.used::after{content:'사용함';position:absolute;font-size:10px;color:#ffb3c2;bottom:-15px;letter-spacing:.1em}
 @media(max-width:1100px){#skillbtn{left:8px;width:58px;height:58px}#skillbtn b{font-size:22px}}
 
-.skillgrid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:min(900px,92vw)}
-.stile{width:150px;padding:13px 10px;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:6px;
+.skillgrid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:min(1040px,94vw);
+  align-items:stretch}
+.stile{width:232px;padding:14px 14px 16px;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:7px;
   background:linear-gradient(160deg,#efe4cb,#cdbb96);border:2px solid #6b6053;cursor:pointer;transition:.16s}
 .stile:hover{transform:translateY(-5px);box-shadow:0 10px 22px rgba(0,0,0,.5)}
-.stile b{font-size:32px;color:#22190f;font-weight:400;line-height:1}
-.stile .sn{font-size:13.5px;color:#22190f}
-.stile .sd{font-size:11px;color:#4a4234;text-align:center;line-height:1.4;word-break:keep-all}
+.stile > b{font-size:34px;color:#22190f;font-weight:400;line-height:1}
+.stile .sn{font-size:14.5px;color:#22190f;letter-spacing:.04em}
+/* 설명문 — 글리프 규칙에 휩쓸리지 않게 크기를 따로 못박는다 */
+.stile .sd{font-size:12.5px;color:#4a4234;text-align:center;line-height:1.7;
+  word-break:keep-all;overflow-wrap:break-word;letter-spacing:-.1px}
+.stile .sd b,.stile .sd em,.stile .sd i{font-size:inherit;line-height:inherit;font-style:normal;font-weight:700}
+.stile .sd b{color:#7d1e22}
+.stile .sd em{color:#a8272c}
+.stile .sd i{color:#31536b}
 .stile .sg{font-size:9.5px;padding:1px 7px;border-radius:3px;background:var(--gc);color:#fff;
   border:1px solid rgba(255,255,255,.4)}
 .stile.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
@@ -720,8 +727,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .rtile{width:84px;padding:10px 5px;border-radius:7px;display:flex;flex-direction:column;align-items:center;gap:5px;
   background:linear-gradient(160deg,#efe4cb,#cdbb96);border:2px solid #6b6053;cursor:pointer;transition:.15s}
 .rtile:hover{transform:translateY(-5px);box-shadow:0 8px 18px rgba(0,0,0,.5)}
-.rtile b{font-size:26px;color:#22190f;font-weight:400;line-height:1}
-.rtile span{font-size:10.5px;color:#4a4234;text-align:center;word-break:keep-all;line-height:1.2}
+.rtile > b{font-size:26px;color:#22190f;font-weight:400;line-height:1}
+.rtile span{font-size:10.5px;color:#4a4234;text-align:center;word-break:keep-all;line-height:1.25}
+.dextile span,.gunit .un{word-break:keep-all;overflow-wrap:break-word}
 .rtile.g-uncommon{border-color:#2f6d8f}
 .rtile.g-rare{border-color:#b8912f;box-shadow:0 0 10px rgba(184,145,47,.5)}
 .rtile.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
@@ -2068,7 +2076,7 @@ defSkill({ id: 'rush', n: '속공', g: '速', rar: 'special',
 
 /* --- SSX급 --- */
 defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
-  d: '<b>기의 제한을 깨고</b> 뽑을 더미와 버린 더미의 <b>모든 부적을 태운다.</b><br>' +
+  d: '<b>기의 제한을 깨고</b> 뽑을 더미와 버린 더미의 <b>모든 부적을 태운다.</b> ' +
      '태운 장수 × <em>9</em>의 피해를 모든 적에게 준다.',
   use: async () => {
     const b = G.b;
@@ -4026,7 +4034,7 @@ async function pickSkill() {
       const d = SKILLS[id];
       const n = el('div', 'stile g-' + d.rar,
         `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div><b>${d.g}</b>
-         <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>/g, ' ')}</div>`);
+         <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>\s*/g, ' ')}</div>`);
       n.onclick = () => { gainSkill(id); G.run.skill = id; closeTop(); renderTop(); res(); };
       g.appendChild(n);
     }
@@ -4120,7 +4128,7 @@ function showSkills() {
       `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div>
        <b>${own ? d.g : '?'}</b>
        <div class="sn">${own ? d.n : '???'}</div>
-       <div class="sd">${own ? d.d.replace(/<br>/g, ' ') : '아직 익히지 못했다'}</div>
+       <div class="sd">${own ? d.d.replace(/<br>\s*/g, ' ') : '아직 익히지 못했다'}</div>
        ${on ? '<div class="eq">장 착 중</div>' : ''}`);
     if (own) n.onclick = () => { run.skill = id; SND.power(); toast(`${d.n} 장착`); saveRun(); closeTop(); showSkills(); };
     else { n.style.opacity = '.45'; n.style.cursor = 'default'; }
