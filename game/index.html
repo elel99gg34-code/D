@@ -4066,7 +4066,7 @@ function autoOverlay(panel) {
     if (left === AUTO.rewLeft) AUTO.rewStall++; else { AUTO.rewLeft = left; AUTO.rewStall = 0; }
     if (AUTO.rewStall < 8) { rew.click(); return; }
   } else { AUTO.rewLeft = -1; AUTO.rewStall = 0; }
-  for (const sel of ['#rw_done', '.evtbox .opt:not(:disabled)', '#r_heal', '#tr_done', '#sh_leave']) {
+  for (const sel of ['#pr_ok', '#rw_done', '.evtbox .opt:not(:disabled)', '#r_heal', '#tr_done', '#sh_leave']) {
     const n = q(sel);
     if (n) { n.click(); return; }
   }
@@ -4113,6 +4113,8 @@ async function autoLoop() {
       await new Promise(r => setTimeout(r, autoDelay()));
       if (!AUTO.on) break;
       if (!G.run || G.scene === 'title' || G.scene === 'over' || G.scene === 'win') { autoStop(); break; }
+      /* 상자가 터지는 중이면 끝날 때까지 기다린다 */
+      if ($('#app > .openscene')) { AUTO.lost = 0; continue; }
       /* 이야기는 읽을 틈을 두고 넘긴다 */
       const story = $('#app > .story:not(.fadeout)');
       if (story) {
