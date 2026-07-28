@@ -674,6 +674,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .agtxt span{display:block;font-size:12.8px;color:#a9bdb6;line-height:1.85}
 .agtxt em{font-style:normal;color:#ffd98a}
 .rewitem.gift{background:linear-gradient(100deg,#effff9,#d9f5ea);box-shadow:0 0 22px rgba(70,200,170,.45)}
+.rewitem.sgift{background:linear-gradient(100deg,#fff3e2,#ffe0bd);box-shadow:0 0 24px rgba(255,140,50,.5)}
+.rewitem.sgift .ic{background:radial-gradient(circle at 35% 30%,#ffa04a,#8a3a06);color:#fff4e2}
+.rewitem.sgift .t b{color:#8a3a06}
 .rewitem.gift .ic{background:radial-gradient(circle at 35% 30%,#4fd3a0,#14624e);color:#eafff9}
 .rewitem.gift .t b{color:#14503f}
 
@@ -876,6 +879,27 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .jpiece.sold{filter:grayscale(1);opacity:.4;cursor:default}
 .jpiece.sold:hover{transform:translate(-50%,-50%)}
 .jpiece.buyable{animation:jpulse 1.8s ease-in-out infinite}
+.jpiece.picked{transform:translate(-50%,-56%) scale(1.12);box-shadow:0 0 0 3px rgba(255,210,90,.9),0 8px 18px rgba(0,0,0,.6);z-index:4}
+.jdot{position:absolute;width:5.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:rgba(40,110,80,.62);cursor:pointer;z-index:2;box-shadow:0 0 10px rgba(60,180,130,.6);
+  animation:jdotIn .2s ease-out}
+.jdot:hover{background:rgba(40,140,100,.9);transform:translate(-50%,-50%) scale(1.25)}
+.jdot.cap{width:12.6%;background:transparent;border:3px solid rgba(190,40,50,.85);box-shadow:0 0 14px rgba(200,50,60,.6)}
+.jdot.cap:hover{background:rgba(190,40,50,.25)}
+@keyframes jdotIn{from{opacity:0;transform:translate(-50%,-50%) scale(.4)}}
+.jlast{position:absolute;width:12%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:20%;
+  background:rgba(255,200,90,.22);border:1px dashed rgba(140,90,20,.6);pointer-events:none;z-index:1}
+.jboard.jshake{animation:shake .3s}
+.jold{display:flex;gap:11px;align-items:center;padding:12px 14px;border-radius:8px;
+  background:rgba(10,8,4,.5);border:1px solid rgba(220,190,120,.25)}
+.jface{width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:23px;
+  background:radial-gradient(circle at 35% 30%,#efe0b8,#9c7f45);color:#2a1c08;border:2px solid #c8a94e}
+.jsay{font-size:12.5px;color:#e0cfa4;line-height:1.7;letter-spacing:.02em}
+.jbtns{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.jbtns .brush-btn{width:100%;font-size:13.5px;padding:9px 12px}
+.jhead .gback{width:34px;height:34px;border-radius:6px;background:rgba(220,190,120,.15);
+  border:1px solid rgba(220,190,120,.4);color:#f4ead0;font-size:18px}
+.jhead .gback:hover{background:rgba(220,190,120,.32)}
 @keyframes jpulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,.45)}
   50%{box-shadow:0 3px 8px rgba(0,0,0,.45),0 0 18px 4px rgba(255,200,90,.7)}}
 
@@ -1430,6 +1454,22 @@ const SND = {
     const k = Math.min(9, Math.max(3, n | 0));
     for (let i = 0; i < k; i++)
       this.blip(this.vary(1500 + i * 90), { dur: .16, type: 'triangle', vol: .055, to: 700, delay: i * .045, rev: .5 });
+  },
+  /* 장기 — 말을 놓는 소리 */
+  jgMove() {
+    this.blip(this.vary(320), { dur: .07, type: 'square', vol: .09, to: 120 });
+    this.hiss({ dur: .06, vol: .09, freq: 2600, to: 700, filter: 'bandpass', q: 1.4, rev: .25 });
+    this.blip(this.vary(150), { dur: .13, type: 'sine', vol: .07, to: 70, rev: .3 });
+  },
+  jgCapture() {
+    this.blip(this.vary(260), { dur: .1, type: 'square', vol: .13, to: 90 });
+    this.hiss({ dur: .16, vol: .14, freq: 3600, to: 500, filter: 'bandpass', q: 1, rev: .4 });
+    this.blip(this.vary(92), { dur: .3, type: 'sawtooth', vol: .1, to: 40, rev: .45 });
+  },
+  jgWin() {
+    [392, 523, 659, 784, 1046].forEach((f, i) =>
+      this.blip(f, { dur: .8, type: 'triangle', vol: .1, delay: i * .085, rev: .85 }));
+    this.blip(196, { dur: 1.8, type: 'sine', vol: .09, delay: .1, rev: .9 });
   },
   /* 손패가 펼쳐지는 소리 */
   swoosh() { this.hiss({ dur: .22, vol: .07, freq: 2600, to: 700, filter: 'bandpass', q: .7, rev: .3 }); },
@@ -2207,6 +2247,32 @@ defCard({ id: 'stormfall', n: '만뢰붕락', g: '霆', type: 'attack', rar: 'ss
       }
       shake(last);
       if (!last) { await wait(220); SND.thunder(); }
+    }
+    syncAll();
+  } });
+
+defCard({ id: 'janggi', n: '장기(將棋)', g: '將', type: 'skill', rar: 'unknown', cost: 2, tgt: 'all', exhaust: true,
+  v: u => ({ p: u ? 65 : 50, c: 60 }),
+  txt: v => `<b>${v.p}%</b> 확률로 <b>모든 적</b>의 체력을 <em>${v.c}%</em> 깎는다.<br>
+    빗나가면 카드를 2장 뽑고 기를 2 얻는다. 소멸.`,
+  play: async c => {
+    skillBanner('將 棋', true);
+    SND.jgMove(); await wait(220);
+    const hit = rnd() * 100 < c.v.p;
+    if (!hit) {
+      SND.err(); floatText(P(), '빗나갔다', '');
+      screenFlash('rgba(90,90,120,.4)', 420);
+      drawCards(2); energy(2); syncAll();
+      return;
+    }
+    SND.jgWin(); SND.gong();
+    screenFlash('radial-gradient(circle,rgba(255,255,255,.85),rgba(120,60,220,.7))', 780);
+    shake(true); hitstop(true);
+    for (const e of alive()) {
+      impact('void', e);
+      pure(e, Math.ceil(e.hp * c.v.c / 100));
+      FX.burst(centerOf(e.el).x, centerOf(e.el).y, 30, '150,90,255', 7, 50, 5);
+      await wait(120);
     }
     syncAll();
   } });
@@ -5097,6 +5163,24 @@ function showRewards(kind) {
   if (kind === 'elite') {
     const rid = randomRelic();
     if (rid) items.push({ ic: RELICS[rid].g, t: RELICS[rid].n, s: RELICS[rid].d.replace(/<[^>]+>/g, ''), act: () => gainRelic(rid) });
+    /* 제5막부터는 엘리트가 이따금 S급 부적을 떨어뜨린다 — 없으면 못 넘는다 */
+    if (run.act >= SPECIAL_DROP_FROM && GRADE_POOL.special.length && rnd() < specialDropRate(run.act)) {
+      const three = sample(GRADE_POOL.special, 3);
+      items.push({ ic: 'S', t: 'S급 부적', cls: 'sgift',
+        s: `${three.length}장 중 하나 · 제${run.act}막의 엘리트가 남긴 것`,
+        act: async () => {
+          const list = three.map(id => mkCard(id, false));
+          const c = await pickFromList(list, 'S급 부적 하나를 고르시오', { cancel: true, hint: '불타는 부적이다' });
+          if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id);
+                   SND.unlock(); screenFlash('rgba(255,150,60,.4)', 620); toast(`${cname(c)} 획득`); }
+          return true;
+        } });
+    }
+  }
+  /* 제5막을 넘어서면 특대급 상자를 하나 준다 (제6막에는 없다) */
+  if (kind === 'boss' && run.act === FREEBOX_ACT) {
+    items.push({ ic: '櫃', t: '특대급 상자 1회', cls: 'sgift', s: '제5막을 넘어선 값 · 특별 부적만 나온다',
+      act: async () => { await freeBigBox(); return true; } });
   }
   if (kind === 'boss' && run.act === 1 && !autoOk()) {
     items.push({ ic: '自', t: '자동 플레이 개방', s: '제1막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다',
@@ -5297,6 +5381,222 @@ function showSkills() {
    { piece:'車', side:'red'|'green', x:0~8, y:0~9,
      n:'이름', d:'설명', price:골드, dia:다이아, buy(){ ... } }
    ═══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   장기(將棋) — 노인과의 한 판
+   ──────────────────────────────────────────────────────────
+   9줄 × 10줄. 아래가 나(漢), 위가 노인(楚).
+   車 馬 象 士 包 卒 의 규칙을 모두 지키고, 궁(宮) 안의 대각선도 산다.
+   노인은 알파-베타 가지치기를 붙인 미니맥스로 세 수 앞을 본다.
+   ══════════════════════════════════════════════════════════ */
+const JG_GLYPH = {
+  cho: { K: '楚', A: '士', R: '車', N: '馬', B: '象', C: '包', P: '卒' },
+  han: { K: '漢', A: '士', R: '車', N: '馬', B: '象', C: '包', P: '兵' }
+};
+const JG_VAL = { K: 10000, R: 130, C: 70, N: 50, B: 30, A: 30, P: 20 };
+const JG_NAME = { K: '왕', A: '사', R: '차', N: '마', B: '상', C: '포', P: '졸' };
+const idx = (x, y) => y * 9 + x;
+const onBoard = (x, y) => x >= 0 && x < 9 && y >= 0 && y < 10;
+const inPalace = (s, x, y) => x >= 3 && x <= 5 && (s === 'cho' ? y <= 2 : y >= 7);
+const anyPalace = (x, y) => x >= 3 && x <= 5 && (y <= 2 || y >= 7);
+/* 궁 안 대각선으로 이어진 자리 */
+function jgDiag(x, y) {
+  for (const [cx, cy] of [[4, 1], [4, 8]]) {
+    if (x === cx && y === cy) return [[cx - 1, cy - 1], [cx + 1, cy - 1], [cx - 1, cy + 1], [cx + 1, cy + 1]];
+    if (Math.abs(x - cx) === 1 && Math.abs(y - cy) === 1) return [[cx, cy]];
+  }
+  return [];
+}
+function jgNewBoard() {
+  const b = new Array(90).fill(null);
+  const put = (x, y, t, s) => { b[idx(x, y)] = { t, s }; };
+  /* 위(楚) — 차마상사·사상마차 */
+  const back = ['R', 'N', 'B', 'A', null, 'A', 'B', 'N', 'R'];
+  back.forEach((t, x) => { if (t) put(x, 0, t, 'cho'); });
+  put(4, 1, 'K', 'cho');
+  put(1, 2, 'C', 'cho'); put(7, 2, 'C', 'cho');
+  [0, 2, 4, 6, 8].forEach(x => put(x, 3, 'P', 'cho'));
+  /* 아래(漢) */
+  back.forEach((t, x) => { if (t) put(x, 9, t, 'han'); });
+  put(4, 8, 'K', 'han');
+  put(1, 7, 'C', 'han'); put(7, 7, 'C', 'han');
+  [0, 2, 4, 6, 8].forEach(x => put(x, 6, 'P', 'han'));
+  return b;
+}
+/* 한 말이 갈 수 있는 자리들 (자기 왕의 안전은 따지지 않는다) */
+function jgRaw(b, from) {
+  const p = b[from]; if (!p) return [];
+  const x = from % 9, y = (from / 9) | 0, out = [];
+  const at = (xx, yy) => b[idx(xx, yy)];
+  const push = (xx, yy) => {
+    if (!onBoard(xx, yy)) return;
+    const q = at(xx, yy);
+    if (q && q.s === p.s) return;
+    if (p.t === 'C' && q && q.t === 'C') return;      /* 포는 포를 먹지 못한다 */
+    out.push(idx(xx, yy));
+  };
+  const ORTH = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+  if (p.t === 'K' || p.t === 'A') {
+    for (const [dx, dy] of ORTH) { const nx = x + dx, ny = y + dy; if (inPalace(p.s, nx, ny)) push(nx, ny); }
+    for (const [nx, ny] of jgDiag(x, y)) if (inPalace(p.s, nx, ny)) push(nx, ny);
+    return out;
+  }
+  if (p.t === 'R') {
+    for (const [dx, dy] of ORTH) {
+      let nx = x + dx, ny = y + dy;
+      while (onBoard(nx, ny)) {
+        const q = at(nx, ny);
+        if (q) { if (q.s !== p.s) push(nx, ny); break; }
+        push(nx, ny); nx += dx; ny += dy;
+      }
+    }
+    /* 궁 안 대각선 — 비어 있으면 끝까지 */
+    if (anyPalace(x, y)) {
+      for (const [nx, ny] of jgDiag(x, y)) {
+        const q = at(nx, ny);
+        if (q) { if (q.s !== p.s) push(nx, ny); continue; }
+        push(nx, ny);
+        const fx = nx + (nx - x), fy = ny + (ny - y);
+        if (anyPalace(fx, fy) && jgDiag(nx, ny).some(d => d[0] === fx && d[1] === fy)) {
+          const q2 = at(fx, fy);
+          if (!q2 || q2.s !== p.s) push(fx, fy);
+        }
+      }
+    }
+    return out;
+  }
+  if (p.t === 'C') {
+    for (const [dx, dy] of ORTH) {
+      let nx = x + dx, ny = y + dy, screen = null;
+      while (onBoard(nx, ny)) {
+        const q = at(nx, ny);
+        if (!screen) { if (q) { if (q.t === 'C') break; screen = q; } }
+        else { if (q) { if (q.t !== 'C' && q.s !== p.s) push(nx, ny); break; } push(nx, ny); }
+        nx += dx; ny += dy;
+      }
+    }
+    /* 궁 대각선: 가운데에 다리가 있어야 한다 */
+    if (anyPalace(x, y) && jgDiag(x, y).length === 1) {
+      const [mx, my] = jgDiag(x, y)[0], m = at(mx, my);
+      if (m && m.t !== 'C') {
+        const fx = mx + (mx - x), fy = my + (my - y);
+        if (anyPalace(fx, fy)) { const q = at(fx, fy); if (!q || (q.t !== 'C' && q.s !== p.s)) push(fx, fy); }
+      }
+    }
+    return out;
+  }
+  if (p.t === 'N' || p.t === 'B') {
+    const step = p.t === 'N' ? 1 : 2;                  /* 다리를 건넌 뒤 대각선 걸음 수 */
+    for (const [dx, dy] of ORTH) {
+      if (at(x + dx, y + dy) || !onBoard(x + dx, y + dy)) continue;   /* 첫 다리 */
+      const diags = dx ? [[dx, -1], [dx, 1]] : [[-1, dy], [1, dy]];
+      for (const [ex, ey] of diags) {
+        let cx = x + dx, cy = y + dy, ok = true;
+        for (let k = 0; k < step; k++) {
+          cx += ex; cy += ey;
+          if (!onBoard(cx, cy)) { ok = false; break; }
+          if (k < step - 1 && at(cx, cy)) { ok = false; break; }
+        }
+        if (ok) push(cx, cy);
+      }
+    }
+    return out;
+  }
+  if (p.t === 'P') {
+    const fwd = p.s === 'cho' ? 1 : -1;
+    push(x, y + fwd); push(x - 1, y); push(x + 1, y);
+    if (anyPalace(x, y)) for (const [nx, ny] of jgDiag(x, y)) if ((ny - y) === fwd) push(nx, ny);
+    return out;
+  }
+  return out;
+}
+function jgKingAt(b, side) { for (let i = 0; i < 90; i++) { const p = b[i]; if (p && p.t === 'K' && p.s === side) return i; } return -1; }
+function jgAttacked(b, sq, bySide) {
+  for (let i = 0; i < 90; i++) {
+    const p = b[i];
+    if (!p || p.s !== bySide) continue;
+    if (jgRaw(b, i).indexOf(sq) >= 0) return true;
+  }
+  return false;
+}
+function jgInCheck(b, side) {
+  const k = jgKingAt(b, side);
+  return k >= 0 && jgAttacked(b, k, side === 'cho' ? 'han' : 'cho');
+}
+/* 자기 왕이 잡히지 않는 수만 남긴다 */
+function jgMoves(b, side) {
+  const out = [];
+  for (let i = 0; i < 90; i++) {
+    const p = b[i];
+    if (!p || p.s !== side) continue;
+    for (const to of jgRaw(b, i)) {
+      const keep = b[to];
+      b[to] = p; b[i] = null;
+      const bad = jgInCheck(b, side);
+      b[i] = p; b[to] = keep;
+      if (!bad) out.push({ from: i, to, cap: keep ? keep.t : null });
+    }
+  }
+  return out;
+}
+/* 판을 점수로 — 노인의 눈 */
+function jgEval(b) {
+  let sc = 0;
+  for (let i = 0; i < 90; i++) {
+    const p = b[i]; if (!p) continue;
+    let v = JG_VAL[p.t];
+    if (p.t === 'P') {                                  /* 졸은 넘어갈수록 값지다 */
+      const y = (i / 9) | 0;
+      v += (p.s === 'cho' ? y : 9 - y) * 2;
+    }
+    const x = i % 9;
+    if (p.t === 'R' || p.t === 'C') v += (4 - Math.abs(4 - x));
+    sc += (p.s === 'cho' ? v : -v);
+  }
+  return sc;                                            /* 楚(노인)에게 유리하면 +  */
+}
+function jgSearch(b, depth, alpha, beta, side) {
+  if (depth === 0) return jgEval(b);
+  const moves = jgMoves(b, side);
+  if (!moves.length) return side === 'cho' ? -90000 : 90000;   /* 둘 데가 없으면 진다 */
+  moves.sort((a, z) => (JG_VAL[z.cap] || 0) - (JG_VAL[a.cap] || 0));
+  if (side === 'cho') {
+    let best = -1e9;
+    for (const m of moves) {
+      const keep = b[m.to]; b[m.to] = b[m.from]; b[m.from] = null;
+      const v = (keep && keep.t === 'K') ? 90000 - (3 - depth) : jgSearch(b, depth - 1, alpha, beta, 'han');
+      b[m.from] = b[m.to]; b[m.to] = keep;
+      if (v > best) best = v;
+      if (best > alpha) alpha = best;
+      if (alpha >= beta) break;
+    }
+    return best;
+  }
+  let best = 1e9;
+  for (const m of moves) {
+    const keep = b[m.to]; b[m.to] = b[m.from]; b[m.from] = null;
+    const v = (keep && keep.t === 'K') ? -90000 + (3 - depth) : jgSearch(b, depth - 1, alpha, beta, 'cho');
+    b[m.from] = b[m.to]; b[m.to] = keep;
+    if (v < best) best = v;
+    if (best < beta) beta = best;
+    if (alpha >= beta) break;
+  }
+  return best;
+}
+function jgBestMove(b, depth) {
+  const moves = jgMoves(b, 'cho');
+  if (!moves.length) return null;
+  moves.sort((a, z) => (JG_VAL[z.cap] || 0) - (JG_VAL[a.cap] || 0));
+  let best = null, bv = -1e9;
+  for (const m of moves) {
+    const keep = b[m.to]; b[m.to] = b[m.from]; b[m.from] = null;
+    let v = (keep && keep.t === 'K') ? 90000 : jgSearch(b, depth - 1, -1e9, 1e9, 'han');
+    b[m.from] = b[m.to]; b[m.to] = keep;
+    v += Math.random() * 3;                             /* 같은 값이면 손맛대로 */
+    if (v > bv) { bv = v; best = m; }
+  }
+  return best;
+}
+
 const JANGGI_GOODS = [
   { piece: '車', side: 'red',   x: 0, y: 0, todo: true },
   { piece: '馬', side: 'red',   x: 2, y: 0, todo: true },
@@ -5322,76 +5622,222 @@ function openJanggi() {
   if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
   SND.ui(); showJanggi();
 }
-function showJanggi() {
+/* ── 장기 한 판 ─────────────────────────────────────────── */
+const JG = { b: null, sel: -1, moves: [], turn: 'han', over: false, thinking: false, last: null, taken: [] };
+const JG_FEE = 300;                                   /* 두 번째 판부터 판돈 */
+function jgReset() {
+  JG.b = jgNewBoard(); JG.sel = -1; JG.moves = []; JG.turn = 'han';
+  JG.over = false; JG.thinking = false; JG.last = null; JG.taken = [];
+}
+function showJanggi(fresh) {
   G.scene = 'janggi';
   const run = G.run;
-  run.janggiSold = run.janggiSold || {};
-  const ready = JANGGI_GOODS.filter(g => !g.todo).length;
+  if (run.janggiFree == null) run.janggiFree = 1;
+  if (fresh || !JG.b) jgReset();
 
   const p = overlay(`<div class="janggi">
     <div class="jhead">
-      <button class="gback" id="jg_back" style="width:34px;height:34px;border-radius:6px;
-        background:rgba(220,190,120,.15);border:1px solid rgba(220,190,120,.4);color:#f4ead0;font-size:18px">←</button>
-      <h2>장기 상점</h2>
+      <button class="gback" id="jg_back">←</button>
+      <h2>장기 — 노인과 한 판</h2>
       <div class="jcur"><span class="gold"><i>金</i>${run.gold}</span><span class="dia"><i>玉</i>${run.dia || 0}</span></div>
     </div>
     <div class="jbody">
       <div class="jside">
-        <h3>장 기 商</h3>
-        <div class="note">
-          <p>노인이 장기판을 펴 놓고 앉아 있다.<br>
-          말 하나하나가 물건이라 한다.</p>
+        <h3>노 인</h3>
+        <div class="jold"><div class="jface">翁</div>
+          <div class="jsay" id="jg_say">"한 판 두겠는가."</div></div>
+        <div class="note" id="jg_state"></div>
+        <div class="note"><p><b style="color:#e8cf94">이기면 장기 상자</b>를 준다.<br>
+          그 안에 <b style="color:#b98cff">1% 확률</b>로 세상에 하나뿐인 부적이 들었다.</p></div>
+        <div class="jbtns">
+          <button class="brush-btn" id="jg_new">${run.janggiFree ? '새 판 (무료)' : `새 판 (골드 ${JG_FEE})`}</button>
+          <button class="brush-btn ghost" id="jg_undo" style="color:#e9dfc9;border-color:#8a7f68">무르기</button>
+          <button class="brush-btn red" id="jg_leave">떠난다</button>
         </div>
-        <div class="note">
-          <p><b style="color:#e8cf94">말을 누르면 산다.</b><br>
-          한 판에 말 하나는 한 번만 팔린다.</p>
-        </div>
-        ${ready ? '' : `<div class="note"><p style="color:#d8a45a">아직 <b>물건이 들어오지 않았다.</b><br>
-          말 자리는 ${JANGGI_GOODS.length}개가 놓여 있다.</p></div>`}
-        <button class="brush-btn red" id="jg_leave">떠난다</button>
       </div>
-      <div class="jboard">${janggiBoardSvg()}</div>
-      <div class="jside" style="width:200px">
-        <h3>말 자 리</h3>
-        <div class="note"><p>${JANGGI_GOODS.map(g =>
-          `${g.piece} — ${g.todo ? '<span style="color:#8a7a52">준비 중</span>' : g.n}`).join('<br>')}</p></div>
+      <div class="jboard" id="jg_board">${janggiBoardSvg()}</div>
+      <div class="jside" style="width:186px">
+        <h3>규 칙</h3>
+        <div class="note"><p>
+          <b>車</b> 곧게 끝까지<br><b>包</b> 하나를 넘어서 · 포는 못 넘고 못 잡는다<br>
+          <b>馬</b> 한 칸 뒤 대각 한 칸<br><b>象</b> 한 칸 뒤 대각 두 칸<br>
+          <b>士·王</b> 궁 안에서 한 칸<br><b>兵</b> 앞과 옆으로 한 칸<br>
+          궁 안에서는 <b>대각선</b>도 길이다.
+        </p></div>
+        <h3>잡 은 말</h3>
+        <div class="note"><p id="jg_taken" style="font-size:17px;letter-spacing:.1em">—</p></div>
       </div>
     </div>
   </div>`, 'janggipanel');
 
-  const board = p.querySelector('.jboard');
-  for (const g of JANGGI_GOODS) {
-    const sold = !!run.janggiSold[g.piece + g.x + g.y];
-    const canBuy = !g.todo && !sold && (g.price == null || run.gold >= g.price) && (g.dia == null || (run.dia || 0) >= g.dia);
-    const n = el('div', 'jpiece ' + (g.side === 'green' ? 'green ' : '') +
-      (g.todo ? 'todo' : sold ? 'sold' : canBuy ? 'buyable' : ''),
-      `<b>${g.piece}</b>${g.todo ? '' : `<span class="tagp">${sold ? '판매됨'
-        : (g.price != null ? g.price + ' 골드' : '') + (g.dia != null ? ' 玉' + g.dia : '')}</span>`}`);
-    /* 판 좌표(0~8, 0~9)를 화면 비율로 */
-    n.style.left = ((g.x / 8) * 88 + 6) + '%';
-    n.style.top = ((g.y / 9) * 88 + 6) + '%';
-    bindTip(n, () => g.todo
-      ? `<b>${g.piece}</b><br><span style="color:#9a8d74">아직 물건이 정해지지 않았다</span>`
-      : `<b>${g.n}</b><br>${g.d}` + (sold ? '<br><b>이미 팔렸다</b>' : ''));
-    if (!g.todo && !sold) n.onclick = () => {
-      if (g.price != null && run.gold < g.price) { SND.err(); toast('골드가 모자란다'); return; }
-      if (g.dia != null && (run.dia || 0) < g.dia) { SND.err(); toast('다이아가 모자란다'); return; }
-      const r = g.buy ? g.buy() : undefined;
-      if (r === false) return;
-      if (g.price != null) run.gold -= g.price;
-      if (g.dia != null) run.dia -= g.dia;
-      run.janggiSold[g.piece + g.x + g.y] = 1;
-      SND.coin(); toast(`${g.n} 구입`);
-      saveRun(); renderTop();
-      closeOverlay(); showJanggi();
-    };
-    board.appendChild(n);
-  }
   const leave = () => { closeOverlay(); saveRun(); showMap(); };
   p.querySelector('#jg_back').onclick = leave;
   p.querySelector('#jg_leave').onclick = leave;
+  p.querySelector('#jg_undo').onclick = () => {
+    if (!JG.hist || !JG.hist.length || JG.thinking || JG.over) { SND.err(); return; }
+    const h = JG.hist.pop();
+    JG.b = h.b.map(c => c ? { t: c.t, s: c.s } : null);
+    JG.taken = h.taken.slice(); JG.sel = -1; JG.moves = []; JG.turn = 'han';
+    SND.ui(); jgDraw();
+  };
+  p.querySelector('#jg_new').onclick = () => {
+    if (!run.janggiFree) {
+      if (run.gold < JG_FEE) { SND.err(); toast('골드가 모자란다'); return; }
+      run.gold -= JG_FEE; SND.coin(); renderTop(); saveRun();
+    } else { run.janggiFree = 0; saveRun(); }
+    jgReset(); closeOverlay(); showJanggi(true);
+  };
+  jgDraw();
 }
-
+function jgSay(t) { const n = $('#jg_say'); if (n) n.textContent = t; }
+function jgDraw() {
+  const board = $('#jg_board'); if (!board) return;
+  board.querySelectorAll('.jpiece,.jdot,.jlast').forEach(n => n.remove());
+  const pos = (i) => ({ l: ((i % 9) / 8) * 88 + 6, t: (((i / 9) | 0) / 9) * 88 + 6 });
+  if (JG.last) for (const i of [JG.last.from, JG.last.to]) {
+    const d = el('div', 'jlast'); const c = pos(i);
+    d.style.left = c.l + '%'; d.style.top = c.t + '%';
+    board.appendChild(d);
+  }
+  for (let i = 0; i < 90; i++) {
+    const p = JG.b[i]; if (!p) continue;
+    const n = el('div', 'jpiece' + (p.s === 'han' ? ' green' : '') + (JG.sel === i ? ' picked' : ''),
+      `<b>${JG_GLYPH[p.s][p.t]}</b>`);
+    const c = pos(i);
+    n.style.left = c.l + '%'; n.style.top = c.t + '%';
+    n.onclick = () => jgClick(i);
+    board.appendChild(n);
+  }
+  for (const m of JG.moves) {
+    const d = el('div', 'jdot' + (JG.b[m] ? ' cap' : ''));
+    const c = pos(m);
+    d.style.left = c.l + '%'; d.style.top = c.t + '%';
+    d.onclick = () => jgClick(m);
+    board.appendChild(d);
+  }
+  const tk = $('#jg_taken');
+  if (tk) tk.innerHTML = JG.taken.length
+    ? JG.taken.map(t => `<span style="color:${t.s === 'cho' ? '#8a2b2b' : '#1f6b4a'}">${JG_GLYPH[t.s][t.t]}</span>`).join(' ')
+    : '—';
+  const st = $('#jg_state');
+  if (st) {
+    const chk = !JG.over && jgInCheck(JG.b, JG.turn);
+    st.innerHTML = `<p>${JG.over ? '<b style="color:#e8cf94">판이 끝났다</b>'
+      : JG.thinking ? '노인이 <b>생각 중</b>이다…'
+      : JG.turn === 'han' ? '<b style="color:#7fe6a8">그대의 차례</b>' : '노인의 차례'}
+      ${chk ? '<br><b style="color:#ff7a7a">장군!</b>' : ''}
+      <br><span style="color:#8a7a52">말을 누르면 갈 곳이 보인다</span></p>`;
+  }
+}
+function jgClick(i) {
+  if (JG.over || JG.thinking || JG.turn !== 'han') return;
+  const p = JG.b[i];
+  if (JG.sel >= 0 && JG.moves.indexOf(i) >= 0) { jgPlay(JG.sel, i); return; }
+  if (p && p.s === 'han') {
+    JG.sel = i;
+    JG.moves = jgMoves(JG.b, 'han').filter(m => m.from === i).map(m => m.to);
+    SND.select ? SND.select() : SND.ui();
+    jgDraw(); return;
+  }
+  JG.sel = -1; JG.moves = []; jgDraw();
+}
+function jgPlay(from, to) {
+  JG.hist = JG.hist || [];
+  JG.hist.push({ b: JG.b.map(c => c ? { t: c.t, s: c.s } : null), taken: JG.taken.slice() });
+  if (JG.hist.length > 12) JG.hist.shift();
+  jgApply(from, to);
+  JG.sel = -1; JG.moves = [];
+  if (jgFinish()) return;
+  JG.turn = 'cho'; JG.thinking = true; jgDraw();
+  jgSay(['"흠."', '"허어."', '"제법이군."', '"…….', '"거기였나."'][Math.floor(Math.random() * 5)].replace('.','.'));
+  setTimeout(() => {
+    if (G.scene !== 'janggi') { JG.thinking = false; return; }
+    const m = jgBestMove(JG.b, 3);
+    JG.thinking = false;
+    if (!m) { jgEnd(true); return; }
+    jgApply(m.from, m.to);
+    if (jgFinish()) return;
+    JG.turn = 'han'; jgDraw();
+    if (jgInCheck(JG.b, 'han')) { SND.bell(); jgSay('"장군일세."'); }
+  }, 420);
+}
+function jgApply(from, to) {
+  const cap = JG.b[to];
+  JG.b[to] = JG.b[from]; JG.b[from] = null;
+  JG.last = { from, to };
+  if (cap) {
+    JG.taken.push(cap);
+    SND.jgCapture(); FX.burst(innerWidth / 2, innerHeight / 2, 8, '120,70,30', 3, 30, 3);
+    const b2 = $('#jg_board');
+    if (b2) { b2.classList.remove('jshake'); void b2.offsetWidth; b2.classList.add('jshake'); }
+  } else SND.jgMove();
+  jgDraw();
+}
+/* 판이 끝났는지 — 왕이 잡혔거나, 둘 데가 없거나 */
+function jgFinish() {
+  const choK = jgKingAt(JG.b, 'cho'), hanK = jgKingAt(JG.b, 'han');
+  if (choK < 0) { jgEnd(true); return true; }
+  if (hanK < 0) { jgEnd(false); return true; }
+  const side = JG.turn === 'han' ? 'cho' : 'han';       /* 방금 둔 쪽의 상대 */
+  if (!jgMoves(JG.b, side).length) { jgEnd(side === 'cho'); return true; }
+  return false;
+}
+function jgEnd(win) {
+  JG.over = true; JG.thinking = false; jgDraw();
+  if (win) {
+    SND.jgWin(); screenFlash('rgba(255,220,140,.45)', 800);
+    FX.gold(innerWidth / 2, innerHeight * .45, 60);
+    jgSay('"…… 내가 졌네."');
+    setTimeout(() => janggiBoxScene(), 700);
+  } else {
+    SND.lose(); jgSay('"아직 멀었네."');
+    toast('노인이 이겼다');
+  }
+}
+/* ── 장기 상자 ──────────────────────────────────────────── */
+const JANGGI_CARD_CHANCE = 0.01;                        /* ?급 '장기' 부적 */
+function janggiLoot() {
+  const run = G.run;
+  if (rnd() < JANGGI_CARD_CHANCE) {
+    const c = mkCard('janggi', false);
+    return { g: '將', n: '장기(將棋)', grade: 'unknown', jackpot: true,
+      d: `<b style="color:#7b4bd8">?급</b> — ` + CARDS.janggi.txt(CARDS.janggi.v(false), false).replace(/<[^>]+>/g, ''),
+      take: () => { run.deck.push(c); run.stats.cards++; dexAdd('cards', 'janggi'); } };
+  }
+  const r = rnd();
+  if (r < .18 && GRADE_POOL.special.length) {
+    const id = pick(GRADE_POOL.special);
+    return { g: CARDS[id].g, n: CARDS[id].n, grade: 'special',
+      d: `<b style="color:${GRADE[CARDS[id].rar].c}">S급</b> — ` + CARDS[id].txt(CARDS[id].v(false), false).replace(/<[^>]+>/g, ''),
+      take: () => { run.deck.push(mkCard(id, false)); run.stats.cards++; dexAdd('cards', id); } };
+  }
+  if (r < .40) {
+    const rid = randomRelic();
+    if (rid) return { g: RELICS[rid].g, n: RELICS[rid].n, grade: rgrade(rid),
+      d: `<b style="color:${GRADE[rgrade(rid)].c}">${GRADE[rgrade(rid)].n} 유물</b> — ` + RELICS[rid].d.replace(/<[^>]+>/g, ''),
+      take: () => gainRelic(rid, true) };
+  }
+  if (r < .62) {
+    const n = ri(260, 520);
+    return { g: '玉', n: `다이아 ${n}`, d: '노인이 주머니를 털었다', take: () => { run.dia = (run.dia || 0) + n; } };
+  }
+  if (r < .82) {
+    const g = ri(180, 340);
+    return { g: '金', n: `골드 ${g}`, d: '엽전 꾸러미', take: () => { run.gold += g; } };
+  }
+  const id = randomPotion();
+  return { g: POTIONS[id].g, n: POTIONS[id].n, d: POTIONS[id].d.replace(/<[^>]+>/g, ''),
+    take: () => { if (run.potions.length >= run.potSlots) run.gold += 80; else run.potions.push(id); } };
+}
+async function janggiBoxScene() {
+  const loot = janggiLoot();
+  loot.take();
+  saveRun(); renderTop();
+  closeOverlay();
+  await boxOpenScene('將', loot.grade || 'rare');
+  if (loot.jackpot) { screenFlash('rgba(180,120,255,.6)', 1200); SND.unlock(); SND.gong(); shake(true); }
+  showPullResult([{ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || null }], () => showJanggi(true));
+}
 /* ══ 대전투장(大鬪場) ══════════════════════════════════════
    SSX급 부적 셋을 갖춘 자만 들어간다. 라운드를 넘길수록 요괴가
    늘고 강해지며, 한 라운드마다 다이아 30이 적립된다.
@@ -5768,6 +6214,23 @@ function showShop() {
     run.gold -= cost; SND.coin(); saveRun(); renderTop(); draw();
   }
   draw();
+}
+
+/* ── 제5·6막의 배려 ───────────────────────────────────────
+   여기서부터는 S급 없이 넘기 어렵다. 엘리트가 이따금 내어 준다.
+   ────────────────────────────────────────────────────────── */
+const SPECIAL_DROP_FROM = 5;                 /* 이 막부터 */
+const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
+function specialDropRate(act) { return act >= 6 ? .35 : .30; }
+/* 공짜 특대급 상자 한 번 — 연출까지 그대로 */
+async function freeBigBox() {
+  const B = BANNERS[3];
+  const loot = boxLoot(B.tier);
+  loot.take();
+  saveRun(); renderTop();
+  const items = [{ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || 'special' }];
+  await boxOpenScene(B.g, loot.grade || 'special');
+  return new Promise(res => showPullResult(items, () => res()));
 }
 
 /* ══ 부적 뽑기 상점 ════════════════════════════════════════
