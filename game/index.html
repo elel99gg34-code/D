@@ -112,7 +112,11 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .hpbar{position:relative;width:150px;height:16px;background:#2e2620;border:1px solid #554a3c;border-radius:2px;overflow:hidden}
 .hpbar i{position:absolute;inset:0;width:0;background:linear-gradient(#c14247,#8e2226);transition:width .4s ease}
 .hpbar span{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;color:#fff;text-shadow:0 1px 2px #000;letter-spacing:.02em}
-#relicbar{display:flex;gap:5px;flex:1;flex-wrap:wrap;max-height:44px;overflow:hidden}
+#relicbar{display:flex;gap:5px;flex:1 1 0;min-width:60px;flex-wrap:nowrap;align-items:center;
+  overflow-x:auto;overflow-y:hidden;height:36px;scrollbar-width:thin}
+#relicbar::-webkit-scrollbar{height:4px}
+#relicbar::-webkit-scrollbar-thumb{background:rgba(220,200,160,.35);border-radius:2px}
+.relic,.topbtn,#potbar,#topbar .grp,#deckbtn,#menubtn{flex:none}
 .relic{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#efe4cb;color:#2a2219;
   font-size:15px;border:1.5px solid var(--gold);cursor:help;transition:.15s;line-height:1}
 .relic:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 4px 10px rgba(0,0,0,.4)}
@@ -124,10 +128,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
-.topbtn.arena{color:#ffd9c8;background:rgba(200,80,40,.24);border-color:#e2622a}
-.topbtn.arena:hover{background:rgba(200,80,40,.5)}
-.topbtn.arena.ready{animation:flameGlow 1.7s ease-in-out infinite}
-.topbtn.arena.locked{opacity:.4}
+.topbtn.atop{color:#ffd9c8;background:rgba(200,80,40,.24);border-color:#e2622a}
+.topbtn.atop:hover{background:rgba(200,80,40,.5)}
+.topbtn.atop.ready{animation:flameGlow 1.7s ease-in-out infinite}
+.topbtn.atop.locked{opacity:.4}
 .topbtn.skill{color:#e6d6ff;background:rgba(120,60,200,.24);border-color:#a879e8}
 .topbtn.skill:hover{background:rgba(120,60,200,.46)}
 .topbtn.fuse{color:#ffd9e0;background:rgba(190,40,80,.22);border-color:#d84a70}
@@ -208,6 +212,44 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dmgnum.blk{color:var(--blue)}
 .dmgnum.heal{color:#2c7a4b}
 .dmgnum.sm{font-size:21px}
+.dmgnum.big{font-size:40px;color:#d23a2e}
+.dmgnum.crit{font-size:54px;color:#ff8a1e;font-weight:400;
+  text-shadow:0 0 14px #fff,0 0 30px #ffb648,0 0 60px #ff6a00,0 3px 8px rgba(0,0,0,.6);
+  animation:dmgCrit 1.05s cubic-bezier(.15,1.4,.35,1) forwards}
+@keyframes dmgCrit{0%{opacity:0;transform:translate(-50%,16px) scale(.3) rotate(-8deg)}
+  16%{opacity:1;transform:translate(-50%,-12px) scale(1.65) rotate(3deg)}
+  30%{transform:translate(-50%,-18px) scale(1.15) rotate(-1deg)}
+  100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
+.critmark{position:absolute;z-index:32;pointer-events:none;font-size:20px;letter-spacing:.32em;
+  color:#fff2c8;text-indent:.32em;text-shadow:0 0 12px #ff8a1e,0 0 28px #ff5a00;
+  animation:critMark .8s ease-out forwards}
+@keyframes critMark{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}
+  20%{opacity:1;transform:translate(-50%,-10px) scale(1.1)}
+  100%{opacity:0;transform:translate(-50%,-38px) scale(1)}}
+/* 타격 정지 — 아주 짧게 화면을 붙든다 */
+.hitstop{animation:hitStop .1s steps(1) both}
+.hitstop-lg{animation:hitStopLg .16s steps(1) both}
+@keyframes hitStop{0%{filter:contrast(1.35) saturate(1.25) brightness(1.1)}100%{filter:none}}
+@keyframes hitStopLg{0%{filter:contrast(1.6) saturate(1.4) brightness(1.25)}
+  60%{filter:contrast(1.2) saturate(1.15)}100%{filter:none}}
+/* 체력이 바닥일 때 화면 가장자리가 뛴다 */
+#lowhp{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:0;transition:opacity .5s;
+  background:radial-gradient(ellipse at center,transparent 42%,rgba(140,20,24,.34) 88%,rgba(120,12,16,.6) 100%)}
+#lowhp.on{opacity:1;animation:lowPulse 1.9s ease-in-out infinite}
+@keyframes lowPulse{50%{opacity:.45}}
+/* 한 턴에 이어 낸 부적 */
+.chainmark{position:fixed;right:34px;top:44%;z-index:31;pointer-events:none;text-align:right;white-space:nowrap;min-width:78px;
+  color:#ffd76a;letter-spacing:.1em;text-shadow:0 0 14px #ff8a00,0 2px 8px rgba(0,0,0,.8);
+  animation:chainPop .9s cubic-bezier(.2,1.3,.4,1) forwards}
+.chainmark b{display:block;font-size:46px;font-weight:400;line-height:1}
+.chainmark span{display:block;font-size:13px;letter-spacing:.3em;opacity:.85;white-space:nowrap;text-indent:.3em}
+@keyframes chainPop{0%{opacity:0;transform:translateX(26px) scale(.7)}
+  20%{opacity:1;transform:translateX(0) scale(1.16)}
+  60%{opacity:1;transform:translateX(0) scale(1)}
+  100%{opacity:0;transform:translateX(-8px) scale(1.02)}}
+/* 전리품이 상단바로 날아간다 */
+.flyget{position:fixed;z-index:33;pointer-events:none;font-size:17px;letter-spacing:.06em;
+  text-shadow:0 2px 6px rgba(0,0,0,.7);transition:transform .78s cubic-bezier(.4,0,.2,1),opacity .78s}
 @keyframes dmgUp{0%{opacity:0;transform:translate(-50%,10px) scale(.5)}
   18%{opacity:1;transform:translate(-50%,-8px) scale(1.25)}
   35%{transform:translate(-50%,-14px) scale(1)}
@@ -1324,6 +1366,51 @@ const SND = {
     [392, 349, 294, 196].forEach((f, i) =>
       this.blip(f, { dur: 1.1, type: 'triangle', vol: .1, delay: i * .22, rev: .8 }));
     this.blip(65, { dur: 3, type: 'sine', vol: .1, delay: .3, rev: .9 });
+  },
+
+  /* ── 쾌감용 소리 ─────────────────────────────────────── */
+  /* 연속 처치·연속 사용 — 이을수록 반음씩 올라간다 */
+  combo(n) {
+    const step = Math.min(12, n);
+    const f = 523 * Math.pow(2, step / 12);
+    this.blip(f, { dur: .26, type: 'triangle', vol: .1, rev: .5 });
+    this.blip(f * 2, { dur: .14, type: 'sine', vol: .05, delay: .02, rev: .4 });
+  },
+  /* 한 방이 묵직하게 들어갔을 때 */
+  crit() {
+    this.hiss({ dur: .07, vol: .26, freq: 9000, to: 1400, filter: 'highpass' });
+    this.blip(this.vary(160), { dur: .5, type: 'sawtooth', vol: .16, to: 44, rev: .5 });
+    this.blip(this.vary(1250), { dur: .22, type: 'square', vol: .05, to: 300, delay: .01 });
+  },
+  /* 방어도가 깨질 때 — 유리 조각 */
+  shatter() {
+    [1800, 2400, 3100, 4200].forEach((f, i) =>
+      this.blip(this.vary(f), { dur: .16, type: 'triangle', vol: .06, to: f * .4, delay: i * .022, rev: .5 }));
+    this.hiss({ dur: .2, vol: .1, freq: 5200, to: 900, filter: 'bandpass', q: 1.2, rev: .4 });
+  },
+  /* 체력이 바닥일 때의 심장 소리 */
+  heartbeat() {
+    this.blip(58, { dur: .16, type: 'sine', vol: .16, to: 38 });
+    this.blip(52, { dur: .2, type: 'sine', vol: .12, to: 32, delay: .17 });
+  },
+  /* 새로 열렸다 */
+  unlock() {
+    [392, 523, 659, 880, 1174].forEach((f, i) =>
+      this.blip(f, { dur: .7, type: 'triangle', vol: .09, delay: i * .07, rev: .85 }));
+    this.hiss({ dur: .5, vol: .07, freq: 2200, to: 7000, filter: 'bandpass', q: 1.4, rev: .7 });
+  },
+  /* 돈이 쏟아진다 */
+  coinRain(n) {
+    const k = Math.min(9, Math.max(3, n | 0));
+    for (let i = 0; i < k; i++)
+      this.blip(this.vary(1500 + i * 90), { dur: .16, type: 'triangle', vol: .055, to: 700, delay: i * .045, rev: .5 });
+  },
+  /* 손패가 펼쳐지는 소리 */
+  swoosh() { this.hiss({ dur: .22, vol: .07, freq: 2600, to: 700, filter: 'bandpass', q: .7, rev: .3 }); },
+  /* 요괴가 힘을 모을 때 */
+  charge() {
+    this.blip(90, { dur: .9, type: 'sawtooth', vol: .1, to: 340, rev: .6 });
+    this.hiss({ dur: .8, vol: .08, freq: 300, to: 3000, filter: 'bandpass', q: 1.1, rev: .6 });
   },
 
   /* 연출별 악센트 */
@@ -2999,6 +3086,135 @@ defEnemy({ id: 'mugan', n: '무간', g: '無', hp: [560, 560], col: '#16141f', b
     return r < .45 ? 'unmake' : r < .72 ? 'coil' : 'silence';
   } });
 
+/* ══ 제7막 · 무저갱 — 무간 아래로 떨어진 것들 ═══════════════ */
+defEnemy({ id: 'fallen', n: '떨어진 것', g: '墮', hp: [92, 106], col: '#3a3040',
+  moves: { plunge: { t: 'attack', label: '곤두박질', d: 28, fx: 'blunt' },
+           drag:   { t: 'atkdeb', label: '끌어내리기', d: 14, deb: { weak: 3, vuln: 3 }, fx: 'claw' },
+           sink:   { t: 'defend', label: '가라앉기', blk: 30, self: { dex: 3 } } },
+  next: e => lastIs(e, 'plunge') ? (rnd() < .55 ? 'drag' : 'sink')
+           : rnd() < .48 ? 'plunge' : rnd() < .8 ? 'drag' : 'sink' });
+
+defEnemy({ id: 'chainwraith', n: '사슬 망령', g: '縲', hp: [100, 114], col: '#4a4450',
+  init: e => { e.s.thorns = 6; },
+  moves: { lash:   { t: 'attack', label: '사슬질', d: 11, n: 3, fx: 'claw' },
+           bind2:  { t: 'debuff', label: '얽어매기', deb: { weak: 4, curse: 4 } },
+           rattle: { t: 'atkdef', label: '쇳소리', d: 16, blk: 24, self: { thorns: 4 }, fx: 'blunt' } },
+  next: e => e.hist.length === 0 ? 'bind2' : lastIs(e, 'lash') ? 'rattle'
+           : rnd() < .5 ? 'lash' : rnd() < .8 ? 'rattle' : 'bind2' });
+
+defEnemy({ id: 'maw', n: '아가리', g: '吻', hp: [112, 126], col: '#5a2430', big: true,
+  moves: { swallow: { t: 'attack', label: '집어삼키기', d: 34, heal: 20, fx: 'void' },
+           chew:    { t: 'attack', label: '씹기', d: 13, n: 3, fx: 'claw' },
+           gape:    { t: 'buff', label: '아가리를 벌린다', blk: 20, self: { str: 6 },
+                      extra: () => flash('무언가가 입을 벌렸다') } },
+  next: e => e.hist.length === 0 ? 'gape' : lastIs(e, 'swallow') ? 'chew'
+           : e.turnCount % 4 === 0 ? 'gape' : rnd() < .5 ? 'swallow' : 'chew' });
+
+defEnemy({ id: 'abysseye', n: '심연의 눈', g: '瞳', hp: [96, 110], col: '#243a4a',
+  moves: { stare:  { t: 'debuff', label: '응시', deb: { vuln: 5, weak: 3 } },
+           beam:   { t: 'attack', label: '꿰뚫어 봄', d: 30, fx: 'lance' },
+           blink:  { t: 'defend', label: '깜빡임', blk: 34, self: { dex: 5 } } },
+  next: e => e.hist.length === 0 ? 'stare' : lastIs(e, 'beam') ? 'blink'
+           : rnd() < .5 ? 'beam' : rnd() < .8 ? 'stare' : 'blink' });
+
+defEnemy({ id: 'forgotten', n: '잊혀진 왕', g: '忘', hp: [215, 238], col: '#4a3a2a', elite: true, big: true,
+  init: e => { e.s.rage = 3; },
+  moves: { crown:  { t: 'buff', label: '녹슨 관을 쓴다', blk: 34, self: { str: 5, thorns: 4 } },
+           decree: { t: 'atkdeb', label: '지워진 칙령', d: 22, deb: { curse: 5, weak: 4 }, fx: 'holy' },
+           smite:  { t: 'attack', label: '잊힌 이름으로', d: 19, n: 2, fx: 'slash2' } },
+  next: e => e.hist.length === 0 ? 'crown' : lastIs(e, 'smite') ? 'decree'
+           : e.turnCount % 5 === 0 ? 'crown' : rnd() < .52 ? 'smite' : 'decree' });
+
+defEnemy({ id: 'abysslord', n: '심연의 주인', g: '淵', hp: [232, 256], col: '#1e2a3a', elite: true, big: true,
+  init: e => { e.s.dex = 4; },
+  moves: { tide:   { t: 'attack', label: '밀물', d: 15, n: 3, fx: 'wind' },
+           drown2: { t: 'atkdeb', label: '숨 앗기', d: 24, deb: { weak: 4, vuln: 4 }, fx: 'void' },
+           deep:   { t: 'defend', label: '더 깊이', blk: 42, self: { dex: 3, regenP: 6 } } },
+  next: e => e.hist.length === 0 ? 'deep' : lastIs(e, 'tide') ? 'drown2'
+           : rnd() < .48 ? 'tide' : rnd() < .8 ? 'drown2' : 'deep' });
+
+defEnemy({ id: 'abyss', n: '무저(無底)', g: '底', hp: [640, 640], col: '#12161f', boss: true, big: true,
+  init: e => { e.pull = 0; },
+  moves: {
+    fathom:  { t: 'attack', label: '헤아릴 수 없음', d: 22, n: 2, fx: 'void' },
+    weight:  { t: 'atkdeb', label: '깊이의 무게', d: 26, deb: { weak: 3, vuln: 3 }, fx: 'blunt' },
+    hollow:  { t: 'defend', label: '텅 빔', blk: 48, self: { thorns: 6, dex: 3 } },
+    inhale:  { t: 'buff', label: '바닥이 숨을 들이쉰다', blk: 40, self: { str: 7 },
+               extra: e => { e.pull = 1; flash('바닥이 당긴다'); SND.boss(); } },
+    swallow2:{ t: 'attack', label: '삼킴', d: 58, fx: 'void',
+               extra: e => { e.pull = 0; st(P(), 'curse', 4); shake(true); } }
+  },
+  onHalf: e => { st(e, 'str', 6); st(e, 'regenP', 8); flash('바닥이 더 깊어진다'); },
+  next: e => {
+    if (e.pull) return 'swallow2';
+    if (e.hist.length === 0) return 'weight';
+    if (e.turnCount % 5 === 0) return 'inhale';
+    if (lastIs(e, 'fathom', 2)) return 'hollow';
+    const r = rnd();
+    return r < .44 ? 'fathom' : r < .74 ? 'weight' : 'hollow';
+  } });
+
+/* ══ 제8막 · 태초 — 아무것도 없던 자리 ═════════════════════ */
+defEnemy({ id: 'firstlight', n: '첫 빛', g: '曦', hp: [106, 120], col: '#c8a24a',
+  moves: { dawn2:  { t: 'attack', label: '트임', d: 30, fx: 'holy' },
+           scatter:{ t: 'attack', label: '흩뿌림', d: 12, n: 3, fx: 'holy' },
+           kindle: { t: 'buff', label: '돋움', blk: 26, self: { str: 4, dex: 3 } } },
+  next: e => e.hist.length === 0 ? 'kindle' : lastIs(e, 'dawn2') ? 'scatter'
+           : e.turnCount % 4 === 0 ? 'kindle' : rnd() < .52 ? 'dawn2' : 'scatter' });
+
+defEnemy({ id: 'wordless', n: '말 이전', g: '默', hp: [114, 128], col: '#3a3a46',
+  moves: { hush:   { t: 'debuff', label: '말을 지운다', deb: { weak: 5, curse: 5 } },
+           press:  { t: 'attack', label: '침묵의 무게', d: 32, fx: 'blunt' },
+           still:  { t: 'defend', label: '고요', blk: 38, self: { thorns: 6 } } },
+  next: e => e.hist.length === 0 ? 'hush' : lastIs(e, 'press') ? 'still'
+           : rnd() < .5 ? 'press' : rnd() < .8 ? 'hush' : 'still' });
+
+defEnemy({ id: 'shapeless', n: '꼴 없는 것', g: '渾', hp: [122, 138], col: '#5a5060', big: true,
+  moves: { churn:  { t: 'attack', label: '뒤섞기', d: 14, n: 3, fx: 'void' },
+           unform: { t: 'atkdeb', label: '모양을 지운다', d: 24, deb: { vuln: 5, weak: 4 }, fx: 'void_slash' },
+           knead:  { t: 'defend', label: '뭉치기', blk: 40, self: { str: 4, dex: 4 } } },
+  next: e => e.hist.length === 0 ? 'knead' : lastIs(e, 'churn') ? 'unform'
+           : rnd() < .46 ? 'churn' : rnd() < .78 ? 'unform' : 'knead' });
+
+defEnemy({ id: 'primordial', n: '태초의 짐승', g: '獸', hp: [252, 278], col: '#6b3a1a', elite: true, big: true,
+  init: e => { e.s.rage = 4; e.s.thorns = 6; },
+  moves: { rend:   { t: 'attack', label: '찢기', d: 20, n: 2, fx: 'claw' },
+           roar:   { t: 'buff', label: '첫 울음', blk: 36, self: { str: 6 },
+                     extra: () => { flash('첫 울음이 산을 흔든다'); shake(true); SND.gong(); } },
+           trample:{ t: 'attack', label: '짓밟기', d: 38, fx: 'blunt' } },
+  next: e => e.hist.length === 0 ? 'roar' : lastIs(e, 'trample') ? 'rend'
+           : e.turnCount % 5 === 0 ? 'roar' : rnd() < .5 ? 'rend' : 'trample' });
+
+defEnemy({ id: 'namer', n: '이름 짓는 자', g: '名', hp: [240, 264], col: '#2a4a5a', elite: true, big: true,
+  moves: { name2:  { t: 'debuff', label: '이름을 붙인다', deb: { vuln: 6, weak: 5, curse: 4 } },
+           unname: { t: 'attack', label: '이름을 거둔다', d: 34, fx: 'void', extra: () => { const p = P();
+                     for (const k in p.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete p.s[k]; } },
+           write:  { t: 'atkdef', label: '고쳐 적기', d: 18, blk: 38, self: { dex: 4 }, fx: 'talisman' } },
+  next: e => e.hist.length === 0 ? 'name2' : lastIs(e, 'unname') ? 'write'
+           : rnd() < .46 ? 'unname' : rnd() < .78 ? 'write' : 'name2' });
+
+defEnemy({ id: 'taecho', n: '태초(太初)', g: '太', hp: [820, 820], col: '#0d0c14', boss: true, big: true,
+  init: e => { e.phase = 1; e.charge2 = 0; },
+  moves: {
+    before:  { t: 'attack', label: '있기 전', d: 24, n: 2, fx: 'void' },
+    unmake2: { t: 'atkdeb', label: '없던 일로', d: 30, deb: { weak: 4, vuln: 4, curse: 4 }, fx: 'void_slash' },
+    fold:    { t: 'defend', label: '접힘', blk: 54, self: { thorns: 8, dex: 4 } },
+    breathe: { t: 'buff', label: '처음을 들이쉰다', blk: 46, self: { str: 8 },
+               extra: e => { e.charge2 = 1; flash('태초가 숨을 들이쉰다'); SND.boss(); screenFlash('rgba(255,255,255,.35)', 700); } },
+    begin:   { t: 'attack', label: '처음', d: 66, fx: 'holy',
+               extra: e => { e.charge2 = 0; st(P(), 'weak', 4); st(P(), 'vuln', 4); shake(true); SND.thunder(); } }
+  },
+  onHalf: e => { e.phase = 2; st(e, 'str', 8); st(e, 'rage', 2); st(e, 'regenP', 10);
+                 flash('태초가 눈을 뜬다'); screenFlash('rgba(255,240,200,.5)', 900); SND.gong(); },
+  next: e => {
+    if (e.charge2) return 'begin';
+    if (e.hist.length === 0) return 'unmake2';
+    if (e.turnCount % 5 === 0) return 'breathe';
+    if (lastIs(e, 'before', 2)) return 'fold';
+    const r = rnd();
+    return r < .42 ? 'before' : r < .72 ? 'unmake2' : 'fold';
+  } });
+
 /* ---------- 조우(인카운터) 구성 ---------- */
 const ENCOUNTERS = {
   1: {
@@ -3046,6 +3262,22 @@ const ENCOUNTERS = {
              ['karmaflame', 'karmaflame'], ['voidling', 'karmaflame', 'nameless']],
     elite:  [['mirrorself'], ['gatewarden'], ['mirrorself', 'voidling'], ['gatewarden', 'nameless']],
     boss:   ['mugan']
+  },
+  7: {
+    weak:   [['fallen'], ['chainwraith', 'abysseye'], ['maw']],
+    normal: [['maw', 'fallen'], ['chainwraith', 'chainwraith'], ['abysseye', 'fallen'],
+             ['maw', 'abysseye'], ['fallen', 'fallen', 'chainwraith'], ['abysseye', 'chainwraith'],
+             ['voidling', 'maw'], ['karmaflame', 'fallen']],
+    elite:  [['forgotten'], ['abysslord'], ['forgotten', 'fallen'], ['abysslord', 'abysseye']],
+    boss:   ['abyss']
+  },
+  8: {
+    weak:   [['firstlight'], ['wordless', 'firstlight'], ['shapeless']],
+    normal: [['shapeless', 'wordless'], ['firstlight', 'firstlight'], ['wordless', 'wordless'],
+             ['shapeless', 'firstlight'], ['firstlight', 'wordless', 'shapeless'],
+             ['shapeless', 'shapeless'], ['maw', 'firstlight'], ['nameless', 'wordless']],
+    elite:  [['primordial'], ['namer'], ['primordial', 'firstlight'], ['namer', 'shapeless']],
+    boss:   ['taecho']
   }
 };
 
@@ -3057,6 +3289,7 @@ const alive = () => G.b ? G.b.enemies.filter(e => e.hp > 0 && !e.dead) : [];
 
 function calcAtk(src, tgt, base) {
   let d = base;
+  if (src.dmgMul && src.dmgMul !== 1) d = d * src.dmgMul;    /* 막에 따른 보정 */
   d += (src.s.str || 0);
   if (src.isPlayer) d += (src.s.edge || 0);
   if (src.s.weak) d = Math.floor(d * .75);
@@ -3140,7 +3373,7 @@ function drawCards(n) {
     }
     b.hand.push(b.drawPile.pop());
   }
-  SND.draw(); syncAll();
+  SND.draw(); if (n >= 3) SND.swoosh(); syncAll();
 }
 function discardCard(c) {
   const b = G.b, i = b.hand.findIndex(x => x.uid === c.uid);
@@ -3167,11 +3400,15 @@ function startBattle(enemyIds, kind, opts) {
     skillUsed: false, freeTurn: false, halved: false, startHp: run.hp
   };
   let ux = 1;
+  /* 제4막부터 요괴의 체력·공격력이 10% 오른다 (대전투장은 자체 배율을 쓴다) */
+  const boost = kind === 'arena' ? 1 : actBoost(run.act);
   for (const id of enemyIds) {
     const d = ENEMIES[id];
     let hp = ri(d.hp[0], d.hp[1]) + Math.floor((run.asc || 0) * 0.08 * d.hp[0]);
+    hp = Math.round(hp * boost);
     if (opts.hpMul) hp = Math.round(hp * opts.hpMul);
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
+                dmgMul: boost,
                 hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false };
     if (d.init) d.init(e);
     if (opts.str) e.s.str = (e.s.str || 0) + opts.str;
@@ -3260,6 +3497,7 @@ async function playCard(card, target) {
   }
   b.curCard = null;
   b.played++;
+  chainFx(b.played);                         /* 한 턴에 이어 낼수록 소리가 올라간다 */
   fire('cardPlay', card);
 
   if (!b.over) {
@@ -3360,7 +3598,7 @@ async function doMove(e, m) {
   }
   if (!G.b || b.over) return;
   if (m.blk) { eblk(e, m.blk); syncAll(); await wait(180); }
-  if (m.self) { for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
+  if (m.self) { if (m.self.str >= 4) SND.charge(); for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
   if (m.deb && P()) { for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
   if (m.heal) { eheal(e, m.heal); await wait(160); }
   if (m.extra) { await m.extra(e); await wait(160); }
@@ -3388,7 +3626,10 @@ async function checkDeaths() {
     const n = el('div', 'combomark', killed + '연속 처치!');
     n.style.top = (innerHeight * .26) + 'px';
     $('#app').appendChild(n); setTimeout(() => n.remove(), 1200);
-    SND.victory(); shake(true);
+    SND.victory(); shake(true); hitstop(true);
+    for (let i = 0; i < killed; i++) setTimeout(() => SND.combo(i + 3), i * 90);
+    screenFlash('rgba(255,220,140,.4)', 560);
+    FX.gold(innerWidth / 2, innerHeight * .4, 40);
   }
   if (any) {
     await wait(430);
@@ -3435,7 +3676,7 @@ function winBattle() {
    등급이 한 칸이라도 높으면 어떤 상황에서도 먼저 쓰인다.
    같은 등급 안에서만 상황(마무리 일격·받을 피해·심법)이 순서를 가른다.
    ══════════════════════════════════════════════════════════ */
-const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0, rewLeft: -1, rewStall: 0, wait: 0 };
+const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0, rewLeft: -1, rewStall: 0, wait: 0, lost: 0 };
 const AUTO_PACE = { slow: 1500, normal: 850, fast: 380 };
 const autoDelay = () => AUTO_PACE[OPT.autoPace] || 300;
 /* 등급 서열 — 이 값이 곧 우선순위다 */
@@ -3623,7 +3864,7 @@ async function autoLoop() {
       if (story) {
         const now = Date.now();
         if (!AUTO.storyAt) AUTO.storyAt = now;
-        if (now - AUTO.storyAt > 2600) { AUTO.storyAt = now; story.click(); }
+        if (now - AUTO.storyAt > 1500) { AUTO.storyAt = now; story.click(); }
         continue;
       }
       AUTO.storyAt = 0;
@@ -3635,7 +3876,16 @@ async function autoLoop() {
         try { autoBattleStep(); } catch (e) { console.error('자동 플레이 오류', e); autoStop('길을 잃었다'); }
         continue;
       }
-      if (G.scene === 'map' && OPT.autoScope === 'run') { AUTO.fights++; autoMapStep(); continue; }
+      if (G.scene === 'map') {
+        /* '전투만'이면 지도에 서는 순간 손을 뗀다 — 로비에서 켜져 있을 이유가 없다 */
+        if (OPT.autoScope !== 'run') { autoStop('전투가 끝났다'); break; }
+        AUTO.lost = 0; AUTO.fights++; autoMapStep(); continue;
+      }
+      /* 어느 화면도 아닌 자리에 오래 서 있으면 스스로 지도로 돌아간다 */
+      if (OPT.autoScope === 'run' && G.run) {
+        AUTO.lost = (AUTO.lost || 0) + 1;
+        if (AUTO.lost > 14) { AUTO.lost = 0; closeOverlay(); showMap(); }
+      }
     }
   } finally { AUTO.loop = false; syncAuto(); }
 }
@@ -3643,6 +3893,7 @@ function autoStart() {
   if (AUTO.on) return;
   if (!G.run) { toast('모험 중에만 쓸 수 있다'); return; }
   if (!autoOk()) { SND.err(); toast('자동 플레이는 제1막을 넘어선 자에게 열린다 (VIP는 곧바로)'); return; }
+  if (!G.b && OPT.autoScope !== 'run') { SND.err(); toast('싸울 때만 대신해 준다 — 지도까지 맡기려면 설정에서 범위를 바꾸시오'); return; }
   AUTO.on = true; SND.ui();
   toast(OPT.autoScope === 'run' ? '자동 플레이 — 지도까지 스스로 나아간다' : '자동 플레이 — 전투를 대신한다');
   syncAuto(); autoLoop();
@@ -3678,7 +3929,8 @@ function unlockAuto(quiet) {
   if (META.autoUnlocked) return false;
   META.autoUnlocked = true; saveMeta(); syncAuto();
   if (!quiet) {
-    SND.power(); screenFlash('rgba(120,220,200,.35)', 700);
+    SND.unlock(); screenFlash('rgba(120,220,200,.35)', 700);
+    FX.spark(innerWidth / 2, innerHeight * .4, 40, '90,230,190');
     const p = modal(`<h2>자 동 플 레 이</h2>
       <div class="hint">제1막을 넘어선 자에게만 주어지는 권한</div>
       <div class="autogift">
@@ -3747,7 +3999,7 @@ function renderTop() {
       <div id="relicbar"></div>
       <div id="potbar"></div>
       <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
-      <button class="topbtn arena" id="arenabtn" title="대전투장">鬪<em></em></button>
+      <button class="topbtn atop" id="arenabtn" title="대전투장">鬪<em></em></button>
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
@@ -3919,7 +4171,7 @@ function buildEnemies() {
 }
 
 /* --- 동기화 --- */
-function syncAll() { if (!G.b) { renderTop(); return; } syncPlayer(); syncEnemies(); syncHand(); syncPiles(); renderTop(); }
+function syncAll() { if (!G.b) { renderTop(); syncLowHp(); return; } syncPlayer(); syncEnemies(); syncHand(); syncPiles(); renderTop(); syncLowHp(); }
 
 function statChip(ent, k, v) {
   const s = STATUS[k]; if (!s) return '';
@@ -4118,21 +4370,40 @@ function floatText(ent, txt, cls) {
   n.style.left = (r.left + r.width / 2) + 'px'; n.style.top = (r.top + 8) + 'px';
   $('#app').appendChild(n); setTimeout(() => n.remove(), 1000);
 }
+/* 묵직한 순간에 화면을 0.09초 멈춰 세운다 — 타격이 손에 남는다 */
+function hitstop(strong) {
+  if (!OPT.shake) return;                     /* 흔들림을 끈 사람은 이것도 끈다 */
+  const a = $('#app');
+  a.classList.remove('hitstop', 'hitstop-lg'); void a.offsetWidth;
+  a.classList.add(strong ? 'hitstop-lg' : 'hitstop');
+  setTimeout(() => a.classList.remove('hitstop', 'hitstop-lg'), strong ? 150 : 95);
+}
+const CRIT_AT = 26;                           /* 이만큼 들어가면 '치명' */
 function hitFx(ent, hpDmg, blocked, splash) {
   if (!ent.el) return;
   const r = ent.el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   if (hpDmg > 0) {
-    const n = el('div', 'dmgnum', hpDmg);
+    const crit = hpDmg >= CRIT_AT && !ent.isPlayer;
+    const n = el('div', 'dmgnum' + (crit ? ' crit' : hpDmg >= 15 ? ' big' : ''), hpDmg);
     n.style.left = cx + 'px'; n.style.top = (r.top + 20) + 'px';
     $('#app').appendChild(n); setTimeout(() => n.remove(), 1000);
     ent.el.classList.remove('hurt'); void ent.el.offsetWidth; ent.el.classList.add('hurt');
     if (splash) { FX.blood(cx, cy, Math.min(26, 8 + hpDmg)); SND.hit(hpDmg > 12 ? 2 : 1); }
+    if (crit) {
+      const m = el('div', 'critmark', '치 명');
+      m.style.left = cx + 'px'; m.style.top = (r.top - 6) + 'px';
+      $('#app').appendChild(m); setTimeout(() => m.remove(), 780);
+      FX.burst(cx, cy, 22, '255,190,80', 7, 46, 5);
+      SND.crit(); hitstop(hpDmg >= CRIT_AT * 1.8); shake(true);
+    } else if (hpDmg >= 15) hitstop(false);
   }
   if (blocked > 0) {
     const n = el('div', 'dmgnum blk sm', blocked);
     n.style.left = (cx - 34) + 'px'; n.style.top = (r.top + 40) + 'px';
     $('#app').appendChild(n); setTimeout(() => n.remove(), 1000);
     FX.spark(cx, cy, 10, '49,83,107');
+    /* 방어도가 이번 타격으로 다 깨졌다 */
+    if (ent.block <= 0) { SND.shatter(); FX.burst(cx, cy, 16, '150,190,220', 5, 40, 3.6); }
   }
   syncAll();
 }
@@ -4145,20 +4416,66 @@ function lunge(e) {
   b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
   setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
 }
+/* ── 연격 — 한 턴에 부적을 이어 낼수록 음이 올라간다 ─────── */
+function chainFx(n) {
+  if (n < 3) return;
+  SND.combo(n);
+  const box = el('div', 'chainmark', `<b>${n}</b><span>연 격</span>`);
+  box.style.color = n >= 7 ? '#ff6ea0' : n >= 5 ? '#ffb648' : '#ffd76a';
+  $('#app').appendChild(box);
+  setTimeout(() => box.remove(), 900);
+  if (n >= 5) { FX.gold(innerWidth - 70, innerHeight * .45, 12 + n); shake(); }
+  if (n >= 8) { screenFlash('rgba(255,140,180,.28)', 460); SND.gong(); }
+}
+/* ── 체력이 바닥일 때 화면 가장자리가 뛴다 ───────────────── */
+let _lowTimer = null;
+function syncLowHp() {
+  let v = $('#lowhp');
+  if (!v) { v = el('div', ''); v.id = 'lowhp'; $('#app').appendChild(v); }
+  const p = G.b ? P() : null;
+  const hp = p ? p.hp : (G.run ? G.run.hp : 1), mx = p ? p.maxHp : (G.run ? G.run.maxHp : 1);
+  const low = !!G.b && hp > 0 && hp / Math.max(1, mx) <= .3;
+  v.classList.toggle('on', low);
+  if (low && !_lowTimer) {
+    const beat = () => { if (!G.b || !$('#lowhp').classList.contains('on')) { clearInterval(_lowTimer); _lowTimer = null; return; } SND.heartbeat(); };
+    beat(); _lowTimer = setInterval(beat, 2100);
+  } else if (!low && _lowTimer) { clearInterval(_lowTimer); _lowTimer = null; }
+}
+/* ── 전리품이 상단바로 날아간다 ──────────────────────────── */
+function flyGet(text, color, targetSel) {
+  const t = $(targetSel);
+  const n = el('div', 'flyget', text);
+  n.style.color = color;
+  n.style.left = (innerWidth / 2) + 'px';
+  n.style.top = (innerHeight * .45) + 'px';
+  $('#app').appendChild(n);
+  const r = t ? t.getBoundingClientRect() : { left: innerWidth / 2, top: 20 };
+  requestAnimationFrame(() => {
+    n.style.transform = `translate(${r.left - innerWidth / 2}px,${r.top - innerHeight * .45}px) scale(.7)`;
+    n.style.opacity = '0';
+  });
+  setTimeout(() => n.remove(), 820);
+}
 /* ── 처치 연출 ───────────────────────────────────────────── */
 function killFx(e) {
   const big = !!(e.def.boss || e.def.elite);
+  /* 남은 체력보다 훨씬 세게 때려 눕혔다 */
+  const over = e.hp <= -Math.max(12, e.maxHp * .25);
   if (e.el) {
     const c = centerOf(e.el);
     FX.ink(c.x, c.y, big ? 44 : 26);
     FX.blood(c.x, c.y, big ? 34 : 18);
     if (big) FX.gold(c.x, c.y, 26);
+    if (over) { FX.burst(c.x, c.y, 40, '255,170,60', 8, 56, 5.5); FX.gold(c.x, c.y, 24); }
     e.el.classList.add('dying');
-    const m = el('div', 'killmark' + (big ? ' big' : ''), big ? '토 벌' : '처 치');
+    const m = el('div', 'killmark' + (big ? ' big' : ''), over ? '과 잉' : big ? '토 벌' : '처 치');
+    if (over) m.style.color = '#ffdf9a';
     m.style.left = c.x + 'px'; m.style.top = c.y + 'px';
     $('#app').appendChild(m); setTimeout(() => m.remove(), 1000);
   }
   SND.death();
+  hitstop(big || over);
+  if (over) { SND.crit(); screenFlash('rgba(255,190,90,.34)', 420); }
   if (big) { screenFlash('rgba(255,210,120,.42)', 520); SND.gong(); shake(true); }
   else shake();
 }
@@ -4518,8 +4835,12 @@ const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', sho
    10. 모험 진행
    ══════════════════════════════════════════════════════════ */
 const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
-                   4: '명계 관문', 5: '구천 상계', 6: '무간' };
-const LAST_ACT = 6;
+                   4: '명계 관문', 5: '구천 상계', 6: '무간',
+                   7: '무저갱', 8: '태초' };
+const LAST_ACT = 8;
+/* 제4막부터는 요괴가 한 뼘씩 더 강해진다 (체력·공격력 +10%) */
+const ACT_BOOST_FROM = 4;
+const actBoost = act => (act >= ACT_BOOST_FROM ? 1.1 : 1);
 function newRun(asc) {
   G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
@@ -4678,6 +4999,13 @@ function closeTop() {
   if (o.lastElementChild) o.lastElementChild.remove();
   if (!o.children.length) o.style.display = 'none';
 }
+/* 자기 자신만 닫는다 — 창이 겹쳤을 때 남의 화면을 지우지 않는다.
+   (고르는 창이 두 번 닫히면서 아래 보상 화면까지 사라지던 문제를 막는다) */
+function closePanel(p) {
+  const o = $('#overlay');
+  if (p && p.parentNode === o) p.remove();
+  if (!o.children.length) o.style.display = 'none';
+}
 function closeOverlay() { const o = $('#overlay'); o.style.display = 'none'; o.innerHTML = ''; }
 
 /* --- 카드 목록 보기 --- */
@@ -4700,11 +5028,11 @@ function pickFromList(list, title, opts) {
     if (!list.length) g.innerHTML = '<div style="color:#c8bda3">고를 카드가 없다</div>';
     for (const c of list) {
       const n = cardNode(c); n.classList.add('pick');
-      n.onclick = () => { closeTop(); SND.ui(); res(c); };
+      n.onclick = () => { closePanel(p); SND.ui(); res(c); };
       g.appendChild(n);
     }
     const cb = p.querySelector('#pk_cancel');
-    if (cb) cb.onclick = () => { closeTop(); res(null); };
+    if (cb) cb.onclick = () => { closePanel(p); res(null); };
   });
 }
 function chooseCards(list, n, title) {
@@ -4715,16 +5043,23 @@ function chooseCards(list, n, title) {
 function showRewards(kind) {
   G.scene = 'reward';
   const run = G.run;
+  if (kind === 'boss') { screenFlash('rgba(255,225,150,.45)', 900); SND.unlock(); }
+  else if (kind === 'elite') screenFlash('rgba(255,215,140,.24)', 520);
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * vm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * vm);
-  const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다', act: it => { run.gold += gold; run.stats.gold += gold; SND.coin(); } },
-    { ic: '玉', t: `다이아 ${dia}`, s: '상자를 여는 값', act: () => { run.dia = (run.dia || 0) + dia; SND.coin(); } }];
+  const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다',
+      act: () => { run.gold += gold; run.stats.gold += gold; SND.coinRain(gold / 12);
+                   flyGet('金 +' + gold, '#ffd76a', '#goldv'); } },
+    { ic: '玉', t: `다이아 ${dia}`, s: '상자를 여는 값',
+      act: () => { run.dia = (run.dia || 0) + dia; SND.coinRain(dia / 20);
+                   flyGet('玉 +' + dia, '#6fd0e8', '#diav'); } }];
   const potChance = kind === 'elite' ? .62 : kind === 'boss' ? 1 : .42;
   if (rnd() < potChance && run.potions.length < run.potSlots) {
     const pid = randomPotion();
     items.push({ ic: POTIONS[pid].g, t: POTIONS[pid].n, s: POTIONS[pid].d.replace(/<[^>]+>/g, ''),
-      act: () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; } run.potions.push(pid); SND.heal(); } });
+      act: () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; }
+        run.potions.push(pid); SND.heal(); flyGet(POTIONS[pid].g, '#7fe6cf', '#potbar'); } });
   }
   if (kind === 'elite') {
     const rid = randomRelic();
@@ -4796,7 +5131,9 @@ function showRewards(kind) {
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
-      const key = act >= LAST_ACT ? 'end_mugan' : ('act' + act);
+      const key = act >= LAST_ACT
+        ? (STORY['end_' + G.run.bossPick] ? 'end_' + G.run.bossPick : 'end_taecho')
+        : ('act' + act);
       showStory(STORY[key] ? key : null).then(() => { if (act >= LAST_ACT) victory(); else nextAct(); });
     }
     else showMap();
@@ -4818,7 +5155,7 @@ async function pickSkill() {
       const n = el('div', 'stile g-' + d.rar,
         `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div><b>${d.g}</b>
          <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>\s*/g, ' ')}</div>`);
-      n.onclick = () => { gainSkill(id); G.run.skill = id; closeTop(); renderTop(); res(); };
+      n.onclick = () => { gainSkill(id); G.run.skill = id; closePanel(p); renderTop(); res(); };
       g.appendChild(n);
     }
   });
@@ -4834,7 +5171,7 @@ async function pickBossRelic() {
     for (const id of three) {
       const d = RELICS[id];
       const n = el('div', 'rewitem', `<div class="ic">${d.g}</div><div class="t"><b>${d.n}</b><small>${d.d.replace(/<[^>]+>/g, '')}</small></div>`);
-      n.onclick = () => { closeTop(); gainRelic(id); renderTop(); res(); };
+      n.onclick = () => { closePanel(p); gainRelic(id); renderTop(); res(); };
       row.appendChild(n);
     }
   });
@@ -5979,10 +6316,42 @@ function storyScene(kind) {
     village: ['#2a1410', '#0d0605'], master: ['#181a16', '#0a0b09'],
     hero: ['#1d1a14', '#0b0a08'], fox: ['#241016', '#0c0508'],
     tiger: ['#241a0e', '#0d0906'], dragon: ['#12141d', '#07080c'],
-    gate: ['#1a1626', '#08070c'], dawn: ['#2c2418', '#100c07'] }[kind] || ['#14110d', '#080706'];
+    gate: ['#1a1626', '#08070c'], dawn: ['#2c2418', '#100c07'],
+    abyss: ['#0c0a14', '#030206'], first: ['#3a3222', '#1a1610'] }[kind] || ['#14110d', '#080706'];
   const mt = (fill, d, op) => `<path d="${d}" fill="${fill}" opacity="${op}"/>`;
   let art = '';
   switch (kind) {
+    case 'abyss': {                       /* 무저갱 — 아래로 끝없이 */
+      let rings = '';
+      for (let i = 0; i < 9; i++) {
+        const rx = 460 - i * 48, ry = 150 - i * 15, cy = 300 + i * 30;
+        rings += `<ellipse cx="500" cy="${cy}" rx="${rx}" ry="${Math.max(6, ry)}" fill="none"
+          stroke="#6a5f86" stroke-width="${(9 - i) * .5}" opacity="${.5 - i * .045}"/>`;
+      }
+      let dust = '';
+      for (let i = 0; i < 26; i++)
+        dust += `<circle cx="${40 + (i * 137) % 920}" cy="${60 + (i * 211) % 500}" r="${1 + (i % 3)}"
+          fill="#b9a8e0" opacity="${.14 + (i % 5) * .05}"/>`;
+      art = `<rect width="1000" height="600" fill="#07060c"/>${rings}${dust}
+        <ellipse cx="500" cy="588" rx="200" ry="34" fill="#000" opacity=".9"/>`;
+      break;
+    }
+    case 'first': {                       /* 태초 — 아무것도 없던 자리 */
+      let halo = '';
+      for (let i = 6; i >= 1; i--)
+        halo += `<circle cx="500" cy="300" r="${i * 62}" fill="#ffe9a8" opacity="${.045 * (7 - i)}"/>`;
+      let rays = '';
+      for (let i = 0; i < 20; i++) {
+        const a = i * 18 * Math.PI / 180, L = 200 + (i % 4) * 110;
+        rays += `<line x1="500" y1="300" x2="${(500 + Math.cos(a) * L).toFixed(1)}"
+          y2="${(300 + Math.sin(a) * L).toFixed(1)}" stroke="#fff3ce" stroke-width="${1 + (i % 3)}"
+          opacity="${.1 + (i % 3) * .06}"/>`;
+      }
+      art = `<rect width="1000" height="600" fill="#1a1610"/>${halo}${rays}
+        <circle cx="500" cy="300" r="52" fill="#fffbe8"/>
+        <circle cx="500" cy="300" r="52" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`;
+      break;
+    }
     case 'moon':
       art = `<circle cx="700" cy="150" r="86" fill="#c9585c" opacity=".55"/>
         <circle cx="700" cy="150" r="86" fill="none" stroke="#e8a0a2" stroke-width="1.5" opacity=".4"/>` +
@@ -6117,6 +6486,21 @@ const STORY = {
     { scene: 'tiger', who: '치우천왕', t: '"하늘도 저것을 막지 못했다."\n\n구리 이마가 갈라지며 피가 흐른다.' },
     { scene: 'dragon', who: '치우천왕', t: '"문 너머에는 아무것도 없다.\n아무것도 없는 것이 있다."\n\n"그것이 네 이름을 지웠다."' },
     { scene: 'gate', t: '구천의 끝, 무간(無間)의 입구가 열렸다.\n\n소리도, 빛도, 냄새도 없다.' }
+  ],
+  act6: [
+    { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
+    { scene: 'dragon', t: '부적이 한 장씩 타들어 갔다.\n마지막 한 장을 붙였을 때,\n\n비로소 소리가 돌아왔다.' },
+    { scene: 'abyss', t: '무간이 무너지자 바닥이 사라졌다.\n\n문 너머에 또 다른 아래가 있었다.\n떨어지는 데 이레가 걸렸다.' }
+  ],
+  act7: [
+    { scene: 'abyss', who: '무저', t: '"여기가 바닥이라 생각했느냐."\n\n대답할 입이 그것에게도 없었다.' },
+    { scene: 'abyss', t: '바닥이 갈라지고,\n그 아래에서 빛이 올라왔다.\n\n아래인데 빛이 올라왔다.' },
+    { scene: 'first', t: '떨어지던 몸이 문득 떠올랐다.\n\n산도, 문도, 어둠도 없는 자리.\n아무것도 없던 자리에 닿았다.' }
+  ],
+  end_taecho: [
+    { scene: 'first', who: '태초', t: '"네가 지운 것이 나다."\n\n"내가 지운 것도 너다."' },
+    { scene: 'first', t: '부적은 진작 다 떨어졌다.\n\n마지막으로 남은 것은\n스승이 남긴 벽사부 한 장이었다.' },
+    { scene: 'dawn', t: '처음이 닫혔다.\n\n산은 다시 잠들었고,\n백 년 뒤 누군가 다시 오를 것이다.\n\n그때는 문 앞에서 멈추기를.' }
   ],
   end_mugan: [
     { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
@@ -6838,11 +7222,13 @@ function setBg(act) {
   const PAL = {
     1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
     3: ['#9d95a8', '#7d7488', '#4e4857'], 4: ['#7f7a8e', '#5f5a70', '#38344a'],
-    5: ['#a9bcd0', '#87a0bc', '#5a6f8e'], 6: ['#6e6a78', '#4a4652', '#2a2732']
-  }[Math.min(6, act)] || ['#c3b79d', '#a89c82', '#7b7260'];
+    5: ['#a9bcd0', '#87a0bc', '#5a6f8e'], 6: ['#6e6a78', '#4a4652', '#2a2732'],
+    7: ['#4a4250', '#332e3e', '#1b1826'], 8: ['#d8cbb0', '#b6a78a', '#7d7159']
+  }[Math.min(8, act)] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
-                5: '#e8f0fb 0%,#cfe0f2 55%,#adc4e0 100%', 6: '#c6c2ce 0%,#a49fb0 55%,#7c7789 100%' }[act];
+                5: '#e8f0fb 0%,#cfe0f2 55%,#adc4e0 100%', 6: '#c6c2ce 0%,#a49fb0 55%,#7c7789 100%',
+                7: '#8d8898 0%,#6b6578 55%,#413c50 100%', 8: '#fff8e4 0%,#f2e4c2 55%,#dcc99e 100%' }[act];
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      <g opacity=".55">
@@ -6854,7 +7240,9 @@ function setBg(act) {
      <g opacity=".75">
        <path fill="${near}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
      </g>
-     ${act >= 6 ? '<g opacity=".4"><circle cx="500" cy="150" r="86" fill="#0d0b12"/><circle cx="500" cy="150" r="96" fill="none" stroke="#b98cff" stroke-width="2" opacity=".6"/></g>'
+     ${act === 8 ? '<g opacity=".55"><circle cx="500" cy="140" r="102" fill="#fff6d8"/><circle cx="500" cy="140" r="150" fill="#ffeeb0" opacity=".22"/><circle cx="500" cy="140" r="200" fill="#ffe89a" opacity=".1"/></g>'
+       : act === 7 ? '<g opacity=".45"><ellipse cx="500" cy="600" rx="330" ry="130" fill="#0a0810"/><ellipse cx="500" cy="600" rx="240" ry="96" fill="#05040a"/></g>'
+       : act >= 6 ? '<g opacity=".4"><circle cx="500" cy="150" r="86" fill="#0d0b12"/><circle cx="500" cy="150" r="96" fill="none" stroke="#b98cff" stroke-width="2" opacity=".6"/></g>'
        : act === 5 ? '<g opacity=".5"><circle cx="820" cy="110" r="54" fill="#fff4c8"/><circle cx="820" cy="110" r="96" fill="#fff4c8" opacity=".18"/></g>'
        : act === 4 ? '<g opacity=".42"><circle cx="118" cy="80" r="46" fill="#2a2438"/><circle cx="118" cy="80" r="52" fill="none" stroke="#7b4bd8" stroke-width="2"/></g>'
        : act === 3 ? '<g opacity=".34"><circle cx="118" cy="76" r="44" fill="#cfd6ea"/><circle cx="136" cy="66" r="40" fill="#9d95a8"/></g>'
