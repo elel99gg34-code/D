@@ -135,6 +135,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
 .topbtn.atop{color:#ffd9c8;background:rgba(200,80,40,.24);border-color:#e2622a}
+.topbtn.place{color:#fff0cf;background:rgba(157,124,46,.3);border-color:#d8ac3e}
+.topbtn.place:hover{background:rgba(180,145,60,.55)}
+.topbtn.place.ready{animation:flameGlow 2.2s ease-in-out infinite}
 .topbtn.atop:hover{background:rgba(200,80,40,.5)}
 .topbtn.atop.ready{animation:flameGlow 1.7s ease-in-out infinite}
 .topbtn.atop.locked{opacity:.4}
@@ -902,6 +905,75 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .jhead .gback:hover{background:rgba(220,190,120,.32)}
 @keyframes jpulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,.45)}
   50%{box-shadow:0 3px 8px rgba(0,0,0,.45),0 0 18px 4px rgba(255,200,90,.7)}}
+
+/* ══ 저주의 서당 ═════════════════════════════════════════ */
+.school{position:absolute;inset:0;display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#1d1218 0%,#2c1a22 45%,#100a0d 100%)}
+.school:before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(ellipse at 50% 0%,rgba(168,58,90,.28),transparent 62%)}
+.schead{position:relative;height:54px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:linear-gradient(rgba(10,6,8,.94),rgba(40,22,28,.84));border-bottom:1px solid rgba(200,90,120,.3)}
+.schead h2{color:#f6dce2;font-size:17px;letter-spacing:.22em;font-weight:400;margin-left:.22em}
+.schead .scnote{margin-left:auto;color:#a8697e;font-size:11px;letter-spacing:.4em}
+.schead .gback{width:34px;height:34px;border-radius:6px;background:rgba(220,120,140,.15);
+  border:1px solid rgba(220,120,140,.4);color:#f6dce2;font-size:18px}
+.schead .gback:hover{background:rgba(220,120,140,.32)}
+.scbody{position:relative;flex:1;display:flex;min-height:0;gap:20px;padding:18px}
+.scside{width:250px;flex:none;display:flex;flex-direction:column;gap:10px}
+.scside .note{padding:12px 14px;border-radius:8px;background:rgba(10,6,8,.55);border:1px solid rgba(200,90,120,.25)}
+.scside .note p{color:#c9aeb6;font-size:12.5px;line-height:1.8}
+.scside .note.curon{border-color:rgba(255,120,150,.6);box-shadow:0 0 18px rgba(200,50,90,.28)}
+.scmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.schint{color:#c9aeb6;font-size:12.5px;letter-spacing:.04em}
+.curgrid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:13px;
+  align-content:start;overflow-y:auto;padding-right:6px}
+.curgrid::-webkit-scrollbar{width:8px}.curgrid::-webkit-scrollbar-thumb{background:rgba(220,140,160,.3);border-radius:4px}
+.curtile{position:relative;padding:14px 15px 13px;border-radius:10px;text-align:left;
+  background:linear-gradient(150deg,rgba(50,28,36,.9),rgba(22,13,17,.9));
+  border:1px solid rgba(200,90,120,.3);transition:.16s}
+.curtile.can{cursor:pointer}
+.curtile.can:hover{transform:translateY(-3px);border-color:#ff8aa4;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 22px rgba(220,60,100,.3)}
+.curtile.on{border-color:#ff8aa4;box-shadow:0 0 22px rgba(220,60,100,.35);
+  animation:curPulse 2.2s ease-in-out infinite}
+@keyframes curPulse{50%{box-shadow:0 0 34px rgba(220,60,100,.6)}}
+.curtile.done{opacity:.5;filter:grayscale(.4)}
+.curtile .cg{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;
+  color:#fff;background:radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--cc) 60%,#fff),var(--cc));
+  box-shadow:0 0 18px color-mix(in srgb,var(--cc) 60%,transparent);margin-bottom:9px}
+.curtile .cn{color:#ffe6ec;font-size:15px;letter-spacing:.06em;margin-bottom:4px}
+.curtile .csay{color:#a8909a;font-size:11.5px;font-style:italic;margin-bottom:10px;word-break:keep-all}
+.curtile .crow{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
+.curtile .crow em{flex:none;font-style:normal;font-size:10.5px;letter-spacing:.1em;padding:2px 7px;border-radius:4px;
+  white-space:nowrap;margin-top:1px}
+.curtile .crow.bad em{background:rgba(200,50,80,.28);color:#ffb0c0;border:1px solid rgba(220,80,110,.45)}
+.curtile .crow.good em{background:rgba(200,160,50,.22);color:#ffdf9a;border:1px solid rgba(220,180,80,.45)}
+.curtile .crow span{font-size:11.8px;line-height:1.65;color:#cbb6bc;word-break:keep-all}
+.curtile .crow.good span{color:#ecd8a6}
+.curtile .ctag{margin-top:9px;text-align:center;font-size:11.5px;letter-spacing:.14em;padding:6px 0;border-radius:5px;
+  background:rgba(255,255,255,.05);color:#a8909a}
+.curtile.can .ctag{background:rgba(200,50,80,.3);color:#ffd0da;border:1px solid rgba(220,80,110,.5)}
+.curwarn{max-width:440px;padding:13px 16px;border-radius:8px;margin:4px 0 14px;text-align:left;
+  background:rgba(120,20,45,.28);border:1px solid rgba(220,80,110,.5);color:#f0d4da;font-size:13px;line-height:1.8}
+.boongot{display:flex;gap:16px;align-items:center;max-width:480px;margin:6px 0 4px;text-align:left}
+.bg2{width:82px;height:82px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:38px;color:#fff;
+  background:radial-gradient(circle at 34% 28%,#fff0c0,var(--cc));box-shadow:0 0 30px rgba(255,200,120,.6)}
+.bt b{display:block;font-weight:400;font-size:17px;color:#ffe9b0;letter-spacing:.08em;margin-bottom:6px}
+.bt span{display:block;font-size:12.8px;color:#c3b79c;line-height:1.8}
+/* 저주 딱지 — 상단바 */
+.curchip{display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:12px;font-size:11px;
+  background:rgba(150,25,60,.42);border:1px solid rgba(255,120,150,.55);color:#ffd0da;letter-spacing:.06em;
+  white-space:nowrap;cursor:pointer;animation:curPulse 2.4s ease-in-out infinite}
+.curchip b{font-size:13px;font-weight:400;color:#fff}
+/* ══ 터(場) — 갈 만한 자리 모음 ═══════════════════════════ */
+.placegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:min(560px,86vw)}
+.placetile{padding:16px 12px;border-radius:10px;text-align:center;cursor:pointer;transition:.16s;
+  background:linear-gradient(150deg,rgba(60,48,30,.85),rgba(24,19,12,.9));border:1px solid rgba(200,175,125,.3)}
+.placetile:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 24px rgba(0,0,0,.5)}
+.placetile .pg2{font-size:30px;color:#f2e7cc;line-height:1;margin-bottom:8px}
+.placetile b{display:block;font-weight:400;font-size:14.5px;color:#f4ead0;letter-spacing:.08em;margin-bottom:3px}
+.placetile small{display:block;font-size:11.5px;color:#9d927b;line-height:1.6;word-break:keep-all}
+.placetile.hot{border-color:#ff8aa4;box-shadow:0 0 18px rgba(220,60,100,.28)}
+.placetile.lock{opacity:.45}
 
 /* ══ 대전투장 ════════════════════════════════════════════ */
 .arena{position:absolute;inset:0;display:flex;flex-direction:column;
@@ -1685,6 +1757,8 @@ function adoptRun(obj) {
   if (G.run.banner == null) G.run.banner = 3;
   if (!G.run.skills) { G.run.skills = []; gainSkill('shout', true); }
   if (!G.run.arena) G.run.arena = { best: 0, cleared: 0 };
+  if (!G.run.boons) G.run.boons = [];
+  if (G.run.curse === undefined) G.run.curse = null;
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -2192,6 +2266,63 @@ defCard({ id: 'quickdraw', n: '발도', g: '拔', type: 'attack', rar: 'uncommon
   txt: v => `<em>${v.d}</em>의 피해를 준다. 소멸.`,
   play: c => atk(c.t, c.v.d) });
 
+defCard({ id: 'dustveil', n: '먼지 장막', g: '塵', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ b: u ? 6 : 4, k: u ? 2 : 1 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 모든 적에게 <b>약화</b> ${v.k}를 부여한다.`,
+  play: c => { blk(c.v.b); for (const e of alive()) st(e, 'weak', c.v.k); } });
+
+defCard({ id: 'stoneskin', n: '석피술', g: '皮', type: 'skill', rar: 'common', cost: 2,
+  v: u => ({ b: u ? 15 : 11 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => blk(c.v.b) });
+
+defCard({ id: 'needle', n: '침봉', g: '針', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 4 : 3, n: 2, p: u ? 3 : 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 두 번 주고 <b>중독</b> ${v.p}를 부여한다.`,
+  play: async c => { atk(c.t, c.v.d); await wait(130); atk(c.t, c.v.d); st(c.t, 'poison', c.v.p); } });
+
+defCard({ id: 'shoutdown', n: '호통', g: '呼', type: 'skill', rar: 'common', cost: 0, tgt: 'enemy',
+  v: u => ({ k: u ? 3 : 2 }),
+  txt: v => `대상에게 <b>취약</b> ${v.k}을 부여한다.`,
+  play: c => { st(c.t, 'vuln', c.v.k); SND.gong(); } });
+
+defCard({ id: 'breathe', n: '고르기', g: '息', type: 'skill', rar: 'common', cost: 0, exhaust: true,
+  v: u => ({ h: u ? 8 : 5 }),
+  txt: v => `체력을 ${v.h} 회복한다. 소멸.`,
+  play: c => heal(c.v.h) });
+
+/* ---------- 2등급 더 ---------- */
+defCard({ id: 'twinfang', n: '쌍아', g: '牙', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 7 : 5, n: 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 두 번 준다. 둘 다 맞으면 <b>힘</b> 1을 얻는다.`,
+  play: async c => { atk(c.t, c.v.d); await wait(140);
+    if (c.t.hp > 0) { atk(c.t, c.v.d); st(P(), 'str', 1); } } });
+
+defCard({ id: 'echoward', n: '되울림 부적', g: '響', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 7 : 5 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 이번 턴에 낸 부적 한 장마다 <i>2</i>씩 더 얻는다.`,
+  play: c => blk(c.v.b + G.b.played * 2) });
+
+defCard({ id: 'graspwind', n: '붙잡는 바람', g: '握', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'all',
+  v: u => ({ d: u ? 7 : 5 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>약화</b> 1을 부여한다.`,
+  play: c => { for (const e of alive()) { atk(e, c.v.d); st(e, 'weak', 1); } } });
+
+defCard({ id: 'sharpen', n: '벼리기', g: '礪', type: 'skill', rar: 'uncommon', cost: 0, exhaust: true,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>검기</b> ${v.x}를 얻는다. 소멸.`,
+  play: c => { st(P(), 'edge', c.v.x); SND.slash(); } });
+
+defCard({ id: 'lastward', n: '막판 부적', g: '終', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 20 : 14 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 손에 다른 부적이 없어야 한다.`,
+  play: c => { if (G.b.hand.length === 0) blk(c.v.b); else { blk(4); toast('손이 비어 있어야 한다'); } } });
+
+defCard({ id: 'venomfog', n: '독무', g: '霧', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ p: u ? 4 : 3 }),
+  txt: v => `모든 적에게 <b>중독</b> ${v.p}을 부여한다.`,
+  play: c => { for (const e of alive()) st(e, 'poison', c.v.p); SND.poison(); } });
+
 /* ---------- 1등급 ---------- */
 defCard({ id: 'windwheel', n: '풍륜참', g: '車', type: 'attack', rar: 'rare', cost: 2, tgt: 'all',
   v: u => ({ d: u ? 10 : 7 }),
@@ -2288,7 +2419,12 @@ let _uid = 1;
 function mkCard(id, up) { return { uid: _uid++, id, up: !!up }; }
 function cdef(c) { return CARDS[c.id]; }
 function cval(c) { return cdef(c).v(c.up); }
-function ccost(c) { const d = cdef(c); return d.costOf ? d.costOf(c.up) : d.cost; }
+function ccost(c) {
+  const d = cdef(c);
+  const k = d.costOf ? d.costOf(c.up) : d.cost;
+  if (k > 0 && curseTag('costup')) return k + 1;               /* 저주 — 무겁다 */
+  return k;
+}
 /* 실제로 치르는 값 — 무념무상 같은 효과를 반영한다 */
 function ecost(c) { const k = ccost(c); return (G.b && G.b.freeTurn && k > 0) ? 0 : k; }
 function cname(c) { return cdef(c).n + (c.up ? '+' : ''); }
@@ -2543,12 +2679,22 @@ function doFuse(f) {
 
 function fire(hook, ...args) {
   if (!G.run) return;
-  for (const r of G.run.relics) { const d = RELICS[r.id]; if (d.h && d.h[hook]) d.h[hook](r, ...args); }
+  const half = curseTag('relichalf');
+  for (const r of G.run.relics) {
+    const d = RELICS[r.id]; if (!d.h || !d.h[hook]) continue;
+    if (half) { r.skip = !r.skip; if (r.skip) continue; }   /* 저주 — 한 번 걸러 한 번만 듣는다 */
+    d.h[hook](r, ...args);
+  }
 }
 function pipe(hook, val, ...args) {
   if (!G.run) return val;
-  for (const r of G.run.relics) { const d = RELICS[r.id]; if (d.h && d.h[hook]) val = d.h[hook](r, val, ...args); }
-  return val;
+  const half = curseTag('relichalf');
+  for (const r of G.run.relics) {
+    const d = RELICS[r.id]; if (!d.h || !d.h[hook]) continue;
+    const out = d.h[hook](r, val, ...args);
+    val = (half && typeof out === 'number' && typeof val === 'number') ? val + (out - val) * .5 : out;
+  }
+  return typeof val === 'number' ? Math.round(val) : val;
 }
 function hasRelic(id) { return G.run && G.run.relics.some(r => r.id === id); }
 function gainRelic(id, silent) {
@@ -3383,7 +3529,10 @@ function calcAtk(src, tgt, base) {
   let d = base;
   if (src.dmgMul && src.dmgMul !== 1) d = d * src.dmgMul;    /* 막에 따른 보정 */
   d += (src.s.str || 0);
-  if (src.isPlayer) d += (src.s.edge || 0);
+  if (src.isPlayer) {
+    d += (src.s.edge || 0);
+    if (hasBoon('atk80')) d *= 1.8;                          /* 저주를 이겨 낸 자 */
+  }
   if (src.s.weak) d = Math.floor(d * .75);
   if (tgt.s.vuln) d = Math.floor(d * 1.5);
   return Math.max(0, Math.floor(d));
@@ -3435,7 +3584,8 @@ function pure(t, amt) {                       // 방어도·보정 무시 직접
 }
 function blk(n, raw) {
   const p = P(); if (n <= 0) return;
-  const v = Math.max(0, raw ? n : n + (p.s.dex || 0));
+  let v = Math.max(0, raw ? n : n + (p.s.dex || 0));
+  if (curseTag('weakblock')) v = Math.floor(v * .65);         /* 저주 — 방패가 삭는다 */
   p.block += v; SND.block(); blockFx(p, v); syncPlayer();
 }
 function eblk(e, n) { const v = Math.max(0, n + (e.s.dex || 0)); e.block += v; SND.block(); blockFx(e, v); }
@@ -3487,7 +3637,7 @@ function startBattle(enemyIds, kind, opts) {
   const b = G.b = {
     p: { isPlayer: true, hp: run.hp, maxHp: run.maxHp, block: 0, s: {}, el: null },
     enemies: [], hand: [], drawPile: [], discardPile: [], exhaustPile: [],
-    energy: 0, maxEnergy: run.maxEnergy, turn: 0, played: 0, attacked: false,
+    energy: 0, maxEnergy: Math.max(1, run.maxEnergy - (curseTag('lessqi') ? 1 : 0)), turn: 0, played: 0, attacked: false,
     drawMod: 0, busy: true, over: false, kind: kind || 'normal', sel: null, curCard: null,
     skillUsed: false, freeTurn: false, halved: false, startHp: run.hp
   };
@@ -3513,6 +3663,7 @@ function startBattle(enemyIds, kind, opts) {
   renderBattle();
   SND.ambience(true, true);
   if (kind === 'boss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
+  if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
   syncAll();
@@ -3543,7 +3694,7 @@ async function startPlayerTurn() {
   await checkDeaths();
   if (b.over) return;
 
-  const n = 5 + (p.s.flow || 0) + b.drawMod;
+  const n = 5 + (p.s.flow || 0) + b.drawMod + (hasBoon('draw1') ? 1 : 0);
   b.drawMod = 0;
   b.fortuneRolled = false;
   drawCards(Math.max(0, n));
@@ -3753,6 +3904,7 @@ function winBattle() {
   run.hp = P().hp;
   run.stats.battles++;
   fire('battleEnd', b.kind);
+  curseTick();                                   /* 저주가 하루 저문다 */
   SND.victory();
   const kind = b.kind;
   if (kind === 'arena') { arenaWin(); return; }
@@ -4090,12 +4242,11 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div><div id="reliccnt"></div>
       <div id="potbar"></div>
+      <div id="cursechip"></div>
       <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
-      <button class="topbtn atop" id="arenabtn" title="대전투장">鬪<em></em></button>
+      <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리">場<em></em></button>
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
-      <button class="topbtn" id="shopbtn" title="상점">商<em></em></button>
-      <button class="topbtn box" id="boxbtn" title="특별 상자">匣<em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
       <button class="brush-btn ghost" id="menubtn" style="padding:6px 12px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c">≡</button>`;
     const rb = t.querySelector('#relicbar');
@@ -4131,11 +4282,11 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
-    t.querySelector('#arenabtn').onclick = () => openArena();
+    t.querySelector('#placebtn').onclick = () => showPlaces();
+    bindTip(t.querySelector('#placebtn'), () => `<b>터</b> — 갈 만한 자리<br>
+      상점 · 부적 뽑기 · 대전투장 · 장기 · 저주의 서당`);
     t.querySelector('#skilltop').onclick = () => openSkills();
     t.querySelector('#fusebtn').onclick = () => openFuse();
-    t.querySelector('#shopbtn').onclick = () => openShop();
-    t.querySelector('#boxbtn').onclick = () => openBoxes();
     const hb0 = t.querySelector('#healbtn');
     hb0.onclick = () => emergencyHeal();
     bindTip(hb0, () => `<b>응급 회복</b> — <span style="color:#e0bd63">골드 ${EMERGENCY_COST}</span><br>
@@ -4149,20 +4300,25 @@ function renderTop() {
   t.querySelector('#diav').textContent = run.dia || 0;
   t.querySelector('#floorv').textContent = run.act + '-' + run.floor;
   t.querySelector('#deckbtn').textContent = '덱 ' + run.deck.length;
-  const bb = t.querySelector('#boxbtn'), cur = (run.summons || 0) % 100;
-  const next = MILESTONES.find(m => m.at > cur);
-  bb.querySelector('em').textContent = next ? (next.at - cur) : '';
-  bb.title = '부적 뽑기 — 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
-  t.querySelector('#shopbtn').classList.toggle('busy', !!G.b);
-  bb.classList.toggle('busy', !!G.b);
   const fb = t.querySelector('#fusebtn'), ready = canFuse().length;
   fb.querySelector('em').textContent = ready || '';
   fb.classList.toggle('ready', ready > 0);
-  const ab = t.querySelector('#arenabtn'), ok = arenaReady();
-  ab.querySelector('em').textContent = ok ? '!' : '';
-  ab.classList.toggle('ready', ok);
-  ab.classList.toggle('locked', !ok);
-  ab.title = ok ? '대전투장 — 들어갈 수 있다' : `대전투장 — SSX급 부적 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`;
+  const pb2 = t.querySelector('#placebtn');
+  const marks = (arenaReady() ? 1 : 0) + (curseReady() && !run.curse ? 1 : 0);
+  pb2.querySelector('em').textContent = marks || '';
+  pb2.classList.toggle('busy', !!G.b);
+  pb2.classList.toggle('ready', marks > 0);
+  /* 저주 딱지 */
+  const cc = t.querySelector('#cursechip');
+  cc.innerHTML = '';
+  if (run.curse) {
+    const d = CURSES[run.curse.id];
+    const chip = el('div', 'curchip', `${d.g} 저주 <b>${run.curse.left}</b>판`);
+    bindTip(chip, () => `<b style="color:${d.col}">${d.n}</b><br>${d.cost}<br>
+      <span style="color:#ffd76a">${run.curse.left}판을 더 견디면 — ${d.boonTxt}</span>`);
+    chip.onclick = () => { tipHide(); openSchool(); };
+    cc.appendChild(chip);
+  }
   const sb = t.querySelector('#skilltop');
   sb.querySelector('em').textContent = (run.skills || []).length || '';
   sb.title = run.skill ? '비기 — ' + SKILLS[run.skill].n : '비기 없음';
@@ -4187,6 +4343,34 @@ function emergencyHeal() {
   FX.spark(innerWidth / 2, 90, 26, '80,220,170');
   toast(`숨을 돌렸다 — 체력을 모두 회복 (골드 ${EMERGENCY_COST})`);
   renderTop(); saveRun();
+}
+/* ── 터(場) — 갈 만한 자리를 한 곳에 모았다 ─────────────── */
+function showPlaces() {
+  if (!G.run) return;
+  const run = G.run;
+  SND.ui();
+  const arena = arenaReady(), school = curseReady() && !run.curse;
+  const p = modal(`<h2>터</h2>
+    <div class="hint">발길 닿는 곳 · 싸우는 중에는 갈 수 없는 자리도 있다</div>
+    <div class="placegrid" id="pl_grid"></div>
+    <button class="brush-btn ghost" id="pl_close" style="color:#e9dfc9;border-color:#8a7f68;margin-top:16px">돌아가기</button>`);
+  p.dataset.noauto = '1';
+  const grid = p.querySelector('#pl_grid');
+  const add = (g, n, d, cls, fn) => {
+    const t = el('div', 'placetile ' + (cls || ''), `<div class="pg2">${g}</div><b>${n}</b><small>${d}</small>`);
+    t.onclick = () => { closeTop(); fn(); };
+    grid.appendChild(t);
+  };
+  add('商', '떠돌이 상점', '부적 · 유물 · 물약을 산다', G.b ? 'lock' : '', () => openShop());
+  const cur = (run.summons || 0) % 100, next = MILESTONES.find(m => m.at > cur);
+  add('匣', '부적 뽑기', next ? `다음 보너스까지 ${next.at - cur}회` : '상자를 연다', G.b ? 'lock' : '', () => openBoxes());
+  add('鬪', '대전투장', arena ? '들어갈 수 있다' : `SSX급 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`,
+    arena ? 'hot' : 'lock', () => openArena());
+  add('將', '장기 상점', '노인과 한 판 · 이기면 상자', G.b ? 'lock' : '', () => openJanggi());
+  add('呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
+    : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
+    school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
+  p.querySelector('#pl_close').onclick = closeTop;
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -4323,6 +4507,7 @@ function syncEnemies() {
   }
 }
 function intentDesc(e, m) {
+  if (curseTag('blind')) return '<b style="color:#a89a80">보이지 않는다.</b>';
   if (e.s.stun) return '이번 턴 아무것도 하지 못한다.';
   const out = [];
   if (m.d) out.push(`<em style="color:#e2777a">${calcAtk(e, P(), m.d)}</em>의 피해를 ${(m.n || 1)}회 준다.`);
@@ -4770,7 +4955,8 @@ const CARD_FX = {
   vajra: 'blunt', shadowblade: 'slash2', mu: 'void', seal: 'talisman', healtalis: 'talisman',
   skyweb: 'wind', cleaver: 'slash2', purgatory: 'fire', kalpa: 'fire', genesis: 'void',
   sandkick: 'wind', emberseal: 'fire', scatterbomb: 'fire', siphon: 'void', quickdraw: 'slash',
-  windwheel: 'spin', soulbind: 'talisman', wolffang: 'claw', stormfall: 'lightning'
+  windwheel: 'spin', soulbind: 'talisman', wolffang: 'claw', stormfall: 'lightning',
+  needle: 'pierce', twinfang: 'claw', graspwind: 'wind', venomfog: 'poison', janggi: 'void'
 };
 /* 이름을 크게 띄울 만한 카드 (희귀 이상이거나 무거운 것) */
 function worthBanner(card) {
@@ -4956,6 +5142,7 @@ function newRun(asc) {
     act: 1, floor: 0, rewardCut: 0,
     map: null, mapCur: -1, mapDone: [], bossPick: null,
     skills: [], skill: null,
+    curse: null, boons: [], curseHp: 0,
     arena: { best: 0, cleared: 0 }, arenaRound: 1, arenaDia: 0, arenaHp: null,
     stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
@@ -5147,11 +5334,16 @@ function showRewards(kind) {
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * vm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * vm);
-  const items = [{ ic: '金', t: `골드 ${gold}`, s: '주머니가 무거워진다',
-      act: () => { run.gold += gold; run.stats.gold += gold; SND.coinRain(gold / 12);
+  const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
+  const items = [{ ic: '金', t: broke ? '골드 (재가 된다)' : `골드 ${gold}`,
+      s: broke ? '손에 닿자마자 흩어진다' : '주머니가 무거워진다',
+      act: () => { if (broke) { SND.err(); floatText(P() || { el: null }, '', ''); toast('탐욕의 저주 — 골드가 재가 되었다'); return; }
+                   run.gold += gold; run.stats.gold += gold; SND.coinRain(gold / 12);
                    flyGet('金 +' + gold, '#ffd76a', '#goldv'); } },
-    { ic: '玉', t: `다이아 ${dia}`, s: '상자를 여는 값',
-      act: () => { run.dia = (run.dia || 0) + dia; SND.coinRain(dia / 20);
+    { ic: '玉', t: broke ? '다이아 (재가 된다)' : `다이아 ${dia}`,
+      s: broke ? '손에 닿자마자 흩어진다' : '상자를 여는 값',
+      act: () => { if (broke) { SND.err(); toast('탐욕의 저주 — 다이아가 재가 되었다'); return; }
+                   run.dia = (run.dia || 0) + dia; SND.coinRain(dia / 20);
                    flyGet('玉 +' + dia, '#6fd0e8', '#diav'); } }];
   const potChance = kind === 'elite' ? .62 : kind === 'boss' ? 1 : .42;
   if (rnd() < potChance && run.potions.length < run.potSlots) {
@@ -6216,6 +6408,191 @@ function showShop() {
   draw();
 }
 
+/* ══════════════════════════════════════════════════════════
+   저주의 서당(咀呪書堂)
+   ──────────────────────────────────────────────────────────
+   미친 노인이 글을 가르친다는 서당. 실은 저주를 판다.
+   저주를 받으면 스무 판 동안 값을 치르고, 견뎌 내면 그 값이
+   영영 힘으로 남는다. 이레에 한 번만 문을 연다.
+   ══════════════════════════════════════════════════════════ */
+const CURSE_ROUNDS = 20;                       /* 견뎌야 하는 전투 수 */
+const CURSE_COOLDOWN = 7 * 24 * 3600 * 1000;   /* 이레에 한 번 */
+const CURSES = {};
+function defCurse(o) { CURSES[o.id] = o; return o; }
+
+defCurse({ id: 'oldman', n: '미친 노인의 저주', g: '狂', col: '#a83a5a',
+  tags: ['relichalf', 'lessqi', 'weakblock'],
+  cost: '유물이 <b>한 번 걸러 한 번만</b> 듣는다 (효력 −50%)<br>기가 <b>1 줄어든다</b><br>얻는 방어도가 <b>35% 깎인다</b>',
+  boon: 'atk80', boonTxt: '공격력이 <b>영구히 80% 오른다</b>',
+  say: '"힘을 원하나. 그럼 가진 걸 다 내놓게."' });
+
+defCurse({ id: 'hollow', n: '텅 빈 자의 저주', g: '空', col: '#4a6b8a',
+  tags: ['lesshp'],
+  cost: '최대 체력이 <b>40% 깎인다</b>',
+  boon: 'hp60', boonTxt: '최대 체력이 <b>영구히 60% 오른다</b>',
+  say: '"비워야 채워지는 법일세."' });
+
+defCurse({ id: 'blind', n: '눈먼 자의 저주', g: '盲', col: '#5c5a68',
+  tags: ['blind'],
+  cost: '요괴의 <b>다음 수가 보이지 않는다</b>',
+  boon: 'draw1', boonTxt: '매 턴 카드를 <b>영구히 한 장 더</b> 뽑는다',
+  say: '"눈을 감으면 손이 밝아지지."' });
+
+defCurse({ id: 'greed', n: '탐욕의 저주', g: '貪', col: '#8a6b1a',
+  tags: ['nogold'],
+  cost: '<b>골드와 다이아를 한 푼도 얻지 못한다</b>',
+  boon: 'str5', boonTxt: '전투를 시작할 때 <b>영구히 힘 4·민첩 4</b>를 얻는다',
+  say: '"돈이 무슨 소용인가. 손에 쥔 게 힘인데."' });
+
+defCurse({ id: 'ironrule', n: '무쇠의 저주', g: '鐵', col: '#4a5a4a',
+  tags: ['costup'],
+  cost: '값이 있는 부적의 <b>기 소모가 1 늘어난다</b>',
+  boon: 'qi3', boonTxt: '기의 최대치가 <b>영구히 3 오른다</b>',
+  say: '"무거운 걸 들어야 팔이 굵어지네."' });
+
+const BOON_TXT = {
+  atk80: '공격력 +80%', hp60: '최대 체력 +60%', draw1: '매 턴 카드 +1',
+  str5: '전투 시작 시 힘 4·민첩 4', qi3: '기 최대치 +3'
+};
+/* 지금 걸린 저주가 이 표를 지녔는가 */
+function curseTag(t) {
+  const c = G.run && G.run.curse;
+  return !!(c && c.left > 0 && CURSES[c.id] && CURSES[c.id].tags.indexOf(t) >= 0);
+}
+function hasBoon(b) { return !!(G.run && G.run.boons && G.run.boons.indexOf(b) >= 0); }
+function curseLeft() { const c = G.run && G.run.curse; return c ? c.left : 0; }
+function curseReady() { return Date.now() - (META.curseAt || 0) >= CURSE_COOLDOWN; }
+function curseWaitDays() { return Math.ceil((CURSE_COOLDOWN - (Date.now() - (META.curseAt || 0))) / (24 * 3600 * 1000)); }
+
+/* 저주를 받는다 */
+function takeCurse(id) {
+  const run = G.run, d = CURSES[id];
+  if (!d || run.curse) return;
+  run.curse = { id, left: CURSE_ROUNDS };
+  META.curseAt = Date.now(); saveMeta();
+  if (d.tags.indexOf('lesshp') >= 0) {
+    run.curseHp = run.maxHp;
+    run.maxHp = Math.max(20, Math.round(run.maxHp * .6));
+    run.hp = Math.min(run.hp, run.maxHp);
+  }
+  SND.boss(); SND.err();
+  screenFlash('rgba(120,20,60,.55)', 900); shake(true);
+  FX.burst(innerWidth / 2, innerHeight / 2, 60, '140,30,70', 7, 60, 6);
+  toast(`${d.n} — ${CURSE_ROUNDS}판을 견뎌라`);
+  saveRun(); renderTop();
+}
+/* 전투가 끝날 때마다 하루가 간다 */
+function curseTick() {
+  const run = G.run; if (!run || !run.curse || run.curse.left <= 0) return;
+  run.curse.left--;
+  const d = CURSES[run.curse.id];
+  if (run.curse.left > 0) {
+    if (run.curse.left <= 3) { SND.heartbeat(); toast(`저주가 풀리기까지 ${run.curse.left}판`); }
+    return;
+  }
+  /* 견뎌 냈다 */
+  run.boons = run.boons || [];
+  if (run.boons.indexOf(d.boon) < 0) run.boons.push(d.boon);
+  if (d.tags.indexOf('lesshp') >= 0 && run.curseHp) {
+    run.maxHp = Math.round(run.curseHp * 1.6);
+    run.hp = Math.min(run.maxHp, run.hp + Math.round(run.curseHp * .6));
+    run.curseHp = 0;
+  }
+  else if (d.boon === 'hp60') { run.maxHp = Math.round(run.maxHp * 1.6); }
+  if (d.boon === 'qi3') run.maxEnergy += 3;
+  run.curse = null;
+  SND.unlock(); SND.gong();
+  screenFlash('rgba(255,220,140,.6)', 1300); shake(true);
+  FX.gold(innerWidth / 2, innerHeight * .42, 80);
+  flash('저주를 이겨 냈다');
+  setTimeout(() => {
+    const p = modal(`<h2>저 주 를 이 겨 냈 다</h2>
+      <div class="hint">${d.n} · ${CURSE_ROUNDS}판을 버텼다</div>
+      <div class="boongot"><div class="bg2" style="--cc:${d.col}">${d.g}</div>
+        <div class="bt"><b>${BOON_TXT[d.boon]}</b><span>${d.boonTxt}</span>
+        <span style="color:#9a8d74">이 힘은 이 모험이 끝날 때까지 남는다</span></div></div>
+      <button class="brush-btn" id="bn_ok">받는다</button>`);
+    p.dataset.noauto = '1';
+    p.querySelector('#bn_ok').onclick = closeTop;
+  }, 700);
+  saveRun(); renderTop();
+}
+/* ── 서당 화면 ──────────────────────────────────────────── */
+function openSchool() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showSchool();
+}
+function showSchool() {
+  G.scene = 'school';
+  const run = G.run;
+  const cur = run.curse ? CURSES[run.curse.id] : null;
+  const ready = curseReady();
+  const p = overlay(`<div class="school">
+    <div class="schead">
+      <button class="gback" id="sc_back">←</button>
+      <h2>저주의 서당</h2>
+      <div class="scnote">咀 呪 書 堂</div>
+    </div>
+    <div class="scbody">
+      <div class="scside">
+        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#e8c0c8,#7a2a3a);color:#1a0508;border-color:#c05a70">狂</div>
+          <div class="jsay">${cur ? '"아직 값을 다 치르지 않았네."'
+            : ready ? '"글을 배우러 왔나? 여긴 그런 데가 아닐세."'
+            : `"이레에 한 번일세. ${curseWaitDays()}일 뒤에 오게."`}</div></div>
+        <div class="note"><p>
+          저주를 받으면 <b style="color:#ff8a9a">스무 판</b> 동안 값을 치른다.<br>
+          그 스무 판을 견디면 값이 <b style="color:#ffd76a">영영 힘으로</b> 남는다.<br>
+          <span style="color:#9a8d74">쓰러져 되돌아가도 판 수는 줄지 않는다.</span>
+        </p></div>
+        ${cur ? `<div class="note curon"><p><b style="color:${cur.col}">${cur.g} ${cur.n}</b><br>
+          남은 판 <b style="color:#ff8a9a;font-size:19px">${run.curse.left}</b> / ${CURSE_ROUNDS}<br>
+          <span style="color:#c3ad80">${cur.boonTxt}</span></p></div>` : ''}
+        ${(run.boons || []).length ? `<div class="note"><p><b style="color:#ffd76a">이겨 낸 저주</b><br>
+          ${run.boons.map(b => '· ' + BOON_TXT[b]).join('<br>')}</p></div>` : ''}
+        <button class="brush-btn red" id="sc_leave" style="margin-top:auto">떠난다</button>
+      </div>
+      <div class="scmain">
+        <div class="schint">${cur ? '이미 하나를 짊어졌다. 한 번에 하나뿐이다.'
+          : ready ? '<b style="color:#ff8a9a">하나만 고를 수 있다.</b> 무르기는 없다.'
+          : `<b style="color:#8a7a6a">이레에 한 번만 문을 연다 — ${curseWaitDays()}일 남았다</b>`}</div>
+        <div class="curgrid" id="sc_grid"></div>
+      </div>
+    </div>
+  </div>`, 'schoolpanel');
+
+  const grid = p.querySelector('#sc_grid');
+  for (const id in CURSES) {
+    const d = CURSES[id];
+    const own = (run.boons || []).indexOf(d.boon) >= 0;
+    const active = cur && cur.id === id;
+    const can = !cur && ready && !own;
+    const n = el('div', 'curtile' + (active ? ' on' : '') + (own ? ' done' : '') + (can ? ' can' : ''),
+      `<div class="cg" style="--cc:${d.col}">${d.g}</div>
+       <div class="cn">${d.n}</div>
+       <div class="csay">${d.say}</div>
+       <div class="crow bad"><em>대가</em><span>${d.cost}</span></div>
+       <div class="crow good"><em>${CURSE_ROUNDS}판 뒤</em><span>${d.boonTxt}</span></div>
+       <div class="ctag">${own ? '이미 이겨 냈다' : active ? `견디는 중 · ${run.curse.left}판` : can ? '받는다' : '지금은 받을 수 없다'}</div>`);
+    if (can) n.onclick = () => {
+      const q = modal(`<h2>${d.n}</h2>
+        <div class="hint" style="max-width:420px">${d.say}</div>
+        <div class="curwarn"><b>${CURSE_ROUNDS}판</b>을 견뎌야 한다. 그 전에는 풀 수 없다.<br>
+          <span style="color:#ff8a9a">${d.cost.replace(/<br>/g, ' · ')}</span></div>
+        <div style="display:flex;gap:10px">
+          <button class="brush-btn red" id="cf_yes">받겠다</button>
+          <button class="brush-btn ghost" id="cf_no" style="color:#e9dfc9;border-color:#8a7f68">그만두겠다</button>
+        </div>`);
+      q.dataset.noauto = '1';
+      q.querySelector('#cf_no').onclick = closeTop;
+      q.querySelector('#cf_yes').onclick = () => { closeTop(); takeCurse(id); closeOverlay(); showSchool(); };
+    };
+    grid.appendChild(n);
+  }
+  const leave = () => { closeOverlay(); saveRun(); showMap(); };
+  p.querySelector('#sc_back').onclick = leave;
+  p.querySelector('#sc_leave').onclick = leave;
+}
+
 /* ── 제5·6막의 배려 ───────────────────────────────────────
    여기서부터는 S급 없이 넘기 어렵다. 엘리트가 이따금 내어 준다.
    ────────────────────────────────────────────────────────── */
@@ -7149,12 +7526,9 @@ function showMenu() {
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
       <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (1막 클리어)'}</button>
+      <button class="brush-btn" id="m_place">터 — 상점 · 뽑기 · 대전투장 · 장기 · 서당</button>
       <button class="brush-btn" id="m_set">설정</button>
-      <button class="brush-btn" id="m_arena">대전투장</button>
-      <button class="brush-btn" id="m_janggi">장기 상점</button>
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
-      <button class="brush-btn" id="m_shop">상점 가기</button>
-      <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
@@ -7169,11 +7543,8 @@ function showMenu() {
   };
   p.querySelector('#m_set').onclick = () => showSettings();
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
-  p.querySelector('#m_arena').onclick = () => { closeTop(); openArena(); };
-  p.querySelector('#m_janggi').onclick = () => { closeTop(); openJanggi(); };
+  p.querySelector('#m_place').onclick = () => { closeTop(); showPlaces(); };
   p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
-  p.querySelector('#m_shop').onclick = () => { closeTop(); openShop(); };
-  p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
   p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = () => showHelp();
   p.querySelector('#m_quit').onclick = () => { autoStop(); if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
