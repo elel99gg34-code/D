@@ -104,21 +104,27 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   transform:rotate(-6deg);opacity:.9;box-shadow:0 4px 14px rgba(0,0,0,.2);line-height:1}
 
 /* ---------- 상단바 ---------- */
-#topbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;gap:16px;
+#topbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;gap:12px;
   padding:0 16px;background:linear-gradient(rgba(23,19,15,.90),rgba(23,19,15,.78));color:#eee3cc;z-index:12;
   border-bottom:1px solid rgba(200,175,125,.22)}
 #topbar .grp{display:flex;align-items:center;gap:7px;font-size:15px}
 #topbar .lbl{font-size:11px;color:#a89a80;letter-spacing:.1em}
-.hpbar{position:relative;width:150px;height:16px;background:#2e2620;border:1px solid #554a3c;border-radius:2px;overflow:hidden}
+.hpbar{position:relative;width:126px;height:16px;background:#2e2620;border:1px solid #554a3c;border-radius:2px;overflow:hidden}
 .hpbar i{position:absolute;inset:0;width:0;background:linear-gradient(#c14247,#8e2226);transition:width .4s ease}
 .hpbar span{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;color:#fff;text-shadow:0 1px 2px #000;letter-spacing:.02em}
+/* 막대기는 보이지 않는다 — 휠이나 끌기로 넘긴다 */
 #relicbar{display:flex;gap:5px;flex:1 1 0;min-width:60px;flex-wrap:nowrap;align-items:center;
-  overflow-x:auto;overflow-y:hidden;height:36px;scrollbar-width:thin}
-#relicbar::-webkit-scrollbar{height:4px}
-#relicbar::-webkit-scrollbar-thumb{background:rgba(220,200,160,.35);border-radius:2px}
+  overflow-x:auto;overflow-y:hidden;height:36px;scrollbar-width:none;-ms-overflow-style:none;
+  mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent);
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent)}
+#relicbar.fits{mask-image:none;-webkit-mask-image:none}
+#relicbar::-webkit-scrollbar{display:none;width:0;height:0}
 .relic,.topbtn,#potbar,#topbar .grp,#deckbtn,#menubtn{flex:none}
 .relic{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#efe4cb;color:#2a2219;
   font-size:15px;border:1.5px solid var(--gold);cursor:help;transition:.15s;line-height:1}
+/* 많이 모았으면 조금 작게 그려 더 많이 보이게 한다 */
+#relicbar.dense .relic{width:25px;height:25px;font-size:12.5px;border-width:1.2px}
+
 .relic:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 4px 10px rgba(0,0,0,.4)}
 .relic.new{animation:relicPop .6s ease}
 @keyframes relicPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.4) rotate(10deg)}100%{transform:none}}
@@ -152,11 +158,11 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn em:empty{display:none}
 .topbtn.empty{opacity:.42;box-shadow:none}
 .topbtn.busy{opacity:.3;cursor:default;transform:none!important}
-#potbar{display:flex;gap:6px}
+#potbar{display:flex;gap:5px;align-items:center}
 .potion{width:30px;height:30px;border-radius:4px;display:grid;place-items:center;font-size:14px;color:#2a2219;
   background:#efe4cb;border:1.5px solid var(--jade);cursor:pointer;transition:.15s;line-height:1}
 .potion:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(0,0,0,.4)}
-.potion.empty{background:rgba(255,255,255,.06);border:1.5px dashed #6a5f4e;cursor:default}
+.potion.empty{width:15px;background:rgba(255,255,255,.05);border:1.5px dashed #5f5545;cursor:default;border-radius:3px}
 .potion.empty:hover{transform:none;box-shadow:none}
 
 /* ---------- 전투 ---------- */
@@ -990,6 +996,23 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 #skillbtn.used,#skillbtn.none{filter:grayscale(.85);opacity:.42;box-shadow:none;animation:none;cursor:default}
 #skillbtn.used::after{content:'사용함';position:absolute;font-size:10px;color:#ffb3c2;bottom:-15px;letter-spacing:.1em}
 @media(max-width:1100px){#skillbtn{left:8px;width:58px;height:58px}#skillbtn b{font-size:22px}}
+/* 좁은 화면에서는 상단바를 접는다 — 글자 딱지를 접고, 빈 물약 칸을 숨긴다 */
+@media(max-width:1220px){
+  #topbar{gap:9px;padding:0 10px}
+  #topbar .lbl{display:none}
+  .hpbar{width:104px}
+  .potion.empty{display:none}
+  #relicbar{min-width:40px}
+}
+@media(max-width:1040px){
+  #topbar{gap:7px}
+  .hpbar{width:88px}
+  #topbar .grp{font-size:13px}
+  .topbtn{width:30px;height:30px;font-size:14px}
+  #deckbtn{padding:5px 9px!important;font-size:12px!important}
+  #relicbar{height:32px}
+  #relicbar .relic{width:24px;height:24px;font-size:12px}
+}
 
 .skillgrid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:min(1040px,94vw);
   align-items:stretch}
@@ -1026,7 +1049,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .relic.g-rare{border-color:#b8912f;box-shadow:0 0 9px rgba(184,145,47,.6)}
 .relic.g-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
 .relic.g-ssx{border-color:#ff2d55;animation:ssxGlow 1.25s ease-in-out infinite;background:#ffe6ea}
-#relicbar .cnt{align-self:center;font-size:11px;color:#a89a80;margin-left:2px;letter-spacing:.04em}
+#reliccnt{flex:none;display:flex;align-items:center}
+#reliccnt .cnt{font-size:11px;color:#a89a80;letter-spacing:.04em;cursor:pointer;padding:3px 6px;border-radius:4px;
+  border:1px solid rgba(200,175,125,.28);transition:.15s;white-space:nowrap}
+#reliccnt .cnt:hover{color:#f0e3c4;border-color:var(--gold);background:rgba(157,124,46,.2)}
 #relicbar .cnt.full{color:#e0a06a}
 
 .relicgrid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:min(860px,92vw)}
@@ -3996,7 +4022,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">골드</span><b id="goldv" style="color:#e0bd63"></b></div>
       <div class="grp"><span class="lbl">다이아</span><b id="diav" style="color:#6fd0e8"></b></div>
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
-      <div id="relicbar"></div>
+      <div id="relicbar"></div><div id="reliccnt"></div>
       <div id="potbar"></div>
       <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
       <button class="topbtn atop" id="arenabtn" title="대전투장">鬪<em></em></button>
@@ -4015,12 +4041,17 @@ function renderTop() {
       n.onclick = () => { tipHide(); openFuse(); };
       rb.appendChild(n);
     }
+    rb.classList.toggle('dense', run.relics.length >= 6);
+    /* 휠을 굴리면 가로로 넘어간다 */
+    rb.onwheel = e => { if (rb.scrollWidth <= rb.clientWidth) return;
+      e.preventDefault(); rb.scrollLeft += (e.deltaY || e.deltaX); };
+    const cntBox = t.querySelector('#reliccnt');
     const cnt = el('div', 'cnt' + (run.relics.length >= RELIC_SLOTS ? ' full' : ''),
       run.relics.length + '/' + RELIC_SLOTS);
     bindTip(cnt, () => `유물은 ${RELIC_SLOTS}개까지 지닐 수 있다<br>눌러서 <b>조합</b>하기`);
     cnt.style.cursor = 'pointer';
     cnt.onclick = () => { tipHide(); openFuse(); };
-    rb.appendChild(cnt);
+    cntBox.appendChild(cnt);
     const pb = t.querySelector('#potbar');
     for (let i = 0; i < run.potSlots && i < 8; i++) {
       const id = run.potions[i];
@@ -4069,6 +4100,8 @@ function renderTop() {
   const sb = t.querySelector('#skilltop');
   sb.querySelector('em').textContent = (run.skills || []).length || '';
   sb.title = run.skill ? '비기 — ' + SKILLS[run.skill].n : '비기 없음';
+  const rb2 = t.querySelector('#relicbar');
+  if (rb2) rb2.classList.toggle('fits', rb2.scrollWidth <= rb2.clientWidth + 1);
   const hb = t.querySelector('#healbtn');
   const show = run.hp <= EMERGENCY_HP && run.hp < run.maxHp;
   hb.classList.toggle('hide', !show);
