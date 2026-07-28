@@ -4083,7 +4083,17 @@ function autoOverlay(panel) {
 /* 지도에서 다음 갈림길을 고른다 */
 function autoMapStep() {
   const run = G.run, ids = availableNodes();
-  if (!ids.length) return;
+  if (!ids.length) {
+    /* 갈 곳이 없다 — 보스를 넘고도 다음 막으로 넘어가지 못한 자리.
+       사람이라면 길이 막힌 지도를 보게 되므로, 여기서 끌어내 준다. */
+    AUTO.lost = (AUTO.lost || 0) + 1;
+    if (AUTO.lost > 10) {
+      AUTO.lost = 0;
+      if (run.act < LAST_ACT) nextAct(); else victory();
+    }
+    return;
+  }
+  AUTO.lost = 0;
   const ratio = run.hp / Math.max(1, run.maxHp);
   const W = { rest: ratio < .72 ? 120 : 26, treasure: 78, elite: ratio > .82 ? 60 : 12,
               shop: 44, event: 46, battle: 52, boss: 200, special: 24, janggi: 24 };
