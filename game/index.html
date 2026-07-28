@@ -80,6 +80,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .brush-btn:hover{background:#2a2219;transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,.3)}
 .brush-btn:active{transform:translateY(0);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .brush-btn.red{background:var(--red)}.brush-btn.red:hover{background:var(--red2)}
+.brush-btn.gold{background:linear-gradient(120deg,#c8a24a,#9b7526);color:#2a1c06;border-color:#e8c86a}
+.brush-btn.gold:hover{background:linear-gradient(120deg,#e2bc63,#b48c31)}
+.brush-btn.gold:disabled{background:#6b6455;color:#bdb29a;border-color:#6b6455;cursor:default;opacity:.75}
+.rewbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .brush-btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);box-shadow:none}
 .brush-btn.ghost:hover{background:rgba(23,19,15,.08)}
 .brush-btn:disabled{opacity:.35;cursor:default;transform:none!important;box-shadow:none}
@@ -130,6 +134,15 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn.fuse:hover{background:rgba(190,40,80,.45)}
 .topbtn.fuse.ready{animation:ssxGlow 1.4s ease-in-out infinite}
 .topbtn.box:hover{background:rgba(47,127,153,.5)}
+/* 응급 회복 — 체력이 바닥나면 나타난다 */
+.topbtn.heal{color:#dcffef;background:rgba(30,120,90,.34);border-color:#4fd3a0;
+  animation:healPulse 1.5s ease-in-out infinite}
+.topbtn.heal:hover{background:rgba(40,160,120,.6)}
+.topbtn.heal em{background:#c8a24a;color:#2a1c06}
+.topbtn.heal.poor{border-color:#8a7f68;color:#bdb29a;background:rgba(60,56,46,.4);animation:none;opacity:.55}
+.topbtn.heal.poor em{background:#7a7263;color:#e3dcc9}
+.topbtn.hide{display:none}
+@keyframes healPulse{50%{box-shadow:0 0 18px rgba(80,220,170,.85);border-color:#9bffd8}}
 .topbtn em{position:absolute;right:-5px;top:-5px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;
   background:var(--red);color:#fff;font-size:10px;font-style:normal;display:grid;place-items:center;line-height:1}
 .topbtn em:empty{display:none}
@@ -1983,6 +1996,108 @@ defCard({ id: 'genesis', n: '천지개벽', g: '闢', type: 'skill', rar: 'unkno
     drawCards(c.v.n); energy(c.v.e); syncAll();
   } });
 
+/* ══ 더 늘린 부적들 ═══════════════════════════════════════ */
+/* ---------- 3등급 ---------- */
+defCard({ id: 'sandkick', n: '흙뿌리기', g: '砂', type: 'attack', rar: 'common', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 5 : 3, k: u ? 2 : 1 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>약화</b> ${v.k}를 부여한다.`,
+  play: c => { atk(c.t, c.v.d); st(c.t, 'weak', c.v.k); } });
+
+defCard({ id: 'spiralstep', n: '나선보', g: '螺', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ b: u ? 7 : 5 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 카드를 1장 뽑는다.`,
+  play: c => { blk(c.v.b); drawCards(1); } });
+
+defCard({ id: 'emberseal', n: '화부', g: '焰', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 10 : 7, x: u ? 7 : 5 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 대상이 <b>중독</b> 상태면 <em>${v.x}</em>의 피해를 더 준다.`,
+  play: c => { atk(c.t, c.v.d); if (c.t.s.poison) atk(c.t, c.v.x); } });
+
+defCard({ id: 'warcry', n: '기합성', g: '喝', type: 'skill', rar: 'common', cost: 0, exhaust: true,
+  v: u => ({ x: u ? 2 : 1 }),
+  txt: v => `<b>힘</b> ${v.x}을 얻는다. 소멸.`,
+  play: c => { st(P(), 'str', c.v.x); SND.gong(); } });
+
+/* ---------- 2등급 ---------- */
+defCard({ id: 'counterstance', n: '반격세', g: '返', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 8 : 5, t: u ? 5 : 3 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.t}를 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'thorns', c.v.t); } });
+
+defCard({ id: 'scatterbomb', n: '산화탄', g: '散', type: 'attack', rar: 'uncommon', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 13 : 9, k: u ? 2 : 1 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b> ${v.k}을 부여한다.`,
+  play: c => { for (const e of alive()) { atk(e, c.v.d); st(e, 'vuln', c.v.k); } shake(); } });
+
+defCard({ id: 'siphon', n: '정기 흡수', g: '精', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 9 : 6 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고, 들어간 피해의 절반만큼 체력을 회복한다.`,
+  play: c => { const hp = atk(c.t, c.v.d); if (hp > 0) heal(Math.ceil(hp / 2)); } });
+
+defCard({ id: 'quickdraw', n: '발도', g: '拔', type: 'attack', rar: 'uncommon', cost: 0, tgt: 'enemy', exhaust: true,
+  v: u => ({ d: u ? 12 : 8 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 소멸.`,
+  play: c => atk(c.t, c.v.d) });
+
+/* ---------- 1등급 ---------- */
+defCard({ id: 'windwheel', n: '풍륜참', g: '車', type: 'attack', rar: 'rare', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 10 : 7 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 두 번 준다.`,
+  play: async c => {
+    for (const e of alive()) atk(e, c.v.d);
+    await wait(180);
+    for (const e of alive()) atk(e, c.v.d);
+    shake();
+  } });
+
+defCard({ id: 'soulbind', n: '결박부', g: '縛', type: 'skill', rar: 'rare', cost: 1, tgt: 'enemy', exhaust: true,
+  v: u => ({ k: u ? 4 : 3 }),
+  txt: v => `대상에게 <b>무력</b>을 부여해 다음 행동을 막고, <b>취약</b>과 <b>약화</b>를 각각 ${v.k} 부여한다. 소멸.`,
+  play: c => { st(c.t, 'stun', 1); st(c.t, 'vuln', c.v.k); st(c.t, 'weak', c.v.k); SND.bell(); } });
+
+defCard({ id: 'scaleoflife', n: '천칭', g: '秤', type: 'skill', rar: 'rare', cost: 2,
+  v: u => ({ r: u ? 1 : .6 }),
+  txt: (v, u) => `잃은 체력의 ${u ? '전부' : '60%'}만큼 <i>방어도</i>를 얻는다.`,
+  play: c => { const p = P(); const lost = Math.max(0, p.maxHp - p.hp);
+    blk(Math.max(3, Math.floor(lost * c.v.r))); SND.bell(); } });
+
+/* ---------- S급 ---------- */
+defCard({ id: 'wolffang', n: '혈랑아', g: '狼', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 11 : 8, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 세 번 준다. 매 타격마다 <b>힘</b> 1을 얻는다.`,
+  play: async c => {
+    for (let i = 0; i < 3; i++) {
+      if (!alive().length) break;
+      atk(c.t && c.t.hp > 0 ? c.t : alive()[0], c.v.d);
+      st(P(), 'str', 1);
+      await wait(150);
+    }
+  } });
+
+defCard({ id: 'dragonpillar', n: '반룡주', g: '龍', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ b: u ? 11 : 8, x: u ? 2 : 1 }),
+  txt: v => `매 턴 시작 시 <i>${v.b}</i>의 방어도와 <b>힘</b> ${v.x}을 얻는다.`,
+  play: c => { st(P(), 'turnblock', c.v.b); st(P(), 'rage', c.v.x); SND.power(); flash('반룡주'); } });
+
+/* ---------- SSX급 ---------- */
+defCard({ id: 'stormfall', n: '만뢰붕락', g: '霆', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
+  v: u => ({ d: u ? 20 : 14 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 세 번 준다. 마지막 타격은 <b>방어도를 무시한다</b>. 소멸.`,
+  play: async c => {
+    skillBanner('萬 雷 崩 落', true);
+    SND.thunder();
+    for (let i = 0; i < 3; i++) {
+      const last = i === 2;
+      for (const e of alive()) {
+        if (last) { impact('lightning', e); pure(e, c.v.d); }
+        else atk(e, c.v.d, { fx: 'lightning' });
+      }
+      shake(last);
+      if (!last) { await wait(220); SND.thunder(); }
+    }
+    syncAll();
+  } });
+
 /* ---------- 저주 ---------- */
 defCard({ id: 'curse_grudge', n: '원귀의 원한', g: '怨', type: 'curse', rar: 'curse', cost: -2,
   v: () => ({}), txt: () => `사용할 수 없다. 손에 있는 채로 턴을 마치면 체력을 2 잃는다.`, play: () => {} });
@@ -3321,7 +3436,7 @@ function winBattle() {
    같은 등급 안에서만 상황(마무리 일격·받을 피해·심법)이 순서를 가른다.
    ══════════════════════════════════════════════════════════ */
 const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0, rewLeft: -1, rewStall: 0, wait: 0 };
-const AUTO_PACE = { slow: 640, normal: 300, fast: 90 };
+const AUTO_PACE = { slow: 1500, normal: 850, fast: 380 };
 const autoDelay = () => AUTO_PACE[OPT.autoPace] || 300;
 /* 등급 서열 — 이 값이 곧 우선순위다 */
 const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, special: 4, ssx: 5, unknown: 6 };
@@ -3362,18 +3477,21 @@ function autoScore(c) {
   if (d.tgt === 'enemy' && !target) target = foes[0];
   return { c, target: d.tgt === 'enemy' ? target : null, score: s + clamp(t, -400, 400) };
 }
-/* 위급할 때만 물약을 딴다 */
+/* 물약은 아낀다 — 죽기 직전에, 목숨을 건질 물약만, 한 판에 한두 병까지 */
 function autoPotionIdx() {
-  const run = G.run, p = P();
+  const run = G.run, b = G.b, p = P();
   if (!run.potions.length) return -1;
+  const cap = (b.kind === 'boss' || b.kind === 'elite' || b.kind === 'arena') ? 2 : 1;
+  if ((b.autoPots || 0) >= cap) return -1;
   const through = Math.max(0, incomingTotal() - p.block);
-  const danger = p.hp <= p.maxHp * .32 || through >= p.hp;
-  if (!danger) return -1;
-  for (const id of ['heal', 'iron', 'smoke', 'fire', 'qi']) {
+  const dying = p.hp <= p.maxHp * .25 || through >= p.hp;
+  if (!dying) return -1;
+  /* 목숨을 건지는 물약만 쓴다. 없으면 그냥 아낀다 */
+  for (const id of ['heal', 'iron']) {
     const i = run.potions.indexOf(id);
     if (i >= 0) return i;
   }
-  return 0;
+  return -1;
 }
 function autoSkillWorth() {
   const b = G.b, p = P();
@@ -3391,6 +3509,7 @@ function autoBattleStep() {
       const pd = POTIONS[run.potions[i]];
       const foes = alive();
       if (!(pd.tgt === 'enemy' && !foes.length)) {
+        b.autoPots = (b.autoPots || 0) + 1;
         usePotion(i, pd.tgt === 'enemy' ? foes.slice().sort((a, z) => a.hp - z.hp)[0] : null);
         return;
       }
@@ -3627,6 +3746,7 @@ function renderTop() {
       <div class="grp"><span class="lbl">층</span><b id="floorv"></b></div>
       <div id="relicbar"></div>
       <div id="potbar"></div>
+      <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
       <button class="topbtn arena" id="arenabtn" title="대전투장">鬪<em></em></button>
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
@@ -3667,6 +3787,12 @@ function renderTop() {
     t.querySelector('#fusebtn').onclick = () => openFuse();
     t.querySelector('#shopbtn').onclick = () => openShop();
     t.querySelector('#boxbtn').onclick = () => openBoxes();
+    const hb0 = t.querySelector('#healbtn');
+    hb0.onclick = () => emergencyHeal();
+    bindTip(hb0, () => `<b>응급 회복</b> — <span style="color:#e0bd63">골드 ${EMERGENCY_COST}</span><br>
+      체력을 <b>모두</b> 되돌린다.<br>
+      <span style="color:#9a8d74">체력이 ${EMERGENCY_HP} 이하로 떨어졌을 때만 나타난다 · 싸우는 중에도 쓸 수 있다</span>` +
+      (G.run && G.run.gold < EMERGENCY_COST ? '<br><b style="color:#e2777a">골드가 모자란다</b>' : ''));
   }
   t.querySelector('.hpbar i').style.width = (run.hp / run.maxHp * 100) + '%';
   t.querySelector('.hpbar span').textContent = run.hp + ' / ' + run.maxHp;
@@ -3691,6 +3817,25 @@ function renderTop() {
   const sb = t.querySelector('#skilltop');
   sb.querySelector('em').textContent = (run.skills || []).length || '';
   sb.title = run.skill ? '비기 — ' + SKILLS[run.skill].n : '비기 없음';
+  const hb = t.querySelector('#healbtn');
+  const show = run.hp <= EMERGENCY_HP && run.hp < run.maxHp;
+  hb.classList.toggle('hide', !show);
+  hb.classList.toggle('poor', run.gold < EMERGENCY_COST);
+}
+/* ── 응급 회복 — 체력이 바닥나면 상단에 뜨는 작은 단추 ───── */
+const EMERGENCY_HP = 30;                    /* 이 아래로 떨어지면 나타난다 */
+const EMERGENCY_COST = 60;                  /* 골드 */
+function emergencyHeal() {
+  const run = G.run;
+  if (!run || run.hp > EMERGENCY_HP || run.hp >= run.maxHp) return;
+  if (run.gold < EMERGENCY_COST) { SND.err(); toast(`골드가 모자란다 (${EMERGENCY_COST} 필요)`); return; }
+  run.gold -= EMERGENCY_COST;
+  const n = run.maxHp - run.hp;
+  if (G.b) heal(n); else { healRun(n); SND.heal(); }
+  screenFlash('rgba(90,220,170,.28)', 460);
+  FX.spark(innerWidth / 2, 90, 26, '80,220,170');
+  toast(`숨을 돌렸다 — 체력을 모두 회복 (골드 ${EMERGENCY_COST})`);
+  renderTop(); saveRun();
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -4207,7 +4352,9 @@ const CARD_FX = {
   stormtal: 'wind', madness: 'slash2', hunt: 'pierce', brilliant: 'holy',
   demonblade: 'slash2', ninetail: 'slash2', thunder: 'lightning', rainflower: 'petal',
   vajra: 'blunt', shadowblade: 'slash2', mu: 'void', seal: 'talisman', healtalis: 'talisman',
-  skyweb: 'wind', cleaver: 'slash2', purgatory: 'fire', kalpa: 'fire', genesis: 'void'
+  skyweb: 'wind', cleaver: 'slash2', purgatory: 'fire', kalpa: 'fire', genesis: 'void',
+  sandkick: 'wind', emberseal: 'fire', scatterbomb: 'fire', siphon: 'void', quickdraw: 'slash',
+  windwheel: 'spin', soulbind: 'talisman', wolffang: 'claw', stormfall: 'lightning'
 };
 /* 이름을 크게 띄울 만한 카드 (희귀 이상이거나 무거운 것) */
 function worthBanner(card) {
@@ -4605,17 +4752,44 @@ function showRewards(kind) {
 
   const p = overlay(`<h2>승 리</h2><div class="hint">전리품을 챙기시오</div>
      <div class="rewardrow"></div>
-     <button class="brush-btn red" id="rw_done">${kind === 'boss' && G.run.act >= LAST_ACT ? '정상으로' : '길을 나선다'}</button>`, '');
+     <div class="rewbtns">
+       <button class="brush-btn gold" id="rw_all">모두 받기</button>
+       <button class="brush-btn red" id="rw_done">${kind === 'boss' && G.run.act >= LAST_ACT ? '정상으로' : '길을 나선다'}</button>
+     </div>`, '');
   const row = p.querySelector('.rewardrow');
-  items.forEach((it, i) => {
+  const nodes = [];
+  const allBtn = p.querySelector('#rw_all');
+  const syncAll2 = () => {
+    const left = nodes.filter(([n2]) => !n2.classList.contains('taken')).length;
+    allBtn.textContent = left ? `모두 받기 (${left})` : '다 챙겼다';
+    allBtn.disabled = !left;
+  };
+  const take = async (n2, it) => {
+    if (n2.classList.contains('taken')) return false;
+    const r = await it.act(it);
+    if (r !== false) { n2.classList.add('taken'); renderTop(); }
+    return r !== false;
+  };
+  items.forEach(it => {
     const n2 = el('div', 'rewitem' + (it.cls ? ' ' + it.cls : ''), `<div class="ic">${it.ic}</div><div class="t"><b>${it.t}</b><small>${it.s}</small></div>`);
-    n2.onclick = async () => {
-      if (n2.classList.contains('taken')) return;
-      const r = await it.act(it);
-      if (r !== false) { n2.classList.add('taken'); renderTop(); }
-    };
+    n2.onclick = async () => { await take(n2, it); syncAll2(); };
     row.appendChild(n2);
+    nodes.push([n2, it]);
   });
+  /* 한 번에 다 챙긴다 — 골라야 하는 것은 순서대로 창을 띄운다 */
+  allBtn.onclick = async () => {
+    if (allBtn.dataset.busy) return;
+    allBtn.dataset.busy = '1'; allBtn.disabled = true;
+    SND.coin();
+    for (const [n2, it] of nodes) {
+      if (n2.classList.contains('taken')) continue;
+      await take(n2, it);
+      await new Promise(r => setTimeout(r, 90));
+    }
+    delete allBtn.dataset.busy;
+    syncAll2();
+  };
+  syncAll2();
   p.querySelector('#rw_done').onclick = () => {
     /* 그냥 지나쳤더라도 제1막을 넘었으면 자동 플레이는 준다 */
     if (kind === 'boss' && run.act === 1) unlockAuto(true);
