@@ -1125,6 +1125,105 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .skinnone{color:#9a8d74;font-size:12.5px;padding:14px;width:100%;text-align:center}
 .dextile.skintileD b{font-size:26px}
 
+/* ══ 더 진한 타격감 ══════════════════════════════════════ */
+/* 벤 자리를 가로지르는 섬광 */
+.slashline{position:fixed;z-index:33;pointer-events:none;height:3px;transform-origin:0 50%;
+  background:linear-gradient(90deg,transparent,#fff 18%,#ffd9a0 50%,#fff 82%,transparent);
+  box-shadow:0 0 14px #fff,0 0 30px #ffb648;animation:slashGo .34s cubic-bezier(.1,.9,.3,1) forwards}
+@keyframes slashGo{0%{opacity:0;transform:scaleX(0) rotate(var(--a))}
+  22%{opacity:1;transform:scaleX(1.05) rotate(var(--a))}
+  100%{opacity:0;transform:scaleX(1) rotate(var(--a))}}
+/* 충격 고리 */
+.shockring{position:fixed;z-index:32;pointer-events:none;border-radius:50%;transform:translate(-50%,-50%);
+  border:3px solid var(--rc,#fff);animation:ringGo .46s cubic-bezier(.15,.85,.3,1) forwards}
+@keyframes ringGo{0%{width:12px;height:12px;opacity:.95;border-width:5px}
+  100%{width:var(--rs,180px);height:var(--rs,180px);opacity:0;border-width:1px}}
+/* 화면 가장자리에서 밀려드는 붉은 기운 */
+.rushv{position:fixed;inset:0;z-index:31;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 38%,var(--vc,rgba(200,40,40,.5)) 100%);
+  animation:rushGo .5s ease-out forwards}
+@keyframes rushGo{0%{opacity:0;transform:scale(1.15)}25%{opacity:1;transform:scale(1)}100%{opacity:0}}
+/* 처치할 때 갈라지는 금 */
+.crackfx{position:fixed;z-index:33;pointer-events:none;transform:translate(-50%,-50%);
+  animation:crackGo .58s ease-out forwards}
+@keyframes crackGo{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.35)}}
+/* 숫자가 튀어오른다 */
+@keyframes numPop{0%{transform:translate(-50%,0) scale(.4)}45%{transform:translate(-50%,-16px) scale(1.35)}
+  100%{transform:translate(-50%,-30px) scale(1)}}
+/* 기 구슬이 터질 때 */
+#energy.spend{animation:qiSpend .34s ease-out}
+@keyframes qiSpend{0%{transform:scale(1)}35%{transform:scale(.84);filter:brightness(1.6)}100%{transform:scale(1)}}
+/* 적이 죽기 직전 붉게 떤다 */
+.unit.willdie .body{animation:dieSoon 1s ease-in-out infinite}
+@keyframes dieSoon{50%{filter:brightness(1.25) saturate(1.4)}}
+
+/* ══ 떠돌이 상인 ═════════════════════════════════════════ */
+.merchtop{display:flex;gap:15px;align-items:center;max-width:560px;margin:2px auto 10px;text-align:left}
+.mface{width:64px;height:64px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:30px;color:#fff;
+  background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--mc) 55%,#fff),var(--mc));
+  box-shadow:0 0 22px color-mix(in srgb,var(--mc) 60%,transparent),inset 0 -5px 14px rgba(0,0,0,.35);
+  animation:tuSeal 3.4s ease-in-out infinite}
+.msay{flex:1;font-size:13.5px;line-height:1.85;color:#e6d9bb;font-style:italic;word-break:keep-all}
+.msay .mtag{display:block;font-style:normal;font-size:11px;color:#9a8d74;letter-spacing:.08em;margin-top:5px}
+/* 부적 내기 */
+.betring{display:flex;align-items:center;justify-content:center;gap:20px;margin:10px 0 14px}
+.betside{display:flex;flex-direction:column;align-items:center;gap:7px}
+.betlab{font-size:12px;letter-spacing:.2em;color:#c3b79c}
+.betslot{width:var(--cw);height:var(--ch);border-radius:6px;display:grid;place-items:center;font-size:38px;
+  color:#6b6053;background:linear-gradient(155deg,#2a231a,#171310);border:1.5px dashed #6d6250;
+  transition:transform .26s}
+.betslot .card{position:relative!important;left:auto!important;top:auto!important;margin:0!important;
+  transform:none!important;cursor:default}
+.betslot.flip{transform:rotateY(90deg)}
+.betslot.shown{transform:none;border:none;background:none}
+.betvs{font-size:22px;letter-spacing:.2em;color:#c8a94e}
+.betsay{min-height:44px;font-size:13.5px;line-height:1.8;color:#dccfae;margin-bottom:12px;
+  font-style:italic;max-width:460px;word-break:keep-all}
+
+/* ══ 첫걸음 ══════════════════════════════════════════════ */
+.tutor{position:fixed;inset:0;z-index:80;display:grid;place-items:center;
+  background:radial-gradient(ellipse at 50% 40%,#241d14 0%,#120e09 60%,#080605 100%);
+  animation:tuIn .5s ease-out}
+.tutor:before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(114deg,transparent 0 42px,rgba(200,170,110,.05) 42px 43px)}
+@keyframes tuIn{from{opacity:0}}
+.tutor.fadeout{animation:tuOut .48s ease-in forwards}
+@keyframes tuOut{to{opacity:0}}
+.tuwrap{position:relative;width:min(660px,90vw);padding:4px 8px}
+.tustep{text-align:center;font-size:11.5px;letter-spacing:.34em;color:#8a7f68;margin-bottom:12px;text-indent:.34em}
+.tubody{min-height:322px}
+.tubody.in{animation:tuSlide .34s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes tuSlide{from{opacity:0;transform:translateX(22px)}}
+.tuseal{width:88px;height:88px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;
+  font-size:40px;color:#fff;background:radial-gradient(circle at 34% 28%,
+    color-mix(in srgb,var(--tc) 55%,#fff),var(--tc));
+  box-shadow:0 0 34px color-mix(in srgb,var(--tc) 65%,transparent),inset 0 -6px 16px rgba(0,0,0,.35);
+  animation:tuSeal 3s ease-in-out infinite}
+@keyframes tuSeal{50%{transform:translateY(-5px)}}
+.tubody h3{text-align:center;font-size:23px;letter-spacing:.14em;color:#f6ecd2;font-weight:400;
+  margin-bottom:14px;text-indent:.14em}
+.tulead{text-align:center;font-size:14.5px;line-height:1.9;color:#dccfae;margin:0 auto 18px;
+  max-width:520px;word-break:keep-all}
+.tulead b{color:#ffd98a}
+.tulist{max-width:520px;margin:0 auto;list-style:none;display:flex;flex-direction:column;gap:9px}
+.tulist li{position:relative;padding:9px 14px 9px 30px;border-radius:7px;text-align:left;
+  background:rgba(255,255,255,.045);border:1px solid rgba(200,175,125,.18);
+  font-size:12.8px;line-height:1.75;color:#c3b79c;word-break:keep-all}
+.tulist li:before{content:'·';position:absolute;left:13px;top:8px;color:#c8a94e;font-size:17px}
+.tulist li b{color:#f0e0b4}
+.tunav{display:flex;align-items:center;gap:14px;margin-top:20px}
+.tunav .brush-btn{padding:10px 22px;font-size:14px}
+.tudots{flex:1;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tudots i{width:8px;height:8px;border-radius:50%;background:rgba(220,200,160,.25);cursor:pointer;transition:.16s}
+.tudots i:hover{background:rgba(255,220,150,.6);transform:scale(1.3)}
+.tudots i.past{background:rgba(200,169,78,.55)}
+.tudots i.on{background:#ffd76a;box-shadow:0 0 10px rgba(255,200,90,.8);transform:scale(1.35)}
+.tuskip{position:absolute;right:26px;top:22px;padding:8px 16px;font-size:12.5px;letter-spacing:.16em;
+  color:#a89a80;background:rgba(0,0,0,.35);border:1px solid rgba(200,175,125,.28);border-radius:4px;transition:.15s}
+.tuskip:hover{color:#f0e6cd;border-color:var(--gold)}
+
 /* ══ 저주의 서당 ═════════════════════════════════════════ */
 .school{position:absolute;inset:0;display:flex;flex-direction:column;
   background:linear-gradient(165deg,#1d1218 0%,#2c1a22 45%,#100a0d 100%)}
@@ -3777,6 +3876,7 @@ function applyDamage(ent, dmg, pierce) {
   return { hp: d, blocked };
 }
 function checkHermit() {
+  if (!G.run || !P()) return;
   const r = G.run.relics.find(x => x.id === 'hermit' || x.id === 'immortalpill');
   if (r && !r.used && P().hp > 0 && P().hp * 2 <= P().maxHp) {
     r.used = true; heal(r.id === 'immortalpill' ? 35 : 25);
@@ -3865,14 +3965,15 @@ function startBattle(enemyIds, kind, opts) {
   };
   let ux = 1;
   /* 제4막부터 요괴의 체력·공격력이 10% 오른다 (대전투장은 자체 배율을 쓴다) */
-  const boost = kind === 'arena' ? 1 : actBoost(run.act);
+  const sc = kind === 'arena' ? { hp: 1, dmg: 1 } : actScale(run.act);
+  const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
     let hp = ri(d.hp[0], d.hp[1]) + Math.floor((run.asc || 0) * 0.08 * d.hp[0]);
     hp = Math.round(hp * boost);
     if (opts.hpMul) hp = Math.round(hp * opts.hpMul);
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
-                dmgMul: boost,
+                dmgMul: sc.dmg,
                 hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false };
     if (d.init) d.init(e);
     if (opts.str) e.s.str = (e.s.str || 0) + opts.str;
@@ -3941,6 +4042,8 @@ async function playCard(card, target) {
   b.busy = true; b.sel = null; hideArrow(); clearPreview();
   const spent = isX ? b.energy : cost;
   b.energy -= spent;
+  if (spent > 0) { const eb = $('#energy');
+    if (eb) { eb.classList.remove('spend'); void eb.offsetWidth; eb.classList.add('spend'); } }
 
   const i = b.hand.findIndex(x => x.uid === card.uid);
   if (i >= 0) b.hand.splice(i, 1);
@@ -4054,6 +4157,8 @@ async function doMove(e, m) {
       const r = applyDamage(P(), dmg);
       impact(m.fx || 'claw', P());
       hitFx(P(), r.hp, r.blocked, true);
+      if (r.hp > 0 && e.el && P().el) slashLine(centerOf(e.el), centerOf(P().el), '#ff8a7a');
+      if (r.hp >= 14) { rushVignette('rgba(190,30,30,.5)'); hitstop(r.hp >= 26); }
       SND.hit(dmg > 14 ? 2 : 1); shake(dmg > 14);
       lunge(e);
       if (P().s.thorns) pure(e, P().s.thorns);
@@ -4118,12 +4223,13 @@ async function checkOver() {
     if (b.kind === 'arena') arenaLose(); else gameOver();
     return true;
   }
-  if (!alive().length) { b.over = true; await wait(420); winBattle(); return true; }
+  if (!alive().length) { b.over = true; await wait(420); if (!G.b) return true; winBattle(); return true; }
   return false;
 }
 function winBattle() {
   const b = G.b, run = G.run;
-  run.hp = P().hp;
+  if (!b || !run) return;                      /* 기다리는 사이 전투가 사라졌을 수 있다 */
+  if (P()) run.hp = P().hp;
   run.stats.battles++;
   fire('battleEnd', b.kind);
   curseTick();                                   /* 저주가 하루 저문다 */
@@ -4181,6 +4287,7 @@ function autoScore(c) {
     target = best; t += Math.min(260, bv);
   }
   if (d.exhaust) t -= 12;
+  if (d.id === 'lastward' && b.hand.length > 1) t -= 300;   /* 손이 빌 때만 값어치가 있다 */
   if (d.tgt === 'enemy' && !target) target = foes[0];
   return { c, target: d.tgt === 'enemy' ? target : null, score: s + clamp(t, -400, 400) };
 }
@@ -4723,6 +4830,7 @@ function syncEnemies() {
   if (!G.b) return;
   for (const e of G.b.enemies) {
     if (!e.el) continue;
+    e.el.classList.toggle('willdie', !e.dead && e.hp > 0 && e.hp <= e.maxHp * .18);
     if (e.dead) { if (!e.el.classList.contains('dying')) e.el.classList.add('dying'); continue; }
     e.el.querySelector('.ebar i').style.width = (e.hp / e.maxHp * 100) + '%';
     e.el.querySelector('.ebar b').textContent = e.hp + ' / ' + e.maxHp;
@@ -4938,6 +5046,10 @@ function hitFx(ent, hpDmg, blocked, splash) {
       m.style.left = cx + 'px'; m.style.top = (r.top - 6) + 'px';
       $('#app').appendChild(m); setTimeout(() => m.remove(), 780);
       FX.burst(cx, cy, 22, '255,190,80', 7, 46, 5);
+      shockRing(cx, cy, 210, '#ffce6a');
+      const pl = P();
+      if (pl && pl.el) slashLine(centerOf(pl.el), { x: cx, y: cy }, '#ffd9a0');
+      if (hpDmg >= CRIT_AT * 1.8) rushVignette('rgba(255,140,40,.42)');
       SND.crit(); hitstop(hpDmg >= CRIT_AT * 1.8); shake(true);
     } else if (hpDmg >= 15) hitstop(false);
   }
@@ -4960,6 +5072,55 @@ function lunge(e) {
   b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
   setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
 }
+/* ── 더 진한 타격 연출 ─────────────────────────────────── */
+/* 두 점을 잇는 섬광 — 벤 자리를 남긴다 */
+function slashLine(from, to, color) {
+  if (!OPT.particles) return;
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const len = Math.max(60, Math.hypot(dx, dy) + 90);
+  const a = Math.atan2(dy, dx) * 180 / Math.PI;
+  const n = el('div', 'slashline');
+  n.style.left = (from.x - 45) + 'px'; n.style.top = from.y + 'px';
+  n.style.width = len + 'px'; n.style.setProperty('--a', a + 'deg');
+  if (color) n.style.background = `linear-gradient(90deg,transparent,#fff 18%,${color} 50%,#fff 82%,transparent)`;
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 360);
+}
+/* 퍼져 나가는 고리 */
+function shockRing(x, y, size, color) {
+  if (!OPT.particles) return;
+  const n = el('div', 'shockring');
+  n.style.left = x + 'px'; n.style.top = y + 'px';
+  n.style.setProperty('--rs', (size || 180) + 'px');
+  n.style.setProperty('--rc', color || '#fff');
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 480);
+}
+/* 화면 가장자리가 밀려든다 */
+function rushVignette(color) {
+  const n = el('div', 'rushv');
+  if (color) n.style.setProperty('--vc', color);
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 520);
+}
+/* 처치 자리에 금이 간다 */
+function crackFx(x, y, color) {
+  if (!OPT.particles) return;
+  let path = '';
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2 + Math.random() * .5;
+    const r1 = 12 + Math.random() * 10, r2 = 46 + Math.random() * 40;
+    const mx = Math.cos(a) * (r1 + r2) / 2 + (Math.random() - .5) * 22;
+    const my = Math.sin(a) * (r1 + r2) / 2 + (Math.random() - .5) * 22;
+    path += `<path d="M${Math.cos(a) * r1 + 60},${Math.sin(a) * r1 + 60}
+      L${mx + 60},${my + 60} L${Math.cos(a) * r2 + 60},${Math.sin(a) * r2 + 60}"
+      fill="none" stroke="${color || '#fff'}" stroke-width="${1 + Math.random() * 2}" stroke-linecap="round"/>`;
+  }
+  const n = el('div', 'crackfx', `<svg width="120" height="120" viewBox="0 0 120 120">${path}</svg>`);
+  n.style.left = x + 'px'; n.style.top = y + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 600);
+}
 /* ── 연격 — 한 턴에 부적을 이어 낼수록 음이 올라간다 ─────── */
 function chainFx(n) {
   if (n < 3) return;
@@ -4968,8 +5129,10 @@ function chainFx(n) {
   box.style.color = n >= 7 ? '#ff6ea0' : n >= 5 ? '#ffb648' : '#ffd76a';
   $('#app').appendChild(box);
   setTimeout(() => box.remove(), 900);
-  if (n >= 5) { FX.gold(innerWidth - 70, innerHeight * .45, 12 + n); shake(); }
-  if (n >= 8) { screenFlash('rgba(255,140,180,.28)', 460); SND.gong(); }
+  if (n >= 5) { FX.gold(innerWidth - 70, innerHeight * .45, 12 + n); shake();
+    shockRing(innerWidth - 70, innerHeight * .45, 120 + n * 14, n >= 7 ? '#ff6ea0' : '#ffd76a'); }
+  if (n >= 8) { screenFlash('rgba(255,140,180,.28)', 460); SND.gong();
+    rushVignette('rgba(255,90,150,.38)'); }
 }
 /* ── 체력이 바닥일 때 화면 가장자리가 뛴다 ───────────────── */
 let _lowTimer = null;
@@ -5010,7 +5173,10 @@ function killFx(e) {
     FX.ink(c.x, c.y, big ? 44 : 26);
     FX.blood(c.x, c.y, big ? 34 : 18);
     if (big) FX.gold(c.x, c.y, 26);
-    if (over) { FX.burst(c.x, c.y, 40, '255,170,60', 8, 56, 5.5); FX.gold(c.x, c.y, 24); }
+    crackFx(c.x, c.y, big ? '#ffd76a' : '#e8e0cc');
+    shockRing(c.x, c.y, big ? 320 : 200, big ? '#ffd76a' : '#d8cbb0');
+    if (over) { FX.burst(c.x, c.y, 40, '255,170,60', 8, 56, 5.5); FX.gold(c.x, c.y, 24);
+      shockRing(c.x, c.y, 400, '#ffb648'); rushVignette('rgba(255,150,50,.4)'); }
     e.el.classList.add('dying');
     const m = el('div', 'killmark' + (big ? ' big' : ''), over ? '과 잉' : big ? '토 벌' : '처 치');
     if (over) m.style.color = '#ffdf9a';
@@ -5383,9 +5549,22 @@ const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
                    4: '명계 관문', 5: '구천 상계', 6: '무간',
                    7: '무저갱', 8: '태초' };
 const LAST_ACT = 8;
-/* 제4막부터는 요괴가 한 뼘씩 더 강해진다 (체력·공격력 +10%) */
-const ACT_BOOST_FROM = 4;
-const actBoost = act => (act >= ACT_BOOST_FROM ? 1.1 : 1);
+/* ── 막마다 요괴가 굵어진다 ────────────────────────────────
+   위로 갈수록 체력이 붙고 손이 매워진다. 체력은 가파르게,
+   공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
+   ────────────────────────────────────────────────────────── */
+const ACT_SCALE = {
+  1: { hp: 1.00, dmg: 1.00 },
+  2: { hp: 1.04, dmg: 1.02 },
+  3: { hp: 1.12, dmg: 1.06 },
+  4: { hp: 1.26, dmg: 1.12 },
+  5: { hp: 1.46, dmg: 1.20 },
+  6: { hp: 1.66, dmg: 1.28 },
+  7: { hp: 1.86, dmg: 1.36 },
+  8: { hp: 2.10, dmg: 1.45 }
+};
+const actScale = act => ACT_SCALE[Math.min(8, Math.max(1, act || 1))] || ACT_SCALE[1];
+const actBoost = act => actScale(act).hp;
 function newRun(asc) {
   G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
@@ -5415,7 +5594,8 @@ function newRun(asc) {
   G.run.map = genMap(1);
   META.runs++; saveMeta();
   SND.ambience(false);
-  showStory('opening').then(() => { SND.ambience(true, false); showMap(); });
+  const go = () => showStory('opening').then(() => { SND.ambience(true, false); showMap(); });
+  if (!META.tutorDone) showTutorial().then(go); else go();
 }
 /* ── VIP 혜택 ─────────────────────────────────────────────
    영구 보너스 · SSX 부적 5종 · 한 달 한 번 무료 특대급 상자
@@ -6467,7 +6647,8 @@ function startArenaRound() {
 }
 function arenaWin() {
   const run = G.run;
-  run.hp = P().hp;
+  if (!run) return;
+  if (P()) run.hp = P().hp;
   run.arenaDia = (run.arenaDia || 0) + ARENA_DIA;
   run.arena.cleared = (run.arena.cleared || 0) + 1;
   run.arena.best = Math.max(run.arena.best || 0, run.arenaRound);
@@ -6576,7 +6757,11 @@ function showFuse() {
    막이 바뀌거나 지도의 상점 노드를 밟으면 새로 채워진다.
    ----------------------------------------------------------- */
 function restockShop() {
-  const run = G.run, price = v => pipe('modPrice', v);
+  const run = G.run;
+  run.merch = pick(MERCH_IDS);                 /* 상점마다 다른 사람이 앉는다 */
+  run.betDone = false;
+  const mm = MERCHANTS[run.merch].mul;
+  const price = v => pipe('modPrice', Math.round(v * mm));
   const cards = [], seen = new Set();
   const w = gradeWeights('elite');            /* 상인은 한 등급 앞서 판다 */
   let guard = 0;
@@ -6599,6 +6784,131 @@ function restockShop() {
   }
   run.shop = { cards, relics, pots, purged: false, boxSold: false };
 }
+/* ══════════════════════════════════════════════════════════
+   떠돌이 상인 — 만날 때마다 다른 사람이 앉아 있다
+   ──────────────────────────────────────────────────────────
+   여섯 명이 돌아가며 나오고, 저마다 값과 말투가 다르다.
+   두 번째로 만난 뒤부터는 이야기가 이어진다.
+   그리고 부적 내기 — 한 장씩 뒤집어 큰 쪽이 이긴다.
+   ══════════════════════════════════════════════════════════ */
+const MERCHANTS = {};
+function defMerchant(o) { MERCHANTS[o.id] = o; return o; }
+defMerchant({ id: 'oneeye', n: '외눈 장수', g: '眼', col: '#8a5a2a', mul: 1.0,
+  hi: '"어서 오시게. 눈은 하나지만 물건 보는 눈은 둘일세."',
+  bet: '"내기? 좋지. 나는 지는 걸 본 적이 없네."',
+  again: '"또 왔군. 살아 있으니 반갑네."',
+  tale: ['"이 눈은 산에서 잃었네. 백 년 전 그 밤에."',
+         '"자네 스승도 여기서 부적을 샀지. 값을 깎지 않더군."',
+         '"위로 갈수록 물건이 좋아지네. 살아서 닿는다면 말일세."'] });
+defMerchant({ id: 'widow', n: '흰옷의 여인', g: '素', col: '#7a8aa8', mul: 0.85,
+  hi: '"싸게 드리지요. 어차피 저는 쓸 데가 없어요."',
+  bet: '"내기라면… 남편이 즐기던 것이군요."',
+  again: '"또 뵙네요. 아직 살아 계시군요."',
+  tale: ['"남편이 이 산에 올랐어요. 부적 열 장을 지고."',
+         '"돌아온 건 부적 한 장이었지요. 벽사부."',
+         '"값은 받지 않아도 좋아요. 다만 끝까지 올라가 주세요."'] });
+defMerchant({ id: 'monk', n: '탁발승', g: '鉢', col: '#c8813a', mul: 1.15,
+  hi: '"값은 비싸네. 그 값이 자네를 살릴 걸세."',
+  bet: '"승부라. 인연도 승부지."',
+  again: '"인연이 질기군. 좋은 일일세."',
+  tale: ['"나는 저 위에서 내려왔네. 문을 보고."',
+         '"문 안에는 아무것도 없더군. 아무것도 없는 것이 있었네."',
+         '"자네가 보게 될 걸세. 나는 눈을 감았지만."'] });
+defMerchant({ id: 'kid', n: '떠돌이 아이', g: '童', col: '#4a9a6a', mul: 0.92,
+  hi: '"아저씨! 이거 싸게 줄게요. 대신 얘기 좀 들어줘요."',
+  bet: '"내기해요! 저 되게 잘해요!"',
+  again: '"또 왔다! 안 죽었네요?"',
+  tale: ['"저는 여기서 태어났어요. 산 밖은 못 봤고요."',
+         '"요괴들이 저는 안 건드려요. 왜인지는 몰라요."',
+         '"아저씨가 문을 닫으면… 저도 나갈 수 있을까요?"'] });
+defMerchant({ id: 'ghostmerch', n: '이미 죽은 상인', g: '亡', col: '#6a5a8a', mul: 0.7,
+  hi: '"싸다네. 나는 이미 값을 다 치렀거든."',
+  bet: '"내기… 나는 잃을 것이 없네."',
+  again: '"또 만나는군. 나처럼 되지는 말게."',
+  tale: ['"나도 자네처럼 올랐지. 부적을 짊어지고."',
+         '"삼막에서 멈췄네. 욕심이 한 장 더 있었거든."',
+         '"짐이 무거우면 버리게. 덱은 얇을수록 날카롭네."'] });
+defMerchant({ id: 'fox', n: '수상한 장사치', g: '狐', col: '#c8462a', mul: 1.3,
+  hi: '"비싸다고? 물건을 보고 말하시게."',
+  bet: '"내기라면 사양 않지. 흐흐."',
+  again: '"또 왔군. 이번엔 지갑이 두둑한가?"',
+  tale: ['"내 꼬리? 무슨 소린가. 옷자락일세."',
+         '"저 위의 것들과는 거래하지 않네. 값을 안 치르거든."',
+         '"자네는 값을 치르지. 그래서 좋아하네."'] });
+const MERCH_IDS = Object.keys(MERCHANTS);
+/* 이번 상점의 주인 */
+function merchOf(run) {
+  if (!run.merch || !MERCHANTS[run.merch]) run.merch = pick(MERCH_IDS);
+  return MERCHANTS[run.merch];
+}
+/* ── 부적 내기 ───────────────────────────────────────────
+   서로 덱에서 한 장씩 뒤집어 값을 겨룬다. 등급이 곧 끗발.
+   이기면 판돈의 두 배, 지면 판돈을 잃는다. 한 상점에 한 번.
+   ────────────────────────────────────────────────────── */
+const BET_GOLD = 80;
+function cardPower(c) { return (AUTO_RANK[CARDS[c.id].rar] || 0) * 12 + (c.up ? 5 : 0) + ri(0, 9); }
+/* 상인의 패 — 자네가 지닌 것과 비슷한 것을 꺼낸다 (등급 분포를 따른다) */
+function betFoeCard(mine) {
+  const rar = CARDS[pick(mine).id].rar;
+  const pool = Object.keys(CARDS).filter(i => CARDS[i].rar === rar);
+  return { uid: -77, id: pool.length ? pick(pool) : 'strike', up: rnd() < .2 };
+}
+function showBet(after) {
+  const run = G.run, m = merchOf(run);
+  const mine = run.deck.filter(c => CARDS[c.id].rar !== 'curse');
+  if (!mine.length) { toast('걸 부적이 없다'); return; }
+  const p = modal(`<h2>부적 내기</h2>
+    <div class="hint">서로 한 장씩 뒤집는다 · 등급이 높은 쪽이 이긴다<br>
+      판돈 <b style="color:#e8c86a">${BET_GOLD} 골드</b> — 이기면 <b style="color:#7fe6a8">두 배</b>, 지면 잃는다</div>
+    <div class="betring">
+      <div class="betside"><div class="betlab">나</div><div class="betslot" id="bet_me">?</div></div>
+      <div class="betvs" id="bet_vs">對</div>
+      <div class="betside"><div class="betlab" style="color:${m.col}">${m.n}</div>
+        <div class="betslot foe" id="bet_you">?</div></div>
+    </div>
+    <div class="betsay" id="bet_say">${m.bet}</div>
+    <div style="display:flex;gap:10px">
+      <button class="brush-btn red" id="bet_go">건다 (${BET_GOLD})</button>
+      <button class="brush-btn ghost" id="bet_no" style="color:#e9dfc9;border-color:#8a7f68">그만둔다</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  const done = () => { closePanel(p); if (after) after(); };
+  p.querySelector('#bet_no').onclick = done;
+  p.querySelector('#bet_go').onclick = async () => {
+    if (run.gold < BET_GOLD) { SND.err(); toast('골드가 모자란다'); return; }
+    if (run.betDone) { SND.err(); toast('오늘은 여기까지일세'); return; }
+    run.betDone = true; run.gold -= BET_GOLD; renderTop();
+    const go = p.querySelector('#bet_go'); go.disabled = true; go.textContent = '뒤집는다…';
+    const meSlot = p.querySelector('#bet_me'), youSlot = p.querySelector('#bet_you');
+    const my = pick(mine);
+    const foe = betFoeCard(mine);
+    const flip = (slot, c) => {
+      slot.classList.add('flip');
+      setTimeout(() => { slot.textContent = ''; slot.appendChild(cardNode(c, { tip: false }));
+        slot.classList.add('shown'); SND.jgMove(); }, 260);
+    };
+    flip(meSlot, my); SND.draw();
+    await new Promise(r => setTimeout(r, 620));
+    flip(youSlot, foe);
+    await new Promise(r => setTimeout(r, 700));
+    const a = cardPower(my), b2 = cardPower(foe);
+    const say = p.querySelector('#bet_say');
+    if (a >= b2) {
+      run.gold += BET_GOLD * 2;
+      SND.coinRain(9); SND.unlock(); FX.gold(innerWidth / 2, innerHeight * .45, 46);
+      screenFlash('rgba(255,220,140,.35)', 620); shockRing(innerWidth / 2, innerHeight * .45, 300, '#ffd76a');
+      say.innerHTML = `<b style="color:#7fe6a8">이겼다 — 골드 ${BET_GOLD * 2}</b><br>
+        <span style="color:#c3b79c">${cname(my)} (${GRADE[CARDS[my.id].rar].n}) 대 ${cname(foe)} (${GRADE[CARDS[foe.id].rar].n})</span>`;
+    } else {
+      SND.lose(); rushVignette('rgba(120,30,50,.45)');
+      say.innerHTML = `<b style="color:#ff8a9a">졌다 — 골드 ${BET_GOLD}을 잃었다</b><br>
+        <span style="color:#c3b79c">${cname(my)} (${GRADE[CARDS[my.id].rar].n}) 대 ${cname(foe)} (${GRADE[CARDS[foe.id].rar].n})</span>`;
+    }
+    renderTop(); saveRun();
+    go.textContent = '끝났다'; 
+    p.querySelector('#bet_no').textContent = '돌아간다';
+  };
+}
 function showShop() {
   G.scene = 'shop';
   const run = G.run;
@@ -6607,14 +6917,28 @@ function showShop() {
   const purgePrice = pipe('modPrice', 72 + (run.purges || 0) * 20);
   const relicBoxPrice = pipe('modPrice', 165);
 
+  const m = merchOf(run);
+  run.merchMet = run.merchMet || {};
+  const met = run.merchMet[m.id] || 0;
+  run.merchMet[m.id] = met + 1;
+  const line = met === 0 ? m.hi : (m.tale[Math.min(m.tale.length - 1, met - 1)] || m.again);
   function draw() {
-    const p = overlay(`<h2>떠돌이 상인</h2><div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
+    const p = overlay(`<h2>${m.n}</h2>
+      <div class="merchtop">
+        <div class="mface" style="--mc:${m.col}">${m.g}</div>
+        <div class="msay">${line}<span class="mtag">${m.mul < 1 ? '값이 싸다' : m.mul > 1 ? '값이 비싸다' : '보통 값'}
+          · 만난 횟수 ${met + 1}</span></div>
+      </div>
+      <div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
         · 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
       <div class="shopgrid">
         <div class="shopcol"><h3>부 적</h3><div class="cardgrid" style="max-width:640px;max-height:52vh"></div></div>
         <div class="shopcol"><h3>물 건</h3><div class="rewardrow" style="width:330px"></div></div>
       </div>
-      <button class="brush-btn red" id="sh_leave">떠난다</button>`);
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="brush-btn" id="sh_bet"${run.betDone ? ' disabled' : ''}>부적 내기 (${BET_GOLD})</button>
+        <button class="brush-btn red" id="sh_leave">떠난다</button>
+      </div>`);
     p.dataset.shop = '1';                     /* 자동 플레이는 남의 지갑을 열지 않는다 */
     const g = p.querySelector('.cardgrid');
     sh.cards.forEach(it => {
@@ -6658,6 +6982,9 @@ function showShop() {
         toast(`${CARDS[c.id].n} 제거`);
       });
     p.querySelector('#sh_leave').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+    const bb = p.querySelector('#sh_bet');
+    if (bb) bb.onclick = () => { if (run.betDone) { SND.err(); toast('한 상점에 한 번뿐일세'); return; }
+      SND.ui(); showBet(() => draw()); };
   }
   async function buy(cost, fn) {
     if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
@@ -8473,6 +8800,124 @@ const GUIDE = {
     부적은 등급별로 나뉘어 있고, 누르면 기본과 강화 버전을 나란히 볼 수 있다.</p>`
 };
 
+/* ══════════════════════════════════════════════════════════
+   첫걸음 — 처음 오는 사람에게 손수 짚어 준다
+   ──────────────────────────────────────────────────────────
+   새 모험을 처음 시작할 때 한 번 흐른다. 언제든 건너뛴다.
+   ≡ 안내서에서 다시 볼 수 있다.
+   ══════════════════════════════════════════════════════════ */
+const TUTOR = [
+  { g: '牌', t: '부적을 낸다', c: '#a8272c',
+    b: '손에 든 부적을 <b>누르면</b> 나간다. 적을 골라야 하는 부적은 누른 뒤 <b>요괴를 한 번 더</b> 누른다.',
+    s: ['부적 왼쪽 위의 <b>동그란 숫자</b>가 값이다. 이것이 <b>기(氣)</b>다.',
+        '기는 매 턴 <b>4로 돌아온다.</b> 남겨도 이월되지 않으니 다 쓰는 편이 좋다.',
+        '숫자 <span class="kbd">1</span>~<span class="kbd">9</span> 키로도 낼 수 있다. 취소는 <span class="kbd">Esc</span>.'] },
+  { g: '意', t: '요괴의 다음 수를 먼저 본다', c: '#8a5a2a',
+    b: '요괴 머리 위 그림이 <b>다음 턴에 할 행동</b>이다. 칼에 13이면 13만큼 때린다는 뜻.',
+    s: ['마우스를 올리면 자세히 나온다.',
+        '<b>이번 턴에 받을 피해 합계</b>가 내 몸 위에 붉게 뜬다.',
+        '손패에 마우스를 올리면 그 부적이 실제로 낼 <b>수치</b>가 요괴 머리 위에 미리 뜬다.'] },
+  { g: '守', t: '방어도는 한 턴만 산다', c: '#31536b',
+    b: '방어도는 <b>내 턴이 시작될 때 사라진다.</b> 미리 쌓는 게 아니라 <b>이번에 맞을 만큼만</b> 그때그때 올리는 것이다.',
+    s: ['8을 맞는데 20을 올리면 12는 그냥 버려진다.',
+        '피해는 방어도부터 깎고, 남은 만큼 체력이 준다.',
+        '적의 다음 수를 보고 <b>딱 맞게</b> 막는 것이 이 놀이의 알맹이다.'] },
+  { g: '氣', t: '턴을 넘긴다', c: '#2c5f5a',
+    b: '더 낼 것이 없으면 오른쪽 아래 <b>턴 종료</b>를 누른다. <span class="kbd">E</span> 나 <span class="kbd">Space</span> 도 같다.',
+    s: ['턴을 넘기면 <b>손패는 전부 버려진다.</b> 아끼지 말고 쓰자.',
+        '다음 내 턴에 다시 <b>다섯 장</b>을 뽑는다.',
+        '뽑을 더미가 비면 버린 더미를 섞어 다시 쓴다.'] },
+  { g: '祕', t: '비기는 기를 쓰지 않는다', c: '#a879e8',
+    b: '왼쪽 아래 단추가 <b>비기</b>다. <b>기를 하나도 쓰지 않고</b>, 요괴 한 마리와의 싸움에서 <b>한 번</b> 쓴다.',
+    s: ['위급할 때를 위해 아껴 두는 한 수다.',
+        '보스를 잡거나 <b>비기 상자</b>에서 새 비기를 얻는다.',
+        '가진 비기 중 하나만 장착할 수 있다.'] },
+  { g: '牌', t: '이기면 부적이 는다', c: '#b8912f',
+    b: '싸움에서 이기면 <b>전리품</b>을 준다. 골드 · 다이아 · 물약 · 유물, 그리고 <b>부적 한 장</b>.',
+    s: ['<b>모두 받기</b>를 누르면 한 번에 챙긴다. 고르는 것만 창이 뜬다.',
+        '부적은 등급이 있다 — <b>4등급 < 3 < 2 < 1 < S급 < SSX급 < ?급</b>.',
+        '보상에는 4등급이 나오지 않는다. 산을 오를수록 높은 등급이 열린다.'] },
+  { g: '寶', t: '유물은 계속 듣는다', c: '#9d7c2e',
+    b: '유물은 <b>모험 내내</b> 저절로 힘을 쓴다. 상단바 동그라미들이 지금 지닌 유물이다.',
+    s: ['최대 <b>열 개</b>까지 지닌다.',
+        '같은 재료를 모으면 <b>合</b> 단추에서 <b>조합</b>해 더 센 유물을 만든다.',
+        '엘리트 요괴와 보물 상자가 주로 내어 준다.'] },
+  { g: '地', t: '길은 갈라진다', c: '#6b6053',
+    b: '지도에서 <b>다음 칸</b>을 고른다. 한 번 고르면 그 길로만 간다.',
+    s: ['刀 싸움 · 鬼 엘리트 · 火 야영지 · 商 상점 · 寶 보물 · ? 사건 · 將 장기',
+        '<b>야영지</b>에서는 쉬거나 부적을 벼린다.',
+        '쓰러져도 끝이 아니다. <b>그 갈림길로 돌아가</b> 다시 오를 수 있다.'] },
+  { g: '匣', t: '뽑기와 터', c: '#6fd0e8',
+    b: '상단바 <b>匣</b>은 <b>부적 뽑기</b>, <b>場</b>은 <b>상점 · 대전투장 · 장기 · 저주의 서당</b>이 모인 자리다.',
+    s: ['뽑기는 다이아로 상자를 연다. 누적 <b>30 · 60 · 100회</b>마다 확정 보너스가 있다.',
+        '<b>스킨 상자</b>는 부적의 겉모습만 바꾼다. 성능은 그대로다.',
+        '<b>저주의 서당</b>은 이레에 한 번, 스무 판의 값을 받고 영구한 힘을 준다.'] },
+  { g: '鑑', t: '도감에 남는다', c: '#3f7346',
+    b: '만난 부적 · 유물 · 비기 · 요괴 · 스킨이 <b>도감</b>에 남는다. 모험이 끝나도 지워지지 않는다.',
+    s: ['부적을 누르면 기본과 강화(+)를 나란히 볼 수 있다.',
+        'S급 이상 부적은 도감에서 <b>스킨을 갈아입힌다.</b>',
+        '≡ 메뉴 · 타이틀 화면 어디서나 열 수 있다.'] },
+  { g: '自', t: '지치면 맡겨도 된다', c: '#4fd3a0',
+    b: '제1막을 넘어서면 <b>자동 플레이</b>가 열린다. <b>등급이 높은 부적을 먼저</b> 쓰는 식으로 대신 싸운다.',
+    s: ['전투 화면의 <b>자동 ▶</b> 단추 · 아무 때나 <span class="kbd">A</span> 키.',
+        '설정에서 <b>전투만 / 지도까지</b>와 속도를 고른다.',
+        '급하면 상단바 <b>癒</b> — 체력이 30 아래로 떨어지면 골드 60에 전부 회복한다.'] },
+  { g: '道', t: '그럼, 올라가 보자', c: '#a8272c',
+    b: '한 판에 <b>30~45분</b>. 쓰러져도 갈림길로 돌아온다. <b>다 외울 필요 없다.</b>',
+    s: ['막히면 <b>≡ 메뉴 → 안내서</b>에 그림과 함께 전부 적혀 있다.',
+        '이 첫걸음도 안내서에서 다시 볼 수 있다.',
+        '산이 문을 열었다. 백귀가 내려온다.'] }
+];
+function showTutorial(fromHelp) {
+  return new Promise(done => {
+    let i = 0;
+    const sc = el('div', 'tutor');
+    sc.innerHTML = `<div class="tuwrap">
+        <div class="tustep" id="tu_step"></div>
+        <div class="tubody" id="tu_body"></div>
+        <div class="tunav">
+          <button class="brush-btn ghost" id="tu_prev" style="color:#e9dfc9;border-color:#8a7f68">이전</button>
+          <div class="tudots" id="tu_dots"></div>
+          <button class="brush-btn" id="tu_next">다음</button>
+        </div>
+      </div>
+      <button class="tuskip" id="tu_skip">건너뛰기</button>`;
+    $('#app').appendChild(sc);
+    const body = sc.querySelector('#tu_body'), step = sc.querySelector('#tu_step'),
+      dots = sc.querySelector('#tu_dots'), next = sc.querySelector('#tu_next'),
+      prev = sc.querySelector('#tu_prev');
+    const finish = () => {
+      META.tutorDone = true; saveMeta();
+      sc.classList.add('fadeout');
+      setTimeout(() => { sc.remove(); done(); }, 480);
+    };
+    function draw() {
+      const d = TUTOR[i];
+      step.textContent = `${i + 1} / ${TUTOR.length}`;
+      body.innerHTML = `<div class="tuseal" style="--tc:${d.c}">${d.g}</div>
+        <h3>${d.t}</h3>
+        <p class="tulead">${d.b}</p>
+        <ul class="tulist">${d.s.map(x => `<li>${x}</li>`).join('')}</ul>`;
+      body.classList.remove('in'); void body.offsetWidth; body.classList.add('in');
+      dots.innerHTML = TUTOR.map((_, k) => `<i class="${k === i ? 'on' : k < i ? 'past' : ''}"></i>`).join('');
+      [...dots.children].forEach((n, k) => { n.onclick = () => { i = k; SND.ui(); draw(); }; });
+      prev.style.visibility = i ? 'visible' : 'hidden';
+      next.textContent = i === TUTOR.length - 1 ? '시작한다' : '다음';
+      SND.select ? SND.select() : SND.ui();
+    }
+    next.onclick = () => { if (i === TUTOR.length - 1) { SND.gong(); finish(); } else { i++; draw(); } };
+    prev.onclick = () => { if (i) { i--; draw(); } };
+    sc.querySelector('#tu_skip').onclick = () => { SND.ui(); finish(); };
+    const key = e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next.click(); }
+      else if (e.key === 'ArrowLeft') prev.click();
+      else if (e.key === 'Escape') { e.preventDefault(); finish(); }
+    };
+    addEventListener('keydown', key);
+    const orig = done; done = () => { removeEventListener('keydown', key); orig(); };
+    draw();
+  });
+}
 function showHelp(startTab) {
   const keys = Object.keys(GUIDE);
   let cur = startTab && GUIDE[startTab] ? startTab : keys[0];
@@ -8489,6 +8934,11 @@ function showHelp(startTab) {
     gc.innerHTML = GUIDE[cur]();
   }
   draw();
+  const tu = el('button', 'brush-btn', '첫걸음 다시 보기');
+  tu.id = 'h_tutor';
+  tu.style.cssText = 'margin-right:10px';
+  tu.onclick = () => { closeTop(); showTutorial(true); };
+  p.querySelector('#h_close').before(tu);
   p.querySelector('#h_close').onclick = closeTop;
 }
 
@@ -8548,6 +8998,7 @@ function showTitle() {
         <button class="brush-btn red" id="t_new">새로운 모험</button>
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
         <button class="brush-btn ghost" id="t_dex">도감</button>
+        <button class="brush-btn ghost" id="t_tutor">첫걸음 (처음이라면)</button>
         <button class="brush-btn ghost" id="t_help">안내서</button>
         <button class="brush-btn ghost" id="t_set">설정</button>
       </div>
@@ -8562,6 +9013,7 @@ function showTitle() {
   }, 900);
   s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
   s.querySelector('#t_set').onclick = () => { SND.init(); SND.ui(); showSettings(); };
+  s.querySelector('#t_tutor').onclick = () => { SND.init(); SND.ui(); showTutorial(true); };
   const c = s.querySelector('#t_cont');
   if (c) c.onclick = () => { SND.init(); SND.ui(); resumeRun(); };
 }
