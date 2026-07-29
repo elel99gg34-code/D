@@ -762,9 +762,13 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 /* 찌르기 */
 @keyframes pierceGo{0%{transform:translateX(-190px) scaleX(.2);opacity:0}
   30%{opacity:1}55%{transform:translateX(0) scaleX(1);opacity:1}100%{transform:translateX(44px) scaleX(.6);opacity:0}}
-.ik-pierce i.lance{width:230px;height:5px;margin:-2px 0 0 -115px;border-radius:3px;
+.ik-pierce i.lance,.ik-lance i.lance{width:230px;height:5px;margin:-2px 0 0 -115px;border-radius:3px;
   background:linear-gradient(90deg,transparent,#ffe9c9 40%,#fff 85%,#fff);
   box-shadow:0 0 12px rgba(255,220,170,.95);animation:pierceGo .26s ease-out forwards}
+/* 창 — 찌르기보다 굵고 느리게 */
+.ik-lance i.lance{width:280px;height:8px;margin:-4px 0 0 -140px;
+  background:linear-gradient(90deg,transparent,#ffd68e 38%,#fff4d8 88%,#fff);
+  box-shadow:0 0 18px rgba(255,206,120,.95);animation-duration:.32s}
 
 /* 강타 — 충격파 고리 */
 @keyframes ringOut{0%{transform:scale(.15);opacity:0}18%{opacity:1}100%{transform:scale(2.6);opacity:0}}
@@ -2174,6 +2178,19 @@ const SND = {
   },
   ok() { return this.on && this.ctx; },
   vary(x, amt) { return x * (1 + (Math.random() * 2 - 1) * (amt == null ? .035 : amt)); },
+  /* ── 변주 고르개 ──────────────────────────────────────────
+     같은 소리가 두 번 잇달아 나오면 귀가 금방 물린다.
+     자리마다 마지막에 쓴 갈래를 적어 두고, 그것만 빼고 고른다. */
+  _last: {},
+  pickVar(key, n) {
+    if (n <= 1) return 0;
+    let i = (Math.random() * n) | 0;
+    if (i === this._last[key]) i = (i + 1 + ((Math.random() * (n - 1)) | 0)) % n;
+    this._last[key] = i;
+    return i;
+  },
+  /* 반음 단위로 옮긴 진동수 */
+  semi(f, n) { return f * Math.pow(2, n / 12); },
 
   /* 기본 알갱이 — 음 하나 */
   blip(freq, o) {
@@ -2226,45 +2243,110 @@ const SND = {
   },
 
   /* ── 효과음 ───────────────────────────────────────────── */
-  ui()   { this.blip(1150, { dur: .045, type: 'sine', vol: .07 }); this.hiss({ dur: .03, vol: .04, freq: 5000, filter: 'highpass' }); },
+  ui()   { this.blip([1150, 1046, 1318][this.pickVar('ui', 3)], { dur: .045, type: 'sine', vol: .07 });
+           this.hiss({ dur: .03, vol: .04, freq: 5000, filter: 'highpass' }); },
   select(){ this.hiss({ dur: .05, vol: .07, freq: 2600, filter: 'bandpass', q: 2 }); this.blip(880, { dur: .06, type: 'triangle', vol: .06, to: 1250 }); },
   err()  { this.blip(140, { dur: .16, type: 'square', vol: .1, to: 96 }); this.hiss({ dur: .1, vol: .07, freq: 420 }); },
 
   /* 종이·카드 */
   cardPlay(type) {
-    this.hiss({ dur: .075, vol: .1, freq: 3800, filter: 'bandpass', q: .8, to: 1500 });
-    if (type === 'attack') this.blip(320, { dur: .07, type: 'triangle', vol: .07, to: 190 });
-    else if (type === 'power') { [392, 494, 587].forEach((f, i) => this.blip(f, { dur: .5, type: 'sine', vol: .06, delay: i * .045, rev: .5 })); }
-    else this.blip(660, { dur: .08, type: 'sine', vol: .06, to: 880 });
+    /* 종이 소리부터 세 갈래 — 훑기 / 떼기 / 팽팽하게 당기기 */
+    const paper = this.pickVar('paper', 3);
+    if (paper === 0) this.hiss({ dur: .075, vol: .1, freq: 3800, filter: 'bandpass', q: .8, to: 1500 });
+    else if (paper === 1) this.hiss({ dur: .055, vol: .095, freq: 5600, filter: 'highpass', to: 2400 });
+    else { this.hiss({ dur: .04, vol: .08, freq: 3000, filter: 'bandpass', q: 2.2 });
+           this.hiss({ dur: .06, vol: .07, freq: 6400, filter: 'highpass', delay: .035 }); }
+    if (type === 'attack') {
+      const v = this.pickVar('cpAtk', 3);
+      if (v === 0) this.blip(320, { dur: .07, type: 'triangle', vol: .07, to: 190 });
+      else if (v === 1) this.blip(268, { dur: .085, type: 'sawtooth', vol: .06, to: 150 });
+      else { this.blip(410, { dur: .06, type: 'square', vol: .05, to: 210 });
+             this.blip(205, { dur: .1, type: 'sine', vol: .06, to: 110, delay: .02 }); }
+    } else if (type === 'power') {
+      /* 심법 — 화음을 셋 중 하나로 */
+      const CH = [[392, 494, 587], [349, 440, 523], [330, 415, 554]];
+      CH[this.pickVar('cpPow', 3)].forEach((f, i) =>
+        this.blip(f, { dur: .5, type: 'sine', vol: .06, delay: i * .045, rev: .5 }));
+    } else {
+      const v = this.pickVar('cpSkl', 3);
+      if (v === 0) this.blip(660, { dur: .08, type: 'sine', vol: .06, to: 880 });
+      else if (v === 1) this.blip(740, { dur: .09, type: 'triangle', vol: .055, to: 1050 });
+      else { this.blip(587, { dur: .07, type: 'sine', vol: .05, to: 784 });
+             this.blip(1174, { dur: .05, type: 'sine', vol: .035, delay: .03, rev: .3 }); }
+    }
   },
-  draw() {
-    for (let i = 0; i < 3; i++)
-      this.hiss({ dur: .035, vol: .055, freq: 4200 + Math.random() * 2500, filter: 'bandpass', q: 1.4, delay: i * .035 });
+  draw(n) {
+    /* 장수만큼 종이가 스친다 — 갈래마다 결이 다르다 */
+    const k = Math.max(1, Math.min(5, n || 3));
+    const v = this.pickVar('draw', 3);
+    for (let i = 0; i < k; i++) {
+      const base = v === 0 ? 4200 : v === 1 ? 3200 : 5200;
+      this.hiss({ dur: v === 2 ? .026 : .035, vol: .05 + (v === 1 ? .01 : 0),
+        freq: base + Math.random() * 2500, filter: v === 1 ? 'lowpass' : 'bandpass',
+        q: 1.4, delay: i * (v === 2 ? .026 : .035) });
+    }
   },
 
   /* 타격 — 몸통(저역) + 살점(중역) + 파편(고역) 3층 */
+  /* 휘두르는 소리 — 네 갈래 (긴 베기 / 짧은 벰 / 훑는 벰 / 도는 벰) */
   slash() {
-    this.hiss({ dur: .13, vol: .16, freq: 7000, to: 900, filter: 'bandpass', q: .7, rev: .3 });
-    this.blip(1500, { dur: .09, type: 'sawtooth', vol: .05, to: 380, rev: .25 });
+    switch (this.pickVar('slash', 4)) {
+      case 0:
+        this.hiss({ dur: .13, vol: .16, freq: 7000, to: 900, filter: 'bandpass', q: .7, rev: .3 });
+        this.blip(1500, { dur: .09, type: 'sawtooth', vol: .05, to: 380, rev: .25 }); break;
+      case 1:
+        this.hiss({ dur: .075, vol: .17, freq: 9500, to: 1800, filter: 'highpass', rev: .2 });
+        this.blip(2100, { dur: .06, type: 'sine', vol: .045, to: 620 }); break;
+      case 2:
+        this.hiss({ dur: .19, vol: .13, freq: 4200, to: 620, filter: 'bandpass', q: 1.3, rev: .35 });
+        this.blip(880, { dur: .13, type: 'triangle', vol: .05, to: 260, rev: .3 }); break;
+      default:
+        this.hiss({ dur: .1, vol: .14, freq: 6200, to: 1100, filter: 'bandpass', q: .9, rev: .28 });
+        this.hiss({ dur: .09, vol: .1, freq: 3400, to: 700, filter: 'bandpass', q: 1.6, delay: .055, rev: .3 });
+    }
   },
+  /* 맞는 소리 — 세 갈래. 세기(power)에 따라 층이 더 붙는다 */
   hit(power) {
     const p = power || 1;
-    this.blip(this.vary(165 - 34 * p, .08), { dur: .17 + .05 * p, type: 'triangle', vol: .17, to: 42, rev: .2 });
-    this.hiss({ dur: .1 + .05 * p, vol: .17, freq: 1500 + 500 * p, to: 260, rev: .25 });
+    const v = this.pickVar('hit', 3);
+    const lo = v === 0 ? 165 : v === 1 ? 138 : 196;
+    const mid = v === 0 ? 1500 : v === 1 ? 1050 : 2100;
+    this.blip(this.vary(lo - 34 * p, .08), { dur: .17 + .05 * p, type: v === 2 ? 'sawtooth' : 'triangle', vol: .17, to: 42, rev: .2 });
+    this.hiss({ dur: .1 + .05 * p, vol: .17, freq: mid + 500 * p, to: 260, filter: v === 1 ? 'lowpass' : 'bandpass', q: 1, rev: .25 });
     this.blip(this.vary(60, .1), { dur: .22, type: 'sine', vol: .13 + .05 * p, to: 30 });
     if (p > 1.5) this.hiss({ dur: .3, vol: .08, freq: 700, to: 150, rev: .6, delay: .02 });
   },
+  /* 막는 소리 — 나무 / 쇠 / 가죽 */
   block() {
-    this.blip(this.vary(430), { dur: .16, type: 'triangle', vol: .12, to: 250, rev: .3 });
-    this.blip(this.vary(880), { dur: .1, type: 'sine', vol: .07, to: 620, delay: .012, rev: .3 });
-    this.hiss({ dur: .06, vol: .08, freq: 2400, filter: 'bandpass', q: 2 });
+    switch (this.pickVar('block', 3)) {
+      case 0:
+        this.blip(this.vary(430), { dur: .16, type: 'triangle', vol: .12, to: 250, rev: .3 });
+        this.blip(this.vary(880), { dur: .1, type: 'sine', vol: .07, to: 620, delay: .012, rev: .3 });
+        this.hiss({ dur: .06, vol: .08, freq: 2400, filter: 'bandpass', q: 2 }); break;
+      case 1:
+        this.blip(this.vary(1180), { dur: .28, type: 'sine', vol: .1, to: 760, rev: .55 });
+        this.blip(this.vary(2360), { dur: .16, type: 'sine', vol: .05, delay: .008, rev: .5 });
+        this.hiss({ dur: .05, vol: .1, freq: 5200, filter: 'highpass' }); break;
+      default:
+        this.blip(this.vary(210), { dur: .13, type: 'sine', vol: .13, to: 120 });
+        this.hiss({ dur: .1, vol: .12, freq: 900, to: 260, rev: .2 });
+    }
   },
+  /* 독 — 방울 터지기 / 스미기 */
   poison() {
-    for (let i = 0; i < 4; i++)
-      this.blip(this.vary(180 + i * 26, .12), { dur: .1, type: 'sine', vol: .07, to: 90, delay: i * .06, rev: .3 });
+    if (this.pickVar('poison', 2) === 0) {
+      for (let i = 0; i < 4; i++)
+        this.blip(this.vary(180 + i * 26, .12), { dur: .1, type: 'sine', vol: .07, to: 90, delay: i * .06, rev: .3 });
+    } else {
+      this.hiss({ dur: .5, vol: .08, freq: 640, to: 180, filter: 'bandpass', q: 2.4, rev: .5 });
+      for (let i = 0; i < 3; i++)
+        this.blip(this.vary(146 - i * 14, .1), { dur: .18, type: 'sine', vol: .06, to: 70, delay: i * .09, rev: .4 });
+    }
   },
+  /* 회복 — 화음 세 갈래 */
   heal() {
-    [523, 659, 784, 1046].forEach((f, i) =>
+    const CH = [[523, 659, 784, 1046], [440, 554, 659, 880], [587, 740, 880, 1174]];
+    CH[this.pickVar('heal', 3)].forEach((f, i) =>
       this.blip(f, { dur: .55, type: 'sine', vol: .085, delay: i * .055, rev: .7 }));
   },
   power() {
@@ -2272,9 +2354,13 @@ const SND = {
       this.blip(f, { dur: .75, type: 'triangle', vol: .075, to: f * 1.5, delay: i * .05, rev: .8 }));
     this.hiss({ dur: .5, vol: .05, freq: 600, to: 5000, filter: 'bandpass', q: 1.2, rev: .5 });
   },
+  /* 엽전 — 몇 닢인지, 어떻게 떨어졌는지가 매번 다르다 */
   coin() {
-    for (let i = 0; i < 3; i++)
-      this.blip(this.vary(1250 + i * 260, .07), { dur: .1, type: 'square', vol: .055, delay: i * .045, rev: .35 });
+    const k = 2 + this.pickVar('coinN', 3);
+    const base = [1250, 1080, 1420][this.pickVar('coin', 3)];
+    for (let i = 0; i < k; i++)
+      this.blip(this.vary(base + i * 260, .07), { dur: .1, type: 'square', vol: .055,
+        delay: i * (.035 + Math.random() * .03), rev: .35 });
   },
   potion() {
     this.blip(this.vary(1750), { dur: .12, type: 'sine', vol: .07, rev: .45 });
@@ -2282,7 +2368,7 @@ const SND = {
   },
   /* 종·징 — 배음을 어긋나게 쌓아야 쇠붙이처럼 들린다 */
   bell() {
-    const f = this.vary(740, .02);
+    const f = this.vary([740, 622, 880][this.pickVar('bell', 3)], .02);
     [[1, .12], [2.76, .05], [5.4, .028], [8.9, .015]].forEach(([m, v]) =>
       this.blip(f * m, { dur: 1.5 / Math.sqrt(m), type: 'sine', vol: v, rev: .9, jit: .004 }));
   },
@@ -2292,9 +2378,20 @@ const SND = {
       this.blip(f * m, { dur: 2.6 / Math.pow(m, .35), type: 'sine', vol: v, rev: 1, jit: .005 }));
     this.hiss({ dur: 1.1, vol: .09, freq: 900, to: 160, rev: .9 });
   },
+  /* 북 — 가운데를 치기 / 테를 치기 / 두 번 굴리기 */
   drum() {
-    this.blip(this.vary(92, .06), { dur: .3, type: 'sine', vol: .16, to: 46, rev: .3 });
-    this.hiss({ dur: .07, vol: .09, freq: 1100, to: 300 });
+    switch (this.pickVar('drum', 3)) {
+      case 0:
+        this.blip(this.vary(92, .06), { dur: .3, type: 'sine', vol: .16, to: 46, rev: .3 });
+        this.hiss({ dur: .07, vol: .09, freq: 1100, to: 300 }); break;
+      case 1:
+        this.blip(this.vary(138, .06), { dur: .18, type: 'triangle', vol: .13, to: 78, rev: .25 });
+        this.hiss({ dur: .05, vol: .11, freq: 2600, to: 800, filter: 'bandpass', q: 1.8 }); break;
+      default:
+        this.blip(this.vary(88, .06), { dur: .16, type: 'sine', vol: .12, to: 50 });
+        this.blip(this.vary(96, .06), { dur: .3, type: 'sine', vol: .15, to: 44, delay: .1, rev: .35 });
+        this.hiss({ dur: .06, vol: .07, freq: 1000, to: 280, delay: .1 });
+    }
   },
   boss() {
     this.gong();
@@ -2394,8 +2491,55 @@ const SND = {
               this.blip(2100, { dur: .1, type: 'sine', vol: .06, to: 700 }); },
   bluntS()  { this.blip(this.vary(74), { dur: .42, type: 'sine', vol: .2, to: 32, rev: .4 });
               this.hiss({ dur: .22, vol: .16, freq: 800, to: 120, rev: .4 }); },
+  /* ── 연출마다 제 소리를 준다 ──────────────────────────────
+     예전에는 베기·발톱·꽃잎·부적·창에 소리가 없어서
+     전부 한 가지 휘두르는 소리로만 들렸다.
+     ────────────────────────────────────────────────────── */
+  slashS()  { this.hiss({ dur: .1, vol: .17, freq: 8200, to: 1400, filter: 'bandpass', q: .8, rev: .3 });
+              this.blip(this.vary(1750), { dur: .07, type: 'sawtooth', vol: .05, to: 420, rev: .25 });
+              this.blip(this.vary(128), { dur: .16, type: 'sine', vol: .09, to: 60 }); },
+  slash2S() { for (let i = 0; i < 3; i++)
+                this.hiss({ dur: .07, vol: .14, freq: 7600 - i * 900, to: 1200, filter: 'bandpass', q: 1.1,
+                  delay: i * .065, rev: .3 });
+              this.blip(this.vary(96), { dur: .34, type: 'sine', vol: .14, to: 40, delay: .04, rev: .4 }); },
+  clawS()   { for (let i = 0; i < 3; i++)
+                this.hiss({ dur: .055, vol: .13, freq: 3400 + i * 700, to: 900, filter: 'bandpass', q: 2.4,
+                  delay: i * .045 });
+              this.blip(this.vary(150), { dur: .2, type: 'sawtooth', vol: .08, to: 62, rev: .3 }); },
+  lanceS()  { this.blip(this.vary(1450), { dur: .09, type: 'square', vol: .07, to: 380 });
+              this.hiss({ dur: .12, vol: .14, freq: 6200, to: 1100, filter: 'bandpass', q: 1.6, rev: .3 });
+              this.blip(this.vary(110), { dur: .26, type: 'sine', vol: .11, to: 48, rev: .35 }); },
+  petalS()  { [1046, 1318, 1568, 2093].forEach((f, i) =>
+                this.blip(this.vary(f, .01), { dur: .5, type: 'sine', vol: .045, delay: i * .05, rev: .8 }));
+              this.hiss({ dur: .4, vol: .05, freq: 3400, to: 900, filter: 'bandpass', q: 1.1, rev: .6 }); },
+  talismanS(){ this.hiss({ dur: .06, vol: .12, freq: 4600, filter: 'highpass' });
+              this.blip(this.vary(620), { dur: .22, type: 'triangle', vol: .09, to: 300, rev: .45 });
+              this.blip(this.vary(1240), { dur: .12, type: 'sine', vol: .05, delay: .02, rev: .4 }); },
 
-  /* 배경 바람 — 아주 낮게 깔아 둔다 */
+  /* ── 배경 바람 — 막마다 결이 다르다 ──────────────────────
+     낮은 산은 마른 바람, 벼랑은 휘파람, 명계는 웅웅거림,
+     태초는 맑은 울림, 백귀야행은 멀리서 오는 발소리,
+     무(無)는 거의 아무것도 없다. */
+  ambProfile(act) {
+    const a = Math.min(15, Math.max(1, act || 1));
+    return [
+      { f: 420, q: .7, r: .35, w: .06, d: 210 },   /* 1 요괴 숲 */
+      { f: 380, q: .8, r: .34, w: .05, d: 180 },   /* 2 안개 봉우리 */
+      { f: 640, q: 2.6, r: .30, w: .09, d: 380 },  /* 3 구천 벼랑 — 휘파람 */
+      { f: 190, q: 1.1, r: .28, w: .04, d: 90 },   /* 4 명계 관문 — 웅웅 */
+      { f: 900, q: 1.4, r: .40, w: .07, d: 320 },  /* 5 구천 상계 */
+      { f: 130, q: .9, r: .24, w: .03, d: 60 },    /* 6 무간 */
+      { f: 96, q: .7, r: .22, w: .025, d: 44 },    /* 7 무저갱 */
+      { f: 1500, q: 2.2, r: .5, w: .05, d: 520 },  /* 8 태초 — 맑다 */
+      { f: 560, q: 1.2, r: .34, w: .06, d: 240 },  /* 9 환영 */
+      { f: 250, q: 1.8, r: .30, w: .14, d: 150 },  /* 10 백귀야행 — 발소리처럼 흔들린다 */
+      { f: 1100, q: 1.0, r: .44, w: .05, d: 420 }, /* 11 새벽 */
+      { f: 470, q: .8, r: .36, w: .05, d: 200 },   /* 12 인간계 */
+      { f: 330, q: 1.6, r: .30, w: .06, d: 170 },  /* 13 왕도 */
+      { f: 1750, q: 1.3, r: .55, w: .04, d: 600 }, /* 14 천계 */
+      { f: 70, q: .6, r: .18, w: .015, d: 26 }     /* 15 무 */
+    ][a - 1];
+  },
   ambience(on, strong) {
     if (!this.ok()) return;
     const c = this.ctx;
@@ -2407,15 +2551,23 @@ const SND = {
       }
       return;
     }
+    const act = (typeof G === 'object' && G && G.run) ? G.run.act : 1;
+    /* 막이 바뀌면 바람도 갈아 끼운다 */
+    if (this.amb && this.ambAct !== act) { const old = this.amb, og = this.ambGain;
+      og.gain.linearRampToValueAtTime(.0001, c.currentTime + .8);
+      setTimeout(() => { try { old.stop(); } catch (e) {} }, 1100);
+      this.amb = null; }
     if (this.amb) { if (this.ambGain) this.ambGain.gain.linearRampToValueAtTime(strong ? .034 : .019, c.currentTime + 1.2); return; }
+    const pr = this.ambProfile(act);
+    this.ambAct = act;
     const s = c.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true;
     s.playbackRate.value = .35;
-    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .7;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = pr.f; f.Q.value = pr.q;
     const lfo = c.createOscillator(), lg = c.createGain();
-    lfo.frequency.value = .06; lg.gain.value = 210;
+    lfo.frequency.value = pr.w; lg.gain.value = pr.d;
     lfo.connect(lg).connect(f.frequency); lfo.start();
     this.ambGain = c.createGain(); this.ambGain.gain.value = .0001;
-    this.ambGain.gain.linearRampToValueAtTime(strong ? .034 : .019, c.currentTime + 2.5);
+    this.ambGain.gain.linearRampToValueAtTime((strong ? .034 : .019) * (pr.r / .34), c.currentTime + 2.5);
     s.connect(f).connect(this.ambGain).connect(this.master);
     s.start(); this.amb = s;
   }
@@ -5093,7 +5245,7 @@ function drawCards(n) {
     }
     b.hand.push(b.drawPile.pop());
   }
-  SND.draw(); if (n >= 3) SND.swoosh(); syncAll();
+  SND.draw(n); if (n >= 3) SND.swoosh(); syncAll();
 }
 function discardCard(c) {
   const b = G.b, i = b.hand.findIndex(x => x.uid === c.uid);
@@ -5246,6 +5398,7 @@ async function playCard(card, target) {
   castMotion(card, d, target);
   SND.cardPlay(d.type);
   if (d.type === 'attack') SND.slash();
+  if (d.rar === 'ssc') SND.blip(1046, { dur: .5, type: 'sine', vol: .06, to: 1568, rev: .7 });
 
   b.curCard = card;
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
@@ -6812,14 +6965,19 @@ function impact(kind, ent) {
   switch (kind) {
     case 'slash':
       add('', `--a:${rr(-46, -18)}deg`);
-      shockRing(cx, cy, 130, '#fff0d0'); sparkles(cx, cy, 4, '#fff6dc', 44); break;
+      shockRing(cx, cy, 130, '#fff0d0'); sparkles(cx, cy, 4, '#fff6dc', 44);
+      SND.slashS(); break;
     case 'slash2':
       for (let k = 0; k < 3; k++) add('', `--a:${rr(-60, 40)}deg;animation-delay:${k * .07}s`);
       for (let k = 0; k < 3; k++) setTimeout(() => shockRing(cx + rr(-22, 22), cy + rr(-22, 22), 92, '#ffe6c0'), k * 70);
-      sparkles(cx, cy, 7, '#fff2d0', 60); blink(.45); break;
+      sparkles(cx, cy, 7, '#fff2d0', 60); blink(.45); SND.slash2S(); break;
     case 'spin':
       for (let k = 0; k < 2; k++) add('', `--a:${k ? 14 : -14}deg;animation-delay:${k * .06}s`);
       SND.windhit(); break;
+    case 'lance':
+      add('lance'); FX.spark(cx, cy, 14, '255,214,150');
+      lightBeam(cx, 'rgba(255,228,170,.45)', 74); shockRing(cx, cy, 140, '#ffe0a0');
+      SND.lanceS(); break;
     case 'pierce':
       add('lance'); FX.spark(cx, cy, 12, '255,220,170');
       lightBeam(cx, 'rgba(255,235,190,.5)', 60); shockRing(cx, cy, 110, '#ffe9b0');
@@ -6870,14 +7028,14 @@ function impact(kind, ent) {
       SND.windhit(); break;
     case 'petal':
       for (let k = 0; k < 9; k++) add('', `--x:${rr(-70, 70)}px;animation-delay:${k * .04}s`);
-      sparkles(cx, cy, 10, '#ffd0e0', 96); shockRing(cx, cy, 170, '#ffc0d8'); break;
+      sparkles(cx, cy, 10, '#ffd0e0', 96); shockRing(cx, cy, 170, '#ffc0d8'); SND.petalS(); break;
     case 'talisman':
       add(); FX.burst(cx, cy, 12, '168,39,44', 4, 40, 4);
-      shockRing(cx, cy, 160, '#e8b04a'); sparkles(cx, cy, 6, '#ffd98a', 58); break;
+      shockRing(cx, cy, 160, '#e8b04a'); sparkles(cx, cy, 6, '#ffd98a', 58); SND.talismanS(); break;
     case 'claw':
     default:
       for (let k = 0; k < 3; k++) add('', `--a:${rr(-30, 30)}deg;animation-delay:${k * .05}s`);
-      shockRing(cx, cy, 120, '#e8a0a0'); sparkles(cx, cy, 4, '#ffc8b8', 48); break;
+      shockRing(cx, cy, 120, '#e8a0a0'); sparkles(cx, cy, 4, '#ffc8b8', 48); SND.clawS(); break;
   }
   $('#app').appendChild(box);
   setTimeout(() => box.remove(), 1100);
