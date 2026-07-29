@@ -324,6 +324,200 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card.g-unknown::before{content:'';position:absolute;inset:-7px;border-radius:11px;z-index:0;
   background:conic-gradient(from 0deg,#7b4bd8,#2de1ff,#ff2d55,#ffe14d,#7b4bd8);
   animation:emberSpin 3.4s linear infinite, emberPulse 1.5s ease-in-out infinite}
+
+/* ══ 스킨(皮) — S급·SSX급·?급 부적에 입힌다 ══════════════
+   스킨을 입으면 등급이 만드는 기본 아우라를 지우고 제 색을 낸다.
+   ═══════════════════════════════════════════════════════════ */
+.card.skinned::before{display:none!important}
+.card.skinned .face{animation:none}
+.card.skinned .sklayer{position:absolute;inset:0;border-radius:5px;pointer-events:none;z-index:1;overflow:hidden}
+.card.skinned .face > *:not(.sklayer){position:relative;z-index:2}
+.card.skinned .skaura{position:absolute;inset:-7px;border-radius:11px;z-index:0;pointer-events:none}
+@keyframes skSweep{0%{background-position:210% 0}55%,100%{background-position:-110% 0}}
+@keyframes skSpin{to{transform:rotate(360deg)}}
+@keyframes skBreathe{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes skRise{0%{transform:translateY(0) scale(.7);opacity:0}
+  15%{opacity:.9}100%{transform:translateY(-104px) scale(1.1);opacity:0}}
+@keyframes skDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4px,-5px) scale(1.08)}}
+@keyframes skTwinkle{0%,100%{opacity:.15}50%{opacity:.95}}
+
+/* 1. 금박(金箔) — 검은 옻칠 위에 금박을 입혔다 */
+.card.sk-gold .face{background:linear-gradient(155deg,#241c10,#100c07 55%,#2a2013);border-color:#c8a13c;
+  box-shadow:0 5px 16px rgba(0,0,0,.55),inset 0 0 0 1px rgba(230,190,110,.45)}
+.card.sk-gold .cname{color:#ffe9ae;text-shadow:0 0 10px rgba(255,200,110,.6)}
+.card.sk-gold .txt{color:#e6d4ab}
+.card.sk-gold .txt em{color:#ff9a6a}.card.sk-gold .txt i{color:#8fd0ff}
+.card.sk-gold .kind{color:#a08a55;border-top-color:rgba(200,160,80,.3)}
+.card.sk-gold .art .g{color:#ffd776;text-shadow:0 0 16px rgba(255,190,90,.85),0 2px 0 #6b4a12}
+.card.sk-gold .art .ring{border-color:rgba(230,190,110,.5);box-shadow:0 0 14px rgba(230,180,90,.4) inset}
+.card.sk-gold .cost{background:linear-gradient(140deg,#e6bd63,#8a6118);color:#2a1c06;border-color:#ffe9ae}
+.card.sk-gold .sklayer{mix-blend-mode:screen;
+  background:linear-gradient(108deg,transparent 36%,rgba(255,230,150,.5) 47%,rgba(255,200,90,.28) 53%,transparent 64%);
+  background-size:250% 100%;animation:skSweep 3.4s ease-in-out infinite}
+.card.sk-gold .skaura{background:conic-gradient(from 0deg,#c8a13c,#ffe9ae,#8a6118,#c8a13c);
+  filter:blur(8px);opacity:.6;animation:skSpin 7s linear infinite}
+
+/* 2. 청자(靑瓷) — 갈라진 비취빛 유약 */
+.card.sk-celadon .face{background:linear-gradient(155deg,#dcefe6,#b8dbcd 55%,#94c2b2);border-color:#3f7d6b;
+  box-shadow:0 5px 14px rgba(0,0,0,.3),inset 0 0 26px rgba(255,255,255,.5)}
+.card.sk-celadon .cname{color:#14453a}
+.card.sk-celadon .txt{color:#1c4a3f}
+.card.sk-celadon .kind{color:#4c7c6e;border-top-color:rgba(30,80,68,.22)}
+.card.sk-celadon .art .g{color:#0f3b31;text-shadow:0 1px 0 rgba(255,255,255,.65)}
+.card.sk-celadon .art .ring{border-color:rgba(20,70,58,.3)}
+.card.sk-celadon .cost{background:linear-gradient(140deg,#5ea78f,#22574a);color:#eafff6;border-color:#bfe6d8}
+.card.sk-celadon .sklayer{opacity:.5;
+  background:
+    linear-gradient(64deg,transparent 48%,rgba(20,60,52,.5) 49%,transparent 50%),
+    linear-gradient(-38deg,transparent 62%,rgba(20,60,52,.4) 63%,transparent 64%),
+    linear-gradient(15deg,transparent 30%,rgba(20,60,52,.35) 31%,transparent 32%),
+    linear-gradient(-72deg,transparent 76%,rgba(20,60,52,.3) 77%,transparent 78%)}
+.card.sk-celadon .skaura{background:radial-gradient(circle,rgba(120,210,180,.55),transparent 70%);
+  animation:skBreathe 3.6s ease-in-out infinite}
+
+/* 3. 주칠(朱漆) — 붉은 옻칠에 금니로 그렸다 */
+.card.sk-lacquer .face{background:linear-gradient(155deg,#7d1418,#4a0a0d 58%,#68110f);border-color:#e8c86a;
+  box-shadow:0 5px 16px rgba(0,0,0,.5),inset 0 0 0 1px rgba(232,200,106,.4)}
+.card.sk-lacquer .cname{color:#ffdf9a}
+.card.sk-lacquer .txt{color:#f2d6c4}
+.card.sk-lacquer .txt em{color:#ffb08a}.card.sk-lacquer .txt i{color:#9fd8ff}
+.card.sk-lacquer .kind{color:#c8926a;border-top-color:rgba(232,200,106,.28)}
+.card.sk-lacquer .art .g{color:#ffe6a8;text-shadow:0 0 12px rgba(255,190,90,.6),0 2px 0 #3a0708}
+.card.sk-lacquer .art .ring{border-color:rgba(232,200,106,.45)}
+.card.sk-lacquer .cost{background:linear-gradient(140deg,#2a0607,#5a0d10);color:#ffdf9a;border-color:#e8c86a}
+.card.sk-lacquer .sklayer{opacity:.32;
+  background:repeating-linear-gradient(42deg,transparent 0 7px,rgba(255,220,150,.14) 7px 8px)}
+.card.sk-lacquer .skaura{background:radial-gradient(circle,rgba(200,40,40,.7),transparent 72%);
+  animation:skBreathe 2.8s ease-in-out infinite}
+
+/* 4. 먹빛(墨) — 번지는 먹물 */
+.card.sk-ink .face{background:linear-gradient(155deg,#3a3630,#171512 60%,#2a2622);border-color:#8f887c;
+  box-shadow:0 5px 14px rgba(0,0,0,.55),inset 0 0 30px rgba(0,0,0,.6)}
+.card.sk-ink .cname{color:#f0ece0}
+.card.sk-ink .txt{color:#cfc9b8}
+.card.sk-ink .txt em{color:#ff8a7a}.card.sk-ink .txt i{color:#8fc4ff}
+.card.sk-ink .kind{color:#8f887c;border-top-color:rgba(200,195,180,.2)}
+.card.sk-ink .art .g{color:#f6f2e6;text-shadow:0 0 20px rgba(0,0,0,.9)}
+.card.sk-ink .art .ring{border-color:rgba(240,236,224,.28)}
+.card.sk-ink .cost{background:#0e0d0b;color:#f0ece0;border-color:#8f887c}
+.card.sk-ink .sklayer{opacity:.55;
+  background:radial-gradient(ellipse 60% 34% at 22% 26%,rgba(0,0,0,.85),transparent 70%),
+    radial-gradient(ellipse 48% 30% at 78% 68%,rgba(0,0,0,.7),transparent 72%),
+    radial-gradient(ellipse 40% 22% at 50% 92%,rgba(0,0,0,.6),transparent 70%);
+  animation:skDrift 7s ease-in-out infinite}
+.card.sk-ink .skaura{background:radial-gradient(circle,rgba(60,56,48,.9),transparent 68%);
+  animation:skBreathe 4.5s ease-in-out infinite}
+
+/* 5. 야광(夜光) — 어둠 속에서 스스로 빛난다 */
+.card.sk-glow .face{background:linear-gradient(155deg,#0d1730,#060a18 58%,#0a1428);border-color:#2de1ff;
+  box-shadow:0 5px 18px rgba(0,0,0,.6),0 0 22px rgba(45,225,255,.35),inset 0 0 26px rgba(20,120,180,.35)}
+.card.sk-glow .cname{color:#b6f4ff;text-shadow:0 0 12px rgba(45,225,255,.9)}
+.card.sk-glow .txt{color:#a8d8e8}
+.card.sk-glow .txt em{color:#ff7a9a}.card.sk-glow .txt i{color:#6ef0ff}
+.card.sk-glow .kind{color:#5a90a8;border-top-color:rgba(45,225,255,.3)}
+.card.sk-glow .art .g{color:#dffaff;text-shadow:0 0 10px #2de1ff,0 0 26px #2de1ff,0 0 48px rgba(45,225,255,.7)}
+.card.sk-glow .art .ring{border-color:rgba(45,225,255,.55);box-shadow:0 0 16px rgba(45,225,255,.5)}
+.card.sk-glow .cost{background:linear-gradient(140deg,#0b3a52,#041826);color:#b6f4ff;border-color:#2de1ff;
+  box-shadow:0 0 12px rgba(45,225,255,.6)}
+.card.sk-glow .sklayer{
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(45,225,255,.07) 3px 4px);
+  animation:skBreathe 2.4s ease-in-out infinite}
+.card.sk-glow .skaura{background:radial-gradient(circle,rgba(45,225,255,.75),transparent 70%);
+  filter:blur(5px);animation:skBreathe 2.1s ease-in-out infinite}
+
+/* 6. 화염(火焰) — 불티가 피어오른다 */
+.card.sk-flame .face{background:linear-gradient(170deg,#ffd9a0,#f08a2a 40%,#a82810 78%,#5a0f06);
+  border-color:#ffb648;box-shadow:0 5px 18px rgba(0,0,0,.5),inset 0 -18px 30px rgba(90,15,6,.6)}
+.card.sk-flame .cname{color:#fff3d8;text-shadow:0 1px 4px rgba(120,20,0,.8)}
+.card.sk-flame .txt{color:#fff0dc;text-shadow:0 1px 3px rgba(90,15,6,.7)}
+.card.sk-flame .txt em{color:#fff0a0}.card.sk-flame .txt i{color:#bfe8ff}
+.card.sk-flame .kind{color:#ffd9a0;border-top-color:rgba(255,200,120,.4)}
+.card.sk-flame .art .g{color:#fff6dc;text-shadow:0 0 14px #ff8a00,0 0 34px #ff4a00,0 2px 0 #7a1c04}
+.card.sk-flame .art .ring{border-color:rgba(255,220,160,.6);box-shadow:0 0 20px rgba(255,140,40,.6)}
+.card.sk-flame .cost{background:linear-gradient(140deg,#ff9a2a,#8a2408);color:#fff6dc;border-color:#ffd9a0}
+.card.sk-flame .sklayer i{position:absolute;bottom:-6px;width:3px;height:3px;border-radius:50%;
+  background:#ffd076;box-shadow:0 0 7px #ff9a2a;animation:skRise 2.6s linear infinite}
+.card.sk-flame .skaura{background:conic-gradient(from 0deg,#ff4a00,#ffd24d,#ff8a00,#ff2d00,#ff4a00);
+  filter:blur(9px);opacity:.75;animation:skSpin 3.4s linear infinite,skBreathe 1.5s ease-in-out infinite}
+
+/* 7. 서리(霜) — 살얼음이 낀 부적 */
+.card.sk-frost .face{background:linear-gradient(155deg,#f2fbff,#cfe6f5 52%,#a8c8e0);border-color:#5a9ec8;
+  box-shadow:0 5px 14px rgba(0,0,0,.28),0 0 20px rgba(140,210,255,.4),inset 0 0 30px rgba(255,255,255,.7)}
+.card.sk-frost .cname{color:#0f3550}
+.card.sk-frost .txt{color:#173d58}
+.card.sk-frost .kind{color:#4a7898;border-top-color:rgba(30,80,120,.25)}
+.card.sk-frost .art .g{color:#0d3a5c;text-shadow:0 0 12px rgba(180,230,255,.95),0 1px 0 #fff}
+.card.sk-frost .art .ring{border-color:rgba(80,150,200,.45)}
+.card.sk-frost .cost{background:linear-gradient(140deg,#7fc4e8,#255f88);color:#f2fbff;border-color:#cfe6f5}
+.card.sk-frost .sklayer{opacity:.6;
+  background:
+    linear-gradient(60deg,transparent 41%,rgba(255,255,255,.9) 42%,transparent 44%),
+    linear-gradient(-60deg,transparent 56%,rgba(255,255,255,.8) 57%,transparent 59%),
+    linear-gradient(120deg,transparent 24%,rgba(255,255,255,.7) 25%,transparent 27%),
+    radial-gradient(circle at 82% 16%,rgba(255,255,255,.9),transparent 26%),
+    radial-gradient(circle at 14% 76%,rgba(255,255,255,.8),transparent 24%)}
+.card.sk-frost .skaura{background:radial-gradient(circle,rgba(150,220,255,.8),transparent 70%);
+  filter:blur(6px);animation:skBreathe 3.2s ease-in-out infinite}
+
+/* 8. 자개(螺鈿) — 검은 칠 위에 자개를 박았다 */
+.card.sk-nacre .face{background:linear-gradient(155deg,#1a1620,#0b0910 58%,#16121c);border-color:#8fd8c8;
+  box-shadow:0 5px 16px rgba(0,0,0,.6),inset 0 0 0 1px rgba(180,240,220,.3)}
+.card.sk-nacre .cname{color:#d8fff2}
+.card.sk-nacre .txt{color:#bfd8d2}
+.card.sk-nacre .txt em{color:#ff9ab8}.card.sk-nacre .txt i{color:#9fe0ff}
+.card.sk-nacre .kind{color:#6f9a90;border-top-color:rgba(140,220,200,.28)}
+.card.sk-nacre .art .g{color:#eafff8;text-shadow:0 0 16px rgba(140,255,220,.7)}
+.card.sk-nacre .art .ring{border-color:rgba(140,220,200,.4)}
+.card.sk-nacre .cost{background:linear-gradient(140deg,#123028,#050a08);color:#d8fff2;border-color:#8fd8c8}
+.card.sk-nacre .sklayer{opacity:.62;mix-blend-mode:screen;
+  background:
+    conic-gradient(from 20deg at 26% 30%,#7affd8,#9ab8ff,#ff9ae0,#ffe89a,#7affd8),
+    conic-gradient(from 200deg at 74% 70%,#ff9ae0,#7affd8,#ffe89a,#9ab8ff,#ff9ae0);
+  background-size:44% 30%,38% 26%;background-repeat:no-repeat;
+  -webkit-mask-image:radial-gradient(ellipse 22% 15% at 26% 30%,#000 60%,transparent 62%),
+    radial-gradient(ellipse 19% 13% at 74% 70%,#000 60%,transparent 62%),
+    radial-gradient(ellipse 12% 9% at 60% 20%,#000 60%,transparent 62%);
+  mask-image:radial-gradient(ellipse 22% 15% at 26% 30%,#000 60%,transparent 62%),
+    radial-gradient(ellipse 19% 13% at 74% 70%,#000 60%,transparent 62%),
+    radial-gradient(ellipse 12% 9% at 60% 20%,#000 60%,transparent 62%);
+  animation:skBreathe 3.8s ease-in-out infinite}
+.card.sk-nacre .skaura{background:conic-gradient(from 0deg,#7affd8,#9ab8ff,#ff9ae0,#ffe89a,#7affd8);
+  filter:blur(8px);opacity:.55;animation:skSpin 8s linear infinite}
+
+/* 9. 혼돈(混沌) — 빛깔이 잡히지 않는다 */
+.card.sk-chaos .face{background:linear-gradient(155deg,#1c1030,#0a0616 55%,#1a0e2c);border-color:#c78cff;
+  box-shadow:0 5px 20px rgba(0,0,0,.6),inset 0 0 28px rgba(140,80,220,.4)}
+.card.sk-chaos .cname{color:#f2dcff;text-shadow:0 0 12px rgba(190,120,255,.8)}
+.card.sk-chaos .txt{color:#dcc8f0}
+.card.sk-chaos .txt em{color:#ff7ab0}.card.sk-chaos .txt i{color:#7ae8ff}
+.card.sk-chaos .kind{color:#9a7ac0;border-top-color:rgba(190,140,255,.3)}
+.card.sk-chaos .art .g{color:#fff;text-shadow:0 0 14px #b98cff,0 0 30px #ff2d55,0 0 48px #2de1ff}
+.card.sk-chaos .art .ring{border-color:rgba(200,150,255,.5);box-shadow:0 0 18px rgba(180,110,255,.6)}
+.card.sk-chaos .cost{background:linear-gradient(140deg,#4a1c7a,#12061f);color:#f2dcff;border-color:#c78cff}
+.card.sk-chaos .sklayer{mix-blend-mode:screen;opacity:.4;
+  background:conic-gradient(from 0deg,#ff2d55,#ffd24d,#2de1ff,#b98cff,#ff2d55);
+  animation:skSpin 4.2s linear infinite}
+.card.sk-chaos .skaura{background:conic-gradient(from 0deg,#ff2d55,#ffd24d,#2de1ff,#b98cff,#ff2d55);
+  filter:blur(10px);opacity:.85;animation:skSpin 2.4s linear infinite,skBreathe 1.3s ease-in-out infinite}
+
+/* 10. 성수(星宿) — 별자리를 새겼다 */
+.card.sk-star .face{background:linear-gradient(175deg,#101a34,#050a18 50%,#0b1226);border-color:#8fa8e8;
+  box-shadow:0 5px 18px rgba(0,0,0,.6),inset 0 0 30px rgba(30,50,110,.6)}
+.card.sk-star .cname{color:#e2ecff}
+.card.sk-star .txt{color:#c2d0ee}
+.card.sk-star .txt em{color:#ff96a8}.card.sk-star .txt i{color:#96d8ff}
+.card.sk-star .kind{color:#7a8cc0;border-top-color:rgba(150,180,255,.28)}
+.card.sk-star .art .g{color:#fff8dc;text-shadow:0 0 12px rgba(255,240,190,.9),0 0 30px rgba(150,180,255,.7)}
+.card.sk-star .art .ring{border-color:rgba(180,200,255,.4)}
+.card.sk-star .cost{background:linear-gradient(140deg,#1d2a55,#070c1a);color:#e2ecff;border-color:#8fa8e8}
+.card.sk-star .sklayer i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff8dc;
+  box-shadow:0 0 5px #fff8dc;animation:skTwinkle 2.6s ease-in-out infinite}
+.card.sk-star .sklayer:after{content:'';position:absolute;inset:0;
+  background:linear-gradient(118deg,transparent 44%,rgba(190,215,255,.35) 46%,transparent 48%),
+    linear-gradient(-58deg,transparent 62%,rgba(190,215,255,.28) 63%,transparent 65%)}
+.card.sk-star .skaura{background:radial-gradient(circle,rgba(120,160,255,.6),transparent 70%);
+  filter:blur(7px);animation:skBreathe 4s ease-in-out infinite}
+
 .card:hover{z-index:20!important}
 .card.sel{z-index:25!important;filter:drop-shadow(0 0 12px rgba(168,39,44,.9))}
 .card.unplayable .face{filter:grayscale(.75) brightness(.82)}
@@ -905,6 +1099,28 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .jhead .gback:hover{background:rgba(220,190,120,.32)}
 @keyframes jpulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,.45)}
   50%{box-shadow:0 3px 8px rgba(0,0,0,.45),0 0 18px 4px rgba(255,200,90,.7)}}
+
+/* ══ 스킨 고르기 ═════════════════════════════════════════ */
+.skinstage{position:relative;height:calc(var(--ch) + 26px);width:calc(var(--cw) + 40px);margin:6px auto 14px;
+  display:grid;place-items:center}
+.skinstage .card{position:relative!important;left:auto!important;top:auto!important;margin:0!important;
+  transform:none!important;cursor:default}
+.skinrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:min(560px,86vw);
+  max-height:40vh;overflow-y:auto;padding:2px 2px 8px}
+.skinrow::-webkit-scrollbar{width:8px}.skinrow::-webkit-scrollbar-thumb{background:rgba(220,200,160,.32);border-radius:4px}
+.skintile{width:88px;padding:9px 6px 8px;border-radius:8px;cursor:pointer;transition:.15s;text-align:center;
+  background:rgba(23,19,15,.55);border:1.5px solid #6d6250}
+.skintile:hover{transform:translateY(-3px);border-color:var(--gold)}
+.skintile.on{border-color:#ffd76a;background:rgba(120,90,30,.4);box-shadow:0 0 16px rgba(255,200,90,.4)}
+.skintile .sh{width:40px;height:40px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;
+  font-size:19px;color:var(--sc2);border:1.5px solid var(--sc2);
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.16),rgba(0,0,0,.45));
+  text-shadow:0 0 10px var(--sc2)}
+.skintile b{display:block;font-weight:400;font-size:12.5px;color:#f0e6cd;letter-spacing:.04em}
+.skintile small{display:block;font-size:10.5px;margin-top:2px}
+.skintile.plain .sh{text-shadow:none}
+.skinnone{color:#9a8d74;font-size:12.5px;padding:14px}
+.dextile.skintileD b{font-size:26px}
 
 /* ══ 저주의 서당 ═════════════════════════════════════════ */
 .school{position:absolute;inset:0;display:flex;flex-direction:column;
@@ -1706,7 +1922,8 @@ const G = {
 const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
 let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, autoUnlocked: false,
-  vip: { owned: false, at: 0, freeBoxAt: 0 }, dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
+  vip: { owned: false, at: 0, freeBoxAt: 0 }, skins: { own: {}, eq: {} },
+  dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
 /* VIP · 자동 플레이 개방 여부 */
 const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
 function vipOn() { return !!(META.vip && META.vip.owned); }
@@ -1732,6 +1949,8 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.opt = Object.assign({}, OPT_DEF, META.opt || {});
   OPT = META.opt;
   META.vip = Object.assign({ owned: false, at: 0, freeBoxAt: 0 }, META.vip || {});
+  META.skins = Object.assign({ own: {}, eq: {} }, META.skins || {});
+  META.skins.own = META.skins.own || {}; META.skins.eq = META.skins.eq || {};
   META.autoUnlocked = !!META.autoUnlocked;
   META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
   META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
@@ -4257,6 +4476,7 @@ function renderTop() {
       <div id="cursechip"></div>
       <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
       <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리">場<em></em></button>
+      <button class="topbtn box" id="boxbtn" title="부적 뽑기">匣<em></em></button>
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
@@ -4295,8 +4515,10 @@ function renderTop() {
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
     t.querySelector('#placebtn').onclick = () => showPlaces();
+    t.querySelector('#boxbtn').onclick = () => openBoxes();
     bindTip(t.querySelector('#placebtn'), () => `<b>터</b> — 갈 만한 자리<br>
-      상점 · 부적 뽑기 · 대전투장 · 장기 · 저주의 서당`);
+      상점 · 대전투장 · 장기 · 저주의 서당<br>
+      <span style="color:#9a8d74">부적 뽑기는 옆의 匣 단추</span>`);
     t.querySelector('#skilltop').onclick = () => openSkills();
     t.querySelector('#fusebtn').onclick = () => openFuse();
     const hb0 = t.querySelector('#healbtn');
@@ -4320,6 +4542,11 @@ function renderTop() {
   pb2.querySelector('em').textContent = marks || '';
   pb2.classList.toggle('busy', !!G.b);
   pb2.classList.toggle('ready', marks > 0);
+  const bb = t.querySelector('#boxbtn'), cur = (run.summons || 0) % 100;
+  const next = MILESTONES.find(m => m.at > cur);
+  bb.querySelector('em').textContent = next ? (next.at - cur) : '';
+  bb.title = '부적 뽑기 — 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
+  bb.classList.toggle('busy', !!G.b);
   /* 저주 딱지 */
   const cc = t.querySelector('#cursechip');
   cc.innerHTML = '';
@@ -4374,8 +4601,6 @@ function showPlaces() {
     grid.appendChild(t);
   };
   add('商', '떠돌이 상점', '부적 · 유물 · 물약을 산다', G.b ? 'lock' : '', () => openShop());
-  const cur = (run.summons || 0) % 100, next = MILESTONES.find(m => m.at > cur);
-  add('匣', '부적 뽑기', next ? `다음 보너스까지 ${next.at - cur}회` : '상자를 연다', G.b ? 'lock' : '', () => openBoxes());
   add('鬪', '대전투장', arena ? '들어갈 수 있다' : `SSX급 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`,
     arena ? 'hot' : 'lock', () => openArena());
   add('將', '장기 상점', '노인과 한 판 · 이기면 상자', G.b ? 'lock' : '', () => openJanggi());
@@ -4544,22 +4769,42 @@ function syncPiles() {
   syncIncoming();
 }
 
+/* 스킨이 흩뿌리는 작은 것들 (불티·별) */
+function skinBits(id) {
+  if (id === 'flame') {
+    let o = '';
+    for (let i = 0; i < 7; i++)
+      o += `<i style="left:${8 + i * 13}%;animation-delay:${(i * .37).toFixed(2)}s;animation-duration:${(2.2 + (i % 3) * .5).toFixed(1)}s"></i>`;
+    return o;
+  }
+  if (id === 'star') {
+    let o = '';
+    const pts = [[18,14],[34,26],[62,12],[78,30],[26,52],[52,44],[84,58],[14,72],[44,80],[70,88],[90,20],[8,36]];
+    pts.forEach((p2, i) => { o += `<i style="left:${p2[0]}%;top:${p2[1]}%;animation-delay:${(i * .29).toFixed(2)}s"></i>`; });
+    return o;
+  }
+  return '';
+}
 /* --- 카드 DOM --- */
 function cardNode(c, opts) {
   opts = opts || {};
   const d = cdef(c), v = cval(c), cost = ccost(c);
-  const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssx' ? ' special' : '') + auraClass(d.rar) + (c.up ? ' up' : ''));
+  const skin = skinOf(c.id);
+  const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssx' ? ' special' : '') +
+    auraClass(d.rar) + (c.up ? ' up' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, c.up) + '').replace(/<[^>]+>/g, '').length;
   n.innerHTML = `
     <div class="face">
+      ${skin ? `<div class="sklayer">${skinBits(skin)}</div>` : ''}
       <div class="grade" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
       <div class="cname${c.up ? ' up' : ''}">${cname(c)}</div>
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, c.up)}</span></div>
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
     </div>
-    <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>`;
+    <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>` +
+    (skin ? '<div class="skaura"></div>' : '');
   n.dataset.uid = c.uid;
   n.dataset.cid = c.id; n.dataset.up = c.up ? '1' : '0';
   if (opts.tip !== false) {
@@ -6605,6 +6850,104 @@ function showSchool() {
   p.querySelector('#sc_leave').onclick = leave;
 }
 
+/* ══════════════════════════════════════════════════════════
+   스킨(皮) — 부적의 옷
+   ──────────────────────────────────────────────────────────
+   S급·SSX급·?급 부적에만 입힌다. 성능은 하나도 바뀌지 않는다.
+   스킨은 모험을 넘어 남는다(META). 도감에서 갈아입힌다.
+   ══════════════════════════════════════════════════════════ */
+const SKINS = {};
+function defSkin(o) { SKINS[o.id] = o; return o; }
+defSkin({ id: 'gold',    n: '금박',  h: '金箔', rar: 'uncommon', c: '#e6bd63',
+  d: '검은 옻칠 위에 금박을 입혔다. 빛이 스칠 때마다 결이 흐른다.' });
+defSkin({ id: 'celadon', n: '청자',  h: '靑瓷', rar: 'common',   c: '#6fbfa4',
+  d: '가마에서 갈라진 비취빛 유약. 실금이 그대로 무늬가 되었다.' });
+defSkin({ id: 'lacquer', n: '주칠',  h: '朱漆', rar: 'common',   c: '#c8402c',
+  d: '붉은 옻을 여러 겹 올리고 금니로 그렸다.' });
+defSkin({ id: 'ink',     n: '먹빛',  h: '墨',   rar: 'common',   c: '#57524a',
+  d: '갓 갈아 낸 먹이 종이 위에서 아직 번지고 있다.' });
+defSkin({ id: 'glow',    n: '야광',  h: '夜光', rar: 'uncommon', c: '#2de1ff',
+  d: '어둠 속에서 스스로 빛난다. 밤에만 읽을 수 있는 글자.' });
+defSkin({ id: 'frost',   n: '서리',  h: '霜',   rar: 'uncommon', c: '#7fc4e8',
+  d: '살얼음이 낀 부적. 손끝이 시리다.' });
+defSkin({ id: 'flame',   n: '화염',  h: '火焰', rar: 'rare',     c: '#ff8a2a',
+  d: '아래에서 위로 불티가 계속 피어오른다.' });
+defSkin({ id: 'nacre',   n: '자개',  h: '螺鈿', rar: 'rare',     c: '#8fd8c8',
+  d: '검은 칠 위에 자개를 박았다. 보는 각도마다 빛깔이 다르다.' });
+defSkin({ id: 'star',    n: '성수',  h: '星宿', rar: 'rare',     c: '#8fa8e8',
+  d: '스물여덟 별자리를 새겼다. 별이 하나씩 깜빡인다.' });
+defSkin({ id: 'chaos',   n: '혼돈',  h: '混沌', rar: 'ssx',      c: '#b98cff',
+  d: '어떤 빛깔이라 부를 수가 없다. 볼 때마다 달라진다.' });
+const ALL_SKINS = Object.keys(SKINS);
+/* 스킨을 입힐 수 있는 등급 */
+const SKINNABLE = ['special', 'ssx', 'unknown'];
+function skinnable(id) { return CARDS[id] && SKINNABLE.indexOf(CARDS[id].rar) >= 0; }
+function ownSkin(id) { return !!(META.skins && META.skins.own[id]); }
+function skinOf(cardId) {
+  if (!skinnable(cardId)) return null;          /* S급 아래에는 입히지 않는다 */
+  const e = META.skins && META.skins.eq[cardId];
+  return e && SKINS[e] && ownSkin(e) ? e : null;
+}
+function gainSkin(id, silent) {
+  META.skins.own[id] = (META.skins.own[id] || 0) + 1;
+  saveMeta();
+  if (!silent) { SND.unlock(); toast(`스킨 획득 — ${SKINS[id].n}`); }
+  return META.skins.own[id] === 1;
+}
+function equipSkin(cardId, skinId) {
+  if (!META.skins) return;
+  if (skinId) META.skins.eq[cardId] = skinId; else delete META.skins.eq[cardId];
+  saveMeta();
+}
+function skinCount() { return Object.keys(META.skins ? META.skins.own : {}).length; }
+/* 스킨 상자에서 하나 */
+function skinLoot() {
+  const w = [{ w: 44, r: 'common' }, { w: 33, r: 'uncommon' }, { w: 18, r: 'rare' }, { w: 5, r: 'ssx' }];
+  let pool = [], guard = 0;
+  while (!pool.length && guard++ < 10) { const r = pickWeighted(w).r; pool = ALL_SKINS.filter(i => SKINS[i].rar === r); }
+  if (!pool.length) pool = ALL_SKINS;
+  const id = pick(pool), d = SKINS[id];
+  const dup = ownSkin(id);
+  return { g: d.h, n: d.n + ' 스킨', grade: d.rar, skin: id,
+    d: dup ? `<b style="color:${d.c}">이미 가진 스킨</b> — 다이아 200으로 바꿔 준다`
+           : `<b style="color:${d.c}">${GRADE[d.rar].n} 스킨</b> — ` + d.d,
+    take: () => { if (dup) { G.run.dia = (G.run.dia || 0) + 200; } else gainSkin(id, true); } };
+}
+/* 스킨 고르는 창 — 도감의 부적 상세에서 연다 */
+function showSkinPicker(cardId, after) {
+  const d = CARDS[cardId];
+  const owned = ALL_SKINS.filter(ownSkin);
+  const cur = skinOf(cardId);
+  const p = modal(`<h2>${d.n} — 옷 갈아입히기</h2>
+    <div class="hint">성능은 하나도 바뀌지 않는다 · 가진 스킨 ${owned.length} / ${ALL_SKINS.length}</div>
+    <div class="skinstage" id="sk_stage"></div>
+    <div class="skinrow" id="sk_row"></div>
+    <button class="brush-btn" id="sk_close">닫기</button>`);
+  p.dataset.noauto = '1';
+  const stage = p.querySelector('#sk_stage'), row = p.querySelector('#sk_row');
+  const draw = () => {
+    stage.innerHTML = '';
+    stage.appendChild(cardNode({ uid: -30, id: cardId, up: false }, { tip: false }));
+    [...row.children].forEach(n => n.classList.toggle('on', (n.dataset.sk || '') === (skinOf(cardId) || '')));
+  };
+  const addTile = (id) => {
+    const sd = id ? SKINS[id] : null;
+    const t = el('div', 'skintile' + (id ? '' : ' plain'),
+      id ? `<div class="sh" style="--sc2:${sd.c}">${sd.h}</div><b>${sd.n}</b>
+            <small style="color:${GRADE[sd.rar].c}">${GRADE[sd.rar].n}</small>`
+         : `<div class="sh" style="--sc2:#8a7f68">素</div><b>기본</b><small>본디 모습</small>`);
+    t.dataset.sk = id || '';
+    if (id) bindTip(t, () => `<b style="color:${sd.c}">${sd.n} (${sd.h})</b><br>${sd.d}`);
+    t.onclick = () => { equipSkin(cardId, id); SND.ui(); draw(); if (after) after(); };
+    row.appendChild(t);
+  };
+  addTile(null);
+  for (const id of owned) addTile(id);
+  if (!owned.length) row.appendChild(el('div', 'skinnone', '아직 가진 스킨이 없다 · 뽑기의 <b>스킨 상자</b>에서 나온다'));
+  draw();
+  p.querySelector('#sk_close').onclick = closeTop;
+}
+
 /* ── 제5·6막의 배려 ───────────────────────────────────────
    여기서부터는 S급 없이 넘기 어렵다. 엘리트가 이따금 내어 준다.
    ────────────────────────────────────────────────────────── */
@@ -6641,6 +6984,8 @@ const BANNERS = [
     desc: '<b>유물만 나온다.</b> 조합 재료를 모으기 좋다.' },
   { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
     desc: '<b>비기만 나온다.</b>' },
+  { n: '스킨 상자',     g: '皮', sub: '부적에 옷을 입힌다', price: 1200, tier: 6, skin: true,
+    desc: '<b>부적의 겉모습만 바꾼다.</b> S급·SSX급·?급 부적에 입힐 수 있다. 성능은 그대로다.' },
   { n: 'VIP 패키지',    g: '貴', sub: '단 한 번의 결단',   price: 0,    tier: 9, vip: true,
     desc: '퇴마사의 격을 영원히 올린다.' }
 ];
@@ -6655,6 +7000,8 @@ const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 /* 상자 하나에서 나오는 것 */
 function boxLoot(tier) {
   const run = G.run;
+  /* 스킨 상자 */
+  if (tier === 6) return skinLoot();
   /* 비기 상자 */
   if (tier === 5) {
     const r = rnd();
@@ -6723,7 +7070,7 @@ function boxLoot(tier) {
 
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
-  if (tier === 4 || tier === 5) return [];
+  if (tier === 4 || tier === 5 || tier === 6) return [];
   if (tier === 3) return GRADE_POOL.special.concat(GRADE_POOL.ssx, GRADE_POOL.unknown);
   const base = POOL.rare.slice();
   if (tier >= 1) return base.concat(GRADE_POOL.special);
@@ -6737,6 +7084,8 @@ function bannerRates(tier) {
   if (tier === 5) return [
     { g: 'common', p: '28%' }, { g: 'uncommon', p: '24%' }, { g: 'rare', p: '22%' },
     { g: 'special', p: '21%' }, { g: 'ssx', p: '4.5%' }, { g: 'unknown', p: '0.5%' }];
+  if (tier === 6) return [
+    { g: 'common', p: '44%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '18%' }, { g: 'ssx', p: '5%' }];
   return null;
 }
 
@@ -6849,6 +7198,20 @@ function showSpecialShop(refill) {
           `<div class="ub" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
            <div class="ug">${d.g}</div><div class="un">${d.n}</div>`);
         bindTip(u, () => `<b>${d.n}</b> · ${GRADE[d.rar].n} 비기<br>${d.d}` + (got ? '<br><span style="color:#6fe0a8">이미 익혔다</span>' : ''));
+        gp.appendChild(u);
+      }
+      renderBonus(p, cur);
+      return;
+    }
+    if (B.skin) {
+      for (const id of ALL_SKINS) {
+        const d = SKINS[id], got = ownSkin(id);
+        const u = el('div', 'gunit u-' + d.rar + (got ? ' owned' : ''),
+          `<div class="ub" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
+           <div class="ustar">${stars(d.rar)}</div>
+           <div class="ug" style="color:${d.c};text-shadow:0 0 12px ${d.c}88">${d.h}</div><div class="un">${d.n}</div>`);
+        bindTip(u, () => `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}` +
+          (got ? '<br><span style="color:#6fe0a8">이미 가지고 있다</span>' : ''));
         gp.appendChild(u);
       }
       renderBonus(p, cur);
@@ -7538,7 +7901,8 @@ function showMenu() {
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
       <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (1막 클리어)'}</button>
-      <button class="brush-btn" id="m_place">터 — 상점 · 뽑기 · 대전투장 · 장기 · 서당</button>
+      <button class="brush-btn" id="m_box">부적 뽑기</button>
+      <button class="brush-btn" id="m_place">터 — 상점 · 대전투장 · 장기 · 서당</button>
       <button class="brush-btn" id="m_set">설정</button>
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
@@ -7556,6 +7920,7 @@ function showMenu() {
   p.querySelector('#m_set').onclick = () => showSettings();
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_place').onclick = () => { closeTop(); showPlaces(); };
+  p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
   p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
   p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = () => showHelp();
@@ -7686,6 +8051,7 @@ function dexTile(known, glyph, name, tipHtml, cls, onClick) {
 /* 카드 상세보기 — 기본과 강화를 나란히 보여 준다 */
 function showCardDetail(id) {
   const d = CARDS[id], g = GRADE[d.rar];
+  const canSkin = skinnable(id);
   const p = modal(`<h2>${d.n}</h2>
     <div class="hint"><span class="gradechip" style="--gc:${g.c}">${g.s}</span> ${g.n} · ${TYPE_NAME[d.type]}
       ${d.exhaust ? ' · 소멸' : ''} · 비용 ${ccost({ id, up: false }) === -1 ? 'X' : ccost({ id, up: false }) === -2 ? '없음' : ccost({ id, up: false })}</div>
@@ -7694,7 +8060,13 @@ function showCardDetail(id) {
       <div class="detailcol"><h4>강화 (+)</h4><div class="dslot" id="dt_b"></div></div>
     </div>
     <div class="detailnote">${g.desc}</div>
-    <button class="brush-btn" id="dt_close">닫기</button>`);
+    ${canSkin ? `<div class="detailnote" style="border-color:rgba(200,160,255,.4)">
+      지금 입은 옷 — <b style="color:${skinOf(id) ? SKINS[skinOf(id)].c : '#c3b79c'}">${skinOf(id) ? SKINS[skinOf(id)].n : '기본'}</b></div>` : ''}
+    <div style="display:flex;gap:10px">
+      ${canSkin ? '<button class="brush-btn" id="dt_skin">옷 갈아입히기</button>' : ''}
+      <button class="brush-btn ghost" id="dt_close" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>
+    </div>`);
+  if (canSkin) p.querySelector('#dt_skin').onclick = () => showSkinPicker(id, () => { closeTop(); closeTop(); showCardDetail(id); });
   p.querySelector('#dt_a').appendChild(cardNode({ uid: -1, id, up: false }, { tip: false }));
   p.querySelector('#dt_b').appendChild(cardNode({ uid: -2, id, up: true }, { tip: false }));
   p.querySelector('#dt_close').onclick = closeTop;
@@ -7723,6 +8095,9 @@ function showDex() {
       ${secs}
       <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i>
         <em>등급순 · SSX급은 조합으로만 얻는다</em></h3><div class="dexgrid" id="dx_r"></div></div>
+      <div class="dexsec"><h3>스킨 <i>${skinCount()} / ${ALL_SKINS.length}</i>
+        <em>부적의 겉옷 · 뽑기의 <b>스킨 상자</b>에서 나온다 · 성능은 그대로다</em></h3>
+        <div class="dexgrid" id="dx_sk"></div></div>
       <div class="dexsec"><h3>비기 <i>${dexCount('skills', ALL_SKILLS.length)}</i>
         <em>기를 쓰지 않는 한 수 · 전투당 1회</em></h3><div class="dexgrid" id="dx_s"></div></div>
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
@@ -7749,6 +8124,16 @@ function showDex() {
       (d.rar === 'fused' ? ' <span style="color:#ffd76a">(합성)</span>' : '') + `<br>${d.d}`,
       'gd_' + g));
   });
+  const gk = p.querySelector('#dx_sk');
+  for (const id of ALL_SKINS) {
+    const d = SKINS[id], got = ownSkin(id);
+    const n = el('div', 'dextile skintileD gd_' + d.rar + (got ? '' : ' unknown'),
+      `<b style="${got ? `color:${d.c};text-shadow:0 0 12px ${d.c}99` : ''}">${got ? d.h : '?'}</b>
+       <span>${got ? d.n : '???'}</span>`);
+    if (got) bindTip(n, () => `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}
+      <br><span style="color:#8f846d">부적을 눌러 갈아입힌다</span>`);
+    gk.appendChild(n);
+  }
   const gs = p.querySelector('#dx_s');
   for (const id of ALL_SKILLS) {
     const d = SKILLS[id], known = !!META.dex.skills[id];
