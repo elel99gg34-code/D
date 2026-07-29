@@ -4412,10 +4412,15 @@ function applyDamage(ent, dmg, pierce) {
   if (ent.isPlayer) {
     G.run.hp = ent.hp;
     if (d > 0) checkHermit();
-  } else if (!ent.halfDone && ent.hp > 0 && ent.hp * 2 <= ent.maxHp) {
-    ent.halfDone = true;
-    if (ent.def.onHalf) ent.def.onHalf(ent);
-    if (ent.def.boss) awaken(ent);          /* 보스는 반으로 꺾이면 눈을 뜬다 */
+  } else if (ent.hp > 0) {
+    if (!ent.halfDone && ent.hp * 2 <= ent.maxHp) {
+      ent.halfDone = true;
+      if (ent.def.onHalf) ent.def.onHalf(ent);
+    }
+    /* 반이 깎이는 순간과 각성이 한꺼번에 올 수도 있으므로 따로 본다 */
+    if (ent.def.boss && !ent.awake && ent.hp <= ent.maxHp * AWAKEN_AT) {
+      awaken(ent);                          /* 보스는 더 몰리면 눈을 뜬다 */
+    }
   }
   return { hp: d, blocked };
 }
@@ -4541,6 +4546,7 @@ function startBattle(enemyIds, kind, opts) {
 /* ══ 각성(覺醒) — 보스가 반으로 꺾이면 눈을 뜬다 ══════════
    피해가 50% 오르고, 본래 없던 세 수를 새로 쓴다.
    ═══════════════════════════════════════════════════════════ */
+const AWAKEN_AT = 0.40;                   /* 체력이 이 아래로 떨어지면 각성한다 */
 const AWAKEN_MOVES = {
   aw_rend:  { t: 'attack', label: '각성 · 찢어발기기', d: 30, n: 2, fx: 'slash2', awaken: true },
   aw_curse: { t: 'atkdeb', label: '각성 · 업을 씌운다', d: 26, fx: 'void', awaken: true,
