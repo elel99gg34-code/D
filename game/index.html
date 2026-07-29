@@ -332,6 +332,14 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card.skinned .face{animation:none}
 .card.skinned .sklayer{position:absolute;inset:0;border-radius:5px;pointer-events:none;z-index:1;overflow:hidden}
 .card.skinned .face > *:not(.sklayer){position:relative;z-index:2}
+/* 무늬가 화려해도 글이 읽히도록 받침을 깐다 (무늬 위·글자 아래) */
+.card.skinned .txt:before,.card.skinned .cname:before,.card.skinned .kind:before{
+  content:'';position:absolute;inset:-3px -5px;border-radius:5px;z-index:-1;
+  background:var(--scrim,rgba(0,0,0,.34))}
+.card.skinned .kind:before{inset:-1px -5px}
+/* 바탕이 밝은 옷은 흰 받침 */
+.card.sk-celadon,.card.sk-frost,.card.sk-plum,.card.sk-landscape,.card.sk-glass,
+.card.sk-tigerfur,.card.sk-talisman{--scrim:rgba(255,255,255,.52)}
 .card.skinned .skaura{position:absolute;inset:-7px;border-radius:11px;z-index:0;pointer-events:none}
 @keyframes skSweep{0%{background-position:210% 0}55%,100%{background-position:-110% 0}}
 @keyframes skSpin{to{transform:rotate(360deg)}}
@@ -345,7 +353,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card.sk-gold .face{background:linear-gradient(155deg,#241c10,#100c07 55%,#2a2013);border-color:#c8a13c;
   box-shadow:0 5px 16px rgba(0,0,0,.55),inset 0 0 0 1px rgba(230,190,110,.45)}
 .card.sk-gold .cname{color:#ffe9ae;text-shadow:0 0 10px rgba(255,200,110,.6)}
-.card.sk-gold .txt{color:#e6d4ab}
+.card.sk-gold .txt{color:#f0e0bc}
 .card.sk-gold .txt em{color:#ff9a6a}.card.sk-gold .txt i{color:#8fd0ff}
 .card.sk-gold .kind{color:#a08a55;border-top-color:rgba(200,160,80,.3)}
 .card.sk-gold .art .g{color:#ffd776;text-shadow:0 0 16px rgba(255,190,90,.85),0 2px 0 #6b4a12}
@@ -523,8 +531,38 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card.unplayable .face{filter:grayscale(.75) brightness(.82)}
 .card.unplayable .cost{background:#6b6053}
 .card.playing{pointer-events:none}
+/* 부적이 나가는 모션 — 종류마다 다르다 */
 .card.fly{animation:cardFly .32s ease-in forwards}
 @keyframes cardFly{to{opacity:0;transform:translate(0,-160px) scale(.55) rotate(4deg)}}
+/* 한 번 크게 들어 보인 뒤 흩어진다 */
+.card.cast{z-index:60!important;pointer-events:none;
+  animation:cardCast .46s cubic-bezier(.2,.9,.25,1) forwards}
+@keyframes cardCast{
+  0%{transform:translate(0,0) scale(1) rotate(0);opacity:1;filter:none}
+  30%{transform:translate(var(--mx,0px),calc(var(--my,-150px) * .55)) scale(1.34) rotate(-3deg);
+      filter:brightness(1.35) drop-shadow(0 0 22px var(--cg,#ffd76a))}
+  58%{transform:translate(var(--mx,0px),var(--my,-150px)) scale(1.22) rotate(2deg);
+      filter:brightness(1.6) drop-shadow(0 0 34px var(--cg,#ffd76a))}
+  100%{transform:translate(calc(var(--mx,0px) * 1.9),calc(var(--my,-150px) * 1.7)) scale(.42) rotate(9deg);
+       opacity:0;filter:brightness(2.2) blur(3px)}}
+/* 심법은 내 몸으로 스며든다 */
+.card.cast.into{animation:cardInto .5s cubic-bezier(.3,.8,.3,1) forwards}
+@keyframes cardInto{
+  0%{transform:translate(0,0) scale(1);opacity:1}
+  34%{transform:translate(0,-96px) scale(1.28) rotate(-2deg);filter:brightness(1.5) drop-shadow(0 0 26px var(--cg,#7fe6cf))}
+  100%{transform:translate(var(--mx,-360px),var(--my,-120px)) scale(.2) rotate(-14deg);opacity:0;filter:blur(4px) brightness(2)}}
+/* 나가는 자리에 남는 잔상 */
+.castghost{position:fixed;z-index:59;pointer-events:none;border-radius:6px;
+  border:2px solid var(--cg,#ffd76a);box-shadow:0 0 26px var(--cg,#ffd76a),inset 0 0 20px var(--cg,#ffd76a);
+  animation:ghostGo .5s ease-out forwards}
+@keyframes ghostGo{0%{opacity:.85;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.7) rotate(6deg)}}
+/* 부적에서 대상으로 흐르는 기운 */
+.castflow{position:fixed;z-index:58;pointer-events:none;height:4px;transform-origin:0 50%;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--cg,#ffd76a),transparent);
+  filter:blur(1px);animation:flowGo .42s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes flowGo{0%{opacity:0;transform:scaleX(0) rotate(var(--a))}
+  30%{opacity:1}100%{opacity:0;transform:scaleX(1) rotate(var(--a))}}
 
 #pilebar{position:absolute;bottom:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;pointer-events:none}
 .pile{pointer-events:auto;width:62px;height:62px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -581,9 +619,29 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   20%{opacity:.8;transform:translateX(-50%) scale(1)}70%{opacity:.8}100%{opacity:0;transform:translateX(-50%) scale(1.08)}}
 
 /* ---------- 지도 ---------- */
-#map{position:absolute;inset:52px 0 0 0;overflow-y:auto;overflow-x:hidden}
-#map::-webkit-scrollbar{width:8px}#map::-webkit-scrollbar-thumb{background:rgba(23,19,15,.35);border-radius:4px}
-#mapinner{position:relative;margin:0 auto;width:660px}
+/* 지도는 스크롤하지 않는다 — 한 화면에 전부 담고 필요한 만큼만 줄인다 */
+#map{position:absolute;inset:52px 0 0 0;overflow:hidden;display:flex;flex-direction:column;align-items:center}
+#mapstage{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
+#mapinner{position:relative;width:660px;transform-origin:50% 50%}
+/* 지금 자리 */
+.mapnode.cur:after{content:'';position:absolute;inset:-11px;border-radius:50%;border:2px solid var(--gold);
+  animation:curRing 1.9s ease-out infinite;pointer-events:none}
+@keyframes curRing{0%{transform:scale(.86);opacity:.95}100%{transform:scale(1.5);opacity:0}}
+/* 갈 수 있는 곳 위의 작은 화살 */
+.mapnode.avail:before{content:'';position:absolute;left:50%;top:-17px;margin-left:-6px;
+  border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid var(--red);
+  animation:availArrow 1.4s ease-in-out infinite;opacity:.9}
+@keyframes availArrow{50%{transform:translateY(-5px)}}
+/* 한눈에 보이는 층 눈금 */
+.maprow{position:absolute;left:-46px;font-size:11px;color:rgba(23,19,15,.4);letter-spacing:.08em;
+  transform:translateY(-50%)}
+.maprow.now{color:var(--red);font-size:12.5px}
+/* 아래 안내 띠 */
+#maplegend{flex:none;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:8px 14px 12px;
+  font-size:11.5px;color:var(--ink3);letter-spacing:.04em}
+#maplegend span{display:flex;align-items:center;gap:5px}
+#maplegend i{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+  font-size:11px;background:#efe6d0;border:1.5px solid var(--ink2);color:var(--ink)}
 .mapnode{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;display:grid;place-items:center;
   font-size:22px;background:#efe6d0;border:2px solid var(--ink2);color:var(--ink);transition:.18s;z-index:2;line-height:1}
 .mapnode.avail{cursor:pointer;border-color:var(--red);box-shadow:0 0 0 4px rgba(168,39,44,.18),0 0 16px rgba(168,39,44,.35);
@@ -600,8 +658,13 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   box-shadow:0 0 0 3px rgba(111,208,232,.22),0 0 18px rgba(111,208,232,.5)}
 .mapnode.special.done{background:#3a4a50}
 .mapnode.boss{width:76px;height:76px;margin:-38px 0 0 -38px;font-size:32px;background:#2a1f17;color:#f0d9a0;border-color:var(--red)}
-#maphead{text-align:center;padding:22px 0 6px;font-size:15px;letter-spacing:.3em;color:var(--ink2);margin-left:.3em}
-#maphead .actname{font-size:27px;display:block;margin-top:6px;letter-spacing:.18em;margin-left:.18em}
+#maphead{flex:none;text-align:center;padding:10px 0 4px;font-size:13.5px;letter-spacing:.3em;color:var(--ink2);margin-left:.3em}
+#maphead .actname{font-size:23px;display:block;margin-top:3px;letter-spacing:.18em;margin-left:.18em}
+#maphead .actbar{width:min(420px,60vw);height:5px;margin:8px auto 0;border-radius:3px;background:rgba(23,19,15,.14);
+  overflow:hidden}
+#maphead .actbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),#e2884a);
+  transition:width .5s ease}
+#maphead .actsub{display:block;font-size:11px;letter-spacing:.1em;color:var(--ink3);margin-top:5px}
 
 /* ---------- 카드 목록/보상/상점 등 패널 ---------- */
 .panel{position:absolute;inset:0;background:rgba(18,14,10,.93);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;
@@ -1100,6 +1163,272 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 @keyframes jpulse{0%,100%{box-shadow:0 3px 8px rgba(0,0,0,.45)}
   50%{box-shadow:0 3px 8px rgba(0,0,0,.45),0 0 18px 4px rgba(255,200,90,.7)}}
 
+/* ── 스킨 11~25 ─────────────────────────────────────────── */
+@keyframes skWeave{0%{background-position:0 0,0 0}100%{background-position:24px 24px,-24px 24px}}
+@keyframes skVein{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes skAurora{0%,100%{transform:translateX(-6%) skewX(-6deg)}50%{transform:translateX(6%) skewX(6deg)}}
+@keyframes skScale{0%{background-position:0 0}100%{background-position:0 18px}}
+@keyframes skRim{0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.5),0 0 16px rgba(180,140,255,.5)}
+  50%{box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 34px rgba(200,160,255,.9)}}
+
+/* 11. 단청(丹靑) — 절집 처마의 색 */
+.card.sk-dancheong .face{background:linear-gradient(155deg,#1b3a34,#0e211d 58%,#183530);border-color:#d8b45a}
+.card.sk-dancheong .cname{color:#ffeec4}
+.card.sk-dancheong .txt{color:#dce8dc}
+.card.sk-dancheong .txt em{color:#ff9a8a}.card.sk-dancheong .txt i{color:#8fd8ff}
+.card.sk-dancheong .kind{color:#9ab8a8;border-top-color:rgba(216,180,90,.35)}
+.card.sk-dancheong .art .g{color:#ffe6a8;text-shadow:0 0 12px rgba(255,190,90,.7),0 2px 0 #0a1a16}
+.card.sk-dancheong .art .ring{border-color:rgba(216,180,90,.55)}
+.card.sk-dancheong .cost{background:linear-gradient(140deg,#c0392b,#6b1410);color:#ffeec4;border-color:#d8b45a}
+.card.sk-dancheong .sklayer{opacity:.32;
+  background:repeating-linear-gradient(90deg,
+    #2e6b5c 0 9px,#c0392b 9px 15px,#2a4a8a 15px 21px,#d8b45a 21px 24px,transparent 24px 34px)}
+.card.sk-dancheong .skaura{background:conic-gradient(from 0deg,#2e6b5c,#c0392b,#2a4a8a,#d8b45a,#2e6b5c);
+  filter:blur(8px);opacity:.5;animation:skSpin 9s linear infinite}
+
+/* 12. 호피(虎皮) — 산군의 가죽 */
+.card.sk-tigerfur .face{background:linear-gradient(155deg,#e8a445,#c97a1e 55%,#a55c12);border-color:#2a1608}
+.card.sk-tigerfur .cname{color:#2a1608}
+.card.sk-tigerfur .txt{color:#3a2008}
+.card.sk-tigerfur .kind{color:#6b4110;border-top-color:rgba(42,22,8,.35)}
+.card.sk-tigerfur .art .g{color:#2a1608;text-shadow:0 1px 0 rgba(255,220,150,.7)}
+.card.sk-tigerfur .art .ring{border-color:rgba(42,22,8,.4)}
+.card.sk-tigerfur .cost{background:linear-gradient(140deg,#2a1608,#0f0803);color:#ffcf7a;border-color:#e8a445}
+.card.sk-tigerfur .sklayer{opacity:.4;
+  background:
+    repeating-linear-gradient(74deg,transparent 0 13px,#2a1608 13px 17px,transparent 17px 21px),
+    repeating-linear-gradient(-68deg,transparent 0 21px,rgba(42,22,8,.75) 21px 24px,transparent 24px 40px)}
+.card.sk-tigerfur .skaura{background:radial-gradient(circle,rgba(230,150,40,.7),transparent 70%);
+  animation:skBreathe 3s ease-in-out infinite}
+
+/* 13. 비단(緋緞) — 짜인 결이 흐른다 */
+.card.sk-silk .face{background:linear-gradient(155deg,#8e1f3a,#5c0f24 55%,#7a1a30);border-color:#f0c8d8}
+.card.sk-silk .cname{color:#ffe0ea}
+.card.sk-silk .txt{color:#f2d0da}
+.card.sk-silk .txt em{color:#ffc48a}.card.sk-silk .txt i{color:#a8d8ff}
+.card.sk-silk .kind{color:#c890a0;border-top-color:rgba(240,200,216,.3)}
+.card.sk-silk .art .g{color:#fff0f4;text-shadow:0 0 14px rgba(255,170,200,.8)}
+.card.sk-silk .art .ring{border-color:rgba(240,200,216,.5)}
+.card.sk-silk .cost{background:linear-gradient(140deg,#f0c8d8,#a8546c);color:#4a0a18;border-color:#fff0f4}
+.card.sk-silk .sklayer{opacity:.34;mix-blend-mode:screen;
+  background:repeating-linear-gradient(45deg,rgba(255,220,235,.5) 0 2px,transparent 2px 12px),
+    repeating-linear-gradient(-45deg,rgba(255,200,220,.35) 0 2px,transparent 2px 12px);
+  animation:skWeave 9s linear infinite}
+.card.sk-silk .skaura{background:radial-gradient(circle,rgba(240,120,160,.7),transparent 72%);
+  animation:skBreathe 3.4s ease-in-out infinite}
+
+/* 14. 철갑(鐵甲) — 두들겨 편 쇠판 */
+.card.sk-iron .face{background:linear-gradient(160deg,#8a9099,#4a5058 45%,#6a7078 70%,#3a4046);border-color:#22262a}
+.card.sk-iron .cname{color:#f0f4f8;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.card.sk-iron .txt{color:#dfe6ec;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.card.sk-iron .txt em{color:#ff9a7a}.card.sk-iron .txt i{color:#9fd8ff}
+.card.sk-iron .kind{color:#aab2ba;border-top-color:rgba(255,255,255,.25)}
+.card.sk-iron .art .g{color:#f4f8fc;text-shadow:0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(180,210,240,.5)}
+.card.sk-iron .art .ring{border-color:rgba(255,255,255,.35)}
+.card.sk-iron .cost{background:linear-gradient(140deg,#6a7078,#20242a);color:#f0f4f8;border-color:#aab2ba}
+.card.sk-iron .sklayer{opacity:.5;
+  background:
+    radial-gradient(circle at 9% 8%,rgba(255,255,255,.7) 0 2px,rgba(0,0,0,.4) 2px 4px,transparent 5px),
+    radial-gradient(circle at 91% 8%,rgba(255,255,255,.7) 0 2px,rgba(0,0,0,.4) 2px 4px,transparent 5px),
+    radial-gradient(circle at 9% 92%,rgba(255,255,255,.7) 0 2px,rgba(0,0,0,.4) 2px 4px,transparent 5px),
+    radial-gradient(circle at 91% 92%,rgba(255,255,255,.7) 0 2px,rgba(0,0,0,.4) 2px 4px,transparent 5px),
+    repeating-linear-gradient(96deg,transparent 0 3px,rgba(255,255,255,.09) 3px 4px)}
+.card.sk-iron .skaura{background:radial-gradient(circle,rgba(160,180,200,.6),transparent 70%);
+  animation:skBreathe 4.2s ease-in-out infinite}
+
+/* 15. 황부(黃符) — 노란 종이에 붉은 주사 */
+.card.sk-talisman .face{background:linear-gradient(155deg,#f6e08a,#e8c65a 55%,#d8ab3a);border-color:#a8261c}
+.card.sk-talisman .cname{color:#8a1810}
+.card.sk-talisman .txt{color:#5a2008}
+.card.sk-talisman .kind{color:#8a5a20;border-top-color:rgba(168,38,28,.35)}
+.card.sk-talisman .art .g{color:#a8261c;text-shadow:0 1px 0 rgba(255,240,180,.8)}
+.card.sk-talisman .art .ring{border-color:rgba(168,38,28,.45)}
+.card.sk-talisman .cost{background:linear-gradient(140deg,#c0392b,#7a1108);color:#ffe6a8;border-color:#f6e08a}
+.card.sk-talisman .sklayer{opacity:.26;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 15px,rgba(168,38,28,.45) 15px 17px,transparent 17px 32px),
+    repeating-linear-gradient(0deg,transparent 0 26px,rgba(168,38,28,.22) 26px 27px,transparent 27px 44px)}
+.card.sk-talisman .skaura{background:radial-gradient(circle,rgba(230,180,60,.75),transparent 70%);
+  animation:skBreathe 2.6s ease-in-out infinite}
+
+/* 16. 매화(梅花) — 눈 위에 핀 것 */
+.card.sk-plum .face{background:linear-gradient(155deg,#fdfbfb,#eee6ea 55%,#ded2da);border-color:#8a3a56}
+.card.sk-plum .cname{color:#7a1a38}
+.card.sk-plum .txt{color:#4a2a38}
+.card.sk-plum .kind{color:#9a6a80;border-top-color:rgba(122,26,56,.22)}
+.card.sk-plum .art .g{color:#7a1a38;text-shadow:0 1px 0 #fff}
+.card.sk-plum .art .ring{border-color:rgba(122,26,56,.3)}
+.card.sk-plum .cost{background:linear-gradient(140deg,#c05070,#7a1a38);color:#fff0f4;border-color:#f0c8d8}
+.card.sk-plum .sklayer{opacity:.6;
+  background:
+    radial-gradient(circle at 20% 18%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 26% 14%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 23% 23%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 23% 18%,#fff0a0 0 2px,transparent 3px),
+    radial-gradient(circle at 78% 62%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 84% 58%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 81% 67%,#e88aa8 0 3px,transparent 4px),
+    radial-gradient(circle at 81% 62%,#fff0a0 0 2px,transparent 3px),
+    radial-gradient(circle at 62% 88%,#e88aa8 0 2.4px,transparent 3.4px),
+    linear-gradient(118deg,transparent 46%,rgba(90,50,30,.35) 47%,transparent 48%)}
+.card.sk-plum .skaura{background:radial-gradient(circle,rgba(240,160,190,.6),transparent 70%);
+  animation:skBreathe 3.8s ease-in-out infinite}
+
+/* 17. 파도(波濤) — 청해파 무늬 */
+.card.sk-wave .face{background:linear-gradient(155deg,#0f3a5c,#082238 55%,#0c3049);border-color:#7fd4f0}
+.card.sk-wave .cname{color:#d8f4ff}
+.card.sk-wave .txt{color:#b8dcee}
+.card.sk-wave .txt em{color:#ff9a9a}.card.sk-wave .txt i{color:#8fe8ff}
+.card.sk-wave .kind{color:#6a9ab8;border-top-color:rgba(127,212,240,.3)}
+.card.sk-wave .art .g{color:#eafaff;text-shadow:0 0 14px rgba(120,220,255,.8)}
+.card.sk-wave .art .ring{border-color:rgba(127,212,240,.5)}
+.card.sk-wave .cost{background:linear-gradient(140deg,#1a6a92,#05202f);color:#d8f4ff;border-color:#7fd4f0}
+.card.sk-wave .sklayer{opacity:.4;
+  background:repeating-radial-gradient(circle at 50% 100%,transparent 0 8px,rgba(127,212,240,.5) 8px 9.5px,transparent 9.5px 17px);
+  background-size:34px 17px}
+.card.sk-wave .skaura{background:radial-gradient(circle,rgba(60,170,220,.7),transparent 72%);
+  animation:skBreathe 3.2s ease-in-out infinite}
+
+/* 18. 뇌문(雷紋) — 푸른 녹이 앉은 청동 */
+.card.sk-bronze .face{background:linear-gradient(155deg,#4a6b5a,#25382e 55%,#3a5648);border-color:#8fc0a0}
+.card.sk-bronze .cname{color:#dff2e2}
+.card.sk-bronze .txt{color:#c0d8c6}
+.card.sk-bronze .txt em{color:#ffab8a}.card.sk-bronze .txt i{color:#9fd8ff}
+.card.sk-bronze .kind{color:#7fa08c;border-top-color:rgba(143,192,160,.3)}
+.card.sk-bronze .art .g{color:#eaffee;text-shadow:0 2px 0 #1a2a20,0 0 14px rgba(140,220,170,.6)}
+.card.sk-bronze .art .ring{border-color:rgba(143,192,160,.45)}
+.card.sk-bronze .cost{background:linear-gradient(140deg,#3a5648,#12201a);color:#dff2e2;border-color:#8fc0a0}
+.card.sk-bronze .sklayer{opacity:.4;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 11px,rgba(190,230,200,.42) 11px 13px,transparent 13px 24px),
+    repeating-linear-gradient(90deg,transparent 0 11px,rgba(190,230,200,.42) 11px 13px,transparent 13px 24px),
+    repeating-linear-gradient(0deg,transparent 0 24px,rgba(20,40,28,.5) 24px 26px,transparent 26px 48px)}
+.card.sk-bronze .skaura{background:radial-gradient(circle,rgba(110,180,140,.6),transparent 70%);
+  animation:skBreathe 4.6s ease-in-out infinite}
+
+/* 19. 월광(月光) — 달빛에 젖었다 */
+.card.sk-moon .face{background:linear-gradient(160deg,#2a3450,#141c30 55%,#202940);border-color:#c8d8f8}
+.card.sk-moon .cname{color:#eef4ff;text-shadow:0 0 12px rgba(190,215,255,.8)}
+.card.sk-moon .txt{color:#c8d4ea}
+.card.sk-moon .txt em{color:#ff9ab0}.card.sk-moon .txt i{color:#a8dcff}
+.card.sk-moon .kind{color:#8896b8;border-top-color:rgba(200,216,248,.3)}
+.card.sk-moon .art .g{color:#fbfdff;text-shadow:0 0 16px rgba(200,220,255,.95),0 0 40px rgba(150,180,255,.6)}
+.card.sk-moon .art .ring{border-color:rgba(200,216,248,.5);box-shadow:0 0 18px rgba(180,205,255,.4)}
+.card.sk-moon .cost{background:linear-gradient(140deg,#3a4870,#0e1424);color:#eef4ff;border-color:#c8d8f8}
+.card.sk-moon .sklayer{opacity:.6;
+  background:
+    radial-gradient(circle at 76% 20%,rgba(255,255,255,.95) 0 15px,transparent 16px),
+    radial-gradient(circle at 70% 17%,#141c30 0 14px,transparent 15px),
+    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(190,215,255,.28),transparent 70%)}
+.card.sk-moon .skaura{background:radial-gradient(circle,rgba(180,205,255,.7),transparent 70%);
+  filter:blur(6px);animation:skBreathe 3.6s ease-in-out infinite}
+
+/* 20. 혈사(血絲) — 붉은 실이 기어간다 */
+.card.sk-bloodvein .face{background:linear-gradient(155deg,#2a0e12,#12050a 58%,#22090f);border-color:#c02a3a}
+.card.sk-bloodvein .cname{color:#ffd0d8}
+.card.sk-bloodvein .txt{color:#e0b8c0}
+.card.sk-bloodvein .txt em{color:#ff6a7a}.card.sk-bloodvein .txt i{color:#8fc8ff}
+.card.sk-bloodvein .kind{color:#9a5a66;border-top-color:rgba(192,42,58,.35)}
+.card.sk-bloodvein .art .g{color:#ffdfe4;text-shadow:0 0 16px rgba(230,40,70,.9)}
+.card.sk-bloodvein .art .ring{border-color:rgba(192,42,58,.55);box-shadow:0 0 16px rgba(200,30,50,.5) inset}
+.card.sk-bloodvein .cost{background:linear-gradient(140deg,#8a0f1c,#2a0308);color:#ffd0d8;border-color:#c02a3a}
+.card.sk-bloodvein .sklayer{opacity:.5;animation:skVein 2.8s ease-in-out infinite;
+  background:
+    linear-gradient(72deg,transparent 39%,rgba(200,30,50,.75) 40%,transparent 41%),
+    linear-gradient(-54deg,transparent 55%,rgba(180,20,44,.65) 56%,transparent 57%),
+    linear-gradient(28deg,transparent 24%,rgba(220,50,70,.5) 25%,transparent 26%),
+    linear-gradient(-84deg,transparent 71%,rgba(170,20,40,.55) 72%,transparent 73%),
+    radial-gradient(ellipse 50% 30% at 50% 50%,rgba(200,20,40,.35),transparent 70%)}
+.card.sk-bloodvein .skaura{background:radial-gradient(circle,rgba(200,20,50,.85),transparent 70%);
+  filter:blur(7px);animation:skBreathe 1.9s ease-in-out infinite}
+
+/* 21. 금룡(金龍) — 비늘이 겹쳐 있다 */
+.card.sk-dragon .face{background:linear-gradient(155deg,#6b4a10,#3a2606 55%,#5a3d0c);border-color:#ffd76a}
+.card.sk-dragon .cname{color:#fff2c4;text-shadow:0 0 12px rgba(255,200,90,.8)}
+.card.sk-dragon .txt{color:#efdcb0}
+.card.sk-dragon .txt em{color:#ff9a6a}.card.sk-dragon .txt i{color:#8fd8ff}
+.card.sk-dragon .kind{color:#b89a58;border-top-color:rgba(255,215,106,.35)}
+.card.sk-dragon .art .g{color:#fff6d8;text-shadow:0 0 18px rgba(255,190,60,.95),0 2px 0 #3a2606}
+.card.sk-dragon .art .ring{border-color:rgba(255,215,106,.6);box-shadow:0 0 20px rgba(255,190,60,.5)}
+.card.sk-dragon .cost{background:linear-gradient(140deg,#ffd76a,#8a5f10);color:#2a1c04;border-color:#fff2c4}
+.card.sk-dragon .sklayer{opacity:.34;animation:skScale 6s linear infinite;
+  background:repeating-radial-gradient(circle at 50% 0,transparent 0 7px,rgba(255,215,106,.55) 7px 8.5px,transparent 8.5px 15px);
+  background-size:22px 15px}
+.card.sk-dragon .skaura{background:conic-gradient(from 0deg,#ffd76a,#fff2c4,#8a5f10,#ffd76a);
+  filter:blur(8px);opacity:.7;animation:skSpin 5.5s linear infinite}
+
+/* 22. 수묵(水墨) — 부적 안에 산이 있다 */
+.card.sk-landscape .face{background:linear-gradient(175deg,#f2ede0,#e4dcc8 62%,#cfc4a8);border-color:#3a342a}
+.card.sk-landscape .cname{color:#1c1610}
+.card.sk-landscape .txt{color:#1e1810}
+.card.sk-landscape .kind{color:#6b6053;border-top-color:rgba(23,19,15,.2)}
+.card.sk-landscape .art .g{color:#12100c;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.card.sk-landscape .art .ring{border-color:rgba(23,19,15,.22)}
+.card.sk-landscape .cost{background:linear-gradient(140deg,#3a342a,#12100c);color:#f2ede0;border-color:#8a8070}
+.card.sk-landscape .sklayer{opacity:.4;
+  background:
+    linear-gradient(160deg,transparent 62%,rgba(60,56,46,.55) 63%,transparent 78%),
+    linear-gradient(-152deg,transparent 68%,rgba(80,74,62,.5) 69%,transparent 82%),
+    linear-gradient(168deg,transparent 76%,rgba(40,36,30,.6) 77%,transparent 90%),
+    radial-gradient(ellipse 60% 18% at 50% 84%,rgba(255,255,255,.7),transparent 70%),
+    radial-gradient(circle at 22% 16%,rgba(150,60,60,.35) 0 11px,transparent 12px)}
+.card.sk-landscape .skaura{background:radial-gradient(circle,rgba(120,112,96,.55),transparent 70%);
+  animation:skBreathe 5s ease-in-out infinite}
+
+/* 23. 유리(琉璃) — 속이 비쳐 보인다 */
+.card.sk-glass .face{background:linear-gradient(155deg,#d8f2ff,#a8d4ea 55%,#78aecc);
+  border-color:rgba(230,250,255,.85);backdrop-filter:blur(2px);
+  box-shadow:0 5px 18px rgba(0,0,0,.35),inset 0 0 30px rgba(255,255,255,.55),0 0 22px rgba(150,220,255,.5)}
+.card.sk-glass .cname{color:#0d3a52;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+.card.sk-glass .txt{color:#0a2c40}
+.card.sk-glass .kind{color:#1f5a76;border-top-color:rgba(255,255,255,.55)}
+.card.sk-glass .art .g{color:#0a2f45;text-shadow:0 1px 0 rgba(255,255,255,.9),0 0 18px rgba(180,240,255,.9)}
+.card.sk-glass .art .ring{border-color:rgba(255,255,255,.7)}
+.card.sk-glass .cost{background:linear-gradient(140deg,rgba(220,250,255,.9),rgba(110,180,215,.9));
+  color:#0a2f45;border-color:#fff}
+.card.sk-glass .sklayer{opacity:.45;mix-blend-mode:screen;
+  background:
+    linear-gradient(112deg,transparent 30%,rgba(255,255,255,.85) 34%,transparent 38%),
+    linear-gradient(112deg,transparent 52%,rgba(255,220,255,.6) 55%,transparent 58%),
+    linear-gradient(-64deg,transparent 66%,rgba(200,255,255,.6) 69%,transparent 72%)}
+.card.sk-glass .skaura{background:conic-gradient(from 0deg,#bff0ff,#ffd8f8,#d8ffe8,#bff0ff);
+  filter:blur(9px);opacity:.6;animation:skSpin 7s linear infinite}
+
+/* 24. 구천(九天) — 하늘이 커튼처럼 흔들린다 (SSX) */
+.card.sk-aurora .face{background:linear-gradient(175deg,#06121e,#020810 60%,#04101a);border-color:#7fffd0}
+.card.sk-aurora .cname{color:#dfffe8;text-shadow:0 0 14px rgba(110,255,200,.9)}
+.card.sk-aurora .txt{color:#bfe8da}
+.card.sk-aurora .txt em{color:#ff8ab0}.card.sk-aurora .txt i{color:#8ff0ff}
+.card.sk-aurora .kind{color:#5f9a88;border-top-color:rgba(127,255,208,.32)}
+.card.sk-aurora .art .g{color:#f0fffa;text-shadow:0 0 16px #7fffd0,0 0 40px rgba(120,200,255,.8)}
+.card.sk-aurora .art .ring{border-color:rgba(127,255,208,.55);box-shadow:0 0 22px rgba(110,255,200,.55)}
+.card.sk-aurora .cost{background:linear-gradient(140deg,#0e4a3c,#02120e);color:#dfffe8;border-color:#7fffd0}
+.card.sk-aurora .sklayer{opacity:.44;mix-blend-mode:screen;animation:skAurora 5.5s ease-in-out infinite;
+  background:
+    linear-gradient(96deg,transparent 6%,rgba(110,255,200,.55) 16%,transparent 26%),
+    linear-gradient(96deg,transparent 30%,rgba(120,180,255,.5) 40%,transparent 50%),
+    linear-gradient(96deg,transparent 56%,rgba(200,130,255,.45) 66%,transparent 76%),
+    linear-gradient(96deg,transparent 80%,rgba(110,255,220,.4) 88%,transparent 96%)}
+.card.sk-aurora .skaura{background:conic-gradient(from 0deg,#7fffd0,#78b4ff,#c882ff,#7fffd0);
+  filter:blur(10px);opacity:.75;animation:skSpin 4s linear infinite,skBreathe 2.2s ease-in-out infinite}
+
+/* 25. 무(無) — 빛을 삼킨다 (SSX) */
+.card.sk-void .face{background:radial-gradient(ellipse at 50% 45%,#000 0 42%,#050408 68%,#0a0810 100%);
+  border-color:#2a2436;box-shadow:0 5px 22px rgba(0,0,0,.85),inset 0 0 34px rgba(0,0,0,.95)}
+.card.sk-void .cname{color:#cfc8e0;text-shadow:0 0 10px rgba(160,140,220,.5)}
+.card.sk-void .txt{color:#a49cb8}
+.card.sk-void .txt em{color:#e0708a}.card.sk-void .txt i{color:#78a8d8}
+.card.sk-void .kind{color:#5a5470;border-top-color:rgba(140,130,180,.25)}
+.card.sk-void .art .g{color:#0a0810;text-shadow:0 0 2px rgba(200,190,240,.9),0 0 22px rgba(160,140,230,.7)}
+.card.sk-void .art .ring{border-color:rgba(160,150,200,.5);animation:skRim 2.6s ease-in-out infinite}
+.card.sk-void .cost{background:#000;color:#cfc8e0;border-color:#4a4460}
+.card.sk-void .sklayer{opacity:.55;
+  background:radial-gradient(ellipse 60% 50% at 50% 45%,#000 0 55%,transparent 78%),
+    conic-gradient(from 0deg at 50% 45%,transparent,rgba(150,130,220,.28),transparent 40%);
+  animation:skSpin 12s linear infinite}
+.card.sk-void .skaura{background:radial-gradient(circle,rgba(90,70,150,.6),transparent 62%);
+  filter:blur(9px);animation:skBreathe 3.4s ease-in-out infinite}
+
 /* ══ 스킨 고르기 ═════════════════════════════════════════ */
 .skinstage{position:relative;height:calc(var(--ch) + 26px);width:calc(var(--cw) + 40px);margin:6px auto 14px;
   display:grid;place-items:center}
@@ -1157,6 +1486,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 @keyframes qiSpend{0%{transform:scale(1)}35%{transform:scale(.84);filter:brightness(1.6)}100%{transform:scale(1)}}
 /* 적이 죽기 직전 붉게 떤다 */
 .unit.willdie .body{animation:dieSoon 1s ease-in-out infinite}
+/* 각성한 보스 */
+.unit.awake .body{animation:awakePulse 1.5s ease-in-out infinite}
+.unit.awake .nm{color:#ff5a3a;text-shadow:0 0 12px rgba(255,80,40,.8)}
+.unit.awake .nm:after{content:' 覺';color:#ffb648}
+@keyframes awakePulse{0%,100%{filter:drop-shadow(0 0 10px rgba(255,80,40,.65)) saturate(1.2)}
+  50%{filter:drop-shadow(0 0 26px rgba(255,120,50,1)) saturate(1.6) brightness(1.12)}}
 @keyframes dieSoon{50%{filter:brightness(1.25) saturate(1.4)}}
 
 /* ══ 떠돌이 상인 ═════════════════════════════════════════ */
@@ -1181,6 +1516,45 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .betvs{font-size:22px;letter-spacing:.2em;color:#c8a94e}
 .betsay{min-height:44px;font-size:13.5px;line-height:1.8;color:#dccfae;margin-bottom:12px;
   font-style:italic;max-width:460px;word-break:keep-all}
+
+/* ══ 더 요란하게 ═════════════════════════════════════════ */
+/* 화면이 한 번 깜빡인다 (아주 짧게) */
+.blinkw{position:fixed;inset:0;z-index:36;pointer-events:none;background:#fff;
+  animation:blinkGo .13s ease-out forwards}
+@keyframes blinkGo{0%{opacity:.85}100%{opacity:0}}
+/* 반짝이 — 한 점에서 터져 흩어지는 별 */
+.sparkle{position:fixed;z-index:34;pointer-events:none;width:var(--sz,14px);height:var(--sz,14px);
+  transform:translate(-50%,-50%);animation:sparkGo var(--dur,.6s) cubic-bezier(.15,.9,.3,1) forwards}
+.sparkle:before,.sparkle:after{content:'';position:absolute;inset:0;background:var(--sc3,#fff);
+  clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%)}
+.sparkle:after{transform:rotate(45deg) scale(.62);opacity:.75}
+@keyframes sparkGo{0%{opacity:0;transform:translate(-50%,-50%) scale(0) rotate(0)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.25) rotate(60deg)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(160deg)}}
+/* 화면을 가로지르는 빛기둥 */
+.lightbeam{position:fixed;top:0;bottom:0;z-index:33;pointer-events:none;width:var(--bw,120px);
+  background:linear-gradient(90deg,transparent,var(--bc,rgba(255,240,200,.65)),transparent);
+  transform:translateX(-50%) skewX(-14deg);animation:beamGo .5s ease-out forwards}
+@keyframes beamGo{0%{opacity:0;transform:translateX(-50%) skewX(-14deg) scaleY(.4)}
+  30%{opacity:1;transform:translateX(-50%) skewX(-14deg) scaleY(1)}
+  100%{opacity:0;transform:translateX(-50%) skewX(-14deg) scaleY(1.1)}}
+/* 색수차 — 한순간 화면이 어긋난다 */
+#app.rgbsplit{animation:rgbGo .22s steps(2) 2}
+@keyframes rgbGo{0%{filter:none}
+  50%{filter:drop-shadow(3px 0 0 rgba(255,0,60,.55)) drop-shadow(-3px 0 0 rgba(0,200,255,.55))}
+  100%{filter:none}}
+/* 화면 전체가 확 당겨진다 */
+#app.zoompunch{animation:zoomGo .26s cubic-bezier(.2,.9,.3,1)}
+@keyframes zoomGo{0%{transform:scale(1)}35%{transform:scale(1.035)}100%{transform:scale(1)}}
+/* 큰 글자가 쿵 하고 찍힌다 */
+.stampword{position:fixed;left:50%;top:38%;z-index:35;pointer-events:none;transform:translate(-50%,-50%);
+  font-size:clamp(46px,9vw,110px);letter-spacing:.2em;text-indent:.2em;color:#fff;white-space:nowrap;
+  text-shadow:0 0 22px var(--wc,#ff8a00),0 0 60px var(--wc,#ff8a00),0 6px 16px rgba(0,0,0,.7);
+  animation:stampGo .9s cubic-bezier(.15,1.4,.35,1) forwards}
+@keyframes stampGo{0%{opacity:0;transform:translate(-50%,-50%) scale(2.6) rotate(-7deg);filter:blur(8px)}
+  18%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0);filter:blur(0)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(1.03)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.12)}}
 
 /* ══ 첫걸음 ══════════════════════════════════════════════ */
 .tutor{position:fixed;inset:0;z-index:80;display:grid;place-items:center;
@@ -1545,7 +1919,34 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 40px rgba(0,0,0,.8);min-height:150px;
   display:flex;align-items:center;justify-content:center}
 .story .stext .cur{opacity:.7;animation:hintBlink .7s ease-in-out infinite}
-.story .swho{position:relative;z-index:2;color:#c9a24a;font-size:14px;letter-spacing:.34em;margin-bottom:14px;margin-left:.34em}
+/* 말하는 이 — 이름패 */
+.story .swho{position:relative;z-index:2;color:#f4e2b0;font-size:14px;letter-spacing:.34em;
+  margin-bottom:16px;margin-left:.34em;padding:7px 22px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,rgba(120,90,40,.5),transparent);
+  border-top:1px solid rgba(200,169,78,.45);border-bottom:1px solid rgba(200,169,78,.45);
+  text-shadow:0 0 14px rgba(255,200,110,.6);animation:whoIn .5s cubic-bezier(.2,.9,.3,1)}
+.story .swho:empty{display:none}
+@keyframes whoIn{0%{opacity:0;transform:translateY(10px) scale(.9);letter-spacing:.6em}
+  100%{opacity:1;transform:none}}
+/* 글이 한 줄씩 밀려 올라온다 */
+.story .stext{animation:textIn .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes textIn{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
+/* 위아래 검은 띠 — 영화처럼 */
+.story:before,.story:after{content:'';position:absolute;left:0;right:0;height:52px;z-index:3;pointer-events:none;
+  background:#050403;animation:barIn .6s cubic-bezier(.2,.9,.3,1)}
+.story:before{top:0;box-shadow:0 3px 22px rgba(0,0,0,.8)}
+.story:after{bottom:0;box-shadow:0 -3px 22px rgba(0,0,0,.8)}
+@keyframes barIn{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+.story:before{transform-origin:top}.story:after{transform-origin:bottom}
+/* 화면을 떠도는 먼지 */
+.story .sdust{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.story .sdust i{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,235,190,.55);
+  box-shadow:0 0 7px rgba(255,220,160,.6);animation:dustGo linear infinite}
+@keyframes dustGo{0%{transform:translate(0,0);opacity:0}
+  12%{opacity:.85}80%{opacity:.5}100%{transform:translate(var(--dx,30px),-120vh);opacity:0}}
+/* 장면이 천천히 밀려든다 */
+.story .sart{animation:artIn 1.1s ease-out}
+@keyframes artIn{0%{opacity:0;transform:scale(1.08)}100%{opacity:.9;transform:none}}
 .story .snext{position:absolute;bottom:44px;color:#9d9077;font-size:13px;letter-spacing:.24em;
   animation:hintBlink 1.3s ease-in-out infinite;z-index:2}
 .story .sskip{position:absolute;top:20px;right:24px;z-index:3;padding:7px 16px;border-radius:5px;font-size:13px;
@@ -2080,6 +2481,7 @@ function adoptRun(obj) {
   if (!G.run.arena) G.run.arena = { best: 0, cleared: 0 };
   if (!G.run.boons) G.run.boons = [];
   if (G.run.curse === undefined) G.run.curse = null;
+  G.run.inBattle = false;
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
@@ -3774,7 +4176,131 @@ defEnemy({ id: 'taecho', n: '태초(太初)', g: '太', hp: [820, 820], col: '#0
     return r < .42 ? 'before' : r < .72 ? 'unmake2' : 'fold';
   } });
 
-/* ---------- 조우(인카운터) 구성 ---------- */
+/* ══ 제9막 · 환영 — 태초 너머, 내가 지나온 것들 ═══════════ */
+defEnemy({ id: 'mirage', n: '아지랑이', g: '陽', hp: [128, 144], col: '#8a7a5a',
+  moves: { blur:   { t: 'atkdeb', label: '흐려짐', d: 26, deb: { weak: 4 }, fx: 'wind' },
+           split2: { t: 'attack', label: '갈라짐', d: 13, n: 3, fx: 'slash2' },
+           waver:  { t: 'defend', label: '일렁임', blk: 40, self: { dex: 5 } } },
+  next: e => lastIs(e, 'split2') ? 'waver' : rnd() < .46 ? 'split2' : rnd() < .78 ? 'blur' : 'waver' });
+
+defEnemy({ id: 'oldself', n: '지난 날의 나', g: '昨', hp: [136, 152], col: '#5a6b7a', big: true,
+  init: e => { e.s.thorns = 8; },
+  moves: { same:   { t: 'attack', label: '같은 수', d: 21, n: 2, fx: 'slash2' },
+           regret: { t: 'debuff', label: '후회', deb: { curse: 6, weak: 4 } },
+           mirror2:{ t: 'atkdef', label: '되풀이', d: 20, blk: 42, self: { thorns: 5 }, fx: 'blunt' } },
+  next: e => e.hist.length === 0 ? 'regret' : lastIs(e, 'same') ? 'mirror2'
+           : rnd() < .5 ? 'same' : rnd() < .8 ? 'mirror2' : 'regret' });
+
+defEnemy({ id: 'echoghost', n: '메아리 귀', g: '响', hp: [124, 140], col: '#6a5a7a',
+  moves: { repeat: { t: 'attack', label: '되울림', d: 16, n: 3, fx: 'void' },
+           howl:   { t: 'atkdeb', label: '울부짖음', d: 24, deb: { vuln: 5, weak: 4 }, fx: 'wind' },
+           fade:   { t: 'defend', label: '스러짐', blk: 44, self: { regenP: 8 } } },
+  next: e => e.hist.length === 0 ? 'howl' : lastIs(e, 'repeat', 2) ? 'fade'
+           : rnd() < .48 ? 'repeat' : rnd() < .8 ? 'howl' : 'fade' });
+
+defEnemy({ id: 'faceless', n: '얼굴 없는 스승', g: '師', hp: [280, 306], col: '#4a4230', elite: true, big: true,
+  init: e => { e.s.rage = 4; e.s.dex = 4; },
+  moves: { teach:  { t: 'debuff', label: '가르침', deb: { weak: 5, vuln: 5, curse: 5 } },
+           strike3:{ t: 'attack', label: '스승의 일격', d: 42, fx: 'slash2' },
+           guard3: { t: 'defend', label: '거둠', blk: 52, self: { thorns: 7 } } },
+  next: e => e.hist.length === 0 ? 'teach' : lastIs(e, 'strike3') ? 'guard3'
+           : e.turnCount % 4 === 0 ? 'teach' : rnd() < .56 ? 'strike3' : 'guard3' });
+
+defEnemy({ id: 'thousandface', n: '천의 얼굴', g: '千', hp: [268, 296], col: '#6a3a5a', elite: true, big: true,
+  moves: { swap:   { t: 'attack', label: '얼굴 바꾸기', d: 18, n: 3, fx: 'claw' },
+           steal:  { t: 'atkdeb', label: '이름 훔치기', d: 28, deb: { curse: 6 }, fx: 'void',
+                     extra: () => { const p = P(); if (p) for (const k in p.s)
+                       if (STATUS[k] && STATUS[k].kind === 'buff') delete p.s[k]; } },
+           many:   { t: 'buff', label: '여럿이 된다', blk: 44, self: { str: 7, dex: 4 } } },
+  next: e => e.hist.length === 0 ? 'many' : lastIs(e, 'steal') ? 'swap'
+           : e.turnCount % 5 === 0 ? 'many' : rnd() < .5 ? 'swap' : 'steal' });
+
+defEnemy({ id: 'myself', n: '나(我)', g: '我', hp: [960, 960], col: '#2a3a3a', boss: true, big: true,
+  init: e => { e.copy = 0; },
+  moves: {
+    same2:   { t: 'attack', label: '내가 쓰던 수', d: 26, n: 2, fx: 'slash2' },
+    know:    { t: 'atkdeb', label: '나를 안다', d: 34, deb: { weak: 5, vuln: 5 }, fx: 'lance' },
+    hold:    { t: 'defend', label: '버티기', blk: 58, self: { thorns: 8, regenP: 10 } },
+    gather3: { t: 'buff', label: '숨을 고른다', blk: 50, self: { str: 9 },
+               extra: e => { e.copy = 1; flash('내가 나를 겨눈다'); SND.boss(); } },
+    finish:  { t: 'attack', label: '내가 아는 마지막 수', d: 72, fx: 'slash2',
+               extra: e => { e.copy = 0; st(P(), 'curse', 5); shake(true); } }
+  },
+  onHalf: e => { st(e, 'str', 9); st(e, 'rage', 2); flash('나도 지지 않는다'); screenFlash('rgba(140,220,210,.5)', 800); },
+  next: e => {
+    if (e.copy) return 'finish';
+    if (e.hist.length === 0) return 'know';
+    if (e.turnCount % 5 === 0) return 'gather3';
+    if (lastIs(e, 'same2', 2)) return 'hold';
+    const r = rnd();
+    return r < .44 ? 'same2' : r < .74 ? 'know' : 'hold';
+  } });
+
+/* ══ 제10막 · 백귀야행 — 마지막 밤, 행렬이 돌아온다 ═══════ */
+defEnemy({ id: 'lantern2', n: '등롱 든 것', g: '燈', hp: [148, 166], col: '#c8813a',
+  moves: { light:  { t: 'attack', label: '등불 들이대기', d: 34, fx: 'fire' },
+           swing:  { t: 'attack', label: '휘두르기', d: 15, n: 3, fx: 'blunt' },
+           beckon: { t: 'buff', label: '손짓', blk: 42, self: { str: 6 } } },
+  next: e => e.hist.length === 0 ? 'beckon' : lastIs(e, 'light') ? 'swing'
+           : e.turnCount % 4 === 0 ? 'beckon' : rnd() < .52 ? 'light' : 'swing' });
+
+defEnemy({ id: 'drummer', n: '북 치는 것', g: '鼓', hp: [156, 174], col: '#8a3a2a',
+  moves: { beat:   { t: 'atkdeb', label: '북소리', d: 22, deb: { weak: 5, vuln: 5 }, fx: 'blunt' },
+           march:  { t: 'attack', label: '행진', d: 17, n: 3, fx: 'blunt' },
+           rally:  { t: 'buff', label: '행렬을 부른다', blk: 46, self: { str: 7, dex: 5 },
+                     extra: () => { for (const e2 of alive()) st(e2, 'str', 3); } } },
+  next: e => e.hist.length === 0 ? 'rally' : lastIs(e, 'march') ? 'beat'
+           : e.turnCount % 4 === 0 ? 'rally' : rnd() < .5 ? 'march' : 'beat' });
+
+defEnemy({ id: 'palanquin', n: '가마', g: '轎', hp: [170, 190], col: '#4a2a5a', big: true,
+  moves: { crush3: { t: 'attack', label: '내리누름', d: 44, fx: 'blunt' },
+           carry:  { t: 'defend', label: '메고 간다', blk: 56, self: { dex: 6, regenP: 9 } },
+           open:   { t: 'atkdeb', label: '발을 걷는다', d: 26, deb: { curse: 6, vuln: 5 }, fx: 'void' } },
+  next: e => e.hist.length === 0 ? 'carry' : lastIs(e, 'crush3') ? 'carry'
+           : rnd() < .46 ? 'crush3' : rnd() < .78 ? 'open' : 'carry' });
+
+defEnemy({ id: 'headmonk', n: '행렬을 이끄는 것', g: '導', hp: [320, 350], col: '#2a4a6a', elite: true, big: true,
+  init: e => { e.s.rage = 5; },
+  moves: { lead:   { t: 'buff', label: '앞장선다', blk: 54, self: { str: 8 },
+                     extra: () => { for (const e2 of alive()) st(e2, 'dex', 3); } },
+           point:  { t: 'attack', label: '가리킨다', d: 46, fx: 'lance' },
+           chant:  { t: 'debuff', label: '염불', deb: { weak: 6, vuln: 6, curse: 6 } } },
+  next: e => e.hist.length === 0 ? 'lead' : lastIs(e, 'point') ? 'chant'
+           : e.turnCount % 4 === 0 ? 'lead' : rnd() < .54 ? 'point' : 'chant' });
+
+defEnemy({ id: 'nightqueen', n: '밤의 어미', g: '母', hp: [305, 336], col: '#5a2a4a', elite: true, big: true,
+  init: e => { e.s.thorns = 9; e.s.regenP = 8; },
+  moves: { cradle: { t: 'atkdef', label: '품는다', d: 24, blk: 50, self: { thorns: 6 }, fx: 'void' },
+           lull:   { t: 'debuff', label: '자장가', deb: { weak: 6, curse: 7 } },
+           tear:   { t: 'attack', label: '떼어낸다', d: 22, n: 2, fx: 'claw' } },
+  next: e => e.hist.length === 0 ? 'lull' : lastIs(e, 'tear') ? 'cradle'
+           : rnd() < .48 ? 'tear' : rnd() < .8 ? 'cradle' : 'lull' });
+
+defEnemy({ id: 'hyakki', n: '백귀야행(百鬼夜行)', g: '百', hp: [1180, 1180], col: '#1a0e18', boss: true, big: true,
+  init: e => { e.wave = 0; e.surge = 0; },
+  moves: {
+    parade:  { t: 'attack', label: '행렬이 지나간다', d: 22, n: 3, fx: 'claw' },
+    lanterns:{ t: 'atkdeb', label: '등불이 에워싼다', d: 36, deb: { weak: 5, vuln: 5, curse: 5 }, fx: 'fire' },
+    close:   { t: 'defend', label: '줄을 좁힌다', blk: 66, self: { thorns: 10, dex: 5 } },
+    call:    { t: 'buff', label: '백 귀를 부른다', blk: 58, self: { str: 10 },
+               extra: e => { e.surge = 1; flash('백귀가 모여든다'); SND.boss(); SND.drum();
+                             screenFlash('rgba(180,40,60,.45)', 800); } },
+    night:   { t: 'attack', label: '밤 이 내 린 다', d: 88, fx: 'void',
+               extra: e => { e.surge = 0; st(P(), 'weak', 5); st(P(), 'vuln', 5);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 10); st(e, 'rage', 3); st(e, 'regenP', 12);
+                 flash('행렬이 뒤를 돈다'); screenFlash('rgba(255,120,60,.55)', 1000); SND.boss(); },
+  next: e => {
+    if (e.surge) return 'night';
+    if (e.hist.length === 0) return 'lanterns';
+    if (e.turnCount % 5 === 0) return 'call';
+    if (lastIs(e, 'parade', 2)) return 'close';
+    const r = rnd();
+    return r < .42 ? 'parade' : r < .72 ? 'lanterns' : 'close';
+  } });
+
+/* ---------- 조우(인카운터) 구성 ---------- *//* ---------- 조우(인카운터) 구성 ---------- */
 const ENCOUNTERS = {
   1: {
     weak:   [['wisp', 'wisp'], ['boar'], ['spirit'], ['foxling', 'bat']],
@@ -3837,6 +4363,22 @@ const ENCOUNTERS = {
              ['shapeless', 'shapeless'], ['maw', 'firstlight'], ['nameless', 'wordless']],
     elite:  [['primordial'], ['namer'], ['primordial', 'firstlight'], ['namer', 'shapeless']],
     boss:   ['taecho']
+  },
+  9: {
+    weak:   [['mirage'], ['echoghost', 'mirage'], ['oldself']],
+    normal: [['oldself', 'mirage'], ['echoghost', 'echoghost'], ['mirage', 'mirage', 'echoghost'],
+             ['oldself', 'echoghost'], ['mirage', 'oldself'], ['echoghost', 'shapeless'],
+             ['oldself', 'oldself'], ['wordless', 'mirage']],
+    elite:  [['faceless'], ['thousandface'], ['faceless', 'mirage'], ['thousandface', 'echoghost']],
+    boss:   ['myself']
+  },
+  10: {
+    weak:   [['lantern2'], ['drummer', 'lantern2'], ['palanquin']],
+    normal: [['lantern2', 'drummer'], ['palanquin', 'lantern2'], ['drummer', 'drummer'],
+             ['palanquin', 'drummer'], ['lantern2', 'lantern2', 'drummer'],
+             ['palanquin', 'echoghost'], ['drummer', 'mirage'], ['lantern2', 'palanquin']],
+    elite:  [['headmonk'], ['nightqueen'], ['headmonk', 'lantern2'], ['nightqueen', 'drummer']],
+    boss:   ['hyakki']
   }
 };
 
@@ -3870,8 +4412,10 @@ function applyDamage(ent, dmg, pierce) {
   if (ent.isPlayer) {
     G.run.hp = ent.hp;
     if (d > 0) checkHermit();
-  } else if (!ent.halfDone && ent.hp > 0 && ent.hp * 2 <= ent.maxHp && ent.def.onHalf) {
-    ent.halfDone = true; ent.def.onHalf(ent);
+  } else if (!ent.halfDone && ent.hp > 0 && ent.hp * 2 <= ent.maxHp) {
+    ent.halfDone = true;
+    if (ent.def.onHalf) ent.def.onHalf(ent);
+    if (ent.def.boss) awaken(ent);          /* 보스는 반으로 꺾이면 눈을 뜬다 */
   }
   return { hp: d, blocked };
 }
@@ -3982,6 +4526,7 @@ function startBattle(enemyIds, kind, opts) {
     b.enemies.push(e);
   }
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
+  if (kind !== 'arena') { run.inBattle = true; saveRun(); }   /* 도중에 나가면 갈림길로 되돌린다 */
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
@@ -3993,10 +4538,43 @@ function startBattle(enemyIds, kind, opts) {
   setTimeout(() => startPlayerTurn(), 420);
 }
 
+/* ══ 각성(覺醒) — 보스가 반으로 꺾이면 눈을 뜬다 ══════════
+   피해가 50% 오르고, 본래 없던 세 수를 새로 쓴다.
+   ═══════════════════════════════════════════════════════════ */
+const AWAKEN_MOVES = {
+  aw_rend:  { t: 'attack', label: '각성 · 찢어발기기', d: 30, n: 2, fx: 'slash2', awaken: true },
+  aw_curse: { t: 'atkdeb', label: '각성 · 업을 씌운다', d: 26, fx: 'void', awaken: true,
+              deb: { weak: 5, vuln: 5, curse: 6 } },
+  aw_roar:  { t: 'buff',   label: '각성 · 포효', blk: 40, self: { str: 8, thorns: 6 }, awaken: true,
+              extra: e => { SND.charge(); if (e.el) { const c = centerOf(e.el);
+                sparkles(c.x, c.y, 16, '#ff8a3a', 90); shockRing(c.x, c.y, 260, '#ff6a2a'); } } }
+};
+const AWAKEN_KEYS = Object.keys(AWAKEN_MOVES);
+function awaken(e) {
+  if (e.awake || !e.def.boss) return;
+  e.awake = true;
+  e.dmgMul = (e.dmgMul || 1) * 1.5;      /* 딱 50% — 힘까지 얹으면 너무 세다 */
+  if (e.el) e.el.classList.add('awake');
+  stampWord('각 성', '#ff3a2a');
+  screenFlash('radial-gradient(circle,rgba(255,90,40,.65),rgba(60,0,0,.85))', 1000);
+  blink(2); zoomPunch(); rgbSplit(); shake(true); hitstop(true);
+  rushVignette('rgba(200,30,20,.55)');
+  SND.boss(); SND.gong(); SND.charge();
+  if (e.el) { const c = centerOf(e.el);
+    sparkles(c.x, c.y, 30, '#ff9a4a', 180); shockRing(c.x, c.y, 460, '#ff5a2a');
+    FX.burst(c.x, c.y, 40, '255,90,40', 8, 60, 6);
+    for (let i = 0; i < 3; i++) setTimeout(() => lightBeam(c.x + (i - 1) * 90, 'rgba(255,120,50,.6)', 150), i * 110);
+  }
+  flash(e.n + ' 각성');
+  syncAll();
+}
 function pickIntent(e) {
   if (e.hp <= 0) return;
-  const key = e.def.next(e);
-  e.mvKey = key; e.mv = e.def.moves[key];
+  let key;
+  if (e.awake && rnd() < .38) key = pick(AWAKEN_KEYS);   /* 각성한 보스는 새 수를 섞어 쓴다 */
+  else key = e.def.next(e);
+  e.mvKey = key;
+  e.mv = AWAKEN_MOVES[key] || e.def.moves[key];
 }
 
 /* --- 플레이어 턴 시작 --- */
@@ -4047,13 +4625,17 @@ async function playCard(card, target) {
 
   const i = b.hand.findIndex(x => x.uid === card.uid);
   if (i >= 0) b.hand.splice(i, 1);
-  const cel = cardEls[card.uid];
-  if (cel) { cel.classList.add('fly'); setTimeout(() => cel.remove(), 340); delete cardEls[card.uid]; }
+  castMotion(card, d, target);
   SND.cardPlay(d.type);
   if (d.type === 'attack') SND.slash();
 
   b.curCard = card;
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
+  if (d.rar === 'ssx' || d.rar === 'unknown') {
+    blink(1.3); zoomPunch(); rgbSplit();
+    sparkles(innerWidth / 2, innerHeight * .5, 22, GRADE[d.rar].c, 220);
+    lightBeam(innerWidth / 2, d.rar === 'unknown' ? 'rgba(190,140,255,.55)' : 'rgba(255,90,130,.55)', 190);
+  } else if (d.rar === 'special') { blink(.7); sparkles(innerWidth / 2, innerHeight * .52, 10, '#ffb07a', 150); }
   const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
@@ -4157,8 +4739,16 @@ async function doMove(e, m) {
       const r = applyDamage(P(), dmg);
       impact(m.fx || 'claw', P());
       hitFx(P(), r.hp, r.blocked, true);
-      if (r.hp > 0 && e.el && P().el) slashLine(centerOf(e.el), centerOf(P().el), '#ff8a7a');
+      /* 요괴가 때릴 때도 손맛이 있어야 한다 */
+      const pc = P().el ? centerOf(P().el) : { x: innerWidth * .18, y: innerHeight * .42 };
+      if (e.el) slashLine(centerOf(e.el), pc, r.hp > 0 ? '#ff8a7a' : '#9fd0ff');
+      shockRing(pc.x, pc.y, r.hp > 0 ? 140 + r.hp * 3 : 120, r.hp > 0 ? '#e2555a' : '#7fb4e8');
+      sparkles(pc.x, pc.y, r.hp > 0 ? 6 : 8, r.hp > 0 ? '#ffb0a0' : '#bfe0ff', 54);
+      if (r.blocked > 0 && r.hp === 0) SND.block();      /* 다 막아냈다 */
+      if (r.hp >= 10) blink(.55);
       if (r.hp >= 14) { rushVignette('rgba(190,30,30,.5)'); hitstop(r.hp >= 26); }
+      if (r.hp >= 22) { rgbSplit(); zoomPunch();
+        lightBeam(pc.x, 'rgba(255,90,90,.45)', 150); }
       SND.hit(dmg > 14 ? 2 : 1); shake(dmg > 14);
       lunge(e);
       if (P().s.thorns) pure(e, P().s.thorns);
@@ -4167,8 +4757,16 @@ async function doMove(e, m) {
     }
   }
   if (!G.b || b.over) return;
-  if (m.blk) { eblk(e, m.blk); syncAll(); await wait(180); }
-  if (m.self) { if (m.self.str >= 4) SND.charge(); for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
+  if (m.blk) { eblk(e, m.blk);
+    if (e.el) { const c2 = centerOf(e.el); shockRing(c2.x, c2.y, 130, '#7fb4e8');
+      sparkles(c2.x, c2.y, 6, '#bfe0ff', 46); }
+    syncAll(); await wait(180); }
+  if (m.self) {
+    if (m.self.str >= 4) { SND.charge();
+      if (e.el) { const c3 = centerOf(e.el);
+        sparkles(c3.x, c3.y, 14, '#ffb060', 80); shockRing(c3.x, c3.y, 220, '#ff8a3a');
+        lightBeam(c3.x, 'rgba(255,140,60,.45)', 130); blink(.6); } }
+    for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
   if (m.deb && P()) { for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
   if (m.heal) { eheal(e, m.heal); await wait(160); }
   if (m.extra) { await m.extra(e); await wait(160); }
@@ -4200,6 +4798,11 @@ async function checkDeaths() {
     for (let i = 0; i < killed; i++) setTimeout(() => SND.combo(i + 3), i * 90);
     screenFlash('rgba(255,220,140,.4)', 560);
     FX.gold(innerWidth / 2, innerHeight * .4, 40);
+    stampWord(killed + ' 연 속', '#ffb648');
+    blink(1.6); zoomPunch(); rgbSplit();
+    sparkles(innerWidth / 2, innerHeight * .4, 26, '#ffe9a8', 200);
+    lightBeam(innerWidth * .35, 'rgba(255,220,150,.6)', 150);
+    setTimeout(() => lightBeam(innerWidth * .65, 'rgba(255,200,120,.5)', 190), 110);
   }
   if (any) {
     await wait(430);
@@ -4229,6 +4832,7 @@ async function checkOver() {
 function winBattle() {
   const b = G.b, run = G.run;
   if (!b || !run) return;                      /* 기다리는 사이 전투가 사라졌을 수 있다 */
+  run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
   fire('battleEnd', b.kind);
@@ -5047,9 +5651,14 @@ function hitFx(ent, hpDmg, blocked, splash) {
       $('#app').appendChild(m); setTimeout(() => m.remove(), 780);
       FX.burst(cx, cy, 22, '255,190,80', 7, 46, 5);
       shockRing(cx, cy, 210, '#ffce6a');
+      sparkles(cx, cy, 10, '#fff2c0', 62);
+      blink(.7);
       const pl = P();
       if (pl && pl.el) slashLine(centerOf(pl.el), { x: cx, y: cy }, '#ffd9a0');
-      if (hpDmg >= CRIT_AT * 1.8) rushVignette('rgba(255,140,40,.42)');
+      if (hpDmg >= CRIT_AT * 1.8) {
+        rushVignette('rgba(255,140,40,.42)'); rgbSplit(); zoomPunch();
+        lightBeam(cx, 'rgba(255,220,150,.6)', 160); sparkles(cx, cy, 14, '#ffdf9a', 120);
+      }
       SND.crit(); hitstop(hpDmg >= CRIT_AT * 1.8); shake(true);
     } else if (hpDmg >= 15) hitstop(false);
   }
@@ -5069,8 +5678,120 @@ function statusFx(ent, k) { if (!ent.el) return; const s = STATUS[k]; if (s) flo
 function lunge(e) {
   if (!e.el) return;
   const b = e.el.querySelector('.body');
-  b.style.transition = 'transform .12s'; b.style.transform = 'translate(-18px,4px) scale(1.06)';
-  setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 200); }, 130);
+  b.style.transition = 'transform .1s cubic-bezier(.3,1.4,.4,1)';
+  b.style.transform = 'translate(-26px,6px) scale(1.11) rotate(-3deg)';
+  setTimeout(() => { b.style.transform = ''; setTimeout(() => b.style.transition = '', 220); }, 150);
+}
+/* ── 부적이 나가는 모션 ─────────────────────────────────
+   공격은 상대에게 날아가고, 기술은 가운데서 터지고,
+   심법은 내 몸으로 스며든다. 등급이 높을수록 빛이 세다.
+   ────────────────────────────────────────────────────── */
+function castMotion(card, d, target) {
+  const cel = cardEls[card.uid];
+  delete cardEls[card.uid];
+  if (!cel) return;
+  const gc = GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a';
+  const r = cel.getBoundingClientRect();
+  const from = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  /* 어디로 갈 것인가 */
+  let to = { x: innerWidth / 2, y: innerHeight * .34 };
+  if (d.type === 'power' || (d.type === 'skill' && !target)) {
+    const pe = P() && P().el;
+    if (pe) { const c = centerOf(pe); to = { x: c.x, y: c.y }; }
+  } else if (target && target.el) { const c = centerOf(target.el); to = { x: c.x, y: c.y }; }
+  else if (d.tgt === 'all') {
+    const a = alive();
+    if (a.length && a[0].el) { const c = centerOf(a[Math.floor(a.length / 2)].el || a[0].el); to = { x: c.x, y: c.y }; }
+  }
+  const into = (d.type === 'power');
+  cel.style.setProperty('--cg', gc);
+  cel.style.setProperty('--mx', (to.x - from.x) * (into ? 1 : .55) + 'px');
+  cel.style.setProperty('--my', (to.y - from.y) * (into ? 1 : .55) + 'px');
+  cel.classList.add('cast');
+  if (into) cel.classList.add('into');
+  setTimeout(() => cel.remove(), into ? 520 : 480);
+
+  if (!OPT.particles) return;
+  /* 자리에 남는 잔상 */
+  const g = el('div', 'castghost');
+  g.style.cssText = `left:${from.x}px;top:${from.y}px;width:${r.width}px;height:${r.height}px;--cg:${gc}`;
+  $('#app').appendChild(g);
+  setTimeout(() => g.remove(), 520);
+  /* 대상으로 흐르는 기운 */
+  setTimeout(() => {
+    const dx = to.x - from.x, dy = to.y - from.y;
+    const len = Math.hypot(dx, dy);
+    const f = el('div', 'castflow');
+    f.style.cssText = `left:${from.x}px;top:${from.y}px;width:${len}px;--cg:${gc};` +
+      `--a:${Math.atan2(dy, dx) * 180 / Math.PI}deg`;
+    $('#app').appendChild(f);
+    setTimeout(() => f.remove(), 440);
+    sparkles(to.x, to.y, d.rar === 'basic' ? 3 : d.rar === 'common' ? 4 : 7, gc, 56);
+  }, 190);
+  FX.burst(from.x, from.y, d.rar === 'basic' ? 6 : 10, hexRgb(gc), 4, 34, 3.4);
+}
+/* #rrggbb → "r,g,b" */
+function hexRgb(h) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h || '');
+  return m ? `${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)}` : '200,170,90';
+}
+/* ── 더 요란한 연출 ───────────────────────────────────── */
+/* 아주 짧은 화면 깜빡임 */
+function blink(strength) {
+  if (!OPT.shake) return;
+  const n = el('div', 'blinkw');
+  if (strength) n.style.animationDuration = (.13 * strength) + 's';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 220);
+}
+/* 반짝이 한 무더기 */
+function sparkles(x, y, n, color, spread) {
+  if (!OPT.particles) return;
+  const sp = spread || 70;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, r = Math.random() * sp;
+    const d = el('div', 'sparkle');
+    d.style.left = (x + Math.cos(a) * r) + 'px';
+    d.style.top = (y + Math.sin(a) * r) + 'px';
+    d.style.setProperty('--sc3', color || '#fff6d0');
+    d.style.setProperty('--sz', (8 + Math.random() * 16) + 'px');
+    d.style.setProperty('--dur', (.45 + Math.random() * .45) + 's');
+    d.style.animationDelay = (Math.random() * .22) + 's';
+    $('#app').appendChild(d);
+    setTimeout(() => d.remove(), 1100);
+  }
+}
+/* 화면을 훑고 지나가는 빛기둥 */
+function lightBeam(x, color, w) {
+  if (!OPT.particles) return;
+  const n = el('div', 'lightbeam');
+  n.style.left = (x == null ? innerWidth / 2 : x) + 'px';
+  if (color) n.style.setProperty('--bc', color);
+  if (w) n.style.setProperty('--bw', w + 'px');
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 540);
+}
+/* 색이 한순간 어긋난다 */
+function rgbSplit() {
+  if (!OPT.shake) return;
+  const a = $('#app');
+  a.classList.remove('rgbsplit'); void a.offsetWidth; a.classList.add('rgbsplit');
+  setTimeout(() => a.classList.remove('rgbsplit'), 480);
+}
+/* 화면이 확 당겨진다 */
+function zoomPunch() {
+  if (!OPT.shake) return;
+  const a = $('#app');
+  a.classList.remove('zoompunch'); void a.offsetWidth; a.classList.add('zoompunch');
+  setTimeout(() => a.classList.remove('zoompunch'), 300);
+}
+/* 큰 글자를 쿵 하고 찍는다 */
+function stampWord(text, color) {
+  if (!OPT.banner) return;
+  const n = el('div', 'stampword', text);
+  if (color) n.style.setProperty('--wc', color);
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 950);
 }
 /* ── 더 진한 타격 연출 ─────────────────────────────────── */
 /* 두 점을 잇는 섬광 — 벤 자리를 남긴다 */
@@ -5130,9 +5851,11 @@ function chainFx(n) {
   $('#app').appendChild(box);
   setTimeout(() => box.remove(), 900);
   if (n >= 5) { FX.gold(innerWidth - 70, innerHeight * .45, 12 + n); shake();
-    shockRing(innerWidth - 70, innerHeight * .45, 120 + n * 14, n >= 7 ? '#ff6ea0' : '#ffd76a'); }
+    shockRing(innerWidth - 70, innerHeight * .45, 120 + n * 14, n >= 7 ? '#ff6ea0' : '#ffd76a');
+    sparkles(innerWidth - 70, innerHeight * .45, 6 + n, n >= 7 ? '#ffb0d0' : '#ffe9a8', 90); }
   if (n >= 8) { screenFlash('rgba(255,140,180,.28)', 460); SND.gong();
-    rushVignette('rgba(255,90,150,.38)'); }
+    rushVignette('rgba(255,90,150,.38)'); blink(1.2); zoomPunch();
+    stampWord(n + ' 연 격', '#ff6ea0'); }
 }
 /* ── 체력이 바닥일 때 화면 가장자리가 뛴다 ───────────────── */
 let _lowTimer = null;
@@ -5175,8 +5898,12 @@ function killFx(e) {
     if (big) FX.gold(c.x, c.y, 26);
     crackFx(c.x, c.y, big ? '#ffd76a' : '#e8e0cc');
     shockRing(c.x, c.y, big ? 320 : 200, big ? '#ffd76a' : '#d8cbb0');
+    sparkles(c.x, c.y, big ? 20 : 10, big ? '#ffe9a8' : '#efe4cb', big ? 110 : 70);
+    blink(big ? 1.4 : .8);
+    if (big) { lightBeam(c.x, 'rgba(255,225,160,.7)', 220); zoomPunch(); rgbSplit(); }
     if (over) { FX.burst(c.x, c.y, 40, '255,170,60', 8, 56, 5.5); FX.gold(c.x, c.y, 24);
-      shockRing(c.x, c.y, 400, '#ffb648'); rushVignette('rgba(255,150,50,.4)'); }
+      shockRing(c.x, c.y, 400, '#ffb648'); rushVignette('rgba(255,150,50,.4)');
+      stampWord('과 잉', '#ff9a2a'); sparkles(c.x, c.y, 18, '#ffcf7a', 150); }
     e.el.classList.add('dying');
     const m = el('div', 'killmark' + (big ? ' big' : ''), over ? '과 잉' : big ? '토 벌' : '처 치');
     if (over) m.style.color = '#ffdf9a';
@@ -5225,6 +5952,10 @@ async function tryFortune() {
   b.busy = true;
   skillBanner('天 運', true);
   screenFlash('radial-gradient(circle,rgba(255,255,220,.9),rgba(255,150,40,.7))', 900);
+  stampWord('천 운', '#ffd76a'); blink(2); zoomPunch(); rgbSplit();
+  sparkles(innerWidth / 2, innerHeight * .45, 40, '#fff2c0', 300);
+  for (let i = 0; i < 5; i++)
+    setTimeout(() => lightBeam(innerWidth * (.12 + i * .19), 'rgba(255,235,180,.6)', 130), i * 90);
   SND.gong(); SND.victory();
   toast(`천운! 덱의 기술 ${pool.length}장이 저절로 펼쳐진다`);
   await wait(500);
@@ -5272,6 +6003,9 @@ async function useSkill() {
   const id = G.run.skill, d = id && SKILLS[id];
   if (!d) { SND.err(); toast('장착한 비기가 없다'); return; }
   b.skillUsed = true; b.busy = true; b.sel = null; hideArrow(); clearPreview(); syncAll();
+  blink(1.1); zoomPunch();
+  sparkles(innerWidth * .12, innerHeight * .78, 14, GRADE[d.rar].c, 90);
+  lightBeam(innerWidth * .12, 'rgba(200,150,255,.5)', 130);
   try { await d.use(); } catch (e) { console.error('비기 오류', id, e); }
   await checkDeaths();
   b.busy = false; syncAll();
@@ -5416,25 +6150,35 @@ function impact(kind, ent) {
 
   switch (kind) {
     case 'slash':
-      add('', `--a:${rr(-46, -18)}deg`); break;
+      add('', `--a:${rr(-46, -18)}deg`);
+      shockRing(cx, cy, 130, '#fff0d0'); sparkles(cx, cy, 4, '#fff6dc', 44); break;
     case 'slash2':
       for (let k = 0; k < 3; k++) add('', `--a:${rr(-60, 40)}deg;animation-delay:${k * .07}s`);
-      break;
+      for (let k = 0; k < 3; k++) setTimeout(() => shockRing(cx + rr(-22, 22), cy + rr(-22, 22), 92, '#ffe6c0'), k * 70);
+      sparkles(cx, cy, 7, '#fff2d0', 60); blink(.45); break;
     case 'spin':
       for (let k = 0; k < 2; k++) add('', `--a:${k ? 14 : -14}deg;animation-delay:${k * .06}s`);
       SND.windhit(); break;
     case 'pierce':
-      add('lance'); FX.spark(cx, cy, 12, '255,220,170'); SND.pierceS(); break;
+      add('lance'); FX.spark(cx, cy, 12, '255,220,170');
+      lightBeam(cx, 'rgba(255,235,190,.5)', 60); shockRing(cx, cy, 110, '#ffe9b0');
+      SND.pierceS(); break;
     case 'blunt':
-      add(); add(); FX.ink(cx, cy, 16); SND.bluntS(); shake(true); break;
+      add(); add(); FX.ink(cx, cy, 16);
+      shockRing(cx, cy, 240, '#d8c8a8'); zoomPunch(); blink(.7);
+      SND.bluntS(); shake(true); break;
     case 'void':
       add(); add(); add();
       FX.burst(cx, cy, 26, '20,16,14', 4, 52, 5);
       screenFlash('radial-gradient(circle at ' + cx + 'px ' + cy + 'px, rgba(255,45,85,.5), rgba(10,8,8,.9))', 620);
+      rgbSplit(); zoomPunch(); shockRing(cx, cy, 320, '#b98cff');
+      sparkles(cx, cy, 12, '#c8a0ff', 110);
       SND.voidhit(); shake(true); break;
     case 'fire':
       for (let k = 0; k < 7; k++) add('', `--x:${rr(-40, 40)}px;animation-delay:${k * .045}s`);
       FX.burst(cx, cy + 10, 20, '230,120,40', 4, 46, 4);
+      shockRing(cx, cy, 200, '#ff9a3a'); sparkles(cx, cy - 14, 9, '#ffcf7a', 74);
+      rushVignette('rgba(220,90,20,.34)');
       SND.fire(); break;
     case 'lightning': {
       let d = 'M90,0';
@@ -5443,28 +6187,36 @@ function impact(kind, ent) {
         stroke-linecap="round"/><path d="${d}" fill="none" stroke="#8fd8ff" stroke-width="14" opacity=".45"
         stroke-linecap="round"/></svg>`;
       screenFlash('rgba(220,245,255,.8)', 300);
-      FX.spark(cx, cy, 22, '190,235,255'); SND.thunder(); shake(true); break;
+      FX.spark(cx, cy, 22, '190,235,255');
+      blink(1.2); rgbSplit(); shockRing(cx, cy, 300, '#bfeaff');
+      sparkles(cx, cy, 14, '#e8fbff', 130); lightBeam(cx, 'rgba(200,240,255,.6)', 90);
+      SND.thunder(); shake(true); break;
     }
     case 'holy':
       add('ring');
       for (let k = 0; k < 8; k++) add('ray', `--a:${k * 45}deg;animation-delay:${k * .022}s`);
       screenFlash('rgba(255,240,200,.55)', 380);
-      FX.gold(cx, cy, 22); SND.holyhit(); break;
+      FX.gold(cx, cy, 22); sparkles(cx, cy, 12, '#fff6d0', 96);
+      shockRing(cx, cy, 260, '#ffe9a8'); blink(.8);
+      SND.holyhit(); break;
     case 'poison':
       for (let k = 0; k < 6; k++) add('', `--x:${rr(-30, 30)}px;animation-delay:${k * .06}s`);
+      shockRing(cx, cy, 150, '#8fd86a'); sparkles(cx, cy, 6, '#c8f0a0', 60);
       SND.poison(); break;
     case 'wind':
       for (let k = 0; k < 4; k++) add('', `--a:${rr(-25, 25)}deg;animation-delay:${k * .05}s`);
+      shockRing(cx, cy, 190, '#cfe8f0'); sparkles(cx, cy, 5, '#e8f8ff', 80);
       SND.windhit(); break;
     case 'petal':
       for (let k = 0; k < 9; k++) add('', `--x:${rr(-70, 70)}px;animation-delay:${k * .04}s`);
-      break;
+      sparkles(cx, cy, 10, '#ffd0e0', 96); shockRing(cx, cy, 170, '#ffc0d8'); break;
     case 'talisman':
-      add(); FX.burst(cx, cy, 12, '168,39,44', 4, 40, 4); break;
+      add(); FX.burst(cx, cy, 12, '168,39,44', 4, 40, 4);
+      shockRing(cx, cy, 160, '#e8b04a'); sparkles(cx, cy, 6, '#ffd98a', 58); break;
     case 'claw':
     default:
       for (let k = 0; k < 3; k++) add('', `--a:${rr(-30, 30)}deg;animation-delay:${k * .05}s`);
-      break;
+      shockRing(cx, cy, 120, '#e8a0a0'); sparkles(cx, cy, 4, '#ffc8b8', 48); break;
   }
   $('#app').appendChild(box);
   setTimeout(() => box.remove(), 1100);
@@ -5547,23 +6299,25 @@ const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', sho
    ══════════════════════════════════════════════════════════ */
 const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
                    4: '명계 관문', 5: '구천 상계', 6: '무간',
-                   7: '무저갱', 8: '태초' };
-const LAST_ACT = 8;
+                   7: '무저갱', 8: '태초', 9: '환영', 10: '백귀야행' };
+const LAST_ACT = 10;
 /* ── 막마다 요괴가 굵어진다 ────────────────────────────────
    위로 갈수록 체력이 붙고 손이 매워진다. 체력은 가파르게,
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
    ────────────────────────────────────────────────────────── */
 const ACT_SCALE = {
-  1: { hp: 1.00, dmg: 1.00 },
-  2: { hp: 1.04, dmg: 1.02 },
-  3: { hp: 1.12, dmg: 1.06 },
-  4: { hp: 1.26, dmg: 1.12 },
-  5: { hp: 1.46, dmg: 1.20 },
-  6: { hp: 1.66, dmg: 1.28 },
-  7: { hp: 1.86, dmg: 1.36 },
-  8: { hp: 2.10, dmg: 1.45 }
+  1: { hp: 1.00, dmg: 1.00 },              /* 첫 막만 그대로 둔다 */
+  2: { hp: 1.20, dmg: 1.17 },
+  3: { hp: 1.29, dmg: 1.22 },
+  4: { hp: 1.45, dmg: 1.29 },
+  5: { hp: 1.68, dmg: 1.38 },
+  6: { hp: 1.91, dmg: 1.47 },
+  7: { hp: 2.14, dmg: 1.56 },
+  8: { hp: 2.42, dmg: 1.67 },
+  9: { hp: 2.72, dmg: 1.78 },
+  10:{ hp: 3.05, dmg: 1.90 }
 };
-const actScale = act => ACT_SCALE[Math.min(8, Math.max(1, act || 1))] || ACT_SCALE[1];
+const actScale = act => ACT_SCALE[Math.min(10, Math.max(1, act || 1))] || ACT_SCALE[1];
 const actBoost = act => actScale(act).hp;
 function newRun(asc) {
   G.cp = null;
@@ -5632,12 +6386,38 @@ function nextAct() {
 }
 
 function showMap() {
-  G.scene = 'map'; G.b = null;
+  G.scene = 'map'; G.b = null; if (G.run) G.run.inBattle = false;
   clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false);
   const run = G.run, m = run.map;
+  /* 제1막을 넘어선 사람에게는 자동 플레이가 있어야 한다.
+     기록이 어떤 이유로든 지워졌다면 여기서 되돌려 준다. */
+  if (run.act >= 2 && !META.autoUnlocked) { META.autoUnlocked = true; saveMeta(); syncAuto(); }
+  /* 갈 곳이 하나도 없다 — 보스 칸에서 끊긴 저장이다. 길을 열어 준다. */
+  if (!availableNodes().length) {
+    const last = m.nodes[m.nodes.length - 1];
+    if (run.mapCur === last.id) {
+      if (run.act < LAST_ACT) { nextAct(); return; }
+      victory(); return;
+    }
+    run.mapCur = -1;                       /* 그 밖의 막힘은 첫 갈림길로 되돌린다 */
+  }
   const s = $('#scene');
-  s.innerHTML = `<div id="map"><div id="maphead">제 ${run.act} 막<span class="actname">${ACT_NAME[run.act] || '심산유곡'}</span></div>
-    <div id="mapinner" style="height:${m.h}px"><svg style="position:absolute;inset:0;width:100%;height:${m.h}px"></svg></div></div>`;
+  const rows = m.nodes.reduce((a, n) => Math.max(a, n.r), 0) + 1;
+  const doneRows = Math.max(0, run.floor);
+  s.innerHTML = `<div id="map">
+      <div id="maphead">제 ${run.act} 막<span class="actname">${ACT_NAME[run.act] || '심산유곡'}</span>
+        <div class="actbar"><i style="width:${Math.round(doneRows / rows * 100)}%"></i></div>
+        <span class="actsub">${doneRows} / ${rows} 층 · ${run.act >= LAST_ACT ? '마지막 봉우리' : `제 ${run.act + 1} 막까지 ${rows - doneRows} 층`}</span>
+      </div>
+      <div id="mapstage">
+        <div id="mapinner" style="height:${m.h}px"><svg style="position:absolute;inset:0;width:100%;height:${m.h}px"></svg></div>
+      </div>
+      <div id="maplegend">
+        <span><i>刀</i>싸움</span><span><i>鬼</i>엘리트</span><span><i>火</i>야영지</span>
+        <span><i>商</i>상점</span><span><i>寶</i>보물</span><span><i>?</i>사건</span>
+        <span><i>將</i>장기</span><span><i>王</i>보스</span>
+      </div>
+    </div>`;
   const inner = s.querySelector('#mapinner'), svg = inner.querySelector('svg');
   const done = new Set(run.mapDone);
   const availIds = availableNodes();
@@ -5663,9 +6443,27 @@ function showMap() {
     if (isAvail) b.onclick = () => { tipHide(); enterNode(n); };
     inner.appendChild(b);
   }
-  $('#map').scrollTop = m.h;
+  /* 층 눈금 */
+  const byRow = {};
+  for (const n of m.nodes) if (byRow[n.r] == null) byRow[n.r] = n.y;
+  for (const r in byRow) {
+    const lab = el('div', 'maprow' + (+r + 1 === run.floor ? ' now' : ''), (+r + 1) + '층');
+    lab.style.top = byRow[r] + 'px';
+    inner.appendChild(lab);
+  }
+  /* 스크롤 없이 한 화면에 담는다 — 모자라면 그만큼만 줄인다 */
+  const fit = () => {
+    const stage = $('#mapstage'); if (!stage) return;
+    const availH = stage.clientHeight - 16, availW = stage.clientWidth - 40;
+    const k = Math.min(1, availH / m.h, availW / 700);
+    inner.style.transform = `scale(${Math.max(.42, k)})`;
+  };
+  fit();
+  requestAnimationFrame(fit);
+  _mapFit = fit;
   saveRun();
 }
+let _mapFit = null;
 function availableNodes() {
   const run = G.run, m = run.map;
   if (run.mapCur < 0) return m.nodes.filter(n => n.r === 0).map(n => n.id);
@@ -5769,8 +6567,16 @@ function chooseCards(list, n, title) {
 function showRewards(kind) {
   G.scene = 'reward';
   const run = G.run;
-  if (kind === 'boss') { screenFlash('rgba(255,225,150,.45)', 900); SND.unlock(); }
-  else if (kind === 'elite') screenFlash('rgba(255,215,140,.24)', 520);
+  if (kind === 'boss') {
+    screenFlash('rgba(255,225,150,.45)', 900); SND.unlock();
+    stampWord('승 리', '#ffd76a'); blink(1.8); zoomPunch();
+    sparkles(innerWidth / 2, innerHeight * .42, 34, '#ffe9a8', 260);
+    for (let i = 0; i < 4; i++)
+      setTimeout(() => lightBeam(innerWidth * (.2 + i * .2), 'rgba(255,225,160,.55)', 140), i * 120);
+  } else if (kind === 'elite') {
+    screenFlash('rgba(255,215,140,.24)', 520); blink(.9);
+    sparkles(innerWidth / 2, innerHeight * .42, 16, '#ffe0a0', 180);
+  }
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * vm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * vm);
@@ -5792,22 +6598,12 @@ function showRewards(kind) {
       act: () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; }
         run.potions.push(pid); SND.heal(); flyGet(POTIONS[pid].g, '#7fe6cf', '#potbar'); } });
   }
+  /* 엘리트가 이따금 S급을 남긴다 — 그 판은 부적 보상 자체가 S급으로 바뀐다 */
+  const sDrop = kind === 'elite' && run.act >= SPECIAL_DROP_FROM
+    && GRADE_POOL.special.length && rnd() < specialDropRate(run.act);
   if (kind === 'elite') {
     const rid = randomRelic();
     if (rid) items.push({ ic: RELICS[rid].g, t: RELICS[rid].n, s: RELICS[rid].d.replace(/<[^>]+>/g, ''), act: () => gainRelic(rid) });
-    /* 제5막부터는 엘리트가 이따금 S급 부적을 떨어뜨린다 — 없으면 못 넘는다 */
-    if (run.act >= SPECIAL_DROP_FROM && GRADE_POOL.special.length && rnd() < specialDropRate(run.act)) {
-      const three = sample(GRADE_POOL.special, 3);
-      items.push({ ic: 'S', t: 'S급 부적', cls: 'sgift',
-        s: `${three.length}장 중 하나 · 제${run.act}막의 엘리트가 남긴 것`,
-        act: async () => {
-          const list = three.map(id => mkCard(id, false));
-          const c = await pickFromList(list, 'S급 부적 하나를 고르시오', { cancel: true, hint: '불타는 부적이다' });
-          if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id);
-                   SND.unlock(); screenFlash('rgba(255,150,60,.4)', 620); toast(`${cname(c)} 획득`); }
-          return true;
-        } });
-    }
   }
   /* 제5막을 넘어서면 특대급 상자를 하나 준다 (제6막에는 없다) */
   if (kind === 'boss' && run.act === FREEBOX_ACT) {
@@ -5823,14 +6619,21 @@ function showRewards(kind) {
     if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '1등급 이상 셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
   }
   const n = Math.max(1, 3 - (run.rewardCut || 0));
-  const cards = rewardCards(n, kind === 'normal' ? null : kind);
+  const cards = sDrop ? sample(GRADE_POOL.special, Math.min(3, GRADE_POOL.special.length)).map(id => mkCard(id, false))
+                      : rewardCards(n, kind === 'normal' ? null : kind);
   const un = unlockedGrades(kind === 'normal' ? null : kind).map(r => GRADE[r].n).join(' · ');
   const nx = nextUnlock();
-  items.push({ ic: '牌', t: '부적 한 장 고르기',
-    s: `${n}장 중 하나 · 지금 나오는 등급 ${un}` + (nx ? ` (${nx.left}층 뒤 ${nx.n})` : ''),
+  items.push({ ic: sDrop ? 'S' : '牌',
+    t: sDrop ? 'S급 부적 고르기' : '부적 한 장 고르기',
+    cls: sDrop ? 'sgift' : '',
+    s: sDrop ? `${cards.length}장 중 하나 · 엘리트가 남긴 불타는 부적`
+             : `${cards.length}장 중 하나 · 지금 나오는 등급 ${un}` + (nx ? ` (${nx.left}층 뒤 ${nx.n})` : ''),
     act: async () => {
-      const c = await pickFromList(cards, '한 장을 고르시오', { cancel: true, hint: '건너뛰어도 좋다' });
-      if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id); toast(`${cname(c)} 획득`); }
+      const c = await pickFromList(cards, sDrop ? 'S급 부적 하나를 고르시오' : '한 장을 고르시오',
+        { cancel: true, hint: sDrop ? '불타는 부적이다' : '건너뛰어도 좋다' });
+      if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id);
+               if (sDrop) { SND.unlock(); screenFlash('rgba(255,150,60,.4)', 620); blink(1); }
+               toast(`${cname(c)} 획득`); }
       return true;
     } });
 
@@ -7208,6 +8011,37 @@ defSkin({ id: 'star',    n: '성수',  h: '星宿', rar: 'rare',     c: '#8fa8e8
   d: '스물여덟 별자리를 새겼다. 별이 하나씩 깜빡인다.' });
 defSkin({ id: 'chaos',   n: '혼돈',  h: '混沌', rar: 'ssx',      c: '#b98cff',
   d: '어떤 빛깔이라 부를 수가 없다. 볼 때마다 달라진다.' });
+/* ── 더 늘린 옷들 ─────────────────────────────────────── */
+defSkin({ id: 'dancheong', n: '단청', h: '丹靑', rar: 'common',   c: '#d8b45a',
+  d: '절집 처마에 올린 색. 초록과 주홍과 군청이 띠를 이룬다.' });
+defSkin({ id: 'tigerfur',  n: '호피', h: '虎皮', rar: 'common',   c: '#c97a1e',
+  d: '산군의 가죽. 결이 두 방향으로 엇갈려 흐른다.' });
+defSkin({ id: 'talisman',  n: '황부', h: '黃符', rar: 'common',   c: '#d8ab3a',
+  d: '노란 종이에 주사로 내려 그은 글씨. 가장 오래된 모양이다.' });
+defSkin({ id: 'plum',      n: '매화', h: '梅花', rar: 'common',   c: '#c05070',
+  d: '눈이 덜 녹은 가지에 먼저 핀 것.' });
+defSkin({ id: 'silk',      n: '비단', h: '緋緞', rar: 'uncommon', c: '#c8546c',
+  d: '짜인 결이 끊임없이 흐른다. 만지면 서늘하다.' });
+defSkin({ id: 'iron',      n: '철갑', h: '鐵甲', rar: 'uncommon', c: '#8a9099',
+  d: '두들겨 편 쇠판에 네 모서리를 못으로 박았다.' });
+defSkin({ id: 'wave',      n: '파도', h: '波濤', rar: 'uncommon', c: '#7fd4f0',
+  d: '겹겹이 밀려오는 청해파. 물비린내가 난다.' });
+defSkin({ id: 'bronze',    n: '뇌문', h: '雷紋', rar: 'uncommon', c: '#8fc0a0',
+  d: '푸른 녹이 앉은 청동. 번개 무늬가 네모지게 돈다.' });
+defSkin({ id: 'moon',      n: '월광', h: '月光', rar: 'rare',     c: '#c8d8f8',
+  d: '달빛에 젖었다. 초승달이 부적 안에 걸려 있다.' });
+defSkin({ id: 'bloodvein', n: '혈사', h: '血絲', rar: 'rare',     c: '#c02a3a',
+  d: '붉은 실이 종이 속을 기어간다. 가끔 맥이 뛴다.' });
+defSkin({ id: 'landscape', n: '수묵', h: '水墨', rar: 'rare',     c: '#3a342a',
+  d: '부적 안에 산이 있다. 안개가 걷히면 봉우리가 셋.' });
+defSkin({ id: 'glass',     n: '유리', h: '琉璃', rar: 'rare',     c: '#9fdcf0',
+  d: '속이 비쳐 보인다. 빛이 지날 때마다 무지개가 선다.' });
+defSkin({ id: 'dragon',    n: '금룡', h: '金龍', rar: 'ssx',      c: '#ffd76a',
+  d: '비늘이 겹쳐 있다. 아래에서 위로 천천히 밀려 올라간다.' });
+defSkin({ id: 'aurora',    n: '구천', h: '九天', rar: 'ssx',      c: '#7fffd0',
+  d: '하늘이 커튼처럼 흔들린다. 구천에서만 보이는 빛.' });
+defSkin({ id: 'void',      n: '무',   h: '無',   rar: 'ssx',      c: '#8a7ac0',
+  d: '빛을 삼킨다. 글자가 검게 파여 테두리만 남는다.' });
 const ALL_SKINS = Object.keys(SKINS);
 /* 스킨을 입힐 수 있는 등급 */
 const SKINNABLE = ['special', 'ssx', 'unknown'];
@@ -7741,7 +8575,11 @@ function boxOpenScene(glyph, bestGrade) {
       sc.appendChild(g);
       const cx = innerWidth / 2, cy = innerHeight / 2;
       FX.gold(cx, cy, 44);
-      if (hi >= 2) FX.burst(cx, cy, 40, hi === 3 ? '150,90,255' : '255,60,110', 8, 60, 5);
+      sparkles(cx, cy, 18 + hi * 10, hi === 3 ? '#d8b0ff' : hi === 2 ? '#ffb0c8' : '#ffe9a8', 130 + hi * 60);
+      blink(.8 + hi * .45);
+      if (hi >= 1) { lightBeam(cx, hi === 3 ? 'rgba(190,140,255,.6)' : 'rgba(255,200,120,.6)', 150); zoomPunch(); }
+      if (hi >= 2) { FX.burst(cx, cy, 40, hi === 3 ? '150,90,255' : '255,60,110', 8, 60, 5);
+        rgbSplit(); stampWord(hi === 3 ? '? 급' : 'SSX 급', hi === 3 ? '#b98cff' : '#ff2d55'); }
       shake(true);
       if (hi === 3) { screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(120,60,220,.8))', 900); SND.gong(); SND.thunder(); }
       else if (hi === 2) { screenFlash('rgba(255,90,130,.55)', 640); SND.gong(); }
@@ -8091,6 +8929,21 @@ const STORY = {
     { scene: 'abyss', t: '바닥이 갈라지고,\n그 아래에서 빛이 올라왔다.\n\n아래인데 빛이 올라왔다.' },
     { scene: 'first', t: '떨어지던 몸이 문득 떠올랐다.\n\n산도, 문도, 어둠도 없는 자리.\n아무것도 없던 자리에 닿았다.' }
   ],
+  act8: [
+    { scene: 'first', who: '태초', t: '"네가 지운 것이 나다."\n\n"내가 지운 것도 너다."' },
+    { scene: 'first', t: '처음이 닫히자 빛이 걷혔다.\n\n그 자리에 낯익은 것이 서 있었다.\n산이었다. 처음 오르던 그 산.' },
+    { scene: 'hero', t: '길도, 요괴도, 부적도 그대로였다.\n\n다만 앞서 가는 사람의 뒷모습이\n어쩐지 낯이 익었다.' }
+  ],
+  act9: [
+    { scene: 'hero', who: '나', t: '"여기까지 온 것을 축하하네."\n\n돌아본 얼굴은 내 얼굴이었다.' },
+    { scene: 'moon', who: '나', t: '"백 년마다 하나가 오르지.\n그리고 백 년마다 하나가 남네."\n\n"이번엔 자네 차례일세."' },
+    { scene: 'parade', t: '재가 흩어진 자리에서\n등불이 하나둘 켜지기 시작했다.\n\n행렬이 돌아오고 있었다.' }
+  ],
+  end_hyakki: [
+    { scene: 'parade', who: '백귀야행', t: '수천의 등불이 산을 감았다.\n\n노래는 없었다. 발소리뿐이었다.' },
+    { scene: 'parade', t: '스승의 벽사부가 마지막으로 타올랐다.\n\n행렬의 맨 앞이 걸음을 멈췄다.\n그리고 뒤로 돌아섰다.' },
+    { scene: 'dawn', t: '문이 닫혔다. 이번에는 안쪽에서.\n\n산은 다시 잠들었고,\n백 년 뒤에도 행렬은 오지 않았다.\n\n누군가 끝까지 올라갔기 때문이다.' }
+  ],
   end_taecho: [
     { scene: 'first', who: '태초', t: '"네가 지운 것이 나다."\n\n"내가 지운 것도 너다."' },
     { scene: 'first', t: '부적은 진작 다 떨어졌다.\n\n마지막으로 남은 것은\n스승이 남긴 벽사부 한 장이었다.' },
@@ -8121,6 +8974,10 @@ function showStory(key) {
     let i = 0, typing = null, finished = false;
     const sc = el('div', 'story');
     sc.innerHTML = `<div class="sart"></div><div class="svig"></div>
+      <div class="sdust">${[...Array(22)].map((_, k) =>
+        `<i style="left:${(k * 4.7 + (k % 3) * 9) % 100}%;bottom:-8px;` +
+        `animation-duration:${(9 + (k % 5) * 4)}s;animation-delay:${(k * .7).toFixed(1)}s;` +
+        `--dx:${((k % 7) - 3) * 22}px;width:${2 + (k % 3)}px;height:${2 + (k % 3)}px"></i>`).join('')}</div>
       <div class="swho"></div><div class="stitle"></div>
       <div class="stext"></div><div class="snext">눌러서 계속</div>
       <button class="sskip">건너뛰기</button>`;
@@ -8146,6 +9003,8 @@ function showStory(key) {
       const full = p.t;
       let n = 0;
       clearInterval(typing);
+      text.classList.remove('stext'); void text.offsetWidth; text.classList.add('stext');
+      if (p.who) { who.style.animation = 'none'; void who.offsetWidth; who.style.animation = ''; }
       SND.hiss({ dur: .06, vol: .05, freq: 3000, filter: 'bandpass', q: 2 });
       typing = setInterval(() => {
         n += 1;
@@ -8956,12 +9815,14 @@ function setBg(act) {
     1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
     3: ['#9d95a8', '#7d7488', '#4e4857'], 4: ['#7f7a8e', '#5f5a70', '#38344a'],
     5: ['#a9bcd0', '#87a0bc', '#5a6f8e'], 6: ['#6e6a78', '#4a4652', '#2a2732'],
-    7: ['#4a4250', '#332e3e', '#1b1826'], 8: ['#d8cbb0', '#b6a78a', '#7d7159']
-  }[Math.min(8, act)] || ['#c3b79d', '#a89c82', '#7b7260'];
+    7: ['#4a4250', '#332e3e', '#1b1826'], 8: ['#d8cbb0', '#b6a78a', '#7d7159'],
+    9: ['#a8a08e', '#88806e', '#5a5346'], 10: ['#3a1e2a', '#26121c', '#140a10']
+  }[Math.min(10, act)] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
                 5: '#e8f0fb 0%,#cfe0f2 55%,#adc4e0 100%', 6: '#c6c2ce 0%,#a49fb0 55%,#7c7789 100%',
-                7: '#8d8898 0%,#6b6578 55%,#413c50 100%', 8: '#fff8e4 0%,#f2e4c2 55%,#dcc99e 100%' }[act];
+                7: '#8d8898 0%,#6b6578 55%,#413c50 100%', 8: '#fff8e4 0%,#f2e4c2 55%,#dcc99e 100%',
+                9: '#e8e2d4 0%,#cfc7b4 55%,#a89f8c 100%', 10: '#2a1220 0%,#1a0a14 55%,#0c050a 100%' }[act];
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      <g opacity=".55">
@@ -8973,7 +9834,14 @@ function setBg(act) {
      <g opacity=".75">
        <path fill="${near}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
      </g>
-     ${act === 8 ? '<g opacity=".55"><circle cx="500" cy="140" r="102" fill="#fff6d8"/><circle cx="500" cy="140" r="150" fill="#ffeeb0" opacity=".22"/><circle cx="500" cy="140" r="200" fill="#ffe89a" opacity=".1"/></g>'
+     ${act === 10 ? '<g opacity=".6">' +
+         [...Array(14)].map((_, i) => `<circle cx="${60 + i * 66}" cy="${120 + (i % 4) * 26}" r="${5 + (i % 3) * 2}" fill="#e2a13a"/>` +
+           `<circle cx="${60 + i * 66}" cy="${120 + (i % 4) * 26}" r="${16 + (i % 3) * 5}" fill="#e2a13a" opacity=".2"/>`).join('') +
+         '<circle cx="500" cy="110" r="74" fill="#8a1a2a" opacity=".7"/></g>'
+       : act === 9 ? '<g opacity=".4"><circle cx="500" cy="150" r="92" fill="none" stroke="#fff" stroke-width="2"/>' +
+         '<circle cx="500" cy="150" r="120" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>' +
+         '<circle cx="500" cy="150" r="150" fill="none" stroke="#fff" stroke-width="1" opacity=".3"/></g>'
+       : act === 8 ? '<g opacity=".55"><circle cx="500" cy="140" r="102" fill="#fff6d8"/><circle cx="500" cy="140" r="150" fill="#ffeeb0" opacity=".22"/><circle cx="500" cy="140" r="200" fill="#ffe89a" opacity=".1"/></g>'
        : act === 7 ? '<g opacity=".45"><ellipse cx="500" cy="600" rx="330" ry="130" fill="#0a0810"/><ellipse cx="500" cy="600" rx="240" ry="96" fill="#05040a"/></g>'
        : act >= 6 ? '<g opacity=".4"><circle cx="500" cy="150" r="86" fill="#0d0b12"/><circle cx="500" cy="150" r="96" fill="none" stroke="#b98cff" stroke-width="2" opacity=".6"/></g>'
        : act === 5 ? '<g opacity=".5"><circle cx="820" cy="110" r="54" fill="#fff4c8"/><circle cx="820" cy="110" r="96" fill="#fff4c8" opacity=".18"/></g>'
@@ -9023,8 +9891,16 @@ function resumeRun() {
   try {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY));
     if (!d || !d.run) { toast('저장된 모험이 없다'); return; }
-    adoptRun(d.run);
-    G.cp = d.cp || null;
+    /* 싸우다 말고 나갔다면, 그 갈림길에 들어서기 직전으로 되돌린다 */
+    if (d.run.inBattle && d.cp) {
+      adoptRun(JSON.parse(d.cp));
+      G.run.inBattle = false;
+      G.cp = d.cp;
+      toast('싸우다 만 자리 — 그 갈림길로 되돌렸다');
+    } else {
+      adoptRun(d.run);
+      G.cp = d.cp || null;
+    }
     showMap();
   } catch (e) { console.error(e); toast('저장된 기록을 읽을 수 없다'); }
 }
@@ -9046,7 +9922,7 @@ addEventListener('keydown', e => {
   } else if (e.key === 'e' || e.key === 'E' || e.key === ' ') { e.preventDefault(); endTurn(); }
   else if (e.key === 'd' || e.key === 'D') showCardList(G.run.deck, '나의 덱');
 });
-addEventListener('resize', () => { if (G.b) syncHand(); });
+addEventListener('resize', () => { if (G.b) syncHand(); if (G.scene === 'map' && _mapFit) _mapFit(); });
 addEventListener('pointerdown', () => SND.init(), { once: true });
 
 /* --- 시작 --- */
