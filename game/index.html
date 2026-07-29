@@ -1654,6 +1654,67 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .curgrid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:13px;
   align-content:start;overflow-y:auto;padding-right:6px}
 .curgrid::-webkit-scrollbar{width:8px}.curgrid::-webkit-scrollbar-thumb{background:rgba(220,140,160,.3);border-radius:4px}
+/* ── 수행터 — 서당의 뼈대를 쓰되 빛깔은 흙과 금으로 ── */
+.school.train{background:linear-gradient(165deg,#161610 0%,#252217 45%,#0d0c08 100%)}
+.school.train:before{background:radial-gradient(ellipse at 50% 0%,rgba(200,165,70,.24),transparent 62%)}
+.train .schead{background:linear-gradient(rgba(8,8,5,.94),rgba(38,34,22,.86));border-bottom-color:rgba(200,170,90,.32)}
+.train .schead h2{color:#f3e8cc}
+.train .schead .scnote{color:#a89460}
+.train .schead .gback{background:rgba(210,180,100,.15);border-color:rgba(210,180,100,.42);color:#f3e8cc}
+.train .schead .gback:hover{background:rgba(210,180,100,.3)}
+.train .scside .note{background:rgba(8,8,5,.55);border-color:rgba(200,170,90,.24)}
+.train .scside .note p{color:#c6bb9c}
+.train .schint{color:#c6bb9c}
+.jpbox{padding:12px 14px;border-radius:9px;background:linear-gradient(150deg,rgba(58,50,26,.9),rgba(24,21,12,.9));
+  border:1px solid rgba(210,180,100,.35)}
+.jpnow{display:flex;align-items:baseline;gap:9px}
+.jpnow i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;
+  background:radial-gradient(circle at 35% 30%,#ffdf9a,#8a6a12);color:#241a05;flex:none}
+.jpnow b{color:#ffd76a;font-size:26px;letter-spacing:.02em;text-shadow:0 0 16px rgba(255,200,90,.5)}
+.jpnow span{color:#a2977a;font-size:11.5px;letter-spacing:.08em}
+.jptot{margin-top:6px;color:#8d8367;font-size:11px;letter-spacing:.04em}
+.mercylist{padding:10px 12px;border-radius:8px;background:rgba(8,8,5,.5);border:1px solid rgba(120,200,180,.22)}
+.mercylist .mtit{color:#8fe6d0;font-size:11.5px;letter-spacing:.1em;margin-bottom:6px}
+.mercylist .mtit.dim{color:#6d6a58;margin-bottom:0}
+.mercylist .mrow{display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 0}
+.mercylist .mrow span{color:#c6bb9c;width:52px;flex:none}
+.mercylist .mrow em{color:#8d8367;font-style:normal;flex:1;font-size:11px}
+.mercylist .mrow b{color:#8fe6d0}
+.trgrid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:12px;
+  align-content:start;overflow-y:auto;padding-right:6px}
+.trgrid::-webkit-scrollbar{width:8px}.trgrid::-webkit-scrollbar-thumb{background:rgba(210,180,100,.3);border-radius:4px}
+.trtile{position:relative;padding:13px 14px 12px;border-radius:10px;text-align:left;
+  background:linear-gradient(150deg,rgba(52,46,26,.9),rgba(20,18,11,.92));
+  border:1px solid rgba(200,170,90,.28);transition:.16s;cursor:pointer}
+.trtile.can{border-color:rgba(255,215,120,.7);box-shadow:0 0 18px rgba(200,160,50,.22)}
+.trtile.can:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 24px rgba(220,180,60,.34)}
+.trtile.done{opacity:.72;cursor:default;border-color:rgba(140,220,190,.4)}
+.trtile .tg{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-size:19px;
+  background:radial-gradient(circle at 35% 28%,#efdcae,#7a6528);color:#1c1508;margin-bottom:8px}
+.trtile .tn{color:#f3e8cc;font-size:14.5px;letter-spacing:.1em;margin-bottom:6px}
+.trtile .tbar{display:flex;gap:3px;margin-bottom:7px}
+.trtile .tbar i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.1)}
+.trtile .tbar i.on{background:linear-gradient(90deg,#ffd76a,#e0a13a);box-shadow:0 0 6px rgba(255,200,90,.6)}
+.trtile .tv{color:#c6bb9c;font-size:12px;line-height:1.6;min-height:2.4em}
+.trtile .tv b{color:#ffd76a}
+.trtile .tnext{color:#8d8367;font-size:11px;margin-top:5px;letter-spacing:.02em}
+.trtile .tbuy{margin-top:9px;padding:5px 0;text-align:center;border-radius:6px;font-size:12.5px;
+  background:rgba(255,215,120,.12);border:1px solid rgba(255,215,120,.3);color:#ffd76a}
+.trtile .tbuy i{font-style:normal;opacity:.8}
+.trtile.done .tbuy{background:rgba(140,220,190,.12);border-color:rgba(140,220,190,.3);color:#8fe6d0}
+.jpgain{margin:10px auto 2px;padding:11px 18px;border-radius:10px;max-width:520px;
+  background:linear-gradient(150deg,rgba(58,50,26,.86),rgba(24,21,12,.86));border:1px solid rgba(210,180,100,.36)}
+.jpgain .jn{display:flex;align-items:center;justify-content:center;gap:8px;color:#c6bb9c;font-size:14px}
+.jpgain .jn i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;
+  background:radial-gradient(circle at 35% 30%,#ffdf9a,#8a6a12);color:#241a05}
+.jpgain .jn b{color:#ffd76a;font-size:20px;text-shadow:0 0 14px rgba(255,200,90,.55)}
+.jpgain .js{color:#8d8367;font-size:11.5px;margin-top:4px;letter-spacing:.03em}
+.jpgain .js b{color:#c6bb9c}
+.jpgain .jm{margin-top:7px;padding-top:7px;border-top:1px solid rgba(210,180,100,.2);
+  color:#8fe6d0;font-size:12px;line-height:1.6}
+.jpgain .jm b{color:#bff5e6}
+.brush-btn.gold{border-color:#d8a24a;color:#ffe0a0;background:rgba(180,130,40,.18)}
+.brush-btn.gold:hover{background:rgba(210,160,60,.3)}
 .curtile{position:relative;padding:14px 15px 13px;border-radius:10px;text-align:left;
   background:linear-gradient(150deg,rgba(50,28,36,.9),rgba(22,13,17,.9));
   border:1px solid rgba(200,90,120,.3);transition:.16s}
@@ -1746,6 +1807,19 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .arow .k{width:96px;flex:none;color:#c09a92;font-size:12.5px}
 .arow b{color:#ffd0b8}
 .aenemies{display:flex;flex-wrap:wrap;gap:9px}
+/* 교환소 — 피로 번 다이아를 쓰는 자리 */
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:11px;margin-top:12px}
+.extile{padding:12px 13px 11px;border-radius:10px;text-align:left;transition:.16s;cursor:pointer;
+  background:linear-gradient(150deg,rgba(22,44,52,.9),rgba(10,18,22,.92));border:1px solid rgba(111,208,232,.28)}
+.extile.can:hover{transform:translateY(-3px);border-color:#6fd0e8;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 22px rgba(60,180,220,.32)}
+.extile.no{opacity:.5}
+.extile .eg{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:18px;
+  background:radial-gradient(circle at 35% 28%,#a8e8f6,#256a7c);color:#06202a;margin-bottom:7px}
+.extile .en{color:#e6f7fb;font-size:14px;letter-spacing:.06em;margin-bottom:4px}
+.extile .ed{color:#9fb8c0;font-size:11.5px;line-height:1.55;min-height:2.4em}
+.extile .ep{margin-top:8px;padding:4px 0;text-align:center;border-radius:6px;font-size:12.5px;
+  background:rgba(111,208,232,.12);border:1px solid rgba(111,208,232,.32);color:#6fd0e8}
+.extile .ep i{font-style:normal;opacity:.8}
 .aenemy{width:76px;padding:9px 4px;border-radius:7px;display:flex;flex-direction:column;align-items:center;gap:3px;
   background:linear-gradient(160deg,#3a2020,#221213);border:1.5px solid rgba(220,120,110,.4)}
 .aenemy b{font-size:22px;color:#ffdcd6;font-weight:400;line-height:1}
@@ -2460,6 +2534,7 @@ const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
 let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, autoUnlocked: false,
   vip: { owned: false, at: 0, freeBoxAt: 0 }, skins: { own: {}, eq: {} },
+  jp: 0, jpTotal: 0, train: {}, fails: {}, cleared: 0,
   dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
 /* VIP · 자동 플레이 개방 여부 */
 const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
@@ -2491,7 +2566,91 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.autoUnlocked = !!META.autoUnlocked;
   META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
   META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
-  META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {}; }
+  META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {};
+  META.jp = META.jp || 0; META.jpTotal = META.jpTotal || 0;
+  META.train = META.train || {}; META.fails = META.fails || {}; META.cleared = META.cleared || 0; }
+/* ══════════════════════════════════════════════════════════
+   수행(修行) — 져도 남는 것
+   ──────────────────────────────────────────────────────────
+   이 놀이의 가장 큰 흠은 「손이 못 따라가면 아무것도 못 한다」는 것이다.
+   실력이 모자라면 뽑기를 하는 수밖에 없었다. 그래서 두 가지를 둔다.
+
+   ① 정진(精進) — 이기든 지든, 오른 만큼 쌓인다. 절대 줄지 않는다.
+      쌓인 정진으로 수행 나무를 키우면 다음 모험이 영구히 조금씩 세진다.
+      백 번을 져도 백 번어치가 몸에 남는다.
+   ② 오기(傲氣) — 같은 막에서 거듭 무릎을 꿇으면 그 막의 요괴가 눅는다.
+      한 번에 3%, 최대 18%까지. 넘어선 막에서는 즉시 사라진다.
+      숨기지 않고 지도와 수행터에 그대로 적어 둔다.
+   ══════════════════════════════════════════════════════════ */
+const TRAIN = {
+  hp:      { n: '뿌리',     g: '根', max: 8, cost: l => 30 + l * 22,
+             d: l => `최대 체력 <b>+${l * 4}</b>`, one: '최대 체력 +4' },
+  atk:     { n: '무쇠손',   g: '拳', max: 6, cost: l => 45 + l * 34,
+             d: l => `주는 피해 <b>+${l * 3}%</b>`, one: '주는 피해 +3%' },
+  def:     { n: '굳은살',   g: '皮', max: 5, cost: l => 45 + l * 34,
+             d: l => `받는 피해 <b>-${l}</b>`, one: '받는 피해 -1' },
+  gold:    { n: '봇짐',     g: '囊', max: 5, cost: l => 22 + l * 16,
+             d: l => `시작 골드 <b>+${l * 45}</b>`, one: '시작 골드 +45' },
+  card:    { n: '부적첩',   g: '帖', max: 3, cost: l => 60 + l * 60,
+             d: l => `시작할 때 <b>2등급 부적 ${l}장</b>을 얹는다`, one: '2등급 부적 한 장' },
+  potion:  { n: '약낭',     g: '囍', max: 2, cost: l => 70 + l * 70,
+             d: l => `물약 자리 <b>+${l}</b>`, one: '물약 자리 +1' },
+  relic:   { n: '연緣',     g: '緣', max: 2, cost: l => 90 + l * 110,
+             d: l => `시작할 때 <b>유물 ${l}개</b>를 지니고 나선다`, one: '시작 유물 하나' },
+  qi:      { n: '단전',     g: '丹', max: 1, cost: () => 320,
+             d: () => `기(氣)가 <b>1 늘어난다</b>`, one: '최대 기 +1' },
+  revive:  { n: '숨결',     g: '息', max: 3, cost: l => 40 + l * 40,
+             d: l => `되살아날 때 체력 <b>+${l * 8}</b>`, one: '되살아날 때 체력 +8' },
+  mercy:   { n: '오기',     g: '傲', max: 3, cost: l => 55 + l * 55,
+             d: l => `약자 보정 한도 <b>+${l * 6}%</b>`, one: '약자 보정 한도 +6%' }
+};
+const TRAIN_KEYS = Object.keys(TRAIN);
+const trLv = k => (META.train && META.train[k]) || 0;
+const trCost = k => TRAIN[k].cost(trLv(k));
+const trMaxed = k => trLv(k) >= TRAIN[k].max;
+function trBuy(k) {
+  if (trMaxed(k)) return false;
+  const c = trCost(k);
+  if (META.jp < c) return false;
+  META.jp -= c;
+  META.train[k] = trLv(k) + 1;
+  saveMeta();
+  return true;
+}
+/* 한 판이 끝날 때 쌓이는 정진 — 이겼든 졌든 */
+function jpEarned(run, won) {
+  if (!run) return 0;
+  const s = run.stats || {};
+  let p = (s.floors || 0) * 2 + (s.battles || 0) * 1
+        + (s.elites || 0) * 5 + Math.max(0, (run.act || 1) - 1) * 10;
+  if (won) p = Math.round(p * 2);
+  return Math.max(6, p);
+}
+function jpGain(run, won) {
+  const p = jpEarned(run, won);
+  META.jp += p; META.jpTotal += p;
+  saveMeta();
+  return p;
+}
+/* ── 오기 — 같은 막에서 거듭 무너진 만큼 요괴가 눅는다 ── */
+const MERCY_STEP = 0.03;                       /* 한 번 무너질 때마다 3% */
+function mercyCap() { return 0.18 + trLv('mercy') * 0.06; }
+function mercyMul(act) {
+  if (!act) return 1;
+  if (META.cleared >= act) return 1;           /* 이미 넘어선 막에는 붙지 않는다 */
+  const f = (META.fails && META.fails[act]) || 0;
+  return 1 - Math.min(mercyCap(), f * MERCY_STEP);
+}
+function mercyPct(act) { return Math.round((1 - mercyMul(act)) * 100); }
+function noteFail(act) {
+  if (!act) return;
+  if (META.cleared >= act) return;
+  META.fails[act] = (META.fails[act] || 0) + 1;
+  saveMeta();
+}
+function noteClear(act) {
+  if (act > (META.cleared || 0)) { META.cleared = act; saveMeta(); }
+}
 function applyVol() { try { if (SND.master) SND.master.gain.value = OPT.vol; } catch (e) {} }
 function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
 function saveRun() {
@@ -4357,20 +4516,21 @@ defEnemy({ id: 'nightqueen', n: '밤의 어미', g: '母', hp: [305, 336], col: 
   next: e => e.hist.length === 0 ? 'lull' : lastIs(e, 'tear') ? 'cradle'
            : rnd() < .48 ? 'tear' : rnd() < .8 ? 'cradle' : 'lull' });
 
-defEnemy({ id: 'hyakki', n: '백귀야행(百鬼夜行)', g: '百', hp: [1180, 1180], col: '#1a0e18', boss: true, big: true,
+/* 마지막 행렬 — 체력과 손이 다 같이 10% 눅었다 (1180→1062, 수도 한 단씩 아래로) */
+defEnemy({ id: 'hyakki', n: '백귀야행(百鬼夜行)', g: '百', hp: [1062, 1062], col: '#1a0e18', boss: true, big: true,
   init: e => { e.wave = 0; e.surge = 0; },
   moves: {
-    parade:  { t: 'attack', label: '행렬이 지나간다', d: 22, n: 3, fx: 'claw' },
-    lanterns:{ t: 'atkdeb', label: '등불이 에워싼다', d: 36, deb: { weak: 5, vuln: 5, curse: 5 }, fx: 'fire' },
-    close:   { t: 'defend', label: '줄을 좁힌다', blk: 66, self: { thorns: 10, dex: 5 } },
-    call:    { t: 'buff', label: '백 귀를 부른다', blk: 58, self: { str: 10 },
+    parade:  { t: 'attack', label: '행렬이 지나간다', d: 20, n: 3, fx: 'claw' },
+    lanterns:{ t: 'atkdeb', label: '등불이 에워싼다', d: 32, deb: { weak: 4, vuln: 4, curse: 4 }, fx: 'fire' },
+    close:   { t: 'defend', label: '줄을 좁힌다', blk: 59, self: { thorns: 9, dex: 4 } },
+    call:    { t: 'buff', label: '백 귀를 부른다', blk: 52, self: { str: 9 },
                extra: e => { e.surge = 1; flash('백귀가 모여든다'); SND.boss(); SND.drum();
                              screenFlash('rgba(180,40,60,.45)', 800); } },
-    night:   { t: 'attack', label: '밤 이 내 린 다', d: 88, fx: 'void',
-               extra: e => { e.surge = 0; st(P(), 'weak', 5); st(P(), 'vuln', 5);
+    night:   { t: 'attack', label: '밤 이 내 린 다', d: 79, fx: 'void',
+               extra: e => { e.surge = 0; st(P(), 'weak', 4); st(P(), 'vuln', 4);
                              shake(true); SND.gong(); } }
   },
-  onHalf: e => { st(e, 'str', 10); st(e, 'rage', 3); st(e, 'regenP', 12);
+  onHalf: e => { st(e, 'str', 9); st(e, 'rage', 2); st(e, 'regenP', 10);
                  flash('행렬이 뒤를 돈다'); screenFlash('rgba(255,120,60,.55)', 1000); SND.boss(); },
   next: e => {
     if (e.surge) return 'night';
@@ -4476,6 +4636,8 @@ function calcAtk(src, tgt, base) {
   if (src.isPlayer) {
     d += (src.s.edge || 0);
     if (hasBoon('atk80')) d *= 1.8;                          /* 저주를 이겨 낸 자 */
+    const tr = G.run && G.run.train;                         /* 수행 — 무쇠손 */
+    if (tr && tr.atk) d *= (1 + tr.atk);
   }
   if (src.s.weak) d = Math.floor(d * .75);
   if (tgt.s.vuln) d = Math.floor(d * 1.5);
@@ -4486,6 +4648,8 @@ function applyDamage(ent, dmg, pierce) {
   if (ent.isPlayer) {
     if (G.b && G.b.halved) dmg = Math.ceil(dmg / 2);
     dmg = pipe('modTaken', dmg);
+    const tr = G.run && G.run.train;                    /* 수행 — 굳은살 */
+    if (tr && tr.def && dmg > 0) dmg = Math.max(1, dmg - tr.def);
   }
   let d = Math.max(0, dmg), blocked = 0;
   if (!pierce && ent.block > 0) { blocked = Math.min(ent.block, d); ent.block -= blocked; d -= blocked; }
@@ -5421,6 +5585,8 @@ function showPlaces() {
   add('呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
+  add('修', '수행터', `모은 정진 ${META.jp} · 져도 남는 길`,
+    G.b ? 'lock' : (META.jp >= 30 ? 'hot' : ''), () => openTraining());
   p.querySelector('#pl_close').onclick = closeTop;
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
@@ -6477,7 +6643,13 @@ const ACT_SCALE = {
   9: { hp: 2.50, dmg: 1.66 },
   10:{ hp: 2.72, dmg: 1.73 }
 };
-const actScale = act => ACT_SCALE[Math.min(10, Math.max(1, act || 1))] || ACT_SCALE[1];
+/* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
+function actScale(act) {
+  const a = Math.min(LAST_ACT, Math.max(1, act || 1));
+  const base = ACT_SCALE[a] || ACT_SCALE[1];
+  const m = mercyMul(a);
+  return m === 1 ? base : { hp: base.hp * m, dmg: base.dmg * m };
+}
 const actBoost = act => actScale(act).hp;
 function newRun(asc) {
   G.cp = null;
@@ -6501,6 +6673,7 @@ function newRun(asc) {
     startedAt: Date.now()
   };
   applyVipRun();
+  applyTrainRun();                           /* 수행으로 쌓은 것이 여기서 몸에 붙는다 */
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
   restockShop();
@@ -6510,6 +6683,26 @@ function newRun(asc) {
   SND.ambience(false);
   const go = () => showStory('opening').then(() => { SND.ambience(true, false); showMap(); });
   if (!META.tutorDone) showTutorial().then(go); else go();
+}
+/* 수행 나무가 모험 첫머리에 하는 일 */
+function applyTrainRun() {
+  const run = G.run; if (!run) return;
+  const hp = trLv('hp') * 4;
+  if (hp) { run.maxHp += hp; run.hp += hp; }
+  run.gold += trLv('gold') * 45;
+  run.potSlots += trLv('potion');
+  run.maxEnergy += trLv('qi');
+  /* 부적첩 — 2등급 부적을 얹어 준다 */
+  for (let i = 0; i < trLv('card'); i++) {
+    const id = pick(POOL.uncommon);
+    if (id) { run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
+  }
+  /* 연(緣) — 유물을 지니고 나선다 */
+  for (let i = 0; i < trLv('relic'); i++) {
+    const rid = randomRelic(i === 0 ? 'common' : 'uncommon') || randomRelic();
+    if (rid) gainRelic(rid, true);
+  }
+  run.train = { atk: trLv('atk') * 0.03, def: trLv('def'), revive: trLv('revive') * 8 };
 }
 /* ── VIP 혜택 ─────────────────────────────────────────────
    영구 보너스 · SSX 부적 5종 · 한 달 한 번 무료 특대급 상자
@@ -6533,6 +6726,7 @@ function applyVipRun() {
 }
 function nextAct() {
   const run = G.run;
+  noteClear(run.act);                       /* 이 막은 넘었다 — 오기는 여기서 걷힌다 */
   run.act++;
   run.floor = 0;
   setTimeout(checkUnlockToast, 900);
@@ -7461,6 +7655,51 @@ async function janggiBoxScene() {
    ═══════════════════════════════════════════════════════════ */
 const ARENA_DIA = 30;
 const ARENA_REQ = 3;
+const ARENA_JP = 12;                          /* 한 라운드를 넘길 때마다 쌓이는 정진 */
+/* ── 교환소 ────────────────────────────────────────────────
+   대전투장의 다이아가 아무 데도 쓸 데가 없다는 말을 들었다.
+   맞는 말이었다 — 뽑기가 공짜라 다이아는 죽은 돈이었다.
+   피로 번 돈이니, 여기서만 바꿀 수 있는 것들을 놓는다.
+   ────────────────────────────────────────────────────────── */
+const EXCHANGE = [
+  { g: '櫃', n: '특대급 상자', p: 900, d: '특별 등급 부적만 나온다',
+    act: async () => { await freeBigBox(1); } },
+  { g: '皮', n: '스킨 상자', p: 600, d: '부적에 입힐 옷 하나',
+    act: async () => { const l = skinLoot(); l.take();
+      await boxOpenScene('皮', l.grade || 'rare');
+      return new Promise(r => showPullResult([{ g: l.g, n: l.n, d: l.d, grade: l.grade }], () => r())); } },
+  { g: '寶', n: '유물 상자', p: 450, d: '유물 하나가 나온다',
+    act: async () => { const l = boxLoot(4); l.take(); toast(`${l.n} 획득`); SND.bell(); } },
+  { g: 'S', n: 'S급 부적 고르기', p: 1200, d: '셋 중 하나를 고른다',
+    can: () => GRADE_POOL.special.length > 0,
+    act: async () => {
+      const cards = sample(GRADE_POOL.special, Math.min(3, GRADE_POOL.special.length)).map(id => mkCard(id, false));
+      const c = await pickFromList(cards, 'S급 부적 하나를 고르시오', { hint: '피로 산 부적이다' });
+      if (c) { G.run.deck.push(mkCard(c.id, c.up)); G.run.stats.cards++; dexAdd('cards', c.id);
+        SND.unlock(); screenFlash('rgba(255,150,60,.4)', 620); toast(`${cname(c)} 획득`); } } },
+  { g: 'C', n: 'SSC급 부적 고르기', p: 2000, d: 'S급 위, SSX급 아래 · 셋 중 하나',
+    can: () => GRADE_POOL.ssc.length > 0,
+    act: async () => {
+      const cards = sample(GRADE_POOL.ssc, Math.min(3, GRADE_POOL.ssc.length)).map(id => mkCard(id, false));
+      const c = await pickFromList(cards, 'SSC급 부적 하나를 고르시오', { hint: '청람빛이 돈다' });
+      if (c) { G.run.deck.push(mkCard(c.id, c.up)); G.run.stats.cards++; dexAdd('cards', c.id);
+        SND.unlock(); screenFlash('rgba(60,200,230,.4)', 620); toast(`${cname(c)} 획득`); } } },
+  { g: '精', n: '정진 150', p: 500, d: '수행터에서 쓸 정진으로 바꾼다',
+    act: async () => { META.jp += 150; META.jpTotal += 150; saveMeta();
+      SND.unlock(); toast('정진 150을 얻었다'); } },
+  { g: '根', n: '최대 체력 +10', p: 700, d: '이번 모험 내내 · 그 자리에서 채워진다',
+    act: async () => { G.run.maxHp += 10; G.run.hp += 10; SND.heal(); toast('최대 체력 +10'); } },
+  { g: '囍', n: '물약 자리 +1', p: 650, d: '이번 모험 내내',
+    can: r => r.potSlots < 8, no: '더 늘릴 수 없다',
+    act: async () => { G.run.potSlots++; SND.bell(); toast('물약 자리 +1'); } },
+  { g: '淨', n: '부적 태우기', p: 300, d: '덱에서 한 장을 없앤다',
+    act: async () => {
+      const c = await pickFromList(G.run.deck, '없앨 부적을 고르시오', { cancel: true });
+      if (c) { G.run.deck.splice(G.run.deck.findIndex(x => x.uid === c.uid), 1);
+        toast(`${CARDS[c.id].n} 제거`); } } },
+  { g: '金', n: '골드 600', p: 250, d: '떠돌이 상인에게 쓸 돈',
+    act: async () => { G.run.gold += 600; SND.coin(); toast('골드 +600'); } }
+];
 function ssxCount() {
   if (!G.run) return 0;
   const seen = new Set();
@@ -7512,6 +7751,7 @@ function showArena(tab) {
     { k: '도전', g: '鬪', sub: '지금 들어간다' },
     { k: '규칙', g: '則', sub: '어떻게 굴러가나' },
     { k: '전리품', g: '賞', sub: '무엇을 얻나' },
+    { k: '교환소', g: '換', sub: '다이아를 쓴다' },
     { k: '기록', g: '碑', sub: '여기까지 갔다' }
   ];
   tab = tab || '도전';
@@ -7593,13 +7833,38 @@ function showArena(tab) {
       </div>
       <div class="asub">한 판이라도 더 버티면 다이아가 쌓인다. 다만 <b>욕심이 목을 조른다.</b></div>`;
   } else if (tab === '전리품') {
-    let rows = '';
-    for (let i = 1; i <= 10; i++)
-      rows += `<div class="arow"><span class="k">${i} 라운드</span>누적 <b>다이아 ${i * ARENA_DIA}</b>
+    let rows = '', acc = 0;
+    for (let i = 1; i <= 10; i++) {
+      acc += arenaPay(i);
+      rows += `<div class="arow"><span class="k">${i} 라운드</span><b>+${arenaPay(i)}</b> · 누적 <b>다이아 ${acc}</b>
         <span style="color:#c09a92;font-size:12px">· 체력 ×${arenaScale(i).hpMul}${i % 5 === 0 ? ' · 보스' : ''}</span></div>`;
+    }
     main.innerHTML = `<div class="atitle">전 리 품</div>
-      <div class="asub">한 라운드를 넘길 때마다 <b>다이아 ${ARENA_DIA}</b>이 적립된다. 특대급 상자가 2500이니, 여든네 판이면 하나다.</div>
+      <div class="asub">한 라운드를 넘길 때마다 <b>다이아</b>가 쌓인다 —
+        깊이 들어갈수록 한 판의 값이 오른다. 여기에 <b>정진 ${ARENA_JP}</b>이 매 라운드 따라붙는다.
+        쌓은 다이아는 <b style="color:#6fd0e8">교환소</b>에서 상자·부적·몸으로 바꾼다.</div>
       <div class="abox">${rows}</div>`;
+  } else if (tab === '교환소') {
+    main.innerHTML = `<div class="atitle">교 환 소</div>
+      <div class="asub">피로 번 다이아다. 여기서만 바꿀 수 있는 것들이 있다.
+        지금 지닌 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
+      <div class="exgrid" id="ar_ex"></div>`;
+    const g = main.querySelector('#ar_ex');
+    for (const it of EXCHANGE) {
+      const can = (run.dia || 0) >= it.p && (!it.can || it.can(run));
+      const n = el('div', 'extile' + (can ? ' can' : ' no'),
+        `<div class="eg">${it.g}</div><div class="en">${it.n}</div>
+         <div class="ed">${it.d}</div>
+         <div class="ep"><i>玉</i> ${it.p}</div>`);
+      n.onclick = async () => {
+        if ((run.dia || 0) < it.p) { SND.err(); toast(`다이아가 ${it.p - (run.dia || 0)}만큼 모자라다`); return; }
+        if (it.can && !it.can(run)) { SND.err(); toast(it.no || '지금은 바꿀 수 없다'); return; }
+        run.dia -= it.p; SND.coin(); saveRun(); renderTop();
+        await it.act(run);
+        saveRun(); closeOverlay(); showArena('교환소');
+      };
+      g.appendChild(n);
+    }
   } else {
     main.innerHTML = `<div class="atitle">기 록</div>
       <div class="abox">
@@ -7628,11 +7893,15 @@ function startArenaRound() {
     SND.gong();
   }, 260);
 }
+/* 깊이 들어갈수록 한 라운드의 값이 오른다 — 욕심에 값을 매긴다 */
+function arenaPay(round) { return ARENA_DIA + Math.max(0, round - 1) * 5; }
 function arenaWin() {
   const run = G.run;
   if (!run) return;
   if (P()) run.hp = P().hp;
-  run.arenaDia = (run.arenaDia || 0) + ARENA_DIA;
+  const pay = arenaPay(run.arenaRound || 1);
+  run.arenaDia = (run.arenaDia || 0) + pay;
+  META.jp += ARENA_JP; META.jpTotal += ARENA_JP;      /* 대전투장도 정진이 쌓인다 */
   run.arena.cleared = (run.arena.cleared || 0) + 1;
   run.arena.best = Math.max(run.arena.best || 0, run.arenaRound);
   META.arenaBest = Math.max(META.arenaBest || 0, run.arenaRound); saveMeta();
@@ -7640,7 +7909,8 @@ function arenaWin() {
   G.b = null;
   SND.victory();
   const p = modal(`<h2>제 ${run.arenaRound - 1} 라운드 돌파</h2>
-    <div class="hint">다이아 <b style="color:#6fd0e8">+${ARENA_DIA}</b> 적립 · 누적 <b style="color:#6fd0e8">${run.arenaDia}</b>
+    <div class="hint">다이아 <b style="color:#6fd0e8">+${pay}</b> 적립 · 누적 <b style="color:#6fd0e8">${run.arenaDia}</b>
+      · 정진 <b style="color:#ffd76a">+${ARENA_JP}</b>
       · 체력 <b>${run.hp} / ${run.maxHp}</b></div>
     <div class="hint" style="color:#e0a06a">다음은 제 ${run.arenaRound} 라운드 — 요괴가 더 늘어난다</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
@@ -7743,7 +8013,8 @@ function restockShop() {
   const run = G.run;
   run.merch = pick(MERCH_IDS);                 /* 상점마다 다른 사람이 앉는다 */
   run.betDone = false;
-  const mm = MERCHANTS[run.merch].mul;
+  /* 앞서 이 상인을 빈손으로 지나쳤다면 그 값을 여기서 치른다 */
+  const mm = MERCHANTS[run.merch].mul * snubMul(run, run.merch);
   const price = v => pipe('modPrice', Math.round(v * mm));
   const cards = [], seen = new Set();
   const w = gradeWeights('elite');            /* 상인은 한 등급 앞서 판다 */
@@ -7824,6 +8095,24 @@ function merchOf(run) {
   if (!run.merch || !MERCHANTS[run.merch]) run.merch = pick(MERCH_IDS);
   return MERCHANTS[run.merch];
 }
+/* ── 그냥 나가는 데에도 값이 있다 ─────────────────────────
+   한 푼도 안 쓰고 돌아서면 상인은 그것을 기억한다.
+   다음에 만날 때 그 상인만 값을 8%씩 올려 받는다 (최대 +32%).
+   무엇이든 하나 사면 그 자리에서 없던 일이 된다.
+   ────────────────────────────────────────────────────── */
+const SNUB_STEP = 0.08, SNUB_MAX = 4;
+function snubOf(run, id) { return (run.merchSnub && run.merchSnub[id]) || 0; }
+function snubMul(run, id) { return 1 + Math.min(SNUB_MAX, snubOf(run, id)) * SNUB_STEP; }
+function noteSnub(run, id, bought) {
+  run.merchSnub = run.merchSnub || {};
+  if (bought) { if (run.merchSnub[id]) { delete run.merchSnub[id]; toast('상인의 낯이 풀렸다'); } return; }
+  run.merchSnub[id] = Math.min(SNUB_MAX, (run.merchSnub[id] || 0) + 1);
+}
+const SNUB_SAY = ['"...허, 구경만 하고 가시나."',
+  '"두 번째로군. 다음엔 값이 좀 오를 걸세."',
+  '"내 봇짐이 자네 눈요기감인가?"',
+  '"이보게, 나도 먹고살아야 하네."',
+  '"자네에겐 이 값이 제값일세."'];
 /* ── 부적 내기 ───────────────────────────────────────────
    서로 덱에서 한 장씩 뒤집어 값을 겨룬다. 등급이 곧 끗발.
    이기면 판돈의 두 배, 지면 판돈을 잃는다. 한 상점에 한 번.
@@ -7904,13 +8193,16 @@ function showShop() {
   run.merchMet = run.merchMet || {};
   const met = run.merchMet[m.id] || 0;
   run.merchMet[m.id] = met + 1;
-  const line = met === 0 ? m.hi : (m.tale[Math.min(m.tale.length - 1, met - 1)] || m.again);
+  const snub = snubOf(run, m.id);
+  const line = snub ? SNUB_SAY[Math.min(SNUB_SAY.length - 1, snub - 1)]
+             : met === 0 ? m.hi : (m.tale[Math.min(m.tale.length - 1, met - 1)] || m.again);
+  let bought = false;                          /* 이 자리에서 하나라도 샀는가 */
   function draw() {
     const p = overlay(`<h2>${m.n}</h2>
       <div class="merchtop">
         <div class="mface" style="--mc:${m.col}">${m.g}</div>
         <div class="msay">${line}<span class="mtag">${m.mul < 1 ? '값이 싸다' : m.mul > 1 ? '값이 비싸다' : '보통 값'}
-          · 만난 횟수 ${met + 1}</span></div>
+          · 만난 횟수 ${met + 1}${snub ? ` · <b style="color:#ff8a9a">빈손으로 지나친 값 +${Math.round((snubMul(run, m.id) - 1) * 100)}%</b>` : ''}</span></div>
       </div>
       <div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
         · 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
@@ -7920,8 +8212,10 @@ function showShop() {
       </div>
       <div style="display:flex;gap:10px;justify-content:center">
         <button class="brush-btn" id="sh_bet"${run.betDone ? ' disabled' : ''}>부적 내기 (${BET_GOLD})</button>
-        <button class="brush-btn red" id="sh_leave">떠난다</button>
-      </div>`);
+        <button class="brush-btn red" id="sh_leave">${bought ? '떠난다' : '그냥 떠난다 (값이 오른다)'}</button>
+      </div>
+      ${bought ? '' : `<div class="hint" style="margin-top:8px;color:#b0553f">한 푼도 쓰지 않고 돌아서면
+        이 상인은 다음에 <b>${Math.round(SNUB_STEP * 100)}% 비싸게</b> 부른다 (최대 +${Math.round(SNUB_STEP * SNUB_MAX * 100)}%)</div>`}`);
     p.dataset.shop = '1';                     /* 자동 플레이는 남의 지갑을 열지 않는다 */
     const g = p.querySelector('.cardgrid');
     sh.cards.forEach(it => {
@@ -7964,7 +8258,11 @@ function showShop() {
         run.purges = (run.purges || 0) + 1; sh.purged = true;
         toast(`${CARDS[c.id].n} 제거`);
       });
-    p.querySelector('#sh_leave').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+    p.querySelector('#sh_leave').onclick = () => {
+      noteSnub(run, m.id, bought);             /* 그냥 나가면 상인이 기억한다 */
+      if (!bought) { SND.err(); flash('상인이 등을 돌린다'); }
+      closeOverlay(); saveRun(); showMap();
+    };
     const bb = p.querySelector('#sh_bet');
     if (bb) bb.onclick = () => { if (run.betDone) { SND.err(); toast('한 상점에 한 번뿐일세'); return; }
       SND.ui(); showBet(() => draw()); };
@@ -7973,7 +8271,8 @@ function showShop() {
     if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
     const r = await fn();
     if (r === false) return;
-    run.gold -= cost; SND.coin(); saveRun(); renderTop(); draw();
+    run.gold -= cost; bought = true;           /* 하나라도 샀으면 미움이 풀린다 */
+    SND.coin(); saveRun(); renderTop(); draw();
   }
   draw();
 }
@@ -8087,6 +8386,98 @@ function curseTick() {
   }, 700);
   saveRun(); renderTop();
 }
+/* ══════════════════════════════════════════════════════════
+   수행터(修行터) — 져도 남는 길
+   ──────────────────────────────────────────────────────────
+   모험 밖에 있는 화면이다. 모험 중에도, 타이틀에서도 들어올 수 있다.
+   여기서 쓴 정진은 다음 모험부터 몸에 붙는다.
+   ══════════════════════════════════════════════════════════ */
+function showTraining() {
+  const prev = G.scene;
+  G.scene = 'train';
+  const p = overlay(`<div class="school train">
+    <div class="schead">
+      <button class="gback" id="tr_back">←</button>
+      <h2>수행터</h2>
+      <div class="scnote">修 行</div>
+    </div>
+    <div class="scbody">
+      <div class="scside">
+        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#d8ceb0,#5a5240);color:#f4eee0;border-color:#a89878">修</div>
+          <div class="jsay">"손이 못 따라가면 발로 가면 되네.<br>백 번을 져도 백 번어치가 몸에 남는 법일세."</div></div>
+        <div class="jpbox">
+          <div class="jpnow"><i>精</i><b id="tr_jp">${META.jp}</b><span>모은 정진</span></div>
+          <div class="jptot">여태 쌓은 정진 ${META.jpTotal} · 오른 판 ${META.runs}판</div>
+        </div>
+        <div class="note"><p>
+          <b style="color:#ffd76a">정진(精進)</b>은 <b>이기든 지든</b> 쌓인다.<br>
+          한 층에 2, 한 판에 1, 엘리트 5, 막 하나를 넘으면 10.<br>
+          승천하면 두 배. <b>줄어드는 일은 없다.</b><br><br>
+          <b style="color:#8fe6d0">오기(傲氣)</b> — 같은 막에서 무너질 때마다
+          그 막의 요괴가 <b>3%씩 눅는다</b> (한도 ${Math.round(mercyCap() * 100)}%).
+          그 막을 한 번이라도 넘어서면 <b>즉시 걷힌다.</b>
+        </p></div>
+        <div class="mercylist" id="tr_mercy"></div>
+      </div>
+      <div class="scmain">
+        <div class="schint">쌓은 정진으로 <b style="color:#ffd76a">영구히</b> 몸을 만든다 ·
+          여기서 올린 것은 <b>다음 모험부터</b> 붙는다</div>
+        <div class="trgrid" id="tr_grid"></div>
+      </div>
+    </div>
+  </div>`, 'trainpanel');
+  p.dataset.noauto = '1';
+
+  const grid = p.querySelector('#tr_grid');
+  const draw = () => {
+    p.querySelector('#tr_jp').textContent = META.jp;
+    grid.innerHTML = '';
+    for (const k of TRAIN_KEYS) {
+      const t = TRAIN[k], lv = trLv(k), maxed = trMaxed(k), cost = trCost(k);
+      const can = !maxed && META.jp >= cost;
+      const n = el('div', 'trtile' + (maxed ? ' done' : '') + (can ? ' can' : ''),
+        `<div class="tg">${t.g}</div>
+         <div class="tn">${t.n}</div>
+         <div class="tbar">${Array.from({ length: t.max }, (_, i) =>
+            `<i class="${i < lv ? 'on' : ''}"></i>`).join('')}</div>
+         <div class="tv">${lv ? t.d(lv) : '<span style="color:#8a7f68">아직 닦지 않았다</span>'}</div>
+         <div class="tnext">${maxed ? '<b style="color:#8fe6d0">끝까지 닦았다</b>'
+            : `다음 한 칸 — ${t.one}`}</div>
+         <div class="tbuy">${maxed ? '완성' : `<i>精</i> ${cost}`}</div>`);
+      if (!maxed) n.onclick = () => {
+        if (!trBuy(k)) { SND.err(); toast(`정진이 ${cost - META.jp}만큼 모자라다`); return; }
+        SND.unlock(); screenFlash('rgba(255,215,120,.28)', 480);
+        sparkles(innerWidth / 2, innerHeight * .5, 14, '#ffd76a', 140);
+        toast(`${TRAIN[k].n} — ${TRAIN[k].one}`);
+        draw();
+      };
+      grid.appendChild(n);
+    }
+    /* 어느 막에서 얼마나 눅었는지 그대로 보여 준다 */
+    const ml = p.querySelector('#tr_mercy');
+    const rows = [];
+    for (let a = 1; a <= LAST_ACT; a++) {
+      const pc = mercyPct(a);
+      if (pc) rows.push(`<div class="mrow"><span>제${a}막</span>
+        <em>${META.fails[a]}번 무너짐</em><b>-${pc}%</b></div>`);
+    }
+    ml.innerHTML = rows.length
+      ? `<div class="mtit">지금 붙어 있는 오기</div>${rows.join('')}`
+      : `<div class="mtit dim">아직 붙은 오기가 없다</div>`;
+  };
+  draw();
+  const leave = () => {
+    closePanel(p);
+    G.scene = prev;
+    if (prev === 'map' && G.run) showMap();
+  };
+  p.querySelector('#tr_back').onclick = leave;
+}
+function openTraining() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showTraining();
+}
+
 /* ── 서당 화면 ──────────────────────────────────────────── */
 function openSchool() {
   if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
@@ -9267,6 +9658,11 @@ function gameOver() {
   META.best = Math.max(META.best, score); saveMeta();
   G.scene = 'over';
   G.b = null;
+  /* 져도 남는다 — 오른 만큼 정진이 쌓이고, 무너진 막이 기록되어
+     다음 판에는 그 막의 요괴가 그만큼 눅어진다 */
+  const gained = jpGain(G.run, false);
+  const fallAct = G.run.act;
+  noteFail(fallAct);
   const canReturn = !!G.cp;
   /* 모험은 지우지 않는다. 마지막 갈림길 상태를 저장해 두어 창을 닫았다 와도 이어진다. */
   if (canReturn) { try { const cp = JSON.parse(G.cp);
@@ -9276,8 +9672,15 @@ function gameOver() {
   d.innerHTML = `<div class="big">쓰 러 졌 다</div>
     <div style="color:#9d9077;letter-spacing:.2em">${canReturn ? '허나 아직 끝은 아니다' : '산이 그대를 삼켰다'}</div>
     <div class="stats">${runStatsHtml()}</div>
+    <div class="jpgain">
+      <div class="jn"><i>精</i>정진 <b>+${gained}</b></div>
+      <div class="js">진 판도 몸에 남는다 · 모은 정진 <b>${META.jp}</b></div>
+      ${mercyPct(fallAct) ? `<div class="jm">제${fallAct}막에서 <b>${META.fails[fallAct]}번</b> 무릎 꿇었다 —
+        다음 판에는 이 막의 요괴가 <b>${mercyPct(fallAct)}% 눅어진다</b></div>` : ''}
+    </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
+      <button class="brush-btn gold" id="ov_train">수행터로 간다 (精 ${META.jp})</button>
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
     ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
@@ -9289,17 +9692,20 @@ function gameOver() {
     adoptRun(JSON.parse(G.cp));
     /* 표시점의 체력 그대로 돌려보내면 빈사로 되살아나 또 죽는다 —
        그 무한굴레를 끊으려고 숨을 돌릴 만큼은 채워 준다 */
-    G.run.hp = Math.max(G.run.hp, Math.min(REVIVE_HP, G.run.maxHp));
+    const rv = REVIVE_HP + ((G.run.train && G.run.train.revive) || 0);
+    G.run.hp = Math.max(G.run.hp, Math.min(rv, G.run.maxHp));
     G.run.stats.revives++;
     SND.bell(); screenFlash('rgba(255,220,150,.4)', 620);
     toast(`숨을 고르고 다시 선다 — 체력 ${G.run.hp}`);
     saveRun(); showMap();
   };
+  d.querySelector('#ov_train').onclick = () => showTraining();
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
 }
 function victory() {
   autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
   META.wins++; META.best = Math.max(META.best, 30 + (G.run.asc || 0) * 5); saveMeta();
+  jpGain(G.run, true); noteClear(LAST_ACT);
   G.scene = 'win';
   const s = $('#scene');
   const d = el('div', 'endscreen win');
@@ -10085,6 +10491,7 @@ function showTitle() {
       <div class="menu">
         <button class="brush-btn red" id="t_new">새로운 모험</button>
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
+        <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
         <button class="brush-btn ghost" id="t_dex">도감</button>
         <button class="brush-btn ghost" id="t_tutor">첫걸음 (처음이라면)</button>
         <button class="brush-btn ghost" id="t_help">안내서</button>
@@ -10100,6 +10507,7 @@ function showTitle() {
       n.textContent = '안내서 (처음이신가요?)'; }
   }, 900);
   s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
+  s.querySelector('#t_train').onclick = () => { SND.init(); SND.ui(); showTraining(); };
   s.querySelector('#t_set').onclick = () => { SND.init(); SND.ui(); showSettings(); };
   s.querySelector('#t_tutor').onclick = () => { SND.init(); SND.ui(); showTutorial(true); };
   const c = s.querySelector('#t_cont');
