@@ -6379,7 +6379,7 @@ function nextAct() {
   run.map = genMap(run.act);
   run.mapCur = -1; run.mapDone = []; run.bossPick = null;
   run.shop = null;
-  healRun(Math.ceil(run.maxHp * .25));
+  healRun(Math.ceil(run.maxHp * .34));      /* 새 막 첫 칸에서 쓰러지지 않도록 */
   saveRun();
   showMap();
   flash(`제 ${run.act}막 · ${ACT_NAME[run.act]}`);
