@@ -7291,12 +7291,14 @@ function showSkinPicker(cardId, after) {
   p.querySelector('#sk_close').onclick = closeTop;
 }
 
-/* ── 제5·6막의 배려 ───────────────────────────────────────
+/* ── 제4~6막의 배려 ───────────────────────────────────────
    여기서부터는 S급 없이 넘기 어렵다. 엘리트가 이따금 내어 준다.
+   뽑기를 하지 않은 사람일수록 이 한 장이 크다.
    ────────────────────────────────────────────────────────── */
-const SPECIAL_DROP_FROM = 5;                 /* 이 막부터 */
+const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내어 준다 */
 const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
-function specialDropRate(act) { return act >= 6 ? .35 : .30; }
+/* 뽑기를 하지 않은 사람도 오를 수 있게, 제4막부터 조금씩 열어 준다 */
+function specialDropRate(act) { return act >= 6 ? .35 : act >= 5 ? .30 : .20; }
 /* 공짜 특대급 상자 한 번 — 연출까지 그대로 */
 async function freeBigBox() {
   const B = BANNERS[3];
