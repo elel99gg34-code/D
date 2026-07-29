@@ -320,6 +320,21 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .card.g-ssx::before{content:'';position:absolute;inset:-8px;border-radius:12px;z-index:0;
   background:conic-gradient(from 0deg,#ff2d55,#ff8a00,#ffe14d,#ff2d55,#c2185b,#ff2d55);
   animation:emberSpin 2.6s linear infinite, emberPulse 1.25s ease-in-out infinite}
+/* SSC급 — S 위, SSX 아래. 불이 아니라 청람빛 서릿결로 간다 */
+@keyframes sscGlow{
+  0%,100%{box-shadow:0 0 14px 3px rgba(31,182,201,.6),0 0 32px 8px rgba(90,220,255,.28),inset 0 0 18px rgba(150,235,255,.22)}
+  50%    {box-shadow:0 0 28px 9px rgba(45,205,225,.9),0 0 54px 16px rgba(120,240,255,.42),inset 0 0 30px rgba(190,248,255,.38)}}
+.card.g-ssc .face{border-color:#1fb6c9;background:linear-gradient(155deg,#f2fdff,#d6f4f9 52%,#b3e6ef);
+  animation:sscGlow 1.5s ease-in-out infinite}
+.card.g-ssc .grade{font-weight:700;text-shadow:0 0 8px rgba(120,240,255,.95)}
+.card.g-ssc .art .g{color:#0d5c68;text-shadow:0 0 12px rgba(45,205,225,.7)}
+.card.g-ssc::before{content:'';position:absolute;inset:-7px;border-radius:11px;z-index:0;
+  background:conic-gradient(from 0deg,#1fb6c9,#7ee8f5,#2f8fd8,#1fb6c9,#0e6f83,#1fb6c9);
+  animation:emberSpin 3.2s linear infinite, emberPulse 1.5s ease-in-out infinite}
+.stile.g-ssc{border-color:#1fb6c9;background:linear-gradient(160deg,#e9fbff,#bfe9f2);animation:sscGlow 1.5s ease-in-out infinite}
+.relic.g-ssc{border-color:#1fb6c9;animation:sscGlow 1.5s ease-in-out infinite;background:#e6f9fd}
+.rtile.g-ssc{border-color:#1fb6c9;background:linear-gradient(160deg,#e9fbff,#bfe9f2);animation:sscGlow 1.5s ease-in-out infinite}
+#skillbtn.sg-ssc.ready{animation:sscGlow 1.5s ease-in-out infinite}
 .card.g-unknown .face{border-color:#7b4bd8}
 .card.g-unknown::before{content:'';position:absolute;inset:-7px;border-radius:11px;z-index:0;
   background:conic-gradient(from 0deg,#7b4bd8,#2de1ff,#ff2d55,#ffe14d,#7b4bd8);
@@ -622,20 +637,32 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 /* 지도는 스크롤하지 않는다 — 한 화면에 전부 담고 필요한 만큼만 줄인다 */
 #map{position:absolute;inset:52px 0 0 0;overflow:hidden;display:flex;flex-direction:column;align-items:center}
 #mapstage{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
-#mapinner{position:relative;width:660px;transform-origin:50% 50%}
+#mapinner{position:relative;transform-origin:50% 50%}
 /* 지금 자리 */
 .mapnode.cur:after{content:'';position:absolute;inset:-11px;border-radius:50%;border:2px solid var(--gold);
   animation:curRing 1.9s ease-out infinite;pointer-events:none}
 @keyframes curRing{0%{transform:scale(.86);opacity:.95}100%{transform:scale(1.5);opacity:0}}
-/* 갈 수 있는 곳 위의 작은 화살 */
-.mapnode.avail:before{content:'';position:absolute;left:50%;top:-17px;margin-left:-6px;
-  border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid var(--red);
-  animation:availArrow 1.4s ease-in-out infinite;opacity:.9}
-@keyframes availArrow{50%{transform:translateY(-5px)}}
-/* 한눈에 보이는 층 눈금 */
-.maprow{position:absolute;left:-46px;font-size:11px;color:rgba(23,19,15,.4);letter-spacing:.08em;
-  transform:translateY(-50%)}
-.maprow.now{color:var(--red);font-size:12.5px}
+/* 갈 수 있는 곳 왼쪽의 작은 화살 — 걸어가는 쪽을 가리킨다 */
+.mapnode.avail:before{content:'';position:absolute;top:50%;left:-21px;margin-top:-6px;
+  border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--red);
+  animation:availArrow 1.3s ease-in-out infinite;opacity:.92}
+@keyframes availArrow{50%{transform:translateX(5px)}}
+/* 칸 이름 — 짚어 보지 않아도 무엇인지 읽힌다 */
+.mapnode b{position:absolute;top:calc(100% + 7px);left:50%;transform:translateX(-50%);
+  font-size:12.5px;font-weight:400;letter-spacing:.02em;white-space:nowrap;color:var(--ink2);
+  background:rgba(244,238,224,.82);padding:1px 7px;border-radius:9px;pointer-events:none}
+.mapnode.done b{opacity:.55}
+.mapnode.avail b{color:var(--red);background:rgba(255,247,236,.94);font-weight:700}
+.mapnode.boss b{font-size:14px;color:var(--red);font-weight:700;top:calc(100% + 9px)}
+/* 발치의 층 눈금 자 */
+.mapruler{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,
+  transparent,rgba(23,19,15,.16) 8%,rgba(23,19,15,.16) 92%,transparent)}
+.mapcol{position:absolute;transform:translateX(-50%);font-size:12px;color:rgba(23,19,15,.5);
+  letter-spacing:.06em;white-space:nowrap;background:rgba(244,238,224,.7);padding:0 4px;border-radius:6px}
+.mapcol:before{content:'';position:absolute;left:50%;top:-7px;width:1px;height:5px;background:rgba(23,19,15,.22)}
+.mapcol.now{color:var(--red);font-weight:700}
+.mapcol.now:before{background:var(--red);height:8px;top:-10px}
+.mapcol.bossmark{color:var(--red);letter-spacing:.14em}
 /* 아래 안내 띠 */
 #maplegend{flex:none;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:8px 14px 12px;
   font-size:11.5px;color:var(--ink3);letter-spacing:.04em}
@@ -651,6 +678,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .mapnode.avail:hover{transform:scale(1.18)}
 .mapnode.done{opacity:.42;filter:grayscale(.7)}
 .mapnode.cur{border-color:var(--gold);box-shadow:0 0 0 4px rgba(157,124,46,.3)}
+/* 지금 서 있는 자리는 지나온 칸이라도 흐려지지 않는다 */
+.mapnode.done.cur{opacity:1;filter:none;background:#2a1f17;color:var(--gold);border-color:var(--gold)}
+.mapnode.cur b{color:var(--gold);background:rgba(42,31,23,.9);font-weight:700}
+.mapnode.cur b:after{content:' · 지금 여기'}
 .mapnode.janggi{background:linear-gradient(150deg,#5c4a1d,#957d2b);color:#fbf3ea;border-color:#e8cf94;
   box-shadow:0 0 0 3px rgba(232,207,148,.2),0 0 16px rgba(232,207,148,.45)}
 .mapnode.janggi.done{background:#4a4438}
@@ -935,6 +966,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .agtxt em{font-style:normal;color:#ffd98a}
 .rewitem.gift{background:linear-gradient(100deg,#effff9,#d9f5ea);box-shadow:0 0 22px rgba(70,200,170,.45)}
 .rewitem.sgift{background:linear-gradient(100deg,#fff3e2,#ffe0bd);box-shadow:0 0 24px rgba(255,140,50,.5)}
+.rewitem.cgift{background:linear-gradient(100deg,#eafcff,#c7edf6);box-shadow:0 0 24px rgba(45,205,225,.55)}
+.rewitem.cgift .ic{background:radial-gradient(circle at 35% 30%,#4fd6e8,#0a5766);color:#eafcff}
+.rewitem.cgift .t b{color:#0a5766}
 .rewitem.sgift .ic{background:radial-gradient(circle at 35% 30%,#ffa04a,#8a3a06);color:#fff4e2}
 .rewitem.sgift .t b{color:#8a3a06}
 .rewitem.gift .ic{background:radial-gradient(circle at 35% 30%,#4fd3a0,#14624e);color:#eafff9}
@@ -2926,6 +2960,51 @@ defCard({ id: 'phoenix', n: '불사조', g: '鳳', type: 'power', rar: 'ssx', co
   txt: v => `이 전투에서 쓰러질 때 체력 ${v.h}과 <i>20</i>의 방어도로 되살아난다. (한 번) 소멸.`,
   play: c => { st(P(), 'rebirth', c.v.h); SND.power(); flash('불사조'); } });
 
+/* ---------- SSC급 — S급 위, SSX급 아래 ----------
+   S급이 한 수를 크게 하는 부적이라면, SSC급은 한 수로 판을 기울인다.
+   다만 SSX처럼 판을 끝내지는 못한다 — 값도 한 기(氣) 눅고,
+   소멸이 붙지 않는 것이 많아 두 번 세 번 돌려 쓸 수 있다. */
+defCard({ id: 'frostfang', n: '한월참', g: '寒', type: 'attack', rar: 'ssc', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 30 : 24, k: u ? 3 : 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>취약</b> ${v.k}과 <b>약화</b> ${v.k}을 부여한다. 소멸하지 않는다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'slash2' }); st(c.t, 'vuln', c.v.k); st(c.t, 'weak', c.v.k); } });
+
+defCard({ id: 'bluewave', n: '창랑도', g: '滄', type: 'attack', rar: 'ssc', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 19 : 15 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고, 이 부적으로 쓰러뜨릴 때마다 기를 1 되찾는다.`,
+  play: c => { for (const e of alive()) { const before = e.hp;
+    atk(e, c.v.d, { fx: 'wind' }); if (before > 0 && e.hp <= 0) energy(1); } } });
+
+defCard({ id: 'jadearmor', n: '벽옥신갑', g: '甲', type: 'skill', rar: 'ssc', cost: 1,
+  v: u => ({ b: u ? 22 : 17, x: u ? 3 : 2 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>민첩</b> ${v.x}을 얻는다. 이번 턴에 받는 피해가 <b>3 줄어든다</b>.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); st(P(), 'endblock', 3); } });
+
+defCard({ id: 'sevenstar', n: '칠성보', g: '七', type: 'skill', rar: 'ssc', cost: 1, exhaust: true,
+  v: u => ({ n: u ? 5 : 4, e: u ? 3 : 2 }),
+  txt: v => `카드를 ${v.n}장 뽑고 기를 ${v.e} 얻는다. 소멸.`,
+  play: c => { drawCards(c.v.n); energy(c.v.e); } });
+
+defCard({ id: 'tidecall', n: '조수인', g: '潮', type: 'power', rar: 'ssc', cost: 2,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>힘</b> ${v.x}과 <b>검기</b> ${v.x}을 얻고, 매 턴 카드를 한 장 더 뽑는다.`,
+  play: c => { st(P(), 'str', c.v.x); st(P(), 'edge', c.v.x); st(P(), 'flow', 1); SND.power(); } });
+
+defCard({ id: 'mirrorlake', n: '경호수', g: '鏡', type: 'skill', rar: 'ssc', cost: 1, tgt: 'all',
+  v: u => ({ n: u ? 2 : 1 }),
+  txt: v => `모든 적의 방어도를 없애고 ${v.n}턴 <b>무력</b>하게 만든다.`,
+  play: c => { SND.gong(); for (const e of alive()) { e.block = 0; st(e, 'stun', c.v.n); } syncAll(); } });
+
+defCard({ id: 'deepcurrent', n: '심해류', g: '深', type: 'attack', rar: 'ssc', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 11 : 9, n: u ? 4 : 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: c => atk(c.t, c.v.d, { n: c.v.n, fx: 'slash' }) });
+
+defCard({ id: 'coldmoon', n: '냉월심법', g: '月', type: 'power', rar: 'ssc', cost: 2, exhaust: true,
+  v: u => ({ b: u ? 10 : 7 }),
+  txt: v => `매 턴 시작할 때 <i>${v.b}</i>의 방어도를 얻는다. 소멸.`,
+  play: c => { st(P(), 'turnblock', c.v.b); SND.power(); } });
+
 /* ---------- ?급 — 세상에 단 하나 ---------- */
 defCard({ id: 'genesis', n: '천지개벽', g: '闢', type: 'skill', rar: 'unknown', cost: 3, exhaust: true,
   v: u => ({ n: u ? 4 : 3, e: u ? 3 : 2 }),
@@ -3158,19 +3237,21 @@ const GRADE = {
   uncommon: { n: '2등급', s: '2', c: '#2f6d8f', desc: '드문 부적' },
   rare:     { n: '1등급', s: '1', c: '#b8912f', desc: '귀한 부적' },
   special:  { n: 'S급',   s: 'S', c: '#e2622a', desc: '특별 상자에서만 나오는 불타는 부적' },
+  ssc:      { n: 'SSC급', s: 'SSC', c: '#1fb6c9', desc: 'S급을 넘어선 청람빛 부적. SSX에는 못 미치나, 그 아래는 전부 아래다.' },
   ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.1% 확률로만 모습을 드러낸다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
-const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'special', 'ssx', 'unknown'];
+const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'special', 'ssc', 'ssx', 'unknown'];
 const RARITY_NAME = {};
 for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
-const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown' : '';
+const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
+  : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* 보상 풀 */
 const POOL = { common: [], uncommon: [], rare: [] };
 const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전부 */
-const GRADE_POOL = { special: [], ssx: [], unknown: [] };
+const GRADE_POOL = { special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in CARDS) {
   const c = CARDS[k];
   if (POOL[c.rar]) POOL[c.rar].push(k);
@@ -4479,7 +4560,9 @@ function energy(n) { G.b.energy += n; const e = $('#energy'); if (e) { e.classLi
 function drawCards(n) {
   const b = G.b; if (!b) return;
   for (let i = 0; i < n; i++) {
-    if (b.hand.length >= 10) { toast('손에 카드를 더 들 수 없다'); break; }
+    /* 손은 열 장까지. 자동으로 도는 중에는 굳이 알리지 않는다 —
+       뽑기 효과가 겹치면 한 판에 몇 번씩 떠서 오류처럼 보였다 */
+    if (b.hand.length >= 10) { if (!AUTO.on) toast('손에 카드를 더 들 수 없다'); break; }
     if (!b.drawPile.length) {
       if (!b.discardPile.length) break;
       b.drawPile = shuffle(b.discardPile.slice()); b.discardPile = [];
@@ -4599,6 +4682,10 @@ async function startPlayerTurn() {
   if (p.s.sword) { for (let i = 0; i < p.s.sword; i++) { const a = alive(); if (a.length) pure(pick(a), 4); } }
   fire('turnStart');
   await checkDeaths();
+  /* 검기·독 따위가 차례 첫머리에 마지막 요괴를 눕혔을 수 있다.
+     checkDeaths 는 시체만 치울 뿐 전투를 끝내지 않는다 — 여기서 끝을 본다.
+     (이것을 빠뜨려 '이겼는데 계속 싸우는' 헛턴이 돌았다) */
+  if (await checkOver()) return;
   if (b.over) return;
 
   const n = 5 + (p.s.flow || 0) + b.drawMod + (hasBoon('draw1') ? 1 : 0);
@@ -4631,6 +4718,7 @@ async function playCard(card, target) {
 
   const i = b.hand.findIndex(x => x.uid === card.uid);
   if (i >= 0) b.hand.splice(i, 1);
+  setTint(card);                             /* 스킨을 입었다면 이 부적의 빛깔로 */
   castMotion(card, d, target);
   SND.cardPlay(d.type);
   if (d.type === 'attack') SND.slash();
@@ -4639,9 +4727,10 @@ async function playCard(card, target) {
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
   if (d.rar === 'ssx' || d.rar === 'unknown') {
     blink(1.3); zoomPunch(); rgbSplit();
-    sparkles(innerWidth / 2, innerHeight * .5, 22, GRADE[d.rar].c, 220);
-    lightBeam(innerWidth / 2, d.rar === 'unknown' ? 'rgba(190,140,255,.55)' : 'rgba(255,90,130,.55)', 190);
-  } else if (d.rar === 'special') { blink(.7); sparkles(innerWidth / 2, innerHeight * .52, 10, '#ffb07a', 150); }
+    sparkles(innerWidth / 2, innerHeight * .5, 22, tint(GRADE[d.rar].c), 220);
+    lightBeam(innerWidth / 2, FX_TINT ? rgba(shade(FX_TINT, .3), .55)
+      : d.rar === 'unknown' ? 'rgba(190,140,255,.55)' : 'rgba(255,90,130,.55)', 190);
+  } else if (d.rar === 'special') { blink(.7); sparkles(innerWidth / 2, innerHeight * .52, 10, tint('#ffb07a'), 150); }
   const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
@@ -4663,6 +4752,7 @@ async function playCard(card, target) {
   }
   syncAll();
   await wait(90);
+  FX_TINT = null;                            /* 빛깔은 이 부적에서 끝난다 */
   b.busy = false;
   if (!b.over) { await checkDeaths(); syncAll(); await checkOver(); }
 }
@@ -4689,6 +4779,8 @@ async function usePotion(idx, target) {
 async function endTurn() {
   const b = G.b, p = P();
   if (b.busy || b.over) return;
+  /* 안전줄 — 어떤 길로 왔든, 요괴가 하나도 안 남았으면 그것은 이긴 것이다 */
+  if (!alive().length) { if (await checkOver()) return; }
   b.busy = true; b.sel = null; hideArrow(); syncAll();
 
   fire('turnEnd');
@@ -4713,7 +4805,9 @@ async function endTurn() {
     e.turnCount++;
     e.block = 0;
     if (e.s.poison) { const d = e.s.poison; SND.poison(); pure(e, d); st(e, 'poison', -1);
-      await wait(240); await checkDeaths(); if (e.hp <= 0 || b.over) continue; }
+      await wait(240); await checkDeaths();
+      if (await checkOver()) return;         /* 독이 마지막 놈을 눕혔다면 여기서 끝난다 */
+      if (e.hp <= 0 || b.over) continue; }
     if (e.s.stun) { st(e, 'stun', -1); floatText(e, '무력', 'blk'); await wait(420); decay(e); pickIntent(e); continue; }
     highlight(e, true);
     await wait(230);
@@ -4862,7 +4956,7 @@ const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0
 const AUTO_PACE = { slow: 1500, normal: 850, fast: 380 };
 const autoDelay = () => AUTO_PACE[OPT.autoPace] || 300;
 /* 등급 서열 — 이 값이 곧 우선순위다 */
-const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, special: 4, ssx: 5, unknown: 6 };
+const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, special: 4, ssc: 5, ssx: 6, unknown: 7 };
 
 /* 손에 든 한 장을 저울질한다. 쓸 수 없으면 null */
 function autoScore(c) {
@@ -5511,7 +5605,7 @@ function cardNode(c, opts) {
   opts = opts || {};
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
-  const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssx' ? ' special' : '') +
+  const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
     auraClass(d.rar) + (c.up ? ' up' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, c.up) + '').replace(/<[^>]+>/g, '').length;
@@ -5650,20 +5744,28 @@ function hitFx(ent, hpDmg, blocked, splash) {
     n.style.left = cx + 'px'; n.style.top = (r.top + 20) + 'px';
     $('#app').appendChild(n); setTimeout(() => n.remove(), 1000);
     ent.el.classList.remove('hurt'); void ent.el.offsetWidth; ent.el.classList.add('hurt');
-    if (splash) { FX.blood(cx, cy, Math.min(26, 8 + hpDmg)); SND.hit(hpDmg > 12 ? 2 : 1); }
+    if (splash) {
+      FX.blood(cx, cy, Math.min(26, 8 + hpDmg)); SND.hit(hpDmg > 12 ? 2 : 1);
+      /* 옷을 입은 부적이 때리면 그 빛깔의 불티가 함께 튄다 */
+      if (FX_TINT && !ent.isPlayer)
+        FX.burst(cx, cy, Math.min(16, 5 + (hpDmg >> 1)), hexRgb(shade(FX_TINT, .2)), 5, 38, 3.8);
+    }
     if (crit) {
       const m = el('div', 'critmark', '치 명');
+      if (FX_TINT) { m.style.color = shade(FX_TINT, .45); m.style.textShadow = `0 0 18px ${rgba(FX_TINT, .8)}`; }
       m.style.left = cx + 'px'; m.style.top = (r.top - 6) + 'px';
       $('#app').appendChild(m); setTimeout(() => m.remove(), 780);
-      FX.burst(cx, cy, 22, '255,190,80', 7, 46, 5);
-      shockRing(cx, cy, 210, '#ffce6a');
-      sparkles(cx, cy, 10, '#fff2c0', 62);
+      /* 스킨을 입혔으면 치명타의 불빛도 그 빛깔을 탄다 */
+      const kc = tint('#ffce6a');
+      FX.burst(cx, cy, 22, hexRgb(shade(kc, .18)), 7, 46, 5);
+      shockRing(cx, cy, 210, kc);
+      sparkles(cx, cy, 10, shade(kc, .55), 62);
       blink(.7);
       const pl = P();
-      if (pl && pl.el) slashLine(centerOf(pl.el), { x: cx, y: cy }, '#ffd9a0');
+      if (pl && pl.el) slashLine(centerOf(pl.el), { x: cx, y: cy }, shade(kc, .35));
       if (hpDmg >= CRIT_AT * 1.8) {
-        rushVignette('rgba(255,140,40,.42)'); rgbSplit(); zoomPunch();
-        lightBeam(cx, 'rgba(255,220,150,.6)', 160); sparkles(cx, cy, 14, '#ffdf9a', 120);
+        rushVignette(rgba(shade(kc, -.15), .42)); rgbSplit(); zoomPunch();
+        lightBeam(cx, rgba(shade(kc, .5), .6), 160); sparkles(cx, cy, 14, shade(kc, .4), 120);
       }
       SND.crit(); hitstop(hpDmg >= CRIT_AT * 1.8); shake(true);
     } else if (hpDmg >= 15) hitstop(false);
@@ -5696,7 +5798,7 @@ function castMotion(card, d, target) {
   const cel = cardEls[card.uid];
   delete cardEls[card.uid];
   if (!cel) return;
-  const gc = GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a';
+  const gc = tint(GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a');
   const r = cel.getBoundingClientRect();
   const from = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   /* 어디로 갈 것인가 */
@@ -5741,6 +5843,30 @@ function hexRgb(h) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h || '');
   return m ? `${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)}` : '200,170,90';
 }
+/* ── 스킨 빛깔이 이펙트까지 물든다 ────────────────────────
+   부적에 옷을 입혀 두었다면, 그 부적이 나갈 때의 잔상·불티·
+   베는 선·충격파가 전부 그 빛깔을 따라간다. 입히지 않았으면
+   본래대로 등급 빛깔을 쓴다.
+   ──────────────────────────────────────────────────────── */
+let FX_TINT = null;                           /* 지금 나가는 부적의 스킨 빛깔 */
+function setTint(card) {
+  FX_TINT = null;
+  if (!card) return null;
+  const s = skinOf(card.id);
+  if (s && SKINS[s]) FX_TINT = SKINS[s].c;
+  return FX_TINT;
+}
+/* 스킨을 입었으면 그 빛깔, 아니면 넘겨받은 본래 빛깔 */
+const tint = fb => FX_TINT || fb;
+/* 밝은 쪽/어두운 쪽으로 민 빛깔 — 치명타의 속불처럼 */
+function shade(hex, k) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+  if (!m) return hex || '#ffce6a';
+  const f = v => Math.max(0, Math.min(255, Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k))));
+  return '#' + [1, 2, 3].map(i => f(parseInt(m[i], 16)).toString(16).padStart(2, '0')).join('');
+}
+/* 색을 rgba() 로 — 무게(a)를 실어서 */
+function rgba(hex, a) { return `rgba(${hexRgb(hex)},${a})`; }
 /* ── 더 요란한 연출 ───────────────────────────────────── */
 /* 아주 짧은 화면 깜빡임 */
 function blink(strength) {
@@ -6127,11 +6253,14 @@ const CARD_FX = {
 /* 이름을 크게 띄울 만한 카드 (희귀 이상이거나 무거운 것) */
 function worthBanner(card) {
   const d = cdef(card);
-  return d.rar === 'rare' || d.rar === 'special' || d.rar === 'ssx' || (d.cost >= 2 && d.type === 'attack');
+  return d.rar === 'rare' || d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' || (d.cost >= 2 && d.type === 'attack');
 }
 function skillBanner(text, ssx) {
   if (!OPT.banner) return;
   const n = el('div', 'skillname' + (ssx ? ' ssx' : ''), text);
+  /* 옷을 입힌 부적은 이름표까지 그 빛깔로 뜬다 */
+  if (FX_TINT) { n.style.color = shade(FX_TINT, .5);
+    n.style.textShadow = `0 0 26px ${rgba(FX_TINT, .85)},0 0 60px ${rgba(FX_TINT, .45)}`; }
   n.style.top = Math.max(64, innerHeight * .145) + 'px';
   $('#app').appendChild(n);
   setTimeout(() => n.remove(), 1000);
@@ -6287,18 +6416,42 @@ function genMap(act) {
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
     n.type = pickWeighted(w).t;
   }
-  /* 좌표 */
-  const totalH = MAP_H * 108 + 190;
-  for (const n of nodes) {
-    const jitter = n.type === 'boss' ? 0 : ((n.id * 37) % 22) - 11;
-    n.x = 74 + n.c * ((660 - 148) / (MAP_W - 1)) + jitter + (n.type === 'boss' ? 0 : 0);
-    if (n.type === 'boss') n.x = 330;
-    n.y = totalH - 84 - n.r * 108;
+  const m = { nodes, act };
+  mapLayout(m);
+  return m;
+}
+/* 좌표를 매긴다 — 왼쪽에서 오른쪽으로 걸어 오르는 산길.
+   세로로 세우면 열두 층이 화면 높이에 눌려 글씨가 뭉개진다.
+   가로로 눕히면 넓은 쪽을 쓰게 되어 거의 원래 크기로 펼쳐진다.
+   옛 저장(세로 좌표)도 이 함수를 지나면 가로로 다시 놓인다. */
+function mapLayout(m) {
+  if (!m || !m.nodes) return m;
+  const STEP = 90, LANE = 98, PAD_L = 92, PAD_R = 108;
+  const maxR = m.nodes.reduce((a, n) => Math.max(a, n.r), 0);
+  const cols = maxR + 1;
+  m.w = PAD_L + maxR * STEP + PAD_R;
+  m.h = (MAP_W - 1) * LANE + 198;
+  m.cols = cols;
+  const midY = m.h / 2 - 14;
+  for (const n of m.nodes) {
+    const jitter = n.type === 'boss' ? 0 : ((n.id * 37) % 20) - 10;
+    n.x = PAD_L + n.r * STEP;
+    n.y = midY + (n.c - (MAP_W - 1) / 2) * LANE + jitter - n.r * 3.2;
+    /* 오를수록 길이 조금씩 높아진다 — 산을 타는 맛 */
+    if (n.type === 'boss') { n.x = PAD_L + maxR * STEP; n.y = midY - maxR * 3.2; }
   }
-  return { nodes, h: totalH, act };
+  return m;
 }
 const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', janggi: '將', boss: '魔' };
 const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', janggi: '장기 상점', boss: '보스' };
+/* 지도에 바로 적어 넣는 짧은 이름 — 짚어 보지 않아도 읽히게 */
+const NODE_SHORT = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '상인', event: '수상한 일', treasure: '보물', special: '특별 상자', janggi: '장기', boss: '보스' };
+/* 칸을 짚었을 때 한 줄로 알려 주는 말 */
+const NODE_HINT = { battle: '싸움 한 판. 이기면 부적과 돈.', elite: '굵은 놈. 대신 유물을 내어 준다.',
+  rest: '체력을 30% 되찾거나 부적 한 장을 벼린다.', shop: '부적·유물·물약을 판다. 하나는 지울 수도.',
+  event: '무슨 일이 있을지는 가 봐야 안다.', treasure: '유물 하나가 그냥 놓여 있다.',
+  special: '특대급 상자를 연다.', janggi: '노인과 장기 한 판. 이기면 상자.',
+  boss: '이 막의 끝. 넘으면 다음 막으로.' };
 
 /* ══════════════════════════════════════════════════════════
    10. 모험 진행
@@ -6312,16 +6465,17 @@ const LAST_ACT = 10;
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
    ────────────────────────────────────────────────────────── */
 const ACT_SCALE = {
-  1: { hp: 1.00, dmg: 1.00 },              /* 첫 막만 그대로 둔다 */
-  2: { hp: 1.09, dmg: 1.06 },              /* 첫 막 바로 뒤라 계단을 낮춘다 */
-  3: { hp: 1.22, dmg: 1.15 },
-  4: { hp: 1.45, dmg: 1.29 },              /* 여기서부터가 본격이다 */
-  5: { hp: 1.68, dmg: 1.38 },
-  6: { hp: 1.91, dmg: 1.47 },
-  7: { hp: 2.14, dmg: 1.56 },
-  8: { hp: 2.42, dmg: 1.67 },
-  9: { hp: 2.72, dmg: 1.78 },
-  10:{ hp: 3.05, dmg: 1.90 }
+  1: { hp: 0.97, dmg: 0.97 },              /* 첫 막만 그대로 둔다 */
+  2: { hp: 1.06, dmg: 1.03 },              /* 첫 막 바로 뒤라 계단을 낮춘다 */
+  3: { hp: 1.18, dmg: 1.12 },
+  4: { hp: 1.41, dmg: 1.25 },              /* 여기서부터가 본격이다 */
+  5: { hp: 1.63, dmg: 1.34 },
+  6: { hp: 1.85, dmg: 1.43 },
+  7: { hp: 2.08, dmg: 1.51 },
+  8: { hp: 2.35, dmg: 1.62 },
+  /* 「나(我)」와 「백귀야행」 — 여기서 벽이 너무 가팔라 계단을 낮췄다 */
+  9: { hp: 2.50, dmg: 1.66 },
+  10:{ hp: 2.72, dmg: 1.73 }
 };
 const actScale = act => ACT_SCALE[Math.min(10, Math.max(1, act || 1))] || ACT_SCALE[1];
 const actBoost = act => actScale(act).hp;
@@ -6407,6 +6561,7 @@ function showMap() {
     }
     run.mapCur = -1;                       /* 그 밖의 막힘은 첫 갈림길로 되돌린다 */
   }
+  mapLayout(m);                            /* 세로로 그려 두었던 옛 저장도 가로로 눕힌다 */
   const s = $('#scene');
   const rows = m.nodes.reduce((a, n) => Math.max(a, n.r), 0) + 1;
   const doneRows = Math.max(0, run.floor);
@@ -6416,7 +6571,7 @@ function showMap() {
         <span class="actsub">${doneRows} / ${rows} 층 · ${run.act >= LAST_ACT ? '마지막 봉우리' : `제 ${run.act + 1} 막까지 ${rows - doneRows} 층`}</span>
       </div>
       <div id="mapstage">
-        <div id="mapinner" style="height:${m.h}px"><svg style="position:absolute;inset:0;width:100%;height:${m.h}px"></svg></div>
+        <div id="mapinner" style="width:${m.w}px;height:${m.h}px"><svg style="position:absolute;inset:0;width:${m.w}px;height:${m.h}px"></svg></div>
       </div>
       <div id="maplegend">
         <span><i>刀</i>싸움</span><span><i>鬼</i>엘리트</span><span><i>火</i>야영지</span>
@@ -6427,15 +6582,17 @@ function showMap() {
   const inner = s.querySelector('#mapinner'), svg = inner.querySelector('svg');
   const done = new Set(run.mapDone);
   const availIds = availableNodes();
-  /* 간선 */
+  /* 간선 — 지나온 길은 이어진 먹줄, 앞길은 점선 */
   let paths = '';
   for (const n of m.nodes) for (const t of n.next) {
     const b = m.nodes[t];
-    const mx = (n.x + b.x) / 2 + ((n.id * 13) % 16) - 8;
-    const active = run.mapCur === n.id || (run.mapCur < 0 && n.r === 0 && false);
-    const col = done.has(n.id) && done.has(t) ? 'rgba(23,19,15,.22)' : active ? 'rgba(168,39,44,.75)' : 'rgba(23,19,15,.35)';
-    paths += `<path d="M${n.x},${n.y} Q${mx},${(n.y + b.y) / 2} ${b.x},${b.y}" fill="none" stroke="${col}"
-      stroke-width="${active ? 4 : 2.5}" stroke-linecap="round" stroke-dasharray="${active ? '' : '1 9'}"/>`;
+    const my = (n.y + b.y) / 2 + ((n.id * 13) % 14) - 7;
+    const walked = done.has(n.id) && done.has(t);
+    const active = run.mapCur === n.id;
+    const col = walked ? 'rgba(23,19,15,.34)' : active ? 'rgba(168,39,44,.78)' : 'rgba(23,19,15,.30)';
+    paths += `<path d="M${n.x},${n.y} Q${(n.x + b.x) / 2},${my} ${b.x},${b.y}" fill="none" stroke="${col}"
+      stroke-width="${active ? 4 : walked ? 3 : 2.5}" stroke-linecap="round"
+      stroke-dasharray="${active || walked ? '' : '2 8'}"/>`;
   }
   svg.innerHTML = paths;
   /* 노드 */
@@ -6445,24 +6602,29 @@ function showMap() {
     b.style.left = n.x + 'px'; b.style.top = n.y + 'px';
     if (n.type === 'boss') { const bl = ENCOUNTERS[run.act].boss;
       if (!run.bossPick || bl.indexOf(run.bossPick) < 0) run.bossPick = pick(bl); }
-    bindTip(b, () => `<b>${NODE_NAME[n.type]}</b>${n.type === 'boss' ? '<br>' + ENEMIES[run.bossPick].n : ''}`);
+    b.appendChild(el('b', '', n.type === 'boss' ? ENEMIES[run.bossPick].n : NODE_SHORT[n.type]));
+    bindTip(b, () => `<b>${NODE_NAME[n.type]}</b>${n.type === 'boss' ? ' · ' + ENEMIES[run.bossPick].n : ''}<br>${NODE_HINT[n.type] || ''}`);
     if (isAvail) b.onclick = () => { tipHide(); enterNode(n); };
     inner.appendChild(b);
   }
-  /* 층 눈금 */
-  const byRow = {};
-  for (const n of m.nodes) if (byRow[n.r] == null) byRow[n.r] = n.y;
-  for (const r in byRow) {
-    const lab = el('div', 'maprow' + (+r + 1 === run.floor ? ' now' : ''), (+r + 1) + '층');
-    lab.style.top = byRow[r] + 'px';
+  /* 발치의 층 눈금 자 */
+  const byCol = {};
+  for (const n of m.nodes) if (byCol[n.r] == null) byCol[n.r] = n.x;
+  const rule = el('div', 'mapruler'); rule.style.top = (m.h - 30) + 'px';
+  inner.appendChild(rule);
+  for (const r in byCol) {
+    const isBoss = +r === MAP_H;
+    const lab = el('div', 'mapcol' + (+r + 1 === run.floor ? ' now' : '') + (isBoss ? ' bossmark' : ''),
+      isBoss ? '보 스' : (+r + 1) + '층');
+    lab.style.left = byCol[r] + 'px'; lab.style.top = (m.h - 24) + 'px';
     inner.appendChild(lab);
   }
   /* 스크롤 없이 한 화면에 담는다 — 모자라면 그만큼만 줄인다 */
   const fit = () => {
     const stage = $('#mapstage'); if (!stage) return;
-    const availH = stage.clientHeight - 16, availW = stage.clientWidth - 40;
-    const k = Math.min(1, availH / m.h, availW / 700);
-    inner.style.transform = `scale(${Math.max(.42, k)})`;
+    const availH = stage.clientHeight - 10, availW = stage.clientWidth - 24;
+    const k = Math.min(1, availH / m.h, availW / m.w);
+    inner.style.transform = `scale(${Math.max(.55, k)})`;
   };
   fit();
   requestAnimationFrame(fit);
@@ -6604,17 +6766,29 @@ function showRewards(kind) {
       act: () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; }
         run.potions.push(pid); SND.heal(); flyGet(POTIONS[pid].g, '#7fe6cf', '#potbar'); } });
   }
-  /* 엘리트가 이따금 S급을 남긴다 — 그 판은 부적 보상 자체가 S급으로 바뀐다 */
+  /* 엘리트가 이따금 S급을 남긴다 — 그 판은 부적 보상 자체가 S급으로 바뀐다.
+     제7막부터는 그 S급이 40% 확률로 한 등급 위인 SSC급이 된다. */
   const sDrop = kind === 'elite' && run.act >= SPECIAL_DROP_FROM
     && GRADE_POOL.special.length && rnd() < specialDropRate(run.act);
+  const sscDrop = sDrop && run.act >= SSC_DROP_FROM && GRADE_POOL.ssc.length && rnd() < .4;
+  const dropPool = sscDrop ? GRADE_POOL.ssc : GRADE_POOL.special;
+  const dropName = sscDrop ? 'SSC급' : 'S급';
   if (kind === 'elite') {
     const rid = randomRelic();
     if (rid) items.push({ ic: RELICS[rid].g, t: RELICS[rid].n, s: RELICS[rid].d.replace(/<[^>]+>/g, ''), act: () => gainRelic(rid) });
   }
-  /* 제5막을 넘어서면 특대급 상자를 하나 준다 (제6막에는 없다) */
-  if (kind === 'boss' && run.act === FREEBOX_ACT) {
-    items.push({ ic: '櫃', t: '특대급 상자 1회', cls: 'sgift', s: '제5막을 넘어선 값 · 특별 부적만 나온다',
-      act: async () => { await freeBigBox(); return true; } });
+  /* 막을 넘어선 값 — 뒤로 갈수록 크게 얹어 준다 (제6막에는 없다) */
+  if (kind === 'boss' && ACT_CLEAR_BOX[run.act]) {
+    const cnt = ACT_CLEAR_BOX[run.act];
+    items.push({ ic: '櫃', t: `특대급 상자 ${cnt}회`, cls: 'sgift',
+      s: `제${run.act}막을 넘어선 값 · 특별 부적만 나온다`,
+      act: async () => { await freeBigBox(cnt); return true; } });
+  }
+  /* 제9막을 넘어서면 SSX급 유물 둘 */
+  if (kind === 'boss' && run.act === FUSED_GIFT_ACT) {
+    items.push({ ic: '融', t: 'SSX급 유물 2개', cls: 'sgift cgift',
+      s: '제9막을 넘어선 값 · 가장 높은 자리의 유물이다',
+      act: async () => { await grantFusedRelics(2); return true; } });
   }
   if (kind === 'boss' && run.act === 1 && !autoOk()) {
     items.push({ ic: '自', t: '자동 플레이 개방', s: '제1막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다',
@@ -6625,20 +6799,20 @@ function showRewards(kind) {
     if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '1등급 이상 셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
   }
   const n = Math.max(1, 3 - (run.rewardCut || 0));
-  const cards = sDrop ? sample(GRADE_POOL.special, Math.min(3, GRADE_POOL.special.length)).map(id => mkCard(id, false))
+  const cards = sDrop ? sample(dropPool, Math.min(3, dropPool.length)).map(id => mkCard(id, false))
                       : rewardCards(n, kind === 'normal' ? null : kind);
   const un = unlockedGrades(kind === 'normal' ? null : kind).map(r => GRADE[r].n).join(' · ');
   const nx = nextUnlock();
-  items.push({ ic: sDrop ? 'S' : '牌',
-    t: sDrop ? 'S급 부적 고르기' : '부적 한 장 고르기',
-    cls: sDrop ? 'sgift' : '',
-    s: sDrop ? `${cards.length}장 중 하나 · 엘리트가 남긴 불타는 부적`
+  items.push({ ic: sDrop ? (sscDrop ? 'C' : 'S') : '牌',
+    t: sDrop ? `${dropName} 부적 고르기` : '부적 한 장 고르기',
+    cls: sDrop ? (sscDrop ? 'sgift cgift' : 'sgift') : '',
+    s: sDrop ? `${cards.length}장 중 하나 · 엘리트가 남긴 ${sscDrop ? '푸른' : '불타는'} 부적`
              : `${cards.length}장 중 하나 · 지금 나오는 등급 ${un}` + (nx ? ` (${nx.left}층 뒤 ${nx.n})` : ''),
     act: async () => {
-      const c = await pickFromList(cards, sDrop ? 'S급 부적 하나를 고르시오' : '한 장을 고르시오',
-        { cancel: true, hint: sDrop ? '불타는 부적이다' : '건너뛰어도 좋다' });
+      const c = await pickFromList(cards, sDrop ? `${dropName} 부적 하나를 고르시오` : '한 장을 고르시오',
+        { cancel: true, hint: sDrop ? (sscDrop ? '청람빛이 돈다' : '불타는 부적이다') : '건너뛰어도 좋다' });
       if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id);
-               if (sDrop) { SND.unlock(); screenFlash('rgba(255,150,60,.4)', 620); blink(1); }
+               if (sDrop) { SND.unlock(); screenFlash(sscDrop ? 'rgba(60,200,230,.4)' : 'rgba(255,150,60,.4)', 620); blink(1); }
                toast(`${cname(c)} 획득`); }
       return true;
     } });
@@ -6699,7 +6873,7 @@ function showRewards(kind) {
   renderTop();
 }
 async function pickSkill() {
-  const good = ['rare', 'special', 'ssx', 'unknown'];
+  const good = ['rare', 'special', 'ssc', 'ssx', 'unknown'];
   let pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0 && good.indexOf(SKILLS[id].rar) >= 0);
   if (!pool.length) pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0);
   const cand = sample(pool, 3);
@@ -8050,7 +8224,7 @@ defSkin({ id: 'void',      n: '무',   h: '無',   rar: 'ssx',      c: '#8a7ac0'
   d: '빛을 삼킨다. 글자가 검게 파여 테두리만 남는다.' });
 const ALL_SKINS = Object.keys(SKINS);
 /* 스킨을 입힐 수 있는 등급 */
-const SKINNABLE = ['special', 'ssx', 'unknown'];
+const SKINNABLE = ['special', 'ssc', 'ssx', 'unknown'];
 function skinnable(id) { return CARDS[id] && SKINNABLE.indexOf(CARDS[id].rar) >= 0; }
 function ownSkin(id) { return !!(META.skins && META.skins.own[id]); }
 function skinOf(cardId) {
@@ -8093,7 +8267,7 @@ function showSkinPicker(cardId, after) {
   const owned = ALL_SKINS.filter(ownSkin);
   const cur = skinOf(cardId);
   const p = modal(`<h2>${d.n} — 옷 갈아입히기</h2>
-    <div class="hint">성능은 하나도 바뀌지 않는다 · 가진 스킨 ${owned.length} / ${ALL_SKINS.length}</div>
+    <div class="hint">성능은 하나도 바뀌지 않는다 · <b style="color:var(--gold)">부적이 나갈 때의 빛깔도 이 옷을 따라간다</b><br>가진 스킨 ${owned.length} / ${ALL_SKINS.length}</div>
     <div class="skinstage" id="sk_stage"></div>
     <div class="skinrow" id="sk_row"></div>
     <button class="brush-btn" id="sk_close">닫기</button>`);
@@ -8136,18 +8310,49 @@ function showSkinPicker(cardId, after) {
    뽑기를 하지 않은 사람일수록 이 한 장이 크다.
    ────────────────────────────────────────────────────────── */
 const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내어 준다 */
+const SSC_DROP_FROM = 7;                     /* 이 막부터는 그것이 SSC급으로 오르기도 한다 */
 const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
+/* 막을 넘어선 값으로 주는 특대급 상자 횟수. 제6막만 비워 둔다 */
+const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5 };
+const FUSED_GIFT_ACT = 9;                    /* 이 막을 넘으면 SSX급 유물 둘 */
 /* 뽑기를 하지 않은 사람도 오를 수 있게, 제4막부터 조금씩 열어 준다 */
 function specialDropRate(act) { return act >= 6 ? .35 : act >= 5 ? .30 : .20; }
 /* 공짜 특대급 상자 한 번 — 연출까지 그대로 */
-async function freeBigBox() {
+async function freeBigBox(times) {
   const B = BANNERS[3];
-  const loot = boxLoot(B.tier);
-  loot.take();
+  const n = Math.max(1, times || 1);
+  const items = [];
+  let best = 0;
+  for (let i = 0; i < n; i++) {
+    const loot = boxLoot(B.tier);
+    loot.take();
+    const g = loot.grade || 'special';
+    best = Math.max(best, GRADE_ORDER.indexOf(g));
+    items.push({ g: loot.g, n: loot.n, d: loot.d, grade: g });
+  }
   saveRun(); renderTop();
-  const items = [{ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || 'special' }];
-  await boxOpenScene(B.g, loot.grade || 'special');
+  await boxOpenScene(B.g, GRADE_ORDER[best] || 'special');
   return new Promise(res => showPullResult(items, () => res()));
+}
+/* SSX급(합쳐진) 유물 하나를 고른다 — randomRelic 은 이 칸을 일부러 빼므로 따로 본다 */
+function randomFusedRelic() {
+  const owned = new Set(G.run.relics.map(r => r.id));
+  const cand = (RELIC_POOL.fused || []).filter(id => !owned.has(id));
+  return cand.length ? pick(cand) : null;
+}
+/* SSX급 유물을 그냥 얹어 준다 — 제9막을 넘어선 값 */
+async function grantFusedRelics(n) {
+  let got = 0;
+  for (let i = 0; i < n; i++) {
+    const rid = randomFusedRelic() || randomRelic('boss') || randomRelic();
+    if (!rid) break;
+    gainRelic(rid, true); got++;
+    toast(`SSX급 유물 — ${RELICS[rid].n}`);
+    SND.unlock(); screenFlash('rgba(255,80,120,.34)', 560);
+    await wait(420);
+  }
+  if (!got) { G.run.gold += 400; toast('가질 유물이 남지 않아 값으로 받았다 (+400 골드)'); }
+  saveRun(); renderTop();
 }
 
 /* ══ 부적 뽑기 상점 ════════════════════════════════════════
@@ -8180,7 +8385,7 @@ const MILESTONES = [
   { at: 60,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
   { at: 100, grade: 'ssx',     s: 'SSX', label: '[SSX급] 보너스', ssx: true }
 ];
-const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, special: 5, ssx: 6, unknown: 7 };
+const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, special: 5, ssc: 6, ssx: 7, unknown: 8 };
 const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 
 /* 상자 하나에서 나오는 것 */
@@ -8191,8 +8396,8 @@ function boxLoot(tier) {
   /* 비기 상자 */
   if (tier === 5) {
     const r = rnd();
-    const grade = r < .005 ? 'unknown' : r < .05 ? 'ssx' : r < .26 ? 'special'
-                : r < .48 ? 'rare' : r < .72 ? 'uncommon' : 'common';
+    const grade = r < .005 ? 'unknown' : r < .05 ? 'ssx' : r < .13 ? 'ssc' : r < .30 ? 'special'
+                : r < .50 ? 'rare' : r < .73 ? 'uncommon' : 'common';
     let id = randomSkill(grade) || randomSkill();
     if (!id) { const g = ri(200, 320); return { g: '金', n: `골드 ${g}`, d: '더 배울 비기가 없다', take: () => { run.gold += g; } }; }
     const sd = SKILLS[id];
@@ -8211,11 +8416,12 @@ function boxLoot(tier) {
       d: `<b style="color:${GRADE[rgrade(rid)].c}">${GRADE[rgrade(rid)].n} 유물</b> — ` + RELICS[rid].d.replace(/<[^>]+>/g, ''),
       take: () => gainRelic(rid, true) };
   }
-  /* 특대급 — 반드시 특별 등급 부적. ?급 0.1% · SSX급 10% · 나머지 S급 */
+  /* 특대급 — 반드시 특별 등급 부적. ?급 0.1% · SSX급 10% · SSC급 26% · 나머지 S급 */
   if (tier === 3) {
     const r = rnd();
     const grade = r < .001 && GRADE_POOL.unknown.length ? 'unknown'
-                : r < .101 && GRADE_POOL.ssx.length ? 'ssx' : 'special';
+                : r < .101 && GRADE_POOL.ssx.length ? 'ssx'
+                : r < .361 && GRADE_POOL.ssc.length ? 'ssc' : 'special';
     const id = pick(GRADE_POOL[grade]);
     const up = grade === 'special' && rnd() < .35;
     const c = mkCard(id, up);
@@ -8257,19 +8463,19 @@ function boxLoot(tier) {
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
   if (tier === 4 || tier === 5 || tier === 6) return [];
-  if (tier === 3) return GRADE_POOL.special.concat(GRADE_POOL.ssx, GRADE_POOL.unknown);
+  if (tier === 3) return GRADE_POOL.special.concat(GRADE_POOL.ssc, GRADE_POOL.ssx, GRADE_POOL.unknown);
   const base = POOL.rare.slice();
   if (tier >= 1) return base.concat(GRADE_POOL.special);
   return base;
 }
 function bannerRates(tier) {
   if (tier === 3) return [
-    { g: 'special', p: '89.9%' }, { g: 'ssx', p: '10%' }, { g: 'unknown', p: '0.1%' }];
+    { g: 'special', p: '63.9%' }, { g: 'ssc', p: '26%' }, { g: 'ssx', p: '10%' }, { g: 'unknown', p: '0.1%' }];
   if (tier === 4) return [
     { g: 'common', p: '52%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '15%' }];
   if (tier === 5) return [
     { g: 'common', p: '28%' }, { g: 'uncommon', p: '24%' }, { g: 'rare', p: '22%' },
-    { g: 'special', p: '21%' }, { g: 'ssx', p: '4.5%' }, { g: 'unknown', p: '0.5%' }];
+    { g: 'special', p: '17%' }, { g: 'ssc', p: '8%' }, { g: 'ssx', p: '4.5%' }, { g: 'unknown', p: '0.5%' }];
   if (tier === 6) return [
     { g: 'common', p: '44%' }, { g: 'uncommon', p: '33%' }, { g: 'rare', p: '18%' }, { g: 'ssx', p: '5%' }];
   return null;
@@ -8548,7 +8754,7 @@ function showSpecialShop(refill) {
 /* 상자가 흔들리다 터지는 연출 — 등급이 높을수록 오래 끌고 빛이 세다 */
 function boxOpenScene(glyph, bestGrade) {
   return new Promise(res => {
-    const hi = bestGrade === 'unknown' ? 3 : bestGrade === 'ssx' ? 2 : bestGrade === 'special' ? 1 : 0;
+    const hi = bestGrade === 'unknown' ? 3 : bestGrade === 'ssx' ? 2 : bestGrade === 'ssc' || bestGrade === 'special' ? 1 : 0;
     const sc = el('div', 'openscene');
     const color = ['#ffd76a', '#ff9c4a', '#ff2d55', '#b98cff'][hi];
     sc.innerHTML = `<div class="obox shake" style="border-color:${color}"><span>${glyph}</span></div>
@@ -9054,6 +9260,7 @@ function runStatsHtml() {
     <div>다시 선 횟수<b>${r.stats.revives || 0}회</b></div>
     <div>걸린 시간<b>${mins}분</b></div>`;
 }
+const REVIVE_HP = 70;                        /* 갈림길로 돌아갈 때 채워 주는 체력 */
 function gameOver() {
   SND.lose(); autoStop('쓰러졌다');
   const score = (G.run.act - 1) * 12 + G.run.floor;
@@ -9073,14 +9280,19 @@ function gameOver() {
       ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
-    ${canReturn ? '<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전 상태로 되돌아간다</div>' : ''}`;
+    ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
+      <b style="color:#d8a24a">체력이 ${REVIVE_HP} 로 채워진다</b></div>` : ''}`;
   s.appendChild(d);
   const back = d.querySelector('#ov_back');
   if (back) back.onclick = () => {
     d.remove(); closeOverlay();
     adoptRun(JSON.parse(G.cp));
+    /* 표시점의 체력 그대로 돌려보내면 빈사로 되살아나 또 죽는다 —
+       그 무한굴레를 끊으려고 숨을 돌릴 만큼은 채워 준다 */
+    G.run.hp = Math.max(G.run.hp, Math.min(REVIVE_HP, G.run.maxHp));
     G.run.stats.revives++;
-    SND.bell(); toast('숨을 고르고 다시 선다');
+    SND.bell(); screenFlash('rgba(255,220,150,.4)', 620);
+    toast(`숨을 고르고 다시 선다 — 체력 ${G.run.hp}`);
     saveRun(); showMap();
   };
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
@@ -9327,7 +9539,7 @@ function showDex() {
     }
   }
   const gr = p.querySelector('#dx_r');
-  const rOrder = ['common', 'uncommon', 'rare', 'special', 'ssx'];
+  const rOrder = ['common', 'uncommon', 'rare', 'special', 'ssc', 'ssx'];
   relicIds.slice().sort((a, b) => rOrder.indexOf(rgrade(a)) - rOrder.indexOf(rgrade(b))).forEach(id => {
     const d = RELICS[id], known = !!META.dex.relics[id], g = rgrade(id);
     gr.appendChild(dexTile(known, d.g, d.n,
