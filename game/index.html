@@ -1119,7 +1119,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .skintile b{display:block;font-weight:400;font-size:12.5px;color:#f0e6cd;letter-spacing:.04em}
 .skintile small{display:block;font-size:10.5px;margin-top:2px}
 .skintile.plain .sh{text-shadow:none}
-.skinnone{color:#9a8d74;font-size:12.5px;padding:14px}
+.skintile.lock{opacity:.42;cursor:not-allowed;border-style:dashed}
+.skintile.lock:hover{transform:none;border-color:#6d6250}
+.skintile.lock .sh{border-color:#6b6053;color:#6b6053;text-shadow:none;background:rgba(0,0,0,.3)}
+.skinnone{color:#9a8d74;font-size:12.5px;padding:14px;width:100%;text-align:center}
 .dextile.skintileD b{font-size:26px}
 
 /* ══ 저주의 서당 ═════════════════════════════════════════ */
@@ -6895,9 +6898,12 @@ function gainSkin(id, silent) {
   return META.skins.own[id] === 1;
 }
 function equipSkin(cardId, skinId) {
-  if (!META.skins) return;
+  if (!META.skins) return false;
+  if (skinId && !ownSkin(skinId)) return false;      /* 없는 옷은 입지 못한다 */
+  if (skinId && !skinnable(cardId)) return false;    /* S급 아래에는 입히지 않는다 */
   if (skinId) META.skins.eq[cardId] = skinId; else delete META.skins.eq[cardId];
   saveMeta();
+  return true;
 }
 function skinCount() { return Object.keys(META.skins ? META.skins.own : {}).length; }
 /* 스킨 상자에서 하나 */
@@ -6910,7 +6916,8 @@ function skinLoot() {
   const dup = ownSkin(id);
   return { g: d.h, n: d.n + ' 스킨', grade: d.rar, skin: id,
     d: dup ? `<b style="color:${d.c}">이미 가진 스킨</b> — 다이아 200으로 바꿔 준다`
-           : `<b style="color:${d.c}">${GRADE[d.rar].n} 스킨</b> — ` + d.d,
+           : `<b style="color:${d.c}">${GRADE[d.rar].n} 스킨</b> — ` + d.d +
+             ` <b style="color:#7fe6cf">· 도감에서 부적을 눌러 갈아입힌다</b>`,
     take: () => { if (dup) { G.run.dia = (G.run.dia || 0) + 200; } else gainSkin(id, true); } };
 }
 /* 스킨 고르는 창 — 도감의 부적 상세에서 연다 */
@@ -6932,18 +6939,27 @@ function showSkinPicker(cardId, after) {
   };
   const addTile = (id) => {
     const sd = id ? SKINS[id] : null;
-    const t = el('div', 'skintile' + (id ? '' : ' plain'),
-      id ? `<div class="sh" style="--sc2:${sd.c}">${sd.h}</div><b>${sd.n}</b>
-            <small style="color:${GRADE[sd.rar].c}">${GRADE[sd.rar].n}</small>`
+    const has = !id || ownSkin(id);
+    const t = el('div', 'skintile' + (id ? '' : ' plain') + (has ? '' : ' lock'),
+      id ? `<div class="sh" style="--sc2:${has ? sd.c : '#6b6053'}">${has ? sd.h : '?'}</div>
+            <b>${has ? sd.n : '???'}</b>
+            <small style="color:${has ? GRADE[sd.rar].c : '#7a7263'}">${has ? GRADE[sd.rar].n : '없음'}</small>`
          : `<div class="sh" style="--sc2:#8a7f68">素</div><b>기본</b><small>본디 모습</small>`);
     t.dataset.sk = id || '';
-    if (id) bindTip(t, () => `<b style="color:${sd.c}">${sd.n} (${sd.h})</b><br>${sd.d}`);
-    t.onclick = () => { equipSkin(cardId, id); SND.ui(); draw(); if (after) after(); };
+    if (id) bindTip(t, () => has
+      ? `<b style="color:${sd.c}">${sd.n} (${sd.h})</b> · ${GRADE[sd.rar].n} 스킨<br>${sd.d}`
+      : `<b>아직 없는 스킨</b><br><span style="color:#9a8d74">부적 뽑기의 <b>스킨 상자</b>에서 나온다</span>`);
+    t.onclick = () => {
+      if (!has) { SND.err(); toast('아직 없는 스킨이다 — 뽑기의 스킨 상자에서 나온다'); return; }
+      if (!equipSkin(cardId, id)) { SND.err(); return; }
+      SND.ui(); draw(); if (after) after();
+    };
     row.appendChild(t);
   };
   addTile(null);
-  for (const id of owned) addTile(id);
-  if (!owned.length) row.appendChild(el('div', 'skinnone', '아직 가진 스킨이 없다 · 뽑기의 <b>스킨 상자</b>에서 나온다'));
+  for (const id of ALL_SKINS) addTile(id);
+  if (!owned.length) row.appendChild(el('div', 'skinnone',
+    '아직 가진 스킨이 없다 · 부적 뽑기(匣)의 <b>스킨 상자</b>에서 나온다'));
   draw();
   p.querySelector('#sk_close').onclick = closeTop;
 }
@@ -6985,7 +7001,8 @@ const BANNERS = [
   { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
     desc: '<b>비기만 나온다.</b>' },
   { n: '스킨 상자',     g: '皮', sub: '부적에 옷을 입힌다', price: 1200, tier: 6, skin: true,
-    desc: '<b>부적의 겉모습만 바꾼다.</b> S급·SSX급·?급 부적에 입힐 수 있다. 성능은 그대로다.' },
+    desc: '<b>부적의 겉모습만 바꾼다.</b> S급·SSX급·?급 부적에 입힐 수 있고 성능은 그대로다. ' +
+      '<b style="color:#7fe6cf">얻은 스킨은 도감에서 부적을 눌러 갈아입힌다.</b>' },
   { n: 'VIP 패키지',    g: '貴', sub: '단 한 번의 결단',   price: 0,    tier: 9, vip: true,
     desc: '퇴마사의 격을 영원히 올린다.' }
 ];
