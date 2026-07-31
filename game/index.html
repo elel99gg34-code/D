@@ -1504,6 +1504,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .skinnone{color:#9a8d74;font-size:12.5px;padding:14px;width:100%;text-align:center}
 .dextile.skintileD b{font-size:26px}
 .gunit .uown{margin-top:3px;font-size:10.5px;letter-spacing:.04em}
+.dextile.petgone b{opacity:.4;filter:grayscale(1)}
 .dextile .skcnt{position:absolute;right:5px;bottom:4px;font-size:9.5px;font-style:normal;letter-spacing:.02em}
 .dextile{position:relative}
 
@@ -1887,6 +1888,43 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 
 /* ══ 비기 ════════════════════════════════════════════════ */
 /* 장착한 비기의 등급 색을 따른다 (--sc 를 코드에서 넣어 준다) */
+/* ── 요괴 팻 ─────────────────────────────────────────────── */
+#petbtn{pointer-events:auto;position:absolute;left:20px;bottom:172px;width:70px;height:62px;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:linear-gradient(160deg,#2a2118,#1a140e);border:2px solid var(--sc,#7d7568);color:#f0e7d3;
+  box-shadow:0 6px 18px rgba(0,0,0,.4);transition:.16s}
+#petbtn b{font-size:24px;font-weight:400;line-height:1;color:var(--sc,#e6c46a);text-shadow:0 0 10px var(--sc,#e6c46a)}
+#petbtn small{font-size:9px;letter-spacing:.06em;opacity:.85;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#petbtn.none{display:none}
+#petbtn.used{opacity:.42;filter:grayscale(.6)}
+#petbtn.ready{animation:skillPulse 1.6s ease-in-out infinite;cursor:pointer}
+#petbtn.ready:hover{transform:translateY(-3px) scale(1.05)}
+.petunit{margin-top:6px}
+.petunit .body{width:74px!important;height:74px!important;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 28%,var(--pc,#6a5a3a),#150f0a);border:2px solid var(--pc,#8a7a5a)}
+.petunit .body .glyph{font-size:30px;color:#f6efdd;text-shadow:0 0 12px rgba(0,0,0,.6)}
+.petunit .nm{font-size:12px}
+.petunit .nm em{font-style:normal;font-size:10px;color:#c8a86a;letter-spacing:.1em}
+.petunit .ebar.pet i{background:linear-gradient(90deg,#8a6a2a,#d8b45a)}
+.petunit.petdead{opacity:.35;filter:grayscale(1)}
+.petmoves{display:flex;flex-direction:column;gap:9px;max-width:440px;width:min(440px,90vw)}
+.petmove{padding:11px 14px;border-radius:9px;cursor:pointer;text-align:left;transition:.15s;
+  background:linear-gradient(150deg,rgba(52,42,26,.92),rgba(22,18,11,.92));border:1px solid rgba(200,170,90,.3)}
+.petmove:hover{transform:translateX(4px);border-color:#e6c46a;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.petmove b{display:block;color:#f3e8cc;font-size:15px;letter-spacing:.06em;font-weight:400;margin-bottom:3px}
+.petmove span{color:#c6bb9c;font-size:12px;line-height:1.55}
+.petmove em{color:#ff9a7a;font-style:normal}
+.petmove i{color:#8fc8e6;font-style:normal}
+.school.pets{background:linear-gradient(165deg,#181510 0%,#2a2318 45%,#0d0b07 100%)}
+.school.pets:before{background:radial-gradient(ellipse at 50% 0%,rgba(200,170,90,.22),transparent 62%)}
+.pets .schead{background:linear-gradient(rgba(8,7,5,.94),rgba(38,32,20,.86));border-bottom-color:rgba(200,170,90,.3)}
+.pets .schead h2{color:#f3e8cc}.pets .schead .scnote{color:#a89460}
+.pets .schead .gback{background:rgba(210,180,100,.15);border-color:rgba(210,180,100,.42);color:#f3e8cc}
+.pets .scside .note{background:rgba(8,7,5,.55);border-color:rgba(200,170,90,.24)}
+.pets .scside .note p{color:#c6bb9c}.pets .schint{color:#c6bb9c}
+.pettile .tv b{color:#ffd76a}
+.petnone{grid-column:1/-1;padding:34px 20px;text-align:center;color:#8d8367;font-size:13px;line-height:1.9}
+.petnone b{color:#ffd76a}
 #skillbtn{pointer-events:auto;position:absolute;left:20px;bottom:92px;width:70px;height:70px;border-radius:12px;
   --sc:#7d7568;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
@@ -2707,6 +2745,7 @@ const META_KEY = 'bge_meta_v1';
 let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, autoUnlocked: false,
   vip: { owned: false, at: 0, freeBoxAt: 0 }, skins: { own: {}, eq: {} },
   jp: 0, jpTotal: 0, train: {}, fails: {}, cleared: 0,
+  pets: { own: {}, active: null, pulls: 0 },
   dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
 /* VIP · 자동 플레이 개방 여부 */
 const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
@@ -2746,7 +2785,9 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
   META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {};
   META.jp = META.jp || 0; META.jpTotal = META.jpTotal || 0;
-  META.train = META.train || {}; META.fails = META.fails || {}; META.cleared = META.cleared || 0; }
+  META.train = META.train || {}; META.fails = META.fails || {}; META.cleared = META.cleared || 0;
+  META.pets = Object.assign({ own: {}, active: null, pulls: 0 }, META.pets || {});
+  META.pets.own = META.pets.own || {}; META.pets.pulls = META.pets.pulls || 0; }
 /* ══════════════════════════════════════════════════════════
    수행(修行) — 져도 남는 것
    ──────────────────────────────────────────────────────────
@@ -5789,6 +5830,7 @@ function calcAtk(src, tgt, base) {
     if (hasBoon('atk80')) d *= 1.8;                          /* 저주를 이겨 낸 자 */
     const tr = G.run && G.run.train;                         /* 수행 — 무쇠손 */
     if (tr && tr.atk) d *= (1 + tr.atk);
+    d *= sorrowAtk();                                        /* 슬픔의 원한 */
   }
   if (src.s.weak) d = Math.floor(d * .75);
   if (tgt.s.vuln) d = Math.floor(d * 1.5);
@@ -5864,11 +5906,14 @@ function st(ent, key, n) {
   if (n > 0) statusFx(ent, key);
   syncAll();
 }
-function heal(n) { const p = P(); const b4 = p.hp; p.hp = Math.min(p.maxHp, p.hp + n); G.run.hp = p.hp;
+function heal(n) { const p = P(); const b4 = p.hp;
+  n = Math.max(1, Math.round(n * sorrowHeal()));            /* 슬픔의 원한 — 상처가 더디 아문다 */
+  p.hp = Math.min(p.maxHp, p.hp + n); G.run.hp = p.hp;
   if (p.hp > b4) { healFx(p, p.hp - b4); SND.heal(); } syncPlayer(); }
 function eheal(e, n) { const b4 = e.hp; e.hp = Math.min(e.maxHp, e.hp + n); if (e.hp > b4) healFx(e, e.hp - b4); }
 function lose(n) { const p = P(); applyDamage(p, n, true); hitFx(p, n, 0, false); syncPlayer(); }
-function healRun(n) { if (!G.run) return; G.run.hp = Math.min(G.run.maxHp, G.run.hp + n); }
+function healRun(n) { if (!G.run) return;
+  G.run.hp = Math.min(G.run.maxHp, G.run.hp + Math.max(1, Math.round(n * sorrowHeal()))); }
 function energy(n) { G.b.energy += n; const e = $('#energy'); if (e) { e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash'); } syncAll(); }
 
 /* --- 덱 조작 --- */
@@ -5908,7 +5953,7 @@ function startBattle(enemyIds, kind, opts) {
     enemies: [], hand: [], drawPile: [], discardPile: [], exhaustPile: [],
     energy: 0, maxEnergy: Math.max(1, run.maxEnergy - (curseTag('lessqi') ? 1 : 0)), turn: 0, played: 0, attacked: false,
     drawMod: 0, busy: true, over: false, kind: kind || 'normal', sel: null, curCard: null,
-    skillUsed: false, freeTurn: false, halved: false, startHp: run.hp
+    skillUsed: false, freeTurn: false, halved: false, startHp: run.hp, pet: null
   };
   let ux = 1;
   /* 제4막부터 요괴의 체력·공격력이 10% 오른다 (대전투장은 자체 배율을 쓴다) */
@@ -5986,6 +6031,7 @@ async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
   b.freeTurn = false; b.halved = false; b.cheap = 0;
+  if (b.pet) b.pet.used = false;
   const p = P();
   if (!p.s.barricade) p.block = 0;
   b.energy = b.maxEnergy + (p.s.focus || 0);
@@ -6155,6 +6201,7 @@ async function doMove(e, m) {
       const r = applyDamage(P(), dmg);
       impact(m.fx || 'claw', P());
       hitFx(P(), r.hp, r.blocked, true);
+      petShare(r.hp);                        /* 팻이 곁에서 함께 맞는다 */
       /* 요괴가 때릴 때도 손맛이 있어야 한다 */
       const pc = P().el ? centerOf(P().el) : { x: innerWidth * .18, y: innerHeight * .42 };
       if (e.el) slashLine(centerOf(e.el), pc, r.hp > 0 ? '#ff8a7a' : '#9fd0ff');
@@ -6251,6 +6298,7 @@ function winBattle() {
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
+  if (b.kind === 'elite') petEliteTick();      /* 팻을 되살리는 걸음 */
   fire('battleEnd', b.kind);
   curseTick();                                   /* 저주가 하루 저문다 */
   SND.victory();
@@ -6733,6 +6781,10 @@ function showPlaces() {
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
   add('修', '수행터', `모은 정진 ${META.jp} · 져도 남는 길`,
     G.b ? 'lock' : (META.jp >= 30 ? 'hot' : ''), () => openTraining());
+  add('獸', '팻 우리', petsOk()
+      ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
+      : `제${PET_ACT}막을 넘어야 열린다`,
+    G.b ? 'lock' : petsOk() ? (petPullsLeft() > 0 ? 'hot' : '') : 'lock', () => openPets());
   p.querySelector('#pl_close').onclick = closeTop;
 }
 /* 전투 중이 아니면 언제든 열 수 있다 */
@@ -6763,6 +6815,7 @@ function renderBattle() {
          <div class="pile" id="discardpile"><b>0</b>버린 더미</div>
        </div>
        <button id="skillbtn"><b></b><small></small></button>
+       <button id="petbtn" class="none"><b></b><small></small></button>
        <div id="energy" title="기"><span><b id="ev">0</b><small>/<b id="emv">3</b></small></span></div>
        <button id="autobtn">자동 <b>▶</b></button>
        <button id="endturn">턴 종료</button>
@@ -6771,9 +6824,11 @@ function renderBattle() {
    </div>`;
   cardEls = {};
   buildPlayer();
+  if (G.b) { G.b.pet = makePet(); buildPet(); }
   buildEnemies();
   $('#endturn').onclick = () => endTurn();
   $('#skillbtn').onclick = () => useSkill();
+  $('#petbtn').onclick = () => showPetMoves();
   const ab = $('#autobtn');
   ab.onclick = () => autoToggle();
   bindTip(ab, () => autoOk()
@@ -6817,7 +6872,7 @@ function buildEnemies() {
 }
 
 /* --- 동기화 --- */
-function syncAll() { if (!G.b) { renderTop(); syncLowHp(); return; } syncPlayer(); syncEnemies(); syncHand(); syncPiles(); renderTop(); syncLowHp(); }
+function syncAll() { if (!G.b) { renderTop(); syncLowHp(); return; } syncPlayer(); syncEnemies(); syncHand(); syncPiles(); syncPet(); renderTop(); syncLowHp(); }
 
 function statChip(ent, k, v) {
   const s = STATUS[k]; if (!s) return '';
@@ -7425,6 +7480,292 @@ async function tryFortune() {
   return true;
 }
 
+/* ══════════════════════════════════════════════════════════
+   요괴 팻(獸) — 잡은 것을 데리고 다닌다
+   ──────────────────────────────────────────────────────────
+   · 제4막을 넘어서면 열린다.
+   · 데려올 수 있는 것은 「힘이 중간쯤인」 요괴뿐이다 — 잡졸도, 보스도 안 된다.
+   · 팻의 체력은 늘 주인보다 30 낮다.
+   · 그 요괴가 쓰던 수를 그대로, 한 턴에 한 번 쓸 수 있다.
+   · 팻이 쓰러지면 「슬픔의 원한」이 남는다 — 손은 매워지고, 상처는 더디 아문다.
+   · 되살리려면 엘리트 다섯을 잡아야 한다.
+   · 뽑기는 계정당 세 번. 제10막을 넘으면 다섯 번이 더 붙는다. 신중히.
+   ══════════════════════════════════════════════════════════ */
+const PET_ACT = 4;                            /* 이 막을 넘으면 열린다 */
+const PET_PULLS_BASE = 3;
+const PET_PULLS_BONUS = 5, PET_BONUS_ACT = 10;
+const PET_HP_GAP = 30;                        /* 주인보다 이만큼 낮다 */
+const PET_DMG = 0.6;                          /* 요괴 때의 힘에서 이만큼만 낸다 */
+const PET_REVIVE_ELITES = 5;                  /* 되살리는 데 드는 엘리트 수 */
+/* 힘이 중간쯤인 것들만 — 잡졸도 보스도 아니다 */
+const PET_POOL = Object.keys(ENEMIES).filter(id => {
+  const d = ENEMIES[id];
+  if (d.boss) return false;
+  const hp = (d.hp[0] + d.hp[1]) / 2;
+  return hp >= 55 && hp <= 420;
+});
+function petsOk() { return (META.cleared || 0) >= PET_ACT; }
+function petPullsTotal() { return PET_PULLS_BASE + ((META.cleared || 0) >= PET_BONUS_ACT ? PET_PULLS_BONUS : 0); }
+function petPullsLeft() { return Math.max(0, petPullsTotal() - ((META.pets && META.pets.pulls) || 0)); }
+function petOwned() { return Object.keys((META.pets && META.pets.own) || {}); }
+function activePet() {
+  const a = META.pets && META.pets.active;
+  return a && META.pets.own[a] ? a : null;
+}
+function petAlive() { const a = activePet(); return a && !META.pets.own[a].dead; }
+/* 팻 하나를 뽑는다 — 도감에 오른 것 가운데서 */
+function petLoot() {
+  const seen = PET_POOL.filter(id => META.dex.enemies[id]);
+  const pool = (seen.length >= 4 ? seen : PET_POOL).filter(id => !META.pets.own[id]);
+  const id = pool.length ? pick(pool) : pick(PET_POOL);
+  const d = ENEMIES[id];
+  return { id, g: d.g, n: d.n, grade: d.elite ? 'rare' : 'uncommon',
+    d: `<b style="color:${d.col}">${d.elite ? '엘리트' : '요괴'} 팻</b> — 체력은 늘 주인보다 ${PET_HP_GAP} 낮다<br>` +
+       `쓰는 수: ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}`,
+    take: () => gainPet(id, true) };
+}
+function gainPet(id, silent) {
+  META.pets.own[id] = { dead: false, need: 0, at: Date.now() };
+  if (!META.pets.active) META.pets.active = id;
+  saveMeta();
+  if (!silent) { SND.unlock(); toast(`팻 — ${ENEMIES[id].n}`); }
+  return true;
+}
+function setPet(id) {
+  if (id && !META.pets.own[id]) return false;
+  META.pets.active = id || null; saveMeta(); return true;
+}
+/* ── 전투 안에서의 팻 ─────────────────────────────────────── */
+function makePet() {
+  const id = activePet();
+  if (!id || !petAlive() || !G.run) return null;
+  const d = ENEMIES[id];
+  const mx = Math.max(10, G.run.maxHp - PET_HP_GAP);
+  return { id, def: d, n: d.n, g: d.g, col: d.col, isPet: true,
+    hp: mx, maxHp: mx, block: 0, s: {}, el: null, used: false };
+}
+function PET() { return G.b && G.b.pet && G.b.pet.hp > 0 ? G.b.pet : null; }
+/* 주인이 맞으면 팻도 그만큼 나눠 맞는다 */
+function petShare(dmg) {
+  const pt = PET(); if (!pt || dmg <= 0) return;
+  const d = Math.max(1, Math.round(dmg * .3));
+  pt.hp = Math.max(0, pt.hp - d);
+  if (pt.el) { pt.el.classList.remove('hurt'); void pt.el.offsetWidth; pt.el.classList.add('hurt'); }
+  floatText(pt, '-' + d, '');
+  if (pt.hp <= 0) petFalls();
+  syncPet();
+}
+function petFalls() {
+  const pt = G.b && G.b.pet; if (!pt || pt.fell) return;
+  pt.fell = true;
+  META.pets.own[pt.id].dead = true;
+  META.pets.own[pt.id].need = PET_REVIVE_ELITES;
+  saveMeta();
+  if (pt.el) { pt.el.classList.add('petdead'); }
+  /* 슬픔의 원한 — 이 모험이 끝날 때까지 남는다 */
+  G.run.sorrow = (G.run.sorrow || 0) + 1;
+  SND.lose(); shake(true); screenFlash('rgba(120,20,40,.45)', 900);
+  stampWord('슬 픔', '#c8324a');
+  flash(`${pt.n}이(가) 쓰러졌다 — 슬픔의 원한`);
+  syncAll();
+}
+/* 엘리트를 잡을 때마다 되살아날 날이 가까워진다 */
+function petEliteTick() {
+  const id = activePet(); if (!id) return;
+  const rec = META.pets.own[id];
+  if (!rec || !rec.dead) return;
+  rec.need = Math.max(0, (rec.need || 0) - 1);
+  if (rec.need <= 0) {
+    rec.dead = false; rec.need = 0; saveMeta();
+    SND.unlock(); screenFlash('rgba(255,220,150,.4)', 700);
+    flash(`${ENEMIES[id].n}이(가) 되살아났다`);
+    if (G.b && !G.b.pet) { G.b.pet = makePet(); buildPet(); syncPet(); }
+  } else { saveMeta(); toast(`${ENEMIES[id].n} 되살리기까지 엘리트 ${rec.need}`); }
+}
+/* 슬픔의 원한 — 손은 매워지고 상처는 더디 아문다 */
+function sorrowAtk() { return 1 + Math.min(.75, (G.run && G.run.sorrow || 0) * .25); }
+function sorrowHeal() { return (G.run && G.run.sorrow) ? .5 : 1; }
+/* 팻의 수 하나를 쓴다 */
+async function petUse(key) {
+  const b = G.b, pt = PET();
+  if (!b || b.busy || b.over || !pt || pt.used) return;
+  const m = pt.def.moves[key]; if (!m) return;
+  pt.used = true; b.busy = true; syncAll();
+  const foes = alive();
+  const t = foes.length ? foes.slice().sort((a, z) => a.hp - z.hp)[0] : null;
+  floatText(pt, m.label, 'blk');
+  SND.charge();
+  await wait(180);
+  if (m.d && t) {
+    for (let i = 0; i < (m.n || 1); i++) {
+      if (!G.b || b.over) break;
+      const a2 = alive(); if (!a2.length) break;
+      const tt = a2.indexOf(t) >= 0 ? t : a2[0];
+      const dmg = Math.max(1, Math.round(calcAtk(pt, tt, m.d) * PET_DMG));
+      const r = applyDamage(tt, dmg);
+      impact(m.fx || 'claw', tt);
+      hitFx(tt, r.hp, r.blocked, true);
+      await wait(m.n > 1 ? 170 : 130);
+    }
+  }
+  if (m.blk) { blk(Math.round(m.blk * PET_DMG)); }
+  if (m.self) for (const k in m.self) st(P(), k, Math.max(1, Math.round(m.self[k] * PET_DMG)));
+  if (m.deb) for (const e of alive()) for (const k in m.deb) st(e, k, Math.max(1, Math.round(m.deb[k] * PET_DMG)));
+  if (m.heal) { heal(Math.round(m.heal * PET_DMG)); }
+  syncAll();
+  await checkDeaths();
+  b.busy = false; syncAll();
+  await checkOver();
+}
+function buildPet() {
+  const pt = G.b && G.b.pet; if (!pt) return;
+  const side = $('#pside'); if (!side) return;
+  const u = el('div', 'unit petunit');
+  u.innerHTML = `<div class="body" style="--pc:${pt.col}">
+      <span class="glyph">${pt.g}</span><div class="blockbadge hide"></div></div>
+    <div class="nm">${pt.n} <em>팻</em></div>
+    <div class="ebar pet"><i></i><b></b></div>`;
+  side.appendChild(u);
+  pt.el = u;
+}
+function syncPet() {
+  const pt = G.b && G.b.pet; if (!pt || !pt.el) return;
+  const bar = pt.el.querySelector('.ebar');
+  bar.querySelector('i').style.width = Math.max(0, pt.hp / pt.maxHp * 100) + '%';
+  bar.querySelector('b').textContent = pt.hp + ' / ' + pt.maxHp;
+  pt.el.classList.toggle('petdead', pt.hp <= 0);
+  const btn = $('#petbtn');
+  if (btn) {
+    const can = pt.hp > 0 && !pt.used && !G.b.busy && !G.b.over;
+    btn.className = can ? 'ready' : pt.hp <= 0 ? 'none' : 'used';
+    btn.disabled = !can;
+    btn.querySelector('b').textContent = pt.g;
+    btn.querySelector('small').textContent = pt.hp > 0 ? (pt.used ? '이번 턴 씀' : pt.n) : '쓰러졌다';
+    btn.style.setProperty('--sc', pt.col);
+  }
+}
+/* 팻의 수를 고르는 작은 창 */
+function showPetMoves() {
+  const pt = PET(); if (!pt || pt.used) { SND.err(); return; }
+  const d = pt.def;
+  const p = modal(`<h2>${pt.n}</h2>
+    <div class="hint">쓰던 수를 그대로 쓴다 · 힘은 ${Math.round(PET_DMG * 100)}% · <b>한 턴에 한 번</b></div>
+    <div class="petmoves" id="pm_list"></div>
+    <button class="brush-btn ghost" id="pm_no" style="color:#e9dfc9;border-color:#8a7f68">그만두기</button>`);
+  p.dataset.noauto = '1';
+  const list = p.querySelector('#pm_list');
+  for (const k in d.moves) {
+    const m = d.moves[k];
+    const bits = [];
+    if (m.d) bits.push(`<em>${Math.round(m.d * PET_DMG)}</em>의 피해${m.n > 1 ? ` × ${m.n}` : ''}`);
+    if (m.blk) bits.push(`<i>${Math.round(m.blk * PET_DMG)}</i> 방어도`);
+    if (m.self) bits.push(Object.keys(m.self).map(x => `${STATUS[x] ? STATUS[x].n : x} +${Math.max(1, Math.round(m.self[x] * PET_DMG))}`).join(' · '));
+    if (m.deb) bits.push('적에게 ' + Object.keys(m.deb).map(x => `${STATUS[x] ? STATUS[x].n : x} ${Math.max(1, Math.round(m.deb[x] * PET_DMG))}`).join(' · '));
+    if (m.heal) bits.push(`체력 ${Math.round(m.heal * PET_DMG)} 회복`);
+    const n = el('div', 'petmove', `<b>${m.label}</b><span>${bits.join(' · ') || '기운을 고른다'}</span>`);
+    n.onclick = () => { closeTop(); petUse(k); };
+    list.appendChild(n);
+  }
+  p.querySelector('#pm_no').onclick = closeTop;
+}
+/* ── 팻 우리(도감 겸 뽑기) ─────────────────────────────────── */
+function openPets() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  SND.ui(); showPets();
+}
+function showPets() {
+  const prev = G.scene;
+  G.scene = 'pets';
+  const ok = petsOk();
+  const p = overlay(`<div class="school pets">
+    <div class="schead">
+      <button class="gback" id="pt_back">←</button>
+      <h2>팻 우리</h2>
+      <div class="scnote">獸 舍</div>
+    </div>
+    <div class="scbody">
+      <div class="scside">
+        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#c8b48a,#5a4a2a);color:#1c1508;border-color:#a89060">獸</div>
+          <div class="jsay">${ok ? '"길들일 수 있는 것은 몇 없네.<br>너무 약한 것도, 너무 센 것도 못 데려가."'
+            : `"제${PET_ACT}막은 넘고 오게."`}</div></div>
+        <div class="jpbox">
+          <div class="jpnow"><i>獸</i><b id="pt_left">${petPullsLeft()}</b><span>남은 뽑기</span></div>
+          <div class="jptot">계정당 ${PET_PULLS_BASE}회 · 제${PET_BONUS_ACT}막을 넘으면 ${PET_PULLS_BONUS}회 더
+            ${(META.cleared || 0) >= PET_BONUS_ACT ? '<b style="color:#8fe6d0">(열렸다)</b>' : ''}</div>
+        </div>
+        <div class="note"><p>
+          팻의 체력은 늘 <b>주인보다 ${PET_HP_GAP} 낮다</b>.<br>
+          쓰던 수를 그대로 쓰되 힘은 <b>${Math.round(PET_DMG * 100)}%</b>, <b>한 턴에 한 번</b>.<br>
+          주인이 맞으면 팻도 <b>그 30%</b>를 나눠 맞는다.<br><br>
+          <b style="color:#ff8a9a">팻이 쓰러지면 슬픔의 원한</b>이 남는다 —
+          남은 모험 내내 주는 피해가 <b>25% 오르고</b>, 회복은 <b>절반</b>이 된다.<br>
+          되살리려면 <b>엘리트 ${PET_REVIVE_ELITES}마리</b>를 잡아야 한다.
+        </p></div>
+        <button class="brush-btn gold" id="pt_pull"${ok && petPullsLeft() > 0 ? '' : ' disabled'}>
+          팻 뽑기 (${petPullsLeft()}회 남음)</button>
+      </div>
+      <div class="scmain">
+        <div class="schint">데려온 것 <b>${petOwned().length}</b> · 길들일 수 있는 요괴 ${PET_POOL.length}종
+          ${ok ? '' : `· <b style="color:#ff8a9a">제${PET_ACT}막을 넘어야 열린다</b>`}</div>
+        <div class="trgrid" id="pt_grid"></div>
+      </div>
+    </div>
+  </div>`, 'petpanel');
+  p.dataset.noauto = '1';
+  const grid = p.querySelector('#pt_grid');
+  const draw = () => {
+    grid.innerHTML = '';
+    const own = petOwned();
+    const list = own.length ? own : [];
+    if (!list.length) {
+      grid.innerHTML = `<div class="petnone">아직 데려온 팻이 없다 —
+        왼쪽에서 <b>팻 뽑기</b>를 한다. 기회는 몇 없으니 신중히.</div>`;
+    }
+    for (const id of list) {
+      const d = ENEMIES[id], rec = META.pets.own[id];
+      const on = activePet() === id;
+      const mx = G.run ? Math.max(10, G.run.maxHp - PET_HP_GAP) : '—';
+      const t = el('div', 'trtile pettile' + (on ? ' can' : '') + (rec.dead ? ' done' : ''),
+        `<div class="tg" style="background:radial-gradient(circle at 35% 28%,${d.col},#1c1508);color:#f6efdd">${d.g}</div>
+         <div class="tn">${d.n}${d.elite ? ' <em style="color:#e08a7a;font-style:normal;font-size:11px">엘리트</em>' : ''}</div>
+         <div class="tv">체력 <b>${mx}</b> (주인 -${PET_HP_GAP})<br>
+           ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}</div>
+         <div class="tnext">${rec.dead ? `<b style="color:#ff8a9a">쓰러졌다</b> · 엘리트 ${rec.need}마리 남음`
+            : '멀쩡하다'}</div>
+         <div class="tbuy">${on ? '데리고 다닌다' : '데리고 간다'}</div>`);
+      t.onclick = () => { setPet(on ? null : id); SND.ui(); draw(); };
+      grid.appendChild(t);
+    }
+  };
+  draw();
+  const pull = p.querySelector('#pt_pull');
+  pull.onclick = async () => {
+    if (!petsOk()) { SND.err(); toast(`제${PET_ACT}막을 넘어야 열린다`); return; }
+    if (petPullsLeft() <= 0) { SND.err(); toast('남은 뽑기가 없다'); return; }
+    const q = modal(`<h2>팻 뽑기</h2>
+      <div class="hint" style="max-width:420px">기회는 <b>${petPullsLeft()}번</b>뿐이다.<br>
+        무엇이 나올지는 정해져 있지 않다. 정말 뽑겠는가?</div>
+      <div style="display:flex;gap:10px">
+        <button class="brush-btn red" id="pp_yes">뽑는다</button>
+        <button class="brush-btn ghost" id="pp_no" style="color:#e9dfc9;border-color:#8a7f68">그만두기</button>
+      </div>`);
+    q.dataset.noauto = '1';
+    q.querySelector('#pp_no').onclick = closeTop;
+    q.querySelector('#pp_yes').onclick = async () => {
+      closeTop();
+      META.pets.pulls = (META.pets.pulls || 0) + 1; saveMeta();
+      const l = petLoot();
+      await boxOpenScene(l.g, l.grade);
+      l.take();
+      showPullResult([{ g: l.g, n: l.n, d: l.d, grade: l.grade }], () => {
+        closeOverlay(); showPets();
+      });
+    };
+  };
+  const leave = () => { closePanel(p); G.scene = prev; if (prev === 'map' && G.run) showMap(); };
+  p.querySelector('#pt_back').onclick = leave;
+}
+
 /* ── 비기 ────────────────────────────────────────────────── */
 function syncSkill() {
   const btn = $('#skillbtn'); if (!btn || !G.b) return;
@@ -7812,7 +8153,7 @@ function newRun(asc) {
     act: 1, floor: 0, rewardCut: 0,
     map: null, mapCur: -1, mapDone: [], bossPick: null,
     skills: [], skill: null,
-    curse: null, boons: [], curseHp: 0,
+    curse: null, boons: [], curseHp: 0, sorrow: 0,
     arena: { best: 0, cleared: 0 }, arenaRound: 1, arenaDia: 0, arenaHp: null,
     stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
@@ -11197,9 +11538,12 @@ function showDex() {
       ${secs}
       <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i>
         <em>등급순 · SSX급은 조합으로만 얻는다</em></h3><div class="dexgrid" id="dx_r"></div></div>
-      <div class="dexsec"><h3>스킨 <i>${skinCount()} / ${ALL_SKINS.length}</i>
-        <em>부적의 겉옷 · 뽑기의 <b>스킨 상자</b>에서 나온다 · 성능은 그대로다</em></h3>
+      <div class="dexsec"><h3>스킨 <i>${skinCount()} / ${SKIN_PAIRS()}</i>
+        <em>부적의 겉옷 · <b>부적마다 따로</b> 얻는다 · 성능은 그대로다</em></h3>
         <div class="dexgrid" id="dx_sk"></div></div>
+      <div class="dexsec"><h3>팻 <i>${petOwned().length} / ${PET_POOL.length}</i>
+        <em>힘이 중간쯤인 요괴만 길들일 수 있다 · 남은 뽑기 ${petPullsLeft()}회</em></h3>
+        <div class="dexgrid" id="dx_pt"></div></div>
       <div class="dexsec"><h3>비기 <i>${dexCount('skills', ALL_SKILLS.length)}</i>
         <em>기를 쓰지 않는 한 수 · 전투당 1회</em></h3><div class="dexgrid" id="dx_s"></div></div>
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
@@ -11244,6 +11588,27 @@ function showDex() {
         : `<b>아직 한 벌도 없는 옷</b><br><span style="color:#9a8d74">스킨 상자는
            <b>부적 하나를 정해</b> 그 부적의 옷을 준다</span>`);
       gk.appendChild(n);
+    }
+  }
+  {
+    const gp2 = p.querySelector('#dx_pt');
+    for (const id of PET_POOL) {
+      const d = ENEMIES[id];
+      const has = !!(META.pets.own && META.pets.own[id]);
+      const seen = !!META.dex.enemies[id];
+      const rec = has ? META.pets.own[id] : null;
+      const n = el('div', 'dextile gd_' + (d.elite ? 'rare' : 'uncommon') +
+        (has ? '' : ' unknown') + (rec && rec.dead ? ' petgone' : ''),
+        `<b style="${has ? `color:${d.col};text-shadow:0 0 12px ${d.col}99` : ''}">${seen ? d.g : '?'}</b>
+         <span>${seen ? d.n : '???'}</span>`);
+      bindTip(n, () => has
+        ? `<b style="color:${d.col}">${d.n}</b> · 데려온 팻${activePet() === id ? ' <span style="color:#8fe6d0">(지금 데리고 다닌다)</span>' : ''}
+           <br>쓰는 수: ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}
+           ${rec.dead ? `<br><b style="color:#ff8a9a">쓰러졌다</b> · 엘리트 ${rec.need}마리 남음` : ''}`
+        : seen
+        ? `<b>${d.n}</b><br><span style="color:#9a8d74">길들일 수 있는 요괴다 — ≡ → 터 → 팻 우리에서 뽑는다</span>`
+        : `<b>아직 만나지 못한 요괴</b>`);
+      gp2.appendChild(n);
     }
   }
   const gs = p.querySelector('#dx_s');
