@@ -6473,8 +6473,51 @@ async function checkDeaths() {
     syncAll();
   }
 }
+/* ══════════════════════════════════════════════════════════
+   전투 감시견
+   ──────────────────────────────────────────────────────────
+   「요괴가 다 죽었는데 전투가 안 끝난다」는 말을 두 번 들었다.
+   끝내는 길목마다 검사를 걸어도 어딘가 새는 구멍이 남는다.
+   그래서 길목을 지키는 대신, 상태 자체를 지킨다 —
+   0.4초마다 전투를 들여다보고 아래 둘 중 하나면 강제로 끝낸다.
+     ① 살아 있는 요괴가 없는데 끝나지 않았다
+     ② 끝났다고 표시됐는데 전투가 치워지지 않았다
+   ══════════════════════════════════════════════════════════ */
+let _bw = null, _bwDead = 0, _bwOver = 0;
+function battleWatch(on) {
+  if (_bw) { clearInterval(_bw); _bw = null; }
+  _bwDead = 0; _bwOver = 0;
+  if (!on) return;
+  _bw = setInterval(async () => {
+    const b = G.b;
+    if (!b) { _bwDead = 0; _bwOver = 0; return; }
+    /* ① 다 죽었는데 안 끝난다 */
+    if (!b.over && !alive().length && P() && P().hp > 0) {
+      if (++_bwDead >= 3) {                 /* 1.2초를 견디면 손을 쓴다 */
+        _bwDead = 0;
+        console.warn('전투 감시견: 요괴가 없는데 끝나지 않아 강제로 끝낸다');
+        b.busy = false;
+        try { await checkOver(); } catch (e) { console.error(e); }
+        if (G.b && !G.b.over) { G.b.over = true; winBattle(); }
+      }
+    } else _bwDead = 0;
+    /* ② 끝났다는데 치워지지 않는다 */
+    if (b.over) {
+      if (++_bwOver >= 5) {                 /* 2초 */
+        _bwOver = 0;
+        console.warn('전투 감시견: 끝난 전투가 치워지지 않아 손을 쓴다');
+        const kind = b.kind;
+        G.b = null;
+        if (kind === 'arena') { try { arenaRetire(); } catch (e) { showMap(); } }
+        else if (!$('#overlay').children.length) { try { showRewards(kind); } catch (e) { showMap(); } }
+      }
+    } else _bwOver = 0;
+  }, 400);
+}
 async function checkOver() {
-  const b = G.b; if (!b || b.over) return !!(b && b.over);
+  const b = G.b; if (!b) return false;
+  /* 끝났다고만 표시되고 정리가 안 된 자리를 여기서 마저 끝낸다 */
+  if (b.over) { if (!alive().length && !b._won) { b._won = true; winBattle(); } return true; }
   const p = P();
   if (p.hp <= 0 && p.s.rebirth) {                 /* 불사조 */
     const h = p.s.rebirth; delete p.s.rebirth;
@@ -6492,7 +6535,18 @@ async function checkOver() {
   return false;
 }
 function winBattle() {
+  try { _winBattle(); }
+  catch (e) {
+    console.error('전투 마무리 오류', e);
+    G.b = null;
+    toast('전투를 마무리하다 문제가 생겼다 — 지도로 돌아간다');
+    try { saveRun(); } catch (e2) {}
+    showMap();
+  }
+}
+function _winBattle() {
   const b = G.b, run = G.run;
+  battleWatch(false);
   if (!b || !run) return;                      /* 기다리는 사이 전투가 사라졌을 수 있다 */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
@@ -7030,6 +7084,7 @@ function renderBattle() {
   buildPlayer();
   if (G.b) { G.b.pet = makePet(); buildPet(); }
   buildEnemies();
+  battleWatch(true);
   $('#endturn').onclick = () => endTurn();
   $('#skillbtn').onclick = () => useSkill();
   $('#petbtn').onclick = () => showPetMoves();
@@ -7699,7 +7754,9 @@ const PET_ACT = 4;                            /* 이 막을 넘으면 열린다 
 const PET_PULLS_BASE = 3;
 const PET_PULLS_BONUS = 5, PET_BONUS_ACT = 10;
 const PET_HP_GAP = 30;                        /* 주인보다 이만큼 낮다 */
-const PET_DMG = 0.6;                          /* 요괴 때의 힘에서 이만큼만 낸다 */
+/* 팻은 거들 뿐이다 — 요괴 때의 힘에서 이만큼만 낸다.
+   0.60 은 주인보다 세 보였다. 곁에서 거드는 정도로 내렸다. */
+const PET_DMG = 0.35;
 const PET_REVIVE_ELITES = 5;                  /* 되살리는 데 드는 엘리트 수 */
 /* 힘이 중간쯤인 것들만 — 잡졸도 보스도 아니다 */
 const PET_POOL = Object.keys(ENEMIES).filter(id => {
@@ -7752,7 +7809,7 @@ function PET() { return G.b && G.b.pet && G.b.pet.hp > 0 ? G.b.pet : null; }
 /* 주인이 맞으면 팻도 그만큼 나눠 맞는다 */
 function petShare(dmg) {
   const pt = PET(); if (!pt || dmg <= 0) return;
-  const d = Math.max(1, Math.round(dmg * .3));
+  const d = Math.max(1, Math.round(dmg * .25));
   pt.hp = Math.max(0, pt.hp - d);
   if (pt.el) { pt.el.classList.remove('hurt'); void pt.el.offsetWidth; pt.el.classList.add('hurt'); }
   floatText(pt, '-' + d, '');
@@ -7900,7 +7957,7 @@ function showPets() {
         <div class="note"><p>
           팻의 체력은 늘 <b>주인보다 ${PET_HP_GAP} 낮다</b>.<br>
           쓰던 수를 그대로 쓰되 힘은 <b>${Math.round(PET_DMG * 100)}%</b>, <b>한 턴에 한 번</b>.<br>
-          주인이 맞으면 팻도 <b>그 30%</b>를 나눠 맞는다.<br><br>
+          주인이 맞으면 팻도 <b>그 25%</b>를 나눠 맞는다.<br><br>
           <b style="color:#ff8a9a">팻이 쓰러지면 슬픔의 원한</b>이 남는다 —
           남은 모험 내내 주는 피해가 <b>25% 오르고</b>, 회복은 <b>절반</b>이 된다.<br>
           되살리려면 <b>엘리트 ${PET_REVIVE_ELITES}마리</b>를 잡아야 한다.
@@ -8486,7 +8543,7 @@ function nextAct() {
 }
 
 function showMap() {
-  G.scene = 'map'; G.b = null; if (G.run) G.run.inBattle = false;
+  G.scene = 'map'; G.b = null; battleWatch(false); if (G.run) G.run.inBattle = false;
   clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false); SND.bgm(true, 'map');
   const run = G.run;
   migrateMap(run);
@@ -9715,6 +9772,7 @@ function arenaWin() {
   saveRun();
 }
 function arenaLose() {
+  battleWatch(false);
   const run = G.run;
   const half = Math.floor((run.arenaDia || 0) / 2);
   const round = run.arenaRound || 1;
@@ -9730,6 +9788,7 @@ function arenaLose() {
   p.querySelector('#al_ok').onclick = () => { closeTop(); renderTop(); saveRun(); showMap(); };
 }
 function arenaRetire() {
+  battleWatch(false);
   const run = G.run;
   const got = run.arenaDia || 0;
   run.dia = (run.dia || 0) + got;
@@ -11534,6 +11593,7 @@ function runStatsHtml() {
 }
 const REVIVE_HP = 70;                        /* 갈림길로 돌아갈 때 채워 주는 체력 */
 function gameOver() {
+  battleWatch(false);
   SND.lose(); autoStop('쓰러졌다');
   const score = (G.run.act - 1) * 12 + G.run.floor;
   META.best = Math.max(META.best, score); saveMeta();
