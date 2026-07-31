@@ -8655,19 +8655,34 @@ function modal(html, cls) {
   o.appendChild(l);
   return l;
 }
+/* ── 창이 붙들고 있던 약속을 풀어 준다 ─────────────────────
+   고르는 창은 Promise 를 쥐고 기다린다. Esc 로 그냥 지워 버리면
+   기다리던 쪽이 영영 깨어나지 못해 아무것도 못 하게 된다.
+   창을 없앨 때는 반드시 이 고리를 거쳐 약속부터 푼다.
+   ────────────────────────────────────────────────────────── */
+function disposePanel(p) {
+  if (!p || !p._esc) return;
+  const f = p._esc; p._esc = null;
+  try { f(); } catch (e) { console.error('창 정리 오류', e); }
+}
 function closeTop() {
   const o = $('#overlay');
-  if (o.lastElementChild) o.lastElementChild.remove();
+  const p = o.lastElementChild;
+  if (p) { disposePanel(p); p.remove(); }
   if (!o.children.length) o.style.display = 'none';
 }
 /* 자기 자신만 닫는다 — 창이 겹쳤을 때 남의 화면을 지우지 않는다.
    (고르는 창이 두 번 닫히면서 아래 보상 화면까지 사라지던 문제를 막는다) */
 function closePanel(p) {
   const o = $('#overlay');
-  if (p && p.parentNode === o) p.remove();
+  if (p && p.parentNode === o) { disposePanel(p); p.remove(); }
   if (!o.children.length) o.style.display = 'none';
 }
-function closeOverlay() { const o = $('#overlay'); o.style.display = 'none'; o.innerHTML = ''; }
+function closeOverlay() {
+  const o = $('#overlay');
+  [...o.children].forEach(disposePanel);
+  o.style.display = 'none'; o.innerHTML = '';
+}
 
 /* --- 카드 목록 보기 --- */
 function showCardList(list, title, shuffled) {
@@ -8685,15 +8700,16 @@ function pickFromList(list, title, opts) {
   return new Promise(res => {
     const p = modal(`<h2>${title}</h2>${opts.hint ? `<div class="hint">${opts.hint}</div>` : ''}
       <div class="cardgrid"></div>${opts.cancel ? '<button class="brush-btn ghost" id="pk_cancel" style="color:#e9dfc9;border-color:#8a7f68">그만두기</button>' : ''}`);
+    p._esc = () => res(null);                 /* Esc 로 닫혀도 기다리는 쪽을 깨운다 */
     const g = p.querySelector('.cardgrid');
     if (!list.length) g.innerHTML = '<div style="color:#c8bda3">고를 카드가 없다</div>';
     for (const c of list) {
       const n = cardNode(c); n.classList.add('pick');
-      n.onclick = () => { closePanel(p); SND.ui(); res(c); };
+      n.onclick = () => { p._esc = null; closePanel(p); SND.ui(); res(c); };
       g.appendChild(n);
     }
     const cb = p.querySelector('#pk_cancel');
-    if (cb) cb.onclick = () => { closePanel(p); res(null); };
+    if (cb) cb.onclick = () => { p._esc = null; closePanel(p); res(null); };
   });
 }
 function chooseCards(list, n, title) {
@@ -8850,13 +8866,14 @@ async function pickSkill() {
   return new Promise(res => {
     const p = modal(`<h2>비기 전수</h2><div class="hint">하나만 익힐 수 있다</div>
       <div class="skillgrid"></div>`);
+    p._esc = () => res();
     const g = p.querySelector('.skillgrid');
     for (const id of cand) {
       const d = SKILLS[id];
       const n = el('div', 'stile g-' + d.rar,
         `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div><b>${d.g}</b>
          <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>\s*/g, ' ')}</div>`);
-      n.onclick = () => { gainSkill(id); G.run.skill = id; closePanel(p); renderTop(); res(); };
+      n.onclick = () => { p._esc = null; gainSkill(id); G.run.skill = id; closePanel(p); renderTop(); res(); };
       g.appendChild(n);
     }
   });
@@ -8868,11 +8885,12 @@ async function pickBossRelic() {
   if (!three.length) { G.run.gold += 100; toast('골드 100을 얻었다'); return; }
   return new Promise(res => {
     const p = modal(`<h2>보스의 유물</h2><div class="hint">하나만 가질 수 있다</div><div class="rewardrow"></div>`);
+    p._esc = () => res();
     const row = p.querySelector('.rewardrow');
     for (const id of three) {
       const d = RELICS[id];
       const n = el('div', 'rewitem', `<div class="ic">${d.g}</div><div class="t"><b>${d.n}</b><small>${d.d.replace(/<[^>]+>/g, '')}</small></div>`);
-      n.onclick = () => { closePanel(p); gainRelic(id); renderTop(); res(); };
+      n.onclick = () => { p._esc = null; closePanel(p); gainRelic(id); renderTop(); res(); };
       row.appendChild(n);
     }
   });
@@ -11009,6 +11027,7 @@ function showPullResult(items, after) {
       : bestGrade === 'ssx' ? ' · <b style="color:#ff2d55">SSX급 등장!</b>' : ''}</div>
     <div class="pullgrid"></div>
     <button class="brush-btn red" id="pr_ok">확인</button>`);
+  p._esc = () => { if (after) after(); };      /* Esc 로 닫혀도 뒷일은 이어진다 */
   const g = p.querySelector('.pullgrid');
   items.forEach((it, i) => {
     const gr = it.grade;
@@ -11020,7 +11039,7 @@ function showPullResult(items, after) {
     bindTip(n, () => `<b>${it.n}</b><br>${it.d}`);
     g.appendChild(n);
   });
-  p.querySelector('#pr_ok').onclick = () => { closeTop(); if (after) after(); };
+  p.querySelector('#pr_ok').onclick = () => { p._esc = null; closeTop(); if (after) after(); };
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -11599,6 +11618,7 @@ function showMenu() {
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
+      ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
       <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
@@ -11608,6 +11628,9 @@ function showMenu() {
     if (autoOk()) e.target.textContent = `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}`;
     if (AUTO.on) closeTop();
   };
+  /* 막힌 자리에서 빠져나오는 길 — 이 칸의 몫은 포기한다 */
+  const mm = p.querySelector('#m_map');
+  if (mm) mm.onclick = () => { closeOverlay(); saveRun(); showMap(); };
   p.querySelector('#m_set').onclick = () => showSettings();
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_place').onclick = () => { closeTop(); showPlaces(); };
@@ -12850,7 +12873,13 @@ function resumeRun() {
 addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const o = $('#overlay'), top = o.lastElementChild;
-    if (top) { if (top.dataset.modal) closeTop(); return; }   /* 화면 패널은 Esc 로 닫지 않는다 */
+    if (top) {
+      if (top.dataset.modal) { closeTop(); return; }
+      /* 화면 패널(사건·상점 따위)은 Esc 로 지우지 않는다 — 지우면 갈 곳이 없어진다.
+         대신 메뉴를 위에 얹어, 어디서든 빠져나갈 길을 하나 남긴다. */
+      if (G.run && !top.dataset.noesc) showMenu();
+      return;
+    }
     if (G.b && (G.b.sel || G.b.potSel != null)) { G.b.sel = null; hideArrow(); syncHand(); syncEnemies(); return; }
     if (G.run) showMenu();
     return;
