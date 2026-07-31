@@ -611,6 +611,13 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .optlist{display:flex;flex-direction:column;gap:2px;width:min(520px,88vw);max-height:58vh;overflow-y:auto;padding-right:6px}
 .optlist::-webkit-scrollbar{width:8px}.optlist::-webkit-scrollbar-thumb{background:rgba(220,200,160,.3);border-radius:4px}
 .optrow{display:flex;align-items:center;gap:14px;padding:11px 4px;border-bottom:1px solid rgba(220,200,160,.14)}
+.codeRow{flex-wrap:wrap}
+.codebox{display:flex;gap:8px;align-items:center}
+.codein{width:210px;padding:7px 10px;border-radius:6px;font-size:13px;letter-spacing:.06em;
+  background:rgba(0,0,0,.3);border:1px solid rgba(220,200,160,.3);color:#f0e7d3;font-family:inherit}
+.codein:focus{outline:none;border-color:var(--gold);box-shadow:0 0 12px rgba(200,160,60,.28)}
+.codein::placeholder{color:#7a7263}
+.codesay{width:100%;margin-top:7px;font-size:12px;letter-spacing:.03em;min-height:1em}
 .optrow .lb{flex:1;text-align:left}
 .optrow .lb b{display:block;font-weight:400;font-size:14.5px;color:#f0e6cd;letter-spacing:.06em}
 .optrow .lb small{display:block;font-size:11.5px;color:#9d927b;margin-top:2px;letter-spacing:.02em}
@@ -1491,6 +1498,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .skintile.lock .sh{border-color:#6b6053;color:#6b6053;text-shadow:none;background:rgba(0,0,0,.3)}
 .skinnone{color:#9a8d74;font-size:12.5px;padding:14px;width:100%;text-align:center}
 .dextile.skintileD b{font-size:26px}
+.gunit .uown{margin-top:3px;font-size:10.5px;letter-spacing:.04em}
+.dextile .skcnt{position:absolute;right:5px;bottom:4px;font-size:9.5px;font-style:normal;letter-spacing:.02em}
+.dextile{position:relative}
 
 /* ══ 더 진한 타격감 ══════════════════════════════════════ */
 /* 벤 자리를 가로지르는 섬광 */
@@ -2521,7 +2531,7 @@ const SND = {
      태초는 맑은 울림, 백귀야행은 멀리서 오는 발소리,
      무(無)는 거의 아무것도 없다. */
   ambProfile(act) {
-    const a = Math.min(15, Math.max(1, act || 1));
+    const a = Math.min(20, Math.max(1, act || 1));
     return [
       { f: 420, q: .7, r: .35, w: .06, d: 210 },   /* 1 요괴 숲 */
       { f: 380, q: .8, r: .34, w: .05, d: 180 },   /* 2 안개 봉우리 */
@@ -2537,7 +2547,12 @@ const SND = {
       { f: 470, q: .8, r: .36, w: .05, d: 200 },   /* 12 인간계 */
       { f: 330, q: 1.6, r: .30, w: .06, d: 170 },  /* 13 왕도 */
       { f: 1750, q: 1.3, r: .55, w: .04, d: 600 }, /* 14 천계 */
-      { f: 70, q: .6, r: .18, w: .015, d: 26 }     /* 15 무 */
+      { f: 70, q: .6, r: .18, w: .015, d: 26 },    /* 15 무 */
+      { f: 430, q: .7, r: .35, w: .06, d: 215 },   /* 16 회귀 — 첫 막의 바람과 거의 같다 */
+      { f: 300, q: 2.0, r: .32, w: .10, d: 190 },  /* 17 기억 — 웅성거림 */
+      { f: 780, q: 1.5, r: .42, w: .045, d: 300 }, /* 18 스승 — 절의 처마 바람 */
+      { f: 210, q: 1.7, r: .34, w: .12, d: 130 },  /* 19 백년 — 수많은 발소리 */
+      { f: 520, q: .55, r: .38, w: .035, d: 260 }  /* 20 산 — 정상의 큰 바람 */
     ][a - 1];
   },
   ambience(on, strong) {
@@ -2713,8 +2728,14 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.opt = Object.assign({}, OPT_DEF, META.opt || {});
   OPT = META.opt;
   META.vip = Object.assign({ owned: false, at: 0, freeBoxAt: 0 }, META.vip || {});
-  META.skins = Object.assign({ own: {}, eq: {} }, META.skins || {});
+  META.skins = Object.assign({ own: {}, eq: {}, free: {} }, META.skins || {});
   META.skins.own = META.skins.own || {}; META.skins.eq = META.skins.eq || {};
+  META.skins.free = META.skins.free || {};
+  /* 옛 판에서는 옷 자체를 가졌다. 이제는 「부적을 위한 옷」이 단위다 —
+     예전에 가진 것은 free 로 옮겨 어느 부적에나 그대로 입힌다. */
+  for (const k in META.skins.own) if (k.indexOf('|') < 0) {
+    META.skins.free[k] = 1; delete META.skins.own[k];
+  }
   META.autoUnlocked = !!META.autoUnlocked;
   META.dex = META.dex || { cards: {}, relics: {}, enemies: {} };
   META.dex.cards = META.dex.cards || {}; META.dex.relics = META.dex.relics || {};
@@ -3317,6 +3338,178 @@ defCard({ id: 'coldmoon', n: '냉월심법', g: '月', type: 'power', rar: 'ssc'
   play: c => { st(P(), 'turnblock', c.v.b); SND.power(); } });
 
 /* ---------- ?급 — 세상에 단 하나 ---------- */
+/* ── 더 늘린 부적들 ──────────────────────────────────────
+   막이 스물이 되었으니 손에 쥘 것도 그만큼 늘어야 한다.
+   3·2·1등급을 고루, S·SSC·SSX도 몇 장씩. */
+
+/* ---------- 3등급 ---------- */
+defCard({ id: 'sidestep', n: '비껴서기', g: '偏', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ b: u ? 9 : 6, x: u ? 2 : 1 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>민첩</b> ${v.x}을 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); } });
+
+defCard({ id: 'doublecut', n: '겹베기', g: '疊', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 7 : 5, n: 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: c => atk(c.t, c.v.d, { n: c.v.n, fx: 'slash' }) });
+
+defCard({ id: 'saltthrow', n: '소금 뿌리기', g: '鹽', type: 'skill', rar: 'common', cost: 1, tgt: 'all',
+  v: u => ({ x: u ? 2 : 1 }),
+  txt: v => `모든 적에게 <b>약화</b>를 ${v.x} 부여한다.`,
+  play: c => { for (const e of alive()) st(e, 'weak', c.v.x); } });
+
+defCard({ id: 'oxbreath', n: '황소 숨', g: '牛', type: 'skill', rar: 'common', cost: 0,
+  v: u => ({ b: u ? 6 : 4 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 기를 쓰지 않는다.`,
+  play: c => blk(c.v.b) });
+
+defCard({ id: 'pebble', n: '돌팔매', g: '礫', type: 'attack', rar: 'common', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 6 : 4 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 기를 쓰지 않는다.`,
+  play: c => atk(c.t, c.v.d, { fx: 'blunt' }) });
+
+defCard({ id: 'chantlow', n: '나직한 염불', g: '誦', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ h: u ? 7 : 5, b: u ? 5 : 3 }),
+  txt: v => `체력을 ${v.h} 회복하고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { heal(c.v.h); blk(c.v.b); } });
+
+/* ---------- 2등급 ---------- */
+defCard({ id: 'windcut', n: '풍절', g: '截', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'all',
+  v: u => ({ d: u ? 9 : 7 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다.`,
+  play: c => { for (const e of alive()) atk(e, c.v.d, { fx: 'wind' }); } });
+
+defCard({ id: 'ironwill', n: '철심', g: '鐵', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 13 : 10, t: u ? 3 : 2 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.t}를 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'thorns', c.v.t); } });
+
+defCard({ id: 'seizeqi', n: '탈기', g: '奪', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 13 : 10 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 이 부적으로 쓰러뜨리면 기를 <b>1</b> 얻는다.`,
+  play: c => { const b0 = c.t.hp; atk(c.t, c.v.d, { fx: 'lance' }); if (b0 > 0 && c.t.hp <= 0) energy(1); } });
+
+defCard({ id: 'mirrorward', n: '반사부', g: '鏡', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ t: u ? 6 : 4 }),
+  txt: v => `<b>가시</b>를 ${v.t} 얻는다.`,
+  play: c => st(P(), 'thorns', c.v.t) });
+
+defCard({ id: 'bloodpay', n: '피값', g: '債', type: 'attack', rar: 'uncommon', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 16 : 12, s: u ? 3 : 4 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 체력을 ${v.s} 잃는다. 기를 쓰지 않는다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'slash2' }); lose(c.v.s); } });
+
+defCard({ id: 'quickhand', n: '빠른 손', g: '疾', type: 'skill', rar: 'uncommon', cost: 0, exhaust: true,
+  v: u => ({ n: u ? 3 : 2 }),
+  txt: v => `카드를 ${v.n}장 뽑는다. 기를 쓰지 않는다. 소멸.`,
+  play: c => drawCards(c.v.n) });
+
+defCard({ id: 'oldgrudge', n: '묵은 원한', g: '恨', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 8 : 6 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 이번 전투에서 이 부적을 낸 횟수만큼 <b>더</b> 준다.`,
+  play: c => { const b = G.b; b.grudge = (b.grudge || 0) + 1;
+    atk(c.t, c.v.d + (b.grudge - 1) * 4, { fx: 'claw' }); } });
+
+/* ---------- 1등급 ---------- */
+defCard({ id: 'thunderstep', n: '뇌보', g: '雷', type: 'attack', rar: 'rare', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 11 : 9, n: 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 주고 <b>민첩</b> 2를 얻는다.`,
+  play: c => { atk(c.t, c.v.d, { n: c.v.n, fx: 'lightning' }); st(P(), 'dex', 2); } });
+
+defCard({ id: 'ninesteel', n: '구절편', g: '鞭', type: 'attack', rar: 'rare', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 11 : 8, n: 2 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: c => { for (let i = 0; i < c.v.n; i++) for (const e of alive()) atk(e, c.v.d, { fx: 'slash' }); } });
+
+defCard({ id: 'stonewall', n: '석벽', g: '壁', type: 'skill', rar: 'rare', cost: 2,
+  v: u => ({ b: u ? 24 : 18 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 이번 턴에 받는 피해가 <b>4 줄어든다</b>.`,
+  play: c => { blk(c.v.b); st(P(), 'endblock', 4); } });
+
+defCard({ id: 'soulburn', n: '혼을 태운다', g: '燃', type: 'skill', rar: 'rare', cost: 0, exhaust: true,
+  v: u => ({ e: u ? 3 : 2, s: u ? 5 : 7 }),
+  txt: v => `기를 ${v.e} 얻는다. 체력을 ${v.s} 잃는다. 소멸.`,
+  play: c => { energy(c.v.e); lose(c.v.s); } });
+
+defCard({ id: 'foxdance', n: '호리무', g: '舞', type: 'attack', rar: 'rare', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 6 : 5, n: u ? 4 : 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 주고 <b>검기</b> 1을 얻는다.`,
+  play: c => { atk(c.t, c.v.d, { n: c.v.n, fx: 'claw' }); st(P(), 'edge', 1); } });
+
+defCard({ id: 'boneread', n: '골점(骨占)', g: '占', type: 'skill', rar: 'rare', cost: 1, exhaust: true,
+  v: u => ({ n: u ? 4 : 3 }),
+  txt: v => `카드를 ${v.n}장 뽑고, 다음 턴에 뽑는 수가 <b>1 늘어난다</b>. 소멸.`,
+  play: c => { drawCards(c.v.n); G.b.drawMod = (G.b.drawMod || 0) + 1; } });
+
+defCard({ id: 'crushpalm', n: '벽공장', g: '掌', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 30 : 23 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>취약</b> 2를 부여한다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'blunt' }); st(c.t, 'vuln', 2); } });
+
+/* ---------- S급 ---------- */
+defCard({ id: 'ghostblade', n: '유령검', g: '幽', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 18 : 14, n: 2 }),
+  txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: c => atk(c.t, c.v.d, { n: c.v.n, pierce: true, fx: 'void' }) });
+
+defCard({ id: 'tigerroar', n: '호포', g: '咆', type: 'skill', rar: 'special', cost: 1, tgt: 'all',
+  v: u => ({ x: u ? 3 : 2, b: u ? 14 : 10 }),
+  txt: v => `모든 적에게 <b>약화</b>와 <b>취약</b>을 ${v.x}씩 부여하고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { SND.charge(); for (const e of alive()) { st(e, 'weak', c.v.x); st(e, 'vuln', c.v.x); } blk(c.v.b); } });
+
+defCard({ id: 'goldenbody', n: '금강신', g: '金', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ b: u ? 9 : 6 }),
+  txt: v => `매 턴 시작할 때 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { st(P(), 'turnblock', c.v.b); SND.power(); } });
+
+defCard({ id: 'reaping', n: '거둠질', g: '穫', type: 'attack', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 20 : 16 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다. 쓰러뜨릴 때마다 카드를 <b>한 장</b> 뽑는다.`,
+  play: c => { for (const e of alive()) { const b0 = e.hp; atk(e, c.v.d, { fx: 'slash2' });
+    if (b0 > 0 && e.hp <= 0) drawCards(1); } } });
+
+/* ---------- SSC급 ---------- */
+defCard({ id: 'greenwave', n: '청파도', g: '波', type: 'attack', rar: 'ssc', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 16 : 13, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 주고 <b>취약</b> 2를 부여한다. 소멸하지 않는다.`,
+  play: c => { atk(c.t, c.v.d, { n: c.v.n, fx: 'wind' }); st(c.t, 'vuln', 2); } });
+
+defCard({ id: 'iceheart', n: '빙심', g: '氷', type: 'power', rar: 'ssc', cost: 2,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>민첩</b> ${v.x}과 <b>가시</b> ${v.x + 2}를 얻고, 받는 피해가 <b>2 줄어든다</b>.`,
+  play: c => { st(P(), 'dex', c.v.x); st(P(), 'thorns', c.v.x + 2);
+    if (G.run) { G.run.train = G.run.train || {}; G.run.train.def = (G.run.train.def || 0) + 2; }
+    SND.power(); } });
+
+defCard({ id: 'thousandcut', n: '천참', g: '斬', type: 'attack', rar: 'ssc', cost: 3, tgt: 'all', exhaust: true,
+  v: u => ({ d: u ? 13 : 10, n: u ? 4 : 3 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { for (const e of alive()) atk(e, c.v.d, { fx: 'slash2' });
+    await wait(110); } } });
+
+defCard({ id: 'quietmind', n: '적심', g: '寂', type: 'skill', rar: 'ssc', cost: 0, exhaust: true,
+  v: u => ({ n: u ? 3 : 2, b: u ? 14 : 10 }),
+  txt: v => `카드를 ${v.n}장 뽑고 <i>${v.b}</i>의 방어도를 얻는다. 기를 쓰지 않는다. 소멸.`,
+  play: c => { drawCards(c.v.n); blk(c.v.b); } });
+
+/* ---------- SSX급 ---------- */
+defCard({ id: 'ninefold', n: '구중천', g: '九', type: 'attack', rar: 'ssx', cost: 3, tgt: 'enemy', exhaust: true,
+  v: u => ({ d: u ? 22 : 17, n: u ? 6 : 5 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { if (c.t.hp <= 0) break;
+    atk(c.t, c.v.d, { fx: 'lightning' }); await wait(90); } } });
+
+defCard({ id: 'eternalward', n: '만겁부', g: '劫', type: 'power', rar: 'ssx', cost: 2, exhaust: true,
+  v: u => ({ b: u ? 14 : 11 }),
+  txt: v => `매 턴 시작할 때 <i>${v.b}</i>의 방어도를 얻고, 방어도가 사라지지 않는다. 소멸.`,
+  play: c => { st(P(), 'turnblock', c.v.b); st(P(), 'barricade', 1); SND.power(); flash('만겁부'); } });
+
+defCard({ id: 'namestrike', n: '이름을 지운다', g: '抹', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
+  v: u => ({ p: u ? 45 : 35 }),
+  txt: v => `그 요괴의 <b>남은 체력의 ${v.p}%</b>를 없앤다. 소멸.`,
+  play: c => { SND.voidhit(); impact('void', c.t);
+    pure(c.t, Math.ceil(c.t.hp * c.v.p / 100)); } });
+
 defCard({ id: 'genesis', n: '천지개벽', g: '闢', type: 'skill', rar: 'unknown', cost: 3, exhaust: true,
   v: u => ({ n: u ? 4 : 3, e: u ? 3 : 2 }),
   txt: v => `<b>모든 적</b>의 이로운 효과와 방어도를 없애고, 각자의 남은 체력의 절반을 없앤다.
@@ -5013,6 +5206,325 @@ defEnemy({ id: 'mu', n: '무(無)', g: '無', hp: [1650, 1650], col: '#0a0a0a', 
     return r < .4 ? 'swarm2' : r < .72 ? 'unmake' : 'silence';
   } });
 
+
+/* ══ 제16막 · 회귀 — 눈을 뜨니 다시 산 아래였다 ═════════════
+   없음을 이겼는데 처음으로 돌아와 있다.
+   길도 요괴도 그대로인데, 이번엔 내가 기억한다.
+   그리고 그것들도 나를 기억한다. */
+defEnemy({ id: 'againwisp', n: '또 그 도깨비불', g: '又', hp: [262, 292], col: '#4a6a5a',
+  moves: { knew:   { t: 'atkdeb', label: '알고 있었다', d: 36, deb: { weak: 7 }, fx: 'void' },
+           repeat: { t: 'attack', label: '똑같이 한 번 더', d: 21, n: 3, fx: 'claw' },
+           wait2:  { t: 'defend', label: '기다린다', blk: 76, self: { dex: 8 } } },
+  next: e => e.hist.length === 0 ? 'wait2' : lastIs(e, 'repeat') ? 'knew'
+           : rnd() < .48 ? 'repeat' : rnd() < .8 ? 'knew' : 'wait2' });
+
+defEnemy({ id: 'oldroad', n: '지나온 길', g: '路', hp: [276, 308], col: '#6a5a48', big: true,
+  moves: { back:   { t: 'attack', label: '되돌린다', d: 60, fx: 'blunt' },
+           wind3:  { t: 'atkdeb', label: '굽이친다', d: 24, n: 2, deb: { vuln: 7 }, fx: 'wind' },
+           long:   { t: 'defend', label: '길어진다', blk: 82, self: { thorns: 11 } } },
+  next: e => e.hist.length === 0 ? 'long' : lastIs(e, 'back') ? 'long'
+           : rnd() < .46 ? 'back' : rnd() < .78 ? 'wind3' : 'long' });
+
+defEnemy({ id: 'usedcard', n: '태워 버린 부적', g: '燒', hp: [254, 284], col: '#8a4a3a',
+  moves: { ash2:   { t: 'atkdeb', label: '재로 쓴다', d: 32, deb: { curse: 8 }, fx: 'fire' },
+           flare:  { t: 'attack', label: '다시 붙는다', d: 24, n: 2, fx: 'fire' },
+           curl:   { t: 'buff', label: '오그라든다', blk: 68, self: { str: 11, rage: 2 } } },
+  next: e => e.hist.length === 0 ? 'curl' : e.turnCount % 4 === 0 ? 'curl'
+           : rnd() < .54 ? 'flare' : 'ash2' });
+
+defEnemy({ id: 'firstfox', n: '처음의 구미호', g: '狐', hp: [530, 586], col: '#a8272c', elite: true, big: true,
+  init: e => { e.s.rage = 7; e.s.dex = 6; },
+  moves: { nine:   { t: 'attack', label: '아홉 꼬리', d: 26, n: 3, fx: 'claw' },
+           charm2: { t: 'debuff', label: '아직도 홀린다', deb: { weak: 8, vuln: 8, curse: 8 } },
+           moon2:  { t: 'defend', label: '월광 결계', blk: 84, self: { thorns: 10, regenP: 11 } } },
+  next: e => e.hist.length === 0 ? 'charm2' : lastIs(e, 'nine') ? 'moon2'
+           : e.turnCount % 4 === 0 ? 'charm2' : rnd() < .58 ? 'nine' : 'moon2' });
+
+defEnemy({ id: 'mydeck', n: '내가 버린 것들', g: '棄', hp: [548, 606], col: '#4a4a5a', elite: true, big: true,
+  init: e => { e.s.thorns = 12; },
+  moves: { pile2:  { t: 'buff', label: '쌓인다', blk: 80, self: { str: 12 },
+                     extra: () => { for (const e2 of alive()) st(e2, 'str', 5); } },
+           throw2: { t: 'attack', label: '되던진다', d: 34, n: 2, fx: 'slash2' },
+           blame:  { t: 'atkdeb', label: '왜 버렸나', d: 44, deb: { curse: 10 }, fx: 'void' } },
+  next: e => e.hist.length === 0 ? 'pile2' : lastIs(e, 'throw2') ? 'blame'
+           : e.turnCount % 5 === 0 ? 'pile2' : rnd() < .52 ? 'throw2' : 'blame' });
+
+defEnemy({ id: 'circle', n: '되풀이(回)', g: '回', hp: [1780, 1780], col: '#3a4a4a', boss: true, big: true,
+  init: e => { e.turn2 = 0; },
+  moves: {
+    same3:   { t: 'attack', label: '아까 그 수', d: 30, n: 3, fx: 'slash2' },
+    rewind:  { t: 'atkdeb', label: '되감는다', d: 46, deb: { weak: 7, vuln: 7 }, fx: 'void',
+               extra: () => { const p = P(); if (p) for (const k in p.s)
+                 if (STATUS[k] && STATUS[k].kind === 'buff') delete p.s[k]; } },
+    hold3:   { t: 'defend', label: '멈춰 선다', blk: 88, self: { thorns: 13, regenP: 15 } },
+    wind4:   { t: 'buff', label: '태엽을 감는다', blk: 72, self: { str: 13 },
+               extra: e => { e.turn2 = 1; flash('처음으로 돌아간다'); SND.boss();
+                             screenFlash('rgba(120,200,190,.45)', 850); } },
+    restart: { t: 'attack', label: '다 시 처 음 부 터', d: 112, fx: 'void',
+               extra: e => { e.turn2 = 0; st(P(), 'weak', 7); st(P(), 'vuln', 7);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 13); st(e, 'rage', 3); flash('몇 번째인지 세지 않는다');
+                 screenFlash('rgba(140,220,210,.5)', 900); SND.boss(); },
+  next: e => {
+    if (e.turn2) return 'restart';
+    if (e.hist.length === 0) return 'rewind';
+    if (e.turnCount % 5 === 0) return 'wind4';
+    if (lastIs(e, 'same3', 2)) return 'hold3';
+    const r = rnd();
+    return r < .4 ? 'same3' : r < .72 ? 'rewind' : 'hold3';
+  } });
+
+/* ══ 제17막 · 기억 — 죽인 것들이 나를 기억한다 ═══════════════ */
+defEnemy({ id: 'namecall', n: '내 이름을 아는 것', g: '名', hp: [286, 320], col: '#5a3a5a',
+  moves: { call3:  { t: 'atkdeb', label: '이름을 부른다', d: 52, deb: { weak: 8 }, fx: 'lance' },
+           list:   { t: 'debuff', label: '네가 죽인 수를 센다', deb: { vuln: 9, curse: 9 } },
+           quiet2: { t: 'defend', label: '입을 다문다', blk: 84, self: { dex: 9 } } },
+  next: e => e.hist.length === 0 ? 'call3' : lastIs(e, 'list') ? 'call3'
+           : rnd() < .5 ? 'call3' : rnd() < .82 ? 'list' : 'quiet2' });
+
+defEnemy({ id: 'graveghost', n: '무덤 없는 것', g: '塚', hp: [300, 336], col: '#3a4a3a',
+  moves: { dig:    { t: 'attack', label: '흙을 파낸다', d: 26, n: 3, fx: 'claw' },
+           cold:   { t: 'atkdeb', label: '차갑다', d: 38, deb: { weak: 8, vuln: 8 }, fx: 'void' },
+           lie:    { t: 'defend', label: '눕는다', blk: 88, self: { regenP: 14 } } },
+  next: e => e.hist.length === 0 ? 'lie' : lastIs(e, 'dig') ? 'lie'
+           : rnd() < .48 ? 'dig' : rnd() < .8 ? 'cold' : 'lie' });
+
+defEnemy({ id: 'oldwound', n: '아물지 않은 것', g: '傷', hp: [274, 306], col: '#8a2a3a',
+  moves: { open3:  { t: 'attack', label: '벌어진다', d: 64, fx: 'slash2' },
+           bleed:  { t: 'atkdeb', label: '피가 멎지 않는다', d: 22, fx: 'poison',
+                     extra: () => st(P(), 'poison', 16) },
+           scar:   { t: 'buff', label: '흉이 진다', blk: 74, self: { str: 12, thorns: 8 } } },
+  next: e => e.hist.length === 0 ? 'bleed' : e.turnCount % 4 === 0 ? 'scar'
+           : rnd() < .54 ? 'open3' : 'bleed' });
+
+defEnemy({ id: 'allofthem', n: '죽인 것들 전부', g: '衆', hp: [576, 638], col: '#4a2a3a', elite: true, big: true,
+  init: e => { e.s.rage = 8; },
+  moves: { crowd:  { t: 'attack', label: '한꺼번에 온다', d: 24, n: 4, fx: 'claw' },
+           weight: { t: 'atkdeb', label: '무게', d: 48, deb: { weak: 8, vuln: 8 }, fx: 'blunt' },
+           swell:  { t: 'buff', label: '수가 는다', blk: 82, self: { str: 13, dex: 7 } } },
+  next: e => e.hist.length === 0 ? 'swell' : lastIs(e, 'crowd', 2) ? 'weight'
+           : e.turnCount % 4 === 0 ? 'swell' : rnd() < .58 ? 'crowd' : 'weight' });
+
+defEnemy({ id: 'whatiforgot', n: '잊은 것', g: '忘', hp: [594, 658], col: '#3a3a4a', elite: true, big: true,
+  init: e => { e.s.regenP = 15; },
+  moves: { blur:   { t: 'debuff', label: '흐릿해진다', deb: { weak: 9, vuln: 9, curse: 9 } },
+           sudden: { t: 'attack', label: '문득 떠오른다', d: 68, fx: 'lance' },
+           fade:   { t: 'defend', label: '지워진다', blk: 90, self: { dex: 10, regenP: 8 } } },
+  next: e => e.hist.length === 0 ? 'blur' : lastIs(e, 'sudden') ? 'fade'
+           : e.turnCount % 5 === 0 ? 'blur' : rnd() < .52 ? 'sudden' : 'fade' });
+
+defEnemy({ id: 'memory', n: '기억(記憶)', g: '憶', hp: [1920, 1920], col: '#5a3a4a', boss: true, big: true,
+  init: e => { e.recall = 0; },
+  moves: {
+    scene:   { t: 'attack', label: '그 밤을 다시 보인다', d: 32, n: 3, fx: 'void' },
+    face2:   { t: 'atkdeb', label: '얼굴들', d: 50, deb: { weak: 8, curse: 8 }, fx: 'claw' },
+    keep:    { t: 'defend', label: '간직한다', blk: 92, self: { thorns: 14, regenP: 16 } },
+    gather5: { t: 'buff', label: '전부 떠올린다', blk: 76, self: { str: 14 },
+               extra: e => { e.recall = 1; flash('하나도 빠짐없이'); SND.boss();
+                             screenFlash('rgba(160,90,140,.5)', 900); } },
+    all:     { t: 'attack', label: '너 는 전 부 기 억 된 다', d: 118, fx: 'void',
+               extra: e => { e.recall = 0; st(P(), 'weak', 8); st(P(), 'vuln', 8); st(P(), 'curse', 8);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 14); st(e, 'rage', 3); st(e, 'regenP', 17);
+                 flash('잊히지 않는다'); screenFlash('rgba(200,110,170,.55)', 950); SND.boss(); },
+  next: e => {
+    if (e.recall) return 'all';
+    if (e.hist.length === 0) return 'face2';
+    if (e.turnCount % 5 === 0) return 'gather5';
+    if (lastIs(e, 'scene', 2)) return 'keep';
+    const r = rnd();
+    return r < .4 ? 'scene' : r < .72 ? 'face2' : 'keep';
+  } });
+
+/* ══ 제18막 · 스승 — 벽사부를 준 사람은 어디로 갔나 ═════════ */
+defEnemy({ id: 'discipl', n: '먼저 간 제자', g: '弟', hp: [302, 338], col: '#4a5a6a',
+  moves: { same4:  { t: 'attack', label: '같은 부적을 쓴다', d: 28, n: 3, fx: 'slash' },
+           envy:   { t: 'atkdeb', label: '너는 왜 살아 있나', d: 44, deb: { curse: 9 }, fx: 'void' },
+           stance: { t: 'defend', label: '자세를 잡는다', blk: 86, self: { dex: 9, str: 6 } } },
+  next: e => e.hist.length === 0 ? 'stance' : lastIs(e, 'same4') ? 'envy'
+           : rnd() < .5 ? 'same4' : rnd() < .8 ? 'envy' : 'stance' });
+
+defEnemy({ id: 'brushghost', n: '붓', g: '筆', hp: [288, 322], col: '#2a2a2a',
+  moves: { stroke: { t: 'attack', label: '한 획', d: 70, fx: 'slash2' },
+           blot:   { t: 'atkdeb', label: '먹이 번진다', d: 26, n: 2, deb: { vuln: 9 }, fx: 'void' },
+           dry:    { t: 'defend', label: '마른다', blk: 84, self: { thorns: 12 } } },
+  next: e => e.hist.length === 0 ? 'blot' : lastIs(e, 'stroke') ? 'dry'
+           : rnd() < .46 ? 'stroke' : rnd() < .8 ? 'blot' : 'dry' });
+
+defEnemy({ id: 'templeghost', n: '빈 절', g: '寺', hp: [316, 354], col: '#5a4a2a', big: true,
+  moves: { bell3:  { t: 'debuff', label: '종을 친다', deb: { weak: 9, vuln: 9, curse: 8 } },
+           beam:   { t: 'attack', label: '기둥이 무너진다', d: 66, fx: 'blunt' },
+           sit:    { t: 'defend', label: '앉는다', blk: 92, self: { regenP: 15 } } },
+  next: e => e.hist.length === 0 ? 'bell3' : lastIs(e, 'beam') ? 'sit'
+           : rnd() < .48 ? 'beam' : rnd() < .78 ? 'bell3' : 'sit' });
+
+defEnemy({ id: 'lastward', n: '스승의 벽사부', g: '符', hp: [618, 684], col: '#a8272c', elite: true, big: true,
+  init: e => { e.s.rage = 8; e.s.thorns = 12; },
+  moves: { seal3:  { t: 'attack', label: '붙는다', d: 36, n: 2, fx: 'talisman' },
+           burn3:  { t: 'atkdeb', label: '타오른다', d: 54, deb: { curse: 10 }, fx: 'fire' },
+           hold4:  { t: 'defend', label: '버틴다', blk: 94, self: { thorns: 11, regenP: 10 } } },
+  next: e => e.hist.length === 0 ? 'hold4' : lastIs(e, 'seal3', 2) ? 'burn3'
+           : e.turnCount % 4 === 0 ? 'hold4' : rnd() < .56 ? 'seal3' : 'burn3' });
+
+defEnemy({ id: 'whattaught', n: '가르친 것', g: '敎', hp: [636, 704], col: '#3a4a5a', elite: true, big: true,
+  init: e => { e.s.dex = 9; },
+  moves: { lesson: { t: 'atkdeb', label: '한 수 가르친다', d: 58, deb: { weak: 9, vuln: 9 }, fx: 'lance' },
+           correct:{ t: 'attack', label: '틀렸다', d: 30, n: 3, fx: 'slash2' },
+           wait3:  { t: 'defend', label: '기다려 준다', blk: 96, self: { thorns: 10, str: 8 } } },
+  next: e => e.hist.length === 0 ? 'lesson' : lastIs(e, 'correct') ? 'wait3'
+           : e.turnCount % 5 === 0 ? 'lesson' : rnd() < .54 ? 'correct' : 'wait3' });
+
+defEnemy({ id: 'master', n: '스승(師)', g: '師', hp: [2070, 2070], col: '#2a3a4a', boss: true, big: true,
+  init: e => { e.teach2 = 0; },
+  moves: {
+    ward2:   { t: 'attack', label: '벽사부 한 장', d: 34, n: 3, fx: 'talisman' },
+    scold:   { t: 'atkdeb', label: '아직 멀었다', d: 54, deb: { weak: 9, vuln: 9 }, fx: 'lance' },
+    guard5:  { t: 'defend', label: '막아 선다', blk: 96, self: { thorns: 15, regenP: 17 } },
+    breathe: { t: 'buff', label: '숨을 고른다', blk: 80, self: { str: 15 },
+               extra: e => { e.teach2 = 1; flash('마지막으로 하나 가르쳐 주마'); SND.boss();
+                             screenFlash('rgba(120,160,220,.5)', 900); } },
+    lastles: { t: 'attack', label: '마 지 막 가 르 침', d: 124, fx: 'slash2',
+               extra: e => { e.teach2 = 0; st(P(), 'weak', 9); st(P(), 'vuln', 9);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 15); st(e, 'rage', 3); st(e, 'regenP', 18);
+                 flash('내가 여기 남은 이유가 있다'); screenFlash('rgba(150,190,240,.55)', 950); SND.boss(); },
+  next: e => {
+    if (e.teach2) return 'lastles';
+    if (e.hist.length === 0) return 'scold';
+    if (e.turnCount % 5 === 0) return 'breathe';
+    if (lastIs(e, 'ward2', 2)) return 'guard5';
+    const r = rnd();
+    return r < .42 ? 'ward2' : r < .72 ? 'scold' : 'guard5';
+  } });
+
+/* ══ 제19막 · 백년 — 앞서 오른 모든 사람이 한자리에 ═════════ */
+defEnemy({ id: 'climber1', n: '첫 번째 사람', g: '一', hp: [320, 358], col: '#6a5a4a',
+  moves: { old2:   { t: 'attack', label: '낡은 수', d: 74, fx: 'slash' },
+           tired:  { t: 'atkdeb', label: '지쳤다', d: 28, n: 2, deb: { weak: 9 }, fx: 'blunt' },
+           rest2:  { t: 'defend', label: '주저앉는다', blk: 90, self: { regenP: 16 } } },
+  next: e => e.hist.length === 0 ? 'rest2' : lastIs(e, 'old2') ? 'rest2'
+           : rnd() < .48 ? 'old2' : rnd() < .8 ? 'tired' : 'rest2' });
+
+defEnemy({ id: 'climber2', n: '이름 없는 사람', g: '無', hp: [334, 374], col: '#4a4a4a',
+  moves: { blank2: { t: 'atkdeb', label: '이름이 없다', d: 50, deb: { curse: 10 }, fx: 'void' },
+           swing2: { t: 'attack', label: '휘두른다', d: 30, n: 3, fx: 'slash2' },
+           stand:  { t: 'defend', label: '서 있는다', blk: 94, self: { thorns: 13 } } },
+  next: e => e.hist.length === 0 ? 'blank2' : lastIs(e, 'swing2') ? 'stand'
+           : rnd() < .5 ? 'swing2' : rnd() < .8 ? 'blank2' : 'stand' });
+
+defEnemy({ id: 'climber3', n: '거의 다 온 사람', g: '幾', hp: [348, 390], col: '#7a4a3a',
+  moves: { almost: { t: 'attack', label: '한 걸음 앞에서', d: 80, fx: 'lance' },
+           reach2: { t: 'atkdeb', label: '손을 뻗는다', d: 30, n: 2, deb: { vuln: 10 }, fx: 'claw' },
+           grip:   { t: 'buff', label: '이를 악문다', blk: 86, self: { str: 14, rage: 3 } } },
+  next: e => e.hist.length === 0 ? 'grip' : e.turnCount % 4 === 0 ? 'grip'
+           : rnd() < .52 ? 'almost' : 'reach2' });
+
+defEnemy({ id: 'ninetynine', n: '아흔아홉 번째', g: '九', hp: [664, 736], col: '#5a2a4a', elite: true, big: true,
+  init: e => { e.s.rage = 9; e.s.dex = 8; },
+  moves: { nearly: { t: 'attack', label: '거의 이겼었다', d: 38, n: 2, fx: 'slash2' },
+           grudge: { t: 'atkdeb', label: '왜 너냐', d: 62, deb: { weak: 10, curse: 10 }, fx: 'void' },
+           steel:  { t: 'defend', label: '독을 품는다', blk: 98, self: { thorns: 14, str: 9 } } },
+  next: e => e.hist.length === 0 ? 'grudge' : lastIs(e, 'nearly') ? 'steel'
+           : e.turnCount % 4 === 0 ? 'grudge' : rnd() < .56 ? 'nearly' : 'steel' });
+
+defEnemy({ id: 'thehundred', n: '백 번째', g: '百', hp: [684, 758], col: '#2a2a5a', elite: true, big: true,
+  init: e => { e.s.regenP = 17; e.s.thorns = 13; },
+  moves: { turn3:  { t: 'buff', label: '차례가 온다', blk: 96, self: { str: 15 },
+                     extra: () => { for (const e2 of alive()) { st(e2, 'str', 6); st(e2, 'dex', 5); } } },
+           push:   { t: 'attack', label: '떠민다', d: 72, fx: 'blunt' },
+           count2: { t: 'debuff', label: '수를 센다', deb: { weak: 10, vuln: 10, curse: 10 } } },
+  next: e => e.hist.length === 0 ? 'turn3' : lastIs(e, 'push') ? 'count2'
+           : e.turnCount % 4 === 0 ? 'turn3' : rnd() < .56 ? 'push' : 'count2' });
+
+defEnemy({ id: 'century', n: '백년(百年)', g: '年', hp: [2240, 2240], col: '#3a2a4a', boss: true, big: true,
+  init: e => { e.wheel = 0; },
+  moves: {
+    everyone:{ t: 'attack', label: '전부 한꺼번에', d: 34, n: 3, fx: 'claw' },
+    toll:    { t: 'atkdeb', label: '백 년의 값', d: 58, deb: { weak: 9, vuln: 9, curse: 9 }, fx: 'void' },
+    ring2:   { t: 'defend', label: '고리를 잇는다', blk: 100, self: { thorns: 16, regenP: 18 } },
+    turnw:   { t: 'buff', label: '수레를 돌린다', blk: 84, self: { str: 16 },
+               extra: e => { e.wheel = 1; flash('백 년이 한 번에 온다'); SND.boss();
+                             screenFlash('rgba(140,110,200,.5)', 950); } },
+    allyear: { t: 'attack', label: '백 년 이 지 났 다', d: 130, fx: 'void',
+               extra: e => { e.wheel = 0; st(P(), 'weak', 9); st(P(), 'vuln', 9); st(P(), 'curse', 9);
+                             shake(true); SND.gong(); SND.thunder(); } }
+  },
+  onHalf: e => { st(e, 'str', 16); st(e, 'rage', 4); st(e, 'regenP', 19);
+                 flash('그동안 아무도 넘지 못했다'); screenFlash('rgba(170,140,230,.55)', 1000); SND.boss(); },
+  next: e => {
+    if (e.wheel) return 'allyear';
+    if (e.hist.length === 0) return 'toll';
+    if (e.turnCount % 5 === 0) return 'turnw';
+    if (lastIs(e, 'everyone', 2)) return 'ring2';
+    const r = rnd();
+    return r < .4 ? 'everyone' : r < .72 ? 'toll' : 'ring2';
+  } });
+
+/* ══ 제20막 · 산 — 문을 연 것은 산이었다 ═══════════════════ */
+defEnemy({ id: 'rockthing', n: '바위', g: '巖', hp: [340, 380], col: '#5a5a52', big: true,
+  moves: { fall3:  { t: 'attack', label: '굴러떨어진다', d: 86, fx: 'blunt' },
+           sit2:   { t: 'defend', label: '앉아 있는다', blk: 104, self: { thorns: 15 } },
+           crack2: { t: 'atkdeb', label: '갈라진다', d: 32, n: 2, deb: { vuln: 10 }, fx: 'blunt' } },
+  next: e => e.hist.length === 0 ? 'sit2' : lastIs(e, 'fall3') ? 'sit2'
+           : rnd() < .44 ? 'fall3' : rnd() < .78 ? 'crack2' : 'sit2' });
+
+defEnemy({ id: 'rootthing', n: '뿌리', g: '根', hp: [356, 398], col: '#3a4a2a',
+  moves: { bind:   { t: 'atkdeb', label: '휘감는다', d: 34, n: 3, deb: { weak: 10 }, fx: 'claw' },
+           deep2:  { t: 'defend', label: '더 깊이 내린다', blk: 100, self: { regenP: 18 } },
+           pull:   { t: 'attack', label: '끌어당긴다', d: 78, fx: 'lance' } },
+  next: e => e.hist.length === 0 ? 'deep2' : lastIs(e, 'pull') ? 'deep2'
+           : rnd() < .48 ? 'bind' : rnd() < .8 ? 'pull' : 'deep2' });
+
+defEnemy({ id: 'springthing', n: '샘', g: '泉', hp: [328, 368], col: '#2a5a6a',
+  moves: { flood:  { t: 'attack', label: '넘친다', d: 30, n: 3, fx: 'wind' },
+           still2: { t: 'defend', label: '고인다', blk: 98, self: { dex: 11, regenP: 14 } },
+           cold2:  { t: 'atkdeb', label: '뼈가 시리다', d: 56, deb: { weak: 10, vuln: 10 }, fx: 'void' } },
+  next: e => e.hist.length === 0 ? 'still2' : lastIs(e, 'flood') ? 'cold2'
+           : rnd() < .5 ? 'flood' : rnd() < .8 ? 'cold2' : 'still2' });
+
+defEnemy({ id: 'thegate', n: '문(門)', g: '門', hp: [710, 786], col: '#4a3a2a', elite: true, big: true,
+  init: e => { e.s.thorns = 15; },
+  moves: { open4:  { t: 'attack', label: '열린다', d: 40, n: 2, fx: 'void' },
+           shut:   { t: 'defend', label: '닫힌다', blk: 106, self: { thorns: 13, regenP: 12 } },
+           through:{ t: 'atkdeb', label: '지나간 것들', d: 66, deb: { curse: 11 }, fx: 'claw' } },
+  next: e => e.hist.length === 0 ? 'shut' : lastIs(e, 'open4', 2) ? 'shut'
+           : e.turnCount % 4 === 0 ? 'through' : rnd() < .56 ? 'open4' : 'shut' });
+
+defEnemy({ id: 'thepeak', n: '봉우리', g: '峯', hp: [732, 810], col: '#6a6a7a', elite: true, big: true,
+  init: e => { e.s.rage = 9; e.s.dex = 9; },
+  moves: { high:   { t: 'attack', label: '내려다본다', d: 44, n: 2, fx: 'lance' },
+           snow:   { t: 'atkdeb', label: '눈보라', d: 36, n: 2, deb: { weak: 10, vuln: 10 }, fx: 'wind' },
+           stone2: { t: 'defend', label: '돌이 된다', blk: 108, self: { thorns: 14 } } },
+  next: e => e.hist.length === 0 ? 'stone2' : lastIs(e, 'high') ? 'snow'
+           : e.turnCount % 5 === 0 ? 'stone2' : rnd() < .54 ? 'high' : 'snow' });
+
+defEnemy({ id: 'mountain', n: '산(山)', g: '山', hp: [2450, 2450], col: '#2a2a24', boss: true, big: true,
+  init: e => { e.quake = 0; e.season = 0; },
+  moves: {
+    slide:   { t: 'attack', label: '산이 무너진다', d: 36, n: 3, fx: 'blunt' },
+    winter:  { t: 'atkdeb', label: '겨울이 온다', d: 62, deb: { weak: 10, vuln: 10, curse: 10 }, fx: 'wind' },
+    rise2:   { t: 'defend', label: '더 높아진다', blk: 110, self: { thorns: 17, regenP: 20 } },
+    hundred: { t: 'buff', label: '백 년이 찼다', blk: 90, self: { str: 17 },
+               extra: e => { e.quake = 1; flash('산이 문을 연다'); SND.boss(); SND.drum();
+                             screenFlash('rgba(200,160,90,.5)', 1000); } },
+    door:    { t: 'attack', label: '문 이 열 린 다', d: 138, fx: 'void',
+               extra: e => { e.quake = 0; st(P(), 'weak', 10); st(P(), 'vuln', 10); st(P(), 'curse', 10);
+                             shake(true); SND.gong(); SND.thunder(); } }
+  },
+  onHalf: e => { st(e, 'str', 17); st(e, 'rage', 4); st(e, 'regenP', 22);
+                 flash('산은 백 년을 기다렸다'); screenFlash('rgba(220,180,110,.6)', 1100); SND.boss(); },
+  next: e => {
+    if (e.quake) return 'door';
+    if (e.hist.length === 0) return 'winter';
+    if (e.turnCount % 5 === 0) return 'hundred';
+    if (lastIs(e, 'slide', 2)) return 'rise2';
+    const r = rnd();
+    return r < .4 ? 'slide' : r < .72 ? 'winter' : 'rise2';
+  } });
+
 /* ---------- 조우(인카운터) 구성 ---------- *//* ---------- 조우(인카운터) 구성 ---------- */
 const ENCOUNTERS = {
   1: {
@@ -5132,6 +5644,46 @@ const ENCOUNTERS = {
              ['word', 'lastbreath'], ['nothing1', 'cloudthing'], ['word', 'fairy']],
     elite:  [['thebegin'], ['theend'], ['thebegin', 'nothing1'], ['theend', 'word']],
     boss:   ['mu']
+  },
+  16: {
+    weak:   [['againwisp'], ['usedcard'], ['oldroad']],
+    normal: [['againwisp', 'usedcard'], ['oldroad', 'againwisp'], ['usedcard', 'usedcard'],
+             ['oldroad', 'usedcard'], ['againwisp', 'againwisp', 'usedcard'],
+             ['oldroad', 'oldroad'], ['againwisp', 'nothing1'], ['usedcard', 'word']],
+    elite:  [['firstfox'], ['mydeck'], ['firstfox', 'againwisp'], ['mydeck', 'usedcard']],
+    boss:   ['circle']
+  },
+  17: {
+    weak:   [['namecall'], ['oldwound'], ['graveghost']],
+    normal: [['namecall', 'oldwound'], ['graveghost', 'namecall'], ['oldwound', 'oldwound'],
+             ['graveghost', 'oldwound'], ['namecall', 'namecall', 'graveghost'],
+             ['graveghost', 'graveghost'], ['namecall', 'againwisp'], ['oldwound', 'oldroad']],
+    elite:  [['allofthem'], ['whatiforgot'], ['allofthem', 'namecall'], ['whatiforgot', 'graveghost']],
+    boss:   ['memory']
+  },
+  18: {
+    weak:   [['discipl'], ['brushghost'], ['templeghost']],
+    normal: [['discipl', 'brushghost'], ['templeghost', 'discipl'], ['brushghost', 'brushghost'],
+             ['templeghost', 'brushghost'], ['discipl', 'discipl', 'brushghost'],
+             ['templeghost', 'templeghost'], ['discipl', 'namecall'], ['brushghost', 'oldwound']],
+    elite:  [['lastward'], ['whattaught'], ['lastward', 'discipl'], ['whattaught', 'brushghost']],
+    boss:   ['master']
+  },
+  19: {
+    weak:   [['climber1'], ['climber2'], ['climber3']],
+    normal: [['climber1', 'climber2'], ['climber3', 'climber1'], ['climber2', 'climber2'],
+             ['climber3', 'climber2'], ['climber1', 'climber1', 'climber3'],
+             ['climber3', 'climber3'], ['climber1', 'discipl'], ['climber2', 'templeghost']],
+    elite:  [['ninetynine'], ['thehundred'], ['ninetynine', 'climber1'], ['thehundred', 'climber3']],
+    boss:   ['century']
+  },
+  20: {
+    weak:   [['rockthing'], ['rootthing'], ['springthing']],
+    normal: [['rockthing', 'rootthing'], ['springthing', 'rockthing'], ['rootthing', 'rootthing'],
+             ['springthing', 'rootthing'], ['rockthing', 'rockthing', 'springthing'],
+             ['springthing', 'springthing'], ['rockthing', 'climber3'], ['rootthing', 'climber2']],
+    elite:  [['thegate'], ['thepeak'], ['thegate', 'rockthing'], ['thepeak', 'rootthing']],
+    boss:   ['mountain']
   }
 };
 
@@ -7143,8 +7695,9 @@ const NODE_HINT = { battle: '싸움 한 판. 이기면 부적과 돈.', elite: '
 const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
                    4: '명계 관문', 5: '구천 상계', 6: '무간',
                    7: '무저갱', 8: '태초', 9: '환영', 10: '백귀야행',
-                   11: '새벽', 12: '인간계', 13: '왕도', 14: '천계', 15: '무' };
-const LAST_ACT = 15;
+                   11: '새벽', 12: '인간계', 13: '왕도', 14: '천계', 15: '무',
+                   16: '회귀', 17: '기억', 18: '스승', 19: '백년', 20: '산' };
+const LAST_ACT = 20;
 /* ── 막마다 요괴가 굵어진다 ────────────────────────────────
    위로 갈수록 체력이 붙고 손이 매워진다. 체력은 가파르게,
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
@@ -7166,7 +7719,13 @@ const ACT_SCALE = {
   12:{ hp: 3.14, dmg: 1.85 },
   13:{ hp: 3.38, dmg: 1.92 },
   14:{ hp: 3.64, dmg: 1.99 },
-  15:{ hp: 3.92, dmg: 2.07 }
+  15:{ hp: 3.92, dmg: 2.07 },
+  /* 무(無)를 넘어선 뒤 — 산이 문을 연 까닭까지 간다 */
+  16:{ hp: 4.22, dmg: 2.15 },
+  17:{ hp: 4.54, dmg: 2.23 },
+  18:{ hp: 4.88, dmg: 2.31 },
+  19:{ hp: 5.25, dmg: 2.40 },
+  20:{ hp: 5.65, dmg: 2.49 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
@@ -7504,7 +8063,7 @@ function showRewards(kind) {
       act: async () => { await freeBigBox(cnt); return true; } });
   }
   /* 제9막을 넘어서면 SSX급 유물 둘 */
-  if (kind === 'boss' && run.act === FUSED_GIFT_ACT) {
+  if (kind === 'boss' && FUSED_GIFT_ACTS.indexOf(run.act) >= 0) {
     items.push({ ic: '融', t: 'SSX급 유물 2개', cls: 'sgift cgift',
       s: '제9막을 넘어선 값 · 가장 높은 자리의 유물이다',
       act: async () => { await grantFusedRelics(2); return true; } });
@@ -9142,48 +9701,70 @@ const ALL_SKINS = Object.keys(SKINS);
 /* 스킨을 입힐 수 있는 등급 */
 const SKINNABLE = ['special', 'ssc', 'ssx', 'unknown'];
 function skinnable(id) { return CARDS[id] && SKINNABLE.indexOf(CARDS[id].rar) >= 0; }
-function ownSkin(id) { return !!(META.skins && META.skins.own[id]); }
+/* 이 부적을 위한 이 옷을 가지고 있는가.
+   옛 저장에서 '옷 자체'로 가지고 있던 것은 free 로 옮겨 어느 부적에나 입힌다. */
+function ownSkin(cardId, skinId) {
+  if (!META.skins) return false;
+  if (META.skins.free && META.skins.free[skinId]) return true;
+  return !!META.skins.own[cardId + '|' + skinId];
+}
 function skinOf(cardId) {
   if (!skinnable(cardId)) return null;          /* S급 아래에는 입히지 않는다 */
   const e = META.skins && META.skins.eq[cardId];
-  return e && SKINS[e] && ownSkin(e) ? e : null;
+  return e && SKINS[e] && ownSkin(cardId, e) ? e : null;
 }
-function gainSkin(id, silent) {
-  META.skins.own[id] = (META.skins.own[id] || 0) + 1;
+/* 어느 부적을 위한 어느 옷인가 — 이 한 벌이 소유의 단위다 */
+function skinKey(cardId, skinId) { return cardId + '|' + skinId; }
+function gainSkin(cardId, skinId, silent) {
+  META.skins.own[skinKey(cardId, skinId)] = (META.skins.own[skinKey(cardId, skinId)] || 0) + 1;
   saveMeta();
-  if (!silent) { SND.unlock(); toast(`스킨 획득 — ${SKINS[id].n}`); }
-  return META.skins.own[id] === 1;
+  if (!silent) { SND.unlock(); toast(`${CARDS[cardId].n}을 위한 ${SKINS[skinId].n}`); }
+  return META.skins.own[skinKey(cardId, skinId)] === 1;
 }
 function equipSkin(cardId, skinId) {
   if (!META.skins) return false;
-  if (skinId && !ownSkin(skinId)) return false;      /* 없는 옷은 입지 못한다 */
-  if (skinId && !skinnable(cardId)) return false;    /* S급 아래에는 입히지 않는다 */
+  if (skinId && !ownSkin(cardId, skinId)) return false;   /* 그 부적을 위한 옷이 아니면 못 입힌다 */
+  if (skinId && !skinnable(cardId)) return false;         /* S급 아래에는 입히지 않는다 */
   if (skinId) META.skins.eq[cardId] = skinId; else delete META.skins.eq[cardId];
   saveMeta();
   return true;
 }
 function skinCount() { return Object.keys(META.skins ? META.skins.own : {}).length; }
-/* 스킨 상자에서 하나 */
+/* 이 부적을 위해 가진 옷들 */
+function skinsFor(cardId) { return ALL_SKINS.filter(sk => ownSkin(cardId, sk)); }
+/* 옷을 입힐 수 있는 부적 전부 */
+function skinnableCards() {
+  return Object.keys(CARDS).filter(id => skinnable(id));
+}
+const SKIN_PAIRS = () => skinnableCards().length * ALL_SKINS.length;
+/* 스킨 상자에서 하나 — 이제 「어느 부적을 위한 어느 옷」이 통째로 나온다 */
 function skinLoot() {
   const w = [{ w: 44, r: 'common' }, { w: 33, r: 'uncommon' }, { w: 18, r: 'rare' }, { w: 5, r: 'ssx' }];
   let pool = [], guard = 0;
   while (!pool.length && guard++ < 10) { const r = pickWeighted(w).r; pool = ALL_SKINS.filter(i => SKINS[i].rar === r); }
   if (!pool.length) pool = ALL_SKINS;
   const id = pick(pool), d = SKINS[id];
-  const dup = ownSkin(id);
-  return { g: d.h, n: d.n + ' 스킨', grade: d.rar, skin: id,
-    d: dup ? `<b style="color:${d.c}">이미 가진 스킨</b> — 다이아 200으로 바꿔 준다`
-           : `<b style="color:${d.c}">${GRADE[d.rar].n} 스킨</b> — ` + d.d +
-             ` <b style="color:#7fe6cf">· 도감에서 부적을 눌러 갈아입힌다</b>`,
-    take: () => { if (dup) { G.run.dia = (G.run.dia || 0) + 200; } else gainSkin(id, true); } };
+  /* 어느 부적을 위한 것인가 — 아직 안 가진 벌을 먼저 노린다 */
+  const cards = skinnableCards();
+  const fresh = cards.filter(c => !ownSkin(c, id));
+  const cardId = fresh.length && rnd() < .88 ? pick(fresh) : pick(cards);
+  const cd = CARDS[cardId];
+  const dup = ownSkin(cardId, id);
+  return { g: d.h, n: `${cd.n}의 ${d.n}`, grade: d.rar, skin: id, card: cardId,
+    d: dup ? `<b style="color:${d.c}">이미 가진 한 벌</b> — 다이아 200으로 바꿔 준다`
+           : `<b style="color:${d.c}">${GRADE[d.rar].n} 스킨</b> · <b style="color:${GRADE[cd.rar].c}">${cd.n}</b> 전용<br>` + d.d +
+             ` <b style="color:#7fe6cf">· 도감에서 그 부적을 눌러 갈아입힌다</b>`,
+    take: () => { if (dup) { G.run.dia = (G.run.dia || 0) + 200; } else gainSkin(cardId, id, true); } };
 }
-/* 스킨 고르는 창 — 도감의 부적 상세에서 연다 */
+/* 스킨 고르는 창 — 도감의 부적 상세에서 연다.
+   옷은 이제 「이 부적을 위한 것」만 입힐 수 있다. */
 function showSkinPicker(cardId, after) {
   const d = CARDS[cardId];
-  const owned = ALL_SKINS.filter(ownSkin);
-  const cur = skinOf(cardId);
+  const mine = skinsFor(cardId);
   const p = modal(`<h2>${d.n} — 옷 갈아입히기</h2>
-    <div class="hint">성능은 하나도 바뀌지 않는다 · <b style="color:var(--gold)">부적이 나갈 때의 빛깔도 이 옷을 따라간다</b><br>가진 스킨 ${owned.length} / ${ALL_SKINS.length}</div>
+    <div class="hint">성능은 하나도 바뀌지 않는다 · <b style="color:var(--gold)">부적이 나갈 때의 빛깔도 이 옷을 따라간다</b><br>
+      <b style="color:${GRADE[d.rar].c}">${d.n}</b>을 위해 가진 옷 <b>${mine.length}</b> / ${ALL_SKINS.length}
+      · 모은 한 벌 ${skinCount()} / ${SKIN_PAIRS()}</div>
     <div class="skinstage" id="sk_stage"></div>
     <div class="skinrow" id="sk_row"></div>
     <button class="brush-btn" id="sk_close">닫기</button>`);
@@ -9196,7 +9777,7 @@ function showSkinPicker(cardId, after) {
   };
   const addTile = (id) => {
     const sd = id ? SKINS[id] : null;
-    const has = !id || ownSkin(id);
+    const has = !id || ownSkin(cardId, id);
     const t = el('div', 'skintile' + (id ? '' : ' plain') + (has ? '' : ' lock'),
       id ? `<div class="sh" style="--sc2:${has ? sd.c : '#6b6053'}">${has ? sd.h : '?'}</div>
             <b>${has ? sd.n : '???'}</b>
@@ -9205,9 +9786,10 @@ function showSkinPicker(cardId, after) {
     t.dataset.sk = id || '';
     if (id) bindTip(t, () => has
       ? `<b style="color:${sd.c}">${sd.n} (${sd.h})</b> · ${GRADE[sd.rar].n} 스킨<br>${sd.d}`
-      : `<b>아직 없는 스킨</b><br><span style="color:#9a8d74">부적 뽑기의 <b>스킨 상자</b>에서 나온다</span>`);
+      : `<b>${d.n}을 위한 ${sd.n}</b>을 아직 못 얻었다<br>
+         <span style="color:#9a8d74">스킨 상자는 <b>부적 하나를 정해</b> 그 부적의 옷을 준다</span>`);
     t.onclick = () => {
-      if (!has) { SND.err(); toast('아직 없는 스킨이다 — 뽑기의 스킨 상자에서 나온다'); return; }
+      if (!has) { SND.err(); toast(`${d.n}을 위한 ${sd.n}이 아직 없다`); return; }
       if (!equipSkin(cardId, id)) { SND.err(); return; }
       SND.ui(); draw(); if (after) after();
     };
@@ -9215,8 +9797,8 @@ function showSkinPicker(cardId, after) {
   };
   addTile(null);
   for (const id of ALL_SKINS) addTile(id);
-  if (!owned.length) row.appendChild(el('div', 'skinnone',
-    '아직 가진 스킨이 없다 · 부적 뽑기(匣)의 <b>스킨 상자</b>에서 나온다'));
+  if (!mine.length) row.appendChild(el('div', 'skinnone',
+    `아직 <b>${d.n}</b>을 위한 옷이 없다 · 부적 뽑기(匣)의 <b>스킨 상자</b>에서 나온다`));
   draw();
   p.querySelector('#sk_close').onclick = closeTop;
 }
@@ -9229,8 +9811,8 @@ const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내�
 const SSC_DROP_FROM = 7;                     /* 이 막부터는 그것이 SSC급으로 오르기도 한다 */
 const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
 /* 막을 넘어선 값으로 주는 특대급 상자 횟수. 제6막만 비워 둔다 */
-const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5 };
-const FUSED_GIFT_ACT = 9;                    /* 이 막을 넘으면 SSX급 유물 둘 */
+const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5, 11: 3, 13: 4, 16: 6, 18: 8 };
+const FUSED_GIFT_ACTS = [9, 14, 19];         /* 이 막들을 넘으면 SSX급 유물 둘 */
 /* 뽑기를 하지 않은 사람도 오를 수 있게, 제4막부터 조금씩 열어 준다 */
 function specialDropRate(act) { return act >= 6 ? .35 : act >= 5 ? .30 : .20; }
 /* 공짜 특대급 상자 한 번 — 연출까지 그대로 */
@@ -9512,14 +10094,18 @@ function showSpecialShop(refill) {
       return;
     }
     if (B.skin) {
+      const nCards = skinnableCards().length;
       for (const id of ALL_SKINS) {
-        const d = SKINS[id], got = ownSkin(id);
-        const u = el('div', 'gunit u-' + d.rar + (got ? ' owned' : ''),
+        const d = SKINS[id];
+        const mine = skinnableCards().filter(c => ownSkin(c, id)).length;
+        const got = mine > 0;
+        const u = el('div', 'gunit u-' + d.rar + (mine >= nCards ? ' owned' : ''),
           `<div class="ub" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].s}</div>
            <div class="ustar">${stars(d.rar)}</div>
-           <div class="ug" style="color:${d.c};text-shadow:0 0 12px ${d.c}88">${d.h}</div><div class="un">${d.n}</div>`);
-        bindTip(u, () => `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}` +
-          (got ? '<br><span style="color:#6fe0a8">이미 가지고 있다</span>' : ''));
+           <div class="ug" style="color:${d.c};text-shadow:0 0 12px ${d.c}88">${d.h}</div><div class="un">${d.n}</div>
+           <div class="uown" style="color:${got ? '#6fe0a8' : '#7a7263'}">${mine} / ${nCards}</div>`);
+        bindTip(u, () => `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}
+          <br><span style="color:#9a8d74">이 옷은 <b>부적마다 따로</b> 얻는다 — 지금 ${mine} 자루의 부적이 입을 수 있다</span>`);
         gp.appendChild(u);
       }
       renderBonus(p, cur);
@@ -10092,6 +10678,36 @@ const STORY = {
     { scene: 'dragon', t: '천군이 흩어지고 구름이 걷혔다.\n\n구름 위에는 아무것도 없었다.\n하늘조차 없었다.' },
     { scene: 'first', t: '발밑이 사라졌다.\n떨어지는 느낌도 없었다.\n\n떨어질 아래가 없었기 때문이다.' }
   ],
+  act15: [
+    { scene: 'first', who: '무', t: '"여기까지 온 사람이 몇 있었다."\n\n"전부 여기 있다. 없는 채로."' },
+    { scene: 'first', t: '없음이 없어졌다.\n\n눈을 뜨니 산 아래였다.\n마을에는 밥 짓는 연기가 올랐다.' },
+    { scene: 'hero', t: '길 어귀에 낯익은 팻말이 서 있었다.\n\n제1막, 요괴 숲.\n\n다시 처음이었다.' }
+  ],
+  act16: [
+    { scene: 'hero', who: '되풀이', t: '"몇 번째인지 세지 않네."\n\n"자네도 세지 말게. 세면 못 오르네."' },
+    { scene: 'moon', t: '두 번째로 오르는 산은 낯설었다.\n요괴들이 나를 알아보았기 때문이다.\n\n"또 왔구나." 하고 웃었다.' },
+    { scene: 'abyss', t: '되풀이를 끊자 되풀이가 멈췄다.\n\n멈춘 자리에 지금껏 죽인 것들이\n전부 서서 나를 보고 있었다.' }
+  ],
+  act17: [
+    { scene: 'abyss', who: '기억', t: '"너는 하나도 잊지 않았다."\n\n"우리도 하나도 잊지 않았다."' },
+    { scene: 'moon', t: '이름을 하나씩 불러 주었다.\n부를 이름이 없는 것에는\n이름을 지어 주었다.\n\n그러자 흩어졌다.' },
+    { scene: 'gate', t: '마지막 하나가 흩어지며 말했다.\n\n"자네 스승도 여기 있었네."' }
+  ],
+  act18: [
+    { scene: 'gate', who: '스승', t: '"늦었구나."\n\n벽사부를 쥐여 주던 그 손이었다.' },
+    { scene: 'hero', who: '스승', t: '"백 년 전에도 산이 열렸지.\n그때 오른 것이 나였네."\n\n"나는 문 앞에서 멈췄네."' },
+    { scene: 'parade', t: '스승이 흩어지자 길이 열렸다.\n\n그 길에 사람이 서 있었다.\n하나가 아니었다. 백 명이었다.' }
+  ],
+  act19: [
+    { scene: 'parade', who: '백년', t: '"백 년에 하나씩, 백 명이 올랐다."\n\n"아무도 넘지 못했다."' },
+    { scene: 'dawn', t: '백 명이 하나씩 길을 비켰다.\n비킨 자리마다 발자국이 남았다.\n\n발자국은 전부 위를 향하고 있었다.' },
+    { scene: 'first', t: '마지막 발자국 앞에\n산이 통째로 서 있었다.\n\n문을 연 것은 요괴가 아니었다.' }
+  ],
+  end_mountain: [
+    { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
+    { scene: 'dragon', t: '부적도, 벽사부도, 이름도 다 떨어졌다.\n\n남은 것은 산을 오른 발뿐이었다.\n그 발로 정상을 밟았다.' },
+    { scene: 'dawn', t: '산이 숨을 멈췄다.\n\n백 년 뒤에도 문은 열리지 않았고,\n그다음 백 년에도 열리지 않았다.\n\n산이 잠들었기 때문이다.\n누군가 끝까지 올라갔기 때문이다.' }
+  ],
   end_mu: [
     { scene: 'first', who: '무', t: '"여기까지 온 사람이 몇 있었다."\n\n"전부 여기 있다. 없는 채로."' },
     { scene: 'first', t: '부적은 진작 다 떨어졌다.\n스승의 벽사부도 재가 되었다.\n\n남은 것은 손 하나뿐이었다.\n그 손으로 붙였다.' },
@@ -10314,6 +10930,46 @@ function showMenu() {
 /* ── 설정 ────────────────────────────────────────────────── */
 const SCOPE_NAME = { battle: '전투만', run: '지도까지' };
 const PACE_NAME = { slow: '느긋', normal: '보통', fast: '빠름' };
+/* ══════════════════════════════════════════════════════════
+   코드 — 맛보기용. 제출 전에 이 덩어리째 지운다.
+   ══════════════════════════════════════════════════════════ */
+const CODES = {
+  '0316bakgi75birt': {
+    n: '맛보기',
+    d: '모든 부적과 모든 스킨을 준다',
+    once: true,
+    give() {
+      /* 모든 부적을 도감에 올리고, 모험 중이면 덱에도 넣는다 */
+      let cards = 0;
+      for (const id in CARDS) {
+        if (CARDS[id].rar === 'curse') continue;
+        dexAdd('cards', id); cards++;
+        if (G.run) { G.run.deck.push(mkCard(id, false)); G.run.stats.cards++; }
+      }
+      /* 모든 부적을 위한 모든 옷 */
+      let pairs = 0;
+      for (const cid of skinnableCards()) for (const sk of ALL_SKINS) {
+        META.skins.own[skinKey(cid, sk)] = 1; pairs++;
+      }
+      for (const id in RELICS) dexAdd('relics', id);
+      for (const id in SKILLS) dexAdd('skills', id);
+      saveMeta(); if (G.run) { saveRun(); renderTop(); }
+      return `부적 ${cards}장 · 스킨 ${pairs}벌`;
+    }
+  }
+};
+function redeemCode(raw) {
+  const k = String(raw || '').trim().toLowerCase();
+  if (!k) return { ok: false, msg: '코드를 적으시오' };
+  const c = CODES[k];
+  if (!c) return { ok: false, msg: '없는 코드다' };
+  META.codes = META.codes || {};
+  if (c.once && META.codes[k]) return { ok: false, msg: '이미 쓴 코드다' };
+  const got = c.give();
+  META.codes[k] = Date.now(); saveMeta();
+  toast(`${c.n} — ${got}`);
+  return { ok: true, msg: `${c.n} · ${got}` };
+}
 function showSettings() {
   const p = modal(`<h2>설 정</h2>
     <div class="hint">언제든 바꿀 수 있다 · 설정은 저장된다</div>
@@ -10414,6 +11070,31 @@ function showSettings() {
     n.appendChild(btn); list.appendChild(n);
   }
 
+  /* ── 코드 입력 ────────────────────────────────────────────
+     맛보기용. 제출 전에 지울 자리다. */
+  head('코 드 입 력');
+  {
+    const n = el('div', 'optrow codeRow',
+      `<div class="lb"><b>코드 입력</b><small>받은 코드가 있다면 여기에 적는다 (개발자용 · 나중에 삭제)</small></div>`);
+    const box = el('div', 'codebox');
+    const inp = el('input', 'codein');
+    inp.type = 'text'; inp.placeholder = '코드'; inp.spellcheck = false;
+    inp.setAttribute('autocomplete', 'off');
+    const btn = el('button', 'val'); btn.textContent = '입력';
+    const say = el('div', 'codesay');
+    const go = () => {
+      const r = redeemCode(inp.value);
+      say.textContent = r.msg;
+      say.style.color = r.ok ? '#7fe6cf' : '#e08a7a';
+      if (r.ok) { inp.value = ''; SND.unlock(); screenFlash('rgba(255,215,120,.3)', 520); }
+      else SND.err();
+    };
+    btn.onclick = go;
+    inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
+    box.appendChild(inp); box.appendChild(btn);
+    n.appendChild(box); n.appendChild(say); list.appendChild(n);
+  }
+
   p.querySelector('#op_reset').onclick = () => {
     Object.assign(OPT, OPT_DEF);
     SPEED = 1; META.speed = 1; SND.on = true; META.sound = true;
@@ -10509,14 +11190,24 @@ function showDex() {
       'gd_' + g));
   });
   const gk = p.querySelector('#dx_sk');
-  for (const id of ALL_SKINS) {
-    const d = SKINS[id], got = ownSkin(id);
-    const n = el('div', 'dextile skintileD gd_' + d.rar + (got ? '' : ' unknown'),
-      `<b style="${got ? `color:${d.c};text-shadow:0 0 12px ${d.c}99` : ''}">${got ? d.h : '?'}</b>
-       <span>${got ? d.n : '???'}</span>`);
-    if (got) bindTip(n, () => `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}
-      <br><span style="color:#8f846d">부적을 눌러 갈아입힌다</span>`);
-    gk.appendChild(n);
+  {
+    const cards = skinnableCards();
+    for (const id of ALL_SKINS) {
+      const d = SKINS[id];
+      const mine = cards.filter(c => ownSkin(c, id));
+      const got = mine.length > 0;
+      const n = el('div', 'dextile skintileD gd_' + d.rar + (got ? '' : ' unknown'),
+        `<b style="${got ? `color:${d.c};text-shadow:0 0 12px ${d.c}99` : ''}">${got ? d.h : '?'}</b>
+         <span>${got ? d.n : '???'}</span>
+         <em class="skcnt" style="color:${got ? '#6fe0a8' : '#7a7263'}">${mine.length}/${cards.length}</em>`);
+      bindTip(n, () => got
+        ? `<b style="color:${d.c}">${d.n} (${d.h})</b> · ${GRADE[d.rar].n} 스킨<br>${d.d}
+           <br><span style="color:#8f846d">입힐 수 있는 부적 ${mine.length}자루 —
+           ${mine.slice(0, 6).map(c => CARDS[c].n).join(' · ')}${mine.length > 6 ? ' …' : ''}</span>`
+        : `<b>아직 한 벌도 없는 옷</b><br><span style="color:#9a8d74">스킨 상자는
+           <b>부적 하나를 정해</b> 그 부적의 옷을 준다</span>`);
+      gk.appendChild(n);
+    }
   }
   const gs = p.querySelector('#dx_s');
   for (const id of ALL_SKILLS) {
@@ -10999,7 +11690,10 @@ function setBg(act) {
     9: ['#a8a08e', '#88806e', '#5a5346'], 10: ['#3a1e2a', '#26121c', '#140a10'],
     11: ['#c98a5a', '#9a6440', '#5e3b28'], 12: ['#8f9a7a', '#6e7a5c', '#434b38'],
     13: ['#8a90ac', '#666d8a', '#3b405a'], 14: ['#e6d9a8', '#c9b87e', '#8e7f4e'],
-    15: ['#2a2a2e', '#1a1a1e', '#0a0a0c']
+    15: ['#2a2a2e', '#1a1a1e', '#0a0a0c'],
+    16: ['#c3b79d', '#9c8f74', '#6a6050'], 17: ['#7a6a7a', '#5a4c5c', '#332a38'],
+    18: ['#8a9aa8', '#66727e', '#3c454e'], 19: ['#6a5a7a', '#4a3e58', '#2a2236'],
+    20: ['#7e7a6a', '#5c584a', '#33302a']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
@@ -11011,7 +11705,12 @@ function setBg(act) {
                 12: '#dfe4cf 0%,#c3cbae 52%,#9aa588 100%',
                 13: '#dfe2ee 0%,#bcc2d8 52%,#949ab8 100%',
                 14: '#fffaea 0%,#f6ecc4 50%,#e2d59a 100%',
-                15: '#141416 0%,#0a0a0c 55%,#000 100%' }[a];
+                15: '#141416 0%,#0a0a0c 55%,#000 100%',
+                16: '#f0e6cc 0%,#dccca8 50%,#bda87e 100%',
+                17: '#cfc2d2 0%,#a897b0 52%,#7c6a88 100%',
+                18: '#e2e8ee 0%,#c2cdd8 52%,#98a5b2 100%',
+                19: '#c8bcd8 0%,#a294ba 50%,#75688e 100%',
+                20: '#e8e2cf 0%,#c9c2a8 50%,#9d9680 100%' }[a];
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      ${bgSkyArt(a)}
@@ -11147,6 +11846,54 @@ function bgSkyArt(a) {
         <circle cx="500" cy="180" r="130" stroke-width=".8"/><circle cx="500" cy="180" r="196" stroke-width=".5"/></g>
       <g opacity=".35">${rep(26, i => `<circle cx="${(i * 173) % 1000}" cy="${(i * 97) % 340}" r="${.6 + (i % 3) * .4}" fill="#9a9ab0"/>`)}</g>`;
   }
+  if (a === 16) {
+    /* 회귀 — 처음 그 하늘인데, 해가 두 개 겹쳐 보인다 */
+    return `<circle cx="112" cy="74" r="38" fill="#c9585c" opacity=".26"/>
+      <circle cx="132" cy="88" r="38" fill="#c9585c" opacity=".14"/>
+      ${bgCloud(320, 150, 120, 22, '#a89474', .3)}
+      ${bgCloud(760, 122, 140, 20, '#a89474', .24)}
+      <g>${rep(6, i => bgBird(210 + i * 128, 104 + (i % 3) * 24, 9, '#6a5a44', .45))}</g>
+      <g opacity=".16" fill="none" stroke="#7b6f58">${rep(4, i =>
+        `<path d="M0,${196 + i * 26} Q250,${184 + i * 26} 500,${196 + i * 26} Q750,${208 + i * 26} 1000,${196 + i * 26}"/>`)}</g>`;
+  }
+  if (a === 17) {
+    /* 기억 — 얼굴 없는 형체들이 하늘에 걸려 있다 */
+    return `<circle cx="500" cy="140" r="86" fill="#cfc0d6" opacity=".3"/>
+      <circle cx="500" cy="140" r="130" fill="#cfc0d6" opacity=".1"/>
+      <g opacity=".22" fill="#4a3a52">${rep(17, i =>
+        `<ellipse cx="${40 + i * 58}" cy="${96 + (i % 4) * 42}" rx="13" ry="19"/>`)}</g>
+      <g opacity=".3">${rep(24, i => `<circle cx="${(i * 149) % 990}" cy="${40 + (i * 83) % 220}" r="${.8 + (i % 3) * .5}" fill="#e0d0e8"/>`)}</g>`;
+  }
+  if (a === 18) {
+    /* 스승 — 빈 절의 처마와, 하늘에 걸린 부적 한 장 */
+    return `<circle cx="820" cy="98" r="46" fill="#eef3f8" opacity=".4"/>
+      ${bgCloud(280, 168, 140, 24, '#98a5b2', .3)}
+      <g opacity=".4" fill="#a8272c">
+        <rect x="486" y="96" width="28" height="42" rx="2"/>
+        <rect x="490" y="102" width="20" height="2"/><rect x="490" y="110" width="20" height="2"/>
+        <rect x="490" y="118" width="20" height="2"/><rect x="499" y="102" width="2" height="28"/></g>
+      <g opacity=".26" fill="#5c6874">${rep(4, i =>
+        `<path d="M${120 + i * 240},296 l46,-34 l150,0 l46,34 Z"/>`)}</g>
+      <g>${rep(7, i => bgBird(150 + i * 118, 200 + (i % 3) * 22, 8, '#5c6874', .4))}</g>`;
+  }
+  if (a === 19) {
+    /* 백년 — 셀 수 없이 많은 등불이 층층이 걸려 있다 */
+    return `<circle cx="500" cy="136" r="76" fill="#d8cce8" opacity=".28"/>
+      <g opacity=".5">${rep(30, i => bgLantern(24 + (i % 15) * 68, 84 + ((i / 15) | 0) * 62, 4, '#c8a8e8', .7))}</g>
+      <g opacity=".3" fill="none" stroke="#8a7aa8" stroke-width="1">${rep(3, i =>
+        `<path d="M0,${210 + i * 34} L1000,${196 + i * 34}"/>`)}</g>`;
+  }
+  if (a === 20) {
+    /* 산 — 아주 큰 봉우리 하나가 하늘을 가린다 */
+    return `<circle cx="500" cy="120" r="66" fill="#fff6d8" opacity=".55"/>
+      <circle cx="500" cy="120" r="120" fill="#fff0c0" opacity=".16"/>
+      <path d="M120,600 L500,64 L880,600 Z" fill="#6a6454" opacity=".2"/>
+      <path d="M330,600 L500,160 L670,600 Z" fill="#5a5446" opacity=".16"/>
+      <path d="M418,236 L500,64 L582,236 L546,220 L500,246 L454,220 Z" fill="#f6f2e4" opacity=".5"/>
+      ${bgCloud(300, 300, 160, 26, '#9d9680', .26)}
+      ${bgCloud(760, 268, 150, 22, '#9d9680', .2)}
+      <g>${rep(8, i => bgBird(140 + i * 106, 172 + (i % 3) * 26, 9, '#5c5648', .4))}</g>`;
+  }
   if (a === 9) return `<g opacity=".4"><circle cx="500" cy="150" r="92" fill="none" stroke="#fff" stroke-width="2"/>
       <circle cx="500" cy="150" r="120" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>
       <circle cx="500" cy="150" r="150" fill="none" stroke="#fff" stroke-width="1" opacity=".3"/></g>`;
@@ -11190,6 +11937,27 @@ function bgFarArt(a) {
     return `<g opacity=".3" fill="#d8c88a">${rep(6, i => bgGate(110 + i * 158, 396, 74, 62, '#d8c88a', .8))}</g>`;
   if (a === 15)
     return `<g opacity=".18">${rep(9, i => `<rect x="${(i * 121) % 940}" y="${300 + (i * 53) % 90}" width="${8 + (i % 4) * 9}" height="1" fill="#8a8aa0"/>`)}</g>`;
+  if (a === 16)
+    /* 회귀 — 처음 그 숲의 나무들이 그대로 서 있다 */
+    return `<g opacity=".26" fill="#7b6f58">${rep(19, i =>
+      `<path d="M${24 + i * 52},${360 + (i % 3) * 12} l9,-22 l9,22 Z"/><rect x="${31 + i * 52}" y="${358 + (i % 3) * 12}" width="4" height="18"/>`)}</g>`;
+  if (a === 17)
+    /* 기억 — 비석들 */
+    return `<g opacity=".3" fill="#4a3e50">${rep(15, i =>
+      `<rect x="${34 + i * 64}" y="${372 + (i % 4) * 14}" width="18" height="${34 + (i % 3) * 12}" rx="9"/>`)}</g>`;
+  if (a === 18)
+    /* 스승 — 절 하나 */
+    return `<g opacity=".34" fill="#4c5660">
+      <path d="M352,392 l44,-38 l208,0 l44,38 Z"/><rect x="396" y="392" width="208" height="52"/>
+      <path d="M382,356 l32,-28 l168,0 l32,28 Z" opacity=".85"/>
+      <rect x="462" y="404" width="76" height="40" fill="#2f3841"/></g>`;
+  if (a === 19)
+    /* 백년 — 앞서 간 사람들의 그림자가 줄지어 있다 */
+    return `<g opacity=".26" fill="#3f3552">${rep(21, i =>
+      `<ellipse cx="${24 + i * 48}" cy="${374 + (i % 4) * 13}" rx="9" ry="21"/>`)}</g>`;
+  if (a === 20)
+    return `<g opacity=".22" fill="#5c5648">${rep(13, i =>
+      `<path d="M${20 + i * 78},${372 + (i % 3) * 14} l16,-30 l16,30 Z"/>`)}</g>`;
   return '';
 }
 /* 가운데 능선 뒤 */
@@ -11218,6 +11986,21 @@ function bgMidArt(a) {
   if (a === 15)
     return `<g opacity=".22" fill="none" stroke="#7a7a92" stroke-width="1">
       ${rep(5, i => `<path d="M0,${430 + i * 32} Q250,${418 + i * 32} 500,${430 + i * 32} Q750,${442 + i * 32} 1000,${430 + i * 32}"/>`)}</g>`;
+  if (a === 16)
+    return `<g opacity=".3" fill="#6a6050">${rep(25, i =>
+      `<path d="M${16 + i * 40},${460 + (i % 4) * 14} l7,-18 l7,18 Z"/>`)}</g>`;
+  if (a === 17)
+    return `<g opacity=".34" fill="#332a38">${rep(19, i =>
+      `<rect x="${22 + i * 52}" y="${470 + (i % 3) * 12}" width="20" height="${40 + (i % 4) * 14}" rx="10"/>`)}</g>`;
+  if (a === 18)
+    return `<g opacity=".3" fill="#3c454e">${rep(9, i =>
+      `<rect x="${68 + i * 106}" y="${462 + (i % 2) * 10}" width="8" height="56"/>
+       <rect x="${58 + i * 106}" y="${456 + (i % 2) * 10}" width="28" height="7"/>`)}</g>`;
+  if (a === 19)
+    return `<g opacity=".4">${rep(16, i => bgLantern(30 + i * 64, 462 + (i % 3) * 18, 6, '#b490e0', .7))}</g>`;
+  if (a === 20)
+    return `<g opacity=".3" fill="#33302a">${rep(11, i =>
+      `<ellipse cx="${44 + i * 92}" cy="${478 + (i % 3) * 16}" rx="26" ry="14"/>`)}</g>`;
   return '';
 }
 /* 맨 앞 */
@@ -11249,6 +12032,26 @@ function bgNearArt(a) {
   if (a === 15)
     return `<g opacity=".5"><rect x="0" y="520" width="1000" height="80" fill="#000"/>
       <g opacity=".3">${rep(11, i => `<circle cx="${(i * 211) % 1000}" cy="${540 + (i * 41) % 50}" r=".9" fill="#8a8aa0"/>`)}</g></g>`;
+  if (a === 16)
+    /* 처음 오르던 그 산길의 돌계단 */
+    return `<g opacity=".4" fill="#4e463a">${rep(9, i =>
+      `<rect x="${100 + i * 96}" y="${588 - i * 6}" width="86" height="${9 + i}"/>`)}</g>`;
+  if (a === 17)
+    return `<g opacity=".45" fill="#241d28">
+      <path d="M0,556 Q140,534 300,552 Q460,570 620,548 Q790,526 1000,548 L1000,600 L0,600 Z"/>
+      <g opacity=".5">${rep(13, i => `<rect x="${26 + i * 76}" y="${540 + (i % 3) * 10}" width="14" height="30" rx="7" fill="#150f18"/>`)}</g></g>`;
+  if (a === 18)
+    return `<g opacity=".45" fill="#2b3239">
+      <path d="M0,552 L1000,552 L1000,600 L0,600 Z"/>
+      ${rep(19, i => `<rect x="${14 + i * 53}" y="${528 + (i % 2) * 8}" width="30" height="26"/>`)}</g>`;
+  if (a === 19)
+    return `<g opacity=".55">${rep(6, i => bgLantern(70 + i * 176, 548 - (i % 2) * 14, 12, '#c8a0ff', .78))}</g>
+      <g opacity=".42" fill="#1c1526">${rep(6, i =>
+        `<ellipse cx="${70 + i * 176}" cy="${600 - (i % 2) * 10}" rx="26" ry="46"/>`)}</g>`;
+  if (a === 20)
+    return `<g opacity=".5" fill="#2a2620">
+      <path d="M0,566 Q160,540 340,562 Q520,584 700,556 Q860,532 1000,558 L1000,600 L0,600 Z"/>
+      ${rep(7, i => `<path d="M${60 + i * 142},600 q22,-58 6,-104 q26,30 38,4 q10,48 -10,100 Z"/>`)}</g>`;
   return '';
 }
 
