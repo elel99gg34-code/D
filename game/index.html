@@ -2569,6 +2569,184 @@ const SND = {
               this.blip(this.vary(620), { dur: .22, type: 'triangle', vol: .09, to: 300, rev: .45 });
               this.blip(this.vary(1240), { dur: .12, type: 'sine', vol: .05, delay: .02, rev: .4 }); },
 
+  /* ══════════════════════════════════════════════════════
+     배경 음악 — 그때그때 지어 낸다
+     ──────────────────────────────────────────────────────
+     음원 파일은 한 개도 쓰지 않는다. 거문고 뜯는 소리, 대금의
+     긴 숨, 장구 장단을 그 자리에서 합성해 여덟 박 고리로 돌린다.
+     막이 바뀌면 조(調)와 빠르기와 악기 섞임이 달라진다.
+     ══════════════════════════════════════════════════════ */
+  music: { on: false, t: null, beat: 0, cyc: 0, mode: 'map', act: 0 },
+  musicBus() {
+    if (this.mGain) return this.mGain;
+    const c = this.ctx;
+    this.mGain = c.createGain();
+    this.mGain.gain.value = 0.0001;
+    this.mGain.connect(this.master);
+    this.mRev = c.createGain(); this.mRev.gain.value = .5;
+    this.mGain.connect(this.mRev); this.mRev.connect(this.revSend);
+    return this.mGain;
+  },
+  /* 계면조(슬픈 쪽) · 평조(밝은 쪽) — 다섯 음 */
+  MODE_G: [0, 3, 5, 7, 10],
+  MODE_P: [0, 2, 5, 7, 9],
+  bgmSet(act) {
+    const a = Math.min(20, Math.max(1, act || 1));
+    /* [으뜸음, 조, 한 박(ms), 대금, 장구] */
+    const T = [
+      [196, 'P', 620, .5, .0],   /* 1 요괴 숲 — 낮고 성기게 */
+      [185, 'P', 600, .5, .0],   /* 2 안개 봉우리 */
+      [175, 'G', 570, .6, .1],   /* 3 구천 벼랑 */
+      [165, 'G', 540, .7, .2],   /* 4 명계 관문 */
+      [220, 'P', 520, .6, .2],   /* 5 구천 상계 — 높아진다 */
+      [147, 'G', 500, .8, .3],   /* 6 무간 */
+      [131, 'G', 520, .9, .3],   /* 7 무저갱 */
+      [262, 'P', 560, .5, .1],   /* 8 태초 — 맑다 */
+      [175, 'G', 540, .6, .2],   /* 9 환영 */
+      [110, 'G', 460, .8, .55],  /* 10 백귀야행 — 장구가 산다 */
+      [233, 'P', 540, .6, .15],  /* 11 새벽 */
+      [196, 'P', 560, .5, .25],  /* 12 인간계 */
+      [156, 'G', 500, .6, .35],  /* 13 왕도 */
+      [294, 'P', 600, .7, .1],   /* 14 천계 */
+      [98,  'G', 700, .9, .0],   /* 15 무 — 거의 없다 */
+      [196, 'P', 620, .5, .1],   /* 16 회귀 — 첫 막으로 돌아간다 */
+      [165, 'G', 520, .7, .3],   /* 17 기억 */
+      [208, 'G', 560, .8, .2],   /* 18 스승 */
+      [139, 'G', 480, .7, .45],  /* 19 백년 */
+      [123, 'G', 520, .9, .4]    /* 20 산 */
+    ][a - 1];
+    return { root: T[0], scale: T[1] === 'G' ? this.MODE_G : this.MODE_P,
+             beat: T[2], daeg: T[3], jang: T[4] };
+  },
+  /* 거문고 — 술대로 뜯는다 */
+  geomungo(f, vol) {
+    if (!this.ok()) return;
+    const c = this.ctx, t0 = c.currentTime, g = c.createGain(), o = c.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(f * 1.012, t0);
+    o.frequency.exponentialRampToValueAtTime(f, t0 + .07);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + 1.5);
+    o.connect(g).connect(this.musicBus());
+    o.start(t0); o.stop(t0 + 1.6);
+    /* 술대가 줄을 긁는 소리 */
+    const n = c.createBufferSource(); n.buffer = this.noiseBuf; n.loop = true;
+    const bf = c.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 5; bf.Q.value = 3;
+    const ng = c.createGain();
+    ng.gain.setValueAtTime(vol * .5, t0);
+    ng.gain.exponentialRampToValueAtTime(.0001, t0 + .09);
+    n.connect(bf).connect(ng).connect(this.musicBus());
+    n.start(t0); n.stop(t0 + .12);
+  },
+  /* 대금 — 긴 숨, 떨림이 있다 */
+  daegeum(f, dur, vol) {
+    if (!this.ok()) return;
+    const c = this.ctx, t0 = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    const lfo = c.createOscillator(), lg = c.createGain();
+    lfo.frequency.value = 4.6; lg.gain.value = f * .012;
+    lfo.connect(lg).connect(o.frequency); lfo.start(t0); lfo.stop(t0 + dur + .2);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + dur * .28);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    o.connect(g).connect(this.musicBus());
+    o.start(t0); o.stop(t0 + dur + .1);
+    /* 숨소리 */
+    const n = c.createBufferSource(); n.buffer = this.noiseBuf; n.loop = true;
+    const bf = c.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 3.2; bf.Q.value = 1.6;
+    const ng = c.createGain();
+    ng.gain.setValueAtTime(.0001, t0);
+    ng.gain.exponentialRampToValueAtTime(vol * .35, t0 + dur * .3);
+    ng.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    n.connect(bf).connect(ng).connect(this.musicBus());
+    n.start(t0); n.stop(t0 + dur + .1);
+  },
+  /* 장구 — 북편(왼쪽 낮은 것)과 채편(오른쪽 높은 것) */
+  janggu(kind, vol) {
+    if (!this.ok()) return;
+    const c = this.ctx, t0 = c.currentTime;
+    if (kind === 'kung') {                     /* 북편 */
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(96, t0);
+      o.frequency.exponentialRampToValueAtTime(52, t0 + .18);
+      g.gain.setValueAtTime(vol, t0);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + .3);
+      o.connect(g).connect(this.musicBus());
+      o.start(t0); o.stop(t0 + .34);
+    } else {                                   /* 채편 */
+      const n = c.createBufferSource(); n.buffer = this.noiseBuf; n.loop = true;
+      const bf = c.createBiquadFilter(); bf.type = 'bandpass';
+      bf.frequency.setValueAtTime(2400, t0); bf.Q.value = 2.2;
+      const g = c.createGain();
+      g.gain.setValueAtTime(vol * .8, t0);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + .1);
+      n.connect(bf).connect(g).connect(this.musicBus());
+      n.start(t0); n.stop(t0 + .14);
+    }
+  },
+  bgmNote(deg, oct) {
+    const S = this.bgmSet(this.music.act);
+    const n = S.scale[((deg % S.scale.length) + S.scale.length) % S.scale.length];
+    return S.root * Math.pow(2, (n + (oct || 0) * 12) / 12);
+  },
+  bgmTick() {
+    const m = this.music;
+    if (!m.on || !this.ok()) return;
+    const S = this.bgmSet(m.act);
+    const b = m.beat % 8;
+    const battle = m.mode === 'battle' || m.mode === 'boss';
+    const boss = m.mode === 'boss';
+    const V = boss ? 1.25 : battle ? 1.05 : .85;
+    /* 거문고 — 여덟 박 가운데 몇 자리에 */
+    const SPOT = battle ? [0, 2, 3, 5, 6] : [0, 3, 5];
+    if (SPOT.indexOf(b) >= 0 && Math.random() < (battle ? .78 : .55)) {
+      const deg = [0, 2, 4, 1, 3, 0, 2, 4][b] + (Math.random() < .25 ? 1 : 0);
+      this.geomungo(this.bgmNote(deg, b === 0 ? 0 : Math.random() < .3 ? 1 : 0), .11 * V);
+    }
+    /* 대금 — 두 고리에 한 번, 길게 */
+    if (b === 0 && m.cyc % 2 === 0 && Math.random() < S.daeg)
+      this.daegeum(this.bgmNote(m.cyc % 5 === 0 ? 2 : 0, 1), S.beat * 6 / 1000, .055 * V);
+    /* 뿌리음 — 아주 낮게 깔린다 */
+    if (b === 0 && m.cyc % 4 === 0)
+      this.daegeum(S.root / 2, S.beat * 12 / 1000, .04 * V);
+    /* 장구 — 덩 · 쿵 · 덕 · 쿵덕 */
+    const jv = S.jang * (boss ? 1.7 : battle ? 1.15 : 1);
+    if (jv > .04) {
+      if (b === 0) { this.janggu('kung', .16 * jv); this.janggu('deok', .1 * jv); }
+      else if (b === 2) this.janggu('deok', .09 * jv);
+      else if (b === 4) this.janggu('kung', .13 * jv);
+      else if (b === 6) { this.janggu('deok', .08 * jv);
+        if (boss) setTimeout(() => this.janggu('kung', .1 * jv), S.beat / 2); }
+    }
+    m.beat++;
+    if (b === 7) m.cyc++;
+    m.t = setTimeout(() => this.bgmTick(), S.beat / (boss ? 1.12 : 1));
+  },
+  bgm(on, mode) {
+    if (!this.ok()) { if (!on) return; }
+    const m = this.music;
+    const act = (typeof G === 'object' && G && G.run) ? G.run.act : 1;
+    if (!on || (typeof OPT === 'object' && OPT && OPT.music === false)) {
+      m.on = false;
+      if (m.t) { clearTimeout(m.t); m.t = null; }
+      if (this.mGain) this.mGain.gain.linearRampToValueAtTime(.0001, this.ctx.currentTime + .9);
+      return;
+    }
+    this.init();
+    if (!this.ok()) return;
+    const changed = m.act !== act || m.mode !== (mode || 'map');
+    m.act = act; m.mode = mode || 'map';
+    const bus = this.musicBus();
+    const vol = (OPT.musicVol == null ? .55 : OPT.musicVol) * (m.mode === 'boss' ? 1.15 : 1);
+    bus.gain.cancelScheduledValues(this.ctx.currentTime);
+    bus.gain.setValueAtTime(Math.max(.0001, bus.gain.value), this.ctx.currentTime);
+    bus.gain.linearRampToValueAtTime(Math.max(.0001, vol * .34), this.ctx.currentTime + 1.4);
+    if (m.on && !changed) return;
+    if (changed) { m.beat = 0; m.cyc = 0; }
+    if (!m.on) { m.on = true; if (m.t) clearTimeout(m.t); this.bgmTick(); }
+  },
   /* ── 배경 바람 — 막마다 결이 다르다 ──────────────────────
      낮은 산은 마른 바람, 벼랑은 휘파람, 명계는 웅웅거림,
      태초는 맑은 울림, 백귀야행은 멀리서 오는 발소리,
@@ -2761,6 +2939,8 @@ const OPT_DEF = {
   banner: true,             /* 큰 기술 이름 연출 */
   autoScope: 'battle',      /* battle = 전투만 · run = 지도까지 스스로 나아간다 */
   autoPace: 'normal',       /* slow · normal · fast */
+  music: true,              /* 배경 음악 */
+  musicVol: .55,            /* 배경 음악 음량 */
   autoPotion: true,         /* 위급할 때 물약을 쓴다 */
   autoSkill: true,          /* 비기를 알아서 쓴다 */
   turbo: false              /* VIP 2배속 */
@@ -5978,6 +6158,7 @@ function startBattle(enemyIds, kind, opts) {
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
+  SND.bgm(true, kind === 'boss' ? 'boss' : 'battle');
   if (kind === 'boss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
   if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
   fire('battleStart');
@@ -8227,7 +8408,7 @@ function nextAct() {
 
 function showMap() {
   G.scene = 'map'; G.b = null; if (G.run) G.run.inBattle = false;
-  clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false);
+  clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false); SND.bgm(true, 'map');
   const run = G.run;
   migrateMap(run);                          /* 옛 그물 지도를 갈림길 지도로 */
   const m = run.map;
@@ -11386,7 +11567,9 @@ function showSettings() {
   head('소 리');
   row('소리', '모든 소리를 켜고 끈다', () => SND.on, v => {
     SND.on = v; META.sound = v;
-    if (v) { SND.init(); SND.ui(); SND.ambience(true, !!G.b); } else SND.ambience(false);
+    if (v) { SND.init(); SND.ui(); SND.ambience(true, !!G.b);
+      SND.bgm(true, G.b ? (G.b.kind === 'boss' ? 'boss' : 'battle') : 'map'); }
+    else { SND.ambience(false); SND.bgm(false); }
   });
   {
     const n = el('div', 'optrow', `<div class="lb"><b>음량</b><small>지금 <span id="op_volv">${Math.round(OPT.vol * 100)}</span>%</small></div>`);
@@ -11397,6 +11580,25 @@ function showSettings() {
       n.querySelector('#op_volv').textContent = sl.value;
     };
     sl.onchange = () => { saveMeta(); if (SND.on) SND.ui(); };
+    n.appendChild(sl); list.appendChild(n);
+  }
+  row('배경 음악', '거문고·대금·장구를 그때그때 지어 낸다 · 막마다 조가 다르다',
+    () => OPT.music !== false, v => {
+      OPT.music = v;
+      if (v) SND.bgm(true, G.b ? (G.b.kind === 'boss' ? 'boss' : 'battle') : 'map');
+      else SND.bgm(false);
+    });
+  {
+    const n = el('div', 'optrow', `<div class="lb"><b>음악 음량</b><small>지금 <span id="op_mvv">${Math.round((OPT.musicVol == null ? .55 : OPT.musicVol) * 100)}</span>%</small></div>`);
+    const sl = el('input'); sl.type = 'range'; sl.min = '0'; sl.max = '100'; sl.step = '5';
+    sl.value = String(Math.round((OPT.musicVol == null ? .55 : OPT.musicVol) * 100));
+    sl.oninput = () => {
+      OPT.musicVol = +sl.value / 100;
+      n.querySelector('#op_mvv').textContent = sl.value;
+      if (SND.mGain && SND.music.on)
+        SND.mGain.gain.linearRampToValueAtTime(Math.max(.0001, OPT.musicVol * .34), SND.ctx.currentTime + .2);
+    };
+    sl.onchange = () => saveMeta();
     n.appendChild(sl); list.appendChild(n);
   }
 
@@ -12461,7 +12663,7 @@ function bgNearArt(a) {
 function showTitle() {
   G.scene = 'title'; G.b = null; _bgKey = ''; setBg(1); autoStop();
   const tb = $('#topbar'); if (tb) tb.remove();
-  SND.ambience(false);
+  SND.ambience(false); SND.bgm(false);
   closeOverlay(); hideArrow();
   const s = $('#scene');
   s.innerHTML = `<div id="title-scene">
