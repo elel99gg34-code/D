@@ -3839,7 +3839,7 @@ defCard({ id: 'immovable', n: '부동명왕격', g: '不', type: 'attack', rar: 
 defCard({ id: 'lotus', n: '연화참', g: '蓮', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
   v: u => ({ d: u ? 6 : 4 }),
   txt: v => `이번 턴에 사용한 카드 수 × <em>${v.d}</em>의 피해를 준다. (이 카드 포함)`,
-  play: c => atk(c.t, (G.b.played + 1) * c.v.d) });
+  play: c => atk(c.t, ((G.b ? G.b.played : 0) + 1) * c.v.d) });
 
 defCard({ id: 'stormtal', n: '폭풍 부적', g: '嵐', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'all',
   v: u => ({ d: u ? 5 : 3 }),
@@ -3876,8 +3876,11 @@ defCard({ id: 'afterimage', n: '잔상', g: '殘', type: 'skill', rar: 'uncommon
 defCard({ id: 'ready', n: '준비 자세', g: '備', type: 'skill', rar: 'uncommon', cost: 0,
   v: u => ({ n: u ? 3 : 2 }),
   txt: v => `카드 1장을 버리고 ${v.n}장을 뽑는다.`,
-  play: async c => { const h = G.b.hand.filter(x => x.uid !== c.card.uid);
-    if (h.length) { const d = await chooseCards(h, 1, '버릴 카드를 고르시오'); for (const x of d) discardCard(x); }
+  play: async c => { if (!G.b) return;
+    const h = G.b.hand.filter(x => x.uid !== c.card.uid);
+    if (h.length) { const d = await chooseCards(h, 1, '버릴 카드를 고르시오');
+      if (!G.b) return;                       /* 고르는 사이 전투가 끝났을 수 있다 */
+      for (const x of d) discardCard(x); }
     drawCards(c.v.n); } });
 
 defCard({ id: 'seal', n: '봉인부', g: '封', type: 'skill', rar: 'uncommon', cost: 1, tgt: 'enemy', exhaust: true,
@@ -4474,7 +4477,7 @@ defCard({ id: 'twinfang', n: '쌍아', g: '牙', type: 'attack', rar: 'uncommon'
 defCard({ id: 'echoward', n: '되울림 부적', g: '響', type: 'skill', rar: 'uncommon', cost: 1,
   v: u => ({ b: u ? 7 : 5 }),
   txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 이번 턴에 낸 부적 한 장마다 <i>2</i>씩 더 얻는다.`,
-  play: c => blk(c.v.b + G.b.played * 2) });
+  play: c => blk(c.v.b + (G.b ? G.b.played : 0) * 2) });
 
 defCard({ id: 'graspwind', n: '붙잡는 바람', g: '握', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'all',
   v: u => ({ d: u ? 7 : 5 }),
@@ -4617,7 +4620,7 @@ defCard({ id: 'stonefist', n: '석권', g: '拳', type: 'attack', rar: 'common',
 defCard({ id: 'windread', n: '바람 읽기', g: '風', type: 'skill', rar: 'common', cost: 0,
   v: u => ({ n: u ? 2 : 1 }),
   txt: v => `카드를 ${v.n}장 뽑는다. 이번 턴에 낸 카드가 없으면 기를 1 얻는다.`,
-  play: c => { drawCards(c.v.n); if (!G.b.played) energy(1); } });
+  play: c => { drawCards(c.v.n); if (G.b && !G.b.played) energy(1); } });
 
 defCard({ id: 'grudgecut', n: '한풀이', g: '恨', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
   v: u => ({ d: u ? 7 : 5, k: u ? 4 : 3 }),
@@ -5268,41 +5271,48 @@ const SKILLS = {};
 function defSkill(o) { SKILLS[o.id] = o; return o; }
 
 /* --- 4등급 (시작 비기) --- */
+/* ══════════════════════════════════════════════════════════
+   비기(祕) — 전투 한 번에 딱 한 번 쓰는 한 수
+   ──────────────────────────────────────────────────────────
+   하나같이 너무 세다는 말을 들어 전부 40%쯤 눅였다.
+   판을 뒤집되 혼자 끝내지는 못하게.
+   (만천귀장만은 따로 「절반」을 이르셨기에 그 값을 그대로 둔다)
+   ══════════════════════════════════════════════════════════ */
 defSkill({ id: 'shout', n: '기합', g: '喝', rar: 'basic',
-  d: '모든 적에게 <em>8</em>의 피해를 준다.',
-  use: async () => { SND.drum(); for (const e of alive()) atk(e, 8, { fx: 'wind' }); } });
+  d: '모든 적에게 <em>5</em>의 피해를 준다.',
+  use: async () => { SND.drum(); for (const e of alive()) atk(e, 5, { fx: 'wind' }); } });
 
 /* --- 3등급 --- */
 defSkill({ id: 'guardqi', n: '호신강기', g: '護', rar: 'common',
-  d: '<i>28</i>의 방어도를 얻는다.',
-  use: async () => { blk(28, true); SND.block(); } });
+  d: '<i>17</i>의 방어도를 얻는다.',
+  use: async () => { blk(17, true); SND.block(); } });
 
 /* --- 2등급 --- */
 defSkill({ id: 'gatherqi', n: '축기', g: '蓄', rar: 'uncommon',
-  d: '기를 4 얻는다.',
-  use: async () => { energy(4); SND.power(); } });
+  d: '기를 2 얻는다.',
+  use: async () => { energy(2); SND.power(); } });
 
 /* --- 1등급 --- */
 defSkill({ id: 'chainhand', n: '연환수', g: '連', rar: 'rare',
-  d: '카드를 4장 뽑고 <b>힘</b> 3을 얻는다.',
-  use: async () => { drawCards(4); st(P(), 'str', 3); SND.power(); } });
+  d: '카드를 2장 뽑고 <b>힘</b> 2를 얻는다.',
+  use: async () => { drawCards(2); st(P(), 'str', 2); SND.power(); } });
 
 /* --- S급 --- */
 defSkill({ id: 'qiwave', n: '기공파', g: '氣', rar: 'special',
-  d: '모든 적에게 <em>22</em>의 피해를 준다.',
+  d: '모든 적에게 <em>13</em>의 피해를 준다.',
   use: async () => { screenFlash('rgba(120,220,240,.4)', 420); SND.holyhit();
-    for (const e of alive()) atk(e, 22, { fx: 'wind' }); } });
+    for (const e of alive()) atk(e, 13, { fx: 'wind' }); } });
 defSkill({ id: 'ironwall', n: '철벽', g: '鐵', rar: 'special',
-  d: '<i>30</i>의 방어도를 얻고, 이번 턴 받는 피해가 절반이 된다.',
-  use: async () => { blk(30, true); G.b.halved = true; SND.block(); flash('철벽'); } });
+  d: '<i>18</i>의 방어도를 얻고, 이번 턴 받는 피해가 <b>3분의 1</b> 줄어든다.',
+  use: async () => { blk(18, true); G.b.softened = true; SND.block(); flash('철벽'); } });
 defSkill({ id: 'rush', n: '속공', g: '速', rar: 'special',
-  d: '카드를 3장 뽑고 기를 2 얻는다.',
-  use: async () => { drawCards(3); energy(2); SND.power(); } });
+  d: '카드를 2장 뽑고 기를 1 얻는다.',
+  use: async () => { drawCards(2); energy(1); SND.power(); } });
 
 /* --- SSX급 --- */
 defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
   d: '<b>기의 제한을 깨고</b> 뽑을 더미와 버린 더미의 <b>모든 부적을 태운다.</b> ' +
-     '태운 장수 × <em>2</em>의 피해를 모든 적에게 준다.',
+     '태운 장수 × <em>1</em>의 피해를 모든 적에게 준다.',
   use: async () => {
     const b = G.b;
     const burn = b.drawPile.concat(b.discardPile);
@@ -5314,20 +5324,21 @@ defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
     SND.gong(); SND.thunder();
     syncAll();
     await wait(320);
-    for (const e of alive()) atk(e, n * 2, { fx: 'fire' });
+    /* 두 배는 너무 셌다 — 절반으로 내렸다 */
+    for (const e of alive()) atk(e, n, { fx: 'fire' });
     shake(true);
   } });
 defSkill({ id: 'nomind', n: '무념무상', g: '空', rar: 'ssx',
-  d: '이번 턴 동안 <b>모든 부적의 기 소모가 0</b>이 된다.',
-  use: async () => { G.b.freeTurn = true; SND.power(); flash('무념무상'); syncAll(); } });
+  d: '이번 턴 동안 모든 부적의 <b>기 소모가 2 줄어든다</b>.',
+  use: async () => { G.b.cheap = (G.b.cheap || 0) + 2; SND.power(); flash('무념무상'); syncAll(); } });
 defSkill({ id: 'defy', n: '역천', g: '逆', rar: 'ssx',
-  d: '모든 적의 이로운 효과를 지우고, 각자의 <b>현재 체력의 25%</b>를 없앤다.',
+  d: '모든 적의 이로운 효과를 지우고, 각자의 <b>현재 체력의 15%</b>를 없앤다.',
   use: async () => {
     skillBanner('逆 天', true); SND.voidhit();
     for (const e of alive()) {
       for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k];
       impact('void', e);
-      pure(e, Math.ceil(e.hp * .25));
+      pure(e, Math.ceil(e.hp * .15));
       await wait(90);
     }
     syncAll();
@@ -5337,92 +5348,92 @@ defSkill({ id: 'defy', n: '역천', g: '逆', rar: 'ssx',
    전투 한 번에 딱 한 번 쓰는 한 수다. 등급마다 결이 달라야 한다. */
 /* 4·3등급 */
 defSkill({ id: 'stomp2', n: '발구르기', g: '踏', rar: 'basic',
-  d: '모든 적에게 <em>6</em>의 피해를 주고 <b>취약</b> 1을 부여한다.',
-  use: async () => { SND.drum(); for (const e of alive()) { atk(e, 6, { fx: 'blunt' }); st(e, 'vuln', 1); } } });
+  d: '모든 적에게 <em>4</em>의 피해를 주고 <b>취약</b> 1을 부여한다.',
+  use: async () => { SND.drum(); for (const e of alive()) { atk(e, 4, { fx: 'blunt' }); st(e, 'vuln', 1); } } });
 defSkill({ id: 'catchbreath', n: '숨고르기', g: '呼', rar: 'common',
-  d: '<i>11</i>의 방어도를 얻고 체력을 <b>5</b> 회복한다.',
-  use: async () => { blk(11, true); heal(5); SND.heal(); } });
+  d: '<i>7</i>의 방어도를 얻고 체력을 <b>3</b> 회복한다.',
+  use: async () => { blk(7, true); heal(3); SND.heal(); } });
 defSkill({ id: 'quickdraw', n: '발초', g: '拔', rar: 'common',
-  d: '카드를 <b>2장</b> 뽑는다.',
-  use: async () => { drawCards(2); SND.swoosh(); } });
+  d: '카드를 <b>1장</b> 뽑고 기를 <b>1</b> 얻는다.',
+  use: async () => { drawCards(1); energy(1); SND.swoosh(); } });
 defSkill({ id: 'saltline', n: '금줄', g: '繩', rar: 'common',
-  d: '모든 적에게 <b>약화</b> 2를 부여한다.',
-  use: async () => { SND.bell(); for (const e of alive()) st(e, 'weak', 2); } });
+  d: '모든 적에게 <b>약화</b> 1을 부여한다.',
+  use: async () => { SND.bell(); for (const e of alive()) st(e, 'weak', 1); } });
 /* 2등급 */
 defSkill({ id: 'twinfang', n: '쌍아격', g: '牙', rar: 'uncommon',
-  d: '한 요괴에게 <em>11</em>의 피해를 <b>2번</b> 준다.',
+  d: '한 요괴에게 <em>7</em>의 피해를 <b>2번</b> 준다.',
   use: async () => { const a = alive(); if (!a.length) return;
     const t = a.slice().sort((x, y) => x.hp - y.hp)[0];
-    atk(t, 11, { n: 2, fx: 'claw' }); } });
+    atk(t, 7, { n: 2, fx: 'claw' }); } });
 defSkill({ id: 'sootscreen', n: '검댕 장막', g: '煤', rar: 'uncommon',
-  d: '<i>18</i>의 방어도를 얻고 <b>민첩</b> 2를 얻는다.',
-  use: async () => { blk(18, true); st(P(), 'dex', 2); SND.block(); } });
+  d: '<i>11</i>의 방어도를 얻고 <b>민첩</b> 1을 얻는다.',
+  use: async () => { blk(11, true); st(P(), 'dex', 1); SND.block(); } });
 defSkill({ id: 'boneneedle', n: '골침', g: '針', rar: 'uncommon',
-  d: '모든 적에게 <b>중독</b> 6을 부여한다.',
-  use: async () => { SND.poison(); for (const e of alive()) st(e, 'poison', 6); } });
+  d: '모든 적에게 <b>중독</b> 4를 부여한다.',
+  use: async () => { SND.poison(); for (const e of alive()) st(e, 'poison', 4); } });
 /* 1등급 */
 defSkill({ id: 'skyfall', n: '낙뢰', g: '霹', rar: 'rare',
-  d: '가장 체력이 많은 요괴에게 <em>34</em>의 피해를 준다.',
+  d: '가장 체력이 많은 요괴에게 <em>20</em>의 피해를 준다.',
   use: async () => { const a = alive(); if (!a.length) return;
     const t = a.slice().sort((x, y) => y.hp - x.hp)[0];
-    impact('lightning', t); atk(t, 34, { fx: 'lightning' }); } });
+    impact('lightning', t); atk(t, 20, { fx: 'lightning' }); } });
 defSkill({ id: 'bloodpact', n: '혈맹', g: '盟', rar: 'rare',
-  d: '체력을 <b>10</b> 잃고 <b>힘</b> 3과 <b>검기</b> 2를 얻는다.',
-  use: async () => { lose(10); st(P(), 'str', 3); st(P(), 'edge', 2); SND.charge(); } });
+  d: '체력을 <b>10</b> 잃고 <b>힘</b> 2와 <b>검기</b> 1을 얻는다.',
+  use: async () => { lose(10); st(P(), 'str', 2); st(P(), 'edge', 1); SND.charge(); } });
 defSkill({ id: 'ghostwalk', n: '보허', g: '虛', rar: 'rare',
-  d: '<i>23</i>의 방어도를 얻고 카드를 <b>2장</b> 뽑는다.',
-  use: async () => { blk(23, true); drawCards(2); SND.power(); } });
+  d: '<i>14</i>의 방어도를 얻고 카드를 <b>1장</b> 뽑는다.',
+  use: async () => { blk(14, true); drawCards(1); SND.power(); } });
 /* S급 */
 defSkill({ id: 'ninetail', n: '구미난무', g: '尾', rar: 'special',
-  d: '무작위 요괴에게 <em>10</em>의 피해를 <b>5번</b> 나누어 준다.',
+  d: '무작위 요괴에게 <em>6</em>의 피해를 <b>5번</b> 나누어 준다.',
   use: async () => { for (let i = 0; i < 5; i++) { const a = alive(); if (!a.length) break;
-    atk(pick(a), 10, { fx: 'claw' }); await wait(80); } } });
+    atk(pick(a), 6, { fx: 'claw' }); await wait(80); } } });
 defSkill({ id: 'stonelock', n: '석쇄', g: '鎖', rar: 'special',
-  d: '모든 적을 <b>1턴 무력</b>하게 만들고 방어도를 없앤다.',
-  use: async () => { SND.gong(); for (const e of alive()) { e.block = 0; st(e, 'stun', 1); } syncAll(); } });
+  d: '모든 적을 <b>1턴 무력</b>하게 만들고 방어도를 <b>절반</b> 없앤다.',
+  use: async () => { SND.gong(); for (const e of alive()) { e.block = Math.floor(e.block / 2); st(e, 'stun', 1); } syncAll(); } });
 /* SSC급 */
 defSkill({ id: 'bluetide', n: '창조', g: '潮', rar: 'ssc',
-  d: '모든 적에게 <em>17</em>의 피해를 주고 <b>취약</b> 2를 부여한다. 기를 <b>1</b> 얻는다.',
-  use: async () => { SND.holyhit(); for (const e of alive()) { atk(e, 17, { fx: 'wind' }); st(e, 'vuln', 2); }
+  d: '모든 적에게 <em>10</em>의 피해를 주고 <b>취약</b> 1을 부여한다. 기를 <b>1</b> 얻는다.',
+  use: async () => { SND.holyhit(); for (const e of alive()) { atk(e, 10, { fx: 'wind' }); st(e, 'vuln', 1); }
     energy(1); } });
 defSkill({ id: 'frostvow', n: '한서', g: '誓', rar: 'ssc',
-  d: '<i>36</i>의 방어도와 <b>가시</b> 5를 얻고, 이번 턴 받는 피해가 <b>3 줄어든다</b>.',
-  use: async () => { blk(36, true); st(P(), 'thorns', 5); st(P(), 'endblock', 3);
+  d: '<i>22</i>의 방어도와 <b>가시</b> 3을 얻고, 이번 턴 받는 피해가 <b>2 줄어든다</b>.',
+  use: async () => { blk(22, true); st(P(), 'thorns', 3); st(P(), 'endblock', 2);
     SND.block(); flash('한서'); } });
 /* SSX급 */
 defSkill({ id: 'soulreap', n: '탈혼', g: '奪', rar: 'ssx',
-  d: '모든 적의 <b>현재 체력의 15%</b>를 없애고, 없앤 만큼의 <b>5분의 1</b>을 회복한다.',
+  d: '모든 적의 <b>현재 체력의 9%</b>를 없애고, 없앤 만큼의 <b>5분의 1</b>을 회복한다.',
   use: async () => {
     skillBanner('奪 魂', true); SND.voidhit();
     let sum = 0;
-    for (const e of alive()) { const d = Math.ceil(e.hp * .15); sum += d;
+    for (const e of alive()) { const d = Math.ceil(e.hp * .09); sum += d;
       impact('void', e); pure(e, d); await wait(80); }
     if (sum) heal(Math.ceil(sum / 5));
     syncAll();
   } });
 defSkill({ id: 'thousandhand', n: '천수', g: '手', rar: 'ssx',
-  d: '손패를 <b>8장</b>으로 채우고 기를 <b>2</b> 얻는다. 이번 턴 부적의 기 소모가 <b>1 줄어든다</b>.',
+  d: '손패를 <b>6장</b>으로 채우고 기를 <b>1</b> 얻는다. 이번 턴 부적의 기 소모가 <b>1 줄어든다</b>.',
   use: async () => {
     const b = G.b;
     skillBanner('千 手', true); SND.power();
-    const need = Math.max(0, 8 - b.hand.length);
+    const need = Math.max(0, 6 - b.hand.length);
     if (need) drawCards(need);
-    energy(2); b.cheap = (b.cheap || 0) + 1; syncAll();
+    energy(1); b.cheap = (b.cheap || 0) + 1; syncAll();
   } });
 
 /* --- ?급 --- */
 defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
-  d: '체력을 <b>전투가 시작될 때</b>의 70%로 되돌리고, 손패를 6장으로 채우며 기를 3 얻는다.',
+  d: '체력을 <b>전투가 시작될 때</b>의 45%로 되돌리고, 손패를 5장으로 채우며 기를 2 얻는다.',
   use: async () => {
     const b = G.b, p = P();
     skillBanner('廻 光 返 照', true);
     screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(120,60,220,.7))', 900);
     SND.gong(); SND.heal();
-    const back = Math.min(p.maxHp, Math.round((b.startHp || p.maxHp) * .7));
+    const back = Math.min(p.maxHp, Math.round((b.startHp || p.maxHp) * .45));
     if (back > p.hp) { const d = back - p.hp; p.hp = back; G.run.hp = back; healFx(p, d); }
-    const need = Math.max(0, 6 - b.hand.length);
+    const need = Math.max(0, 5 - b.hand.length);
     if (need) drawCards(need);
-    energy(3); syncAll();
+    energy(2); syncAll();
   } });
 
 const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], special: [], ssc: [], ssx: [], unknown: [] };
@@ -7418,6 +7429,7 @@ function calcAtk(src, tgt, base) {
 function applyDamage(ent, dmg, pierce) {
   if (ent.isPlayer) {
     if (G.b && G.b.halved) dmg = Math.ceil(dmg / 2);
+    if (G.b && G.b.softened) dmg = Math.ceil(dmg * 2 / 3);   /* 철벽 — 절반에서 3분의 1로 눅였다 */
     dmg = pipe('modTaken', dmg);
     const tr = G.run && G.run.train;                    /* 수행 — 굳은살 */
     if (tr && tr.def && dmg > 0) dmg = Math.max(1, dmg - tr.def);
@@ -7526,12 +7538,14 @@ function drawCards(n) {
   SND.draw(n); if (n >= 3) SND.swoosh(); syncAll();
 }
 function discardCard(c) {
-  const b = G.b, i = b.hand.findIndex(x => x.uid === c.uid);
+  const b = G.b; if (!b || !c) return;      /* 고르는 사이 전투가 끝났을 수 있다 */
+  const i = b.hand.findIndex(x => x.uid === c.uid);
   if (i >= 0) b.hand.splice(i, 1);
   b.discardPile.push(c); syncAll();
 }
 function exhaustCard(c) {
-  const b = G.b, i = b.hand.findIndex(x => x.uid === c.uid);
+  const b = G.b; if (!b || !c) return;
+  const i = b.hand.findIndex(x => x.uid === c.uid);
   if (i >= 0) b.hand.splice(i, 1);
   b.exhaustPile.push(c);
   fire('onExhaust', c);
@@ -7645,7 +7659,7 @@ function pickIntent(e) {
 async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
-  b.freeTurn = false; b.halved = false; b.cheap = 0;
+  b.freeTurn = false; b.halved = false; b.softened = false; b.cheap = 0;
   if (b.pet) b.pet.used = false;
   const p = P();
   if (!p.s.barricade) p.block = 0;
@@ -10062,6 +10076,7 @@ function incomingTotal() {
     t += calcAtk(e, P(), e.mv.d) * (e.mv.n || 1);
   }
   if (G.b.halved) t = Math.ceil(t / 2);
+  if (G.b.softened) t = Math.ceil(t * 2 / 3);
   return t;
 }
 function syncIncoming() {
