@@ -1780,6 +1780,34 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .jpgain .jm b{color:#bff5e6}
 .brush-btn.gold{border-color:#d8a24a;color:#ffe0a0;background:rgba(180,130,40,.18)}
 .brush-btn.gold:hover{background:rgba(210,160,60,.3)}
+/* ── 관리자 창 (개발용) ───────────────────────────────────── */
+.topbtn.admin{color:#c8ffe8;background:rgba(30,140,105,.3);border-color:#4fe0b0}
+.topbtn.admin:hover{background:rgba(40,180,135,.55)}
+.school.admin{background:linear-gradient(165deg,#0b1613 0%,#12241e 45%,#050a08 100%)}
+.school.admin:before{background:radial-gradient(ellipse at 50% 0%,rgba(79,224,176,.2),transparent 62%)}
+.admin .schead{background:linear-gradient(rgba(4,8,7,.94),rgba(16,34,28,.86));border-bottom-color:rgba(79,224,176,.3)}
+.admin .schead h2{color:#dafff2}.admin .schead .scnote{color:#4fe0b0;letter-spacing:.2em}
+.admin .schead .gback{background:rgba(79,224,176,.15);border-color:rgba(79,224,176,.42);color:#dafff2}
+.admin .scside .note{background:rgba(4,8,7,.55);border-color:rgba(79,224,176,.24)}
+.admin .scside .note p{color:#a8ccc0}
+.adrow{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;
+  background:rgba(8,20,16,.6);border:1px solid rgba(79,224,176,.2)}
+.adrow b{color:#dafff2;font-size:12.5px;font-weight:400;min-width:46px}
+.adrow input{flex:1;min-width:0;padding:5px 8px;border-radius:6px;font-size:12.5px;font-family:inherit;
+  background:rgba(0,0,0,.35);border:1px solid rgba(79,224,176,.3);color:#eafff6}
+.adrow .val{padding:5px 10px;border-radius:6px;font-size:12px;white-space:nowrap;
+  background:rgba(79,224,176,.16);border:1px solid rgba(79,224,176,.4);color:#8affd0;cursor:pointer}
+.adrow .val:hover{background:rgba(79,224,176,.34);color:#eafff6}
+.adtabs{display:flex;gap:8px;margin-bottom:4px}
+.adtab{padding:6px 14px;border-radius:7px;font-size:12.5px;
+  background:rgba(8,20,16,.6);border:1px solid rgba(79,224,176,.24);color:#a8ccc0;cursor:pointer}
+.adtab.on{background:rgba(79,224,176,.22);border-color:#4fe0b0;color:#eafff6}
+.adfind{width:100%;padding:7px 11px;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:6px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(79,224,176,.28);color:#eafff6}
+.adfind::placeholder{color:#5f7a70}
+.adtile{border-color:rgba(79,224,176,.24)!important}
+.adtile:hover{transform:translateY(-3px);border-color:#4fe0b0!important;box-shadow:0 8px 22px rgba(0,0,0,.5)!important}
+.adtile .tbuy{background:rgba(79,224,176,.14);border-color:rgba(79,224,176,.34);color:#8affd0}
 /* ── 콜로세움 ─────────────────────────────────────────────── */
 .school.colo{background:linear-gradient(165deg,#1c1610 0%,#2e2418 45%,#0c0906 100%)}
 .school.colo:before{background:radial-gradient(ellipse at 50% 0%,rgba(224,184,120,.24),transparent 62%)}
@@ -4556,8 +4584,8 @@ function defSkill(o) { SKILLS[o.id] = o; return o; }
 
 /* --- 4등급 (시작 비기) --- */
 defSkill({ id: 'shout', n: '기합', g: '喝', rar: 'basic',
-  d: '모든 적에게 <em>12</em>의 피해를 준다.',
-  use: async () => { SND.drum(); for (const e of alive()) atk(e, 12, { fx: 'wind' }); } });
+  d: '모든 적에게 <em>8</em>의 피해를 준다.',
+  use: async () => { SND.drum(); for (const e of alive()) atk(e, 8, { fx: 'wind' }); } });
 
 /* --- 3등급 --- */
 defSkill({ id: 'guardqi', n: '호신강기', g: '護', rar: 'common',
@@ -4576,20 +4604,20 @@ defSkill({ id: 'chainhand', n: '연환수', g: '連', rar: 'rare',
 
 /* --- S급 --- */
 defSkill({ id: 'qiwave', n: '기공파', g: '氣', rar: 'special',
-  d: '모든 적에게 <em>32</em>의 피해를 준다.',
+  d: '모든 적에게 <em>22</em>의 피해를 준다.',
   use: async () => { screenFlash('rgba(120,220,240,.4)', 420); SND.holyhit();
-    for (const e of alive()) atk(e, 32, { fx: 'wind' }); } });
+    for (const e of alive()) atk(e, 22, { fx: 'wind' }); } });
 defSkill({ id: 'ironwall', n: '철벽', g: '鐵', rar: 'special',
-  d: '<i>45</i>의 방어도를 얻고, 이번 턴 받는 피해가 절반이 된다.',
-  use: async () => { blk(45, true); G.b.halved = true; SND.block(); flash('철벽'); } });
+  d: '<i>30</i>의 방어도를 얻고, 이번 턴 받는 피해가 절반이 된다.',
+  use: async () => { blk(30, true); G.b.halved = true; SND.block(); flash('철벽'); } });
 defSkill({ id: 'rush', n: '속공', g: '速', rar: 'special',
-  d: '카드를 5장 뽑고 기를 3 얻는다.',
-  use: async () => { drawCards(5); energy(3); SND.power(); } });
+  d: '카드를 3장 뽑고 기를 2 얻는다.',
+  use: async () => { drawCards(3); energy(2); SND.power(); } });
 
 /* --- SSX급 --- */
 defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
   d: '<b>기의 제한을 깨고</b> 뽑을 더미와 버린 더미의 <b>모든 부적을 태운다.</b> ' +
-     '태운 장수 × <em>3</em>의 피해를 모든 적에게 준다.',
+     '태운 장수 × <em>2</em>의 피해를 모든 적에게 준다.',
   use: async () => {
     const b = G.b;
     const burn = b.drawPile.concat(b.discardPile);
@@ -4601,20 +4629,20 @@ defSkill({ id: 'burial', n: '만천귀장', g: '葬', rar: 'ssx',
     SND.gong(); SND.thunder();
     syncAll();
     await wait(320);
-    for (const e of alive()) atk(e, n * 3, { fx: 'fire' });
+    for (const e of alive()) atk(e, n * 2, { fx: 'fire' });
     shake(true);
   } });
 defSkill({ id: 'nomind', n: '무념무상', g: '空', rar: 'ssx',
   d: '이번 턴 동안 <b>모든 부적의 기 소모가 0</b>이 된다.',
   use: async () => { G.b.freeTurn = true; SND.power(); flash('무념무상'); syncAll(); } });
 defSkill({ id: 'defy', n: '역천', g: '逆', rar: 'ssx',
-  d: '모든 적의 이로운 효과를 지우고, 각자의 <b>현재 체력의 40%</b>를 없앤다.',
+  d: '모든 적의 이로운 효과를 지우고, 각자의 <b>현재 체력의 25%</b>를 없앤다.',
   use: async () => {
     skillBanner('逆 天', true); SND.voidhit();
     for (const e of alive()) {
       for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k];
       impact('void', e);
-      pure(e, Math.ceil(e.hp * .4));
+      pure(e, Math.ceil(e.hp * .25));
       await wait(90);
     }
     syncAll();
@@ -4624,92 +4652,92 @@ defSkill({ id: 'defy', n: '역천', g: '逆', rar: 'ssx',
    전투 한 번에 딱 한 번 쓰는 한 수다. 등급마다 결이 달라야 한다. */
 /* 4·3등급 */
 defSkill({ id: 'stomp2', n: '발구르기', g: '踏', rar: 'basic',
-  d: '모든 적에게 <em>8</em>의 피해를 주고 <b>취약</b> 1을 부여한다.',
-  use: async () => { SND.drum(); for (const e of alive()) { atk(e, 8, { fx: 'blunt' }); st(e, 'vuln', 1); } } });
+  d: '모든 적에게 <em>6</em>의 피해를 주고 <b>취약</b> 1을 부여한다.',
+  use: async () => { SND.drum(); for (const e of alive()) { atk(e, 6, { fx: 'blunt' }); st(e, 'vuln', 1); } } });
 defSkill({ id: 'catchbreath', n: '숨고르기', g: '呼', rar: 'common',
-  d: '<i>16</i>의 방어도를 얻고 체력을 <b>8</b> 회복한다.',
-  use: async () => { blk(16, true); heal(8); SND.heal(); } });
+  d: '<i>11</i>의 방어도를 얻고 체력을 <b>5</b> 회복한다.',
+  use: async () => { blk(11, true); heal(5); SND.heal(); } });
 defSkill({ id: 'quickdraw', n: '발초', g: '拔', rar: 'common',
-  d: '카드를 <b>3장</b> 뽑는다.',
-  use: async () => { drawCards(3); SND.swoosh(); } });
+  d: '카드를 <b>2장</b> 뽑는다.',
+  use: async () => { drawCards(2); SND.swoosh(); } });
 defSkill({ id: 'saltline', n: '금줄', g: '繩', rar: 'common',
-  d: '모든 적에게 <b>약화</b> 3을 부여한다.',
-  use: async () => { SND.bell(); for (const e of alive()) st(e, 'weak', 3); } });
+  d: '모든 적에게 <b>약화</b> 2를 부여한다.',
+  use: async () => { SND.bell(); for (const e of alive()) st(e, 'weak', 2); } });
 /* 2등급 */
 defSkill({ id: 'twinfang', n: '쌍아격', g: '牙', rar: 'uncommon',
-  d: '한 요괴에게 <em>16</em>의 피해를 <b>2번</b> 준다.',
+  d: '한 요괴에게 <em>11</em>의 피해를 <b>2번</b> 준다.',
   use: async () => { const a = alive(); if (!a.length) return;
     const t = a.slice().sort((x, y) => x.hp - y.hp)[0];
-    atk(t, 16, { n: 2, fx: 'claw' }); } });
+    atk(t, 11, { n: 2, fx: 'claw' }); } });
 defSkill({ id: 'sootscreen', n: '검댕 장막', g: '煤', rar: 'uncommon',
-  d: '<i>26</i>의 방어도를 얻고 <b>민첩</b> 3을 얻는다.',
-  use: async () => { blk(26, true); st(P(), 'dex', 3); SND.block(); } });
+  d: '<i>18</i>의 방어도를 얻고 <b>민첩</b> 2를 얻는다.',
+  use: async () => { blk(18, true); st(P(), 'dex', 2); SND.block(); } });
 defSkill({ id: 'boneneedle', n: '골침', g: '針', rar: 'uncommon',
-  d: '모든 적에게 <b>중독</b> 9를 부여한다.',
-  use: async () => { SND.poison(); for (const e of alive()) st(e, 'poison', 9); } });
+  d: '모든 적에게 <b>중독</b> 6을 부여한다.',
+  use: async () => { SND.poison(); for (const e of alive()) st(e, 'poison', 6); } });
 /* 1등급 */
 defSkill({ id: 'skyfall', n: '낙뢰', g: '霹', rar: 'rare',
-  d: '가장 체력이 많은 요괴에게 <em>52</em>의 피해를 준다.',
+  d: '가장 체력이 많은 요괴에게 <em>34</em>의 피해를 준다.',
   use: async () => { const a = alive(); if (!a.length) return;
     const t = a.slice().sort((x, y) => y.hp - x.hp)[0];
-    impact('lightning', t); atk(t, 52, { fx: 'lightning' }); } });
+    impact('lightning', t); atk(t, 34, { fx: 'lightning' }); } });
 defSkill({ id: 'bloodpact', n: '혈맹', g: '盟', rar: 'rare',
-  d: '체력을 <b>10</b> 잃고 <b>힘</b> 4와 <b>검기</b> 3을 얻는다.',
-  use: async () => { lose(10); st(P(), 'str', 4); st(P(), 'edge', 3); SND.charge(); } });
+  d: '체력을 <b>10</b> 잃고 <b>힘</b> 3과 <b>검기</b> 2를 얻는다.',
+  use: async () => { lose(10); st(P(), 'str', 3); st(P(), 'edge', 2); SND.charge(); } });
 defSkill({ id: 'ghostwalk', n: '보허', g: '虛', rar: 'rare',
-  d: '<i>34</i>의 방어도를 얻고 카드를 <b>2장</b> 뽑는다.',
-  use: async () => { blk(34, true); drawCards(2); SND.power(); } });
+  d: '<i>23</i>의 방어도를 얻고 카드를 <b>2장</b> 뽑는다.',
+  use: async () => { blk(23, true); drawCards(2); SND.power(); } });
 /* S급 */
 defSkill({ id: 'ninetail', n: '구미난무', g: '尾', rar: 'special',
-  d: '무작위 요괴에게 <em>14</em>의 피해를 <b>6번</b> 나누어 준다.',
-  use: async () => { for (let i = 0; i < 6; i++) { const a = alive(); if (!a.length) break;
-    atk(pick(a), 14, { fx: 'claw' }); await wait(80); } } });
+  d: '무작위 요괴에게 <em>10</em>의 피해를 <b>5번</b> 나누어 준다.',
+  use: async () => { for (let i = 0; i < 5; i++) { const a = alive(); if (!a.length) break;
+    atk(pick(a), 10, { fx: 'claw' }); await wait(80); } } });
 defSkill({ id: 'stonelock', n: '석쇄', g: '鎖', rar: 'special',
   d: '모든 적을 <b>1턴 무력</b>하게 만들고 방어도를 없앤다.',
   use: async () => { SND.gong(); for (const e of alive()) { e.block = 0; st(e, 'stun', 1); } syncAll(); } });
 /* SSC급 */
 defSkill({ id: 'bluetide', n: '창조', g: '潮', rar: 'ssc',
-  d: '모든 적에게 <em>26</em>의 피해를 주고 <b>취약</b> 3을 부여한다. 기를 <b>2</b> 얻는다.',
-  use: async () => { SND.holyhit(); for (const e of alive()) { atk(e, 26, { fx: 'wind' }); st(e, 'vuln', 3); }
-    energy(2); } });
+  d: '모든 적에게 <em>17</em>의 피해를 주고 <b>취약</b> 2를 부여한다. 기를 <b>1</b> 얻는다.',
+  use: async () => { SND.holyhit(); for (const e of alive()) { atk(e, 17, { fx: 'wind' }); st(e, 'vuln', 2); }
+    energy(1); } });
 defSkill({ id: 'frostvow', n: '한서', g: '誓', rar: 'ssc',
-  d: '<i>54</i>의 방어도와 <b>가시</b> 8을 얻고, 이번 턴 받는 피해가 <b>5 줄어든다</b>.',
-  use: async () => { blk(54, true); st(P(), 'thorns', 8); st(P(), 'endblock', 5);
+  d: '<i>36</i>의 방어도와 <b>가시</b> 5를 얻고, 이번 턴 받는 피해가 <b>3 줄어든다</b>.',
+  use: async () => { blk(36, true); st(P(), 'thorns', 5); st(P(), 'endblock', 3);
     SND.block(); flash('한서'); } });
 /* SSX급 */
 defSkill({ id: 'soulreap', n: '탈혼', g: '奪', rar: 'ssx',
-  d: '모든 적의 <b>현재 체력의 25%</b>를 없애고, 없앤 만큼의 <b>4분의 1</b>을 회복한다.',
+  d: '모든 적의 <b>현재 체력의 15%</b>를 없애고, 없앤 만큼의 <b>5분의 1</b>을 회복한다.',
   use: async () => {
     skillBanner('奪 魂', true); SND.voidhit();
     let sum = 0;
-    for (const e of alive()) { const d = Math.ceil(e.hp * .25); sum += d;
+    for (const e of alive()) { const d = Math.ceil(e.hp * .15); sum += d;
       impact('void', e); pure(e, d); await wait(80); }
-    if (sum) heal(Math.ceil(sum / 4));
+    if (sum) heal(Math.ceil(sum / 5));
     syncAll();
   } });
 defSkill({ id: 'thousandhand', n: '천수', g: '手', rar: 'ssx',
-  d: '손패를 <b>10장</b>으로 채우고 기를 <b>4</b> 얻는다. 이번 턴 부적의 기 소모가 <b>1 줄어든다</b>.',
+  d: '손패를 <b>8장</b>으로 채우고 기를 <b>2</b> 얻는다. 이번 턴 부적의 기 소모가 <b>1 줄어든다</b>.',
   use: async () => {
     const b = G.b;
     skillBanner('千 手', true); SND.power();
-    const need = Math.max(0, 10 - b.hand.length);
+    const need = Math.max(0, 8 - b.hand.length);
     if (need) drawCards(need);
-    energy(4); b.cheap = (b.cheap || 0) + 1; syncAll();
+    energy(2); b.cheap = (b.cheap || 0) + 1; syncAll();
   } });
 
 /* --- ?급 --- */
 defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
-  d: '체력을 <b>전투가 시작될 때</b>로 되돌리고, 손패를 7장으로 채우며 기를 5 얻는다.',
+  d: '체력을 <b>전투가 시작될 때</b>의 70%로 되돌리고, 손패를 6장으로 채우며 기를 3 얻는다.',
   use: async () => {
     const b = G.b, p = P();
     skillBanner('廻 光 返 照', true);
     screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(120,60,220,.7))', 900);
     SND.gong(); SND.heal();
-    const back = Math.min(p.maxHp, b.startHp || p.maxHp);
+    const back = Math.min(p.maxHp, Math.round((b.startHp || p.maxHp) * .7));
     if (back > p.hp) { const d = back - p.hp; p.hp = back; G.run.hp = back; healFx(p, d); }
-    const need = Math.max(0, 7 - b.hand.length);
+    const need = Math.max(0, 6 - b.hand.length);
     if (need) drawCards(need);
-    energy(5); syncAll();
+    energy(3); syncAll();
   } });
 
 const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], special: [], ssc: [], ssx: [], unknown: [] };
@@ -7192,6 +7220,7 @@ function renderTop() {
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길">修<em></em></button>
       <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를">神<em></em></button>
       <button class="topbtn box" id="boxbtn" title="부적 뽑기">匣<em></em></button>
+      ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자">管<em></em></button>' : ''}
       <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
@@ -7233,6 +7262,7 @@ function renderTop() {
     t.querySelector('#trainbtn').onclick = () => openTraining();
     t.querySelector('#shrinebtn').onclick = () => openShrine();
     t.querySelector('#boxbtn').onclick = () => openBoxes();
+    const ab2 = t.querySelector('#adminbtn'); if (ab2) ab2.onclick = () => { SND.ui(); showAdmin(); };
     bindTip(t.querySelector('#trainbtn'), () => `<b>수행터</b> — 져도 남는 길<br>
       모은 정진 <b style="color:#ffd76a">${META.jp}</b><br>
       <span style="color:#9a8d74">이기든 지든 쌓인다. 영구히 몸을 만든다.</span>`);
@@ -8723,10 +8753,10 @@ function genMap(act) {
          야영지로 채우면 야영지가 흔해 보인다 — 절반만 야영지로 둔다. */
       const already = nodes.filter(o => o.r === REST_ROW && o.type === 'rest').length;
       n.type = (already === 0 || (already < 2 && rnd() < .5)) ? 'rest'
-             : (rnd() < .55 ? 'shop' : 'treasure');
+             : (rnd() < .3 ? 'shop' : 'treasure');
       continue;
     }
-    const w = [{ w: 58, t: 'battle' }, { w: 12, t: 'event' }, { w: 11, t: 'shop' }];
+    const w = [{ w: 64, t: 'battle' }, { w: 12, t: 'event' }, { w: 5, t: 'shop' }];
     if (n.r >= 4 && rests < REST_CAP && !restNear(n)) w.push({ w: 6, t: 'rest' });
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
     if (n.r >= 7) w.push({ w: 4, t: 'treasure' });
@@ -11589,17 +11619,17 @@ async function grantFusedRelics(n) {
    ═══════════════════════════════════════════════════════════ */
 const BOX_FREE = true;
 const BANNERS = [
-  { n: '작은 상자',     g: '匣', sub: '한 줌의 운',     price: 150,  tier: 0,
+  { n: '작은 상자',     g: '匣', sub: '한 줌의 운',     price: 100,  tier: 0,
     desc: '다이아 · 부적 · 물약 · 보물이 고루 나온다.' },
-  { n: '보통 상자',     g: '匣', sub: '제법 묵직하다',  price: 400,  tier: 1,
+  { n: '보통 상자',     g: '匣', sub: '제법 묵직하다',  price: 200,  tier: 1,
     desc: '부적이 나올 확률이 오른다.' },
-  { n: '큰 상자',       g: '匱', sub: '값어치를 한다',  price: 900,  tier: 2,
+  { n: '큰 상자',       g: '匱', sub: '값어치를 한다',  price: 400,  tier: 2,
     desc: '희귀 부적과 보물이 자주 나온다.' },
-  { n: '특대급 상자!',  g: '櫃', sub: '전설이 잠들었다', price: 2500, tier: 3, hot: true,
+  { n: '특대급 상자!',  g: '櫃', sub: '전설이 잠들었다', price: 900,  tier: 3, hot: true,
     desc: '<b>특별 부적만 나온다!</b>' },
-  { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 1800, tier: 5, skill: true,
+  { n: '비기 상자',     g: '祕', sub: '한 수가 잠들었다',  price: 700,  tier: 5, skill: true,
     desc: '<b>비기만 나온다.</b>' },
-  { n: '스킨 상자',     g: '皮', sub: '부적에 옷을 입힌다', price: 1200, tier: 6, skin: true,
+  { n: '스킨 상자',     g: '皮', sub: '부적에 옷을 입힌다', price: 500,  tier: 6, skin: true,
     desc: '<b>부적의 겉모습만 바꾼다.</b> S급·SSX급·?급 부적에 입힐 수 있고 성능은 그대로다. ' +
       '<b style="color:#7fe6cf">얻은 스킨은 도감에서 부적을 눌러 갈아입힌다.</b>' },
   { n: 'VIP 패키지',    g: '貴', sub: '단 한 번의 결단',   price: 0,    tier: 9, vip: true,
@@ -11765,8 +11795,8 @@ function showSpecialShop(refill) {
           <div class="gbtns">
             <button class="gsummon" id="g_one">1회 뽑기
               <span class="cost">${BOX_FREE ? '무료 <s>玉' + B.price + '</s>' : '玉' + B.price}</span></button>
-            <button class="gsummon ten" id="g_ten">10+1회 뽑기
-              <span class="cost">${BOX_FREE ? '무료 <s>玉' + (B.price * 10) + '</s>' : '玉' + (B.price * 10)}</span></button>
+            <button class="gsummon ten" id="g_ten">10+1회 뽑기 <em class="save">한 번 덤</em>
+              <span class="cost">${BOX_FREE ? '무료 <s>玉' + (B.price * 9) + '</s>' : '玉' + (B.price * 9)}</span></button>
           </div>
         </div>
         <div class="gart">
@@ -11957,7 +11987,7 @@ function showSpecialShop(refill) {
   }
 
   async function doSummon(B, times) {
-    const cost = BOX_FREE ? 0 : B.price * (times === 11 ? 10 : 1);
+    const cost = BOX_FREE ? 0 : B.price * (times === 11 ? 9 : 1);
     if (cost && (run.dia || 0) < cost) { SND.err(); toast('다이아가 모자란다'); return; }
     run.dia = (run.dia || 0) - cost;
     const before = run.summons;
@@ -12674,6 +12704,11 @@ const PACE_NAME = { slow: '느긋', normal: '보통', fast: '빠름' };
    코드 — 맛보기용. 제출 전에 이 덩어리째 지운다.
    ══════════════════════════════════════════════════════════ */
 const CODES = {
+  '031675mj-156fy': {
+    n: '관리자',
+    d: '관리자 창을 연다',
+    give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '관리자 창'; }
+  },
   '0316bakgi75birt': {
     n: '맛보기',
     d: '모든 부적과 모든 스킨을 준다',
@@ -12698,6 +12733,123 @@ const CODES = {
     }
   }
 };
+/* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
+const ADMIN_CODE = '031675mj-156fy';
+function adminOn() { return !!(META.codes && META.codes[ADMIN_CODE]); }
+function showAdmin() {
+  const run = G.run;
+  const p = overlay(`<div class="school admin">
+    <div class="schead">
+      <button class="gback" id="ad_back">←</button>
+      <h2>관리자</h2>
+      <div class="scnote">ADMIN</div>
+    </div>
+    <div class="scbody">
+      <div class="scside">
+        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#8affd0,#0a3a2a);color:#02150e;border-color:#4fe0b0">管</div>
+          <div class="jsay">개발용 창일세.<br>제출 전에는 반드시 지우게.</div></div>
+        <div class="note"><p>
+          <b style="color:#8affd0">막 건너뛰기</b> · <b style="color:#8affd0">원하는 것 받기</b> ·
+          <b style="color:#8affd0">무한 자원</b><br><br>
+          여기서 한 것은 그대로 저장된다.<br>
+          <span style="color:#8a7f68">선물하기는 아직 없다.</span>
+        </p></div>
+        <div class="adrow"><b>막</b><input id="ad_act" type="number" min="1" max="${LAST_ACT}" value="${run ? run.act : 1}"><button class="val" id="ad_go">건너뛴다</button></div>
+        <div class="adrow"><b>골드</b><button class="val" id="ad_gold">+99999</button></div>
+        <div class="adrow"><b>다이아</b><button class="val" id="ad_dia">+99999</button></div>
+        <div class="adrow"><b>정진</b><button class="val" id="ad_jp">+99999</button></div>
+        <div class="adrow"><b>체력</b><button class="val" id="ad_hp">가득</button></div>
+        <div class="adrow"><b>기</b><button class="val" id="ad_qi">+3</button></div>
+        <div class="adrow"><b>전부</b><button class="val" id="ad_all">부적·유물·비기·스킨·팻</button></div>
+      </div>
+      <div class="scmain">
+        <div class="adtabs">
+          <button class="adtab on" data-t="card">부적</button>
+          <button class="adtab" data-t="relic">유물</button>
+          <button class="adtab" data-t="skill">비기</button>
+          <button class="adtab" data-t="pet">팻</button>
+        </div>
+        <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
+        <div class="trgrid" id="ad_grid"></div>
+      </div>
+    </div>
+  </div>`, 'adminpanel');
+  p.dataset.noauto = '1';
+  let tab = 'card';
+  const grid = p.querySelector('#ad_grid'), find = p.querySelector('#ad_find');
+  const draw = () => {
+    const q = (find.value || '').trim();
+    grid.innerHTML = '';
+    const add = (g, n, sub, col, fn) => {
+      const t = el('div', 'trtile adtile',
+        `<div class="tg" style="background:radial-gradient(circle at 35% 28%,${col},#06120e);color:#eafff6">${g}</div>
+         <div class="tn">${n}</div><div class="tv">${sub}</div><div class="tbuy">받는다</div>`);
+      t.onclick = () => { fn(); SND.unlock(); saveRun(); saveMeta(); renderTop(); };
+      grid.appendChild(t);
+    };
+    if (tab === 'card') {
+      for (const id in CARDS) { const d = CARDS[id];
+        if (d.rar === 'curse') continue;
+        if (q && d.n.indexOf(q) < 0) continue;
+        add(d.g, d.n, GRADE[d.rar].n, GRADE[d.rar].c, () => {
+          if (!run) return; run.deck.push(mkCard(id, false)); run.stats.cards++; dexAdd('cards', id);
+          toast(`${d.n} 획득`); });
+      }
+    } else if (tab === 'relic') {
+      for (const id in RELICS) { const d = RELICS[id];
+        if (q && d.n.indexOf(q) < 0) continue;
+        add(d.g, d.n, GRADE[rgrade(id)].n, GRADE[rgrade(id)].c, () => {
+          if (!run) return;
+          if (run.relics.some(x => x.id === id)) { toast('이미 있다'); return; }
+          run.relics.push({ id, used: false, isNew: true }); dexAdd('relics', id);
+          const rd = RELICS[id]; if (rd.h && rd.h.onGain) rd.h.onGain(run.relics[run.relics.length - 1]);
+          toast(`${d.n} 획득`); });
+      }
+    } else if (tab === 'skill') {
+      for (const id of ALL_SKILLS) { const d = SKILLS[id];
+        if (q && d.n.indexOf(q) < 0) continue;
+        add(d.g, d.n, GRADE[d.rar].n, GRADE[d.rar].c, () => {
+          gainSkill(id, true); if (run) run.skill = id; toast(`${d.n} 장착`); });
+      }
+    } else {
+      for (const id of PET_POOL) { const d = ENEMIES[id];
+        if (q && d.n.indexOf(q) < 0) continue;
+        add(d.g, d.n, d.elite ? '엘리트' : '요괴', d.col, () => {
+          gainPet(id, true); setPet(id); toast(`${d.n} 팻`); });
+      }
+    }
+    if (!grid.children.length) grid.innerHTML = '<div class="petnone">찾는 것이 없다</div>';
+  };
+  draw();
+  find.oninput = draw;
+  p.querySelectorAll('.adtab').forEach(b => b.onclick = () => {
+    p.querySelectorAll('.adtab').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); tab = b.dataset.t; draw();
+  });
+  p.querySelector('#ad_go').onclick = () => {
+    if (!run) { toast('모험 중에만'); return; }
+    const a = Math.max(1, Math.min(LAST_ACT, +p.querySelector('#ad_act').value || 1));
+    run.act = a; noteClear(a - 1);
+    run.map = genMap(a); run.mapCur = -1; run.mapDone = []; run.floor = 0; run.bossPick = null;
+    saveRun(); closeOverlay(); toast(`제${a}막으로`); showMap();
+  };
+  p.querySelector('#ad_gold').onclick = () => { if (run) { run.gold += 99999; renderTop(); saveRun(); toast('골드'); } };
+  p.querySelector('#ad_dia').onclick = () => { if (run) { run.dia = (run.dia || 0) + 99999; renderTop(); saveRun(); toast('다이아'); } };
+  p.querySelector('#ad_jp').onclick = () => { META.jp += 99999; META.jpTotal += 99999; saveMeta(); toast('정진'); };
+  p.querySelector('#ad_hp').onclick = () => { if (run) { run.hp = run.maxHp; if (P()) P().hp = run.hp; renderTop(); syncAll(); saveRun(); toast('체력'); } };
+  p.querySelector('#ad_qi').onclick = () => { if (run) { run.maxEnergy += 3; renderTop(); saveRun(); toast('기 +3'); } };
+  p.querySelector('#ad_all').onclick = () => {
+    for (const id in CARDS) { if (CARDS[id].rar === 'curse') continue; dexAdd('cards', id); if (run) run.deck.push(mkCard(id, false)); }
+    for (const id in RELICS) dexAdd('relics', id);
+    for (const id of ALL_SKILLS) gainSkill(id, true);
+    for (const cid of skinnableCards()) for (const sk of ALL_SKINS) META.skins.own[skinKey(cid, sk)] = 1;
+    for (const id of PET_POOL) gainPet(id, true);
+    META.cleared = LAST_ACT; META.pets.pulls = 0;
+    saveMeta(); if (run) saveRun(); renderTop();
+    SND.unlock(); toast('전부 넣었다');
+  };
+  p.querySelector('#ad_back').onclick = () => { closePanel(p); if (G.run && G.scene === 'map') showMap(); };
+}
 function redeemCode(raw) {
   const k = String(raw || '').trim().toLowerCase();
   if (!k) return { ok: false, msg: '코드를 적으시오' };
@@ -12705,8 +12857,10 @@ function redeemCode(raw) {
   if (!c) return { ok: false, msg: '없는 코드다' };
   META.codes = META.codes || {};
   if (c.once && META.codes[k]) return { ok: false, msg: '이미 쓴 코드다' };
-  const got = c.give();
   META.codes[k] = Date.now(); saveMeta();
+  const got = c.give();
+  saveMeta();
+  const tb = $('#topbar'); if (tb && G.run) { tb.remove(); renderTop(); }   /* 관리자 단추가 바로 보이도록 */
   toast(`${c.n} — ${got}`);
   return { ok: true, msg: `${c.n} · ${got}` };
 }
