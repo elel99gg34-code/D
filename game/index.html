@@ -2140,6 +2140,46 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .healcall.poor{border-color:rgba(226,119,122,.45)}
 .healcall.poor .hcgo{background:rgba(226,119,122,.14);border-color:rgba(226,119,122,.42);color:#f0b6b4;cursor:not-allowed}
 @media (max-width:720px){ .healcall{flex-wrap:wrap;justify-content:center;text-align:center} }
+/* ── 길잡이(導) — 때가 되면 손수 짚어 준다 ───────────────── */
+.gdbox{display:flex;gap:16px;align-items:flex-start;width:min(430px,88vw);text-align:left;
+  padding:16px;border-radius:12px;margin:6px 0 4px;
+  background:linear-gradient(155deg,rgba(38,32,22,.9),rgba(18,15,11,.9));
+  border:1px solid rgba(210,180,120,.3)}
+.gdbox .gdg{width:56px;height:56px;border-radius:14px;flex:none;display:grid;place-items:center;
+  font-size:27px;color:#1a140c;background:radial-gradient(circle at 34% 28%,#f0d9a0,#a8865a);
+  box-shadow:0 0 0 1px rgba(240,217,160,.35),0 0 22px rgba(226,189,99,.28);
+  animation:gdPulse 2.4s ease-in-out infinite}
+@keyframes gdPulse{0%,100%{box-shadow:0 0 0 1px rgba(240,217,160,.35),0 0 18px rgba(226,189,99,.22)}
+  50%{box-shadow:0 0 0 1px rgba(240,217,160,.5),0 0 30px rgba(226,189,99,.45)}}
+.gdbox .gdt{flex:1;min-width:0}
+.gdbox .gdt b{display:block;color:#f2e2bd;font-size:15px;letter-spacing:.05em;margin-bottom:7px;font-weight:400}
+.gdbox .gdt p{color:#c8b894;font-size:12.8px;line-height:1.72;margin:0}
+.gdbox .gdt p em{color:#e2bd63;font-style:normal}
+.gdbox .gdt p i{color:#8fd8c0;font-style:normal}
+.gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* 상자를 까라는 권유 — 지도 위에 뜨는 쪽지 */
+.boxcall{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:43;
+  display:flex;align-items:center;gap:12px;padding:10px 14px 10px 12px;border-radius:11px;
+  background:linear-gradient(150deg,rgba(44,34,18,.97),rgba(24,18,10,.97));
+  border:1px solid rgba(226,189,99,.42);animation:hcIn .3s ease;max-width:min(580px,94vw)}
+.boxcall .bcg{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;
+  font-size:20px;background:radial-gradient(circle at 35% 30%,#f0d9a0,#96743e);color:#1a140c;
+  animation:gdPulse 2.2s ease-in-out infinite}
+.boxcall .bct b{display:block;color:#f7edd6;font-size:13.5px;font-weight:400;letter-spacing:.03em}
+.boxcall .bct small{display:block;color:#bfa87c;font-size:11.5px;margin-top:2px}
+.boxcall .bct small b{display:inline;color:#e2bd63}
+.boxcall .bcgo{padding:8px 14px;border-radius:8px;font-size:12.5px;letter-spacing:.04em;white-space:nowrap;
+  background:rgba(226,189,99,.18);border:1px solid rgba(226,189,99,.5);color:#f2e2bd;cursor:pointer}
+.boxcall .bcgo:hover{background:rgba(226,189,99,.36);color:#fff6e2}
+.boxcall .bcx{width:24px;height:24px;border-radius:6px;flex:none;font-size:15px;
+  background:transparent;border:1px solid rgba(226,189,99,.28);color:#bfa87c;cursor:pointer}
+.boxcall .bcx:hover{background:rgba(226,189,99,.16);color:#f7edd6}
+@media (max-width:720px){ .boxcall{flex-wrap:wrap;justify-content:center;text-align:center} }
+/* 안 써 본 자리는 반짝인다 */
+.topbtn.fresh{animation:gdPulse 2.4s ease-in-out infinite}
+.placetile.fresh:after{content:'새로';position:absolute;top:-7px;right:-7px;padding:2px 7px;border-radius:8px;
+  background:#c2483e;color:#fff2e2;font-size:10px;letter-spacing:.06em}
+.placetile{position:relative}
 #petbtn{pointer-events:auto;position:absolute;left:20px;bottom:172px;width:70px;height:62px;border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   background:linear-gradient(160deg,#2a2118,#1a140e);border:2px solid var(--sc,#7d7568);color:#f0e7d3;
@@ -3211,7 +3251,7 @@ const SAVE_KEY = 'bge_save_v1';
 const META_KEY = 'bge_meta_v1';
 let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, autoUnlocked: false,
   vip: { owned: false, at: 0, freeBoxAt: 0 }, skins: { own: {}, eq: {} },
-  jp: 0, jpTotal: 0, train: {}, fails: {}, cleared: 0,
+  jp: 0, jpTotal: 0, train: {}, fails: {}, cleared: 0, guided: {}, used: {},
   pets: { own: {}, active: null, pulls: 0 },
   dex: { cards: {}, relics: {}, enemies: {}, skills: {} } };
 /* VIP · 자동 플레이 개방 여부 */
@@ -3232,6 +3272,7 @@ const OPT_DEF = {
   musicVol: .38,            /* 배경 음악 음량 — 귀가 어질하다는 말에 낮췄다 */
   autoPotion: true,         /* 위급할 때 물약을 쓴다 */
   autoSkill: true,          /* 비기를 알아서 쓴다 */
+  noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
   turbo: false              /* VIP 2배속 */
 };
 let OPT = Object.assign({}, OPT_DEF);
@@ -3255,6 +3296,7 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.dex.enemies = META.dex.enemies || {}; META.dex.skills = META.dex.skills || {};
   META.jp = META.jp || 0; META.jpTotal = META.jpTotal || 0;
   META.train = META.train || {}; META.fails = META.fails || {}; META.cleared = META.cleared || 0;
+  META.guided = META.guided || {}; META.used = META.used || {};
   META.eliteFails = META.eliteFails || {};
   META.pets = Object.assign({ own: {}, active: null, pulls: 0 }, META.pets || {});
   META.pets.own = META.pets.own || {}; META.pets.pulls = META.pets.pulls || 0; }
@@ -7604,10 +7646,10 @@ function renderTop() {
     }
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
-    t.querySelector('#placebtn').onclick = () => showPlaces();
-    t.querySelector('#trainbtn').onclick = () => openTraining();
-    t.querySelector('#shrinebtn').onclick = () => openShrine();
-    t.querySelector('#boxbtn').onclick = () => openBoxes();
+    t.querySelector('#placebtn').onclick = () => { markUsed('places'); showPlaces(); };
+    t.querySelector('#trainbtn').onclick = () => { markUsed('train'); openTraining(); };
+    t.querySelector('#shrinebtn').onclick = () => { markUsed('shrine'); openShrine(); };
+    t.querySelector('#boxbtn').onclick = () => { markUsed('box'); openBoxes(); };
     const ab2 = t.querySelector('#adminbtn'); if (ab2) ab2.onclick = () => { SND.ui(); showAdmin(); };
     bindTip(t.querySelector('#trainbtn'), () => `<b>수행터</b> — 져도 남는 길<br>
       모은 정진 <b style="color:#ffd76a">${META.jp}</b><br>
@@ -7658,6 +7700,11 @@ function renderTop() {
   bb.querySelector('em').textContent = next ? (next.at - cur) : '';
   bb.title = '부적 뽑기 — 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
   bb.classList.toggle('busy', !!G.b);
+  /* 아직 한 번도 안 눌러 본 자리는 반짝인다 */
+  bb.classList.toggle('fresh', !usedPlace('box'));
+  pb2.classList.toggle('fresh', !usedPlace('places'));
+  if (tb2) tb2.classList.toggle('fresh', !usedPlace('train') && META.jp > 0);
+  if (sb2) sb2.classList.toggle('fresh', !usedPlace('shrine') && run.relics.length >= 3);
   /* 저주 딱지 */
   const cc = t.querySelector('#cursechip');
   cc.innerHTML = '';
@@ -7743,26 +7790,192 @@ function showPlaces() {
     <button class="brush-btn ghost" id="pl_close" style="color:#e9dfc9;border-color:#8a7f68;margin-top:16px">돌아가기</button>`);
   p.dataset.noauto = '1';
   const grid = p.querySelector('#pl_grid');
-  const add = (g, n, d, cls, fn) => {
-    const t = el('div', 'placetile ' + (cls || ''), `<div class="pg2">${g}</div><b>${n}</b><small>${d}</small>`);
-    t.onclick = () => { closeTop(); fn(); };
+  const add = (key, g, n, d, cls, fn) => {
+    /* 한 번도 안 들러 본 자리에는 「새로」가 붙는다 */
+    const fresh = !usedPlace(key) && (cls || '').indexOf('lock') < 0;
+    const t = el('div', 'placetile ' + (cls || '') + (fresh ? ' fresh' : ''),
+      `<div class="pg2">${g}</div><b>${n}</b><small>${d}</small>`);
+    t.onclick = () => { markUsed(key); closeTop(); fn(); };
     grid.appendChild(t);
   };
-  add('商', '떠돌이 상점', '부적 · 유물 · 물약을 산다', G.b ? 'lock' : '', () => openShop());
-  add('鬪', '대전투장', arena ? '들어갈 수 있다' : `SSX급 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`,
+  add('shop', '商', '떠돌이 상점', '부적 · 유물 · 물약을 산다', G.b ? 'lock' : '', () => openShop());
+  add('arena', '鬪', '대전투장', arena ? '들어갈 수 있다' : `SSX급 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`,
     arena ? 'hot' : 'lock', () => openArena());
-  add('將', '장기 상점', '노인과 한 판 · 이기면 상자', G.b ? 'lock' : '', () => openJanggi());
-  add('呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
+  add('janggi', '將', '장기 상점', '노인과 한 판 · 이기면 상자', G.b ? 'lock' : '', () => openJanggi());
+  add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
-  add('鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 이기면 ${COL_PRIZE}`,
+  add('colo', '鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 이기면 ${COL_PRIZE}`,
     G.b ? 'lock' : 'hot', () => openColosseum());
-  add('獸', '팻 우리', petsOk()
+  add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
     G.b ? 'lock' : petsOk() ? (petPullsLeft() > 0 ? 'hot' : '') : 'lock', () => openPets());
   p.querySelector('#pl_close').onclick = closeTop;
 }
+/* ══════════════════════════════════════════════════════════
+   길잡이(導) — 때가 되면 손수 짚어 준다
+   ──────────────────────────────────────────────────────────
+   자리가 많아 모르고 지나치면 아깝다는 말을 들었다.
+   각 자리가 「지금부터 쓸모 있어지는」 그 순간에 한 번만 나선다.
+   본 것은 META.guided 에 남아 두 번 뜨지 않고,
+   한 번 들러 본 자리는 META.used 에 남아 반짝임이 꺼진다.
+   지도에 설 때마다 하나씩만 — 한꺼번에 쏟지 않는다.
+   ══════════════════════════════════════════════════════════ */
+function guided(id) { return !!(META.guided && META.guided[id]); }
+function markGuided(id) { META.guided = META.guided || {}; META.guided[id] = 1; saveMeta(); }
+function usedPlace(id) { return !!(META.used && META.used[id]); }
+function markUsed(id) {
+  META.used = META.used || {};
+  if (META.used[id]) return;
+  META.used[id] = 1; saveMeta();
+  const t = $('#topbar'); if (t) renderTop();
+}
+const GUIDES = [
+  { id: 'box', g: '匣', n: '부적 뽑기 — 값을 받지 않는다',
+    when: r => r.floor >= 1,
+    say: () => `위쪽 <em>匣</em> 단추가 <em>부적 뽑기</em>다.
+      지금은 시험 중이라 <i>다이아를 한 톨도 받지 않는다</i> — 열고 싶은 만큼 열어도 된다.<br>
+      한 판에 한 번은 꼭 열어 보는 게 좋다. 덱이 두꺼워야 뒷막을 넘는다.`,
+    warn: () => '30·60·100회에서는 확정 보너스가 붙는다. 100회에서 셈이 처음으로 돌아간다.',
+    go: () => openBoxes(), goN: '지금 열어 본다' },
+  { id: 'places', g: '場', n: '터 — 갈 만한 자리를 모아 두었다',
+    when: r => r.act >= 2 || r.floor >= 4,
+    say: () => `위쪽 <em>場</em> 단추 안에 <i>떠돌이 상점 · 대전투장 · 장기 상점 · 저주의 서당 ·
+      콜로세움 · 팻 우리</i>가 다 들어 있다.<br>
+      싸우는 중만 아니면 <em>언제든</em> 들를 수 있다. 지도 위에서 굳이 그 칸을 밟지 않아도 된다.`,
+    warn: () => '「새로」가 붙은 자리는 아직 한 번도 안 들러 본 곳이다.',
+    go: () => showPlaces(), goN: '둘러본다' },
+  { id: 'train', g: '修', n: '수행터 — 져도 남는 것이 있다',
+    when: () => Object.keys(META.fails || {}).length > 0 || (META.runs || 0) >= 2,
+    say: () => `죽어도 <em>정진(精進)</em>은 남는다. 위쪽 <em>修</em> 단추가 수행터다.<br>
+      체력 · 손패 · 기 · 골드 · 시작 유물까지, <i>한 번 올려 두면 다음 판부터 계속 붙는다.</i><br>
+      실력도 과금도 없이 나아갈 수 있는 길이 이것 하나뿐이다.`,
+    warn: () => '같은 막에서 자꾸 죽으면 그 막만 조금씩 물러진다 — 그것도 여기서 본다.',
+    go: () => openTraining(), goN: '수행터로' },
+  { id: 'skill', g: '祕', n: '비기 — 한 판에 한 번, 판을 뒤집는다',
+    when: r => !!r.skill,
+    say: () => `비기를 하나 얻었다. 위쪽 <em>祕</em> 단추, 또는 전투 화면 왼쪽 아래 단추로 쓴다.<br>
+      <i>한 전투에 한 번</i>뿐이지만 그만큼 세다. 아끼다 죽는 것보다 쓰고 이기는 게 낫다.`,
+    warn: () => '설정에서 「비기를 알아서 쓴다」를 켜면 자동 플레이가 대신 판단한다.',
+    go: () => openSkills(), goN: '비기를 본다' },
+  { id: 'shrine', g: '神', n: '신성의 신전 — 안 쓰는 유물을 바친다',
+    when: r => r.relics.length >= 3,
+    say: () => `유물이 쌓이기 시작했다. 위쪽 <em>神</em> 단추가 신전이다.<br>
+      쓸모가 다한 유물을 <em>바치면</em> 그 값만큼 <i>가호</i>가 오른다 —
+      칼날 · 가죽 · 숨 · 복. 버리는 것이 아까울 일이 없어진다.`,
+    warn: () => '등급이 높은 유물일수록 가호가 크게 오른다.',
+    go: () => openShrine(), goN: '신전으로' },
+  { id: 'fuse', g: '合', n: '유물 조합 — 둘을 합쳐 하나로',
+    when: r => r.relics.length >= 5,
+    say: () => `위쪽 <em>合</em> 단추에서 유물 둘을 <em>합칠</em> 수 있다.<br>
+      짝이 맞으면 <i>SSX급</i>이 된다. 자리를 덜 차지하고 힘은 더 세다.`,
+    warn: () => '합칠 짝은 조합 창 안에 다 적혀 있다.',
+    go: () => openFuse(), goN: '조합을 본다' },
+  { id: 'auto', g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
+    when: () => autoOk(),
+    say: () => `제1막을 넘어서서 <em>자동 플레이</em>가 열렸다.
+      전투 화면 오른쪽 아래 「자동」 단추, 또는 메뉴에서 켠다.<br>
+      설정에서 <i>지도까지</i>로 바꾸면 지도도 스스로 걷는다.`,
+    warn: () => '빠르기도 설정에서 고른다 — 느긋 · 보통 · 빠름.',
+    go: () => showSettings(), goN: '설정을 연다' },
+  { id: 'pet', g: '獸', n: '팻 우리 — 잡은 것을 데리고 다닌다',
+    when: () => petsOk(),
+    say: () => `제${PET_ACT}막을 넘어서서 <em>팻</em>이 열렸다. 터(場) 안 <em>팻 우리</em>로 간다.<br>
+      팻은 그 요괴가 쓰던 수를 그대로 쓴다. 곁에서 거드는 정도지만 한 턴에 한 번씩 쌓이면 크다.<br>
+      <i>뽑기는 계정당 ${PET_PULLS_BASE}번뿐이다.</i> 신중히.`,
+    warn: () => `제${PET_BONUS_ACT}막을 넘으면 ${PET_PULLS_BONUS}번이 더 붙는다. 팻이 죽으면 엘리트 ${PET_REVIVE_ELITES}을 잡아야 되살아난다.`,
+    go: () => openPets(), goN: '팻 우리로' },
+  { id: 'colo', g: '鬪', n: '콜로세움 — 심심하면 겨룬다',
+    when: r => r.act >= 3 && r.gold >= COL_FEE,
+    say: () => `터(場) 안에 <em>콜로세움</em>이 있다. 참가비 <i>${COL_FEE}골드</i>, 이기면 <i>${COL_PRIZE}골드</i>.<br>
+      끝까지 올라가 <em>무마두</em>를 넘으면 ?급 부적 <b>무마두의 숨결</b>이 나온다. 아주 어렵다.`,
+    warn: () => '져도 참가비만 잃는다 — 모험은 그대로다.',
+    go: () => openColosseum(), goN: '겨루러 간다' },
+  { id: 'arena', g: '鬪', n: '대전투장 — SSX급을 모은 자만',
+    when: () => arenaReady(),
+    say: () => `SSX급 유물이 <em>${ARENA_REQ}종</em> 모였다. 터(場) 안 <em>대전투장</em>이 열린다.<br>
+      끝없이 밀려오는 판이다. 멀리 갈수록 <i>다이아와 정진</i>이 크게 쌓인다.`,
+    warn: () => '여기서 번 것으로 교환소에서 유물과 부적을 산다.',
+    go: () => openArena(), goN: '들어간다' },
+  { id: 'school', g: '呪', n: '저주의 서당 — 견디면 크게 받는다',
+    when: () => curseReady(),
+    say: () => `터(場) 안 <em>저주의 서당</em>이 열렸다. 노인이 저주 하나를 걸어 준다.<br>
+      <i>스무 판</i>을 그 저주째로 견디면 값을 크게 쳐 준다. 이레에 한 번뿐이다.`,
+    warn: () => '저주는 도중에 못 푼다. 각오하고 받는 편이 좋다.',
+    go: () => openSchool(), goN: '서당으로' },
+  { id: 'skin', g: '皮', n: '스킨 — 부적에 옷을 입힌다',
+    when: () => Object.keys((META.skins && META.skins.own) || {}).length > 0,
+    say: () => `스킨을 하나 얻었다. <em>도감</em>에서 그 부적을 누르면 갈아입힐 수 있다.<br>
+      성능은 그대로지만 <i>부딪는 자국과 불티 빛깔까지</i> 그 옷 색으로 바뀐다.`,
+    warn: () => '스킨은 부적 하나를 정해서 나온다 — 「00을 위한 00」 꼴이다.',
+    go: () => showDex(), goN: '도감으로' }
+];
+/* 지도에 설 때마다 한 번씩 살핀다 — 한 번에 하나만 */
+function guideTick() {
+  const run = G.run;
+  if (!run || G.b || AUTO.on) return;
+  if ($('#overlay') && $('#overlay').children.length) return;
+  for (const g of GUIDES) {
+    if (guided(g.id)) continue;
+    let ok = false; try { ok = !!g.when(run); } catch (e) { ok = false; }
+    if (!ok) continue;
+    markGuided(g.id);
+    showGuide(g);
+    return;
+  }
+}
+function showGuide(g) {
+  SND.unlock();
+  const p = modal(`<h2>${g.n}</h2>
+    <div class="gdbox"><div class="gdg">${g.g}</div>
+      <div class="gdt"><b>여기 있는 줄 몰랐다면</b><p>${g.say()}</p>
+        ${g.warn ? `<span class="gdw">· ${g.warn()}</span>` : ''}</div></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="brush-btn gold" id="gd_go" style="flex:1">${g.goN}</button>
+      <button class="brush-btn ghost" id="gd_x" style="color:#e9dfc9;border-color:#8a7f68">나중에</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  p._esc = null;
+  p.querySelector('#gd_go').onclick = () => { closeTop(); try { g.go(); } catch (e) { toast('지금은 갈 수 없다'); } };
+  p.querySelector('#gd_x').onclick = closeTop;
+}
+
+/* ── 상자를 까라는 권유 ───────────────────────────────────
+   뽑기가 공짜인데 모르고 안 여는 사람이 있다는 말을 들었다.
+   막이 바뀌었을 때 한 번, 보스 앞에서 한 번 — 그 막에 이미 열었으면 안 뜬다.
+   ────────────────────────────────────────────────────────── */
+let _boxCallOn = false;
+function boxCallHide() { const n = $('#boxcall'); if (n) n.remove(); _boxCallOn = false; }
+function boxNudge() {
+  const run = G.run;
+  boxCallHide();
+  if (!run || G.b || AUTO.on || G.scene !== 'map') return;
+  if (run._boxMute || OPT.noBoxCall) return;
+  if (run._boxAct === run.act) return;                 /* 이 막에서 이미 열었다 */
+  const rows = run.map ? run.map.nodes.reduce((a, n) => Math.max(a, n.r), 0) + 1 : 12;
+  const nearBoss = run.floor >= rows - 3;
+  /* 한 막에 두 번까지 — 막에 들어설 때 한 번, 보스 앞에서 한 번 */
+  if (!run._boxCall || run._boxCall.act !== run.act) run._boxCall = { act: run.act, n: 0 };
+  const stage = run._boxCall.n;
+  if (stage >= 2) return;
+  if (stage === 1 && !nearBoss) return;
+  run._boxCall.n = stage + 1;
+  _boxCallOn = true;
+  const n = el('div', 'boxcall',
+    `<div class="bcg">匣</div>
+     <div class="bct"><b>${nearBoss ? '보스가 코앞이다 — 상자를 열고 가는 게 좋다' : '이 막에서 아직 상자를 안 열었다'}</b>
+       <small>부적 뽑기는 지금 <b>값을 받지 않는다</b> · 열어 둔 만큼 덱이 두꺼워진다</small></div>
+     <button class="bcgo" id="bc_go">상자를 연다</button>
+     <button class="bcx" id="bc_x" title="닫기">×</button>`);
+  n.id = 'boxcall';
+  $('#app').appendChild(n);
+  SND.blip(560, { dur: .1, type: 'triangle', vol: .06, to: 760 });
+  n.querySelector('#bc_go').onclick = () => { boxCallHide(); openBoxes(); };
+  n.querySelector('#bc_x').onclick = () => { run._boxMute = true; boxCallHide(); };
+  setTimeout(() => { if ($('#boxcall') === n) boxCallHide(); }, 14000);
+}
+
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
   if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
@@ -7770,7 +7983,7 @@ function openShop() {
 }
 function openBoxes() {
   if (G.b) { SND.err(); toast('싸우는 중에는 열 수 없다'); return; }
-  SND.ui(); showSpecialShop();
+  markUsed('box'); SND.ui(); showSpecialShop();
 }
 
 /* --- 전투 화면 뼈대 --- */
@@ -9500,6 +9713,14 @@ function showMap() {
   requestAnimationFrame(fit);
   _mapFit = fit;
   saveRun();
+  /* 길잡이 — 지도에 설 때마다 하나씩. 그다음에 상자 권유 */
+  setTimeout(() => {
+    if (G.scene !== 'map') return;
+    const before = $('#overlay') ? $('#overlay').children.length : 0;
+    guideTick();
+    const after = $('#overlay') ? $('#overlay').children.length : 0;
+    if (after === before) boxNudge();          /* 안내가 떴으면 권유는 미룬다 */
+  }, 620);
 }
 function bossOf(run) {
   const bl = ENCOUNTERS[run.act].boss;
@@ -9516,6 +9737,7 @@ function availableNodes() {
 let _mapFit = null;
 function enterNode(n) {
   const run = G.run;
+  boxCallHide();
   markCheckpoint();                       /* 쓰러져도 이 갈림길로 돌아올 수 있다 */
   run.mapCur = n.id; run.mapDone.push(n.id);
   run.floor = n.r + 1; run.stats.floors++;
@@ -12438,6 +12660,8 @@ function showSpecialShop(refill) {
       items.push({ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || null });
     }
     run.summons += times;
+    run._boxAct = run.act;                 /* 이 막에서 열었다 — 권유가 뜨지 않는다 */
+    markUsed('box'); boxCallHide();
     const bonus = grantMilestones(before % 100, run.summons % 100 === 0 ? 100 : (before % 100) + times);
     if (run.summons % 100 === 0 || (before % 100) + times >= 100) run.summons = ((before % 100) + times) % 100;
     saveRun(); renderTop();
@@ -13445,6 +13669,23 @@ function showSettings() {
     () => OPT.autoPace, v => { OPT.autoPace = v; });
   row('물약 자동 사용', '체력이 위태로울 때만 딴다', () => OPT.autoPotion, v => { OPT.autoPotion = v; });
   row('비기 자동 사용', '싸움이 길어지면 알아서 쓴다', () => OPT.autoSkill, v => { OPT.autoSkill = v; });
+
+  head('안 내');
+  {
+    const done = Object.keys(META.guided || {}).length;
+    const n = el('div', 'optrow',
+      `<div class="lb"><b>안내를 처음부터 다시</b><small>때가 되면 손수 짚어 주는 안내 ${done} / ${GUIDES.length}개를 봤다 ·
+        누르면 다시 처음부터 뜬다</small></div>`);
+    const btn = el('button', 'val'); btn.textContent = '다시 받기';
+    btn.onclick = () => {
+      META.guided = {}; saveMeta(); SND.unlock();
+      toast('안내를 처음부터 다시 받는다');
+      btn.textContent = '다시 받는다'; btn.classList.add('yes'); btn.disabled = true;
+    };
+    n.appendChild(btn); list.appendChild(n);
+  }
+  row('상자 권유', '한 막에서 상자를 안 열었으면 지도에 쪽지를 띄운다',
+    () => !OPT.noBoxCall, v => { OPT.noBoxCall = !v; if (!v) boxCallHide(); });
 
   head('기 록');
   {
