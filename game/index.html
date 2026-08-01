@@ -14128,74 +14128,78 @@ const CODES = {
     d: '관리자 창을 연다',
     give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '관리자 창'; }
   },
-  /* ── 나눠 주는 코드들 ─────────────────────────────────── */
+  /* ── 나눠 주는 코드들 ─────────────────────────────────────
+     너무 달다는 말을 들었다. 판을 건너뛰게 하는 몫이 아니라
+     「한 발 거들어 주는」 정도로 낮췄다 — 특대급 상자는 뺐다.
+     ────────────────────────────────────────────────────────── */
   'baekgwi-welcome': {
     n: '환영합니다',
-    d: '첫걸음을 떼는 이에게 — 골드 · 다이아 · 정진 · 특대급 상자 셋',
+    d: '첫걸음을 떼는 이에게 — 골드 150 · 정진 120 · 작은 상자 한 번',
     once: true,
     async give() {
-      META.jp = (META.jp || 0) + 400; saveMeta();
-      if (G.run) { G.run.gold += 500; G.run.dia = (G.run.dia || 0) + 900; saveRun(); renderTop(); }
-      SND.unlock(); screenFlash('rgba(255,210,120,.42)', 700);
-      if (G.run && !G.b) setTimeout(() => freeBigBox(3), 420);
-      return '골드 500 · 다이아 900 · 정진 400 · 특대급 상자 3회';
+      META.jp = (META.jp || 0) + 120; saveMeta();
+      if (G.run) { G.run.gold += 150; saveRun(); renderTop(); }
+      SND.unlock();
+      if (G.run && !G.b) setTimeout(async () => {
+        const l = boxLoot(0); l.take(); saveRun(); renderTop();
+        await boxOpenScene('匣', l.grade || 'common');
+        showPullResult([{ g: l.g, n: l.n, d: l.d, grade: l.grade, skin: l.skin, card: l.card }], () => {});
+      }, 380);
+      return '골드 150 · 정진 120 · 작은 상자 1회';
     }
   },
   'jeongjin1000': {
     n: '수행의 값',
-    d: '정진 1000',
+    d: '정진 250',
     once: true,
-    give() { META.jp = (META.jp || 0) + 1000; saveMeta(); SND.unlock(); return '정진 1000'; }
+    give() { META.jp = (META.jp || 0) + 250; saveMeta(); SND.unlock(); return '정진 250'; }
   },
   'sasindo25': {
     n: '사신도의 부름',
-    d: 'SSX급 부적 하나와 SSC급 부적 하나',
+    d: '2등급 부적 하나',
     once: true,
     give() {
       if (!G.run) return '모험 중에만 받을 수 있다';
-      const got = [];
-      for (const g of ['ssx', 'ssc']) {
-        const pool = GRADE_POOL[g] || [];
-        if (!pool.length) continue;
-        const id = pick(pool);
-        G.run.deck.push(mkCard(id, false)); G.run.stats.cards++; dexAdd('cards', id);
-        got.push(CARDS[id].n);
-      }
-      saveRun(); renderTop(); SND.unlock(); screenFlash('rgba(255,60,110,.36)', 640);
-      return got.length ? got.join(' · ') : '줄 부적이 없다';
+      const pool = POOL.uncommon || [];
+      if (!pool.length) return '줄 부적이 없다';
+      const id = pick(pool);
+      G.run.deck.push(mkCard(id, false)); G.run.stats.cards++; dexAdd('cards', id);
+      saveRun(); renderTop(); SND.unlock();
+      return CARDS[id].n;
     }
   },
   'danobrother': {
     n: '벗의 몫',
-    d: '단오가 남긴 것 — 체력을 가득 채우고 골드 300',
+    d: '체력을 절반쯤 되찾고 골드 100',
     once: true,
     give() {
       if (!G.run) return '모험 중에만 받을 수 있다';
-      G.run.hp = G.run.maxHp; G.run.gold += 300;
+      const n = Math.ceil(G.run.maxHp * .35);
+      G.run.hp = Math.min(G.run.maxHp, G.run.hp + n);
+      G.run.gold += 100;
       if (G.b && P()) P().hp = G.run.hp;
       saveRun(); renderTop(); syncAll(); SND.heal();
-      return '체력 가득 · 골드 300';
+      return `체력 +${n} · 골드 100`;
     }
   },
   'bigi-one': {
     n: '한 수',
-    d: '비기 상자 두 번',
+    d: '비기 상자 한 번',
     once: true,
     async give() {
-      const items = [];
-      for (let i = 0; i < 2; i++) { const l = boxLoot(5); l.take(); items.push({ g: l.g, n: l.n, d: l.d, grade: l.grade }); }
+      const l = boxLoot(5); l.take();
       if (G.run) { saveRun(); renderTop(); }
-      setTimeout(() => showPullResult(items, () => {}), 400);
-      return '비기 둘';
+      setTimeout(() => showPullResult([{ g: l.g, n: l.n, d: l.d, grade: l.grade }], () => {}), 380);
+      return '비기 하나';
     }
   },
   'petfriend': {
     n: '우리의 벗',
-    d: '팻 뽑기 두 번',
+    d: '팻 뽑기 한 번',
     once: true,
     give() { META.pets = META.pets || { own: {}, active: null, pulls: 0 };
-      META.pets.bonusPulls = (META.pets.bonusPulls || 0) + 2; saveMeta(); SND.unlock();
-      return '팻 뽑기 2회'; }
+      META.pets.bonusPulls = (META.pets.bonusPulls || 0) + 1; saveMeta(); SND.unlock();
+      return '팻 뽑기 1회'; }
   },
   '0316bakgi75birt': {
     n: '맛보기',
@@ -14350,7 +14354,7 @@ const NEWS = [
     t: '산에 오르는 그대에게',
     art: 'gate',
     code: 'baekgwi-welcome',
-    codeSay: '골드 500 · 다이아 900 · 정진 400 · 특대급 상자 3회',
+    codeSay: '골드 150 · 정진 120 · 작은 상자 한 번',
     body: `
       <p>해가 지면 산길이 열린다. 등불이 줄지어 지나가고,
       그 행렬을 <b>백귀야행(百鬼夜行)</b>이라 부른다.</p>
@@ -14369,7 +14373,7 @@ const NEWS = [
     t: '벗이 지도에 나타났다 · 부적 마흔둘',
     art: 'road',
     code: 'sasindo25',
-    codeSay: 'SSX급 부적 하나 + SSC급 부적 하나',
+    codeSay: '2등급 부적 하나',
     body: `
       <ul>
         <li><b>지도 위의 단오</b> — 자기 길로 오른다. 지나온 자국은 쪽빛 점선,
@@ -14392,13 +14396,14 @@ const NEWS = [
     art: 'seal',
     body: `
       <p>설정 맨 아래 <b>코드 입력</b>란에 적으면 받는다. 하나에 한 번씩만.</p>
+      <p><span style="color:#9a8d74">거들어 주는 몫일 뿐이다. 산은 제 발로 올라야 한다.</span></p>
       <div class="ncodes">
-        <div><code>baekgwi-welcome</code><span>골드 · 다이아 · 정진 · 특대급 상자 셋</span></div>
-        <div><code>jeongjin1000</code><span>정진 1000</span></div>
-        <div><code>sasindo25</code><span>SSX급 하나 · SSC급 하나</span></div>
-        <div><code>danobrother</code><span>체력 가득 · 골드 300</span></div>
-        <div><code>bigi-one</code><span>비기 상자 두 번</span></div>
-        <div><code>petfriend</code><span>팻 뽑기 두 번</span></div>
+        <div><code>baekgwi-welcome</code><span>골드 150 · 정진 120 · 작은 상자 한 번</span></div>
+        <div><code>jeongjin1000</code><span>정진 250</span></div>
+        <div><code>sasindo25</code><span>2등급 부적 하나</span></div>
+        <div><code>danobrother</code><span>체력을 조금 되찾고 골드 100</span></div>
+        <div><code>bigi-one</code><span>비기 상자 한 번</span></div>
+        <div><code>petfriend</code><span>팻 뽑기 한 번</span></div>
       </div>
       <p class="nq">방을 붙이는 자는 이름을 적지 않는다.<br><span>— 산 어귀의 방(榜)</span></p>`
   }
