@@ -7248,8 +7248,9 @@ function startBattle(enemyIds, kind, opts) {
      특별 상자를 까지 않으면 못 넘을 지경이라는 말을 들었다.
      보스만 따로 눅인다. 엘리트는 그보다 덜.
      ────────────────────────────────────────────────── */
-  if (kind === 'boss') sc = { hp: sc.hp * BOSS_SOFT.hp, dmg: sc.dmg * BOSS_SOFT.dmg };
-  else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp, dmg: sc.dmg * ELITE_SOFT.dmg };
+  const ls = lateSoft(run.act, kind);                 /* 뒷막일수록 한 번 더 눅인다 */
+  if (kind === 'boss') sc = { hp: sc.hp * BOSS_SOFT.hp * ls.hp, dmg: sc.dmg * BOSS_SOFT.dmg * ls.dmg };
+  else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
   const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
@@ -10061,25 +10062,30 @@ const ACT_SCALE = {
   8: { hp: 2.35, dmg: 1.62 },
   /* 「나(我)」와 「백귀야행」 — 여기서 벽이 너무 가팔라 계단을 낮췄다 */
   9: { hp: 2.50, dmg: 1.66 },
-  10:{ hp: 2.72, dmg: 1.73 },
-  /* 백귀야행 너머 — 여기까지 오는 사람은 수행과 오기를 다 짊어지고 온다 */
-  11:{ hp: 2.92, dmg: 1.79 },
-  12:{ hp: 3.14, dmg: 1.85 },
-  13:{ hp: 3.38, dmg: 1.92 },
-  14:{ hp: 3.64, dmg: 1.99 },
-  15:{ hp: 3.92, dmg: 2.07 },
+  /* ── 제10막 뒤로 계단을 눕혔다 ─────────────────────────
+     여기서부터 너무 세다는 말을 들었다. 오르는 기울기를
+     체력은 막마다 4.5%, 피해는 2.1%로 낮췄다.
+     제25막에서 체력 7.96→5.04, 피해 2.94→2.30 —
+     둘을 곱한 몸무게로는 절반이다.
+     ────────────────────────────────────────────────────── */
+  10:{ hp: 2.60, dmg: 1.68 },
+  11:{ hp: 2.72, dmg: 1.72 },
+  12:{ hp: 2.84, dmg: 1.75 },
+  13:{ hp: 2.97, dmg: 1.79 },
+  14:{ hp: 3.10, dmg: 1.83 },
+  15:{ hp: 3.24, dmg: 1.86 },
   /* 무(無)를 넘어선 뒤 — 산이 문을 연 까닭까지 간다 */
-  16:{ hp: 4.22, dmg: 2.15 },
-  17:{ hp: 4.54, dmg: 2.23 },
-  18:{ hp: 4.88, dmg: 2.31 },
-  19:{ hp: 5.25, dmg: 2.40 },
-  20:{ hp: 5.65, dmg: 2.49 },
+  16:{ hp: 3.39, dmg: 1.90 },
+  17:{ hp: 3.54, dmg: 1.94 },
+  18:{ hp: 3.70, dmg: 1.98 },
+  19:{ hp: 3.87, dmg: 2.03 },
+  20:{ hp: 4.04, dmg: 2.07 },
   /* 산 너머 — 벗을 찾아가는 다섯 막 */
-  21:{ hp: 6.05, dmg: 2.57 },
-  22:{ hp: 6.48, dmg: 2.66 },
-  23:{ hp: 6.94, dmg: 2.75 },
-  24:{ hp: 7.43, dmg: 2.84 },
-  25:{ hp: 7.96, dmg: 2.94 }
+  21:{ hp: 4.22, dmg: 2.11 },
+  22:{ hp: 4.41, dmg: 2.16 },
+  23:{ hp: 4.61, dmg: 2.20 },
+  24:{ hp: 4.82, dmg: 2.25 },
+  25:{ hp: 5.04, dmg: 2.30 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
@@ -10092,6 +10098,18 @@ const actBoost = act => actScale(act).hp;
 /* 보스·엘리트만 따로 눅이는 배율 */
 const BOSS_SOFT  = { hp: 0.82, dmg: 0.82 };
 const ELITE_SOFT = { hp: 0.92, dmg: 0.92 };
+/* ── 뒷막의 보스·엘리트는 한 번 더 눅인다 ──────────────────
+   제10막부터 벽이 너무 높다는 말을 들었다. 막이 깊을수록
+   조금씩 더 깎아 제25막에서 보스는 다시 한 번 25% 가벼워진다.
+   ────────────────────────────────────────────────────────── */
+const LATE_FROM = 10;
+function lateSoft(act, kind) {
+  const a = Math.max(0, (act || 1) - LATE_FROM);
+  if (a <= 0 || (kind !== 'boss' && kind !== 'elite')) return { hp: 1, dmg: 1 };
+  const k = kind === 'boss' ? 0.0166 : 0.0090;      /* 막마다 이만큼씩 */
+  const cut = Math.min(kind === 'boss' ? .25 : .14, a * k);
+  return { hp: 1 - cut, dmg: 1 - cut * .7 };
+}
 function newRun(asc) {
   G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
