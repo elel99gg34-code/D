@@ -1,0 +1,16 @@
+{
+  "name": "baekgwi-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "백귀야행 — 회원가입 · 로그인 · 1대1 겨루기 서버",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
