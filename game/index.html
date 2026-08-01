@@ -1780,6 +1780,26 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .jpgain .jm b{color:#bff5e6}
 .brush-btn.gold{border-color:#d8a24a;color:#ffe0a0;background:rgba(180,130,40,.18)}
 .brush-btn.gold:hover{background:rgba(210,160,60,.3)}
+/* ── 벗의 훈수 ────────────────────────────────────────────── */
+@keyframes fsIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes fsOut{to{opacity:0;transform:translateX(-16px)}}
+.friendsay{position:absolute;left:18px;bottom:250px;z-index:33;max-width:min(330px,52vw);
+  display:flex;gap:10px;align-items:flex-start;padding:10px 13px 10px 11px;border-radius:11px;
+  background:linear-gradient(150deg,rgba(16,30,42,.96),rgba(8,16,24,.96));
+  border:1px solid rgba(90,150,190,.42);box-shadow:0 8px 24px rgba(0,0,0,.5);
+  animation:fsIn .3s ease;pointer-events:none}
+.friendsay.out{animation:fsOut .36s ease forwards}
+.friendsay:after{content:'';position:absolute;left:26px;top:100%;border:7px solid transparent;
+  border-top-color:rgba(90,150,190,.42)}
+.friendsay .fsg{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;
+  font-size:17px;background:radial-gradient(circle at 35% 30%,#7fb8d8,#1a3a52);color:#e8f6ff}
+.friendsay .fst b{display:block;color:#8fc8e6;font-size:11.5px;letter-spacing:.1em;font-weight:400;margin-bottom:3px}
+.friendsay .fst span{display:block;color:#dcecf6;font-size:13px;line-height:1.65}
+.friendcut{display:flex;gap:14px;align-items:flex-start;padding:15px 18px;border-radius:11px;max-width:440px;
+  background:rgba(8,14,20,.7);border:1px solid rgba(90,150,190,.3)}
+.friendcut .fcg{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:25px;
+  background:radial-gradient(circle at 35% 30%,#5a8aa8,#12222e);color:#cfe4f2;filter:grayscale(.4)}
+.friendcut .fct{color:#c8dae6;font-size:14px;line-height:1.9;text-align:left}
 /* ── 관리자 창 (개발용) ───────────────────────────────────── */
 .topbtn.admin{color:#c8ffe8;background:rgba(30,140,105,.3);border-color:#4fe0b0}
 .topbtn.admin:hover{background:rgba(40,180,135,.55)}
@@ -2822,7 +2842,7 @@ const SND = {
   MODE_G: [0, 3, 5, 7, 10],
   MODE_P: [0, 2, 5, 7, 9],
   bgmSet(act) {
-    const a = Math.min(20, Math.max(1, act || 1));
+    const a = Math.min(25, Math.max(1, act || 1));
     /* [으뜸음, 조, 한 박(ms), 대금, 장구] */
     const T = [
       [196, 'P', 620, .5, .0],   /* 1 요괴 숲 — 낮고 성기게 */
@@ -2844,7 +2864,12 @@ const SND = {
       [165, 'G', 520, .7, .3],   /* 17 기억 */
       [208, 'G', 560, .8, .2],   /* 18 스승 */
       [139, 'G', 480, .7, .45],  /* 19 백년 */
-      [123, 'G', 520, .9, .4]    /* 20 산 */
+      [123, 'G', 520, .9, .4],   /* 20 산 */
+      [147, 'G', 540, .7, .2],   /* 21 사잇길 */
+      [330, 'P', 620, .8, .1],   /* 22 천국 문 — 높고 맑다 */
+      [392, 'P', 680, .9, .0],   /* 23 천국 */
+      [104, 'G', 440, .6, .65],  /* 24 침공 — 장구가 몰아친다 */
+      [87,  'G', 560, 1.0, .35]  /* 25 사신도 */
     ][a - 1];
     return { root: T[0], scale: T[1] === 'G' ? this.MODE_G : this.MODE_P,
              beat: T[2], daeg: T[3], jang: T[4] };
@@ -3011,7 +3036,7 @@ const SND = {
      태초는 맑은 울림, 백귀야행은 멀리서 오는 발소리,
      무(無)는 거의 아무것도 없다. */
   ambProfile(act) {
-    const a = Math.min(20, Math.max(1, act || 1));
+    const a = Math.min(25, Math.max(1, act || 1));
     return [
       { f: 420, q: .7, r: .35, w: .06, d: 210 },   /* 1 요괴 숲 */
       { f: 380, q: .8, r: .34, w: .05, d: 180 },   /* 2 안개 봉우리 */
@@ -3032,7 +3057,12 @@ const SND = {
       { f: 300, q: 2.0, r: .32, w: .10, d: 190 },  /* 17 기억 — 웅성거림 */
       { f: 780, q: 1.5, r: .42, w: .045, d: 300 }, /* 18 스승 — 절의 처마 바람 */
       { f: 210, q: 1.7, r: .34, w: .12, d: 130 },  /* 19 백년 — 수많은 발소리 */
-      { f: 520, q: .55, r: .38, w: .035, d: 260 }  /* 20 산 — 정상의 큰 바람 */
+      { f: 520, q: .55, r: .38, w: .035, d: 260 }, /* 20 산 — 정상의 큰 바람 */
+      { f: 360, q: 1.4, r: .32, w: .07, d: 200 },  /* 21 사잇길 */
+      { f: 1400, q: 1.1, r: .5, w: .04, d: 520 },  /* 22 천국 문 — 맑고 높다 */
+      { f: 1900, q: .9, r: .58, w: .03, d: 640 },  /* 23 천국 */
+      { f: 150, q: 1.9, r: .3, w: .13, d: 110 },   /* 24 침공 — 발소리 */
+      { f: 88, q: 1.2, r: .26, w: .02, d: 50 }     /* 25 사신도 — 낮고 고요하다 */
     ][a - 1];
   },
   ambience(on, strong) {
@@ -6115,6 +6145,279 @@ defEnemy({ id: 'mountain', n: '산(山)', g: '山', hp: [2450, 2450], col: '#2a2
     return r < .4 ? 'slide' : r < .72 ? 'winter' : 'rise2';
   } });
 
+
+/* ══ 제21막 · 사잇길 — 산 너머에도 길이 있었다 ═════════════ */
+defEnemy({ id: 'between', n: '사이에 있는 것', g: '間', hp: [356, 398], col: '#4a4a58',
+  moves: { slip:  { t: 'attack', label: '틈으로 든다', d: 62, fx: 'void' },
+           widen: { t: 'atkdeb', label: '벌어진다', d: 30, n: 2, deb: { vuln: 10 }, fx: 'claw' },
+           shut2: { t: 'defend', label: '오므린다', blk: 104, self: { thorns: 14 } } },
+  next: e => e.hist.length === 0 ? 'shut2' : lastIs(e, 'slip') ? 'shut2'
+           : rnd() < .48 ? 'slip' : rnd() < .8 ? 'widen' : 'shut2' });
+defEnemy({ id: 'signpost', n: '돌아선 이정표', g: '標', hp: [340, 380], col: '#6a5a3a',
+  moves: { wrong: { t: 'atkdeb', label: '틀린 쪽을 가리킨다', d: 54, deb: { weak: 10, curse: 9 }, fx: 'void' },
+           spin2: { t: 'attack', label: '빙글 돈다', d: 26, n: 3, fx: 'wind' },
+           stand2:{ t: 'defend', label: '박힌다', blk: 100, self: { dex: 10 } } },
+  next: e => e.hist.length === 0 ? 'wrong' : lastIs(e, 'spin2') ? 'stand2'
+           : rnd() < .5 ? 'spin2' : rnd() < .8 ? 'wrong' : 'stand2' });
+defEnemy({ id: 'talisghost', n: '通 부적의 메아리', g: '通', hp: [332, 372], col: '#3a6a7a',
+  moves: { echo3: { t: 'attack', label: '들었던 말', d: 34, n: 2, fx: 'lance' },
+           cut3:  { t: 'atkdeb', label: '끊긴다', d: 58, deb: { curse: 10 }, fx: 'void' },
+           hum:   { t: 'defend', label: '지지직', blk: 96, self: { regenP: 16 } } },
+  next: e => e.hist.length === 0 ? 'hum' : lastIs(e, 'cut3') ? 'echo3'
+           : rnd() < .5 ? 'echo3' : rnd() < .8 ? 'cut3' : 'hum' });
+defEnemy({ id: 'crossroad', n: '갈림길의 주인', g: '岐', hp: [742, 820], col: '#5a4a6a', elite: true, big: true,
+  init: e => { e.s.rage = 9; },
+  moves: { split: { t: 'attack', label: '둘로 가른다', d: 42, n: 2, fx: 'slash2' },
+           choose:{ t: 'debuff', label: '고르게 한다', deb: { weak: 10, vuln: 10, curse: 10 } },
+           hold5: { t: 'defend', label: '길을 막는다', blk: 108, self: { thorns: 14 } } },
+  next: e => e.hist.length === 0 ? 'choose' : lastIs(e, 'split') ? 'hold5'
+           : e.turnCount % 4 === 0 ? 'choose' : rnd() < .56 ? 'split' : 'hold5' });
+defEnemy({ id: 'lostfriend', n: '벗의 그림자', g: '影', hp: [764, 844], col: '#3a5a6a', elite: true, big: true,
+  init: e => { e.s.dex = 10; e.s.regenP = 16; },
+  moves: { mimic: { t: 'attack', label: '벗이 쓰던 수', d: 36, n: 2, fx: 'slash' },
+           blame2:{ t: 'atkdeb', label: '왜 안 왔나', d: 66, deb: { curse: 11 }, fx: 'void' },
+           fade2: { t: 'defend', label: '흐려진다', blk: 104, self: { dex: 9 } } },
+  next: e => e.hist.length === 0 ? 'fade2' : lastIs(e, 'blame2') ? 'mimic'
+           : e.turnCount % 5 === 0 ? 'fade2' : rnd() < .54 ? 'mimic' : 'blame2' });
+defEnemy({ id: 'thepath', n: '사잇길(間道)', g: '道', hp: [2620, 2620], col: '#3a3a4a', boss: true, big: true,
+  init: e => { e.fork = 0; },
+  moves: {
+    branch:  { t: 'attack', label: '길이 갈라진다', d: 36, n: 3, fx: 'wind' },
+    mislead: { t: 'atkdeb', label: '엉뚱한 데로', d: 64, deb: { weak: 10, vuln: 10, curse: 10 }, fx: 'void' },
+    close3:  { t: 'defend', label: '길이 닫힌다', blk: 112, self: { thorns: 17, regenP: 20 } },
+    gather6: { t: 'buff', label: '모든 길이 모인다', blk: 92, self: { str: 17 },
+               extra: e => { e.fork = 1; flash('길이 하나로 모인다'); SND.boss();
+                             screenFlash('rgba(140,140,200,.5)', 950); } },
+    onlyway: { t: 'attack', label: '이 길 뿐 이 다', d: 140, fx: 'void',
+               extra: e => { e.fork = 0; st(P(), 'weak', 10); st(P(), 'vuln', 10);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 17); st(e, 'rage', 4); flash('길은 끝나지 않는다');
+                 screenFlash('rgba(170,170,230,.55)', 1000); SND.boss(); },
+  next: e => { if (e.fork) return 'onlyway';
+    if (e.hist.length === 0) return 'mislead';
+    if (e.turnCount % 5 === 0) return 'gather6';
+    if (lastIs(e, 'branch', 2)) return 'close3';
+    const r = rnd(); return r < .4 ? 'branch' : r < .72 ? 'mislead' : 'close3'; } });
+
+/* ══ 제22막 · 천국 문 앞 — 벗이 있다는 곳 ═══════════════════ */
+defEnemy({ id: 'gatekeep2', n: '문지기', g: '閽', hp: [372, 416], col: '#c8b86a',
+  moves: { ask:   { t: 'atkdeb', label: '이름을 묻는다', d: 56, deb: { weak: 10 }, fx: 'lance' },
+           bar:   { t: 'defend', label: '빗장', blk: 110, self: { thorns: 15 } },
+           push2: { t: 'attack', label: '밀쳐낸다', d: 32, n: 3, fx: 'blunt' } },
+  next: e => e.hist.length === 0 ? 'ask' : lastIs(e, 'push2') ? 'bar'
+           : rnd() < .5 ? 'push2' : rnd() < .8 ? 'ask' : 'bar' });
+defEnemy({ id: 'listkeeper', n: '명부를 든 자', g: '簿', hp: [388, 432], col: '#8a7a4a',
+  moves: { erase2:{ t: 'atkdeb', label: '이름을 지운다', d: 68, deb: { curse: 12 }, fx: 'void' },
+           check: { t: 'debuff', label: '적혀 있지 않다', deb: { weak: 11, vuln: 11 } },
+           shelve:{ t: 'defend', label: '덮는다', blk: 106, self: { regenP: 18 } } },
+  next: e => e.hist.length === 0 ? 'check' : lastIs(e, 'erase2') ? 'shelve'
+           : rnd() < .5 ? 'erase2' : rnd() < .82 ? 'check' : 'shelve' });
+defEnemy({ id: 'lightling', n: '빛 조각', g: '光', hp: [356, 398], col: '#f0e0a0',
+  moves: { shine: { t: 'attack', label: '눈을 찌른다', d: 30, n: 3, fx: 'fire' },
+           dazzle:{ t: 'atkdeb', label: '눈이 먼다', d: 40, deb: { weak: 11, vuln: 11 }, fx: 'fire' },
+           veil4: { t: 'defend', label: '흩어진다', blk: 102, self: { dex: 12 } } },
+  next: e => e.hist.length === 0 ? 'veil4' : lastIs(e, 'shine') ? 'dazzle'
+           : rnd() < .52 ? 'shine' : rnd() < .82 ? 'dazzle' : 'veil4' });
+defEnemy({ id: 'archangel', n: '문 앞의 큰 것', g: '巨', hp: [786, 868], col: '#c8a83a', elite: true, big: true,
+  init: e => { e.s.rage = 10; e.s.thorns = 14; },
+  moves: { smite2:{ t: 'attack', label: '내리친다', d: 46, n: 2, fx: 'lance' },
+           deny:  { t: 'atkdeb', label: '너는 아니다', d: 70, deb: { weak: 11, curse: 11 }, fx: 'void' },
+           wall3: { t: 'defend', label: '막아 선다', blk: 116, self: { thorns: 12 } } },
+  next: e => e.hist.length === 0 ? 'wall3' : lastIs(e, 'smite2', 2) ? 'wall3'
+           : e.turnCount % 4 === 0 ? 'deny' : rnd() < .58 ? 'smite2' : 'wall3' });
+defEnemy({ id: 'thescale', n: '저울', g: '衡', hp: [808, 892], col: '#8a8a6a', elite: true, big: true,
+  init: e => { e.s.regenP = 18; },
+  moves: { weigh2:{ t: 'atkdeb', label: '달아 본다', d: 64, deb: { weak: 11, vuln: 11 }, fx: 'void' },
+           tip:   { t: 'attack', label: '기운다', d: 40, n: 2, fx: 'blunt' },
+           level: { t: 'defend', label: '고른다', blk: 114, self: { thorns: 13, regenP: 8 } } },
+  next: e => e.hist.length === 0 ? 'weigh2' : lastIs(e, 'tip') ? 'level'
+           : e.turnCount % 5 === 0 ? 'level' : rnd() < .54 ? 'tip' : 'weigh2' });
+defEnemy({ id: 'heavengate', n: '천국의 문(天門)', g: '天', hp: [2830, 2830], col: '#d8c88a', boss: true, big: true,
+  init: e => { e.judge2 = 0; },
+  moves: {
+    shine2:  { t: 'attack', label: '빛이 쏟아진다', d: 38, n: 3, fx: 'fire' },
+    name3:   { t: 'atkdeb', label: '네 이름이 없다', d: 68, deb: { weak: 11, vuln: 11, curse: 11 }, fx: 'void' },
+    shut4:   { t: 'defend', label: '닫힌다', blk: 118, self: { thorns: 18, regenP: 21 } },
+    open5:   { t: 'buff', label: '틈이 벌어진다', blk: 96, self: { str: 18 },
+               extra: e => { e.judge2 = 1; flash('문틈으로 벗의 목소리가 새어 나온다'); SND.boss();
+                             screenFlash('rgba(255,240,180,.5)', 1000); } },
+    verdict2:{ t: 'attack', label: '들 어 올 수 없 다', d: 146, fx: 'void',
+               extra: e => { e.judge2 = 0; st(P(), 'weak', 11); st(P(), 'vuln', 11);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 18); st(e, 'regenP', 22); flash('문이 삐걱인다');
+                 screenFlash('rgba(255,250,220,.6)', 1050); SND.boss(); },
+  next: e => { if (e.judge2) return 'verdict2';
+    if (e.hist.length === 0) return 'name3';
+    if (e.turnCount % 5 === 0) return 'open5';
+    if (lastIs(e, 'shine2', 2)) return 'shut4';
+    const r = rnd(); return r < .4 ? 'shine2' : r < .72 ? 'name3' : 'shut4'; } });
+
+/* ══ 제23막 · 천국 — 벗이 없다 ═════════════════════════════ */
+defEnemy({ id: 'blessed', n: '복 받은 것', g: '福', hp: [402, 448], col: '#e0d8b0',
+  moves: { smile: { t: 'atkdeb', label: '웃어 준다', d: 60, deb: { curse: 12 }, fx: 'void' },
+           bless: { t: 'defend', label: '축복한다', blk: 112, self: { regenP: 19 } },
+           hymn:  { t: 'attack', label: '찬가', d: 32, n: 3, fx: 'wind' } },
+  next: e => e.hist.length === 0 ? 'bless' : lastIs(e, 'hymn') ? 'smile'
+           : rnd() < .5 ? 'hymn' : rnd() < .8 ? 'smile' : 'bless' });
+defEnemy({ id: 'foreverchild', n: '늙지 않는 아이', g: '童', hp: [386, 430], col: '#a8d8c8',
+  moves: { play2: { t: 'attack', label: '같이 놀자', d: 28, n: 4, fx: 'claw' },
+           stay:  { t: 'atkdeb', label: '가지 마', d: 56, deb: { weak: 11, vuln: 11 }, fx: 'void' },
+           hide2: { t: 'defend', label: '숨는다', blk: 108, self: { dex: 13 } } },
+  next: e => e.hist.length === 0 ? 'play2' : lastIs(e, 'stay') ? 'play2'
+           : rnd() < .5 ? 'play2' : rnd() < .8 ? 'stay' : 'hide2' });
+defEnemy({ id: 'emptyseat', n: '빈자리', g: '空', hp: [420, 468], col: '#6a6a72',
+  moves: { hollow:{ t: 'atkdeb', label: '아무도 없다', d: 72, deb: { curse: 12, weak: 10 }, fx: 'void' },
+           dust:  { t: 'attack', label: '먼지가 인다', d: 34, n: 2, fx: 'wind' },
+           wait4: { t: 'defend', label: '기다린다', blk: 116, self: { thorns: 15 } } },
+  next: e => e.hist.length === 0 ? 'wait4' : lastIs(e, 'hollow') ? 'dust'
+           : rnd() < .5 ? 'hollow' : rnd() < .8 ? 'dust' : 'wait4' });
+defEnemy({ id: 'oldsaint', n: '오래된 성인', g: '聖', hp: [842, 930], col: '#d8c060', elite: true, big: true,
+  init: e => { e.s.rage = 10; e.s.regenP = 19; },
+  moves: { forgive:{ t: 'atkdeb', label: '용서한다', d: 70, deb: { weak: 12, vuln: 12 }, fx: 'holy' },
+           halo:  { t: 'defend', label: '광배', blk: 120, self: { thorns: 15 } },
+           word2: { t: 'attack', label: '말씀', d: 44, n: 2, fx: 'lance' } },
+  next: e => e.hist.length === 0 ? 'halo' : lastIs(e, 'word2') ? 'forgive'
+           : e.turnCount % 4 === 0 ? 'halo' : rnd() < .56 ? 'word2' : 'forgive' });
+defEnemy({ id: 'reaperscout', n: '먼저 온 사신', g: '死', hp: [866, 956], col: '#2a2a3a', elite: true, big: true,
+  init: e => { e.s.thorns = 15; },
+  moves: { scythe:{ t: 'attack', label: '낫질', d: 48, n: 2, fx: 'slash2' },
+           mark:  { t: 'atkdeb', label: '표를 남긴다', d: 66, deb: { curse: 13 }, fx: 'void' },
+           creep: { t: 'defend', label: '스며든다', blk: 112, self: { dex: 12, regenP: 12 } } },
+  next: e => e.hist.length === 0 ? 'mark' : lastIs(e, 'scythe', 2) ? 'creep'
+           : e.turnCount % 5 === 0 ? 'mark' : rnd() < .58 ? 'scythe' : 'creep' });
+defEnemy({ id: 'heaven', n: '천국(天國)', g: '國', hp: [3060, 3060], col: '#e8dcb0', boss: true, big: true,
+  init: e => { e.calm = 0; },
+  moves: {
+    peace:   { t: 'atkdeb', label: '편안하다', d: 40, n: 3, deb: { weak: 11 }, fx: 'holy' },
+    forget:  { t: 'atkdeb', label: '다 잊게 한다', d: 72, deb: { curse: 12, vuln: 12 }, fx: 'void' },
+    embrace: { t: 'defend', label: '품는다', blk: 124, self: { thorns: 19, regenP: 22 } },
+    rest3:   { t: 'buff', label: '여기서 쉬어라', blk: 100, self: { str: 19 },
+               extra: e => { e.calm = 1; flash('벗의 목소리가 들린다 — 여기 없다'); SND.boss();
+                             screenFlash('rgba(255,250,230,.55)', 1050); } },
+    stay2:   { t: 'attack', label: '여 기 있 어 라', d: 152, fx: 'holy',
+               extra: e => { e.calm = 0; st(P(), 'weak', 11); st(P(), 'curse', 12);
+                             shake(true); SND.gong(); } }
+  },
+  onHalf: e => { st(e, 'str', 19); st(e, 'regenP', 23); flash('천국은 아무도 내보내지 않는다');
+                 screenFlash('rgba(255,255,240,.6)', 1100); SND.boss(); },
+  next: e => { if (e.calm) return 'stay2';
+    if (e.hist.length === 0) return 'peace';
+    if (e.turnCount % 5 === 0) return 'rest3';
+    if (lastIs(e, 'peace', 2)) return 'embrace';
+    const r = rnd(); return r < .4 ? 'peace' : r < .72 ? 'forget' : 'embrace'; } });
+
+/* ══ 제24막 · 사신의 침공 — 천국이 무너진다 ═════════════════ */
+defEnemy({ id: 'reaper1', n: '사신 졸개', g: '卒', hp: [440, 490], col: '#2a2a34',
+  moves: { cut4:  { t: 'attack', label: '벤다', d: 36, n: 3, fx: 'slash2' },
+           chill: { t: 'atkdeb', label: '식힌다', d: 60, deb: { weak: 12, vuln: 12 }, fx: 'void' },
+           form:  { t: 'defend', label: '줄을 선다', blk: 118, self: { str: 10 } } },
+  next: e => e.hist.length === 0 ? 'form' : lastIs(e, 'cut4') ? 'chill'
+           : rnd() < .52 ? 'cut4' : rnd() < .82 ? 'chill' : 'form' });
+defEnemy({ id: 'reaper2', n: '낫을 든 것', g: '鎌', hp: [462, 514], col: '#3a2a3a',
+  moves: { reap2: { t: 'attack', label: '거둔다', d: 84, fx: 'slash2' },
+           hook:  { t: 'atkdeb', label: '걸어 당긴다', d: 38, n: 2, deb: { vuln: 12 }, fx: 'claw' },
+           whet:  { t: 'buff', label: '날을 세운다', blk: 108, self: { str: 14, rage: 3 } } },
+  next: e => e.hist.length === 0 ? 'whet' : e.turnCount % 4 === 0 ? 'whet'
+           : rnd() < .52 ? 'reap2' : 'hook' });
+defEnemy({ id: 'brokenangel', n: '부러진 것', g: '折', hp: [428, 476], col: '#8a7a6a',
+  moves: { fall4: { t: 'attack', label: '떨어진다', d: 40, n: 2, fx: 'blunt' },
+           weep:  { t: 'atkdeb', label: '운다', d: 62, deb: { curse: 13 }, fx: 'void' },
+           curl2: { t: 'defend', label: '움츠린다', blk: 120, self: { regenP: 20 } } },
+  next: e => e.hist.length === 0 ? 'weep' : lastIs(e, 'fall4') ? 'curl2'
+           : rnd() < .5 ? 'fall4' : rnd() < .8 ? 'weep' : 'curl2' });
+defEnemy({ id: 'reaperlord', n: '사신 장군', g: '將', hp: [902, 996], col: '#1a1a26', elite: true, big: true,
+  init: e => { e.s.rage = 11; e.s.thorns = 16; },
+  moves: { order2:{ t: 'buff', label: '진을 친다', blk: 122, self: { str: 20 },
+                    extra: () => { for (const e2 of alive()) { st(e2, 'str', 7); st(e2, 'dex', 6); } } },
+           mow:   { t: 'attack', label: '쓸어 벤다', d: 50, n: 2, fx: 'slash2' },
+           doom:  { t: 'atkdeb', label: '때가 됐다', d: 76, deb: { weak: 13, curse: 13 }, fx: 'void' } },
+  next: e => e.hist.length === 0 ? 'order2' : lastIs(e, 'mow') ? 'doom'
+           : e.turnCount % 4 === 0 ? 'order2' : rnd() < .58 ? 'mow' : 'doom' });
+defEnemy({ id: 'friendhusk', n: '벗이었던 것', g: '友', hp: [928, 1024], col: '#3a5a7a', elite: true, big: true,
+  init: e => { e.s.dex = 12; e.s.regenP = 20; },
+  moves: { ourway:{ t: 'attack', label: '같이 익힌 수', d: 46, n: 2, fx: 'slash' },
+           call4: { t: 'atkdeb', label: '내 이름을 부른다', d: 78, deb: { curse: 13 }, fx: 'void' },
+           guard6:{ t: 'defend', label: '등을 맡긴다', blk: 118, self: { thorns: 14 } } },
+  next: e => e.hist.length === 0 ? 'guard6' : lastIs(e, 'ourway') ? 'call4'
+           : e.turnCount % 5 === 0 ? 'guard6' : rnd() < .54 ? 'ourway' : 'call4' });
+defEnemy({ id: 'invasion', n: '침공(侵)', g: '侵', hp: [3300, 3300], col: '#1a1a24', boss: true, big: true,
+  init: e => { e.wave2 = 0; },
+  moves: {
+    tide:    { t: 'attack', label: '물밀듯이', d: 42, n: 3, fx: 'claw' },
+    harvest: { t: 'atkdeb', label: '거두어 간다', d: 76, deb: { weak: 12, vuln: 12, curse: 12 }, fx: 'void' },
+    ranks:   { t: 'defend', label: '진이 두꺼워진다', blk: 128, self: { thorns: 20, regenP: 23 } },
+    horn:    { t: 'buff', label: '뿔피리', blk: 104, self: { str: 20 },
+               extra: e => { e.wave2 = 1; flash('사신들이 천국의 문을 넘는다'); SND.boss(); SND.drum();
+                             screenFlash('rgba(60,60,90,.6)', 1050); } },
+    flood2:  { t: 'attack', label: '천 국 이 무 너 진 다', d: 158, fx: 'void',
+               extra: e => { e.wave2 = 0; st(P(), 'weak', 12); st(P(), 'vuln', 12); st(P(), 'curse', 12);
+                             shake(true); SND.gong(); SND.thunder(); } }
+  },
+  onHalf: e => { st(e, 'str', 20); st(e, 'rage', 4); st(e, 'regenP', 24);
+                 flash('뒤에서 또 온다'); screenFlash('rgba(40,40,70,.65)', 1100); SND.boss(); },
+  next: e => { if (e.wave2) return 'flood2';
+    if (e.hist.length === 0) return 'harvest';
+    if (e.turnCount % 5 === 0) return 'horn';
+    if (lastIs(e, 'tide', 2)) return 'ranks';
+    const r = rnd(); return r < .42 ? 'tide' : r < .72 ? 'harvest' : 'ranks'; } });
+
+/* ══ 제25막 · 사신도 — 벗을 되찾는 자리 ═══════════════════ */
+defEnemy({ id: 'ferryman', n: '뱃사공', g: '渡', hp: [486, 540], col: '#2a3a4a',
+  moves: { pole:  { t: 'attack', label: '삿대질', d: 44, n: 2, fx: 'lance' },
+           fare:  { t: 'atkdeb', label: '뱃삯을 묻는다', d: 70, deb: { curse: 13 }, fx: 'void' },
+           drift2:{ t: 'defend', label: '흘러간다', blk: 124, self: { dex: 14 } } },
+  next: e => e.hist.length === 0 ? 'fare' : lastIs(e, 'pole') ? 'drift2'
+           : rnd() < .52 ? 'pole' : rnd() < .82 ? 'fare' : 'drift2' });
+defEnemy({ id: 'namelist', n: '죽은 이의 이름들', g: '名', hp: [508, 564], col: '#3a3a2a',
+  moves: { recite:{ t: 'attack', label: '하나씩 부른다', d: 30, n: 4, fx: 'void' },
+           yours: { t: 'atkdeb', label: '네 이름도 있다', d: 80, deb: { weak: 13, curse: 13 }, fx: 'void' },
+           roll:  { t: 'defend', label: '두루마리를 만다', blk: 126, self: { regenP: 21 } } },
+  next: e => e.hist.length === 0 ? 'recite' : lastIs(e, 'yours') ? 'roll'
+           : rnd() < .5 ? 'recite' : rnd() < .82 ? 'yours' : 'roll' });
+defEnemy({ id: 'blackdog', n: '검은 개', g: '狗', hp: [470, 522], col: '#1a1a1a',
+  moves: { bite2: { t: 'attack', label: '문다', d: 40, n: 3, fx: 'claw' },
+           howl:  { t: 'atkdeb', label: '길게 짖는다', d: 56, deb: { weak: 13, vuln: 13 }, fx: 'wind' },
+           crouch:{ t: 'defend', label: '웅크린다', blk: 118, self: { str: 13, dex: 10 } } },
+  next: e => e.hist.length === 0 ? 'howl' : lastIs(e, 'bite2') ? 'crouch'
+           : rnd() < .54 ? 'bite2' : rnd() < .84 ? 'howl' : 'crouch' });
+defEnemy({ id: 'judgehell', n: '시왕(十王)', g: '王', hp: [968, 1068], col: '#5a2a2a', elite: true, big: true,
+  init: e => { e.s.rage = 12; e.s.thorns = 17; },
+  moves: { sentence:{ t: 'atkdeb', label: '판결한다', d: 84, deb: { weak: 14, vuln: 14 }, fx: 'void' },
+           gavel: { t: 'attack', label: '내리친다', d: 52, n: 2, fx: 'blunt' },
+           court2:{ t: 'defend', label: '법정을 세운다', blk: 130, self: { thorns: 15 } } },
+  next: e => e.hist.length === 0 ? 'court2' : lastIs(e, 'gavel') ? 'sentence'
+           : e.turnCount % 4 === 0 ? 'court2' : rnd() < .58 ? 'gavel' : 'sentence' });
+defEnemy({ id: 'reapergen', n: '사신의 오른팔', g: '右', hp: [996, 1100], col: '#22222e', elite: true, big: true,
+  init: e => { e.s.dex = 13; e.s.regenP = 22; },
+  moves: { twin:  { t: 'attack', label: '두 낫', d: 54, n: 2, fx: 'slash2' },
+           still3:{ t: 'atkdeb', label: '멈추게 한다', d: 74, deb: { weak: 14, curse: 14 }, fx: 'void' },
+           shroud:{ t: 'defend', label: '수의를 두른다', blk: 128, self: { thorns: 16, regenP: 10 } } },
+  next: e => e.hist.length === 0 ? 'shroud' : lastIs(e, 'twin', 2) ? 'shroud'
+           : e.turnCount % 5 === 0 ? 'still3' : rnd() < .58 ? 'twin' : 'still3' });
+defEnemy({ id: 'sasindo', n: '사신도(死神圖)', g: '死', hp: [3800, 3800], col: '#141420', boss: true, big: true,
+  init: e => { e.draw2 = 0; },
+  moves: {
+    ink2:    { t: 'attack', label: '먹이 번진다', d: 44, n: 3, fx: 'void' },
+    portrait:{ t: 'atkdeb', label: '네 얼굴을 그린다', d: 80, deb: { weak: 13, vuln: 13, curse: 13 }, fx: 'void' },
+    frame:   { t: 'defend', label: '틀에 가둔다', blk: 134, self: { thorns: 21, regenP: 25 } },
+    brush2:  { t: 'buff', label: '붓을 든다', blk: 108, self: { str: 21 },
+               extra: e => { e.draw2 = 1; flash('그림 속에서 벗이 이쪽을 본다'); SND.boss(); SND.drum();
+                             screenFlash('rgba(20,20,40,.72)', 1100); } },
+    finish2: { t: 'attack', label: '그 림 이 완 성 된 다', d: 168, fx: 'void',
+               extra: e => { e.draw2 = 0; st(P(), 'weak', 13); st(P(), 'vuln', 13); st(P(), 'curse', 13);
+                             shake(true); SND.gong(); SND.thunder(); } }
+  },
+  onHalf: e => { st(e, 'str', 21); st(e, 'rage', 4); st(e, 'regenP', 26);
+                 flash('그림이 찢어진다 — 벗의 손이 나온다');
+                 screenFlash('rgba(120,160,220,.6)', 1200); SND.boss(); },
+  next: e => { if (e.draw2) return 'finish2';
+    if (e.hist.length === 0) return 'portrait';
+    if (e.turnCount % 5 === 0) return 'brush2';
+    if (lastIs(e, 'ink2', 2)) return 'frame';
+    const r = rnd(); return r < .4 ? 'ink2' : r < .72 ? 'portrait' : 'frame'; } });
+
 /* ---------- 조우(인카운터) 구성 ---------- *//* ---------- 조우(인카운터) 구성 ---------- */
 const ENCOUNTERS = {
   1: {
@@ -6274,6 +6577,46 @@ const ENCOUNTERS = {
              ['springthing', 'springthing'], ['rockthing', 'climber3'], ['rootthing', 'climber2']],
     elite:  [['thegate'], ['thepeak'], ['thegate', 'rockthing'], ['thepeak', 'rootthing']],
     boss:   ['mountain']
+  },
+  21: {
+    weak:   [['between'], ['signpost'], ['talisghost']],
+    normal: [['between', 'signpost'], ['talisghost', 'between'], ['signpost', 'signpost'],
+             ['talisghost', 'signpost'], ['between', 'between', 'talisghost'],
+             ['signpost', 'talisghost'], ['between', 'rockthing'], ['signpost', 'rootthing']],
+    elite:  [['crossroad'], ['lostfriend'], ['crossroad', 'between'], ['lostfriend', 'talisghost']],
+    boss:   ['thepath']
+  },
+  22: {
+    weak:   [['gatekeep2'], ['listkeeper'], ['lightling']],
+    normal: [['gatekeep2', 'lightling'], ['listkeeper', 'gatekeep2'], ['lightling', 'lightling'],
+             ['listkeeper', 'lightling'], ['gatekeep2', 'gatekeep2', 'listkeeper'],
+             ['lightling', 'listkeeper'], ['gatekeep2', 'between'], ['listkeeper', 'signpost']],
+    elite:  [['archangel'], ['thescale'], ['archangel', 'lightling'], ['thescale', 'gatekeep2']],
+    boss:   ['heavengate']
+  },
+  23: {
+    weak:   [['blessed'], ['foreverchild'], ['emptyseat']],
+    normal: [['blessed', 'foreverchild'], ['emptyseat', 'blessed'], ['foreverchild', 'foreverchild'],
+             ['emptyseat', 'foreverchild'], ['blessed', 'blessed', 'emptyseat'],
+             ['foreverchild', 'emptyseat'], ['blessed', 'lightling'], ['emptyseat', 'gatekeep2']],
+    elite:  [['oldsaint'], ['reaperscout'], ['oldsaint', 'blessed'], ['reaperscout', 'emptyseat']],
+    boss:   ['heaven']
+  },
+  24: {
+    weak:   [['reaper1'], ['reaper2'], ['brokenangel']],
+    normal: [['reaper1', 'reaper2'], ['brokenangel', 'reaper1'], ['reaper2', 'reaper2'],
+             ['brokenangel', 'reaper2'], ['reaper1', 'reaper1', 'brokenangel'],
+             ['reaper2', 'brokenangel'], ['reaper1', 'blessed'], ['reaper2', 'oldsaint']],
+    elite:  [['reaperlord'], ['friendhusk'], ['reaperlord', 'reaper1'], ['friendhusk', 'reaper2']],
+    boss:   ['invasion']
+  },
+  25: {
+    weak:   [['ferryman'], ['namelist'], ['blackdog']],
+    normal: [['ferryman', 'blackdog'], ['namelist', 'ferryman'], ['blackdog', 'blackdog'],
+             ['namelist', 'blackdog'], ['ferryman', 'ferryman', 'namelist'],
+             ['blackdog', 'namelist'], ['ferryman', 'reaper2'], ['namelist', 'reaperlord']],
+    elite:  [['judgehell'], ['reapergen'], ['judgehell', 'blackdog'], ['reapergen', 'namelist']],
+    boss:   ['sasindo']
   }
 };
 
@@ -6453,6 +6796,8 @@ function startBattle(enemyIds, kind, opts) {
   SND.ambience(true, true);
   SND.bgm(true, kind === 'boss' ? 'boss' : 'battle');
   if (kind === 'boss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
+  if (friendOn()) setTimeout(() => friendSay(kind === 'boss' ? '"보스야. 천천히 가자."'
+    : kind === 'elite' ? '"이건 굵다. 조심해."' : '"붙자."', 3000), 700);
   if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
@@ -6549,6 +6894,7 @@ async function startPlayerTurn() {
   showTurnLabel('당신의 차례');
   b.busy = false;
   syncAll();
+  if (friendOn()) setTimeout(() => friendAdvise(b.turn === 1), 520);
 }
 
 /* --- 카드 사용 --- */
@@ -8112,6 +8458,90 @@ async function tryFortune() {
 }
 
 /* ══════════════════════════════════════════════════════════
+   벗 — 다른 갈림길로 간 퇴마사
+   ──────────────────────────────────────────────────────────
+   같은 날 같은 산에 오른 사람이 하나 더 있었다. 이름은 단오(丹午).
+   산 어귀에서 길이 갈렸고, 서로 통(通) 부적 한 장씩을 나눠 가졌다.
+   부적이 통하는 동안 벗은 곁에서 훈수를 둔다 — 제3막까지.
+   제6막에서 벗의 부적이 끊긴다. 그 뒤로는 벗을 찾아 오르는 이야기다.
+   ══════════════════════════════════════════════════════════ */
+const FRIEND = { n: '단오', g: '午', col: '#3a6a8a' };
+const FRIEND_UNTIL = 3;                       /* 이 막까지 훈수를 둔다 */
+const FRIEND_LOST = 6;                        /* 이 막에서 부적이 끊긴다 */
+function friendOn() {
+  const r = G.run;
+  return !!r && !r.friendLost && r.act <= FRIEND_UNTIL;
+}
+/* 판을 보고 한마디 — 상황에 맞는 것 가운데 하나 */
+function friendLine() {
+  const b = G.b, p = P(); if (!b || !p) return null;
+  const foes = alive(); if (!foes.length) return null;
+  const inc = incomingTotal();
+  const through = Math.max(0, inc - p.block);
+  const lowHp = p.hp <= p.maxHp * .35;
+  const bigHit = foes.some(e => e.mv && e.mv.d && e.mv.d * (e.mv.n || 1) >= 16);
+  const canKill = foes.some(e => {
+    for (const c of b.hand) { const v = cval(c) || {};
+      if (typeof v.d === 'number' && calcAtk(p, e, v.d) * (v.n || 1) >= e.hp + e.block) return true; }
+    return false;
+  });
+  const heavy = b.hand.filter(c => (ecost(c) || 0) > b.energy).length;
+  const noBlock = !b.hand.some(c => { const v = cval(c) || {}; return typeof v.b === 'number' && v.b > 0; });
+  const weak = p.s.weak, vuln = p.s.vuln, poison = p.s.poison;
+  const C = [];
+  if (canKill)      C.push('"저놈, 이번에 넘길 수 있겠는데. 마무리 먼저."');
+  if (lowHp && through > 0) C.push('"막아! 이번 건 못 버텨."');
+  else if (through >= p.hp * .5) C.push(`"이번에 ${through} 들어와. 방어도부터 올려."`);
+  else if (bigHit)  C.push('"저 손 크다. 그냥 맞지 마."');
+  if (poison)       C.push('"독 물렸어. 짧게 끝내는 게 낫겠는데."');
+  if (vuln)         C.push('"취약 붙었잖아. 지금 맞으면 배로 아파."');
+  if (weak)         C.push('"약화 걸렸으니 이번 턴은 때리지 말고 버텨."');
+  if (heavy >= 2)   C.push('"손에 무거운 게 많네. 값싼 것부터 흘려."');
+  if (noBlock && through > 0) C.push('"막을 게 없으면 먼저 때려서 수를 줄여."');
+  if (b.turn === 1) C.push('"첫 턴이야. 서두르지 말고 판을 봐."');
+  if (foes.length >= 3) C.push('"셋이나 되네. 넓게 치는 부적 있으면 지금."');
+  if (b.energy >= 4) C.push('"기 남았어. 아끼지 말고 다 써."');
+  if (!C.length) C.push('"괜찮아. 네 판이야."');
+  return pick(C);
+}
+/* 벗이 말한다 — 전투 화면 왼쪽 아래 쪽지 */
+function friendSay(text, dur) {
+  const old = $('#friendsay'); if (old) old.remove();
+  const n = el('div', 'friendsay', `<div class="fsg">${FRIEND.g}</div>
+    <div class="fst"><b>${FRIEND.n}</b><span>${text}</span></div>`);
+  n.id = 'friendsay';
+  $('#app').appendChild(n);
+  SND.blip(680, { dur: .06, type: 'sine', vol: .05, to: 880 });
+  setTimeout(() => { if (n.parentNode) { n.classList.add('out'); setTimeout(() => n.remove(), 380); } }, dur || 4200);
+}
+function friendAdvise(force) {
+  if (!friendOn() || !G.b || G.b.over) return;
+  const b = G.b;
+  if (!force && b.friendSaid && b.turn - b.friendSaid < 2) return;   /* 매 턴 떠들지 않는다 */
+  const t = friendLine(); if (!t) return;
+  b.friendSaid = b.turn;
+  friendSay(t);
+}
+/* 부적이 끊기는 자리 */
+function friendBreak() {
+  const r = G.run; if (!r || r.friendLost) return;
+  r.friendLost = true; saveRun();
+  const old = $('#friendsay'); if (old) old.remove();
+  SND.err(); SND.hiss({ dur: .9, vol: .12, freq: 1800, to: 200, filter: 'bandpass', q: 1.4, rev: .6 });
+  screenFlash('rgba(60,90,120,.4)', 800);
+  const p = modal(`<h2>통(通) 부적이 끊겼다</h2>
+    <div class="friendcut"><div class="fcg">${FRIEND.g}</div>
+      <div class="fct">"…야. 여기 뭔가 이상해."<br>
+        "엘리트가 아니야. 이건…"<br><br>
+        <b style="color:#8a8a9a">— 지지직 —</b><br><br>
+        부적이 손 안에서 재가 되었다.</div></div>
+    <div class="hint">벗의 부적이 타 버렸다. 이제 훈수는 없다.</div>
+    <button class="brush-btn red" id="fb_ok">…단오야</button>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#fb_ok').onclick = closeTop;
+}
+
+/* ══════════════════════════════════════════════════════════
    요괴 팻(獸) — 잡은 것을 데리고 다닌다
    ──────────────────────────────────────────────────────────
    · 제4막을 넘어서면 열린다.
@@ -8819,8 +9249,9 @@ const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
                    4: '명계 관문', 5: '구천 상계', 6: '무간',
                    7: '무저갱', 8: '태초', 9: '환영', 10: '백귀야행',
                    11: '새벽', 12: '인간계', 13: '왕도', 14: '천계', 15: '무',
-                   16: '회귀', 17: '기억', 18: '스승', 19: '백년', 20: '산' };
-const LAST_ACT = 20;
+                   16: '회귀', 17: '기억', 18: '스승', 19: '백년', 20: '산',
+                   21: '사잇길', 22: '천국 문', 23: '천국', 24: '침공', 25: '사신도' };
+const LAST_ACT = 25;
 /* ── 막마다 요괴가 굵어진다 ────────────────────────────────
    위로 갈수록 체력이 붙고 손이 매워진다. 체력은 가파르게,
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
@@ -8848,7 +9279,13 @@ const ACT_SCALE = {
   17:{ hp: 4.54, dmg: 2.23 },
   18:{ hp: 4.88, dmg: 2.31 },
   19:{ hp: 5.25, dmg: 2.40 },
-  20:{ hp: 5.65, dmg: 2.49 }
+  20:{ hp: 5.65, dmg: 2.49 },
+  /* 산 너머 — 벗을 찾아가는 다섯 막 */
+  21:{ hp: 6.05, dmg: 2.57 },
+  22:{ hp: 6.48, dmg: 2.66 },
+  23:{ hp: 6.94, dmg: 2.75 },
+  24:{ hp: 7.43, dmg: 2.84 },
+  25:{ hp: 7.96, dmg: 2.94 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
@@ -8879,7 +9316,7 @@ function newRun(asc) {
     skills: [], skill: null,
     curse: null, boons: [], curseHp: 0, sorrow: 0, talkBoons: [], shrine: {},
     arena: { best: 0, cleared: 0 }, arenaRound: 1, arenaDia: 0, arenaHp: null,
-    colFoe: null, colTour: null, colHp: null, inElite: false,
+    colFoe: null, colTour: null, colHp: null, inElite: false, friendLost: false,
     stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
     startedAt: Date.now()
   };
@@ -9102,6 +9539,9 @@ function enterNode(n) {
       run.stats.elites++;
       run.inElite = true;
       startBattle(pick(ENCOUNTERS[run.act].elite), 'elite');
+      /* 벗의 부적이 끊기는 자리 */
+      if (run.act >= FRIEND_LOST && !run.friendLost)
+        setTimeout(() => { if (G.b) friendBreak(); }, 1400);
       break;
     }
     case 'boss': startBattle([bossOf(run)], 'boss'); break;
@@ -11570,8 +12010,8 @@ const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내�
 const SSC_DROP_FROM = 7;                     /* 이 막부터는 그것이 SSC급으로 오르기도 한다 */
 const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
 /* 막을 넘어선 값으로 주는 특대급 상자 횟수. 제6막만 비워 둔다 */
-const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5, 11: 3, 13: 4, 16: 6, 18: 8 };
-const FUSED_GIFT_ACTS = [9, 14, 19];         /* 이 막들을 넘으면 SSX급 유물 둘 */
+const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5, 11: 3, 13: 4, 16: 6, 18: 8, 21: 6, 23: 8 };
+const FUSED_GIFT_ACTS = [9, 14, 19, 22, 24];         /* 이 막들을 넘으면 SSX급 유물 둘 */
 /* 뽑기를 하지 않은 사람도 오를 수 있게, 제4막부터 조금씩 열어 준다 */
 function specialDropRate(act) { return act >= 6 ? .35 : act >= 5 ? .30 : .20; }
 /* 공짜 특대급 상자 한 번 — 연출까지 그대로 */
@@ -12366,7 +12806,10 @@ const STORY = {
     { scene: 'village', t: '올해는 문이 닫히지 않았다.\n\n세 마을이 하룻밤에 사라졌다.\n비명을 들은 사람은 아무도 없었다.' },
     { scene: 'master', who: '스승', t: '"문은 산꼭대기에 있다.\n누군가 안에서 열어 두었어."\n\n스승은 부적 한 짐을 지고 올라갔다.' },
     { scene: 'master', t: '이레 뒤,\n돌아온 것은 부적 열 장뿐이었다.\n\n참격 다섯, 호신 넷, 벽사부 하나.' },
-    { scene: 'hero', t: '이제 남은 퇴마사는 하나뿐이다.\n\n부적 열 장을 품고,\n산을 오른다.' }
+    { scene: 'hero', t: '남은 퇴마사는 둘이다.\n\n나와, 같은 날 스승을 잃은 단오(丹午).' },
+    { scene: 'hero', who: '단오', t: '"산 어귀에서 길이 둘로 갈려."\n\n"네가 왼쪽, 내가 오른쪽. 위에서 만나자."' },
+    { scene: 'hero', t: '단오가 부적 두 장을 반으로 갈라 한 쪽을 건넸다.\n通 — 통할 통.\n\n"이게 붙어 있는 동안은 서로 목소리가 들려."\n"내가 봐 줄게. 너 판 보는 눈이 영 없잖아."' },
+    { scene: 'hero', t: '부적 열 장과 통 부적 한 조각을 품고,\n산을 오른다.\n\n귓가에서 단오가 웃는 소리가 들린다.' }
   ],
   act1: [
     { scene: 'fox', who: '구미호', t: '"……어리구나. 스승보다 더."\n\n꼬리 아홉이 하나씩 스러진다.' },
@@ -12387,11 +12830,13 @@ const STORY = {
     { scene: 'moon', t: '저승사자가 흩어지자\n명계의 천장이 갈라지며 빛이 쏟아졌다.\n\n위로, 더 위로 가야 한다.' }
   ],
   act5: [
+    { scene: 'hero', who: '단오', t: '"야, 나 여기 좀 이상해."\n\n"위로 갈수록 부적이 지지직거려.\n네 목소리도 끊겨."' },
     { scene: 'tiger', who: '치우천왕', t: '"하늘도 저것을 막지 못했다."\n\n구리 이마가 갈라지며 피가 흐른다.' },
     { scene: 'dragon', who: '치우천왕', t: '"문 너머에는 아무것도 없다.\n아무것도 없는 것이 있다."\n\n"그것이 네 이름을 지웠다."' },
     { scene: 'gate', t: '구천의 끝, 무간(無間)의 입구가 열렸다.\n\n소리도, 빛도, 냄새도 없다.' }
   ],
   act6: [
+    { scene: 'hero', t: '무간을 넘던 밤, 통 부적이 마지막으로 울었다.\n\n"…야. 여기 뭔가 이상해. 엘리트가 아니야. 이건—"\n\n그 뒤로 아무 소리도 나지 않았다.' },
     { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
     { scene: 'dragon', t: '부적이 한 장씩 타들어 갔다.\n마지막 한 장을 붙였을 때,\n\n비로소 소리가 돌아왔다.' },
     { scene: 'abyss', t: '무간이 무너지자 바닥이 사라졌다.\n\n문 너머에 또 다른 아래가 있었다.\n떨어지는 데 이레가 걸렸다.' }
@@ -12408,6 +12853,7 @@ const STORY = {
   ],
   act9: [
     { scene: 'hero', who: '나', t: '"여기까지 온 것을 축하하네."\n\n돌아본 얼굴은 내 얼굴이었다.' },
+    { scene: 'hero', who: '나', t: '"단오를 찾나?"\n\n"찾을 수 있을 걸세. 다만 자네가 아는 단오는 아닐지도."' },
     { scene: 'moon', who: '나', t: '"백 년마다 하나가 오르지.\n그리고 백 년마다 하나가 남네."\n\n"이번엔 자네 차례일세."' },
     { scene: 'parade', t: '재가 흩어진 자리에서\n등불이 하나둘 켜지기 시작했다.\n\n행렬이 돌아오고 있었다.' }
   ],
@@ -12460,6 +12906,37 @@ const STORY = {
     { scene: 'parade', who: '백년', t: '"백 년에 하나씩, 백 명이 올랐다."\n\n"아무도 넘지 못했다."' },
     { scene: 'dawn', t: '백 명이 하나씩 길을 비켰다.\n비킨 자리마다 발자국이 남았다.\n\n발자국은 전부 위를 향하고 있었다.' },
     { scene: 'first', t: '마지막 발자국 앞에\n산이 통째로 서 있었다.\n\n문을 연 것은 요괴가 아니었다.' }
+  ],
+  act20: [
+    { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
+    { scene: 'dawn', t: '산이 숨을 멈췄다.\n문은 닫혔고, 백귀는 흩어졌다.\n\n그런데 아직 하나가 남았다.' },
+    { scene: 'hero', t: '품 안에서 재가 된 통 부적이\n한 번, 아주 약하게 떨렸다.\n\n단오가 어딘가에 있다.' }
+  ],
+  act21: [
+    { scene: 'hero', who: '사잇길', t: '"산은 끝났지. 하지만 길은 안 끝났네."' },
+    { scene: 'moon', t: '산 너머에 길이 하나 더 있었다.\n어느 지도에도 없는 길이었다.\n\n재가 된 부적이 그쪽으로 기울었다.' },
+    { scene: 'gate', t: '길 끝에 문이 있었다.\n이번 문은 위로 나 있었다.\n\n문 너머가 환했다.' }
+  ],
+  act22: [
+    { scene: 'gate', who: '문지기', t: '"네 이름은 명부에 없다."\n\n"산 사람은 못 들어간다."' },
+    { scene: 'moon', t: '문틈으로 들여다보았다.\n하얗고, 넓고, 조용했다.\n\n그 안 어딘가에서 낯익은 웃음소리가 났다.' },
+    { scene: 'dragon', t: '문을 부수고 들어갔다.\n\n퇴마사가 천국의 문을 부순 것은\n아마 내가 처음일 것이다.' }
+  ],
+  act23: [
+    { scene: 'dragon', who: '천국', t: '"여기 있으면 아프지 않다."\n\n"네 벗도 그래서 남았다."' },
+    { scene: 'hero', t: '단오를 찾아 헤맸다.\n웃음소리는 자꾸 들리는데\n돌아보면 빈자리뿐이었다.' },
+    { scene: 'parade', t: '천국의 하늘이 검게 갈라졌다.\n\n갈라진 틈으로 낫이 먼저 들어왔다.' }
+  ],
+  act24: [
+    { scene: 'parade', who: '사신 장군', t: '"천국은 오래 살찐 밭이다."\n\n"거둘 때가 됐다."' },
+    { scene: 'abyss', t: '복 받은 것들이 줄줄이 거두어졌다.\n비명도 없었다. 여기 사람들은\n비명 지르는 법을 잊은 지 오래였다.' },
+    { scene: 'abyss', t: '무너지는 천국의 끝에서\n낯익은 등이 하나 서 있었다.\n\n"…단오야?"\n\n돌아본 얼굴에는 눈이 없었다.' }
+  ],
+  end_sasindo: [
+    { scene: 'abyss', who: '사신도', t: '"이 그림에 들어온 것은 나가지 못한다."\n\n"네 벗은 여기 여섯 해째 걸려 있다."' },
+    { scene: 'abyss', t: '그림 속에서 단오가 이쪽을 보았다.\n입 모양만으로 무언가 말했다.\n\n— 야. 너 판 보는 눈 여전히 없네.' },
+    { scene: 'dragon', t: '부적도 벽사부도 다 떨어졌다.\n남은 것은 재가 된 통 부적 한 조각.\n\n그것을 그림에 붙였다.\n通 — 통할 통.' },
+    { scene: 'dawn', t: '그림이 찢어졌다.\n\n찢어진 자리에서 손이 하나 나왔다.\n잡았다. 따뜻했다.\n\n둘이서 산을 내려왔다.\n이번에는 길이 갈리지 않았다.' }
   ],
   end_mountain: [
     { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
@@ -13631,7 +14108,10 @@ function setBg(act) {
     15: ['#2a2a2e', '#1a1a1e', '#0a0a0c'],
     16: ['#c3b79d', '#9c8f74', '#6a6050'], 17: ['#7a6a7a', '#5a4c5c', '#332a38'],
     18: ['#8a9aa8', '#66727e', '#3c454e'], 19: ['#6a5a7a', '#4a3e58', '#2a2236'],
-    20: ['#7e7a6a', '#5c584a', '#33302a']
+    20: ['#7e7a6a', '#5c584a', '#33302a'],
+    21: ['#8a8fa0', '#666b7e', '#3c4050'], 22: ['#e2dcc0', '#c2b898', '#8e8466'],
+    23: ['#dfe8f2', '#bccbdf', '#8c9eb8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
+    25: ['#b8ac92', '#8a7f68', '#4a4238']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
@@ -13648,7 +14128,12 @@ function setBg(act) {
                 17: '#cfc2d2 0%,#a897b0 52%,#7c6a88 100%',
                 18: '#e2e8ee 0%,#c2cdd8 52%,#98a5b2 100%',
                 19: '#c8bcd8 0%,#a294ba 50%,#75688e 100%',
-                20: '#e8e2cf 0%,#c9c2a8 50%,#9d9680 100%' }[a];
+                20: '#e8e2cf 0%,#c9c2a8 50%,#9d9680 100%',
+                21: '#b9bccb 0%,#9498ac 52%,#6a6e86 100%',
+                22: '#fffbe8 0%,#f4ead0 46%,#dcceac 100%',
+                23: '#f6faff 0%,#dbe8f8 50%,#b4c8e4 100%',
+                24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
+                25: '#efe6cf 0%,#d8cbaa 48%,#aca084 100%' }[a];
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      ${bgSkyArt(a)}
@@ -13832,6 +14317,75 @@ function bgSkyArt(a) {
       ${bgCloud(760, 268, 150, 22, '#9d9680', .2)}
       <g>${rep(8, i => bgBird(140 + i * 106, 172 + (i % 3) * 26, 9, '#5c5648', .4))}</g>`;
   }
+  if (a === 21) {
+    /* 사잇길 — 이승과 저승 사이. 달이 둘, 하늘 한가운데 이음매가 갈라져 있다 */
+    return `<circle cx="330" cy="128" r="52" fill="#e8e4f0" opacity=".4"/>
+      <circle cx="392" cy="140" r="48" fill="#4a4658" opacity=".45"/>
+      <path d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#e6e2f4" stroke-width="2.4" opacity=".38"/>
+      <path d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#8f88b0" stroke-width="8" opacity=".14"/>
+      ${bgCloud(690, 132, 150, 22, '#b6b2c8', .3)}
+      ${bgCloud(180, 262, 130, 18, '#a8a4bc', .22)}
+      <g opacity=".34">${rep(7, i => bgBird(120 + i * 122, 250 + (i % 3) * 30, 8, '#5c5870', .9))}</g>`;
+  }
+  if (a === 22) {
+    /* 천국 문 — 구름 위로 문 하나가 하늘을 다 채운다 */
+    return `<circle cx="500" cy="230" r="150" fill="#fff8dc" opacity=".5"/>
+      <circle cx="500" cy="230" r="230" fill="#ffeeb4" opacity=".16"/>
+      <g opacity=".3" fill="#a89a70">
+        <rect x="292" y="120" width="26" height="480"/><rect x="682" y="120" width="26" height="480"/>
+        <path d="M244,120 L500,44 L756,120 L756,150 L244,150 Z"/>
+        <path d="M270,178 L500,116 L730,178 L730,200 L270,200 Z" opacity=".8"/>
+        ${rep(9, i => `<rect x="${332 + i * 38}" y="200" width="7" height="${34 + (i % 3) * 14}"/>`)}
+      </g>
+      ${bgCloud(210, 300, 170, 26, '#f2e8c8', .42)}
+      ${bgCloud(820, 268, 160, 24, '#f2e8c8', .36)}
+      <g opacity=".38">${rep(22, i =>
+        `<circle cx="${(i * 149) % 1000}" cy="${60 + (i * 71) % 300}" r="${.9 + (i % 3) * .8}" fill="#fff4c8"/>`)}</g>`;
+  }
+  if (a === 23) {
+    /* 천국 — 구름 층층, 그 위에 뜬 누각들 */
+    return `<circle cx="500" cy="118" r="96" fill="#fffdf4" opacity=".62"/>
+      <circle cx="500" cy="118" r="160" fill="#eef6ff" opacity=".2"/>
+      <g opacity=".28" fill="none" stroke="#fff" stroke-width="1.4">${rep(4, i =>
+        `<circle cx="500" cy="118" r="${118 + i * 40}"/>`)}</g>
+      <g opacity=".3" fill="#c8d6e8">${rep(5, i =>
+        `<path d="M${120 + i * 186},${252 + (i % 3) * 26} l40,-30 l84,0 l40,30 Z"/>
+         <rect x="${160 + i * 186}" y="${252 + (i % 3) * 26}" width="84" height="26"/>`)}</g>
+      ${bgCloud(160, 200, 160, 24, '#ffffff', .44)}
+      ${bgCloud(540, 172, 150, 20, '#ffffff', .34)}
+      ${bgCloud(880, 226, 170, 26, '#ffffff', .4)}
+      <g opacity=".3">${rep(9, i => bgBird(90 + i * 104, 316 + (i % 4) * 22, 9, '#8fa0b8', .9))}</g>`;
+  }
+  if (a === 24) {
+    /* 침공 — 하늘이 찢어지고 그 틈으로 불티가 쏟아진다 */
+    return `<defs><radialGradient id="brift"><stop offset="0%" stop-color="#000" stop-opacity=".92"/>
+        <stop offset="100%" stop-color="#3a0a12" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="500" cy="150" r="118" fill="#2a0a10" opacity=".5"/>
+      <circle cx="500" cy="150" r="126" fill="none" stroke="#ff7a4a" stroke-width="3" opacity=".55"/>
+      <ellipse cx="500" cy="150" rx="330" ry="150" fill="url(#brift)" opacity=".7"/>
+      <path d="M120,70 L360,150 L250,168 L520,268 L400,278 L640,372 L470,352 L700,470"
+        fill="none" stroke="#0a0206" stroke-width="14" stroke-linejoin="round" opacity=".55"/>
+      <path d="M120,70 L360,150 L250,168 L520,268 L400,278 L640,372 L470,352 L700,470"
+        fill="none" stroke="#ff8a4a" stroke-width="2" stroke-linejoin="round" opacity=".5"/>
+      <g opacity=".5">${rep(34, i =>
+        `<circle cx="${(i * 173) % 1000}" cy="${40 + (i * 97) % 420}" r="${.8 + (i % 4) * .8}" fill="#ffab4a"/>`)}</g>
+      ${bgCloud(240, 300, 160, 24, '#5e2020', .34)}
+      ${bgCloud(800, 262, 150, 22, '#5e2020', .28)}`;
+  }
+  if (a === 25) {
+    /* 사신도 — 세상이 그림이 된다. 종이의 결과 낙관, 먹으로 그린 해 */
+    return `<g opacity=".2" stroke="#8a7f68" stroke-width="1" fill="none">${rep(13, i =>
+        `<path d="M${40 + i * 76},0 L${40 + i * 76},600"/>`)}</g>
+      <circle cx="500" cy="140" r="86" fill="none" stroke="#2a2420" stroke-width="4" opacity=".4"/>
+      <circle cx="500" cy="140" r="70" fill="#3a3228" opacity=".16"/>
+      <path d="M60,96 q120,-46 250,10 q140,52 300,-16 q160,-66 330,26" fill="none"
+        stroke="#3a3228" stroke-width="3" opacity=".26" stroke-linecap="round"/>
+      <path d="M40,250 q180,60 340,-8 q170,-72 320,4 q140,58 260,-26" fill="none"
+        stroke="#3a3228" stroke-width="2" opacity=".18" stroke-linecap="round"/>
+      <g opacity=".5"><rect x="852" y="60" width="62" height="62" fill="none" stroke="#8a1a2a" stroke-width="3"/>
+        <path d="M866,76 L900,76 M866,92 L900,92 M866,108 L900,108" stroke="#8a1a2a" stroke-width="3"/></g>
+      <g opacity=".26">${rep(6, i => bgBird(150 + i * 132, 300 + (i % 3) * 28, 10, '#2a2420', .9))}</g>`;
+  }
   if (a === 9) return `<g opacity=".4"><circle cx="500" cy="150" r="92" fill="none" stroke="#fff" stroke-width="2"/>
       <circle cx="500" cy="150" r="120" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>
       <circle cx="500" cy="150" r="150" fill="none" stroke="#fff" stroke-width="1" opacity=".3"/></g>`;
@@ -13896,6 +14450,41 @@ function bgFarArt(a) {
   if (a === 20)
     return `<g opacity=".22" fill="#5c5648">${rep(13, i =>
       `<path d="M${20 + i * 78},${372 + (i % 3) * 14} l16,-30 l16,30 Z"/>`)}</g>`;
+  if (a === 21)
+    /* 사잇길 — 길 잃은 것들이 능선을 따라 서성인다 */
+    return `<g opacity=".26" fill="#4a4a5c">${rep(17, i =>
+      `<ellipse cx="${30 + i * 58}" cy="${376 + (i % 4) * 15}" rx="8" ry="19"/>`)}</g>
+      <g opacity=".2" fill="none" stroke="#8a8fa8" stroke-width="1">${rep(3, i =>
+      `<path d="M0,${348 + i * 26} Q500,${330 + i * 26} 1000,${352 + i * 26}"/>`)}</g>`;
+  if (a === 22)
+    /* 천국 문 — 문 앞에 늘어선 줄 */
+    return `<g opacity=".3" fill="#9a8e68">${rep(20, i =>
+      `<ellipse cx="${26 + i * 50}" cy="${390 + (i % 3) * 12}" rx="7" ry="18"/>`)}</g>
+      <g opacity=".26">${rep(8, i => bgLantern(70 + i * 122, 356 + (i % 2) * 16, 5, '#ffe9a8', .8))}</g>`;
+  if (a === 23)
+    /* 천국 — 누각과 다리가 구름 위에 걸쳐 있다 */
+    return `<g opacity=".34" fill="#9fb2ca">
+      <path d="M300,404 l46,-42 l208,0 l46,42 Z"/><rect x="346" y="404" width="208" height="50"/>
+      <path d="M334,362 l34,-30 l172,0 l34,30 Z" opacity=".85"/>
+      <path d="M0,430 Q160,388 330,424" fill="none" stroke="#9fb2ca" stroke-width="7"/>
+      <path d="M620,420 Q800,384 1000,418" fill="none" stroke="#9fb2ca" stroke-width="7"/></g>
+      <g opacity=".26">${rep(6, i => bgCloud(80 + i * 180, 400 + (i % 3) * 16, 80, 12, '#ffffff', 1))}</g>`;
+  if (a === 24)
+    /* 침공 — 무너지는 누각과 기울어진 깃대 */
+    return `<g opacity=".38" fill="#4a2020">
+      <path d="M300,406 l46,-44 l208,0 l46,44 Z" transform="rotate(-7 450 400)"/>
+      <rect x="346" y="406" width="208" height="52" transform="rotate(-7 450 400)"/>
+      ${rep(6, i => `<rect x="${70 + i * 152}" y="${348 + (i % 3) * 16}" width="4" height="80"
+        transform="rotate(${-14 + i * 5} ${72 + i * 152} 400)"/>`)}</g>
+      <g opacity=".3" fill="#1a0a0c">${rep(16, i =>
+      `<ellipse cx="${34 + i * 62}" cy="${392 + (i % 4) * 14}" rx="9" ry="21"/>`)}</g>`;
+  if (a === 25)
+    /* 사신도 — 먹으로 친 산과, 반쯤 지워진 글자 */
+    return `<g opacity=".22" fill="none" stroke="#3a3228" stroke-width="3" stroke-linecap="round">
+      <path d="M0,404 q90,-64 168,-6 q64,48 132,-26 q78,-84 160,-2 q70,70 148,-14 q76,-82 168,10 q88,88 224,22"/></g>
+      <g opacity=".2" fill="#2a2420">${rep(4, i =>
+      `<rect x="${906}" y="${180 + i * 62}" width="42" height="42" rx="3" fill="none" stroke="#2a2420" stroke-width="2"/>
+       <path d="M${914},${196 + i * 62} l26,0 M${914},${210 + i * 62} l26,0 M${927},${190 + i * 62} l0,26"/>`)}</g>`;
   return '';
 }
 /* 가운데 능선 뒤 */
@@ -13939,6 +14528,35 @@ function bgMidArt(a) {
   if (a === 20)
     return `<g opacity=".3" fill="#33302a">${rep(11, i =>
       `<ellipse cx="${44 + i * 92}" cy="${478 + (i % 3) * 16}" rx="26" ry="14"/>`)}</g>`;
+  if (a === 21)
+    /* 사잇길 — 갈림돌이 줄지어 서고, 길이 둘로 갈린다 */
+    return `<g opacity=".34" fill="#3c4050">${rep(13, i =>
+      `<rect x="${28 + i * 76}" y="${470 + (i % 3) * 14}" width="15" height="${36 + (i % 4) * 12}" rx="7"/>`)}</g>
+      <g opacity=".22" fill="none" stroke="#c8c4dc" stroke-width="2">
+        <path d="M500,600 Q470,520 380,470"/><path d="M500,600 Q530,520 622,470"/></g>`;
+  if (a === 22)
+    /* 천국 문 — 문으로 오르는 층계 */
+    return `<g opacity=".34" fill="#8e8466">${rep(7, i =>
+      `<rect x="${310 + i * 26}" y="${462 + i * 20}" width="${380 - i * 52}" height="16"/>`)}</g>
+      <g opacity=".28">${rep(5, i => bgLantern(90 + i * 200, 486 + (i % 2) * 18, 8, '#ffe9a8', .8))}</g>`;
+  if (a === 23)
+    /* 천국 — 구름이 땅을 대신한다 */
+    return `<g opacity=".4">${rep(7, i => bgCloud(50 + i * 160, 486 + (i % 3) * 20, 110, 16, '#ffffff', 1))}</g>
+      <g opacity=".22" fill="#8c9eb8">${rep(11, i =>
+      `<rect x="${40 + i * 88}" y="${500 + (i % 3) * 12}" width="5" height="46"/>
+       <rect x="${30 + i * 88}" y="${494 + (i % 3) * 12}" width="25" height="7"/>`)}</g>`;
+  if (a === 24)
+    /* 침공 — 불길이 능선을 타고 번진다 */
+    return `<g opacity=".42" fill="#8a2a1a">${rep(15, i =>
+      `<path d="M${24 + i * 68},${520 + (i % 3) * 12} q12,-40 2,-58 q22,20 30,-2 q12,34 -4,60 Z"/>`)}</g>
+      <g opacity=".3" fill="#3e1e20">${rep(9, i =>
+      `<ellipse cx="${56 + i * 112}" cy="${498 + (i % 3) * 14}" rx="24" ry="13"/>`)}</g>`;
+  if (a === 25)
+    /* 사신도 — 종이 위에 번진 먹 */
+    return `<g opacity=".26" fill="#3a3228">
+      <path d="M0,486 q140,-44 280,-2 q140,44 280,-10 q150,-58 300,8 q80,32 140,10 L1000,600 L0,600 Z"/></g>
+      <g opacity=".16" fill="#2a2420">${rep(9, i =>
+      `<ellipse cx="${(i * 227) % 1000}" cy="${500 + (i * 53) % 80}" rx="${14 + (i % 4) * 10}" ry="${5 + (i % 3) * 3}"/>`)}</g>`;
   return '';
 }
 /* 맨 앞 */
@@ -13990,6 +14608,36 @@ function bgNearArt(a) {
     return `<g opacity=".5" fill="#2a2620">
       <path d="M0,566 Q160,540 340,562 Q520,584 700,556 Q860,532 1000,558 L1000,600 L0,600 Z"/>
       ${rep(7, i => `<path d="M${60 + i * 142},600 q22,-58 6,-104 q26,30 38,4 q10,48 -10,100 Z"/>`)}</g>`;
+  if (a === 21)
+    /* 사잇길 — 발밑의 길이 반은 흙, 반은 안개 */
+    return `<g opacity=".5" fill="#2c3040">
+      <path d="M0,558 Q180,536 360,556 Q540,576 720,550 Q870,528 1000,552 L1000,600 L0,600 Z"/></g>
+      <g opacity=".26" fill="#cfcbe0">${rep(5, i =>
+      `<ellipse cx="${100 + i * 210}" cy="${572 + (i % 2) * 12}" rx="${70 + i * 8}" ry="14"/>`)}</g>`;
+  if (a === 22)
+    /* 천국 문 — 문턱의 돌과, 문 안에서 새어 나오는 빛 */
+    return `<g opacity=".5" fill="#7e7454"><rect x="0" y="558" width="1000" height="42"/>
+      ${rep(13, i => `<rect x="${18 + i * 78}" y="${532 + (i % 2) * 8}" width="42" height="30"/>`)}</g>
+      <g opacity=".22" fill="#fff4c8">${rep(9, i =>
+      `<path d="M${500 - 200 + i * 50},600 L${500 - 60 + i * 15},300 L${500 - 40 + i * 15},300 Z"/>`)}</g>`;
+  if (a === 23)
+    /* 천국 — 발밑까지 구름 */
+    return `<g opacity=".55">${rep(6, i => bgCloud(40 + i * 190, 566 + (i % 2) * 16, 130, 20, '#ffffff', 1))}</g>
+      <g opacity=".3">${rep(5, i => bgLantern(110 + i * 200, 540 - (i % 2) * 12, 11, '#fff0c0', .72))}</g>`;
+  if (a === 24)
+    /* 침공 — 코앞까지 온 불과, 그림자로만 보이는 것들 */
+    return `<g opacity=".9">${rep(6, i => bgLantern(70 + i * 178, 552 - (i % 2) * 14, 12, '#ff7a3a', .84))}</g>
+      <g opacity=".6" fill="#140406">${rep(6, i =>
+      `<ellipse cx="${70 + i * 178}" cy="${600 - (i % 2) * 10}" rx="27" ry="48"/>`)}</g>
+      <g opacity=".5">${rep(26, i =>
+      `<circle cx="${(i * 191) % 1000}" cy="${330 + (i * 83) % 260}" r="${.9 + (i % 4) * .8}" fill="#ffb45a"/>`)}</g>`;
+  if (a === 25)
+    /* 사신도 — 그림의 아래 끝. 종이가 찢어져 있다 */
+    return `<g opacity=".55" fill="#3a3228">
+      <path d="M0,566 L60,552 L120,572 L200,548 L270,570 L350,546 L430,568 L510,544
+               L590,566 L670,542 L750,564 L830,540 L910,562 L1000,548 L1000,600 L0,600 Z"/></g>
+      <g opacity=".3" stroke="#8a1a2a" stroke-width="2" fill="none">
+        <path d="M0,584 Q250,572 500,586 Q750,600 1000,580"/></g>`;
   return '';
 }
 
