@@ -2157,6 +2157,25 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gdbox .gdt p em{color:#e2bd63;font-style:normal}
 .gdbox .gdt p i{color:#8fd8c0;font-style:normal}
 .gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* 조용한 안내 쪽지 — 오른쪽 아래 구석. 화면을 막지 않는다 */
+.gdnote{position:absolute;right:18px;bottom:20px;z-index:42;display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:11px;max-width:min(430px,90vw);
+  background:linear-gradient(150deg,rgba(34,28,19,.96),rgba(18,14,10,.96));
+  border:1px solid rgba(210,180,120,.32);animation:hcIn .32s ease}
+.gdnote.out{animation:none;opacity:0;transition:opacity .36s ease,transform .36s ease;transform:translateY(8px)}
+.gdnote .gng{width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:17px;
+  color:#1a140c;background:radial-gradient(circle at 34% 28%,#f0d9a0,#a8865a)}
+.gdnote .gnt{flex:1;min-width:0}
+.gdnote .gnt b{display:block;color:#f2e2bd;font-size:12.8px;font-weight:400;letter-spacing:.03em}
+.gdnote .gnt small{display:block;color:#9a8d74;font-size:11px;margin-top:2px;line-height:1.5;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gdnote .gngo{padding:7px 12px;border-radius:7px;font-size:11.8px;white-space:nowrap;flex:none;
+  background:rgba(226,189,99,.16);border:1px solid rgba(226,189,99,.44);color:#f2e2bd;cursor:pointer}
+.gdnote .gngo:hover{background:rgba(226,189,99,.34);color:#fff6e2}
+.gdnote .gnx{width:22px;height:22px;border-radius:6px;flex:none;font-size:14px;
+  background:transparent;border:1px solid rgba(226,189,99,.24);color:#9a8d74;cursor:pointer}
+.gdnote .gnx:hover{background:rgba(226,189,99,.16);color:#f7edd6}
+@media (max-width:720px){ .gdnote{left:12px;right:12px;bottom:12px;max-width:none} }
 /* 상자를 까라는 권유 — 지도 위에 뜨는 쪽지 */
 .boxcall{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:43;
   display:flex;align-items:center;gap:12px;padding:10px 14px 10px 12px;border-radius:11px;
@@ -3272,6 +3291,7 @@ const OPT_DEF = {
   musicVol: .38,            /* 배경 음악 음량 — 귀가 어질하다는 말에 낮췄다 */
   autoPotion: true,         /* 위급할 때 물약을 쓴다 */
   autoSkill: true,          /* 비기를 알아서 쓴다 */
+  noGuide: false,           /* 때가 되면 나서는 안내를 끈다 */
   noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
   turbo: false              /* VIP 2배속 */
 };
@@ -7853,26 +7873,26 @@ const GUIDES = [
       실력도 과금도 없이 나아갈 수 있는 길이 이것 하나뿐이다.`,
     warn: () => '같은 막에서 자꾸 죽으면 그 막만 조금씩 물러진다 — 그것도 여기서 본다.',
     go: () => openTraining(), goN: '수행터로' },
-  { id: 'skill', g: '祕', n: '비기 — 한 판에 한 번, 판을 뒤집는다',
+  { id: 'skill', soft: true, g: '祕', n: '비기 — 한 판에 한 번, 판을 뒤집는다',
     when: r => !!r.skill,
     say: () => `비기를 하나 얻었다. 위쪽 <em>祕</em> 단추, 또는 전투 화면 왼쪽 아래 단추로 쓴다.<br>
       <i>한 전투에 한 번</i>뿐이지만 그만큼 세다. 아끼다 죽는 것보다 쓰고 이기는 게 낫다.`,
     warn: () => '설정에서 「비기를 알아서 쓴다」를 켜면 자동 플레이가 대신 판단한다.',
     go: () => openSkills(), goN: '비기를 본다' },
-  { id: 'shrine', g: '神', n: '신성의 신전 — 안 쓰는 유물을 바친다',
+  { id: 'shrine', soft: true, g: '神', n: '신성의 신전 — 안 쓰는 유물을 바친다',
     when: r => r.relics.length >= 3,
     say: () => `유물이 쌓이기 시작했다. 위쪽 <em>神</em> 단추가 신전이다.<br>
       쓸모가 다한 유물을 <em>바치면</em> 그 값만큼 <i>가호</i>가 오른다 —
       칼날 · 가죽 · 숨 · 복. 버리는 것이 아까울 일이 없어진다.`,
     warn: () => '등급이 높은 유물일수록 가호가 크게 오른다.',
     go: () => openShrine(), goN: '신전으로' },
-  { id: 'fuse', g: '合', n: '유물 조합 — 둘을 합쳐 하나로',
+  { id: 'fuse', soft: true, g: '合', n: '유물 조합 — 둘을 합쳐 하나로',
     when: r => r.relics.length >= 5,
     say: () => `위쪽 <em>合</em> 단추에서 유물 둘을 <em>합칠</em> 수 있다.<br>
       짝이 맞으면 <i>SSX급</i>이 된다. 자리를 덜 차지하고 힘은 더 세다.`,
     warn: () => '합칠 짝은 조합 창 안에 다 적혀 있다.',
     go: () => openFuse(), goN: '조합을 본다' },
-  { id: 'auto', g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
+  { id: 'auto', soft: true, g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
     when: () => autoOk(),
     say: () => `제1막을 넘어서서 <em>자동 플레이</em>가 열렸다.
       전투 화면 오른쪽 아래 「자동」 단추, 또는 메뉴에서 켠다.<br>
@@ -7886,42 +7906,52 @@ const GUIDES = [
       <i>뽑기는 계정당 ${PET_PULLS_BASE}번뿐이다.</i> 신중히.`,
     warn: () => `제${PET_BONUS_ACT}막을 넘으면 ${PET_PULLS_BONUS}번이 더 붙는다. 팻이 죽으면 엘리트 ${PET_REVIVE_ELITES}을 잡아야 되살아난다.`,
     go: () => openPets(), goN: '팻 우리로' },
-  { id: 'colo', g: '鬪', n: '콜로세움 — 심심하면 겨룬다',
+  { id: 'colo', soft: true, g: '鬪', n: '콜로세움 — 심심하면 겨룬다',
     when: r => r.act >= 3 && r.gold >= COL_FEE,
     say: () => `터(場) 안에 <em>콜로세움</em>이 있다. 참가비 <i>${COL_FEE}골드</i>, 이기면 <i>${COL_PRIZE}골드</i>.<br>
       끝까지 올라가 <em>무마두</em>를 넘으면 ?급 부적 <b>무마두의 숨결</b>이 나온다. 아주 어렵다.`,
     warn: () => '져도 참가비만 잃는다 — 모험은 그대로다.',
     go: () => openColosseum(), goN: '겨루러 간다' },
-  { id: 'arena', g: '鬪', n: '대전투장 — SSX급을 모은 자만',
+  { id: 'arena', soft: true, g: '鬪', n: '대전투장 — SSX급을 모은 자만',
     when: () => arenaReady(),
     say: () => `SSX급 유물이 <em>${ARENA_REQ}종</em> 모였다. 터(場) 안 <em>대전투장</em>이 열린다.<br>
       끝없이 밀려오는 판이다. 멀리 갈수록 <i>다이아와 정진</i>이 크게 쌓인다.`,
     warn: () => '여기서 번 것으로 교환소에서 유물과 부적을 산다.',
     go: () => openArena(), goN: '들어간다' },
-  { id: 'school', g: '呪', n: '저주의 서당 — 견디면 크게 받는다',
+  { id: 'school', soft: true, g: '呪', n: '저주의 서당 — 견디면 크게 받는다',
     when: () => curseReady(),
     say: () => `터(場) 안 <em>저주의 서당</em>이 열렸다. 노인이 저주 하나를 걸어 준다.<br>
       <i>스무 판</i>을 그 저주째로 견디면 값을 크게 쳐 준다. 이레에 한 번뿐이다.`,
     warn: () => '저주는 도중에 못 푼다. 각오하고 받는 편이 좋다.',
     go: () => openSchool(), goN: '서당으로' },
-  { id: 'skin', g: '皮', n: '스킨 — 부적에 옷을 입힌다',
+  { id: 'skin', soft: true, g: '皮', n: '스킨 — 부적에 옷을 입힌다',
     when: () => Object.keys((META.skins && META.skins.own) || {}).length > 0,
     say: () => `스킨을 하나 얻었다. <em>도감</em>에서 그 부적을 누르면 갈아입힐 수 있다.<br>
       성능은 그대로지만 <i>부딪는 자국과 불티 빛깔까지</i> 그 옷 색으로 바뀐다.`,
     warn: () => '스킨은 부적 하나를 정해서 나온다 — 「00을 위한 00」 꼴이다.',
     go: () => showDex(), goN: '도감으로' }
 ];
-/* 지도에 설 때마다 한 번씩 살핀다 — 한 번에 하나만 */
+/* ── 얼마나 자주 나설 것인가 ──────────────────────────────
+   층마다 뜨니 너무 잦다는 말을 들었다. 이렇게 줄였다.
+   · 한 막에 딱 하나. 그 막에서 한 번 나섰으면 다음 막까지 잠잠하다.
+   · 막에 갓 들어섰을 때(처음 두 층)만 나선다 — 길 한복판에서 끊지 않는다.
+   · 정말 중요한 넷(뽑기 · 터 · 수행터 · 팻)만 창으로 막아 세우고,
+     나머지 여덟은 구석에 뜨는 쪽지로 조용히 알린다.
+   · 설정에서 통째로 끌 수 있다.
+   ────────────────────────────────────────────────────────── */
 function guideTick() {
   const run = G.run;
-  if (!run || G.b || AUTO.on) return;
+  if (!run || G.b || AUTO.on || OPT.noGuide) return;
   if ($('#overlay') && $('#overlay').children.length) return;
+  if (run._guideAct === run.act) return;          /* 이 막에서는 이미 나섰다 */
+  if (run.floor > 2) return;                      /* 막 초입에서만 */
   for (const g of GUIDES) {
     if (guided(g.id)) continue;
     let ok = false; try { ok = !!g.when(run); } catch (e) { ok = false; }
     if (!ok) continue;
     markGuided(g.id);
-    showGuide(g);
+    run._guideAct = run.act;
+    if (g.soft) guideNote(g); else showGuide(g);
     return;
   }
 }
@@ -7940,10 +7970,25 @@ function showGuide(g) {
   p.querySelector('#gd_go').onclick = () => { closeTop(); try { g.go(); } catch (e) { toast('지금은 갈 수 없다'); } };
   p.querySelector('#gd_x').onclick = closeTop;
 }
+/* 조용한 쪽지 — 화면을 막지 않는다. 눌러야 열리고, 안 누르면 알아서 사라진다 */
+function guideNote(g) {
+  const old = $('#gdnote'); if (old) old.remove();
+  const n = el('div', 'gdnote', `<div class="gng">${g.g}</div>
+    <div class="gnt"><b>${g.n}</b><small>${g.say().replace(/<br>/g, ' ').replace(/<[^>]+>/g, '')}</small></div>
+    <button class="gngo">${g.goN}</button><button class="gnx" title="닫기">×</button>`);
+  n.id = 'gdnote';
+  $('#app').appendChild(n);
+  SND.blip(720, { dur: .07, type: 'sine', vol: .045, to: 900 });
+  const go = () => { n.remove(); try { g.go(); } catch (e) { toast('지금은 갈 수 없다'); } };
+  n.querySelector('.gngo').onclick = go;
+  n.querySelector('.gnx').onclick = () => n.remove();
+  setTimeout(() => { if ($('#gdnote') === n) { n.classList.add('out'); setTimeout(() => n.remove(), 380); } }, 11000);
+}
 
 /* ── 상자를 까라는 권유 ───────────────────────────────────
    뽑기가 공짜인데 모르고 안 여는 사람이 있다는 말을 들었다.
-   막이 바뀌었을 때 한 번, 보스 앞에서 한 번 — 그 막에 이미 열었으면 안 뜬다.
+   그렇다고 자꾸 들이밀 것은 아니다 — 보스 앞에서 딱 한 번만.
+   그 막에서 이미 열었으면 뜨지 않고, 한 번 닫으면 그 판 내내 잠잠하다.
    ────────────────────────────────────────────────────────── */
 let _boxCallOn = false;
 function boxCallHide() { const n = $('#boxcall'); if (n) n.remove(); _boxCallOn = false; }
@@ -7953,18 +7998,14 @@ function boxNudge() {
   if (!run || G.b || AUTO.on || G.scene !== 'map') return;
   if (run._boxMute || OPT.noBoxCall) return;
   if (run._boxAct === run.act) return;                 /* 이 막에서 이미 열었다 */
+  if (run._boxCall === run.act) return;                /* 이 막에서 이미 권했다 */
   const rows = run.map ? run.map.nodes.reduce((a, n) => Math.max(a, n.r), 0) + 1 : 12;
-  const nearBoss = run.floor >= rows - 3;
-  /* 한 막에 두 번까지 — 막에 들어설 때 한 번, 보스 앞에서 한 번 */
-  if (!run._boxCall || run._boxCall.act !== run.act) run._boxCall = { act: run.act, n: 0 };
-  const stage = run._boxCall.n;
-  if (stage >= 2) return;
-  if (stage === 1 && !nearBoss) return;
-  run._boxCall.n = stage + 1;
+  if (run.floor < rows - 3) return;                    /* 보스가 보일 때만 */
+  run._boxCall = run.act;
   _boxCallOn = true;
   const n = el('div', 'boxcall',
     `<div class="bcg">匣</div>
-     <div class="bct"><b>${nearBoss ? '보스가 코앞이다 — 상자를 열고 가는 게 좋다' : '이 막에서 아직 상자를 안 열었다'}</b>
+     <div class="bct"><b>보스가 코앞이다 — 상자를 열고 가는 게 좋다</b>
        <small>부적 뽑기는 지금 <b>값을 받지 않는다</b> · 열어 둔 만큼 덱이 두꺼워진다</small></div>
      <button class="bcgo" id="bc_go">상자를 연다</button>
      <button class="bcx" id="bc_x" title="닫기">×</button>`);
@@ -7973,7 +8014,7 @@ function boxNudge() {
   SND.blip(560, { dur: .1, type: 'triangle', vol: .06, to: 760 });
   n.querySelector('#bc_go').onclick = () => { boxCallHide(); openBoxes(); };
   n.querySelector('#bc_x').onclick = () => { run._boxMute = true; boxCallHide(); };
-  setTimeout(() => { if ($('#boxcall') === n) boxCallHide(); }, 14000);
+  setTimeout(() => { if ($('#boxcall') === n) boxCallHide(); }, 11000);
 }
 
 /* 전투 중이 아니면 언제든 열 수 있다 */
@@ -9713,13 +9754,15 @@ function showMap() {
   requestAnimationFrame(fit);
   _mapFit = fit;
   saveRun();
-  /* 길잡이 — 지도에 설 때마다 하나씩. 그다음에 상자 권유 */
+  /* 길잡이 — 막에 갓 들어섰을 때만 하나. 그다음에 상자 권유 */
   setTimeout(() => {
     if (G.scene !== 'map') return;
     const before = $('#overlay') ? $('#overlay').children.length : 0;
+    const noteBefore = !!$('#gdnote');
     guideTick();
     const after = $('#overlay') ? $('#overlay').children.length : 0;
-    if (after === before) boxNudge();          /* 안내가 떴으면 권유는 미룬다 */
+    /* 안내가 떴으면 권유는 미룬다 — 한꺼번에 둘을 들이밀지 않는다 */
+    if (after === before && noteBefore === !!$('#gdnote')) boxNudge();
   }, 620);
 }
 function bossOf(run) {
@@ -9738,6 +9781,7 @@ let _mapFit = null;
 function enterNode(n) {
   const run = G.run;
   boxCallHide();
+  const gn = $('#gdnote'); if (gn) gn.remove();
   markCheckpoint();                       /* 쓰러져도 이 갈림길로 돌아올 수 있다 */
   run.mapCur = n.id; run.mapDone.push(n.id);
   run.floor = n.r + 1; run.stats.floors++;
@@ -9983,8 +10027,9 @@ function showRewards(kind) {
     syncAll2();
   };
   syncAll2();
-  /* 초반에는 그냥 지나치려 할 때 한 번 붙잡는다 — 뒤가 가팔라진다 */
-  const WARN_UNTIL = 3;
+  /* 초반에는 그냥 지나치려 할 때 한 번 붙잡는다 — 뒤가 가팔라진다.
+     잦다는 말을 들어 제2막까지로 줄였다. */
+  const WARN_UNTIL = 2;
   const leftItems = () => [...p.querySelectorAll('.rewardrow .rewitem:not(.taken)')].length;
   const doLeave = () => {
     /* 그냥 지나쳤더라도 제1막을 넘었으면 자동 플레이는 준다 */
@@ -13671,21 +13716,23 @@ function showSettings() {
   row('비기 자동 사용', '싸움이 길어지면 알아서 쓴다', () => OPT.autoSkill, v => { OPT.autoSkill = v; });
 
   head('안 내');
+  row('때맞춘 안내', '새 자리가 쓸모 있어지면 한 막에 한 번만 알려 준다 (급한 것만 창으로, 나머지는 구석 쪽지)',
+    () => !OPT.noGuide, v => { OPT.noGuide = !v; if (!v) { const n = $('#gdnote'); if (n) n.remove(); } });
+  row('상자 권유', '보스가 코앞인데 그 막에서 상자를 안 열었으면 한 번 일러 준다',
+    () => !OPT.noBoxCall, v => { OPT.noBoxCall = !v; if (!v) boxCallHide(); });
   {
     const done = Object.keys(META.guided || {}).length;
     const n = el('div', 'optrow',
-      `<div class="lb"><b>안내를 처음부터 다시</b><small>때가 되면 손수 짚어 주는 안내 ${done} / ${GUIDES.length}개를 봤다 ·
-        누르면 다시 처음부터 뜬다</small></div>`);
+      `<div class="lb"><b>안내를 처음부터 다시</b><small>${done} / ${GUIDES.length}개를 봤다 · 누르면 다시 처음부터 뜬다</small></div>`);
     const btn = el('button', 'val'); btn.textContent = '다시 받기';
     btn.onclick = () => {
       META.guided = {}; saveMeta(); SND.unlock();
+      if (G.run) delete G.run._guideAct;
       toast('안내를 처음부터 다시 받는다');
       btn.textContent = '다시 받는다'; btn.classList.add('yes'); btn.disabled = true;
     };
     n.appendChild(btn); list.appendChild(n);
   }
-  row('상자 권유', '한 막에서 상자를 안 열었으면 지도에 쪽지를 띄운다',
-    () => !OPT.noBoxCall, v => { OPT.noBoxCall = !v; if (!v) boxCallHide(); });
 
   head('기 록');
   {
