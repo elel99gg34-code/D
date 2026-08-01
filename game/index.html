@@ -2165,6 +2165,30 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gdbox .gdt p em{color:#e2bd63;font-style:normal}
 .gdbox .gdt p i{color:#8fd8c0;font-style:normal}
 .gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* ── 대장간(冶) ───────────────────────────────────────────── */
+.school.forge{background:linear-gradient(165deg,#1e1208 0%,#3a2010 45%,#0e0704 100%)}
+.forge .schead{background:linear-gradient(rgba(10,5,2,.94),rgba(48,26,12,.86));border-bottom-color:rgba(226,120,42,.34)}
+.forge .schead h2{color:#f8e6cc}.forge .schead .scnote{color:#e2762a}
+.forge .schead .gback{background:rgba(226,120,42,.16);border-color:rgba(226,120,42,.44);color:#f8e6cc}
+.forge .scside .note{background:rgba(10,5,2,.55);border-color:rgba(226,120,42,.26)}
+.forge .scside .note p{color:#d6bfa4}
+.forge .lbhead{color:#d6bfa4}.forge .lbhead b{color:#ffb45a}
+.fgstage{display:flex;flex-direction:column;align-items:center;gap:9px;padding:12px 0;min-height:210px;
+  justify-content:center}
+.fgstage .card{position:relative!important;left:auto!important;top:auto!important;margin-left:0!important;
+  transform:none!important;width:var(--cw);height:var(--ch);flex:none}
+.fgstage .card.hammer{animation:fgHam .3s ease}
+@keyframes fgHam{0%{transform:translateY(0) rotate(0)}
+  30%{transform:translateY(-14px) rotate(-3deg)}
+  55%{transform:translateY(5px) rotate(2deg) scale(1.03)}
+  100%{transform:translateY(0) rotate(0)}}
+.fgnum{text-align:center;font-size:12.5px;color:#d6bfa4;line-height:1.7}
+.fgnum b{display:block;font-size:14px;color:#ffd9a8;font-weight:400;letter-spacing:.06em;margin-bottom:3px}
+.fgnum span{display:block;font-size:11.5px}
+.fgnum em{font-style:normal}
+.forge .cardgrid .card.on{box-shadow:0 0 0 3px #ffb45a,0 0 22px rgba(255,180,90,.6)}
+.forge .cardgrid .card.maxed{filter:saturate(1.15)}
+.forge .pricetag.ok{color:#ffd76a}
 /* ── 속성(屬)과 향초(香) ──────────────────────────────────── */
 .elmk{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:5px;
   margin-right:5px;vertical-align:-3px;font-size:10.5px;line-height:1;cursor:help;
@@ -4761,7 +4785,32 @@ defCard({ id: 'curse_stone', n: '업보의 돌', g: '業', type: 'curse', rar: '
 let _uid = 1;
 function mkCard(id, up) { return { uid: _uid++, id, up: !!up }; }
 function cdef(c) { return CARDS[c.id]; }
-function cval(c) { return cdef(c).v(c.up); }
+/* ══════════════════════════════════════════════════════════
+   대장간(冶) — 부적을 두들겨 힘을 올린다
+   ──────────────────────────────────────────────────────────
+   부적마다 벼림(鍛) 단계가 붙는다. 한 단 오를 때마다
+   피해 · 방어도 · 회복 · 독의 값이 18%씩 오른다.
+   다만 두들길수록 성공이 어렵다. 넷째 단부터는 실패하면
+   한 단이 도로 내려간다 — 욕심을 부릴 자리다.
+   ══════════════════════════════════════════════════════════ */
+const FORGE_MAX = 5;
+const FORGE_STEP = 0.22;                       /* 한 단마다 이만큼 — 다섯 단이면 곱절이 넘는다 */
+const FORGE_KEYS = { d: 1, b: 1, h: 1, p: 1 }; /* 이 값들만 오른다 — 타수와 값은 그대로 */
+const FORGE_ODDS = [0.90, 0.72, 0.52, 0.34, 0.19];       /* 0→1 … 4→5 */
+const FORGE_COST = [140, 240, 400, 680, 1150];
+const FORGE_BACK_FROM = 3;                     /* 이 단부터 실패하면 한 단 내려간다 */
+function fgLv(c) { return Math.max(0, Math.min(FORGE_MAX, c.fg || 0)); }
+function fgMul(c) { return 1 + fgLv(c) * FORGE_STEP; }
+function fgOdds(lv) { return FORGE_ODDS[lv] != null ? FORGE_ODDS[lv] : 0; }
+function fgCost(lv) { return FORGE_COST[lv] != null ? FORGE_COST[lv] : 9999; }
+function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
+function cval(c) {
+  const v = cdef(c).v(c.up);
+  const lv = fgLv(c); if (!lv) return v;
+  const k = fgMul(c), out = {};
+  for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
+  return out;
+}
 function ccost(c) {
   const d = cdef(c);
   const k = d.costOf ? d.costOf(c.up) : d.cost;
@@ -4775,7 +4824,7 @@ function ecost(c) {
   if (G.b.freeTurn) return 0;
   return Math.max(0, k - (G.b.cheap || 0));   /* 천수 같은 것이 값을 깎아 준다 */
 }
-function cname(c) { return cdef(c).n + (c.up ? '+' : ''); }
+function cname(c) { return cdef(c).n + (c.up ? '+' : '') + fgMark(c); }
 /* 등급 — 4등급이 가장 낮고 ?급이 가장 높다. ?급은 아직 어디에도 없다. */
 const GRADE = {
   basic:    { n: '4등급', s: '4', c: '#7d7568', desc: '흔한 기본 부적' },
@@ -8482,6 +8531,8 @@ function showPlaces() {
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
   add('colo', '鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 이기면 ${COL_PRIZE}`,
     G.b ? 'lock' : 'hot', () => openColosseum());
+  add('forge', '冶', '대장간', `부적을 두들겨 힘을 올린다 · 최대 ${FORGE_MAX}단`,
+    G.b ? 'lock' : 'hot', () => openForge());
   add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
@@ -8681,6 +8732,128 @@ function boxNudge() {
   n.querySelector('#bc_go').onclick = () => { boxCallHide(); openBoxes(); };
   n.querySelector('#bc_x').onclick = () => { run._boxMute = true; boxCallHide(); };
   setTimeout(() => { if ($('#boxcall') === n) boxCallHide(); }, 11000);
+}
+
+/* ── 대장간 ──────────────────────────────────────────────── */
+function openForge() {
+  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
+  if (!G.run) { SND.err(); toast('모험 중에만 갈 수 있다'); return; }
+  markUsed('forge'); SND.ui(); showForge();
+}
+function showForge() {
+  const run = G.run;
+  const prev = G.scene;
+  G.scene = 'forge';
+  let sel = null;                                 /* 지금 고른 부적의 uid */
+  const p = overlay(`<div class="school forge">
+    <div class="schead">
+      <button class="gback" id="fg_back">←</button>
+      <h2>대장간</h2>
+      <div class="scnote">冶</div>
+    </div>
+    <div class="scbody">
+      <div class="scside">
+        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#ffb45a,#5a1c08);color:#1a0c04;border-color:#e2762a">冶</div>
+          <div class="jsay" id="fg_say">"부적도 쇠와 같네.<br>두들길수록 매워지지."</div></div>
+        <div class="note" id="fg_info"><p>
+          한 단 오를 때마다 <b style="color:#ffb45a">피해 · 방어도 · 회복 · 독</b>이
+          <b>${Math.round(FORGE_STEP * 100)}%</b>씩 오른다. 최대 <b>${FORGE_MAX}단</b>.<br><br>
+          <b style="color:#e2777a">다만 두들길수록 어렵다.</b><br>
+          ${FORGE_ODDS.map((o, i) => `${i}→${i + 1}단 · <b>${Math.round(o * 100)}%</b> · ${FORGE_COST[i]}골드`).join('<br>')}
+          <br><br><span style="color:#e2777a">${FORGE_BACK_FROM}단부터는 실패하면 한 단이 도로 내려간다.</span>
+        </p></div>
+        <div class="fgstage" id="fg_stage"></div>
+        <button class="brush-btn red" id="fg_go" disabled>부적을 고르시오</button>
+      </div>
+      <div class="scmain">
+        <div class="lbhead">덱의 부적 <b>${run.deck.length}</b>장 · 두들길 것을 고르시오</div>
+        <div class="cardgrid" id="fg_grid" style="max-height:calc(100% - 40px)"></div>
+      </div>
+    </div>
+  </div>`);
+  p.dataset.noauto = '1';
+  const grid = p.querySelector('#fg_grid');
+  const stage = p.querySelector('#fg_stage');
+  const go = p.querySelector('#fg_go');
+  const say = t => { const n = p.querySelector('#fg_say'); if (n) n.innerHTML = t; };
+
+  const drawStage = () => {
+    stage.innerHTML = '';
+    const c = run.deck.find(x => x.uid === sel);
+    if (!c) { go.disabled = true; go.textContent = '부적을 고르시오'; return; }
+    const lv = fgLv(c);
+    stage.appendChild(cardNode(c, { tip: false }));
+    const done = lv >= FORGE_MAX;
+    const cost = fgCost(lv), odds = fgOdds(lv);
+    stage.appendChild(el('div', 'fgnum', done
+      ? `<b style="color:#ffd76a">${FORGE_MAX}단 — 더 두들길 수 없다</b>`
+      : `<b>${lv}단 → ${lv + 1}단</b>
+         <span>성공 <em style="color:${odds >= .5 ? '#8fe6d0' : odds >= .3 ? '#ffd76a' : '#e2777a'}">${Math.round(odds * 100)}%</em>
+         · <em style="color:${run.gold >= cost ? '#e0bd63' : '#e2777a'}">${cost}골드</em></span>
+         ${lv >= FORGE_BACK_FROM ? '<span style="color:#e2777a">실패하면 한 단 내려간다</span>' : ''}`));
+    go.disabled = done || run.gold < cost;
+    go.textContent = done ? '다 벼렸다' : (run.gold < cost ? `골드가 ${cost - run.gold} 모자라다` : `두들긴다 (${cost}골드)`);
+  };
+  const draw = () => {
+    grid.innerHTML = '';
+    run.deck.forEach(c => {
+      const n = cardNode(c);
+      n.classList.add('pick');
+      if (c.uid === sel) n.classList.add('on');
+      if (fgLv(c) >= FORGE_MAX) n.classList.add('maxed');
+      n.onclick = () => { sel = c.uid; SND.ui(); draw(); drawStage(); };
+      const holder = el('div', 'priced');
+      holder.appendChild(n);
+      holder.appendChild(el('div', 'pricetag' + (fgLv(c) ? ' ok' : ''), fgLv(c) ? `${fgLv(c)}단` : '벼리지 않음'));
+      grid.appendChild(holder);
+    });
+    drawStage();
+  };
+  draw();
+
+  go.onclick = async () => {
+    const c = run.deck.find(x => x.uid === sel); if (!c) return;
+    const lv = fgLv(c);
+    if (lv >= FORGE_MAX) return;
+    const cost = fgCost(lv);
+    if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
+    run.gold -= cost;
+    go.disabled = true; go.textContent = '두들기는 중…';
+    /* 망치질 셋 */
+    for (let i = 0; i < 3; i++) {
+      SND.blip(180 + i * 40, { dur: .09, type: 'square', vol: .09, to: 90 });
+      SND.hiss({ dur: .12, vol: .07, freq: 3000, to: 600, filter: 'bandpass', q: 1.2 });
+      const card = stage.querySelector('.card');
+      if (card) { card.classList.remove('hammer'); void card.offsetWidth; card.classList.add('hammer'); }
+      shake();
+      await wait(320);
+    }
+    const win = rnd() < fgOdds(lv);
+    if (win) {
+      c.fg = lv + 1;
+      SND.unlock(); SND.gong();
+      screenFlash('rgba(255,180,90,.42)', 640);
+      FX.burst(innerWidth / 2, innerHeight / 2, 34, '255,180,90', 6, 60, 4.6);
+      say(`"됐네! <b style="color:#ffd76a">${cname(c)}</b> — ${c.fg}단일세."`);
+      toast(`${CARDS[c.id].n} — ${c.fg}단으로 벼려졌다`);
+      flash(`${c.fg}단`);
+    } else {
+      SND.err();
+      screenFlash('rgba(120,120,130,.34)', 420);
+      if (lv >= FORGE_BACK_FROM) {
+        c.fg = lv - 1;
+        say(`"쨍 — 금이 갔네. ${lv}단에서 ${c.fg}단으로 내려앉았어."`);
+        toast(`실패 — ${CARDS[c.id].n}이(가) ${c.fg}단으로 내려갔다`);
+      } else {
+        say('"안 되겠군. 쇠가 아직 안 먹었어."');
+        toast('실패 — 골드만 날렸다');
+      }
+    }
+    saveRun(); renderTop(); draw();
+  };
+  const back = () => { closePanel(p); G.scene = prev; if (prev === 'map' && G.run) showMap(); };
+  p._esc = back;
+  p.querySelector('#fg_back').onclick = () => { p._esc = null; back(); };
 }
 
 /* 전투 중이 아니면 언제든 열 수 있다 */
