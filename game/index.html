@@ -2165,6 +2165,26 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gdbox .gdt p em{color:#e2bd63;font-style:normal}
 .gdbox .gdt p i{color:#8fd8c0;font-style:normal}
 .gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* ── 속성(屬)과 향초(香) ──────────────────────────────────── */
+.elmk{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:5px;
+  margin-right:5px;vertical-align:-3px;font-size:10.5px;line-height:1;cursor:help;
+  color:#fff;background:var(--ec);box-shadow:0 0 8px var(--ec),0 1px 3px rgba(0,0,0,.5)}
+#incchip{display:flex;align-items:center}
+.incchip{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:999px;
+  font-size:11.5px;letter-spacing:.03em;color:#f0e6cf;cursor:help;white-space:nowrap;
+  background:rgba(20,14,8,.7);border:1px solid var(--ec,rgba(226,189,99,.4))}
+.incchip i{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+  font-size:11px;color:#150f08;background:var(--ec);box-shadow:0 0 9px var(--ec)}
+.incchip b{color:#ffd76a;font-weight:400}
+/* 약점을 찌를 때 뜨는 글자 */
+.weakpop{position:fixed;transform:translate(-50%,-50%);z-index:45;pointer-events:none;
+  font-size:15px;letter-spacing:.1em;color:#fff;padding:3px 11px;border-radius:8px;
+  background:linear-gradient(140deg,rgba(255,150,60,.95),rgba(200,60,40,.9));
+  box-shadow:0 0 18px rgba(255,150,60,.7);animation:wkPop .8s ease forwards}
+@keyframes wkPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}
+  22%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+  40%{transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-110%) scale(.95)}}
 /* ── 겨루기(比武) ─────────────────────────────────────────── */
 .loginbox{display:flex;flex-direction:column;gap:11px;width:min(360px,88vw);margin:8px 0 2px}
 .lgrow{display:flex;align-items:center;gap:10px}
@@ -5373,6 +5393,120 @@ function randomPotion() {
    next(e) : 다음 행동 키를 고른다 (e.hist = 최근 행동 기록)
    ══════════════════════════════════════════════════════════ */
 const ENEMIES = {};
+/* ══════════════════════════════════════════════════════════
+   속성(屬) — 요괴에게도 결이 있다
+   ──────────────────────────────────────────────────────────
+   일곱 결이 서로 물고 물린다.
+     불(火) ← 물(水) ← 나무(木) ← 불(火)      … 세 결의 고리
+     어둠(暗) ← 요정(精) ← 악귀(鬼) ← 사이코(念) ← 어둠(暗)  … 네 결의 고리
+   약점을 찌르면 피해가 크게 오르고, 그 결로 되받으면 덜 아프다.
+   요괴마다 손으로 붙이지 않고 이름과 글자를 보고 저절로 매긴다.
+   ══════════════════════════════════════════════════════════ */
+const ELEM = {
+  wood:   { n: '나무',   g: '木', c: '#4f9a5a', d: '뿌리와 잎의 결. 물을 먹고 자란다.' },
+  fire:   { n: '불',     g: '火', c: '#e2622a', d: '타오르는 결. 나무를 살라 먹는다.' },
+  water:  { n: '물',     g: '水', c: '#3f8fc4', d: '흐르는 결. 불을 끈다.' },
+  dark:   { n: '어둠',   g: '暗', c: '#5a4a72', d: '빛이 닿지 않는 결. 넋을 갉아 먹는다.' },
+  psy:    { n: '사이코', g: '念', c: '#b060c0', d: '생각과 넋의 결. 악귀를 짓누른다.' },
+  fae:    { n: '요정',   g: '精', c: '#4fc4a8', d: '깃들고 홀리는 결. 어둠을 밝힌다.' },
+  fiend:  { n: '악귀',   g: '鬼', c: '#a8283c', d: '원한이 뭉친 결. 요정을 찢는다.' }
+};
+/* 이 결은 「무엇에」 약한가 */
+const ELEM_WEAK = { fire: 'water', water: 'wood', wood: 'fire',
+                    dark: 'fae', fae: 'fiend', fiend: 'psy', psy: 'dark' };
+/* 뒤집어서 — 이 결은 「무엇을」 찌르는가 */
+const ELEM_BEATS = {};
+for (const k in ELEM_WEAK) ELEM_BEATS[ELEM_WEAK[k]] = k;
+const ELEM_KEYS = Object.keys(ELEM);
+const ELEM_MUL = 1.55;                 /* 약점을 찌를 때 */
+const ELEM_RESIST = 0.75;              /* 제가 찌르는 결에게 맞을 때 */
+/* 이름·글자를 보고 결을 매긴다 — 손으로 하나하나 붙이지 않는다 */
+const ELEM_HINT = [
+  ['fire',  /불|火|염|炎|燐|燒|타|화염|용암|숯|재|잿|烈|熱|번개|雷|뇌/],
+  ['water', /물|水|비|雨|강|江|바다|海|이무기|용|龍|얼음|氷|寒|서리|눈|雪|샘|泉|해파리|물귀신|溺/],
+  ['wood',  /나무|木|숲|林|풀|草|꽃|花|덩굴|蔓|뿌리|根|잎|葉|산신|버섯|菌|이끼|苔|장승|솔|松/],
+  ['fae',   /여우|狐|구미|고양이|猫|학|鶴|나비|蝶|정령|精|선녀|仙|신선|서낭|祠|당산|호랑|虎|사슴|鹿|토끼|兔/],
+  ['fiend', /귀|鬼|원귀|怨|야차|夜叉|나찰|羅刹|악|惡|저주|呪|해골|骨|시체|屍|강시|殭|피|血|마두|魔/],
+  ['psy',   /념|念|넋|魂|혼|魄|꿈|夢|환|幻|무당|巫|주술|術|눈|眼|목|目|거울|鏡|기억|憶|천|天|신|神/],
+  ['dark',  /어둠|暗|그림자|影|밤|夜|검|黑|묵|墨|무|無|공|空|허|虛|명계|冥|저승|死|사신/]
+];
+function elemOf(id) {
+  const d = ENEMIES[id]; if (!d) return 'dark';
+  if (d.elem) return d.elem;
+  const s = (d.n || '') + (d.g || '') + id;
+  for (const [k, re] of ELEM_HINT) if (re.test(s)) { d.elem = k; return k; }
+  /* 그래도 모르겠으면 이름을 셈해서 고루 흩는다 */
+  let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  d.elem = ELEM_KEYS[h % ELEM_KEYS.length];
+  return d.elem;
+}
+/* 내 손의 결 — 향초를 피우면 그 결이 붙는다 */
+function myElem() {
+  const r = G.run;
+  return (r && r.incense && r.incense.left > 0) ? r.incense.elem : null;
+}
+/* 저 요괴를 칠 때의 곱 */
+function elemMul(tgt) {
+  const mine = myElem(); if (!mine || !tgt || tgt.isPlayer || !tgt.id) return 1;
+  const te = elemOf(tgt.id);
+  if (ELEM_WEAK[te] === mine) return ELEM_MUL;         /* 약점을 찔렀다 */
+  if (ELEM_WEAK[mine] === te) return 0.85;             /* 거꾸로 물렸다 */
+  return 1;
+}
+/* 저 요괴에게 맞을 때의 곱 */
+function elemTakeMul(src) {
+  const mine = myElem(); if (!mine || !src || src.isPlayer || !src.id) return 1;
+  const se = elemOf(src.id);
+  if (ELEM_WEAK[se] === mine) return ELEM_RESIST;      /* 내가 찌르는 결이라 덜 아프다 */
+  return 1;
+}
+function elemBadge(id) {
+  const k = elemOf(id), d = ELEM[k];
+  return `<span class="elmk" style="--ec:${d.c}" data-el="${k}">${d.g}</span>`;
+}
+function elemTip(id) {
+  const k = elemOf(id), d = ELEM[k], w = ELEM[ELEM_WEAK[k]];
+  const mine = myElem();
+  const hit = mine && ELEM_WEAK[k] === mine;
+  return `<b style="color:${d.c}">${d.n}(${d.g})</b> 속성<br>${d.d}<br>
+    <span style="color:#9a8d74">약점 — <b style="color:${w.c}">${w.n}(${w.g})</b></span>` +
+    (hit ? `<br><b style="color:#ffd76a">지금 그 향초를 피우고 있다 — 피해 ×${ELEM_MUL}</b>` : '');
+}
+/* ══════════════════════════════════════════════════════════
+   향초(香) — 결을 손에 옮겨 붙인다
+   ──────────────────────────────────────────────────────────
+   떠돌이 상인이 골드로 판다. 하나를 피우면 세 판 동안
+   그 결이 내 손에 붙는다.
+     · 그 결에 약한 요괴에게는 피해 ×1.55
+     · 거꾸로 물리는 결에게는 ×0.85
+     · 내가 찌르는 결의 요괴에게 맞을 때는 ×0.75 — 덜 아프다
+   두 자루를 한꺼번에 피울 수는 없다. 새로 피우면 앞의 것은 꺼진다.
+   ══════════════════════════════════════════════════════════ */
+const INCENSE_BATTLES = 3;
+const INCENSE_PRICE = 130;
+const INCENSE = ELEM_KEYS.map(k => ({
+  id: 'inc_' + k, elem: k, n: `${ELEM[k].n}의 향초`, g: ELEM[k].g, c: ELEM[k].c,
+  d: `<b style="color:${ELEM[k].c}">${ELEM[k].n}(${ELEM[k].g})</b>의 결이 손에 붙는다 — ` +
+     `<b>${ELEM[ELEM_BEATS[k]].n}</b> 속성 요괴에게 피해 <b>×${ELEM_MUL}</b>, ` +
+     `그 요괴에게 맞을 때는 <b>×${ELEM_RESIST}</b>. ${INCENSE_BATTLES}판 동안.`
+}));
+const incenseById = id => INCENSE.find(x => x.id === id);
+function lightIncense(id) {
+  const it = incenseById(id); if (!it || !G.run) return false;
+  G.run.incense = { elem: it.elem, left: INCENSE_BATTLES };
+  SND.unlock(); screenFlash(rgba(it.c, .3), 560);
+  FX.spark(innerWidth / 2, 110, 20, hexRGB(it.c));
+  toast(`${it.n}을 피웠다 — ${INCENSE_BATTLES}판`);
+  saveRun(); renderTop(); syncAll();
+  return true;
+}
+/* 한 판이 끝날 때 한 자루씩 탄다 */
+function incenseBurn() {
+  const r = G.run; if (!r || !r.incense) return;
+  r.incense.left--;
+  if (r.incense.left <= 0) { toast(`${ELEM[r.incense.elem].n}의 향초가 다 탔다`); r.incense = null; }
+  saveRun(); renderTop();
+}
 function defEnemy(o) { ENEMIES[o.id] = o; return o; }
 const lastIs = (e, k, n = 1) => { const h = e.hist; if (h.length < n) return false; for (let i = 1; i <= n; i++) if (h[h.length - i] !== k) return false; return true; };
 
@@ -7185,6 +7319,9 @@ function calcAtk(src, tgt, base) {
     if (tr && tr.atk) d *= (1 + tr.atk);
     d *= sorrowAtk();                                        /* 슬픔의 원한 */
     d *= shrineAtk();                                        /* 신전 — 칼날의 가호 */
+    d *= elemMul(tgt);                                       /* 향초 — 약점을 찌른다 */
+  } else if (tgt.isPlayer) {
+    d *= elemTakeMul(src);                                   /* 향초 — 되받는 결이라 덜 아프다 */
   }
   if (src.s.weak) d = Math.floor(d * .75);
   if (tgt.s.vuln) d = Math.floor(d * 1.5);
@@ -7236,12 +7373,24 @@ function atk(t, base, opts) {
   const dmg = calcAtk(P(), t, base);
   const r = applyDamage(t, dmg, opts.pierce);
   G.b.attacked = true;
+  if (elemMul(t) > 1) weakPop(t);                 /* 약점을 찔렀다 */
   impact(opts.fx || (G.b.curCard ? CARD_FX[G.b.curCard.id] : null) || 'slash', t);
   hitFx(t, r.hp, r.blocked, true);
   const dr = P().s.drain || 0;
   if (dr && r.hp + r.blocked > 0) heal(dr);
   if (t.s.thorns) { pure(P(), t.s.thorns); }
   return r.hp;
+}
+/* 약점을 찔렀을 때 그 자리에 한 번 뜬다 — 너무 잦지 않게 걸러 낸다 */
+let _wkAt = 0;
+function weakPop(t) {
+  const now = Date.now(); if (now - _wkAt < 260) return; _wkAt = now;
+  const p = t.el ? centerOf(t.el) : null; if (!p) return;
+  const n = el('div', 'weakpop', '약 점!');
+  n.style.left = p.x + 'px'; n.style.top = (p.y - 46) + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 820);
+  SND.blip(1320, { dur: .1, type: 'square', vol: .05, to: 1760 });
 }
 function pure(t, amt) {                       // 방어도·보정 무시 직접 피해
   if (!t || t.hp <= 0 && !t.isPlayer) return;
@@ -7752,6 +7901,7 @@ function _winBattle() {
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
+  incenseBurn();                                 /* 향초가 한 자루 탄다 */
   if (b.kind === 'elite') {
     petEliteTick();                            /* 팻을 되살리는 걸음 */
     if (META.eliteFails && META.eliteFails[run.act]) { delete META.eliteFails[run.act]; saveMeta(); }
@@ -8113,6 +8263,7 @@ function renderTop() {
       <div id="relicbar"></div><div id="reliccnt"></div>
       <div id="potbar"></div>
       <div id="cursechip"></div>
+      <div id="incchip"></div>
       <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
       <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리">場<em></em></button>
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길">修<em></em></button>
@@ -8225,6 +8376,20 @@ function renderTop() {
       <span style="color:#ffd76a">${run.curse.left}판을 더 견디면 — ${d.boonTxt}</span>`);
     chip.onclick = () => { tipHide(); openSchool(); };
     cc.appendChild(chip);
+  }
+  /* 향초 딱지 */
+  const ic = t.querySelector('#incchip');
+  if (ic) {
+    ic.innerHTML = '';
+    if (run.incense && run.incense.left > 0) {
+      const k = run.incense.elem, d = ELEM[k], beat = ELEM[ELEM_BEATS[k]];
+      const chip = el('div', 'incchip', `<i style="--ec:${d.c}">${d.g}</i>${d.n}의 향초 <b>${run.incense.left}</b>판`);
+      bindTip(chip, () => `<b style="color:${d.c}">${d.n}의 향초</b> — ${run.incense.left}판 남았다<br>
+        <b style="color:${beat.c}">${beat.n}(${beat.g})</b> 속성 요괴에게 피해 <b>×${ELEM_MUL}</b><br>
+        그 요괴에게 맞을 때는 <b>×${ELEM_RESIST}</b><br>
+        <span style="color:#9a8d74">향초는 떠돌이 상인이 판다</span>`);
+      ic.appendChild(chip);
+    }
   }
   const sb = t.querySelector('#skilltop');
   sb.querySelector('em').textContent = (run.skills || []).length || '';
@@ -8601,10 +8766,12 @@ function buildEnemies() {
     u.innerHTML = `<div class="intent"></div>
       <div class="prev"></div>
       <div class="body">${enso(e.def.col, i * 3 + 5)}<span class="glyph">${e.g}</span><div class="blockbadge hide"></div></div>
-      <div class="nm">${e.n}</div>
+      <div class="nm">${elemBadge(e.id)}${e.n}</div>
       <div class="ebar"><i></i><b></b></div>
       <div class="stats"></div>`;
     u.style.animationDelay = (i * .4) + 's';
+    const mk = u.querySelector('.elmk');
+    if (mk) bindTip(mk, () => elemTip(e.id));
     u.querySelector('.body').onclick = () => onEnemyClick(e);
     side.appendChild(u);
     e.el = u;
@@ -11703,7 +11870,16 @@ function restockShop() {
     const id = randomPotion();
     pots.push({ id, p: price({ common: 52, uncommon: 78, rare: 112 }[POTIONS[id].rar]), sold: false });
   }
-  run.shop = { cards, relics, pots, purged: false, boxSold: false };
+  /* 향초 — 골드로 산다. 셋을 내놓되 겹치지 않게 */
+  const inc = [];
+  {
+    const pool = INCENSE.slice();
+    for (let i = 0; i < 3 && pool.length; i++) {
+      const it = pool.splice(Math.floor(rnd() * pool.length), 1)[0];
+      inc.push({ id: it.id, p: price(Math.round(INCENSE_PRICE * (.9 + rnd() * .25))), sold: false });
+    }
+  }
+  run.shop = { cards, relics, pots, inc, purged: false, boxSold: false };
 }
 /* ══════════════════════════════════════════════════════════
    떠돌이 상인 — 만날 때마다 다른 사람이 앉아 있다
@@ -11905,6 +12081,7 @@ function restockShopPrices() {
   sh.cards.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
   sh.relics.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
   sh.pots.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
+  (sh.inc || []).forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
 }
 /* ── 그냥 나가는 데에도 값이 있다 ─────────────────────────
    한 푼도 안 쓰고 돌아서면 상인은 그것을 기억한다.
@@ -12057,6 +12234,14 @@ function showShop() {
       () => { it.sold = true; gainRelic(it.id); }));
     sh.pots.forEach(it => addRow(POTIONS[it.id].g, POTIONS[it.id].n, POTIONS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
       () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; } it.sold = true; run.potions.push(it.id); }));
+    /* 향초 — 사면 그 자리에서 피운다 */
+    (sh.inc || []).forEach(it => {
+      const d = incenseById(it.id); if (!d) return;
+      const beat = ELEM[ELEM_BEATS[d.elem]];
+      addRow(`<span style="color:${d.c}">${d.g}</span>`, d.n,
+        `${beat.n}(${beat.g}) 속성에게 피해 ×${ELEM_MUL} · ${INCENSE_BATTLES}판`,
+        it.p, it.sold, () => { it.sold = true; lightIncense(it.id); });
+    });
     addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, sh.purged,
       async () => {
         const c = await pickFromList(run.deck, '없앨 카드를 고르시오', { cancel: true });
