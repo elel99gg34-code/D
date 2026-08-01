@@ -2157,6 +2157,58 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gdbox .gdt p em{color:#e2bd63;font-style:normal}
 .gdbox .gdt p i{color:#8fd8c0;font-style:normal}
 .gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* 콜로세움 — 상대가 내는 부적이 그 자리에 떠오른다 */
+.colplay{position:fixed;transform:translate(-50%,-50%);z-index:46;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:7px;animation:cpIn .3s cubic-bezier(.2,1.5,.5,1)}
+.colplay.out{animation:cpOut .32s ease forwards}
+@keyframes cpIn{from{opacity:0;transform:translate(-50%,-20%) scale(.6) rotate(-8deg)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(.92) rotate(0)}}
+@keyframes cpOut{to{opacity:0;transform:translate(-50%,-72%) scale(.8)}}
+.colplay .card{box-shadow:0 12px 34px rgba(0,0,0,.6),0 0 24px rgba(226,189,99,.36)}
+.colplay .cpl{font-size:11px;letter-spacing:.08em;color:#e8d8b4;padding:2px 9px;border-radius:7px;
+  background:rgba(18,12,8,.82);border:1px solid rgba(226,189,99,.3);white-space:nowrap}
+#coldeckbtn{position:absolute;right:20px;top:74px;z-index:12;padding:7px 13px;border-radius:9px;
+  font-size:12px;letter-spacing:.05em;cursor:pointer;
+  background:linear-gradient(150deg,rgba(40,30,18,.94),rgba(22,16,10,.94));
+  border:1px solid rgba(226,189,99,.42);color:#f0e2c2}
+#coldeckbtn:hover{background:rgba(226,189,99,.28);color:#fff6e2}
+#coldeckbtn b{color:#e2bd63;font-weight:400}
+.cotile .tpeek{margin-top:7px;padding:6px 10px;border-radius:7px;text-align:center;font-size:11.5px;
+  letter-spacing:.05em;cursor:pointer;color:#cbbb96;
+  background:rgba(226,189,99,.1);border:1px solid rgba(226,189,99,.3)}
+.cotile .tpeek:hover{background:rgba(226,189,99,.28);color:#fff6e2}
+/* 유물이 듣는 순간 — 딱지가 튀고, 이름이 한 번 뜬다 */
+.relic.fired{animation:relicPop .68s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 0 0 2px var(--rfc,#e2bd63),0 0 20px var(--rfc,#e2bd63);z-index:5}
+@keyframes relicPop{0%{transform:scale(1)}
+  22%{transform:scale(1.42) rotate(-7deg)}
+  46%{transform:scale(1.12) rotate(4deg)}
+  100%{transform:scale(1) rotate(0)}}
+.relicpop{position:absolute;left:50%;top:96px;transform:translateX(-50%);z-index:47;pointer-events:none;
+  display:flex;align-items:center;gap:9px;padding:7px 15px 7px 9px;border-radius:999px;
+  background:linear-gradient(140deg,rgba(30,24,16,.94),rgba(16,12,8,.9));
+  border:1px solid rgba(226,189,99,.32);animation:rpop 1.15s ease forwards}
+.relicpop i{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+  font-size:14px;color:#141009;background:var(--rfc,#e2bd63);
+  box-shadow:0 0 14px var(--rfc,#e2bd63)}
+.relicpop b{font-size:12.5px;font-weight:400;letter-spacing:.06em;color:#f2e6cc;white-space:nowrap}
+@keyframes rpop{0%{opacity:0;transform:translate(-50%,10px) scale(.9)}
+  16%{opacity:1;transform:translate(-50%,0) scale(1)}
+  74%{opacity:1;transform:translate(-50%,0) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-14px) scale(.97)}}
+/* 지도 위의 벗 — 다른 갈림길을 걷는 단오 */
+.friendmark{position:absolute;transform:translate(-50%,-50%);z-index:6;pointer-events:auto;cursor:help;
+  display:flex;flex-direction:column;align-items:center;gap:2px;animation:fmIn .4s ease}
+@keyframes fmIn{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.friendmark span{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;
+  color:#eaf4ff;background:radial-gradient(circle at 34% 28%,#5e94b8,#24425c);
+  border:2px solid rgba(150,196,224,.75);
+  box-shadow:0 0 0 4px rgba(58,106,138,.14),0 0 14px rgba(120,180,220,.4);
+  animation:fmBob 2.6s ease-in-out infinite}
+@keyframes fmBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.friendmark b{font-size:10.5px;font-weight:400;letter-spacing:.08em;color:#bcd8ec;
+  padding:1px 6px;border-radius:6px;background:rgba(16,26,36,.72);white-space:nowrap}
+.friendmark:hover span{box-shadow:0 0 0 5px rgba(58,106,138,.24),0 0 20px rgba(120,180,220,.62)}
 /* 조용한 안내 쪽지 — 오른쪽 아래 구석. 화면을 막지 않는다 */
 .gdnote{position:absolute;right:18px;bottom:20px;z-index:42;display:flex;align-items:center;gap:11px;
   padding:10px 12px;border-radius:11px;max-width:min(430px,90vw);
@@ -2740,6 +2792,12 @@ const SND = {
     [[1, .2], [1.48, .1], [2.37, .07], [3.9, .04], [6.1, .022]].forEach(([m, v]) =>
       this.blip(f * m, { dur: 2.6 / Math.pow(m, .35), type: 'sine', vol: v, rev: 1, jit: .005 }));
     this.hiss({ dur: 1.1, vol: .09, freq: 900, to: 160, rev: .9 });
+  },
+  /* 유물이 듣는 소리 — 작은 경쇠 한 번. 짧고 맑게, 귀에 거슬리지 않게 */
+  relic() {
+    const f = this.vary(1180, .04);
+    this.blip(f, { dur: .16, type: 'sine', vol: .05, to: f * 1.5, rev: .35 });
+    this.blip(f * 1.5, { dur: .1, type: 'triangle', vol: .022, rev: .2 });
   },
   /* 북 — 가운데를 치기 / 테를 치기 / 두 번 굴리기 */
   drum() {
@@ -4310,6 +4368,236 @@ defCard({ id: 'janggi', n: '장기(將棋)', g: '將', type: 'skill', rar: 'unkn
     syncAll();
   } });
 
+/* ══════════════════════════════════════════════════════════
+   또 한 벌 — 스물다섯 막을 걷자니 손이 심심하다
+   ──────────────────────────────────────────────────────────
+   3등급 열, 2등급 열, 1등급 여덟, S급 여섯, SSC급 넷, SSX급 넷.
+   서른둘. 새 상태를 만들지 않고 있는 것들끼리 엮어 결을 낸다.
+   ══════════════════════════════════════════════════════════ */
+
+/* ---------- 3등급 ---------- */
+defCard({ id: 'hookstrike', n: '갈고리치기', g: '鉤', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 9 : 7 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 적의 방어도가 있으면 그 방어도를 <b>모두 깎는다</b>.`,
+  play: c => { atk(c.t, c.v.d); if (c.t.block > 0) { c.t.block = 0; floatText(c.t, '방어도 파괴', 'buff'); } } });
+
+defCard({ id: 'saltline', n: '소금 뿌리기', g: '鹽', type: 'skill', rar: 'common', cost: 0,
+  v: u => ({ b: u ? 5 : 3 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 카드를 1장 뽑는다.`,
+  play: c => { blk(c.v.b); drawCards(1); } });
+
+defCard({ id: 'lowsweep', n: '발목베기', g: '脛', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 6 : 4, w: u ? 2 : 1 }),
+  txt: v => `<em>${v.d}</em>의 피해를 두 번 주고 <b>약화</b> ${v.w}를 부여한다.`,
+  play: async c => { atk(c.t, c.v.d); await wait(130); atk(c.t, c.v.d); st(c.t, 'weak', c.v.w); } });
+
+defCard({ id: 'talisheal', n: '치유부', g: '癒', type: 'skill', rar: 'common', cost: 1, exhaust: true,
+  v: u => ({ h: u ? 9 : 6 }),
+  txt: v => `체력을 <i>${v.h}</i> 회복한다. 소멸.`,
+  play: c => heal(c.v.h) });
+
+defCard({ id: 'stonefist', n: '석권', g: '拳', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 8 : 6, b: u ? 6 : 4 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { atk(c.t, c.v.d); blk(c.v.b); } });
+
+defCard({ id: 'windread', n: '바람 읽기', g: '風', type: 'skill', rar: 'common', cost: 0,
+  v: u => ({ n: u ? 2 : 1 }),
+  txt: v => `카드를 ${v.n}장 뽑는다. 이번 턴에 낸 카드가 없으면 기를 1 얻는다.`,
+  play: c => { drawCards(c.v.n); if (!G.b.played) energy(1); } });
+
+defCard({ id: 'grudgecut', n: '한풀이', g: '恨', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 7 : 5, k: u ? 4 : 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 내 체력이 절반 아래면 <em>${v.k}</em>을 더 준다.`,
+  play: c => { const p = P(); atk(c.t, c.v.d + (p.hp * 2 <= p.maxHp ? c.v.k : 0)); } });
+
+defCard({ id: 'strawman', n: '제웅', g: '芻', type: 'skill', rar: 'common', cost: 1, exhaust: true,
+  v: u => ({ b: u ? 14 : 10 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 소멸.`,
+  play: c => blk(c.v.b) });
+
+defCard({ id: 'quickjab', n: '선수', g: '先', type: 'attack', rar: 'common', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 5 : 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 기를 쓰지 않는다.`,
+  play: c => atk(c.t, c.v.d) });
+
+defCard({ id: 'bellring', n: '요령 흔들기', g: '鈴', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ k: u ? 2 : 1 }),
+  txt: v => `모든 적에게 <b>취약</b> ${v.k}을 부여한다.`,
+  play: c => { for (const e of alive()) st(e, 'vuln', c.v.k); } });
+
+/* ---------- 2등급 ---------- */
+defCard({ id: 'twinmoon', n: '쌍월참', g: '雙', type: 'attack', rar: 'uncommon', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 11 : 9 }),
+  txt: v => `<em>${v.d}</em>의 피해를 두 번 준다. 둘 다 맞으면 기를 1 되찾는다.`,
+  play: async c => { atk(c.t, c.v.d); await wait(140);
+    const b4 = c.t.hp; atk(c.t, c.v.d); if (b4 > 0) energy(1); } });
+
+defCard({ id: 'ironwill', n: '철심결', g: '芯', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 8 : 5, e: u ? 5 : 3 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>철심</b> ${v.e}을 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'endblock', c.v.e); } });
+
+defCard({ id: 'gutstab', n: '내장 가르기', g: '腸', type: 'attack', rar: 'uncommon', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 15 : 12, p: u ? 8 : 5 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>중독</b> ${v.p}을 부여한다.`,
+  play: c => { atk(c.t, c.v.d); st(c.t, 'poison', c.v.p); } });
+
+defCard({ id: 'mirrorstep', n: '경보', g: '鏡', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ a: u ? 12 : 8 }),
+  txt: v => `<b>잔상</b> ${v.a}을 얻는다 — 다음 턴 시작에 그만큼 방어도가 된다. 카드를 1장 뽑는다.`,
+  play: c => { st(P(), 'afterimg', c.v.a); drawCards(1); } });
+
+defCard({ id: 'bloodpact', n: '혈계', g: '血', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 18 : 14, s: u ? 3 : 4 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 대신 체력을 ${v.s} 잃는다.`,
+  play: c => { atk(c.t, c.v.d); const p = P(); p.hp = Math.max(1, p.hp - c.v.s);
+    if (G.run) G.run.hp = p.hp; floatText(p, '-' + c.v.s, 'dmg'); syncAll(); } });
+
+defCard({ id: 'fanflame', n: '부채질', g: '扇', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'all',
+  v: u => ({ d: u ? 10 : 7 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다. <b>중독</b>된 적에게는 두 배.`,
+  play: c => { for (const e of alive()) atk(e, e.s.poison ? c.v.d * 2 : c.v.d, { fx: 'wind' }); } });
+
+defCard({ id: 'nightwatch', n: '불침번', g: '宵', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ b: u ? 11 : 8, n: u ? 2 : 1 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 카드를 ${v.n}장 뽑는다.`,
+  play: c => { blk(c.v.b); drawCards(c.v.n); } });
+
+defCard({ id: 'coilrope', n: '오랏줄', g: '繩', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 9 : 6 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>무력</b>을 부여한다 — 다음 행동을 못 한다.`,
+  play: c => { atk(c.t, c.v.d); st(c.t, 'stun', 1); } });
+
+defCard({ id: 'ashcloud', n: '재구름', g: '灰', type: 'skill', rar: 'uncommon', cost: 1,
+  v: u => ({ w: u ? 3 : 2 }),
+  txt: v => `모든 적에게 <b>약화</b> ${v.w}를 부여하고 <i>5</i>의 방어도를 얻는다.`,
+  play: c => { for (const e of alive()) st(e, 'weak', c.v.w); blk(5); } });
+
+defCard({ id: 'edgehone', n: '날 세우기', g: '砥', type: 'power', rar: 'uncommon', cost: 1,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>검기</b> ${v.x}을 얻는다.`,
+  play: c => { st(P(), 'edge', c.v.x); SND.power(); } });
+
+/* ---------- 1등급 ---------- */
+defCard({ id: 'thunderpin', n: '벽력침', g: '霹', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 32 : 25 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 대상이 <b>무력</b>이면 기를 2 되찾는다.`,
+  play: c => { const stn = !!c.t.s.stun; atk(c.t, c.v.d, { fx: 'bolt' }); if (stn) energy(2); } });
+
+defCard({ id: 'ninefold', n: '구절편', g: '鞭', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 6 : 5, n: u ? 5 : 4 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); await wait(110); } } });
+
+defCard({ id: 'stonewallB', n: '반석결계', g: '磐', type: 'skill', rar: 'rare', cost: 2,
+  v: u => ({ b: u ? 26 : 20 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 이번 턴이 끝나도 방어도가 남는다.`,
+  play: c => { blk(c.v.b); st(P(), 'barricade', 1); } });
+
+defCard({ id: 'soulsiphon', n: '흡혼도', g: '吸', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 20 : 16, h: u ? 8 : 6 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 체력을 <i>${v.h}</i> 회복한다.`,
+  play: c => { atk(c.t, c.v.d); heal(c.v.h); } });
+
+defCard({ id: 'fivewheel', n: '오륜진', g: '輪', type: 'skill', rar: 'rare', cost: 2, exhaust: true,
+  v: u => ({ n: u ? 4 : 3, e: u ? 2 : 1 }),
+  txt: v => `카드를 ${v.n}장 뽑고 기를 ${v.e} 얻는다. 소멸.`,
+  play: c => { drawCards(c.v.n); energy(c.v.e); } });
+
+defCard({ id: 'ghostblade', n: '유령검', g: '幽', type: 'attack', rar: 'rare', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 16 : 12 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. <b>방어도를 무시한다.</b>`,
+  play: c => atk(c.t, c.v.d, { pierce: true, fx: 'slash2' }) });
+
+defCard({ id: 'furyheart', n: '광심법', g: '狂', type: 'power', rar: 'rare', cost: 2,
+  v: u => ({ x: u ? 2 : 1 }),
+  txt: v => `<b>폭주</b> ${v.x}을 얻는다 — 매 턴 시작에 힘이 그만큼 오른다.`,
+  play: c => { st(P(), 'rage', c.v.x); SND.power(); } });
+
+defCard({ id: 'twinsoul', n: '분신부', g: '分', type: 'skill', rar: 'rare', cost: 1,
+  v: u => ({ n: u ? 2 : 1 }),
+  txt: v => `<b>분신</b> ${v.n}을 얻는다 — 다음에 내는 공격 부적이 한 번 더 나간다.`,
+  play: c => st(P(), 'dbl', c.v.n) });
+
+/* ---------- S급 ---------- */
+defCard({ id: 'skyfall', n: '낙성참', g: '隕', type: 'attack', rar: 'special', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 24 : 19, k: u ? 2 : 1 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고 <b>취약</b> ${v.k}을 부여한다.`,
+  play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'bolt' }); st(e, 'vuln', c.v.k); } } });
+
+defCard({ id: 'ironrain', n: '철우', g: '雨', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 9 : 7, n: u ? 6 : 5 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 낼 때마다 <b>검기</b> 1을 얻는다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); await wait(100); } st(P(), 'edge', 1); } });
+
+defCard({ id: 'greatward', n: '대벽사진', g: '鎭', type: 'skill', rar: 'special', cost: 2,
+  v: u => ({ b: u ? 30 : 24, x: u ? 3 : 2 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>민첩</b> ${v.x}을 얻고 카드를 2장 뽑는다.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); drawCards(2); } });
+
+defCard({ id: 'ninetail', n: '구미분신', g: '尾', type: 'skill', rar: 'special', cost: 2, exhaust: true,
+  v: u => ({ n: u ? 3 : 2 }),
+  txt: v => `<b>분신</b> ${v.n}을 얻는다 — 다음 공격 부적들이 한 번씩 더 나간다. 소멸.`,
+  play: c => st(P(), 'dbl', c.v.n) });
+
+defCard({ id: 'bloodmoonB', n: '혈월심법', g: '朧', type: 'power', rar: 'special', cost: 2,
+  v: u => ({ x: u ? 4 : 3 }),
+  txt: v => `<b>흡성</b> ${v.x}을 얻는다 — 공격할 때마다 그만큼 체력을 되찾는다.`,
+  play: c => { st(P(), 'drain', c.v.x); SND.power(); } });
+
+defCard({ id: 'sealbind', n: '봉인부', g: '封', type: 'skill', rar: 'special', cost: 1, tgt: 'enemy', exhaust: true,
+  v: u => ({ n: u ? 2 : 1, k: u ? 3 : 2 }),
+  txt: v => `적 하나에게 <b>무력</b> ${v.n}과 <b>취약</b> ${v.k}을 부여한다. 소멸.`,
+  play: c => { st(c.t, 'stun', c.v.n); st(c.t, 'vuln', c.v.k); } });
+
+/* ---------- SSC급 ---------- */
+defCard({ id: 'voidcut', n: '단공참', g: '空', type: 'attack', rar: 'ssc', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 40 : 32 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. <b>방어도를 무시하고</b>, 이 부적으로 쓰러뜨리면 기를 2 되찾는다.`,
+  play: c => { const b4 = c.t.hp; atk(c.t, c.v.d, { pierce: true, fx: 'slash2' });
+    if (b4 > 0 && c.t.hp <= 0) energy(2); } });
+
+defCard({ id: 'ironmountain', n: '태산결', g: '嶽', type: 'skill', rar: 'ssc', cost: 2,
+  v: u => ({ b: u ? 20 : 15, t: u ? 8 : 6 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>태산</b> ${v.t}을 얻는다 — 매 턴 시작에 방어도가 붙는다.`,
+  play: c => { blk(c.v.b); st(P(), 'turnblock', c.v.t); } });
+
+defCard({ id: 'ghostlegion', n: '백귀도', g: '百', type: 'attack', rar: 'ssc', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 13 : 10, n: u ? 3 : 2 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) {
+    for (const e of alive()) atk(e, c.v.d, { fx: 'wind' }); await wait(150); } } });
+
+defCard({ id: 'phoenixvow', n: '봉황서', g: '鳳', type: 'power', rar: 'ssc', cost: 2, exhaust: true,
+  v: u => ({ h: u ? 40 : 30 }),
+  txt: v => `<b>불사</b>를 얻는다 — 쓰러질 때 체력 <i>${v.h}</i>로 한 번 되살아난다. 소멸.`,
+  play: c => { st(P(), 'rebirth', c.v.h); SND.power(); } });
+
+/* ---------- SSX급 ---------- */
+defCard({ id: 'heavenpierce', n: '천통일격', g: '貫', type: 'attack', rar: 'ssx', cost: 3, tgt: 'enemy',
+  v: u => ({ d: u ? 66 : 52 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. <b>방어도를 무시한다.</b> 적이 <b>취약</b>이면 절반을 더 준다.`,
+  play: c => { const vu = !!c.t.s.vuln;
+    atk(c.t, Math.round(c.v.d * (vu ? 1.5 : 1)), { pierce: true, fx: 'bolt' }); } });
+
+defCard({ id: 'worldward', n: '만상결계', g: '萬', type: 'skill', rar: 'ssx', cost: 2,
+  v: u => ({ b: u ? 42 : 34, x: u ? 4 : 3 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>민첩</b> ${v.x}·<b>금강</b>을 얻는다 — 턴이 끝나도 방어도가 남는다.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); st(P(), 'barricade', 1); } });
+
+defCard({ id: 'starfallB', n: '북두낙성', g: '斗', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all',
+  v: u => ({ d: u ? 22 : 17, n: u ? 4 : 3 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) {
+    for (const e of alive()) atk(e, c.v.d, { fx: 'bolt' }); await wait(160); } } });
+
+defCard({ id: 'immortalway', n: '장생결', g: '長', type: 'power', rar: 'ssx', cost: 3,
+  v: u => ({ x: u ? 4 : 3, r: u ? 8 : 6 }),
+  txt: v => `<b>힘</b> ${v.x}·<b>검기</b> ${v.x}·<b>기혈</b> ${v.r}을 얻고, 매 턴 카드를 한 장 더 뽑는다.`,
+  play: c => { st(P(), 'str', c.v.x); st(P(), 'edge', c.v.x);
+    st(P(), 'regenP', c.v.r); st(P(), 'flow', 1); SND.power(); } });
+
 /* ---------- 저주 ---------- */
 defCard({ id: 'curse_grudge', n: '원귀의 원한', g: '怨', type: 'curse', rar: 'curse', cost: -2,
   v: () => ({}), txt: () => `사용할 수 없다. 손에 있는 채로 턴을 마치면 체력을 2 잃는다.`, play: () => {} });
@@ -4586,21 +4874,67 @@ function doFuse(f) {
   saveRun(); renderTop();
 }
 
+/* ── 유물이 듣는 순간 ─────────────────────────────────────
+   가만히 있다가 슬그머니 듣고 마니 무엇이 일한 건지 알 수가 없다.
+   그 유물의 딱지를 튀어 오르게 하고, 글자를 크게 한 번 띄우고,
+   그 등급 빛깔로 불티를 뿌린다.
+   싸움이 시작될 때 그냥 쥐여 주는 것들(battleStart·onGain)은 뺀다 —
+   그것까지 번쩍이면 매 판 첫 턴이 난장판이 된다.
+   ────────────────────────────────────────────────────────── */
+const RELIC_QUIET = { battleStart: 1, onGain: 1, modPrice: 1 };
+let _rfxAt = 0;
+function relicFire(rid) {
+  if (!rid || !OPT.particles && !OPT.banner) { /* 소리는 그래도 낸다 */ }
+  const d = RELICS[rid]; if (!d) return;
+  const col = GRADE[rgrade(rid)] ? GRADE[rgrade(rid)].c : '#e2bd63';
+  /* ① 상단바의 그 딱지가 튄다 */
+  const bar = $('#relicbar');
+  if (bar) {
+    const idx = G.run.relics.findIndex(r => r.id === rid);
+    const chip = idx >= 0 ? bar.children[idx] : null;
+    if (chip) {
+      chip.classList.remove('fired'); void chip.offsetWidth; chip.classList.add('fired');
+      chip.style.setProperty('--rfc', col);
+      setTimeout(() => chip.classList.remove('fired'), 720);
+      if (OPT.particles) { const p = centerOf(chip); FX.spark(p.x, p.y, 12, hexRGB(col)); }
+    }
+  }
+  /* ② 화면 가운데 위로 글자가 한 번 뜬다 — 너무 잦지 않게 걸러 낸다 */
+  const now = Date.now();
+  if (now - _rfxAt > 420) {
+    _rfxAt = now;
+    const n = el('div', 'relicpop', `<i style="--rfc:${col}">${d.g}</i><b>${d.n}</b>`);
+    $('#app').appendChild(n);
+    setTimeout(() => n.remove(), 1150);
+  }
+  SND.relic();
+}
+/* '#rrggbb' → 'r,g,b' (FX 는 이 꼴을 받는다) */
+function hexRGB(h) {
+  const s = String(h).replace('#', '');
+  const v = s.length === 3 ? s.split('').map(c => c + c).join('') : s;
+  return [0, 2, 4].map(i => parseInt(v.slice(i, i + 2), 16) || 0).join(',');
+}
 function fire(hook, ...args) {
   if (!G.run) return;
   const half = curseTag('relichalf');
+  const loud = !RELIC_QUIET[hook];
   for (const r of G.run.relics) {
     const d = RELICS[r.id]; if (!d.h || !d.h[hook]) continue;
     if (half) { r.skip = !r.skip; if (r.skip) continue; }   /* 저주 — 한 번 걸러 한 번만 듣는다 */
     d.h[hook](r, ...args);
+    if (loud) relicFire(r.id);
   }
 }
 function pipe(hook, val, ...args) {
   if (!G.run) return val;
   const half = curseTag('relichalf');
+  const loud = !RELIC_QUIET[hook];
   for (const r of G.run.relics) {
     const d = RELICS[r.id]; if (!d.h || !d.h[hook]) continue;
     const out = d.h[hook](r, val, ...args);
+    /* 값을 바꾼 유물만 번쩍인다 — 스쳐 지나간 것은 조용하다 */
+    if (loud && typeof out === 'number' && typeof val === 'number' && out !== val) relicFire(r.id);
     val = (half && typeof out === 'number' && typeof val === 'number') ? val + (out - val) * .5 : out;
   }
   return typeof val === 'number' ? Math.round(val) : val;
@@ -7098,7 +7432,9 @@ async function doMove(e, m) {
   if (!m) return;
   const b = G.b;
   if (!b || b.over) return;                 /* 도중에 전투가 사라졌을 수 있다 */
-  if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
+  /* 콜로세움 — 상대가 내는 부적을 눈에 보이게 띄운다 */
+  if (m.cardId && CARDS[m.cardId]) { colPlayFx(e, m); await wait(360); }
+  else if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
   await wait(160);
   if (m.d) {
     for (let i = 0; i < (m.n || 1); i++) {
@@ -7939,19 +8275,30 @@ const GUIDES = [
      나머지 여덟은 구석에 뜨는 쪽지로 조용히 알린다.
    · 설정에서 통째로 끌 수 있다.
    ────────────────────────────────────────────────────────── */
+/* ── 언제까지 나설 것인가 ─────────────────────────────────
+   제4막이면 이미 손에 익었다. 거기까지만 나서고 그 뒤로는 입을 다문다.
+   창으로 막아 세우는 것은 한 막에 하나뿐,
+   구석 쪽지는 화면을 막지 않으니 한 막에 둘까지 둔다.
+   ────────────────────────────────────────────────────────── */
+const GUIDE_UNTIL = 4;                            /* 이 막까지만 */
+const GUIDE_SOFT_PER_ACT = 2;                     /* 한 막에 둘 수 있는 쪽지 수 */
 function guideTick() {
   const run = G.run;
   if (!run || G.b || AUTO.on || OPT.noGuide) return;
+  if (run.act > GUIDE_UNTIL) return;              /* 제4막을 넘으면 안내는 끝이다 */
   if ($('#overlay') && $('#overlay').children.length) return;
-  if (run._guideAct === run.act) return;          /* 이 막에서는 이미 나섰다 */
   if (run.floor > 2) return;                      /* 막 초입에서만 */
+  if (!run._guideSoft || run._guideSoft.act !== run.act) run._guideSoft = { act: run.act, n: 0 };
+  const hardUsed = run._guideAct === run.act;
+  const softLeft = GUIDE_SOFT_PER_ACT - run._guideSoft.n;
   for (const g of GUIDES) {
     if (guided(g.id)) continue;
+    if (g.soft ? softLeft <= 0 : hardUsed) continue;
     let ok = false; try { ok = !!g.when(run); } catch (e) { ok = false; }
     if (!ok) continue;
     markGuided(g.id);
-    run._guideAct = run.act;
-    if (g.soft) guideNote(g); else showGuide(g);
+    if (g.soft) { run._guideSoft.n++; guideNote(g); }
+    else { run._guideAct = run.act; showGuide(g); }
     return;
   }
 }
@@ -8052,6 +8399,14 @@ function renderBattle() {
      </div>
      <div id="turnlabel"></div>
    </div>`;
+  /* 콜로세움 — 상대 덱을 언제든 들여다볼 수 있다 */
+  if (G.b && G.b.kind === 'colo') {
+    const btn = el('button', '', '상대 덱 <b></b>');
+    btn.id = 'coldeckbtn';
+    btn.onclick = () => showColoDeck(null);
+    bindTip(btn, () => '상대가 쥔 부적을 전부 볼 수 있다<br><span style="color:#9a8d74">이미 낸 것은 흐리게 보인다</span>');
+    s.querySelector('#battle').appendChild(btn);
+  }
   cardEls = {};
   buildPlayer();
   if (G.b) { G.b.pet = makePet(); buildPet(); }
@@ -8173,6 +8528,8 @@ function syncPiles() {
   const d = $('#drawpile'), dd = $('#discardpile');
   if (d) d.querySelector('b').textContent = G.b.drawPile.length;
   if (dd) dd.querySelector('b').textContent = G.b.discardPile.length;
+  const cdb = $('#coldeckbtn');
+  if (cdb) cdb.querySelector('b').textContent = G.b.colDraw ? G.b.colDraw.length : '';
   const ev = $('#ev'), emv = $('#emv');
   if (ev) ev.textContent = G.b.energy;
   if (emv) emv.textContent = G.b.maxEnergy + (P().s.focus || 0);
@@ -9475,6 +9832,108 @@ function mapLayout(m) {
   }
   return m;
 }
+/* ══════════════════════════════════════════════════════════
+   단오도 산을 오른다 — 지도 위의 벗
+   ──────────────────────────────────────────────────────────
+   갈림길에서 갈라졌을 뿐, 벗도 같은 산을 오르고 있다.
+   · 자기 길로 간다 — 그 막에 들어설 때 한 번 정하고 끝까지 그 길이다.
+     플레이어가 첫발을 딛는 자리에서 가장 먼 줄에서 시작한다.
+   · 층(라운드)이 겹치는 일은 없다. 기준은 늘 플레이어 —
+     플레이어의 층을 보고 그보다 한두 층 앞이나 뒤에 세운다.
+     겹칠 수밖에 없는 자리에서는 무조건 뒤로 물린다.
+   · 부적이 끊기는 제6막부터는 지도에서 사라진다.
+   ══════════════════════════════════════════════════════════ */
+function friendHere(run) {
+  return !!run && !run.friendLost && run.act < FRIEND_LOST && !!run.map && !!run.map.nodes;
+}
+/* 벗이 걷는 길 — 줄마다 한 칸씩, 보스 앞 줄까지 */
+function friendPathBuild(run) {
+  const m = run.map, nodes = m.nodes;
+  const maxR = nodes.reduce((a, n) => Math.max(a, n.r), 0);
+  const lastR = maxR - 1;                       /* 보스 칸은 밟지 않는다 */
+  const at = r => nodes.filter(n => n.r === r && n.type !== 'boss');
+  /* 플레이어가 첫발을 딛을 만한 자리에서 가장 먼 줄에서 시작한다 */
+  const firsts = at(0);
+  if (!firsts.length) return [];
+  const mine = run.mapDone && run.mapDone.length ? nodes[run.mapDone[0]] : null;
+  const anchor = mine ? mine.c : (firsts[0].c);
+  let cur = firsts.reduce((a, n) => Math.abs(n.c - anchor) > Math.abs(a.c - anchor) ? n : a, firsts[0]);
+  const path = [cur.id];
+  for (let r = 0; r < lastR; r++) {
+    const nx = (cur.next || []).map(i => nodes[i]).filter(n => n && n.type !== 'boss');
+    if (!nx.length) {                            /* 길이 끊기면 그 줄에서 가장 가까운 칸으로 잇는다 */
+      const row = at(r + 1);
+      if (!row.length) break;
+      cur = row.reduce((a, n) => Math.abs(n.c - cur.c) < Math.abs(a.c - cur.c) ? n : a, row[0]);
+    } else cur = pick(nx);
+    path.push(cur.id);
+  }
+  return path;
+}
+/* 지금 벗이 서 있는 칸 — 플레이어의 층을 기준으로 잡는다 */
+function friendSpot(run) {
+  if (!friendHere(run)) return null;
+  const m = run.map, nodes = m.nodes;
+  if (!run.friendPath || !run.friendPath.length || run.friendPathAct !== run.act) {
+    run.friendPath = friendPathBuild(run); run.friendPathAct = run.act;
+  }
+  const path = run.friendPath;
+  if (!path || !path.length) return null;
+  const lastR = path.length - 1;
+  const pr = run.mapCur >= 0 && nodes[run.mapCur] ? nodes[run.mapCur].r : -1;
+  /* 한두 층 앞서 간다. 산꼭대기에 몰리면 뒤로 물린다 */
+  const gap = 1 + ((run.act * 7 + Math.max(0, pr) * 3) % 2);
+  let fr = pr + gap;
+  if (fr > lastR) fr = pr - gap;
+  if (fr < 0) fr = pr + 1;
+  if (fr > lastR) fr = lastR;
+  /* 그래도 겹치면 무조건 뒤로 — 층이 겹치는 일은 없어야 한다 */
+  if (fr === pr) fr = pr > 0 ? pr - 1 : Math.min(lastR, pr + 1);
+  if (fr === pr || fr < 0 || fr > lastR) return null;
+  const node = nodes[path[fr]];
+  if (!node) return null;
+  const nextNode = fr + 1 <= lastR ? nodes[path[fr + 1]] : null;
+  return { node, next: nextNode, row: fr, prow: pr, ahead: fr > pr, path, upto: fr };
+}
+/* 지도에 벗을 그린다 — 지나온 자국, 서 있는 자리, 나아갈 쪽 */
+function friendDrawMap(run, inner, svg) {
+  const sp = friendSpot(run);
+  if (!sp) return;
+  const nodes = run.map.nodes;
+  /* ① 벗이 지나온 길 — 옅은 쪽빛 실선 */
+  let d = '';
+  for (let i = 0; i < sp.upto; i++) {
+    const a = nodes[sp.path[i]], b = nodes[sp.path[i + 1]];
+    if (!a || !b) continue;
+    const my = (a.y + b.y) / 2 + ((a.id * 11) % 12) - 6;
+    d += `<path d="M${a.x},${a.y} Q${(a.x + b.x) / 2},${my} ${b.x},${b.y}" fill="none"
+      stroke="${FRIEND.col}" stroke-width="2.6" stroke-linecap="round" opacity=".3" stroke-dasharray="6 8"/>`;
+  }
+  /* ② 나아갈 쪽 — 화살 하나 */
+  if (sp.next) {
+    const a = sp.node, b = sp.next;
+    const ang = Math.atan2(b.y - a.y, b.x - a.x);
+    const L = 46, hx = a.x + Math.cos(ang) * L, hy = a.y + Math.sin(ang) * L;
+    const sx = a.x + Math.cos(ang) * 26, sy = a.y + Math.sin(ang) * 26;
+    const w = .42;
+    d += `<path d="M${sx},${sy} L${hx},${hy}" fill="none" stroke="${FRIEND.col}"
+        stroke-width="2.6" stroke-linecap="round" opacity=".72"/>
+      <path d="M${hx},${hy} L${hx - Math.cos(ang - w) * 11},${hy - Math.sin(ang - w) * 11}
+        L${hx - Math.cos(ang + w) * 11},${hy - Math.sin(ang + w) * 11} Z" fill="${FRIEND.col}" opacity=".82"/>`;
+  }
+  svg.insertAdjacentHTML('beforeend', d);
+  /* ③ 벗이 선 자리 */
+  const mk = el('div', 'friendmark', `<span>${FRIEND.g}</span><b>${FRIEND.n}</b>`);
+  /* 칸 바로 위는 위아래 칸과 부딪는다 — 오른쪽 위 귀퉁이에 걸친다 */
+  mk.style.left = (sp.node.x + 30) + 'px'; mk.style.top = (sp.node.y - 32) + 'px';
+  bindTip(mk, () => `<b style="color:#8fc0e0">${FRIEND.n}</b> — 다른 갈림길로 갔다<br>
+    지금 <b>${sp.row + 1}층</b>에서 <b>${NODE_SHORT[sp.node.type] || '길'}</b>을 지나는 중<br>
+    ${sp.next ? `다음은 <b>${NODE_SHORT[sp.next.type] || '길'}</b> 쪽으로 간다<br>` : '보스 앞까지 갔다<br>'}
+    <span style="color:#9a8d74">${sp.ahead ? `너보다 ${sp.row - sp.prow}층 앞서 있다` : `너보다 ${sp.prow - sp.row}층 뒤에 있다`}
+    · 통(通) 부적으로 자리를 알 수 있다</span>`);
+  inner.appendChild(mk);
+}
+
 /* 옛 저장(갈림길 방식)을 다시 그물 지도로 */
 function migrateMap(run) {
   const m = run.map;
@@ -9731,6 +10190,8 @@ function showMap() {
     inner.appendChild(b);
     nodeEl[n.id] = b;
   }
+  /* ── 벗 단오 — 다른 갈림길을 걷는다 ────────────────────── */
+  friendDrawMap(run, inner, svg);
   /* ── 발치의 층 눈금 자 ─────────────────────────────────── */
   const byCol = {};
   for (const n of m.nodes) if (byCol[n.r] == null) byCol[n.r] = n.x;
@@ -11852,23 +12313,57 @@ const COL_FOES = [
     win: '"…처음이군. 이 느낌이."', lose: '"그럴 줄 알았다."' }
 ];
 const colFoe = id => COL_FOES.find(f => f.id === id) || COL_FOES[0];
-/* 상대의 덱에서 한 장 */
-function colDrawId(foe) {
-  let id = null, guard = 0;
-  while (!id && guard++ < 30) {
+/* ── 상대에게도 진짜 덱을 쥐여 준다 ───────────────────────
+   전에는 그때그때 아무 부적이나 뽑아 쓰는 시늉만 했다.
+   이제는 싸움을 시작할 때 열넉 장짜리 덱을 짜 주고,
+   그 덱을 섞어 위에서부터 낸다 — 다 쓰면 버린 것을 다시 섞는다.
+   그러니 「상대 덱 보기」가 거짓말이 아니게 된다.
+   ────────────────────────────────────────────────────────── */
+const COL_DECK_SIZE = 14;
+function colBuildDeck(foe) {
+  const deck = [];
+  let guard = 0;
+  while (deck.length < COL_DECK_SIZE && guard++ < 400) {
     const r = pick(foe.pools);
     const pool = GRADE_POOL[r] || POOL[r];
-    if (pool && pool.length) id = pick(pool);
+    if (!pool || !pool.length) continue;
+    const id = pick(pool);
+    /* 같은 부적은 두 장까지 */
+    if (deck.filter(c => c.id === id).length >= 2) continue;
+    deck.push({ id, up: rnd() < .25 });
   }
-  return id || pick(POOL.common);
+  while (deck.length < COL_DECK_SIZE) deck.push({ id: pick(POOL.common), up: false });
+  return shuffle(deck.slice());
 }
+/* 지금 싸우는 상대의 덱 상태 — { deck, draw, disc } */
+function colDeckState(foe) {
+  const b = G.b;
+  if (!b) return null;
+  if (!b.colDeck || b.colDeckId !== foe.id) {
+    b.colDeck = colBuildDeck(foe); b.colDeckId = foe.id;
+    b.colDraw = b.colDeck.slice(); b.colDisc = [];
+  }
+  return b;
+}
+/* 덱 위에서 한 장 — 다 쓰면 버린 것을 다시 섞는다 */
+function colDrawCard(foe) {
+  const b = colDeckState(foe);
+  if (!b) return { id: pick(POOL.common), up: false };
+  if (!b.colDraw.length) { b.colDraw = shuffle(b.colDisc.slice()); b.colDisc = []; }
+  if (!b.colDraw.length) b.colDraw = shuffle(b.colDeck.slice());
+  const c = b.colDraw.shift();
+  b.colDisc.push(c);
+  return c;
+}
+function colDrawId(foe) { return colDrawCard(foe).id; }
 /* 뽑은 부적을 「요괴의 수」로 옮긴다 */
 function colMoveFrom(foe) {
-  const id = colDrawId(foe);
-  const d = CARDS[id], up = rnd() < .25;
+  const drawn = colDrawCard(foe);
+  const id = drawn.id;
+  const d = CARDS[id], up = drawn.up;
   const c = mkCard(id, up), v = cval(c) || {};
   const k = foe.pow;
-  const m = { label: cname(c), cardId: id, t: 'attack', fx: 'slash2' };
+  const m = { label: cname(c), cardId: id, up: up, t: 'attack', fx: 'slash2' };
   if (typeof v.d === 'number' && v.d > 0) { m.d = Math.max(1, Math.round(v.d * k)); m.n = v.n || 1; }
   if (typeof v.b === 'number' && v.b > 0) m.blk = Math.round(v.b * k);
   if (d.type === 'power') { m.self = { str: Math.max(1, Math.round((v.x || 2) * .8)), dex: 1 }; m.blk = m.blk || 12; }
@@ -11879,6 +12374,57 @@ function colMoveFrom(foe) {
   else if (!m.d && !m.blk) m.t = 'debuff';
   m.fx = d.type === 'attack' ? (m.n > 1 ? 'claw' : 'slash2') : m.fx;
   return m;
+}
+/* 상대가 부적을 내는 모습 — 그 자리에 진짜 부적이 떠올랐다 사라진다 */
+function colPlayFx(e, m) {
+  const d = CARDS[m.cardId]; if (!d) return;
+  const host = $('#battle') || $('#app'); if (!host) return;
+  const n = el('div', 'colplay');
+  const card = cardNode({ uid: -90, id: m.cardId, up: !!m.up }, { tip: false });
+  n.appendChild(card);
+  const lab = el('div', 'cpl', `${e.n} 가 낸다`);
+  n.appendChild(lab);
+  const c = e.el ? centerOf(e.el) : { x: innerWidth * .62, y: innerHeight * .38 };
+  n.style.left = c.x + 'px'; n.style.top = (c.y - 30) + 'px';
+  host.appendChild(n);
+  SND.hiss({ dur: .18, vol: .07, freq: 2600, to: 700, filter: 'bandpass', q: 1.1 });
+  setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 320); }, 620);
+}
+/* 상대의 덱을 들여다본다 — 남은 것과 버린 것까지 */
+function showColoDeck(foe) {
+  const b = G.b;
+  const f = foe || (b && b.colDeckId ? colFoe(b.colDeckId) : null);
+  if (!f) { SND.err(); toast('겨루는 중이 아니다'); return; }
+  SND.ui();
+  const live = b && b.colDeck && b.colDeckId === f.id;
+  const deck = live ? b.colDeck : colBuildDeck(f);
+  const left = live ? b.colDraw.length : deck.length;
+  const used = live ? b.colDisc.length : 0;
+  const list = deck.map(c => mkCard(c.id, c.up));
+  /* 남은 것과 이미 낸 것을 갈라 보여 준다 */
+  const drawSet = live ? b.colDraw.map(c => c.id + (c.up ? '+' : '')) : null;
+  showCardList(list, `${f.n}의 덱 (${deck.length}장)`);
+  const p = $('#overlay') && $('#overlay').lastElementChild;
+  if (p) {
+    const head = p.querySelector('h2');
+    if (head) head.insertAdjacentHTML('afterend',
+      `<div class="hint">뽑을 것 <b style="color:#e2bd63">${left}</b>장 ·
+        이미 낸 것 <b style="color:#9a8d74">${used}</b>장
+        ${live ? '' : ' · <span style="color:#9a8d74">겨루기 전이라 짜임새만 보인다</span>'}<br>
+        <span style="color:#9a8d74">${f.n}은(는) 이 덱을 섞어 위에서부터 낸다 ·
+        한 차례에 ${f.draw || 1}장</span></div>`);
+    /* 이미 낸 것은 흐리게 */
+    if (drawSet) {
+      const seen = {};
+      [...p.querySelectorAll('.cardgrid > *')].forEach((el2, i) => {
+        const c = list[i]; if (!c) return;
+        const k = c.id + (c.up ? '+' : '');
+        seen[k] = (seen[k] || 0) + 1;
+        const have = drawSet.filter(x => x === k).length;
+        if (seen[k] > have) el2.style.opacity = '.34';
+      });
+    }
+  }
 }
 /* 겨루는 자들 — 요괴로 세우되, 수는 그때그때 뽑아 만든다 */
 for (const f of COL_FOES) {
@@ -11943,9 +12489,14 @@ function showColosseum() {
        <div class="tn">${f.n}${beat ? ' <em style="font-style:normal;font-size:11px;color:#8fe6d0">꺾었다</em>' : ''}</div>
        <div class="tv">${open ? f.say : '<span style="color:#8a7f68">앞사람을 꺾어야 나온다</span>'}</div>
        <div class="tnext">체력 <b>${f.hp}</b> · 한 차례에 <b>${f.draw}장</b> · 힘 ×${f.pow.toFixed(2)}
-         <br>덱: ${f.pools.map(r => GRADE[r].n).filter((x, j, a) => a.indexOf(x) === j).join(' · ')}</div>
-       <div class="tbuy">${open ? `겨룬다 (${COL_FEE}골드)` : '잠겨 있다'}</div>`);
-    if (open) t.onclick = () => startColo(f, null);
+         <br>덱: ${COL_DECK_SIZE}장 · ${f.pools.map(r => GRADE[r].n).filter((x, j, a) => a.indexOf(x) === j).join(' · ')}</div>
+       <div class="tbuy">${open ? `겨룬다 (${COL_FEE}골드)` : '잠겨 있다'}</div>
+       ${open ? '<div class="tpeek">덱 엿보기</div>' : ''}`);
+    if (open) {
+      t.onclick = () => startColo(f, null);
+      const pk = t.querySelector('.tpeek');
+      if (pk) pk.onclick = ev => { ev.stopPropagation(); showColoDeck(f); };
+    }
     grid.appendChild(t);
   });
   p.querySelector('#co_tour').onclick = () => {
@@ -13716,7 +14267,8 @@ function showSettings() {
   row('비기 자동 사용', '싸움이 길어지면 알아서 쓴다', () => OPT.autoSkill, v => { OPT.autoSkill = v; });
 
   head('안 내');
-  row('때맞춘 안내', '새 자리가 쓸모 있어지면 한 막에 한 번만 알려 준다 (급한 것만 창으로, 나머지는 구석 쪽지)',
+  row('때맞춘 안내', `새 자리가 쓸모 있어지면 알려 준다 · 제${GUIDE_UNTIL}막까지만 ·
+    한 막에 창 하나 + 구석 쪽지 ${GUIDE_SOFT_PER_ACT}장까지`,
     () => !OPT.noGuide, v => { OPT.noGuide = !v; if (!v) { const n = $('#gdnote'); if (n) n.remove(); } });
   row('상자 권유', '보스가 코앞인데 그 막에서 상자를 안 열었으면 한 번 일러 준다',
     () => !OPT.noBoxCall, v => { OPT.noBoxCall = !v; if (!v) boxCallHide(); });
