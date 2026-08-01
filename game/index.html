@@ -2165,6 +2165,32 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .gdbox .gdt p em{color:#e2bd63;font-style:normal}
 .gdbox .gdt p i{color:#8fd8c0;font-style:normal}
 .gdbox .gdw{display:block;margin-top:8px;color:#9a8d74;font-size:11.5px;line-height:1.6}
+/* 수행터 — 끝이 없으니 단수를 적어 준다 */
+.trtile .tn{display:flex;align-items:baseline;gap:7px;justify-content:center;flex-wrap:wrap}
+.trtile .trlv{font-style:normal;font-size:11px;padding:1px 7px;border-radius:6px;
+  color:#ffd76a;background:rgba(255,215,106,.14);border:1px solid rgba(255,215,106,.32)}
+.trtile .tbar{position:relative}
+.trtile .trover{position:absolute;right:-2px;top:-13px;font-size:9.5px;color:#8fe6d0;letter-spacing:.04em}
+/* ── 상점의 향초 칸 ───────────────────────────────────────── */
+.incrow .incitem{border-color:rgba(226,189,99,.34)}
+.incrow .incitem .ic{font-size:24px}
+.inchint{margin-top:9px;padding:9px 12px;border-radius:8px;font-size:11.5px;line-height:1.7;
+  color:#9a8d74;text-align:center;background:rgba(10,8,4,.42);border:1px dashed rgba(226,189,99,.26)}
+.inchint b{color:#e2bd63}
+/* ── 도감의 속성 고리 ─────────────────────────────────────── */
+.elemring{display:flex;flex-direction:column;gap:8px}
+.elrow{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;border-radius:10px;
+  background:rgba(23,19,15,.5);border:1px solid rgba(150,140,120,.22)}
+.elrow .elg{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
+  font-size:19px;color:#fff;background:var(--ec);box-shadow:0 0 14px var(--ec)}
+.elrow .elt{flex:1;min-width:0}
+.elrow .elt b{font-size:13.5px;font-weight:400;letter-spacing:.04em}
+.elrow .elt small{display:block;font-size:11.5px;color:#9a8d74;margin-top:2px}
+.elrow .elrel{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:11.5px;color:#8f846d}
+.elrow .elrel em{font-style:normal}
+.elrow .elrel b{font-size:11.5px}
+.dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
+.dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
 /* ── 대장간(冶) ───────────────────────────────────────────── */
 .school.forge{background:linear-gradient(165deg,#1e1208 0%,#3a2010 45%,#0e0704 100%)}
 .forge .schead{background:linear-gradient(rgba(10,5,2,.94),rgba(48,26,12,.86));border-bottom-color:rgba(226,120,42,.34)}
@@ -3568,26 +3594,36 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
       한 번에 3%, 최대 18%까지. 넘어선 막에서는 즉시 사라진다.
       숨기지 않고 지도와 수행터에 그대로 적어 둔다.
    ══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   수행터 — 끝이 없다
+   ──────────────────────────────────────────────────────────
+   뚜껑을 덮어 두었더니 다 채우고 나면 정진이 죽은 돈이 되었다.
+   이제 한도가 없다. 대신 오를수록 값이 가파르게 뛴다 —
+   판을 흔드는 것(기·유물·부적첩)일수록 더 가파르다.
+   ══════════════════════════════════════════════════════════ */
+const INF = Infinity;
+/* 값이 오르는 꼴: 밑값 × 곱^단 + 계단 × 단 */
+const trC = (base, mul, step) => l => Math.round(base * Math.pow(mul, l) + (step || 0) * l);
 const TRAIN = {
-  hp:      { n: '뿌리',     g: '根', max: 8, cost: l => 30 + l * 22,
+  hp:      { n: '뿌리',     g: '根', max: INF, cost: trC(30, 1.16, 10),
              d: l => `최대 체력 <b>+${l * 4}</b>`, one: '최대 체력 +4' },
-  atk:     { n: '무쇠손',   g: '拳', max: 6, cost: l => 45 + l * 34,
+  atk:     { n: '무쇠손',   g: '拳', max: INF, cost: trC(45, 1.24, 18),
              d: l => `주는 피해 <b>+${l * 3}%</b>`, one: '주는 피해 +3%' },
-  def:     { n: '굳은살',   g: '皮', max: 5, cost: l => 45 + l * 34,
+  def:     { n: '굳은살',   g: '皮', max: INF, cost: trC(45, 1.30, 20),
              d: l => `받는 피해 <b>-${l}</b>`, one: '받는 피해 -1' },
-  gold:    { n: '봇짐',     g: '囊', max: 5, cost: l => 22 + l * 16,
+  gold:    { n: '봇짐',     g: '囊', max: INF, cost: trC(22, 1.14, 8),
              d: l => `시작 골드 <b>+${l * 45}</b>`, one: '시작 골드 +45' },
-  card:    { n: '부적첩',   g: '帖', max: 3, cost: l => 60 + l * 60,
+  card:    { n: '부적첩',   g: '帖', max: INF, cost: trC(60, 1.42, 40),
              d: l => `시작할 때 <b>2등급 부적 ${l}장</b>을 얹는다`, one: '2등급 부적 한 장' },
-  potion:  { n: '약낭',     g: '囍', max: 2, cost: l => 70 + l * 70,
+  potion:  { n: '약낭',     g: '囍', max: INF, cost: trC(70, 1.46, 50),
              d: l => `물약 자리 <b>+${l}</b>`, one: '물약 자리 +1' },
-  relic:   { n: '연緣',     g: '緣', max: 2, cost: l => 90 + l * 110,
+  relic:   { n: '연緣',     g: '緣', max: INF, cost: trC(90, 1.55, 80),
              d: l => `시작할 때 <b>유물 ${l}개</b>를 지니고 나선다`, one: '시작 유물 하나' },
-  qi:      { n: '단전',     g: '丹', max: 1, cost: () => 320,
-             d: () => `기(氣)가 <b>1 늘어난다</b>`, one: '최대 기 +1' },
-  revive:  { n: '숨결',     g: '息', max: 3, cost: l => 40 + l * 40,
+  qi:      { n: '단전',     g: '丹', max: INF, cost: trC(320, 2.40, 0),
+             d: l => `기(氣)가 <b>${l} 늘어난다</b>`, one: '최대 기 +1' },
+  revive:  { n: '숨결',     g: '息', max: INF, cost: trC(40, 1.28, 22),
              d: l => `되살아날 때 체력 <b>+${l * 8}</b>`, one: '되살아날 때 체력 +8' },
-  mercy:   { n: '오기',     g: '傲', max: 3, cost: l => 55 + l * 55,
+  mercy:   { n: '오기',     g: '傲', max: INF, cost: trC(55, 1.34, 30),
              d: l => `약자 보정 한도 <b>+${l * 6}%</b>`, one: '약자 보정 한도 +6%' }
 };
 const TRAIN_KEYS = Object.keys(TRAIN);
@@ -4794,13 +4830,15 @@ function cdef(c) { return CARDS[c.id]; }
    한 단이 도로 내려간다 — 욕심을 부릴 자리다.
    ══════════════════════════════════════════════════════════ */
 const FORGE_MAX = 5;
-const FORGE_STEP = 0.22;                       /* 한 단마다 이만큼 — 다섯 단이면 곱절이 넘는다 */
+/* 단마다 몇 곱이 되는가 — 오르는 폭이 너무 작다는 말을 들어 크게 잡았다.
+   뒷단일수록 더 벌어진다. 다섯 단이면 곱절 반. */
+const FORGE_MUL = [1, 1.30, 1.65, 2.05, 2.55, 3.20];
 const FORGE_KEYS = { d: 1, b: 1, h: 1, p: 1 }; /* 이 값들만 오른다 — 타수와 값은 그대로 */
 const FORGE_ODDS = [0.90, 0.72, 0.52, 0.34, 0.19];       /* 0→1 … 4→5 */
 const FORGE_COST = [140, 240, 400, 680, 1150];
 const FORGE_BACK_FROM = 3;                     /* 이 단부터 실패하면 한 단 내려간다 */
 function fgLv(c) { return Math.max(0, Math.min(FORGE_MAX, c.fg || 0)); }
-function fgMul(c) { return 1 + fgLv(c) * FORGE_STEP; }
+function fgMul(c) { return FORGE_MUL[fgLv(c)] || 1; }
 function fgOdds(lv) { return FORGE_ODDS[lv] != null ? FORGE_ODDS[lv] : 0; }
 function fgCost(lv) { return FORGE_COST[lv] != null ? FORGE_COST[lv] : 9999; }
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
@@ -8630,6 +8668,23 @@ const GUIDES = [
       <i>스무 판</i>을 그 저주째로 견디면 값을 크게 쳐 준다. 이레에 한 번뿐이다.`,
     warn: () => '저주는 도중에 못 푼다. 각오하고 받는 편이 좋다.',
     go: () => openSchool(), goN: '서당으로' },
+  { id: 'forge', g: '冶', n: '대장간 — 부적을 두들겨 힘을 올린다',
+    when: r => r.gold >= FORGE_COST[0],
+    say: () => `터(場) 안에 <em>대장간</em>이 있다. 골드로 부적을 두들긴다.<br>
+      한 단 오를 때마다 <i>피해 · 방어도 · 회복 · 독</i>이 크게 뛴다 —
+      ${FORGE_MUL.map((m, i) => i ? `${i}단 ×${m.toFixed(2)}` : '').filter(Boolean).join(' · ')}.
+      최대 <em>${FORGE_MAX}단</em>, 이름 뒤에 별이 붙는다.<br>
+      다만 두들길수록 어렵다. <i>${FORGE_BACK_FROM}단부터는 실패하면 한 단 내려간다.</i>`,
+    warn: () => `${FORGE_ODDS.map((o, i) => `${i}→${i + 1}단 ${Math.round(o * 100)}%`).join(' · ')}`,
+    go: () => openForge(), goN: '대장간으로' },
+  { id: 'incense', soft: true, g: '香', n: '향초 — 요괴의 결을 찌른다',
+    when: r => r.act >= 2,
+    say: () => `요괴마다 <em>속성</em>이 있다 — 나무 · 불 · 물 · 어둠 · 사이코 · 요정 · 악귀.
+      이름표 옆 표식이 그것이다.<br>
+      <em>떠돌이 상점</em>에서 <i>향초</i>를 사서 피우면 ${INCENSE_BATTLES}판 동안 그 결이 손에 붙는다.
+      약점을 찌르면 피해 <i>×${ELEM_MUL}</i>, 그 요괴에게 맞을 때는 <i>×${ELEM_RESIST}</i>.`,
+    warn: () => '불 ← 물 ← 나무 ← 불 · 어둠 ← 요정 ← 악귀 ← 사이코 ← 어둠 · 자세한 것은 도감에서 본다',
+    go: () => showDex(), goN: '도감에서 본다' },
   { id: 'skin', soft: true, g: '皮', n: '스킨 — 부적에 옷을 입힌다',
     when: () => Object.keys((META.skins && META.skins.own) || {}).length > 0,
     say: () => `스킨을 하나 얻었다. <em>도감</em>에서 그 부적을 누르면 갈아입힐 수 있다.<br>
@@ -8756,8 +8811,9 @@ function showForge() {
         <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#ffb45a,#5a1c08);color:#1a0c04;border-color:#e2762a">冶</div>
           <div class="jsay" id="fg_say">"부적도 쇠와 같네.<br>두들길수록 매워지지."</div></div>
         <div class="note" id="fg_info"><p>
-          한 단 오를 때마다 <b style="color:#ffb45a">피해 · 방어도 · 회복 · 독</b>이
-          <b>${Math.round(FORGE_STEP * 100)}%</b>씩 오른다. 최대 <b>${FORGE_MAX}단</b>.<br><br>
+          <b style="color:#ffb45a">피해 · 방어도 · 회복 · 독</b>이 단마다 이만큼이 된다.<br>
+          ${FORGE_MUL.map((m, i) => i ? `${i}단 <b style="color:#ffd76a">×${m.toFixed(2)}</b>` : '').filter(Boolean).join(' · ')}<br>
+          <span style="color:#9a8d74">타수와 기 값은 그대로다.</span><br><br>
           <b style="color:#e2777a">다만 두들길수록 어렵다.</b><br>
           ${FORGE_ODDS.map((o, i) => `${i}→${i + 1}단 · <b>${Math.round(o * 100)}%</b> · ${FORGE_COST[i]}골드`).join('<br>')}
           <br><br><span style="color:#e2777a">${FORGE_BACK_FROM}단부터는 실패하면 한 단이 도로 내려간다.</span>
@@ -10492,13 +10548,16 @@ const ACT_SCALE = {
   17:{ hp: 3.54, dmg: 1.94 },
   18:{ hp: 3.70, dmg: 1.98 },
   19:{ hp: 3.87, dmg: 2.03 },
-  20:{ hp: 4.04, dmg: 2.07 },
-  /* 산 너머 — 벗을 찾아가는 다섯 막 */
-  21:{ hp: 4.22, dmg: 2.11 },
-  22:{ hp: 4.41, dmg: 2.16 },
-  23:{ hp: 4.61, dmg: 2.20 },
-  24:{ hp: 4.82, dmg: 2.25 },
-  25:{ hp: 5.04, dmg: 2.30 }
+  /* ── 제20막 뒤로 한 번 더 눕혔다 ───────────────────────
+     여기서부터 또 세다는 말을 들었다. 보스만이 아니라 잡졸까지 모두.
+     체력은 거의 눕혔고(막마다 1.3%), 피해는 제19막보다 도로 내렸다.
+     ────────────────────────────────────────────────────── */
+  20:{ hp: 3.90, dmg: 1.92 },
+  21:{ hp: 3.95, dmg: 1.93 },
+  22:{ hp: 4.00, dmg: 1.94 },
+  23:{ hp: 4.06, dmg: 1.95 },
+  24:{ hp: 4.12, dmg: 1.96 },
+  25:{ hp: 4.18, dmg: 1.97 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
@@ -12369,6 +12428,9 @@ function showShop() {
       <div class="shopgrid">
         <div class="shopcol"><h3>부 적</h3><div class="cardgrid" style="max-width:640px;max-height:min(46vh,340px)"></div></div>
         <div class="shopcol"><h3>물 건</h3><div class="rewardrow" style="width:330px;max-height:min(46vh,340px);overflow-y:auto"></div></div>
+        <div class="shopcol"><h3>향 초</h3><div class="rewardrow incrow" style="width:300px;max-height:min(46vh,340px);overflow-y:auto"></div>
+          <div class="inchint">피우면 <b>${INCENSE_BATTLES}판</b> 동안 그 결이 손에 붙는다<br>
+            약점을 찌르면 피해 <b>×${ELEM_MUL}</b> · 맞을 때 <b>×${ELEM_RESIST}</b></div></div>
       </div>
       <div style="display:flex;gap:10px;justify-content:center">
         <button class="brush-btn" id="sh_talk">말을 건다 (${TALK_MAX - talkedHere(run, m.id)}번 남음)</button>
@@ -12407,14 +12469,23 @@ function showShop() {
       () => { it.sold = true; gainRelic(it.id); }));
     sh.pots.forEach(it => addRow(POTIONS[it.id].g, POTIONS[it.id].n, POTIONS[it.id].d.replace(/<[^>]+>/g, ''), it.p, it.sold,
       () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; } it.sold = true; run.potions.push(it.id); }));
-    /* 향초 — 사면 그 자리에서 피운다 */
+    /* 향초 — 제 칸에 따로 놓는다. 사면 그 자리에서 피운다 */
+    const irow = p.querySelector('.incrow');
     (sh.inc || []).forEach(it => {
       const d = incenseById(it.id); if (!d) return;
       const beat = ELEM[ELEM_BEATS[d.elem]];
-      addRow(`<span style="color:${d.c}">${d.g}</span>`, d.n,
-        `${beat.n}(${beat.g}) 속성에게 피해 ×${ELEM_MUL} · ${INCENSE_BATTLES}판`,
-        it.p, it.sold, () => { it.sold = true; lightIncense(it.id); });
+      const lit = run.incense && run.incense.elem === d.elem;
+      const n = el('div', 'rewitem incitem' + (it.sold ? ' taken' : ''),
+        `<div class="ic" style="color:${d.c};text-shadow:0 0 12px ${d.c}">${d.g}</div>
+         <div class="t"><b style="color:${d.c}">${d.n}</b>
+           <small><b style="color:${beat.c}">${beat.n}(${beat.g})</b> 속성에게 피해 <b>×${ELEM_MUL}</b>
+             · ${INCENSE_BATTLES}판${lit ? ' · <b style="color:#ffd76a">지금 피우는 중</b>' : ''}</small></div>
+         <div style="color:${run.gold >= it.p && !it.sold ? '#9d7c2e' : '#b0553f'};font-size:14px;white-space:nowrap">${it.sold ? '샀다' : it.p + ' 골드'}</div>`);
+      bindTip(n, () => `<b style="color:${d.c}">${d.n}</b><br>${d.d}`);
+      if (!it.sold) n.onclick = () => buy(it.p, () => { it.sold = true; lightIncense(it.id); });
+      irow.appendChild(n);
     });
+    if (!(sh.inc || []).length) irow.appendChild(el('div', 'lbnone', '오늘은 향초가 없다'));
     addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, sh.purged,
       async () => {
         const c = await pickFromList(run.deck, '없앨 카드를 고르시오', { cancel: true });
@@ -12588,7 +12659,8 @@ function showTraining() {
       </div>
       <div class="scmain">
         <div class="schint">쌓은 정진으로 <b style="color:#ffd76a">영구히</b> 몸을 만든다 ·
-          여기서 올린 것은 <b>다음 모험부터</b> 붙는다</div>
+          여기서 올린 것은 <b>다음 모험부터</b> 붙는다 ·
+          <b style="color:#8fe6d0">한도는 없다</b> — 다만 오를수록 값이 가팔라진다</div>
         <div class="trgrid" id="tr_grid"></div>
       </div>
     </div>
@@ -12602,11 +12674,15 @@ function showTraining() {
     for (const k of TRAIN_KEYS) {
       const t = TRAIN[k], lv = trLv(k), maxed = trMaxed(k), cost = trCost(k);
       const can = !maxed && META.jp >= cost;
+      /* 끝이 없으므로 눈금은 열 칸씩 창을 옮겨 가며 보인다 */
+      const PIPS = 10;
+      const base = Math.floor(lv / PIPS) * PIPS;
+      const pips = Array.from({ length: PIPS }, (_, i) =>
+        `<i class="${base + i < lv ? 'on' : ''}"></i>`).join('');
       const n = el('div', 'trtile' + (maxed ? ' done' : '') + (can ? ' can' : ''),
         `<div class="tg">${t.g}</div>
-         <div class="tn">${t.n}</div>
-         <div class="tbar">${Array.from({ length: t.max }, (_, i) =>
-            `<i class="${i < lv ? 'on' : ''}"></i>`).join('')}</div>
+         <div class="tn">${t.n}<em class="trlv">${lv}단</em></div>
+         <div class="tbar">${pips}${base ? `<span class="trover">+${base}</span>` : ''}</div>
          <div class="tv">${lv ? t.d(lv) : '<span style="color:#8a7f68">아직 닦지 않았다</span>'}</div>
          <div class="tnext">${maxed ? '<b style="color:#8fe6d0">끝까지 닦았다</b>'
             : `다음 한 칸 — ${t.one}`}</div>
@@ -14457,6 +14533,17 @@ function runStatsHtml() {
     <div>걸린 시간<b>${mins}분</b></div>`;
 }
 const REVIVE_HP = 70;                        /* 갈림길로 돌아갈 때 채워 주는 체력 */
+/* ── 죽음의 값 ────────────────────────────────────────────
+   되살아나는 것이 공짜라 일부러 죽는 꼼수가 된다는 말을 들었다.
+   갈림길로 돌아갈 때마다 골드를 이만큼 문다.
+   가진 것이 그보다 적으면 있는 만큼만 — 빚은 지지 않는다.
+   ────────────────────────────────────────────────────────── */
+const REVIVE_COST = 120;
+function reviveToll(run) {
+  const pay = Math.min(REVIVE_COST, Math.max(0, run.gold || 0));
+  run.gold = Math.max(0, (run.gold || 0) - pay);
+  return pay;
+}
 const ELITE_GIVEUP = 3;                      /* 한 막의 엘리트에서 이만큼 무너지면 요괴로 바뀐다 */
 function gameOver() {
   battleWatch(false);
@@ -14497,7 +14584,10 @@ function gameOver() {
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
     ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
-      <b style="color:#d8a24a">체력이 ${REVIVE_HP} 로 채워진다</b></div>` : ''}`;
+      <b style="color:#d8a24a">체력이 ${REVIVE_HP} 로 채워진다</b><br>
+      <b style="color:#c2483e">다만 골드 ${REVIVE_COST}을 문다</b>
+      <span style="color:#6d6455">(가진 것이 그보다 적으면 있는 만큼만 · 빚은 지지 않는다 ·
+      지금 ${G.run.gold}골드)</span></div>` : ''}`;
   s.appendChild(d);
   const back = d.querySelector('#ov_back');
   if (back) back.onclick = () => {
@@ -14508,8 +14598,10 @@ function gameOver() {
     const rv = REVIVE_HP + ((G.run.train && G.run.train.revive) || 0);
     G.run.hp = Math.max(G.run.hp, Math.min(rv, G.run.maxHp));
     G.run.stats.revives++;
+    const paid = reviveToll(G.run);            /* 되살아나는 값 */
     SND.bell(); screenFlash('rgba(255,220,150,.4)', 620);
-    toast(`숨을 고르고 다시 선다 — 체력 ${G.run.hp}`);
+    toast(`숨을 고르고 다시 선다 — 체력 ${G.run.hp}` +
+      (paid ? ` · 골드 ${paid}을 잃었다` : ' · 낼 골드가 없었다'));
     saveRun(); showMap();
   };
   d.querySelector('#ov_train').onclick = () => showTraining();
@@ -15237,6 +15329,12 @@ function showDex() {
         <div class="dexgrid" id="dx_pt"></div></div>
       <div class="dexsec"><h3>비기 <i>${dexCount('skills', ALL_SKILLS.length)}</i>
         <em>기를 쓰지 않는 한 수 · 전투당 1회</em></h3><div class="dexgrid" id="dx_s"></div></div>
+      <div class="dexsec"><h3>속성 <i>${ELEM_KEYS.length}</i>
+        <em>요괴마다 결이 있다 · 약점을 찌르면 피해 ×${ELEM_MUL}</em></h3>
+        <div class="elemring" id="dx_el"></div></div>
+      <div class="dexsec"><h3>향초 <i>${INCENSE.length}</i>
+        <em>떠돌이 상인이 골드로 판다 · 피우면 ${INCENSE_BATTLES}판</em></h3>
+        <div class="dexgrid" id="dx_in"></div></div>
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
     </div>
     <button class="brush-btn" id="dx_close">닫기</button>`);
@@ -15250,6 +15348,39 @@ function showDex() {
         `<b>${d.n}</b> · ${GRADE[d.rar].n} ${TYPE_NAME[d.type]}<br>${d.txt(d.v(false), false)}
          <br><span style="color:#8f846d">눌러서 자세히 보기</span>`,
         'gd_' + d.rar, () => showCardDetail(id)));
+    }
+  }
+  /* 속성 — 무엇이 무엇을 무는지 한눈에 */
+  {
+    const box = p.querySelector('#dx_el');
+    for (const k of ELEM_KEYS) {
+      const d = ELEM[k], w = ELEM[ELEM_WEAK[k]], beat = ELEM[ELEM_BEATS[k]];
+      const cnt = Object.keys(ENEMIES).filter(id => elemOf(id) === k).length;
+      const t = el('div', 'elrow', `
+        <span class="elg" style="--ec:${d.c}">${d.g}</span>
+        <div class="elt"><b style="color:${d.c}">${d.n}</b><small>${d.d}</small>
+          <div class="elrel">
+            <em>약점 <b style="color:${w.c}">${w.g} ${w.n}</b></em>
+            <em>먹이 <b style="color:${beat.c}">${beat.g} ${beat.n}</b></em>
+            <em>요괴 <b>${cnt}</b>마리</em>
+          </div></div>`);
+      box.appendChild(t);
+    }
+  }
+  /* 향초 */
+  {
+    const box = p.querySelector('#dx_in');
+    for (const it of INCENSE) {
+      const beat = ELEM[ELEM_BEATS[it.elem]];
+      const lit = G.run && G.run.incense && G.run.incense.elem === it.elem;
+      const t = dexTile(true, it.g, it.n,
+        `<b style="color:${it.c}">${it.n}</b> · 향초<br>${it.d}<br>
+         <span style="color:#9a8d74">떠돌이 상인에게서 ${INCENSE_PRICE}골드쯤</span>` +
+        (lit ? '<br><b style="color:#ffd76a">지금 피우고 있다</b>' : ''));
+      t.style.setProperty('--gdc', it.c);
+      t.classList.add('inctile');
+      if (lit) t.classList.add('lit');
+      box.appendChild(t);
     }
   }
   const gr = p.querySelector('#dx_r');
