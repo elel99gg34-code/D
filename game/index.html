@@ -754,6 +754,20 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .cardgrid .card.pick:hover{transform:translateY(-10px) scale(1.05)!important;z-index:5}
 .cardgrid .card.dim{opacity:.4}
 .rewardrow{display:flex;gap:12px;flex-direction:column;width:420px;max-width:92vw}
+/* ── 스크롤 막대 — 어디서나 먹빛 가는 줄로 ────────────────
+   브라우저가 내어 주는 회색 칸이 못생겼다는 말을 들었다.
+   바탕과 화살표를 지우고 얇은 줄 하나만 남긴다. */
+*{scrollbar-width:thin;scrollbar-color:rgba(160,140,105,.5) transparent}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-thumb{background:rgba(160,140,105,.42);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(200,175,125,.7)}
+/* 밝은 종이 바탕(상점·보상) 위에서는 좀 더 짙게 */
+.rewardrow::-webkit-scrollbar-thumb,.cardgrid::-webkit-scrollbar-thumb{background:rgba(90,78,58,.36)}
+.rewardrow::-webkit-scrollbar-thumb:hover,.cardgrid::-webkit-scrollbar-thumb:hover{background:rgba(90,78,58,.62)}
+.rewardrow,.cardgrid{scrollbar-color:rgba(90,78,58,.36) transparent}
 .rewitem{display:flex;align-items:center;gap:14px;padding:13px 18px;background:rgba(240,232,212,.94);border-radius:3px;
   cursor:pointer;transition:.15s;border-left:4px solid var(--gold)}
 .rewitem:hover{transform:translateX(6px);background:#fff}
@@ -2172,8 +2186,19 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .trtile .tbar{position:relative}
 .trtile .trover{position:absolute;right:-2px;top:-13px;font-size:9.5px;color:#8fe6d0;letter-spacing:.04em}
 /* ── 상점의 향초 칸 ───────────────────────────────────────── */
-.incrow .incitem{border-color:rgba(226,189,99,.34)}
-.incrow .incitem .ic{font-size:24px}
+/* 향초 칸 — 글이 뭉개지지 않게 줄을 잡아 준다 */
+.incitem{border-left-color:var(--ic,#e2bd63)!important;align-items:center}
+.incitem .ic{font-size:21px;background:linear-gradient(150deg,#241d14,#0e0a06);
+  color:var(--ic,#e2bd63);box-shadow:inset 0 0 12px rgba(0,0,0,.6),0 0 10px color-mix(in srgb,var(--ic) 45%,transparent)}
+.incitem .t{min-width:0}
+.incitem .t b{color:#2c2419;font-size:14.5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.incitem .t b .nowlit{font-style:normal;font-size:10.5px;padding:1px 7px;border-radius:6px;
+  background:#7d1e22;color:#ffe6c8;letter-spacing:.04em}
+.incitem .t small{display:block;color:#6d6250;font-size:11.5px;line-height:1.5;margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.incitem .t small i{font-style:normal;font-weight:700}
+.incitem .pr{font-size:13.5px;white-space:nowrap;flex:none;color:#9d7c2e;letter-spacing:.02em}
+.incitem .pr.no{color:#b0553f}
 .inchint{margin-top:9px;padding:9px 12px;border-radius:8px;font-size:11.5px;line-height:1.7;
   color:#9a8d74;text-align:center;background:rgba(10,8,4,.42);border:1px dashed rgba(226,189,99,.26)}
 .inchint b{color:#e2bd63}
@@ -2191,6 +2216,42 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .elrow .elrel b{font-size:11.5px}
 .dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
 .dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
+/* ── 환생(還生) · 기권(棄權) ───────────────────────────────── */
+.reborn,.yieldbox{display:flex;gap:16px;align-items:flex-start;width:min(430px,88vw);text-align:left;
+  padding:16px;border-radius:12px;margin:6px 0 4px;
+  background:linear-gradient(155deg,rgba(34,24,44,.92),rgba(14,10,20,.92));
+  border:1px solid rgba(185,140,255,.32)}
+.yieldbox{background:linear-gradient(155deg,rgba(34,30,26,.92),rgba(14,12,10,.92));
+  border-color:rgba(160,150,140,.3)}
+.reborn .rbg,.yieldbox .ybg{width:56px;height:56px;border-radius:14px;flex:none;display:grid;place-items:center;
+  font-size:26px;color:#150c22;background:radial-gradient(circle at 34% 28%,#dcc8ff,#7b4bd8);
+  box-shadow:0 0 22px rgba(185,140,255,.45);animation:gdPulse 2.6s ease-in-out infinite}
+.yieldbox .ybg{color:#1a1613;background:radial-gradient(circle at 34% 28%,#d8d0c4,#6a6055);
+  box-shadow:0 0 16px rgba(180,170,155,.3)}
+.reborn .rbt,.yieldbox .ybt{flex:1;min-width:0}
+.reborn p,.yieldbox p{margin:0 0 11px;color:#c8bcd8;font-size:12.8px;line-height:1.75}
+.yieldbox p{color:#c9c1b4}
+.rbrow,.ybrow{display:flex;align-items:baseline;gap:8px;padding:5px 0;font-size:12.5px;
+  border-top:1px solid rgba(255,255,255,.07)}
+.rbrow span,.ybrow span{flex:1;color:#9a8db0}
+.ybrow span{color:#9a9080}
+.rbrow b,.ybrow b{color:#dcc8ff;font-size:14px;font-weight:400}
+.ybrow b{color:#e8d8b8}
+.rbrow em,.ybrow em{font-style:normal;font-size:11px;color:#6d6280}
+.ybrow em{color:#6d6558}
+.rbrow.bad b{color:#e2777a}
+.rbwarn,.ybwarn{display:block;margin-top:9px;font-size:11.5px;line-height:1.6;color:#8a7fa0}
+.ybwarn{color:#8a8172}
+.rebornfx{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none}
+.rebornfx b{font-size:clamp(38px,9vw,92px);letter-spacing:.3em;color:#fff;font-weight:400;
+  text-shadow:0 0 40px rgba(185,140,255,.95),0 0 90px rgba(150,90,240,.7);
+  animation:rbName 1.2s ease forwards}
+@keyframes rbName{0%{opacity:0;transform:scale(.6)}30%{opacity:1;transform:scale(1.06)}
+  70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.2)}}
+.rebornfx .rbring{position:absolute;width:120px;height:120px;border-radius:50%;
+  border:2px solid rgba(185,140,255,.85);animation:rbRing 1.2s ease-out forwards}
+.rebornfx .rbring.d2{animation-delay:.18s}.rebornfx .rbring.d3{animation-delay:.36s}
+@keyframes rbRing{from{opacity:.9;transform:scale(.3)}to{opacity:0;transform:scale(7)}}
 /* ── 대장간(冶) ───────────────────────────────────────────── */
 .school.forge{background:linear-gradient(165deg,#1e1208 0%,#3a2010 45%,#0e0704 100%)}
 .forge .schead{background:linear-gradient(rgba(10,5,2,.94),rgba(48,26,12,.86));border-bottom-color:rgba(226,120,42,.34)}
@@ -2226,15 +2287,45 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .incchip i{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-style:normal;
   font-size:11px;color:#150f08;background:var(--ec);box-shadow:0 0 9px var(--ec)}
 .incchip b{color:#ffd76a;font-weight:400}
-/* 약점을 찌를 때 뜨는 글자 */
+/* 약점을 찌를 때 뜨는 글자 — 그 결의 빛깔로 */
 .weakpop{position:fixed;transform:translate(-50%,-50%);z-index:45;pointer-events:none;
-  font-size:15px;letter-spacing:.1em;color:#fff;padding:3px 11px;border-radius:8px;
-  background:linear-gradient(140deg,rgba(255,150,60,.95),rgba(200,60,40,.9));
-  box-shadow:0 0 18px rgba(255,150,60,.7);animation:wkPop .8s ease forwards}
+  display:flex;align-items:center;gap:7px;
+  font-size:15px;letter-spacing:.1em;color:#fff;padding:4px 13px 4px 5px;border-radius:99px;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--ec,#ff963c) 88%,#fff),
+    color-mix(in srgb,var(--ec,#ff963c) 62%,#3a0c10));
+  box-shadow:0 0 22px var(--ec,#ff963c);animation:wkPop .86s ease forwards;
+  text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.weakpop i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+  font-size:12px;background:rgba(10,6,4,.62);color:#fff}
 @keyframes wkPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}
-  22%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
-  40%{transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-110%) scale(.95)}}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.16)}
+  38%{transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-115%) scale(.95)}}
+/* 약점을 맞은 요괴가 그 빛으로 물든다 */
+.unit.weakhit .body{animation:wkHit .6s ease}
+@keyframes wkHit{0%{filter:none}
+  18%{filter:brightness(1.9) saturate(1.6) drop-shadow(0 0 18px var(--ec))}
+  100%{filter:none}}
+/* 향초가 타는 동안 — 전투 화면 왼쪽에 향 하나가 서 있다 */
+.incfx{position:absolute;left:26px;bottom:250px;width:64px;height:130px;z-index:5;pointer-events:none}
+.incfx .icstick{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px}
+.incfx .icstick i{display:block;width:3px;height:44px;border-radius:2px;
+  background:linear-gradient(#3a2c1c,#241a10)}
+.incfx .icstick b{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  font-size:13px;font-weight:400;color:#120c06;background:var(--ec);
+  box-shadow:0 0 14px var(--ec);animation:icGlow 2.6s ease-in-out infinite}
+@keyframes icGlow{0%,100%{box-shadow:0 0 10px var(--ec)}50%{box-shadow:0 0 24px var(--ec)}}
+.incfx .icsmoke{position:absolute;left:50%;bottom:48px;width:7px;height:7px;border-radius:50%;
+  background:var(--ec);opacity:0;filter:blur(3px);animation:icSmoke 4.2s linear infinite}
+.incfx .icsmoke.s1{animation-delay:.85s}.incfx .icsmoke.s2{animation-delay:1.7s}
+.incfx .icsmoke.s3{animation-delay:2.55s}.incfx .icsmoke.s4{animation-delay:3.4s}
+@keyframes icSmoke{
+  0%{opacity:0;transform:translate(-50%,0) scale(.5)}
+  12%{opacity:.55}
+  50%{opacity:.34;transform:translate(-160%,-42px) scale(1.5)}
+  100%{opacity:0;transform:translate(60%,-92px) scale(2.6)}}
+@media (max-width:900px){ .incfx{display:none} }
 /* ── 겨루기(比武) ─────────────────────────────────────────── */
 .loginbox{display:flex;flex-direction:column;gap:11px;width:min(360px,88vw);margin:8px 0 2px}
 .lgrow{display:flex;align-items:center;gap:10px}
@@ -3553,6 +3644,7 @@ const OPT_DEF = {
   autoPotion: true,         /* 위급할 때 물약을 쓴다 */
   autoSkill: true,          /* 비기를 알아서 쓴다 */
   noGuide: false,           /* 때가 되면 나서는 안내를 끈다 */
+  noFriend: false,          /* 벗 단오의 훈수를 끈다 */
   noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
   turbo: false              /* VIP 2배속 */
 };
@@ -4842,13 +4934,19 @@ const FORGE_COST = [140, 240, 400, 680, 1150];
 const FORGE_BACK_FROM = 3;                     /* 이 단부터 실패하면 한 단 내려간다 */
 function fgLv(c) { return Math.max(0, Math.min(FORGE_MAX, c.fg || 0)); }
 function fgMul(c) { return FORGE_MUL[fgLv(c)] || 1; }
-function fgOdds(lv) { return FORGE_ODDS[lv] != null ? FORGE_ODDS[lv] : 0; }
+function fgOdds(lv) {
+  const base = FORGE_ODDS[lv] != null ? FORGE_ODDS[lv] : 0;
+  return base <= 0 ? 0 : Math.min(0.97, base + ASC.forge(ascLv()));   /* 환생할수록 손이 트인다 */
+}
 function fgCost(lv) { return FORGE_COST[lv] != null ? FORGE_COST[lv] : 9999; }
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
 function cval(c) {
   const v = cdef(c).v(c.up);
-  const lv = fgLv(c); if (!lv) return v;
-  const k = fgMul(c), out = {};
+  const lv = fgLv(c);
+  const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
+  const k = fgMul(c) * ASC.card(asc);           /* 벼림 × 환생 */
+  if (k === 1) return v;
+  const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
   return out;
 }
@@ -5516,8 +5614,8 @@ const ELEM_WEAK = { fire: 'water', water: 'wood', wood: 'fire',
 const ELEM_BEATS = {};
 for (const k in ELEM_WEAK) ELEM_BEATS[ELEM_WEAK[k]] = k;
 const ELEM_KEYS = Object.keys(ELEM);
-const ELEM_MUL = 1.55;                 /* 약점을 찌를 때 */
-const ELEM_RESIST = 0.75;              /* 제가 찌르는 결에게 맞을 때 */
+const ELEM_MUL = 1.75;                 /* 약점을 찌를 때 — 체감이 약하다 하여 올렸다 */
+const ELEM_RESIST = 0.70;              /* 제가 찌르는 결에게 맞을 때 */
 /* 이름·글자를 보고 결을 매긴다 — 손으로 하나하나 붙이지 않는다 */
 const ELEM_HINT = [
   ['fire',  /불|火|염|炎|燐|燒|타|화염|용암|숯|재|잿|烈|熱|번개|雷|뇌/],
@@ -5580,7 +5678,7 @@ function elemTip(id) {
      · 내가 찌르는 결의 요괴에게 맞을 때는 ×0.75 — 덜 아프다
    두 자루를 한꺼번에 피울 수는 없다. 새로 피우면 앞의 것은 꺼진다.
    ══════════════════════════════════════════════════════════ */
-const INCENSE_BATTLES = 3;
+const INCENSE_BATTLES = 4;             /* 한 자루로 이만큼 */
 const INCENSE_PRICE = 130;
 const INCENSE = ELEM_KEYS.map(k => ({
   id: 'inc_' + k, elem: k, n: `${ELEM[k].n}의 향초`, g: ELEM[k].g, c: ELEM[k].c,
@@ -5595,6 +5693,13 @@ function lightIncense(id) {
   SND.unlock(); screenFlash(rgba(it.c, .3), 560);
   FX.spark(innerWidth / 2, 110, 20, hexRGB(it.c));
   toast(`${it.n}을 피웠다 — ${INCENSE_BATTLES}판`);
+  /* 연기가 확 피어오른다 */
+  for (let i = 0; i < 3; i++) setTimeout(() => {
+    if (OPT.particles) FX.burst(innerWidth / 2, innerHeight * .62, 14, hexRGB(it.c), 3, 44, 5.2);
+  }, i * 140);
+  SND.hiss({ dur: .9, vol: .07, freq: 700, to: 2200, filter: 'bandpass', q: .8, rev: .6 });
+  SND.blip(320, { dur: .5, type: 'sine', vol: .05, to: 640, rev: .8 });
+  incenseFx(true);
   saveRun(); renderTop(); syncAll();
   return true;
 }
@@ -5602,7 +5707,7 @@ function lightIncense(id) {
 function incenseBurn() {
   const r = G.run; if (!r || !r.incense) return;
   r.incense.left--;
-  if (r.incense.left <= 0) { toast(`${ELEM[r.incense.elem].n}의 향초가 다 탔다`); r.incense = null; }
+  if (r.incense.left <= 0) { toast(`${ELEM[r.incense.elem].n}의 향초가 다 탔다`); r.incense = null; incenseFx(false); }
   saveRun(); renderTop();
 }
 function defEnemy(o) { ENEMIES[o.id] = o; return o; }
@@ -7483,13 +7588,38 @@ function atk(t, base, opts) {
 /* 약점을 찔렀을 때 그 자리에 한 번 뜬다 — 너무 잦지 않게 걸러 낸다 */
 let _wkAt = 0;
 function weakPop(t) {
-  const now = Date.now(); if (now - _wkAt < 260) return; _wkAt = now;
+  const now = Date.now(); if (now - _wkAt < 220) return; _wkAt = now;
   const p = t.el ? centerOf(t.el) : null; if (!p) return;
-  const n = el('div', 'weakpop', '약 점!');
+  const mine = myElem(), d = ELEM[mine] || { c: '#ff9a3a', g: '!' };
+  const n = el('div', 'weakpop', `<i style="--ec:${d.c}">${d.g}</i>약 점!`);
+  n.style.setProperty('--ec', d.c);
   n.style.left = p.x + 'px'; n.style.top = (p.y - 46) + 'px';
   $('#app').appendChild(n);
-  setTimeout(() => n.remove(), 820);
+  setTimeout(() => n.remove(), 860);
+  /* 그 결의 빛깔로 터진다 */
+  if (OPT.particles) {
+    FX.burst(p.x, p.y, 22, hexRGB(d.c), 5, 52, 4.2);
+    FX.spark(p.x, p.y, 12, hexRGB(d.c));
+  }
+  if (t.el) { t.el.classList.remove('weakhit'); void t.el.offsetWidth;
+    t.el.style.setProperty('--ec', d.c); t.el.classList.add('weakhit');
+    setTimeout(() => t.el && t.el.classList.remove('weakhit'), 620); }
+  screenFlash(rgba(d.c, .16), 240);
   SND.blip(1320, { dur: .1, type: 'square', vol: .05, to: 1760 });
+  SND.hiss({ dur: .2, vol: .06, freq: 3200, to: 800, filter: 'bandpass', q: 1.4 });
+}
+/* ── 향초가 타는 동안 — 화면 한켠에 연기가 오른다 ─────────── */
+function incenseFx(on) {
+  const old = $('#incfx'); if (old) old.remove();
+  const r = G.run;
+  if (!on || !r || !r.incense || r.incense.left <= 0 || !G.b) return;
+  const d = ELEM[r.incense.elem]; if (!d) return;
+  const n = el('div', 'incfx', `<div class="icstick"><i></i><b>${d.g}</b></div>
+    ${[0,1,2,3,4].map(i => `<span class="icsmoke s${i}"></span>`).join('')}`);
+  n.id = 'incfx';
+  n.style.setProperty('--ec', d.c);
+  const host = $('#battle') || $('#app');
+  host.appendChild(n);
 }
 function pure(t, amt) {                       // 방어도·보정 무시 직접 피해
   if (!t || t.hp <= 0 && !t.isPlayer) return;
@@ -7570,6 +7700,8 @@ function startBattle(enemyIds, kind, opts) {
      특별 상자를 까지 않으면 못 넘을 지경이라는 말을 들었다.
      보스만 따로 눅인다. 엘리트는 그보다 덜.
      ────────────────────────────────────────────────── */
+  const am = ASC.foe(run.asc || 0);                   /* 환생할수록 요괴도 사나워진다 */
+  if (am !== 1) sc = { hp: sc.hp * am, dmg: sc.dmg * am };
   const ls = lateSoft(run.act, kind);                 /* 뒷막일수록 한 번 더 눅인다 */
   const fs = finalSoft(run.act, kind);                /* 마지막 봉우리는 또 한 번 */
   if (kind === 'boss') sc = { hp: sc.hp * BOSS_SOFT.hp * ls.hp * fs.hp, dmg: sc.dmg * BOSS_SOFT.dmg * ls.dmg * fs.dmg };
@@ -7577,7 +7709,7 @@ function startBattle(enemyIds, kind, opts) {
   const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
-    let hp = ri(d.hp[0], d.hp[1]) + Math.floor((run.asc || 0) * 0.08 * d.hp[0]);
+    let hp = ri(d.hp[0], d.hp[1]);
     hp = Math.round(hp * boost);
     if (opts.hpMul) hp = Math.round(hp * opts.hpMul);
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
@@ -8273,14 +8405,19 @@ function autoToggle() { AUTO.on ? autoStop('직접 하기로 했다') : autoStar
 /* 화면 어디서나 보이는 표식 + 전투 단추 */
 function syncAuto() {
   let chip = $('#autochip');
-  if (!chip) {
-    chip = el('div', '', '<i></i><span>자동 플레이</span><b>멈춤</b>');
-    chip.id = 'autochip';
-    chip.onclick = () => autoStop('직접 하기로 했다');
-    $('#app').appendChild(chip);
+  /* 멈춘 뒤에도 딱지가 어쩌다 비쳤다 —
+     꺼졌으면 아예 지워 버린다. 남겨 두면 언젠가 다시 보인다. */
+  if (!AUTO.on) { if (chip) chip.remove(); }
+  else {
+    if (!chip) {
+      chip = el('div', '', '<i></i><span>자동 플레이</span><b>멈춤</b>');
+      chip.id = 'autochip';
+      chip.onclick = () => autoStop('직접 하기로 했다');
+      $('#app').appendChild(chip);
+    }
+    chip.classList.add('on');
+    chip.querySelector('b').textContent = OPT.autoScope === 'run' ? '지도까지' : '전투만';
   }
-  chip.classList.toggle('on', AUTO.on);
-  chip.querySelector('b').textContent = OPT.autoScope === 'run' ? '지도까지' : '전투만';
   const btn = $('#autobtn');
   if (btn) {
     const ok = autoOk();
@@ -8289,7 +8426,8 @@ function syncAuto() {
     btn.innerHTML = !ok ? '자동 <b>鎖</b>' : AUTO.on ? '자동 <b>■</b>' : '자동 <b>▶</b>';
   }
 }
-/* 제1막을 넘어서면 열린다 (VIP는 사자마자) */
+/* 제8막을 넘어서면 열린다 (VIP는 사자마자) — 손에 익기 전에는 스스로 두게 한다 */
+const AUTO_ACT = 8;
 function unlockAuto(quiet) {
   if (META.autoUnlocked) return false;
   META.autoUnlocked = true; saveMeta(); syncAuto();
@@ -8350,7 +8488,8 @@ function renderTop() {
   let t = $('#topbar');
   if (!run) { if (t) t.remove(); _topSig = ''; return; }
   if (!t) { t = el('div', ''); t.id = 'topbar'; $('#app').appendChild(t); _topSig = ''; }
-  setBg(run.act);
+  /* 콜로세움·대전투장은 제 배경이 따로 있다 */
+  setBg(G.b && (G.b.kind === 'colo' || G.b.kind === 'arena') ? G.b.kind : run.act);
 
   const sig = run.relics.map(r => r.id).join(',') + '|' + run.potions.join(',') + '|' + run.potSlots;
   if (sig !== _topSig) {
@@ -8581,7 +8720,7 @@ function showPlaces() {
   add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
-  add('colo', '鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 이기면 ${COL_PRIZE}`,
+  add('colo', '鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 상금 ${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}`,
     G.b ? 'lock' : 'hot', () => openColosseum());
   add('forge', '冶', '대장간', `부적을 두들겨 힘을 올린다 · 최대 ${FORGE_MAX}단`,
     G.b ? 'lock' : 'hot', () => openForge());
@@ -8652,7 +8791,7 @@ const GUIDES = [
     go: () => openFuse(), goN: '조합을 본다' },
   { id: 'auto', soft: true, g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
     when: () => autoOk(),
-    say: () => `제1막을 넘어서서 <em>자동 플레이</em>가 열렸다.
+    say: () => `제${AUTO_ACT}막을 넘어서서 <em>자동 플레이</em>가 열렸다.
       전투 화면 오른쪽 아래 「자동」 단추, 또는 메뉴에서 켠다.<br>
       설정에서 <i>지도까지</i>로 바꾸면 지도도 스스로 걷는다.`,
     warn: () => '빠르기도 설정에서 고른다 — 느긋 · 보통 · 빠름.',
@@ -8666,7 +8805,7 @@ const GUIDES = [
     go: () => openPets(), goN: '팻 우리로' },
   { id: 'colo', soft: true, g: '鬪', n: '콜로세움 — 심심하면 겨룬다',
     when: r => r.act >= 3 && r.gold >= COL_FEE,
-    say: () => `터(場) 안에 <em>콜로세움</em>이 있다. 참가비 <i>${COL_FEE}골드</i>, 이기면 <i>${COL_PRIZE}골드</i>.<br>
+    say: () => `터(場) 안에 <em>콜로세움</em>이 있다. 참가비 <i>${COL_FEE}골드</i>, 상금은 상대에 따라 <i>${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}골드</i>.<br>
       끝까지 올라가 <em>무마두</em>를 넘으면 ?급 부적 <b>무마두의 숨결</b>이 나온다. 아주 어렵다.`,
     warn: () => '져도 참가비만 잃는다 — 모험은 그대로다.',
     go: () => openColosseum(), goN: '겨루러 간다' },
@@ -8785,6 +8924,16 @@ function boxNudge() {
   if (run._boxMute || OPT.noBoxCall) return;
   if (run._boxAct === run.act) return;                 /* 이 막에서 이미 열었다 */
   if (run._boxCall === run.act) return;                /* 이 막에서 이미 권했다 */
+  /* 권할 까닭이 있어야 권한다 —
+     ① 값을 못 치르면 헛말이다
+     ② 이미 여러 번 열어 본 사람에게는 두 번 이를 것 없다
+     ③ 덱이 이미 두꺼우면 굳이 */
+  if (!BOX_FREE) {
+    const cheapest = BANNERS.filter(b2 => !b2.vip).reduce((a, b2) => Math.min(a, b2.price), 1e9);
+    if ((run.dia || 0) < cheapest) return;
+  }
+  if ((run.summons || 0) >= 6) return;
+  if (run.deck.length >= 28) return;
   const rows = run.map ? run.map.nodes.reduce((a, n) => Math.max(a, n.r), 0) + 1 : 12;
   if (run.floor < rows - 3) return;                    /* 보스가 보일 때만 */
   run._boxCall = run.act;
@@ -8971,6 +9120,7 @@ function renderBattle() {
   }
   cardEls = {};
   buildPlayer();
+  incenseFx(true);                              /* 향초가 타고 있으면 연기가 오른다 */
   if (G.b) { G.b.pet = makePet(); buildPet(); }
   buildEnemies();
   battleWatch(true);
@@ -9644,6 +9794,7 @@ const FRIEND = { n: '단오', g: '午', col: '#3a6a8a' };
 const FRIEND_UNTIL = 3;                       /* 이 막까지 훈수를 둔다 */
 const FRIEND_LOST = 6;                        /* 이 막에서 부적이 끊긴다 */
 function friendOn() {
+  if (OPT.noFriend) return false;              /* 설정에서 껐다 */
   const r = G.run;
   return !!r && !r.friendLost && r.act <= FRIEND_UNTIL;
 }
@@ -10605,17 +10756,39 @@ const FINAL_SOFT = { hp: 0.80, dmg: 0.84 };
 function finalSoft(act, kind) {
   return (act >= LAST_ACT && kind === 'boss') ? FINAL_SOFT : { hp: 1, dmg: 1 };
 }
-function newRun(asc) {
+/* ══════════════════════════════════════════════════════════
+   환생(還生) — 더 오를 데가 없을 때
+   ──────────────────────────────────────────────────────────
+   길이 막히면 「환생하시겠습니까」를 묻는다. 받아들이면
+   제1막으로 돌아가되 <손에 쥔 부적은 하나도 잃지 않는다.>
+   갈 때마다 골드와 다이아가 더 붙고, 대장간의 손이 트이고,
+   부적이 세진다. 그만큼 요괴도 조금씩 사나워진다.
+   ══════════════════════════════════════════════════════════ */
+const ASC = {
+  gold:  a => 1 + a * 0.25,        /* 줍는 골드 */
+  dia:   a => 1 + a * 0.30,        /* 줍는 다이아 */
+  card:  a => 1 + a * 0.07,        /* 부적의 힘 */
+  forge: a => Math.min(0.30, a * 0.05),  /* 대장간 성공률에 더해지는 몫 */
+  foe:   a => 1 + a * 0.06,        /* 요괴의 체력·피해 */
+  hpCut: a => a * 3                /* 시작 체력에서 깎이는 몫 */
+};
+const ascLv = () => (G.run && G.run.asc) || 0;
+function newRun(asc, keepDeck) {
   G.cp = null;
   _rng = mulberry32((Math.random() * 4294967295) >>> 0);
-  const deck = [];
-  for (let i = 0; i < 5; i++) deck.push(mkCard('strike'));
-  for (let i = 0; i < 4; i++) deck.push(mkCard('defend'));
-  deck.push(mkCard('ward'));
+  let deck = [];
+  if (keepDeck && keepDeck.length) {
+    /* 환생 — 쌓아 온 부적을 그대로 안고 간다 (벼림 단까지) */
+    deck = keepDeck.map(c => { const n = mkCard(c.id, c.up); n.fg = c.fg || 0; return n; });
+  } else {
+    for (let i = 0; i < 5; i++) deck.push(mkCard('strike'));
+    for (let i = 0; i < 4; i++) deck.push(mkCard('defend'));
+    deck.push(mkCard('ward'));
+  }
   ['strike', 'defend', 'ward'].forEach(id => dexAdd('cards', id));
   G.run = {
     asc: asc || 0,
-    maxHp: 80 - (asc || 0) * 3, hp: 80 - (asc || 0) * 3,
+    maxHp: 80 - ASC.hpCut(asc || 0), hp: 80 - ASC.hpCut(asc || 0),
     gold: 99, dia: 0, summons: 0, banner: 3, maxEnergy: 4, potSlots: 3,
     deck, relics: [], potions: [],
     act: 1, floor: 0, rewardCut: 0,
@@ -10700,7 +10873,7 @@ function showMap() {
   const run = G.run;
   migrateMap(run);
   const m = run.map;
-  if (run.act >= 2 && !META.autoUnlocked) { META.autoUnlocked = true; saveMeta(); syncAuto(); }
+  if (run.act > AUTO_ACT && !META.autoUnlocked) { META.autoUnlocked = true; saveMeta(); syncAuto(); }
   /* 갈 곳이 하나도 없다 — 보스 칸에서 끊긴 저장이다 */
   if (!availableNodes().length) {
     const last = m.nodes[m.nodes.length - 1];
@@ -10971,8 +11144,9 @@ function showRewards(kind) {
     sparkles(innerWidth / 2, innerHeight * .42, 16, '#ffe0a0', 180);
   }
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
-  const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * vm);
-  const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * vm);
+  const gm = vm * ASC.gold(ascLv()), dm = vm * ASC.dia(ascLv());   /* 환생할수록 두둑하다 */
+  const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
+  const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * dm);
   const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
   const items = [{ ic: '金', t: broke ? '골드 (재가 된다)' : `골드 ${gold}`,
       s: broke ? '손에 닿자마자 흩어진다' : '주머니가 무거워진다',
@@ -11015,8 +11189,8 @@ function showRewards(kind) {
       s: '제9막을 넘어선 값 · 가장 높은 자리의 유물이다',
       act: async () => { await grantFusedRelics(2); return true; } });
   }
-  if (kind === 'boss' && run.act === 1 && !autoOk()) {
-    items.push({ ic: '自', t: '자동 플레이 개방', s: '제1막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다',
+  if (kind === 'boss' && run.act === AUTO_ACT && !autoOk()) {
+    items.push({ ic: '自', t: '자동 플레이 개방', s: `제${AUTO_ACT}막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다`,
       cls: 'gift', act: () => { unlockAuto(); } });
   }
   if (kind === 'boss') {
@@ -11088,13 +11262,16 @@ function showRewards(kind) {
   const leftItems = () => [...p.querySelectorAll('.rewardrow .rewitem:not(.taken)')].length;
   const doLeave = () => {
     /* 그냥 지나쳤더라도 제1막을 넘었으면 자동 플레이는 준다 */
-    if (kind === 'boss' && run.act === 1) unlockAuto(true);
+    if (kind === 'boss' && run.act === AUTO_ACT) unlockAuto(true);
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
+      /* 한 막에 보스가 둘일 수 있다 — 실제로 꺾은 쪽의 이야기를 꺼낸다.
+         그러지 않으면 염라를 잡고 흑룡이 말하는 일이 생긴다. */
       const key = act >= LAST_ACT
         ? (STORY['end_' + G.run.bossPick] ? 'end_' + G.run.bossPick : 'end_taecho')
-        : ('act' + act);
+        : (STORY['act' + act + '_' + G.run.bossPick] ? 'act' + act + '_' + G.run.bossPick
+                                                     : 'act' + act);
       showStory(STORY[key] ? key : null).then(() => { if (act >= LAST_ACT) victory(); else nextAct(); });
     }
     else showMap();
@@ -12491,11 +12668,11 @@ function showShop() {
       const beat = ELEM[ELEM_BEATS[d.elem]];
       const lit = run.incense && run.incense.elem === d.elem;
       const n = el('div', 'rewitem incitem' + (it.sold ? ' taken' : ''),
-        `<div class="ic" style="color:${d.c};text-shadow:0 0 12px ${d.c}">${d.g}</div>
-         <div class="t"><b style="color:${d.c}">${d.n}</b>
-           <small><b style="color:${beat.c}">${beat.n}(${beat.g})</b> 속성에게 피해 <b>×${ELEM_MUL}</b>
-             · ${INCENSE_BATTLES}판${lit ? ' · <b style="color:#ffd76a">지금 피우는 중</b>' : ''}</small></div>
-         <div style="color:${run.gold >= it.p && !it.sold ? '#9d7c2e' : '#b0553f'};font-size:14px;white-space:nowrap">${it.sold ? '샀다' : it.p + ' 골드'}</div>`);
+        `<div class="ic" style="--ic:${d.c}">${d.g}</div>
+         <div class="t"><b>${d.n}${lit ? ' <em class="nowlit">피우는 중</em>' : ''}</b>
+           <small><i style="color:${beat.c}">${beat.n}(${beat.g})</i>에게 피해 ×${ELEM_MUL}
+             · ${INCENSE_BATTLES}판</small></div>
+         <div class="pr${run.gold >= it.p && !it.sold ? '' : ' no'}">${it.sold ? '샀다' : it.p + ' 골드'}</div>`);
       bindTip(n, () => `<b style="color:${d.c}">${d.n}</b><br>${d.d}`);
       if (!it.sold) n.onclick = () => buy(it.p, () => { it.sold = true; lightIncense(it.id); });
       irow.appendChild(n);
@@ -12936,7 +13113,13 @@ function openShrine() {
    참가비 100골드, 이기면 1000골드. 무마두를 꺾으면 ?급 「무마두의 숨결」.
    여기서 쓰러져도 모험은 끝나지 않는다. 체력은 들어오기 전으로.
    ══════════════════════════════════════════════════════════ */
-const COL_FEE = 100, COL_PRIZE = 1000;
+const COL_FEE = 100;
+/* 상대의 층(tier)에 따라 상금이 다르다.
+   허수아비를 잡고 천 냥을 받는 것은 말이 안 된다는 말을 들었다.
+   무마두(4층)를 넘어야 비로소 천 냥이다. */
+const COL_PRIZE_BY_TIER = { 1: 160, 2: 340, 3: 620, 4: 1000 };
+const colPrize = foe => COL_PRIZE_BY_TIER[foe && foe.tier] || 160;
+const COL_PRIZE = 1000;                      /* 명단에 적어 두는 최고 상금 */
 const COL_FOES = [
   { id: 'col_straw', n: '허수아비 검객', g: '藁', col: '#8a7a4a', hp: 140, pow: 0.85, draw: 1, tier: 1,
     pools: ['common', 'uncommon'],
@@ -13108,7 +13291,7 @@ function showColosseum() {
           여기서 쓰러져도 <b>모험은 끝나지 않는다.</b>
           체력은 들어오기 전으로 돌아간다.<br><br>
           참가비 <b style="color:#e8c86a">${COL_FEE}골드</b> ·
-          이기면 <b style="color:#e8c86a">${COL_PRIZE}골드</b><br>
+          상금 <b style="color:#e8c86a">${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}골드</b> (상대에 따라)<br>
           <b style="color:#ff8a9a">무마두</b>를 꺾으면 ?급 <b>무마두의 숨결</b>.<br><br>
           앞사람을 꺾어야 다음 사람이 나온다.
         </p></div>
@@ -13136,7 +13319,7 @@ function showColosseum() {
        <div class="tv">${open ? f.say : '<span style="color:#8a7f68">앞사람을 꺾어야 나온다</span>'}</div>
        <div class="tnext">체력 <b>${f.hp}</b> · 한 차례에 <b>${f.draw}장</b> · 힘 ×${f.pow.toFixed(2)}
          <br>덱: ${COL_DECK_SIZE}장 · ${f.pools.map(r => GRADE[r].n).filter((x, j, a) => a.indexOf(x) === j).join(' · ')}</div>
-       <div class="tbuy">${open ? `겨룬다 (${COL_FEE}골드)` : '잠겨 있다'}</div>
+       <div class="tbuy">${open ? `겨룬다 (${COL_FEE}골드) · 상금 ${colPrize(f)}` : '잠겨 있다'}</div>
        ${open ? '<div class="tpeek">덱 엿보기</div>' : ''}`);
     if (open) {
       t.onclick = () => startColo(f, null);
@@ -13181,7 +13364,8 @@ function coloWin() {
   if (P()) run.hp = P().hp;
   G.b = null;
   let extra = '';
-  if (tour == null) { run.gold += COL_PRIZE; extra = `골드 <b style="color:#e8c86a">+${COL_PRIZE}</b>`; }
+  if (tour == null) { const pz = colPrize(foe); run.gold += pz;
+    extra = `골드 <b style="color:#e8c86a">+${pz}</b>`; }
   if (foe.boss && CARDS.mumadu) {
     run.deck.push(mkCard('mumadu', false)); run.stats.cards++; dexAdd('cards', 'mumadu');
     extra += `${extra ? '<br>' : ''}<b style="color:#b98cff">?급 · 무마두의 숨결</b>을 얻었다`;
@@ -14311,8 +14495,17 @@ const STORY = {
     { scene: 'tiger', who: '산군', t: '"천 년을 지켰는데,\n위에서 부르는 소리를 견디지 못했다.\n\n……너는 견딜 수 있겠느냐."' },
     { scene: 'gate', t: '봉우리 너머,\n구천으로 오르는 벼랑이 드러났다.\n\n문은 아직 열려 있다.' }
   ],
-  act3: [
+  /* 제3막에는 보스가 둘이다 — 꺾은 쪽에 따라 다른 말이 나온다 */
+  act3_blackdragon: [
     { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 내가 아니다."\n\n"나도 이 아래에서 쫓겨 올라온 것뿐."' },
+    { scene: 'gate', t: '비늘이 흩어진 자리에 또 다른 문이 있었다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
+  ],
+  act3_yeomra: [
+    { scene: 'gate', who: '염라', t: '"명부에 네 이름이 없구나."\n\n붓끝이 허공에서 멎는다.' },
+    { scene: 'gate', who: '염라', t: '"위에서 무언가가 명부를 찢고 있다.\n나는 그것을 막으러 내려왔을 뿐이다."\n\n"…네가 대신 가겠느냐."' },
+    { scene: 'gate', t: '염라가 붓을 내려놓자\n벼랑 끝에 또 다른 문이 열렸다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
+  ],
+  act3: [
     { scene: 'gate', t: '벼랑 끝에 또 다른 문이 있었다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
   ],
   act4: [
@@ -14560,6 +14753,55 @@ function reviveToll(run) {
   return pay;
 }
 const ELITE_GIVEUP = 3;                      /* 한 막의 엘리트에서 이만큼 무너지면 요괴로 바뀐다 */
+/* ── 기권(棄權) — 이 싸움만 내려놓는다 ────────────────────
+   보스 앞에서는 물러설 수 없다. 그 밖의 싸움은
+   체력 얼마와 골드를 내고 갈림길 앞으로 돌아간다.
+   ────────────────────────────────────────────────────────── */
+const YIELD_HP = 0.18;                        /* 최대 체력의 이만큼을 잃는다 */
+const YIELD_GOLD = 60;
+function askYield() {
+  const b = G.b, run = G.run;
+  if (!b || b.over || !run) { SND.err(); toast('싸우는 중이 아니다'); return; }
+  if (b.kind === 'boss') { SND.err(); toast('보스 앞에서는 물러설 수 없다'); return; }
+  if (b.kind === 'arena' || b.kind === 'colo') { SND.err(); toast('여기서는 기권할 수 없다 — 나가기를 쓰시오'); return; }
+  const hp = Math.max(1, Math.round(run.maxHp * YIELD_HP));
+  const gold = Math.min(YIELD_GOLD, run.gold);
+  const p = modal(`<h2>기 권 (棄 權)</h2>
+    <div class="hint">이 싸움을 내려놓고 갈림길 앞으로 물러선다</div>
+    <div class="yieldbox">
+      <div class="ybg">棄</div>
+      <div class="ybt">
+        <p>싸움에서 물러서면 <b>이 칸의 보상은 없다.</b> 그래도 목숨은 건진다.</p>
+        <div class="ybrow"><span>잃는 체력</span><b>${hp}</b><em>(${run.hp} → ${Math.max(1, run.hp - hp)})</em></div>
+        <div class="ybrow"><span>잃는 골드</span><b>${gold}</b><em>(${run.gold} → ${run.gold - gold})</em></div>
+        <span class="ybwarn">체력이 그보다 적으면 1만 남는다 · 보스 앞에서는 물러설 수 없다</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="brush-btn red" id="yl_go" style="flex:1">물러선다</button>
+      <button class="brush-btn ghost" id="yl_x" style="color:#e9dfc9;border-color:#8a7f68">계속 싸운다</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#yl_go').onclick = () => { closeOverlay(); doYield(hp, gold); };
+  p.querySelector('#yl_x').onclick = closeTop;
+}
+function doYield(hp, gold) {
+  const b = G.b, run = G.run; if (!b || !run) return;
+  autoStop('기권했다');
+  battleWatch(false);
+  b.over = true;
+  run.hp = Math.max(1, run.hp - hp);
+  run.gold = Math.max(0, run.gold - gold);
+  run.inBattle = false; run.inElite = false;
+  /* 밟기 전으로 되돌린다 — 그 칸은 지나간 것으로 치되 보상은 없다 */
+  fire('battleEnd', 'flee');
+  incenseBurn();
+  G.b = null;
+  SND.err(); screenFlash('rgba(120,110,130,.34)', 520);
+  flash('기 권');
+  toast(`물러섰다 — 체력 ${hp}, 골드 ${gold}를 잃었다`);
+  saveRun(); renderTop(); showMap();
+}
 function gameOver() {
   battleWatch(false);
   /* 엘리트 앞에서 무너진 것을 세어 둔다 */
@@ -14595,9 +14837,12 @@ function gameOver() {
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
+      <button class="brush-btn" id="ov_reborn" style="border-color:#b98cff;color:#dcc8ff">환생한다 (${(G.run.asc || 0) + 1}회)</button>
       <button class="brush-btn gold" id="ov_train">수행터로 간다 (精 ${META.jp})</button>
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
+    <div style="color:#8f7fb0;font-size:12.5px;margin-top:2px">환생하면 <b style="color:#dcc8ff">쌓은 부적을 그대로 안고</b>
+      제1막부터 다시 오른다</div>
     ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
       <b style="color:#d8a24a">체력이 ${REVIVE_HP} 로 채워진다</b><br>
       <b style="color:#c2483e">다만 골드 ${REVIVE_COST}을 문다</b>
@@ -14619,8 +14864,64 @@ function gameOver() {
       (paid ? ` · 골드 ${paid}을 잃었다` : ' · 낼 골드가 없었다'));
     saveRun(); showMap();
   };
+  const rb = d.querySelector('#ov_reborn');
+  if (rb) rb.onclick = () => askReborn(() => { d.remove(); });
   d.querySelector('#ov_train').onclick = () => showTraining();
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
+}
+/* ── 환생을 묻는다 ───────────────────────────────────────── */
+function askReborn(after) {
+  const run = G.run; if (!run) return;
+  const n = (run.asc || 0) + 1;
+  const keep = run.deck.length;
+  const pct = x => Math.round((x - 1) * 100);
+  const p = modal(`<h2>환 생 (還 生)</h2>
+    <div class="hint">더 오를 데가 없다면, 넋을 태워 처음으로 돌아간다</div>
+    <div class="reborn">
+      <div class="rbg">還</div>
+      <div class="rbt">
+        <p><b>제1막부터 다시 오른다.</b> 다만 <b style="color:#dcc8ff">쌓아 온 부적 ${keep}장은 하나도 잃지 않는다</b> —
+          벼린 단(段)까지 그대로다.</p>
+        <div class="rbrow"><span>줍는 골드</span><b>×${ASC.gold(n).toFixed(2)}</b><em>(지금 ×${ASC.gold(n-1).toFixed(2)})</em></div>
+        <div class="rbrow"><span>줍는 다이아</span><b>×${ASC.dia(n).toFixed(2)}</b><em>(지금 ×${ASC.dia(n-1).toFixed(2)})</em></div>
+        <div class="rbrow"><span>부적의 힘</span><b>×${ASC.card(n).toFixed(2)}</b><em>(지금 ×${ASC.card(n-1).toFixed(2)})</em></div>
+        <div class="rbrow"><span>대장간의 손</span><b>+${Math.round(ASC.forge(n) * 100)}%</b><em>(지금 +${Math.round(ASC.forge(n-1) * 100)}%)</em></div>
+        <div class="rbrow bad"><span>요괴의 힘</span><b>×${ASC.foe(n).toFixed(2)}</b><em>(지금 ×${ASC.foe(n-1).toFixed(2)})</em></div>
+        <div class="rbrow bad"><span>시작 체력</span><b>${80 - ASC.hpCut(n)}</b><em>(지금 ${80 - ASC.hpCut(n-1)})</em></div>
+        <span class="rbwarn">유물 · 물약 · 비기 · 골드는 두고 간다. 도감과 정진은 그대로 남는다.</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="brush-btn red" id="rb_go" style="flex:1">환생한다 (${n}회째)</button>
+      <button class="brush-btn ghost" id="rb_x" style="color:#e9dfc9;border-color:#8a7f68">아직은</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#rb_go').onclick = () => {
+    const deck = run.deck.map(c => ({ id: c.id, up: !!c.up, fg: c.fg || 0 }));
+    closeOverlay();
+    if (after) after();
+    doReborn(n, deck);
+  };
+  p.querySelector('#rb_x').onclick = closeTop;
+}
+async function doReborn(n, deck) {
+  autoStop();
+  SND.gong(); SND.unlock();
+  /* 넋이 타는 연출 */
+  const v = el('div', 'rebornfx', '<div class="rbring"></div><div class="rbring d2"></div><div class="rbring d3"></div><b>還 生</b>');
+  $('#app').appendChild(v);
+  screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(150,90,240,.75))', 1100);
+  if (OPT.particles) for (let i = 0; i < 5; i++)
+    setTimeout(() => FX.burst(innerWidth / 2, innerHeight / 2, 26, '190,140,255', 6, 90, 5), i * 130);
+  await wait(1200);
+  v.remove();
+  clearSave();
+  newRun(n, deck);
+  META.asc = Math.max(META.asc || 0, n); saveMeta();
+  document.querySelectorAll('.story').forEach(x => x.remove());
+  toast(`${n}회째 환생 — 부적 ${deck.length}장을 안고 제1막으로`);
+  flash(`還 生 ${n}`);
+  saveRun(); renderTop(); showMap();
 }
 function victory() {
   autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
@@ -14649,7 +14950,7 @@ function victory() {
 function showMenu() {
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
-      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (1막 클리어)'}</button>
+      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : `자동 플레이 (제${AUTO_ACT}막 클리어)`}</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
@@ -14658,6 +14959,7 @@ function showMenu() {
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
       ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
+      ${G.b && !G.b.over ? '<button class="brush-btn red" id="m_yield">이 싸움을 기권한다</button>' : ''}
       <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
@@ -14677,6 +14979,8 @@ function showMenu() {
   p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
   p.querySelector('#m_dex').onclick = showDex;
   p.querySelector('#m_help').onclick = () => showHelp();
+  const yb = p.querySelector('#m_yield');
+  if (yb) yb.onclick = () => { closeTop(); askYield(); };
   p.querySelector('#m_quit').onclick = () => { autoStop(); if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
   p.querySelector('#m_close').onclick = closeTop;
 }
@@ -15216,6 +15520,8 @@ function showSettings() {
     () => !OPT.noGuide, v => { OPT.noGuide = !v; if (!v) { const n = $('#gdnote'); if (n) n.remove(); } });
   row('상자 권유', '보스가 코앞인데 그 막에서 상자를 안 열었으면 한 번 일러 준다',
     () => !OPT.noBoxCall, v => { OPT.noBoxCall = !v; if (!v) boxCallHide(); });
+  row('벗의 훈수', `${FRIEND.n}이(가) 싸움 중에 한마디씩 거든다 (제${FRIEND_UNTIL}막까지)`,
+    () => !OPT.noFriend, v => { OPT.noFriend = !v; if (!v) { const n = $('#friendsay'); if (n) n.remove(); } });
   {
     const done = Object.keys(META.guided || {}).length;
     const n = el('div', 'optrow',
@@ -15919,6 +16225,8 @@ function setBg(act) {
   const k = 'a' + act;
   if (_bgKey === k) return;
   _bgKey = k;
+  /* ── 겨루는 마당 — 막과는 다른 자리다 ─────────────────── */
+  if (act === 'colo' || act === 'arena') { setArenaBg(act); return; }
   const a = Math.min(LAST_ACT, Math.max(1, act || 1));
   const PAL = {
     1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
@@ -15973,6 +16281,49 @@ function setBg(act) {
      </g>
      ${bgNearArt(a)}
    </svg>`;
+}
+/* ══════════════════════════════════════════════════════════
+   겨루는 마당의 배경
+   ──────────────────────────────────────────────────────────
+   콜로세움 — 모래를 깐 둥근 마당. 관중석이 층층이 둘러섰고
+     횃불이 타고, 기둥 사이로 밤하늘이 보인다.
+   대전투장 — 쇠와 피의 자리. 붉은 등이 줄지어 걸리고
+     바닥에는 지난 싸움의 자국이 남아 있다.
+   ══════════════════════════════════════════════════════════ */
+function setArenaBg(kind) {
+  const colo = kind === 'colo';
+  const sky = colo ? '#2a2018 0%,#3c2c1c 46%,#140d07 100%'
+                   : '#2a1218 0%,#3e1620 46%,#12060a 100%';
+  const stone = colo ? '#6a5232' : '#5a2a30';
+  const dark  = colo ? '#3a2c1a' : '#2e1218';
+  const lamp  = colo ? '#ffb45a' : '#ff5a6a';
+  const seatRow = (y, h, op) => `<path d="M0,${y} L1000,${y} L1000,${y + h} L0,${y + h} Z"
+      fill="${stone}" opacity="${op}"/>
+    ${rep(24, i => `<rect x="${i * 42 + 4}" y="${y}" width="3" height="${h}" fill="#0a0604" opacity=".3"/>`)}`;
+  $('#bg').innerHTML = `<div class="sky" style="background:linear-gradient(${sky})"></div>
+    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+      <defs><radialGradient id="argl"><stop offset="0%" stop-color="${lamp}" stop-opacity=".38"/>
+        <stop offset="100%" stop-color="${lamp}" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="500" cy="470" rx="620" ry="220" fill="url(#argl)"/>
+      ${seatRow(96, 46, .34)}${seatRow(150, 52, .44)}${seatRow(208, 58, .54)}
+      <g opacity=".5" fill="${dark}">${rep(30, i =>
+        `<ellipse cx="${18 + i * 34}" cy="${118 + (i % 3) * 56}" rx="9" ry="12"/>`)}</g>
+      <g opacity=".42" fill="${dark}">${rep(9, i =>
+        `<rect x="${6 + i * 118}" y="80" width="26" height="196" rx="4"/>`)}</g>
+      <g>${rep(9, i => bgLantern(19 + i * 118, 292, 9, lamp, .9))}</g>
+      <path d="M0,300 L1000,300 L1000,318 L0,318 Z" fill="${stone}" opacity=".8"/>
+      <ellipse cx="500" cy="470" rx="560" ry="180" fill="${colo ? '#c8ab78' : '#8a6a58'}" opacity=".9"/>
+      <ellipse cx="500" cy="470" rx="470" ry="146" fill="${colo ? '#d8bd8e' : '#9a7866'}" opacity=".85"/>
+      <ellipse cx="500" cy="470" rx="470" ry="146" fill="none"
+        stroke="${colo ? '#8a6a3a' : '#6a3a34'}" stroke-width="3" opacity=".6"/>
+      <g opacity="${colo ? '.14' : '.3'}" fill="${colo ? '#8a6a3a' : '#5a1a20'}">${rep(22, i =>
+        `<ellipse cx="${140 + (i * 173) % 730}" cy="${400 + (i * 97) % 150}"
+          rx="${9 + (i % 4) * 7}" ry="${4 + (i % 3) * 3}"/>`)}</g>
+      <g opacity=".55" fill="#0a0604">
+        <path d="M0,556 L1000,556 L1000,600 L0,600 Z"/>
+        ${rep(7, i => `<ellipse cx="${70 + i * 150}" cy="562" rx="34" ry="16"/>`)}</g>
+      ${rep(3, i => bgLantern(120 + i * 380, 540, 13, lamp, .8))}
+    </svg>`;
 }
 /* ── 배경 그림 ─────────────────────────────────────────────
    같은 산 세 겹 위아래로, 막마다 다른 것들을 얹는다.
