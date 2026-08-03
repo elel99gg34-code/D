@@ -2216,6 +2216,48 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .elrow .elrel b{font-size:11.5px}
 .dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
 .dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
+/* ── 전투 기록(記) ────────────────────────────────────────── */
+#blogbtn{position:absolute;right:20px;bottom:20px;z-index:12;width:38px;height:38px;border-radius:10px;
+  font-size:16px;cursor:pointer;color:#d8c8a8;
+  background:linear-gradient(150deg,rgba(34,28,19,.94),rgba(18,14,10,.94));
+  border:1px solid rgba(200,175,125,.34);transition:.15s}
+#blogbtn:hover{background:rgba(200,175,125,.26);color:#fff6e2}
+#blogbtn.fresh{box-shadow:0 0 0 2px rgba(226,189,99,.4),0 0 14px rgba(226,189,99,.4)}
+.bltally{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 10px}
+.bltally>div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 13px;border-radius:9px;
+  background:rgba(10,8,4,.5);border:1px solid rgba(200,175,125,.2);min-width:74px}
+.bltally span{font-size:10.5px;color:#9a8d74;letter-spacing:.05em}
+.bltally b{font-size:16px;font-weight:400}
+.blogbody{width:min(460px,90vw);height:min(46vh,340px);overflow-y:auto;text-align:left;
+  padding:10px 12px;border-radius:10px;background:rgba(10,8,4,.5);
+  border:1px solid rgba(200,175,125,.2)}
+.blnone{color:#8a7f68;font-size:12.5px;text-align:center;padding:24px 0}
+.blturn{margin:9px 0 5px;font-size:10.5px;letter-spacing:.18em;color:#9a8d74;text-align:center;
+  border-top:1px solid rgba(200,175,125,.16);padding-top:7px}
+.blturn:first-child{margin-top:0;border-top:none;padding-top:0}
+.blrow{display:flex;align-items:center;gap:9px;padding:3px 4px;font-size:12px;line-height:1.5;color:#c3b79c}
+.blrow i{width:18px;height:18px;border-radius:5px;flex:none;display:grid;place-items:center;font-style:normal;
+  font-size:10px;background:rgba(200,175,125,.14);color:#c9b993}
+.blrow span{flex:1;min-width:0;word-break:keep-all}
+.blrow b{font-weight:400;font-size:13px;flex:none}
+.blrow.bl-hit b{color:#e2777a}.blrow.bl-hit i{background:rgba(226,119,122,.2);color:#f0a8a4}
+.blrow.bl-hurt b{color:#d2564e}.blrow.bl-hurt i{background:rgba(210,86,78,.2);color:#f0a8a4}
+.blrow.bl-block b{color:#7fb0e0}.blrow.bl-block i{background:rgba(127,176,224,.18);color:#a8ccf0}
+.blrow.bl-heal b{color:#7fe6b0}.blrow.bl-heal i{background:rgba(127,230,176,.18);color:#a8f0cc}
+.blrow.bl-card i{background:rgba(226,189,99,.2);color:#ffd76a}
+.blrow.bl-turn{color:#9a8d74;font-size:11px}
+/* ── 팻의 진화 ────────────────────────────────────────────── */
+.petbar{display:flex;gap:5px;justify-content:center;margin:5px 0 2px}
+.petbar i{width:22px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}
+.petbar i.on{background:linear-gradient(90deg,#8fe6d0,#4fbfa8);box-shadow:0 0 8px rgba(143,230,208,.6)}
+.pettile.evo1 .tg{box-shadow:0 0 0 2px rgba(143,230,208,.45)}
+.pettile.evo2 .tg{box-shadow:0 0 0 2px rgba(143,230,208,.7),0 0 14px rgba(143,230,208,.4)}
+.pettile.evo3 .tg{box-shadow:0 0 0 3px #8fe6d0,0 0 22px rgba(143,230,208,.7)}
+.unit.petevo .body{animation:petEvo 1.05s ease}
+@keyframes petEvo{0%{filter:none}
+  25%{filter:brightness(2.2) saturate(1.5) drop-shadow(0 0 26px #8fe6d0)}
+  60%{filter:brightness(1.3) drop-shadow(0 0 14px #8fe6d0)}
+  100%{filter:none}}
 /* ── 환생(還生) · 기권(棄權) ───────────────────────────────── */
 .reborn,.yieldbox{display:flex;gap:16px;align-items:flex-start;width:min(430px,88vw);text-align:left;
   padding:16px;border-radius:12px;margin:6px 0 4px;
@@ -7577,6 +7619,7 @@ function atk(t, base, opts) {
   const dmg = calcAtk(P(), t, base);
   const r = applyDamage(t, dmg, opts.pierce);
   G.b.attacked = true;
+  logAdd('hit', `${G.b.curCard ? cname(G.b.curCard) : '일격'} → ${t.n}`, r.hp + r.blocked);
   if (elemMul(t) > 1) weakPop(t);                 /* 약점을 찔렀다 */
   impact(opts.fx || (G.b.curCard ? CARD_FX[G.b.curCard.id] : null) || 'slash', t);
   hitFx(t, r.hp, r.blocked, true);
@@ -7628,6 +7671,7 @@ function pure(t, amt) {                       // 방어도·보정 무시 직접
 }
 function blk(n, raw) {
   const p = P(); if (n <= 0) return;
+  logAdd('block', G.b && G.b.curCard ? cname(G.b.curCard) : '방어', n);
   let v = Math.max(0, raw ? n : n + (p.s.dex || 0));
   if (curseTag('weakblock')) v = Math.floor(v * .65);         /* 저주 — 방패가 삭는다 */
   p.block += v; SND.block(); blockFx(p, v); syncPlayer();
@@ -7644,7 +7688,7 @@ function st(ent, key, n) {
 function heal(n) { const p = P(); const b4 = p.hp;
   n = Math.max(1, Math.round(n * sorrowHeal()));            /* 슬픔의 원한 — 상처가 더디 아문다 */
   p.hp = Math.min(p.maxHp, p.hp + n); G.run.hp = p.hp;
-  if (p.hp > b4) { healFx(p, p.hp - b4); SND.heal(); } syncPlayer(); }
+  if (p.hp > b4) { healFx(p, p.hp - b4); SND.heal(); logAdd('heal', '숨을 돌렸다', p.hp - b4); } syncPlayer(); }
 function eheal(e, n) { const b4 = e.hp; e.hp = Math.min(e.maxHp, e.hp + n); if (e.hp > b4) healFx(e, e.hp - b4); }
 function lose(n) { const p = P(); applyDamage(p, n, true); hitFx(p, n, 0, false); syncPlayer(); }
 function healRun(n) { if (!G.run) return;
@@ -7791,6 +7835,7 @@ function pickIntent(e) {
 async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
+  logAdd('turn', '그대의 차례', 0);
   b.freeTurn = false; b.halved = false; b.softened = false; b.cheap = 0;
   if (b.pet) b.pet.used = false;
   const p = P();
@@ -7873,6 +7918,7 @@ async function playCard(card, target) {
   }
   b.curCard = null;
   b.played++;
+  logAdd('card', cname(card), 0);
   chainFx(b.played);                         /* 한 턴에 이어 낼수록 소리가 올라간다 */
   fire('cardPlay', card);
 
@@ -7968,6 +8014,7 @@ async function doMove(e, m) {
   if (!m) return;
   const b = G.b;
   if (!b || b.over) return;                 /* 도중에 전투가 사라졌을 수 있다 */
+  logAdd('hurt', `${e.n} — ${m.label}`, 0);
   /* 콜로세움 — 상대가 내는 부적을 눈에 보이게 띄운다 */
   if (m.cardId && CARDS[m.cardId]) { colPlayFx(e, m); await wait(360); }
   else if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
@@ -7977,6 +8024,8 @@ async function doMove(e, m) {
       if (!G.b || b.over || !P() || P().hp <= 0) return;
       const dmg = calcAtk(e, P(), m.d);
       const r = applyDamage(P(), dmg);
+      if (r.hp) logAdd('hurt', `${e.n}에게 맞았다`, r.hp);
+      if (r.blocked) logAdd('block', '막아 냈다', r.blocked);
       impact(m.fx || 'claw', P());
       hitFx(P(), r.hp, r.blocked, true);
       petShare(r.hp);                        /* 팻이 곁에서 함께 맞는다 */
@@ -9110,6 +9159,13 @@ function renderBattle() {
      </div>
      <div id="turnlabel"></div>
    </div>`;
+  /* 전투 기록 — 오른쪽 아래 작은 단추 */
+  {
+    const lb = el('button', '', '記');
+    lb.id = 'blogbtn'; lb.title = '전투 기록';
+    lb.onclick = () => showBattleLog();
+    s.querySelector('#battle').appendChild(lb);
+  }
   /* 콜로세움 — 상대 덱을 언제든 들여다볼 수 있다 */
   if (G.b && G.b.kind === 'colo') {
     const btn = el('button', '', '상대 덱 <b></b>');
@@ -9885,6 +9941,9 @@ const PET_HP_GAP = 30;                        /* 주인보다 이만큼 낮다 *
 /* 팻은 거들 뿐이다 — 요괴 때의 힘에서 이만큼만 낸다.
    0.60 은 주인보다 세 보였다. 곁에서 거드는 정도로 내렸다. */
 const PET_DMG = 0.35;
+/* 진화한 팻은 그만큼 더 낸다 */
+function petMul() { const pt = G.b && G.b.pet; return PET_DMG * ((pt && pt.evoMul) || 1); }
+function petMulOf(id) { return PET_DMG * (1 + petEvo(id) * PET_EVO_DMG); }
 const PET_REVIVE_ELITES = 5;                  /* 되살리는 데 드는 엘리트 수 */
 /* 힘이 중간쯤인 것들만 — 잡졸도 보스도 아니다 */
 const PET_POOL = Object.keys(ENEMIES).filter(id => {
@@ -9914,8 +9973,85 @@ function petLoot() {
        `쓰는 수: ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}`,
     take: () => gainPet(id, true) };
 }
+/* ══════════════════════════════════════════════════════════
+   팻의 진화(化) — 엘리트를 잡아 먹이면 자란다
+   ──────────────────────────────────────────────────────────
+   뽑고 나면 끝이라 심심하다는 말을 들었다.
+   엘리트를 잡을 때마다 그 팻이 「기(氣)」를 먹는다.
+   열 마리를 먹으면 한 단(段) 오른다 — 최대 세 단.
+   · 한 단마다 체력이 오르고, 손이 매워지고, 수가 하나 더 붙는다.
+   · 세 단에 이르면 그 요괴보다 한 자리 높은 것으로 「탈바꿈」한다.
+   죽어 있는 팻은 먹지 못한다 — 되살리는 것이 먼저다.
+   ══════════════════════════════════════════════════════════ */
+const PET_EVO_NEED = 10;          /* 한 단에 드는 엘리트 수 */
+const PET_EVO_MAX = 3;
+const PET_EVO_HP = 14;            /* 단마다 체력이 이만큼 더 붙는다 */
+const PET_EVO_DMG = 0.16;         /* 단마다 손이 이만큼 매워진다 */
+const PET_EVO_NAME = ['', '자란', '억센', '탈바꿈한'];
+function petRec(id) { return (META.pets && META.pets.own && META.pets.own[id]) || null; }
+function petEvo(id) { const r = petRec(id); return r ? Math.min(PET_EVO_MAX, r.evo || 0) : 0; }
+function petFed(id) { const r = petRec(id); return r ? (r.fed || 0) : 0; }
+function petEvoName(id) {
+  const d = ENEMIES[id]; if (!d) return '';
+  const lv = petEvo(id);
+  return (lv ? PET_EVO_NAME[lv] + ' ' : '') + d.n;
+}
+/* 세 단에 오른 팻이 탈바꿈할 자리 — 제가 나온 곳보다 한 뼘 위 */
+function petMorphTo(id) {
+  const d = ENEMIES[id]; if (!d) return null;
+  const mine = (d.hp[0] + d.hp[1]) / 2;
+  const cand = PET_POOL.filter(x => {
+    const o = ENEMIES[x];
+    const hp = (o.hp[0] + o.hp[1]) / 2;
+    return hp > mine * 1.35 && elemOf(x) === elemOf(id);
+  }).sort((a, b) => (ENEMIES[a].hp[0] + ENEMIES[a].hp[1]) - (ENEMIES[b].hp[0] + ENEMIES[b].hp[1]));
+  return cand.length ? cand[0] : null;
+}
+/* 엘리트 하나를 먹인다 */
+function petFeed() {
+  const id = activePet(); if (!id) return;
+  const r = petRec(id); if (!r || r.dead) return;         /* 죽은 것은 못 먹는다 */
+  if ((r.evo || 0) >= PET_EVO_MAX) return;
+  r.fed = (r.fed || 0) + 1;
+  if (r.fed < PET_EVO_NEED) {
+    saveMeta();
+    /* 한 마리마다 알리면 시끄럽다 — 절반을 넘겼을 때와 코앞일 때만 */
+    if (r.fed === Math.ceil(PET_EVO_NEED / 2) || r.fed === PET_EVO_NEED - 1)
+      toast(`${petEvoName(id)} — 기를 먹었다 (${r.fed}/${PET_EVO_NEED})`);
+    return;
+  }
+  r.fed = 0; r.evo = (r.evo || 0) + 1;
+  saveMeta();
+  petEvoFx(id, r.evo);
+  /* 세 단 — 탈바꿈 */
+  if (r.evo >= PET_EVO_MAX) {
+    const to = petMorphTo(id);
+    if (to && !META.pets.own[to]) {
+      META.pets.own[to] = { dead: false, need: 0, at: Date.now(), evo: PET_EVO_MAX, fed: 0, from: id };
+      META.pets.active = to;
+      delete META.pets.own[id];
+      saveMeta();
+      setTimeout(() => {
+        flash(`${ENEMIES[id].n} → ${ENEMIES[to].n}`);
+        toast(`탈바꿈 — ${ENEMIES[id].n}이(가) ${ENEMIES[to].n}이 되었다`);
+        if (G.b) { G.b.pet = makePet(); buildPet(); syncPet(); }
+      }, 700);
+      return;
+    }
+  }
+  if (G.b) { G.b.pet = makePet(); buildPet(); syncPet(); }
+}
+function petEvoFx(id, lv) {
+  SND.unlock(); SND.gong();
+  screenFlash('rgba(160,255,210,.4)', 800);
+  if (OPT.particles) FX.burst(innerWidth / 2, innerHeight * .55, 32, '140,240,200', 6, 70, 4.6);
+  flash(`${petEvoName(id)} — ${lv}단`);
+  const pt = G.b && G.b.pet;
+  if (pt && pt.el) { pt.el.classList.remove('petevo'); void pt.el.offsetWidth; pt.el.classList.add('petevo');
+    setTimeout(() => pt.el && pt.el.classList.remove('petevo'), 1100); }
+}
 function gainPet(id, silent) {
-  META.pets.own[id] = { dead: false, need: 0, at: Date.now() };
+  META.pets.own[id] = { dead: false, need: 0, at: Date.now(), evo: 0, fed: 0 };
   if (!META.pets.active) META.pets.active = id;
   saveMeta();
   if (!silent) { SND.unlock(); toast(`팻 — ${ENEMIES[id].n}`); }
@@ -9930,8 +10066,10 @@ function makePet() {
   const id = activePet();
   if (!id || !petAlive() || !G.run) return null;
   const d = ENEMIES[id];
-  const mx = Math.max(10, G.run.maxHp - PET_HP_GAP);
-  return { id, def: d, n: d.n, g: d.g, col: d.col, isPet: true,
+  const lv = petEvo(id);
+  const mx = Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP);
+  return { id, def: d, n: petEvoName(id), g: d.g, col: d.col, isPet: true, evo: lv,
+    evoMul: 1 + lv * PET_EVO_DMG,
     hp: mx, maxHp: mx, block: 0, s: {}, el: null, used: false };
 }
 function PET() { return G.b && G.b.pet && G.b.pet.hp > 0 ? G.b.pet : null; }
@@ -9963,7 +10101,8 @@ function petFalls() {
 function petEliteTick() {
   const id = activePet(); if (!id) return;
   const rec = META.pets.own[id];
-  if (!rec || !rec.dead) return;
+  if (!rec) return;
+  if (!rec.dead) { petFeed(); return; }       /* 살아 있으면 기를 먹는다 */
   rec.need = Math.max(0, (rec.need || 0) - 1);
   if (rec.need <= 0) {
     rec.dead = false; rec.need = 0; saveMeta();
@@ -9991,17 +10130,17 @@ async function petUse(key) {
       if (!G.b || b.over) break;
       const a2 = alive(); if (!a2.length) break;
       const tt = a2.indexOf(t) >= 0 ? t : a2[0];
-      const dmg = Math.max(1, Math.round(calcAtk(pt, tt, m.d) * PET_DMG));
+      const dmg = Math.max(1, Math.round(calcAtk(pt, tt, m.d) * petMul()));
       const r = applyDamage(tt, dmg);
       impact(m.fx || 'claw', tt);
       hitFx(tt, r.hp, r.blocked, true);
       await wait(m.n > 1 ? 170 : 130);
     }
   }
-  if (m.blk) { blk(Math.round(m.blk * PET_DMG)); }
-  if (m.self) for (const k in m.self) st(P(), k, Math.max(1, Math.round(m.self[k] * PET_DMG)));
-  if (m.deb) for (const e of alive()) for (const k in m.deb) st(e, k, Math.max(1, Math.round(m.deb[k] * PET_DMG)));
-  if (m.heal) { heal(Math.round(m.heal * PET_DMG)); }
+  if (m.blk) { blk(Math.round(m.blk * petMul())); }
+  if (m.self) for (const k in m.self) st(P(), k, Math.max(1, Math.round(m.self[k] * petMul())));
+  if (m.deb) for (const e of alive()) for (const k in m.deb) st(e, k, Math.max(1, Math.round(m.deb[k] * petMul())));
+  if (m.heal) { heal(Math.round(m.heal * petMul())); }
   syncAll();
   await checkDeaths();
   b.busy = false; syncAll();
@@ -10039,7 +10178,7 @@ function showPetMoves() {
   const pt = PET(); if (!pt || pt.used) { SND.err(); return; }
   const d = pt.def;
   const p = modal(`<h2>${pt.n}</h2>
-    <div class="hint">쓰던 수를 그대로 쓴다 · 힘은 ${Math.round(PET_DMG * 100)}% · <b>한 턴에 한 번</b></div>
+    <div class="hint">쓰던 수를 그대로 쓴다 · 힘은 ${Math.round(petMul() * 100)}%${pt.evo ? ` <b style="color:#8fe6d0">(${pt.evo}단)</b>` : ''} · <b>한 턴에 한 번</b></div>
     <div class="petmoves" id="pm_list"></div>
     <button class="brush-btn ghost" id="pm_no" style="color:#e9dfc9;border-color:#8a7f68">그만두기</button>`);
   p.dataset.noauto = '1';
@@ -10047,11 +10186,11 @@ function showPetMoves() {
   for (const k in d.moves) {
     const m = d.moves[k];
     const bits = [];
-    if (m.d) bits.push(`<em>${Math.round(m.d * PET_DMG)}</em>의 피해${m.n > 1 ? ` × ${m.n}` : ''}`);
-    if (m.blk) bits.push(`<i>${Math.round(m.blk * PET_DMG)}</i> 방어도`);
-    if (m.self) bits.push(Object.keys(m.self).map(x => `${STATUS[x] ? STATUS[x].n : x} +${Math.max(1, Math.round(m.self[x] * PET_DMG))}`).join(' · '));
-    if (m.deb) bits.push('적에게 ' + Object.keys(m.deb).map(x => `${STATUS[x] ? STATUS[x].n : x} ${Math.max(1, Math.round(m.deb[x] * PET_DMG))}`).join(' · '));
-    if (m.heal) bits.push(`체력 ${Math.round(m.heal * PET_DMG)} 회복`);
+    if (m.d) bits.push(`<em>${Math.round(m.d * petMul())}</em>의 피해${m.n > 1 ? ` × ${m.n}` : ''}`);
+    if (m.blk) bits.push(`<i>${Math.round(m.blk * petMul())}</i> 방어도`);
+    if (m.self) bits.push(Object.keys(m.self).map(x => `${STATUS[x] ? STATUS[x].n : x} +${Math.max(1, Math.round(m.self[x] * petMul()))}`).join(' · '));
+    if (m.deb) bits.push('적에게 ' + Object.keys(m.deb).map(x => `${STATUS[x] ? STATUS[x].n : x} ${Math.max(1, Math.round(m.deb[x] * petMul()))}`).join(' · '));
+    if (m.heal) bits.push(`체력 ${Math.round(m.heal * petMul())} 회복`);
     const n = el('div', 'petmove', `<b>${m.label}</b><span>${bits.join(' · ') || '기운을 고른다'}</span>`);
     n.onclick = () => { closeTop(); petUse(k); };
     list.appendChild(n);
@@ -10114,14 +10253,20 @@ function showPets() {
     for (const id of list) {
       const d = ENEMIES[id], rec = META.pets.own[id];
       const on = activePet() === id;
-      const mx = G.run ? Math.max(10, G.run.maxHp - PET_HP_GAP) : '—';
-      const t = el('div', 'trtile pettile' + (on ? ' can' : '') + (rec.dead ? ' done' : ''),
+      const lv = petEvo(id), fed = petFed(id), maxed = lv >= PET_EVO_MAX;
+      const mx = G.run ? Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP) : '—';
+      const pips = Array.from({ length: PET_EVO_MAX }, (_, i) =>
+        `<i class="${i < lv ? 'on' : ''}"></i>`).join('');
+      const t = el('div', 'trtile pettile' + (on ? ' can' : '') + (rec.dead ? ' done' : '') + (lv ? ' evo' + lv : ''),
         `<div class="tg" style="background:radial-gradient(circle at 35% 28%,${d.col},#1c1508);color:#f6efdd">${d.g}</div>
-         <div class="tn">${d.n}${d.elite ? ' <em style="color:#e08a7a;font-style:normal;font-size:11px">엘리트</em>' : ''}</div>
-         <div class="tv">체력 <b>${mx}</b> (주인 -${PET_HP_GAP})<br>
+         <div class="tn">${petEvoName(id)}${d.elite ? ' <em style="color:#e08a7a;font-style:normal;font-size:11px">엘리트</em>' : ''}</div>
+         <div class="petbar" title="진화">${pips}</div>
+         <div class="tv">체력 <b>${mx}</b> (주인 -${PET_HP_GAP}${lv ? ` +${lv * PET_EVO_HP}` : ''})
+           · 힘 <b>${Math.round(petMulOf(id) * 100)}%</b><br>
            ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}</div>
          <div class="tnext">${rec.dead ? `<b style="color:#ff8a9a">쓰러졌다</b> · 엘리트 ${rec.need}마리 남음`
-            : '멀쩡하다'}</div>
+            : maxed ? '<b style="color:#8fe6d0">다 자랐다</b>'
+            : `엘리트를 먹인다 — <b>${fed} / ${PET_EVO_NEED}</b>${lv ? ` · ${lv}단` : ''}`}</div>
          <div class="tbuy">${on ? '데리고 다닌다' : '데리고 간다'}</div>`);
       t.onclick = () => { setPet(on ? null : id); SND.ui(); draw(); };
       grid.appendChild(t);
@@ -14753,6 +14898,65 @@ function reviveToll(run) {
   return pay;
 }
 const ELITE_GIVEUP = 3;                      /* 한 막의 엘리트에서 이만큼 무너지면 요괴로 바뀐다 */
+/* ══════════════════════════════════════════════════════════
+   전투 기록(記) — 무엇이 얼마나 들어갔는가
+   ──────────────────────────────────────────────────────────
+   숫자가 스쳐 지나가 되짚을 길이 없다는 말을 들었다.
+   턴마다 한 줄씩 쌓아 두고, 오른쪽 아래 「記」로 펼쳐 본다.
+   싸움이 끝나면 그 판의 셈(준 피해 · 받은 피해 · 막은 양)까지 보인다.
+   ══════════════════════════════════════════════════════════ */
+const LOG_MAX = 260;
+function logAdd(kind, text, n) {
+  const b = G.b; if (!b) return;
+  b.log = b.log || [];
+  b.log.push({ t: b.turn || 0, k: kind, s: text, n: n || 0 });
+  if (b.log.length > LOG_MAX) b.log.shift();
+  const d = b.tally = b.tally || { dealt: 0, taken: 0, blocked: 0, healed: 0, cards: 0 };
+  if (kind === 'hit') d.dealt += n || 0;
+  else if (kind === 'hurt') d.taken += n || 0;
+  else if (kind === 'block') d.blocked += n || 0;
+  else if (kind === 'heal') d.healed += n || 0;
+  else if (kind === 'card') d.cards++;
+  const pane = $('#blogbody');
+  if (pane) { pane.innerHTML = logHtml(); pane.scrollTop = pane.scrollHeight; }
+  const btn = $('#blogbtn'); if (btn) btn.classList.add('fresh');
+}
+const LOG_ICON = { turn: '◇', card: '牌', hit: '⚔', hurt: '✦', block: '盾', heal: '癒',
+                   skill: '祕', pet: '獸', relic: '寶', st: '符', win: '勝', lose: '敗' };
+function logHtml() {
+  const b = G.b; if (!b || !b.log) return '<div class="blnone">아직 기록이 없다</div>';
+  let last = -1, h = '';
+  for (const e of b.log) {
+    if (e.t !== last) { last = e.t; h += `<div class="blturn">${e.t}턴</div>`; }
+    h += `<div class="blrow bl-${e.k}"><i>${LOG_ICON[e.k] || '·'}</i><span>${e.s}</span>` +
+         (e.n ? `<b>${e.n}</b>` : '') + '</div>';
+  }
+  return h;
+}
+function logTally() {
+  const b = G.b; if (!b) return '';
+  const d = b.tally || {};
+  const rows = [['준 피해', d.dealt || 0, '#e2777a'], ['받은 피해', d.taken || 0, '#d2564e'],
+                ['막은 양', d.blocked || 0, '#7fb0e0'], ['회복', d.healed || 0, '#7fe6b0'],
+                ['낸 부적', d.cards || 0, '#e2bd63']];
+  return `<div class="bltally">${rows.map(([n, v, c]) =>
+    `<div><span>${n}</span><b style="color:${c}">${v}</b></div>`).join('')}</div>`;
+}
+function showBattleLog() {
+  const b = G.b; if (!b) { SND.err(); toast('싸우는 중이 아니다'); return; }
+  SND.ui();
+  const btn = $('#blogbtn'); if (btn) btn.classList.remove('fresh');
+  const p = modal(`<h2>전투 기록</h2>
+    <div class="hint">${b.turn}턴째 · 한 줄씩 되짚어 본다</div>
+    ${logTally()}
+    <div class="blogbody" id="blogbody">${logHtml()}</div>
+    <button class="brush-btn" id="bl_close">닫기</button>`);
+  p.dataset.noauto = '1';
+  const body = p.querySelector('#blogbody');
+  body.scrollTop = body.scrollHeight;
+  p.querySelector('#bl_close').onclick = closeTop;
+}
+
 /* ── 기권(棄權) — 이 싸움만 내려놓는다 ────────────────────
    보스 앞에서는 물러설 수 없다. 그 밖의 싸움은
    체력 얼마와 골드를 내고 갈림길 앞으로 돌아간다.
