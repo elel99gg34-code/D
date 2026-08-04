@@ -2217,7 +2217,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
 .dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
 /* ── 전투 기록(記) ────────────────────────────────────────── */
-#blogbtn{position:absolute;right:20px;bottom:20px;z-index:12;width:38px;height:38px;border-radius:10px;
+/* 버린 더미와 겹쳐서 위로 옮겼다 — 상단바 바로 아래 오른쪽 */
+#blogbtn{position:absolute;right:20px;top:74px;z-index:12;width:38px;height:38px;border-radius:10px;
   font-size:16px;cursor:pointer;color:#d8c8a8;
   background:linear-gradient(150deg,rgba(34,28,19,.94),rgba(18,14,10,.94));
   border:1px solid rgba(200,175,125,.34);transition:.15s}
@@ -2503,7 +2504,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .colplay .card{box-shadow:0 12px 34px rgba(0,0,0,.6),0 0 24px rgba(226,189,99,.36)}
 .colplay .cpl{font-size:11px;letter-spacing:.08em;color:#e8d8b4;padding:2px 9px;border-radius:7px;
   background:rgba(18,12,8,.82);border:1px solid rgba(226,189,99,.3);white-space:nowrap}
-#coldeckbtn{position:absolute;right:20px;top:74px;z-index:12;padding:7px 13px;border-radius:9px;
+/* 기록 단추와 나란히 — 그 왼쪽에 선다 */
+#coldeckbtn{position:absolute;right:66px;top:74px;z-index:12;padding:7px 13px;border-radius:9px;
   font-size:12px;letter-spacing:.05em;cursor:pointer;
   background:linear-gradient(150deg,rgba(40,30,18,.94),rgba(22,16,10,.94));
   border:1px solid rgba(226,189,99,.42);color:#f0e2c2}
@@ -2832,7 +2834,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .endscreen .stats b{color:#efe4cb;font-weight:400}
 
 /* 반응형 */
-@media(max-width:1100px){:root{--cw:132px;--ch:186px}#energy{left:60px;width:66px;height:66px;font-size:19px}
+/* 기 구슬이 비기 단추와 겹쳐서 오른쪽으로 물렸다 */
+@media(max-width:1100px){:root{--cw:132px;--ch:186px}#energy{left:74px;width:66px;height:66px;font-size:19px}
   #field{padding:0 18px}#pside{width:190px}#eside{gap:22px}}
 @media(max-height:760px){:root{--ch:184px;--cw:134px}#hud{height:232px}#field{bottom:232px}
   .card .art{flex:0 0 44px}.card .art .g{font-size:30px}#energy{bottom:74px}#endturn{bottom:70px}}
