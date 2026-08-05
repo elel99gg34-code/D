@@ -3611,15 +3611,26 @@ const SND = {
   }
 };
 /* --- 캔버스 먹물 파티클 --- */
+/* 파편이 끝없이 쌓이면 화면이 버벅인다 — 뚜껑을 씌운다 */
+const FX_CAP = 190;
 const FX = {
-  cv: null, cx: null, ps: [], running: false,
+  cv: null, cx: null, ps: [], running: false, _w: 0, _h: 0,
   init() {
-    this.cv = $('#fx'); this.cx = this.cv.getContext('2d');
-    const rz = () => { this.cv.width = innerWidth; this.cv.height = innerHeight; };
-    rz(); addEventListener('resize', rz);
+    this.cv = $('#fx'); this.cx = this.cv.getContext('2d', { alpha: true, desynchronized: true });
+    const rz = () => {
+      /* 화면 좌표 그대로 쓴다 — 고해상도 화면에서 네 배로 그리면 헛심만 쓴다 */
+      this._w = this.cv.width = innerWidth;
+      this._h = this.cv.height = innerHeight;
+    };
+    rz();
+    let t = null;
+    addEventListener('resize', () => { clearTimeout(t); t = setTimeout(rz, 120); });
   },
   burst(x, y, n, color, spd = 5, life = 42, size = 4) {
     if (!OPT.particles) return;
+    /* 이미 그득하면 새로 뿌릴 만큼만 앞에서 덜어 낸다 */
+    const room = FX_CAP - this.ps.length;
+    if (room < n) this.ps.splice(0, Math.min(this.ps.length, n - Math.max(0, room)));
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2, s = spd * (.35 + Math.random());
       this.ps.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.2,
@@ -3634,15 +3645,22 @@ const FX = {
   run() {
     if (this.running) return; this.running = true;
     const step = () => {
-      const c = this.cx; c.clearRect(0, 0, this.cv.width, this.cv.height);
+      const c = this.cx; c.clearRect(0, 0, this._w, this._h);
+      /* 빛깔이 바뀔 때만 붓을 갈고, 작은 것은 네모로 찍는다 —
+         한 프레임에 이백 번 원을 그리면 손이 무거워진다 */
+      let curCol = '', curA = -1;
       for (let i = this.ps.length - 1; i >= 0; i--) {
         const p = this.ps[i];
         p.age++; p.x += p.vx; p.y += p.vy; p.vy += p.g; p.vx *= .985; p.vy *= .985;
         if (p.age > p.life) { this.ps.splice(i, 1); continue; }
+        if (p.x < -40 || p.x > this._w + 40 || p.y > this._h + 60) { this.ps.splice(i, 1); continue; }
         const k = 1 - p.age / p.life;
-        c.globalAlpha = k * .85;
-        c.fillStyle = 'rgb(' + p.color + ')';
-        c.beginPath(); c.arc(p.x, p.y, p.r * (.35 + k * .8), 0, 6.284); c.fill();
+        const a2 = Math.round(k * 85) / 100;
+        if (a2 !== curA) { c.globalAlpha = curA = a2; }
+        if (p.color !== curCol) { c.fillStyle = 'rgb(' + p.color + ')'; curCol = p.color; }
+        const r = p.r * (.35 + k * .8);
+        if (r > 3) { c.beginPath(); c.arc(p.x, p.y, r, 0, 6.284); c.fill(); }
+        else c.fillRect(p.x - r, p.y - r, r * 2, r * 2);
       }
       c.globalAlpha = 1;
       if (this.ps.length) requestAnimationFrame(step);
@@ -9339,10 +9357,14 @@ function syncEnemies() {
     if (!e.el) continue;
     e.el.classList.toggle('willdie', !e.dead && e.hp > 0 && e.hp <= e.maxHp * .18);
     if (e.dead) { if (!e.el.classList.contains('dying')) e.el.classList.add('dying'); continue; }
-    e.el.querySelector('.ebar i').style.width = (e.hp / e.maxHp * 100) + '%';
-    e.el.querySelector('.ebar b').textContent = e.hp + ' / ' + e.maxHp;
+    const bar = e.el.querySelector('.ebar i'), num = e.el.querySelector('.ebar b');
+    const w = (e.hp / e.maxHp * 100) + '%', t = e.hp + ' / ' + e.maxHp;
+    if (bar.style.width !== w) bar.style.width = w;          /* 그대로면 손대지 않는다 */
+    if (num.textContent !== t) num.textContent = t;
     const bb = e.el.querySelector('.blockbadge');
-    bb.textContent = e.block; bb.classList.toggle('hide', e.block <= 0);
+    const bt = String(e.block);
+    if (bb.textContent !== bt) bb.textContent = bt;
+    bb.classList.toggle('hide', e.block <= 0);
     fillStats(e.el, e);
     /* 의도 */
     const box = e.el.querySelector('.intent');
@@ -14980,6 +15002,7 @@ const ELITE_GIVEUP = 3;                      /* 한 막의 엘리트에서 이�
    싸움이 끝나면 그 판의 셈(준 피해 · 받은 피해 · 막은 양)까지 보인다.
    ══════════════════════════════════════════════════════════ */
 const LOG_MAX = 260;
+let _logOpen = false, _logFresh = false;
 function logAdd(kind, text, n) {
   const b = G.b; if (!b) return;
   b.log = b.log || [];
@@ -14991,9 +15014,13 @@ function logAdd(kind, text, n) {
   else if (kind === 'block') d.blocked += n || 0;
   else if (kind === 'heal') d.healed += n || 0;
   else if (kind === 'card') d.cards++;
-  const pane = $('#blogbody');
-  if (pane) { pane.innerHTML = logHtml(); pane.scrollTop = pane.scrollHeight; }
-  const btn = $('#blogbtn'); if (btn) btn.classList.add('fresh');
+  /* 창이 열려 있을 때만 다시 그린다 — 매 타격마다 DOM 을 뒤지면 버벅인다 */
+  if (_logOpen) {
+    const pane = $('#blogbody');
+    if (pane) { pane.innerHTML = logHtml(); pane.scrollTop = pane.scrollHeight; }
+    else _logOpen = false;
+  }
+  if (!_logFresh) { _logFresh = true; const btn = $('#blogbtn'); if (btn) btn.classList.add('fresh'); }
 }
 const LOG_ICON = { turn: '◇', card: '牌', hit: '⚔', hurt: '✦', block: '盾', heal: '癒',
                    skill: '祕', pet: '獸', relic: '寶', st: '符', win: '勝', lose: '敗' };
@@ -15020,6 +15047,7 @@ function showBattleLog() {
   const b = G.b; if (!b) { SND.err(); toast('싸우는 중이 아니다'); return; }
   SND.ui();
   const btn = $('#blogbtn'); if (btn) btn.classList.remove('fresh');
+  _logFresh = false; _logOpen = true;
   const p = modal(`<h2>전투 기록</h2>
     <div class="hint">${b.turn}턴째 · 한 줄씩 되짚어 본다</div>
     ${logTally()}
@@ -15028,7 +15056,8 @@ function showBattleLog() {
   p.dataset.noauto = '1';
   const body = p.querySelector('#blogbody');
   body.scrollTop = body.scrollHeight;
-  p.querySelector('#bl_close').onclick = closeTop;
+  p._esc = () => { _logOpen = false; };
+  p.querySelector('#bl_close').onclick = () => { _logOpen = false; p._esc = null; closeTop(); };
 }
 
 /* ── 라운드 포기 ──────────────────────────────────────────
