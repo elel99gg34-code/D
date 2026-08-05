@@ -11365,6 +11365,22 @@ function chooseCards(list, n, title) {
 }
 
 /* --- 전투 보상 --- */
+/* ══════════════════════════════════════════════════════════
+   전리품(利) — 막이 오를수록 굵어진다
+   ──────────────────────────────────────────────────────────
+   제25막쯤 되면 요괴 하나 체력이 천을 넘는데 전리품은 제1막과
+   같았다. 「제25막 요괴 하나에 골드 1100 · 다이아 200 은 되어야
+   한다」를 기준으로 잡고, 제1막 값에서 거기까지 고르게 올린다.
+   낮게 굴러도 그 값은 넘도록 밑값에 맞춰 배수를 정했다.
+     골드   ×1.207^(막-1)  → 제1막 12~22   제25막 1100~2018
+     다이아 ×1.124^(막-1)  → 제1막 12~28   제25막  200~ 467
+   엘리트·보스는 같은 배수를 타므로 사이가 그대로 벌어져 있다.
+   ══════════════════════════════════════════════════════════ */
+const LOOT_G = 1.2075, LOOT_D = 1.1248;
+const lootMul = (r, act) => Math.pow(r, Math.max(0, Math.min(25, act || 1) - 1));
+const lootGold = act => lootMul(LOOT_G, act);
+const lootDia = act => lootMul(LOOT_D, act);
+
 function showRewards(kind) {
   G.scene = 'reward';
   const run = G.run;
@@ -11379,7 +11395,8 @@ function showRewards(kind) {
     sparkles(innerWidth / 2, innerHeight * .42, 16, '#ffe0a0', 180);
   }
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
-  const gm = vm * ASC.gold(ascLv()), dm = vm * ASC.dia(ascLv());   /* 환생할수록 두둑하다 */
+  const gm = vm * ASC.gold(ascLv()) * lootGold(run.act);   /* 환생할수록, 막이 오를수록 두둑하다 */
+  const dm = vm * ASC.dia(ascLv()) * lootDia(run.act);
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * dm);
   const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
@@ -11581,7 +11598,7 @@ async function pickBossRelic() {
 function showTreasure() {
   G.scene = 'treasure';
   const rid = randomRelic();
-  const gold = ri(25, 60);
+  const gold = Math.round(ri(25, 60) * lootGold(G.run.act));   /* 궤짝도 막을 탄다 */
   const p = overlay(`<h2>보 물</h2><div class="hint">낡은 궤짝이 놓여 있다</div><div class="rewardrow"></div>
     <button class="brush-btn red" id="tr_done">길을 나선다</button>`);
   const row = p.querySelector('.rewardrow');
@@ -15189,10 +15206,15 @@ const REVIVE_HP = 70;                        /* 갈림길로 돌아갈 때 채�
    되살아나는 것이 공짜라 일부러 죽는 꼼수가 된다는 말을 들었다.
    갈림길로 돌아갈 때마다 골드를 이만큼 문다.
    가진 것이 그보다 적으면 있는 만큼만 — 빚은 지지 않는다.
+   전리품이 막을 타고 오르므로 값도 같이 태운다.
+   그러지 않으면 뒷막에서 다시 공짜가 된다 (늘 요괴 일곱 마리 값).
    ────────────────────────────────────────────────────────── */
 const REVIVE_COST = 120;
+function reviveCost(run) {
+  return Math.round(REVIVE_COST * lootGold((run && run.act) || 1));
+}
 function reviveToll(run) {
-  const pay = Math.min(REVIVE_COST, Math.max(0, run.gold || 0));
+  const pay = Math.min(reviveCost(run), Math.max(0, run.gold || 0));
   run.gold = Math.max(0, (run.gold || 0) - pay);
   return pay;
 }
@@ -15368,7 +15390,7 @@ function gameOver() {
       제1막부터 다시 오른다</div>
     ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
       <b style="color:#d8a24a">체력이 ${REVIVE_HP} 로 채워진다</b><br>
-      <b style="color:#c2483e">다만 골드 ${REVIVE_COST}을 문다</b>
+      <b style="color:#c2483e">다만 골드 ${reviveCost(G.run)}을 문다</b>
       <span style="color:#6d6455">(가진 것이 그보다 적으면 있는 만큼만 · 빚은 지지 않는다 ·
       지금 ${G.run.gold}골드)</span></div>` : ''}`;
   s.appendChild(d);
