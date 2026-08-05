@@ -2301,20 +2301,20 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 /* 화덕이 벽을 물들인다 */
 .fgbg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.9}
 .fgbg svg{width:100%;height:100%;display:block}
-.fgbg:after{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 78%,rgba(255,150,50,.2),transparent 52%),
-             radial-gradient(ellipse at 50% 108%,rgba(255,180,90,.28),transparent 60%);
-  animation:fgBreathe 5.2s ease-in-out infinite}
+.fgbg:after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 40% 96%,rgba(255,165,70,.26),transparent 58%);
+  will-change:opacity;animation:fgBreathe 5.2s ease-in-out infinite}
 @keyframes fgBreathe{0%,100%{opacity:.7}50%{opacity:1}}
 .fgbg.hit:after{animation:fgFlare .34s ease}
 @keyframes fgFlare{0%{opacity:.7}22%{opacity:1.6}100%{opacity:.7}}
 /* 불티가 천천히 떠오른다 */
 .fgember{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .fgember span{position:absolute;bottom:-14px;width:4px;height:4px;border-radius:50%;
-  background:radial-gradient(circle,#fff0c0,#ff9a3a);box-shadow:0 0 8px #ff9a3a;
-  left:calc(4% + var(--i) * 6.8%);opacity:0;
-  animation:fgUp calc(7s + var(--i) * .55s) linear infinite;
-  animation-delay:calc(var(--i) * -.9s)}
+  background:#ffb45a;box-shadow:0 0 7px #ff9a3a;
+  left:calc(8% + var(--i) * 16%);opacity:0;
+  will-change:transform,opacity;
+  animation:fgUp calc(8s + var(--i) * .9s) linear infinite;
+  animation-delay:calc(var(--i) * -1.6s)}
 @keyframes fgUp{
   0%{opacity:0;transform:translate(0,0) scale(.5)}
   8%{opacity:.9}
@@ -2368,10 +2368,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .fgnum em{font-style:normal}
 .forge .scside .note{backdrop-filter:blur(2px)}
 .forge .jold .jface{box-shadow:0 0 22px rgba(255,150,60,.45)}
-.forge .cardgrid .card.on{box-shadow:0 0 0 3px #ffb45a,0 0 26px rgba(255,180,90,.7);
-  animation:fgHot 2.4s ease-in-out infinite}
-@keyframes fgHot{0%,100%{box-shadow:0 0 0 3px #ffb45a,0 0 18px rgba(255,180,90,.5)}
-  50%{box-shadow:0 0 0 3px #ffd9a8,0 0 34px rgba(255,180,90,.85)}}
+.forge .cardgrid .card.on{box-shadow:0 0 0 3px #ffb45a,0 0 24px rgba(255,180,90,.6);
+  will-change:filter;animation:fgHot 2.6s ease-in-out infinite}
+@keyframes fgHot{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14)}}
 .forge .cardgrid,.forge .scmain{position:relative;z-index:2}
 .forge .pricetag{background:rgba(18,10,5,.7);border-color:rgba(255,150,60,.24)}
 .forge .cardgrid .card.maxed{filter:saturate(1.15)}
@@ -2426,78 +2425,6 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   50%{opacity:.34;transform:translate(-160%,-42px) scale(1.5)}
   100%{opacity:0;transform:translate(60%,-92px) scale(2.6)}}
 @media (max-width:900px){ .incfx{display:none} }
-/* ── 겨루기(比武) ─────────────────────────────────────────── */
-.loginbox{display:flex;flex-direction:column;gap:11px;width:min(360px,88vw);margin:8px 0 2px}
-.lgrow{display:flex;align-items:center;gap:10px}
-.lgrow span{width:64px;flex:none;font-size:12.5px;color:#c9b993;letter-spacing:.06em}
-.lgrow input{flex:1;min-width:0;padding:9px 12px;border-radius:8px;font-size:13.5px;color:#f2e6cc;
-  background:rgba(10,8,4,.6);border:1px solid rgba(220,190,120,.3);outline:none}
-.lgrow input:focus{border-color:rgba(226,189,99,.7);background:rgba(20,16,8,.7)}
-.lgsay{font-size:11.8px;color:#9a8d74;line-height:1.6;padding:2px 2px 0;word-break:keep-all}
-.lgsay.bad{color:#e2777a}
-.school.lobby{background:linear-gradient(165deg,#101820 0%,#1a2a38 45%,#070c11 100%)}
-.lobby .schead{background:linear-gradient(rgba(4,8,11,.94),rgba(20,34,46,.86));border-bottom-color:rgba(140,190,230,.3)}
-.lobby .schead h2{color:#e6f0f8}.lobby .schead .scnote{color:#7fa8c8}
-.lobby .schead .gback{background:rgba(140,190,230,.15);border-color:rgba(140,190,230,.42);color:#e6f0f8}
-.lobby .scside .note{background:rgba(4,8,11,.55);border-color:rgba(140,190,230,.24)}
-.lobby .scside .note p{color:#b6cbdc}
-.lbhead{display:flex;align-items:center;gap:12px;color:#c3d6e6;font-size:13px;letter-spacing:.06em;margin-bottom:12px}
-.lbhead b{color:#8ec8f0}
-.lbref{margin-left:auto;padding:6px 12px;border-radius:7px;font-size:11.5px;cursor:pointer;color:#c3d6e6;
-  background:rgba(140,190,230,.12);border:1px solid rgba(140,190,230,.34)}
-.lbref:hover{background:rgba(140,190,230,.3);color:#fff}
-.lblist{display:flex;flex-direction:column;gap:9px;overflow-y:auto;max-height:calc(100% - 42px)}
-.lbnone{padding:26px;text-align:center;color:#7f95ab;font-size:12.5px;border-radius:10px;
-  background:rgba(4,8,11,.4);border:1px dashed rgba(140,190,230,.24)}
-.lbitem{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;
-  background:rgba(6,12,17,.62);border:1px solid rgba(140,190,230,.24)}
-.lbitem:hover{border-color:rgba(140,190,230,.5);background:rgba(20,38,52,.7)}
-.lbitem .lbg{width:36px;height:36px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:17px;
-  color:#04202e;background:radial-gradient(circle at 34% 28%,#8ec8f0,#12384f)}
-.lbitem .lbt{flex:1;min-width:0}
-.lbitem .lbt b{display:block;font-size:13.5px;font-weight:400;color:#eaf4ff;letter-spacing:.03em}
-.lbitem .lbt small{display:block;font-size:11px;color:#7f95ab;margin-top:2px}
-.lbitem .lbgo{padding:8px 15px;border-radius:8px;font-size:12.5px;cursor:pointer;white-space:nowrap;
-  color:#02202e;background:linear-gradient(#9fd8f8,#5aa8d0);border:1px solid #7fbde0}
-.lbitem .lbgo:hover{background:linear-gradient(#c2ebff,#7fc4e8)}
-/* 겨루는 판 */
-.duel{position:absolute;inset:0;display:flex;flex-direction:column;padding:14px 16px;gap:10px;
-  background:linear-gradient(170deg,#141a20 0%,#20303c 48%,#080c10 100%)}
-.duel .dtop{display:flex;align-items:flex-start;gap:18px;flex:none;padding-top:4px}
-.duel .dside{flex:1;min-width:0}
-.duel .dside.me .dbar i{background:linear-gradient(90deg,#2c8f6a,#7fe6b0)}
-.duel .dname{font-size:13.5px;color:#dfeaf4;letter-spacing:.06em;margin-bottom:5px}
-.duel .dbar{position:relative;height:22px;border-radius:11px;overflow:hidden;
-  background:rgba(4,8,11,.7);border:1px solid rgba(140,190,230,.3)}
-.duel .dbar i{display:block;height:100%;background:linear-gradient(90deg,#8a2b2b,#d2564e);transition:width .3s ease}
-.duel .dbar span{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;color:#fff;
-  text-shadow:0 1px 3px rgba(0,0,0,.8)}
-.duel .dst{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;min-height:19px}
-.duel .dst em{font-style:normal;font-size:10.5px;padding:2px 7px;border-radius:5px;color:#e6f0f8;
-  background:rgba(140,190,230,.16);border:1px solid rgba(140,190,230,.3)}
-.duel .dst em.blk{background:rgba(120,170,220,.3);color:#dff0ff}
-.duel .dvs{flex:none;padding:8px 14px;border-radius:9px;font-size:12.5px;letter-spacing:.1em;color:#ffe6a8;
-  background:rgba(226,189,99,.14);border:1px solid rgba(226,189,99,.4);white-space:nowrap}
-.duel .dlog{flex:none;height:86px;overflow-y:auto;padding:8px 12px;border-radius:9px;font-size:11.8px;
-  line-height:1.75;color:#a8bccc;background:rgba(4,8,11,.5);border:1px solid rgba(140,190,230,.2)}
-.duel .dlog b{color:#ffe6a8}
-.duel .dhand{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:10px;
-  flex-wrap:wrap;align-content:center;overflow-y:auto;padding:6px}
-/* 손패는 전투 화면에서 절대 좌표로 눕지만, 여기서는 나란히 세운다 */
-.duel .dhand .card{position:relative!important;left:auto!important;top:auto!important;
-  margin-left:0!important;transform:none!important;flex:none;
-  width:var(--cw);height:var(--ch);cursor:pointer;transition:transform .14s}
-.duel .dhand .card:hover{transform:translateY(-10px) scale(1.04)!important;z-index:3}
-.duel .dhand .card.dim{filter:grayscale(.65) brightness(.6);cursor:not-allowed}
-.duel .dhand .card.dim:hover{transform:none!important}
-.duel .dfoot{flex:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.duel .denergy{padding:7px 14px;border-radius:9px;font-size:12.5px;color:#dfeaf4;
-  background:rgba(4,8,11,.6);border:1px solid rgba(140,190,230,.3)}
-.duel .denergy b{color:#8ee6ff;font-size:15px}
-.duel .dpile{font-size:11.5px;color:#7f95ab}
-.duel .dfoot .brush-btn{margin-left:auto;padding:9px 18px;font-size:13px}
-.duel .dfoot .brush-btn+.brush-btn{margin-left:0}
-.duel .dfoot .brush-btn[disabled]{opacity:.4;cursor:not-allowed}
 /* ── 공지사항(榜) ─────────────────────────────────────────── */
 .school.newsboard{background:linear-gradient(165deg,#231a10 0%,#33261a 45%,#120c07 100%)}
 .newsboard .schead .scnote{color:#e2bd63}
@@ -2592,10 +2519,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   74%{opacity:1;transform:translate(-50%,0) scale(1)}
   100%{opacity:0;transform:translate(-50%,-14px) scale(.97)}}
 /* 지도 위의 벗 — 다른 갈림길을 걷는 단오 */
-.friendmark{position:absolute;transform:translate(-50%,-50%);z-index:6;pointer-events:auto;cursor:help;
+/* 표식이 지도 칸을 덮어 그 칸에 못 들어가던 것 —
+   칸(z-index 2)보다 아래로 내리고, 글자만 짚을 수 있게 둔다 */
+.friendmark{position:absolute;transform:translate(-50%,-50%);z-index:1;pointer-events:none;cursor:help;
   display:flex;flex-direction:column;align-items:center;gap:2px;animation:fmIn .4s ease}
 @keyframes fmIn{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:1;transform:translate(-50%,-50%)}}
-.friendmark span{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;
+.friendmark span{pointer-events:auto;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;
   color:#eaf4ff;background:radial-gradient(circle at 34% 28%,#5e94b8,#24425c);
   border:2px solid rgba(150,196,224,.75);
   box-shadow:0 0 0 4px rgba(58,106,138,.14),0 0 14px rgba(120,180,220,.4);
@@ -5238,7 +5167,8 @@ defRelic({ id: 'guardians', n: '사신도', g: '四', rar: 'boss', d: '턴 시�
 
 /* ── 유물 등급 ──────────────────────────────────────────────
    부적과 같은 눈금을 쓴다. 합성으로만 얻는 것이 SSX급이다. */
-const RELIC_GRADE = { common: 'common', uncommon: 'uncommon', rare: 'rare', boss: 'special', fused: 'ssx' };
+const RELIC_GRADE = { common: 'common', uncommon: 'uncommon', rare: 'rare', boss: 'special',
+                      special: 'special', ssc: 'ssc', fused: 'ssx' };
 const rgrade = id => RELIC_GRADE[RELICS[id].rar] || 'common';
 const RELIC_SLOTS = 10;
 
@@ -5258,33 +5188,41 @@ const FUSIONS = [
   { a: 'foxbead',   b: 'tigerfang', to: 'ninthseal' }
 ];
 
-/* ── 합성 결과물 (SSX급 유물) ─────────────────────────────── */
-defRelic({ id: 'slayer', n: '참마도', g: '斬', rar: 'fused',
-  d: '전투 시작 시 <b>힘</b> 3을 얻고, 전투마다 처음 사용하는 공격 카드의 피해가 10 증가한다.',
-  h: { battleStart: r => { r.used = false; st(P(), 'str', 3); },
-       modAtk: (r, d, card) => { if (card && cdef(card).type === 'attack' && !r.used) { r.used = true; return d + 10; } return d; } } });
-defRelic({ id: 'pagwae', n: '팔괘경', g: '卦', rar: 'fused',
+/* ══════════════════════════════════════════════════════════
+   합성 결과물 — 넣은 것만큼 나온다
+   ──────────────────────────────────────────────────────────
+   3등급 둘을 합쳐도 SSX급이 나오던 것이 이상했다.
+   이제 넣은 유물의 격에 따라 나오는 격이 다르다.
+     3등급+3등급 → 1등급 · 3~2등급 섞임 → S급
+     1등급이 끼면 → SSC급 · S급 둘을 합쳐야 → SSX급
+   SSX급은 셋뿐이다. 대전투장이 요구하는 세 종이 곧 그것이다.
+   ══════════════════════════════════════════════════════════ */
+defRelic({ id: 'slayer', n: '참마도', g: '斬', rar: 'rare',
+  d: '전투 시작 시 <b>힘</b> 2를 얻고, 전투마다 처음 사용하는 공격 카드의 피해가 6 증가한다.',
+  h: { battleStart: r => { r.used = false; st(P(), 'str', 2); },
+       modAtk: (r, d, card) => { if (card && cdef(card).type === 'attack' && !r.used) { r.used = true; return d + 6; } return d; } } });
+defRelic({ id: 'pagwae', n: '팔괘경', g: '卦', rar: 'special',
   d: '받는 모든 피해가 3 감소한다. (최소 1) 전투 시작 시 <b>가시</b> 5를 얻는다.',
   h: { battleStart: () => st(P(), 'thorns', 5),
        modTaken: (r, d) => d > 0 ? Math.max(1, d - 3) : d } });
-defRelic({ id: 'elixir', n: '불로초', g: '芝', rar: 'fused',
-  d: '획득 시 최대 체력이 15 증가한다. 전투가 끝날 때마다 체력을 12 회복한다.',
-  h: { onGain: () => { G.run.maxHp += 15; G.run.hp += 15; },
-       battleEnd: () => healRun(12) } });
-defRelic({ id: 'firestick', n: '화섭자', g: '燧', rar: 'fused',
+defRelic({ id: 'elixir', n: '불로초', g: '芝', rar: 'rare',
+  d: '획득 시 최대 체력이 10 증가한다. 전투가 끝날 때마다 체력을 8 회복한다.',
+  h: { onGain: () => { G.run.maxHp += 10; G.run.hp += 10; },
+       battleEnd: () => healRun(8) } });
+defRelic({ id: 'firestick', n: '화섭자', g: '燧', rar: 'special',
   d: '각 전투의 첫 턴에 카드를 2장 더 뽑는다. 물약을 쓰면 카드를 1장 뽑는다.',
   h: { turnStart: () => { if (G.b.turn === 1) drawCards(2); },
        onPotion: () => { if (G.b) drawCards(1); } } });
 defRelic({ id: 'vajrabeads', n: '금강염주', g: '珠', rar: 'fused',
   d: '전투 시작 시 <i>12</i>의 방어도를 얻고, 턴 시작 시 <i>6</i>의 방어도를 얻는다.',
   h: { battleStart: () => blk(12, true), turnStart: () => blk(6, true) } });
-defRelic({ id: 'goldclub', n: '황금 방망이', g: '棒', rar: 'fused',
+defRelic({ id: 'goldclub', n: '황금 방망이', g: '棒', rar: 'special',
   d: '전투에서 승리하면 골드를 25, 엘리트라면 60을 더 얻는다.',
   h: { battleEnd: (r, kind) => { G.run.gold += kind === 'elite' ? 60 : 25; SND.coin(); } } });
-defRelic({ id: 'ghostlamp', n: '귀문 등롱', g: '燈', rar: 'fused',
+defRelic({ id: 'ghostlamp', n: '귀문 등롱', g: '燈', rar: 'ssc',
   d: '전투 시작 시 기를 2 얻고, 두 턴마다 턴 시작 시 기를 1 얻는다.',
   h: { battleStart: () => energy(2), turnStart: () => { if (G.b.turn % 2 === 0) energy(1); } } });
-defRelic({ id: 'tigerbell', n: '백호령', g: '虎', rar: 'fused',
+defRelic({ id: 'tigerbell', n: '백호령', g: '虎', rar: 'special',
   d: '전투 시작 시 <b>힘</b> 4를 얻고 모든 적에게 <b>약화</b> 2를 부여한다. (둘째 턴에 힘 4가 사라진다)',
   h: { battleStart: () => { st(P(), 'str', 4); for (const e of alive()) st(e, 'weak', 2); },
        turnStart: () => { if (G.b.turn === 2) st(P(), 'str', -4); } } });
@@ -5292,7 +5230,7 @@ defRelic({ id: 'crowfan', n: '삼족오 부채', g: '扇', rar: 'fused',
   d: '턴 시작 시 무작위 적에게 <em>7</em>의 피해를 준다. 한 턴에 세 번째 카드를 낼 때마다 카드를 1장 뽑는다.',
   h: { turnStart: () => { const a = alive(); if (a.length) pure(pick(a), 7); },
        cardPlay: () => { if (G.b.played === 3) drawCards(1); } } });
-defRelic({ id: 'immortalpill', n: '선단', g: '丹', rar: 'fused',
+defRelic({ id: 'immortalpill', n: '선단', g: '丹', rar: 'ssc',
   d: '전투 중 체력이 절반 이하로 떨어지면 체력을 35 회복한다. (전투당 1회) 휴식처에서 <b>정화</b>를 할 수 있다.',
   h: { battleStart: r => r.used = false } });
 defRelic({ id: 'ninthseal', n: '구천의 인장', g: '九', rar: 'fused',
@@ -5300,7 +5238,7 @@ defRelic({ id: 'ninthseal', n: '구천의 인장', g: '九', rar: 'fused',
   h: { onGain: () => { G.run.maxEnergy++; },
        battleStart: () => { st(P(), 'str', 2); st(P(), 'dex', 2); } } });
 
-const RELIC_POOL = { common: [], uncommon: [], rare: [], boss: [], fused: [] };
+const RELIC_POOL = { common: [], uncommon: [], rare: [], boss: [], special: [], ssc: [], fused: [] };
 for (const k in RELICS) RELIC_POOL[RELICS[k].rar].push(k);
 /* 합성 결과물은 무작위로 나오지 않는다 */
 function fusionFor(ids) {
@@ -9060,9 +8998,9 @@ function forgeBgArt() {
         <stop offset="0%" stop-color="#120a05"/><stop offset="100%" stop-color="#2e1a0c"/></linearGradient>
     </defs>
     <rect width="1000" height="620" fill="url(#fgw)"/>
-    <g opacity=".5" stroke="#3e2612" stroke-width="1.5" fill="none">
-      ${rep(9, i => `<path d="M0,${52 + i * 62} L1000,${52 + i * 62}"/>`)}
-      ${rep(13, i => `<path d="M${(i % 2 ? 40 : 0) + i * 78},0 L${(i % 2 ? 40 : 0) + i * 78},620"/>`)}
+    <g opacity=".45" stroke="#3e2612" stroke-width="1.5" fill="none">
+      ${rep(5, i => `<path d="M0,${88 + i * 118} L1000,${88 + i * 118}"/>`)}
+      ${rep(7, i => `<path d="M${(i % 2 ? 70 : 0) + i * 148},0 L${(i % 2 ? 70 : 0) + i * 148},620"/>`)}
     </g>
     <ellipse cx="500" cy="620" rx="640" ry="380" fill="url(#fgh)"/>
     <g opacity=".55" fill="#241408">
@@ -9107,7 +9045,7 @@ function showForge() {
   let sel = null;                                 /* 지금 고른 부적의 uid */
   const p = overlay(`<div class="school forge">
     <div class="fgbg">${forgeBgArt()}</div>
-    <div class="fgember">${rep(14, i => `<span style="--i:${i}"></span>`)}</div>
+    <div class="fgember">${rep(6, i => `<span style="--i:${i}"></span>`)}</div>
     <div class="schead">
       <button class="gback" id="fg_back">←</button>
       <h2>대장간</h2>
@@ -10961,16 +10899,16 @@ const ACT_SCALE = {
   17:{ hp: 3.54, dmg: 1.94 },
   18:{ hp: 3.70, dmg: 1.98 },
   19:{ hp: 3.87, dmg: 2.03 },
-  /* ── 제20막 뒤로 한 번 더 눕혔다 ───────────────────────
-     여기서부터 또 세다는 말을 들었다. 보스만이 아니라 잡졸까지 모두.
-     체력은 거의 눕혔고(막마다 1.3%), 피해는 제19막보다 도로 내렸다.
+  /* ── 제20막 뒤로 요괴를 반쯤 덜어 냈다 ─────────────────
+     사신도의 요괴가 너무 세다는 말을 들었다.
+     체력도 피해도 앞서 값에서 45%를 깎았다.
      ────────────────────────────────────────────────────── */
-  20:{ hp: 3.90, dmg: 1.92 },
-  21:{ hp: 3.95, dmg: 1.93 },
-  22:{ hp: 4.00, dmg: 1.94 },
-  23:{ hp: 4.06, dmg: 1.95 },
-  24:{ hp: 4.12, dmg: 1.96 },
-  25:{ hp: 4.18, dmg: 1.97 }
+  20:{ hp: 2.15, dmg: 1.06 },
+  21:{ hp: 2.17, dmg: 1.06 },
+  22:{ hp: 2.20, dmg: 1.07 },
+  23:{ hp: 2.23, dmg: 1.07 },
+  24:{ hp: 2.27, dmg: 1.08 },
+  25:{ hp: 2.30, dmg: 1.08 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
@@ -16562,7 +16500,7 @@ function setBg(act) {
     20: ['#7e7a6a', '#5c584a', '#33302a'],
     21: ['#8a8fa0', '#666b7e', '#3c4050'], 22: ['#e2dcc0', '#c2b898', '#8e8466'],
     23: ['#dfe8f2', '#bccbdf', '#8c9eb8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
-    25: ['#b8ac92', '#8a7f68', '#4a4238']
+    25: ['#4a4038', '#2e2620', '#140f0c']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
@@ -16584,7 +16522,7 @@ function setBg(act) {
                 22: '#fffbe8 0%,#f4ead0 46%,#dcceac 100%',
                 23: '#f6faff 0%,#dbe8f8 50%,#b4c8e4 100%',
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
-                25: '#efe6cf 0%,#d8cbaa 48%,#aca084 100%' }[a];
+                25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      ${bgSkyArt(a)}
@@ -16867,18 +16805,41 @@ function bgSkyArt(a) {
       ${bgCloud(800, 262, 150, 22, '#5e2020', .28)}`;
   }
   if (a === 25) {
-    /* 사신도 — 세상이 그림이 된다. 종이의 결과 낙관, 먹으로 그린 해 */
-    return `<g opacity=".2" stroke="#8a7f68" stroke-width="1" fill="none">${rep(13, i =>
-        `<path d="M${40 + i * 76},0 L${40 + i * 76},600"/>`)}</g>
-      <circle cx="500" cy="140" r="86" fill="none" stroke="#2a2420" stroke-width="4" opacity=".4"/>
-      <circle cx="500" cy="140" r="70" fill="#3a3228" opacity=".16"/>
-      <path d="M60,96 q120,-46 250,10 q140,52 300,-16 q160,-66 330,26" fill="none"
-        stroke="#3a3228" stroke-width="3" opacity=".26" stroke-linecap="round"/>
-      <path d="M40,250 q180,60 340,-8 q170,-72 320,4 q140,58 260,-26" fill="none"
-        stroke="#3a3228" stroke-width="2" opacity=".18" stroke-linecap="round"/>
-      <g opacity=".5"><rect x="852" y="60" width="62" height="62" fill="none" stroke="#8a1a2a" stroke-width="3"/>
-        <path d="M866,76 L900,76 M866,92 L900,92 M866,108 L900,108" stroke="#8a1a2a" stroke-width="3"/></g>
-      <g opacity=".26">${rep(6, i => bgBird(150 + i * 132, 300 + (i % 3) * 28, 10, '#2a2420', .9))}</g>`;
+    /* 사신도 — 찢어진 그림 속에서 그것이 이쪽을 본다.
+       종이는 삭았고, 낙관은 피처럼 번졌고, 사신은 눈이 없다. */
+    return `<defs>
+        <radialGradient id="sdeye"><stop offset="0%" stop-color="#ff2d3a"/>
+          <stop offset="55%" stop-color="#7a0a14" stop-opacity=".8"/>
+          <stop offset="100%" stop-color="#7a0a14" stop-opacity="0"/></radialGradient>
+        <radialGradient id="sdhalo"><stop offset="0%" stop-color="#2a0a12" stop-opacity=".9"/>
+          <stop offset="100%" stop-color="#2a0a12" stop-opacity="0"/></radialGradient>
+      </defs>
+      <g opacity=".13" stroke="#6a5c48" stroke-width="1" fill="none">${rep(9, i =>
+        `<path d="M${54 + i * 108},0 L${54 + i * 108},600"/>`)}</g>
+      <ellipse cx="500" cy="250" rx="440" ry="300" fill="url(#sdhalo)"/>
+      <circle cx="500" cy="120" r="74" fill="none" stroke="#3a2a24" stroke-width="3" opacity=".4"/>
+      <circle cx="500" cy="120" r="58" fill="#1a0e0c" opacity=".55"/>
+      <g opacity=".9">
+        <path d="M500,158 q-96,54 -110,190 q-8,74 22,140 q34,74 88,88 q54,-14 88,-88
+                 q30,-66 22,-140 q-14,-136 -110,-190 Z" fill="#07050a"/>
+        <path d="M500,152 q-58,34 -76,96 q22,-34 76,-40 q54,6 76,40 q-18,-62 -76,-96 Z"
+          fill="#120a12" opacity=".9"/>
+        <ellipse cx="500" cy="236" rx="54" ry="62" fill="#0a0508"/>
+        <ellipse cx="478" cy="228" rx="12" ry="16" fill="url(#sdeye)"/>
+        <ellipse cx="522" cy="228" rx="12" ry="16" fill="url(#sdeye)"/>
+        <path d="M470,272 q30,16 60,0" stroke="#5a1018" stroke-width="2.4" fill="none" opacity=".8"/>
+        <g opacity=".75" stroke="#07050a" stroke-width="9" stroke-linecap="round" fill="none">
+          <path d="M420,300 q-118,26 -166,140"/><path d="M580,300 q118,26 166,140"/></g>
+        <g opacity=".5" stroke="#2a1018" stroke-width="2" fill="none">
+          ${rep(7, i => `<path d="M${430 + i * 24},330 q${-8 + i * 3},90 ${-22 + i * 7},220"/>`)}</g>
+      </g>
+      <g opacity=".55" stroke="#8a1a2a" stroke-width="2.4" fill="none" stroke-linecap="round">
+        <path d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26"/></g>
+      <g opacity=".6"><rect x="856" y="52" width="66" height="66" fill="none" stroke="#8a1a2a" stroke-width="3"/>
+        <path d="M872,70 L906,70 M872,86 L906,86 M872,102 L906,102" stroke="#8a1a2a" stroke-width="3"/></g>
+      <g opacity=".34">${rep(20, i =>
+        `<circle cx="${(i * 149) % 1000}" cy="${40 + (i * 83) % 320}" r="${.8 + (i % 3) * .6}" fill="#7a2a34"/>`)}</g>
+    `;
   }
   if (a === 9) return `<g opacity=".4"><circle cx="500" cy="150" r="92" fill="none" stroke="#fff" stroke-width="2"/>
       <circle cx="500" cy="150" r="120" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>
@@ -17135,346 +17096,6 @@ function bgNearArt(a) {
   return '';
 }
 
-/* ══════════════════════════════════════════════════════════
-   겨루기(比武) — 사람과 사람이 부적으로 붙는다
-   ──────────────────────────────────────────────────────────
-   서버가 있어야 돌아간다. server/server.js 를 켜고 그 주소로
-   들어오면 저절로 이어진다. 서버가 없으면 이 칸만 조용히 닫히고
-   나머지 놀이는 그대로다 — 파일 하나로도 다 돌아간다.
-
-   한 판은 이렇게 흐른다.
-   · 두 사람 다 체력 200으로 시작한다.
-   · 제 차례에 손에서 부적 하나를 골라 낸다. 기는 매 차례 3.
-   · 낸 부적은 상대에게 그대로 간다 — 피해든 방어든 상태든.
-   · 다 내거나 「넘긴다」를 누르면 차례가 넘어간다.
-   · 먼저 상대를 눕히는 쪽이 이긴다.
-   ══════════════════════════════════════════════════════════ */
-const NET = {
-  ws: null, user: null, url: null,
-  lobby: [], foe: null, first: false, on: false,
-  hooks: {}, tries: 0
-};
-function netUrl() {
-  if (NET.url) return NET.url;
-  const saved = (META.netUrl || '').trim();
-  if (saved) return saved;
-  const p = location.protocol === 'https:' ? 'wss://' : 'ws://';
-  if (location.protocol === 'file:') return 'ws://localhost:8080';
-  return p + location.host;
-}
-function netOn(t, fn) { (NET.hooks[t] = NET.hooks[t] || []).push(fn); }
-function netFire(t, d) { for (const f of (NET.hooks[t] || [])) { try { f(d); } catch (e) { console.error(e); } } }
-function netSend(t, d) {
-  if (!NET.ws || NET.ws.readyState !== 1) return false;
-  NET.ws.send(JSON.stringify(Object.assign({ t }, d || {})));
-  return true;
-}
-function netConnect(onOpen, onFail) {
-  if (NET.ws && NET.ws.readyState === 1) { onOpen && onOpen(); return; }
-  let ws;
-  try { ws = new WebSocket(netUrl()); } catch (e) { onFail && onFail('주소가 이상하다'); return; }
-  NET.ws = ws;
-  const guard = setTimeout(() => { if (ws.readyState !== 1) { try { ws.close(); } catch (e) {} onFail && onFail('서버가 대답하지 않는다'); } }, 4500);
-  ws.onopen = () => { clearTimeout(guard); NET.on = true; onOpen && onOpen(); };
-  ws.onerror = () => { clearTimeout(guard); NET.on = false; onFail && onFail('서버에 닿지 못했다'); };
-  ws.onclose = () => { NET.on = false; NET.user = null; netFire('closed', {}); };
-  ws.onmessage = ev => {
-    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-    netFire(m.t, m);
-  };
-}
-/* ── 문 앞 — 로그인 · 회원가입 ────────────────────────────── */
-function showLogin() {
-  const p = modal(`<h2>겨 루 기</h2>
-    <div class="hint">사람과 사람이 부적으로 붙는다 · 서버가 켜져 있어야 한다</div>
-    <div class="loginbox">
-      <div class="lgrow"><span>아이디</span><input id="lg_id" maxlength="16" autocomplete="off" spellcheck="false" placeholder="2~16자"></div>
-      <div class="lgrow"><span>비밀번호</span><input id="lg_pw" type="password" maxlength="40" autocomplete="off" placeholder="네 자 이상"></div>
-      <div class="lgrow"><span>서버</span><input id="lg_url" autocomplete="off" spellcheck="false" placeholder="ws://localhost:8080" value="${(META.netUrl || '')}"></div>
-      <div class="lgsay" id="lg_say">서버를 켜 두고 아이디를 만들면 된다.</div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:14px">
-      <button class="brush-btn red" id="lg_in" style="flex:1">들어가기</button>
-      <button class="brush-btn gold" id="lg_up" style="flex:1">회원가입</button>
-      <button class="brush-btn ghost" id="lg_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>
-    </div>`);
-  p.dataset.noauto = '1';
-  const say = (t, bad) => { const n = p.querySelector('#lg_say'); if (n) { n.textContent = t; n.classList.toggle('bad', !!bad); } };
-  const go = kind => {
-    const id = p.querySelector('#lg_id').value.trim();
-    const pw = p.querySelector('#lg_pw').value;
-    const url = p.querySelector('#lg_url').value.trim();
-    if (!id || !pw) { say('아이디와 비밀번호를 적으시오', true); SND.err(); return; }
-    if (url) { META.netUrl = url; NET.url = url; saveMeta(); }
-    say('서버를 부르는 중…');
-    netConnect(() => { say('이름을 대는 중…'); netSend(kind, { id, pw }); },
-               msg => { say(msg + ' — server/server.js 를 켰는지 보시오', true); SND.err(); });
-  };
-  p.querySelector('#lg_in').onclick = () => go('login');
-  p.querySelector('#lg_up').onclick = () => go('register');
-  p.querySelector('#lg_pw').onkeydown = e => { if (e.key === 'Enter') go('login'); };
-  p.querySelector('#lg_x').onclick = closeTop;
-  netOn('authFail', m => { say(m.msg, true); SND.err(); });
-  netOn('authOk', m => {
-    NET.user = m.user; SND.unlock();
-    closeTop(); showLobby();
-  });
-}
-/* ── 대기방 ──────────────────────────────────────────────── */
-function showLobby() {
-  if (!NET.user) { showLogin(); return; }
-  const prev = G.scene;
-  G.scene = 'lobby';
-  const p = overlay(`<div class="school lobby">
-    <div class="schead">
-      <button class="gback" id="lb_back">←</button>
-      <h2>겨루기 — 대기방</h2>
-      <div class="scnote">比武</div>
-    </div>
-    <div class="scbody">
-      <div class="scside">
-        <div class="jold"><div class="jface" style="background:radial-gradient(circle at 35% 30%,#8ec8f0,#12384f);color:#04202e;border-color:#5aa8d0">武</div>
-          <div class="jsay" id="lb_me"></div></div>
-        <div class="note"><p>
-          <b style="color:#8ec8f0">한 판은 이렇게 흐른다</b><br>
-          · 두 사람 다 체력 <b>200</b>으로 시작<br>
-          · 제 차례에 기 <b>3</b>으로 부적을 낸다<br>
-          · 낸 부적은 상대에게 그대로 간다<br>
-          · 먼저 눕히는 쪽이 이긴다<br><br>
-          <span style="color:#8a7f68">덱은 지금 모험의 덱을 쓴다.
-          모험 중이 아니면 기본 덱으로 붙는다.</span>
-        </p></div>
-        <button class="brush-btn ghost" id="lb_out" style="color:#e9dfc9;border-color:#8a7f68">나가기(로그아웃)</button>
-      </div>
-      <div class="scmain">
-        <div class="lbhead">지금 들어와 있는 사람 <b id="lb_n">0</b>명
-          <button class="lbref" id="lb_ref">새로 고침</button></div>
-        <div class="lblist" id="lb_list"></div>
-      </div>
-    </div>
-  </div>`);
-  p.dataset.noauto = '1';
-  const list = p.querySelector('#lb_list');
-  const me = p.querySelector('#lb_me');
-  const drawMe = () => { me.innerHTML = `<b>${NET.user.id}</b><br>${NET.user.win}승 ${NET.user.lose}패`; };
-  const draw = () => {
-    const others = NET.lobby.filter(x => x.id !== NET.user.id);
-    p.querySelector('#lb_n').textContent = others.length;
-    list.innerHTML = '';
-    if (!others.length) {
-      list.appendChild(el('div', 'lbnone', '아직 아무도 없다 · 친구에게 이 주소를 알려 주시오'));
-      return;
-    }
-    for (const u of others) {
-      const t = el('div', 'lbitem', `<div class="lbg">武</div>
-        <div class="lbt"><b>${u.id}</b><small>${u.win}승 ${u.lose}패</small></div>
-        <button class="lbgo">겨루자</button>`);
-      t.querySelector('.lbgo').onclick = () => { SND.ui(); netSend('challenge', { id: u.id }); toast(`${u.id}에게 청했다`); };
-      list.appendChild(t);
-    }
-  };
-  drawMe(); draw();
-  netSend('lobby');
-  p.querySelector('#lb_ref').onclick = () => { SND.ui(); netSend('lobby'); };
-  p.querySelector('#lb_out').onclick = () => {
-    try { NET.ws.close(); } catch (e) {}
-    NET.user = null; NET.ws = null;
-    closePanel(p); showTitle();
-  };
-  const back = () => { closePanel(p); G.scene = prev; if (G.run && prev === 'map') showMap(); else showTitle(); };
-  p._esc = back;
-  p.querySelector('#lb_back').onclick = () => { p._esc = null; back(); };
-  netOn('lobby', m => { NET.lobby = m.list || []; if ($('#lb_list')) draw(); });
-  netOn('info', m => toast(m.msg));
-  netOn('challenged', m => askDuel(m.from));
-  netOn('duelStart', m => { NET.foe = m.foe; NET.first = !!m.first; closeOverlay(); startDuel(m); });
-  netOn('kicked', () => { toast('다른 곳에서 같은 이름으로 들어왔다'); NET.user = null; });
-}
-function askDuel(from) {
-  const p = modal(`<h2>겨루자는 청이 왔다</h2>
-    <div class="hint" style="font-size:14px;color:#cbbb96"><b style="color:#8ec8f0">${from}</b>이(가) 한 판 붙자고 한다.</div>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="brush-btn red" id="dq_y" style="flex:1">받는다</button>
-      <button class="brush-btn ghost" id="dq_n" style="color:#e9dfc9;border-color:#8a7f68">물린다</button>
-    </div>`);
-  p.dataset.noauto = '1';
-  SND.gong();
-  p.querySelector('#dq_y').onclick = () => { closeTop(); netSend('accept', { id: from }); };
-  p.querySelector('#dq_n').onclick = () => { closeTop(); netSend('decline', { id: from }); };
-}
-/* ── 한 판 ───────────────────────────────────────────────── */
-const DUEL_HP = 200, DUEL_ENERGY = 3, DUEL_HAND = 5;
-let DUEL = null;
-function duelDeck() {
-  const src = (G.run && G.run.deck && G.run.deck.length >= 8)
-    ? G.run.deck.map(c => ({ id: c.id, up: !!c.up }))
-    : [...Array(5).fill('strike'), ...Array(4).fill('defend'), 'ward'].map(id => ({ id, up: false }));
-  return shuffle(src.slice());
-}
-function startDuel(m) {
-  SND.gong(); SND.bgm(true, 'boss');
-  DUEL = {
-    foe: m.foe, myTurn: !!m.first, over: false,
-    me: { hp: DUEL_HP, max: DUEL_HP, block: 0, s: {} },
-    you: { hp: DUEL_HP, max: DUEL_HP, block: 0, s: {} },
-    deck: duelDeck(), hand: [], disc: [], energy: DUEL_ENERGY, log: []
-  };
-  duelDraw(DUEL_HAND);
-  renderDuel();
-  duelLog(m.first ? '그대가 먼저 낸다.' : `${m.foe}이(가) 먼저 낸다.`);
-  netOn('moveBy', d => duelTakeMove(d.d));
-  netOn('duelEnd', d => duelFinish(d.win, d.why));
-  netOn('closed', () => { if (DUEL && !DUEL.over) duelFinish(true, '상대의 줄이 끊겼다'); });
-}
-function duelDraw(n) {
-  for (let i = 0; i < n; i++) {
-    if (!DUEL.deck.length) { DUEL.deck = shuffle(DUEL.disc.slice()); DUEL.disc = []; }
-    if (!DUEL.deck.length) break;
-    if (DUEL.hand.length >= 10) break;
-    DUEL.hand.push(DUEL.deck.shift());
-  }
-}
-function duelLog(t) { DUEL.log.unshift(t); DUEL.log = DUEL.log.slice(0, 8); const n = $('#dl_log'); if (n) n.innerHTML = DUEL.log.map(x => `<div>${x}</div>`).join(''); }
-/* 부적 한 장이 상대에게 어떻게 가는가 — 값만 뽑아 보낸다 */
-function duelEffect(c) {
-  const d = CARDS[c.id]; if (!d) return null;
-  const v = d.v(!!c.up) || {};
-  const e = { id: c.id, up: !!c.up };
-  if (typeof v.d === 'number' && v.d > 0) { e.dmg = v.d; e.n = v.n || 1; }
-  if (typeof v.b === 'number' && v.b > 0) e.blk = v.b;
-  if (typeof v.h === 'number' && v.h > 0) e.heal = v.h;
-  if (typeof v.p === 'number' && v.p > 0) e.poison = v.p;
-  if (typeof v.k === 'number' && v.k > 0) e.vuln = v.k;
-  if (typeof v.w === 'number' && v.w > 0) e.weak = v.w;
-  if (typeof v.x === 'number' && v.x > 0) e.str = v.x;
-  if (d.type === 'power' && !e.str) e.str = 2;
-  if (!e.dmg && !e.blk && !e.heal && !e.poison && !e.vuln && !e.weak && !e.str) e.dmg = 5;
-  return e;
-}
-function duelHit(target, amt) {
-  const b = Math.min(target.block, amt);
-  target.block -= b;
-  target.hp = Math.max(0, target.hp - (amt - b));
-}
-/* 내가 낸다 */
-function duelPlay(i) {
-  if (!DUEL || DUEL.over || !DUEL.myTurn) { SND.err(); return; }
-  const c = DUEL.hand[i]; if (!c) return;
-  const cost = Math.max(0, ccost({ id: c.id, up: c.up }) || 0);
-  if (cost > DUEL.energy) { SND.err(); toast('기가 모자란다'); return; }
-  const e = duelEffect(c); if (!e) return;
-  DUEL.energy -= cost;
-  DUEL.hand.splice(i, 1); DUEL.disc.push(c);
-  duelApply(e, DUEL.me, DUEL.you, true);
-  netSend('move', { d: e });
-  SND.hiss({ dur: .16, vol: .07, freq: 2400, to: 700, filter: 'bandpass', q: 1.1 });
-  renderDuel();
-  if (DUEL.you.hp <= 0) { netSend('move', { d: { win: 1 } }); duelFinish(true, '상대를 눕혔다'); return; }
-  if (!DUEL.hand.some(x => (Math.max(0, ccost({ id: x.id, up: x.up }) || 0)) <= DUEL.energy)) duelEndTurn();
-}
-/* 값 하나를 판에 붙인다 */
-function duelApply(e, from, to, mine) {
-  const str = from.s.str || 0, weak = from.s.weak || 0;
-  if (e.dmg) {
-    let d = e.dmg + str;
-    if (weak) d = Math.floor(d * .75);
-    if (to.s.vuln) d = Math.floor(d * 1.5);
-    for (let i = 0; i < (e.n || 1); i++) duelHit(to, d);
-    duelLog(`${mine ? '그대' : DUEL.foe}가 <b>${CARDS[e.id] ? CARDS[e.id].n : '부적'}</b> — ${d}${(e.n || 1) > 1 ? `×${e.n}` : ''}의 피해`);
-    if (!mine) { screenFlash('rgba(200,60,60,.24)', 240); shake(); }
-  }
-  if (e.blk) { from.block += e.blk; duelLog(`${mine ? '그대' : DUEL.foe}가 방어도 ${e.blk}`); }
-  if (e.heal) { from.hp = Math.min(from.max, from.hp + e.heal); duelLog(`${mine ? '그대' : DUEL.foe}가 체력 ${e.heal} 회복`); }
-  if (e.poison) to.s.poison = (to.s.poison || 0) + e.poison;
-  if (e.vuln) to.s.vuln = (to.s.vuln || 0) + e.vuln;
-  if (e.weak) to.s.weak = (to.s.weak || 0) + e.weak;
-  if (e.str) { from.s.str = (from.s.str || 0) + e.str; duelLog(`${mine ? '그대' : DUEL.foe}의 힘 +${e.str}`); }
-}
-function duelTakeMove(e) {
-  if (!DUEL || DUEL.over || !e) return;
-  if (e.win) { duelFinish(false, '눕혔다'); return; }
-  if (e.pass) { DUEL.myTurn = true; duelStartMyTurn(); return; }
-  duelApply(e, DUEL.you, DUEL.me, false);
-  renderDuel();
-  if (DUEL.me.hp <= 0) { netSend('duelOver', {}); duelFinish(false, '눕혀졌다'); }
-}
-function duelEndTurn() {
-  if (!DUEL || DUEL.over || !DUEL.myTurn) return;
-  /* 턴 끝 — 독과 상태가 한 칸씩 준다 */
-  const p = DUEL.me;
-  if (p.s.poison) { duelHit(p, p.s.poison); p.s.poison--; duelLog(`독으로 ${p.s.poison + 1}`); }
-  for (const k of ['vuln', 'weak']) if (p.s[k]) p.s[k]--;
-  DUEL.myTurn = false;
-  netSend('move', { d: { pass: 1 } });
-  duelLog('차례를 넘겼다.');
-  renderDuel();
-  if (p.hp <= 0) { netSend('duelOver', {}); duelFinish(false, '눕혀졌다'); }
-}
-function duelStartMyTurn() {
-  DUEL.energy = DUEL_ENERGY;
-  DUEL.me.block = 0;
-  duelDraw(2);
-  duelLog('그대의 차례.');
-  SND.ui();
-  renderDuel();
-}
-function duelFinish(win, why) {
-  if (!DUEL || DUEL.over) return;
-  DUEL.over = true;
-  SND.bgm(false);
-  if (win) { SND.gong(); screenFlash('rgba(255,220,140,.4)', 700); } else SND.err();
-  const p = modal(`<h2>${win ? '이 겼 다' : '졌 다'}</h2>
-    <div class="hint">${why || ''}</div>
-    <div class="hint" style="margin-top:8px">${NET.foe || '상대'}와의 겨루기</div>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="brush-btn red" id="df_ok" style="flex:1">대기방으로</button>
-    </div>`);
-  p.dataset.noauto = '1';
-  p._esc = () => { DUEL = null; showLobby(); };
-  p.querySelector('#df_ok').onclick = () => { p._esc = null; closeTop(); DUEL = null; netSend('lobby'); showLobby(); };
-}
-function renderDuel() {
-  if (!DUEL) return;
-  G.scene = 'duel';
-  const bar = (o) => `<div class="dbar"><i style="width:${Math.max(0, o.hp / o.max * 100)}%"></i><span>${o.hp} / ${o.max}</span></div>`;
-  const sts = o => Object.keys(o.s).filter(k => o.s[k] > 0)
-    .map(k => `<em title="${STATUS[k] ? STATUS[k].n : k}">${STATUS[k] ? STATUS[k].g : '?'}${o.s[k]}</em>`).join('');
-  const s = $('#scene');
-  s.innerHTML = `<div class="duel">
-    <div class="dtop">
-      <div class="dside">
-        <div class="dname">${NET.foe || '상대'}</div>${bar(DUEL.you)}
-        <div class="dst">${DUEL.you.block ? `<em class="blk">盾${DUEL.you.block}</em>` : ''}${sts(DUEL.you)}</div>
-      </div>
-      <div class="dvs">${DUEL.myTurn ? '그대의 차례' : '상대의 차례'}</div>
-      <div class="dside me">
-        <div class="dname">${NET.user ? NET.user.id : '나'}</div>${bar(DUEL.me)}
-        <div class="dst">${DUEL.me.block ? `<em class="blk">盾${DUEL.me.block}</em>` : ''}${sts(DUEL.me)}</div>
-      </div>
-    </div>
-    <div class="dlog" id="dl_log">${DUEL.log.map(x => `<div>${x}</div>`).join('')}</div>
-    <div class="dhand" id="dl_hand"></div>
-    <div class="dfoot">
-      <div class="denergy">기 <b>${DUEL.energy}</b> / ${DUEL_ENERGY}</div>
-      <div class="dpile">덱 ${DUEL.deck.length} · 버린 것 ${DUEL.disc.length}</div>
-      <button class="brush-btn red" id="dl_end" ${DUEL.myTurn ? '' : 'disabled'}>차례를 넘긴다</button>
-      <button class="brush-btn ghost" id="dl_out" style="color:#e9dfc9;border-color:#8a7f68">물러난다</button>
-    </div>
-  </div>`;
-  const hand = s.querySelector('#dl_hand');
-  DUEL.hand.forEach((c, i) => {
-    const n = cardNode({ uid: -400 - i, id: c.id, up: !!c.up });
-    const cost = Math.max(0, ccost({ id: c.id, up: c.up }) || 0);
-    if (!DUEL.myTurn || cost > DUEL.energy) n.classList.add('dim');
-    n.onclick = () => duelPlay(i);
-    hand.appendChild(n);
-  });
-  s.querySelector('#dl_end').onclick = () => duelEndTurn();
-  s.querySelector('#dl_out').onclick = () => {
-    netSend('leave'); DUEL = null; SND.bgm(false); showLobby();
-  };
-}
-
 /* --- 타이틀 --- */
 function showTitle() {
   G.scene = 'title'; G.b = null; _bgKey = ''; setBg(1); autoStop();
@@ -17491,7 +17112,6 @@ function showTitle() {
         <button class="brush-btn red" id="t_new">새로운 모험</button>
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
-        <button class="brush-btn" id="t_duel">겨루기 (1대1)${NET.user ? ` · ${NET.user.id}` : ''}</button>
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
         <button class="brush-btn ghost" id="t_dex">도감</button>
         <button class="brush-btn ghost" id="t_tutor">첫걸음 (처음이라면)</button>
@@ -17508,7 +17128,6 @@ function showTitle() {
       n.textContent = '안내서 (처음이신가요?)'; }
   }, 900);
   s.querySelector('#t_news').onclick = () => { SND.init(); SND.ui(); showNews(); };
-  s.querySelector('#t_duel').onclick = () => { SND.init(); SND.ui(); NET.user ? showLobby() : showLogin(); };
   s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
   s.querySelector('#t_train').onclick = () => { SND.init(); SND.ui(); showTraining(); };
   s.querySelector('#t_set').onclick = () => { SND.init(); SND.ui(); showSettings(); };
