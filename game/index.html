@@ -7899,21 +7899,26 @@ async function playCard(card, target) {
     await checkDeaths();
     if (b.over) break;
   }
-  b.curCard = null;
-  b.played++;
-  logAdd('card', cname(card), 0);
-  chainFx(b.played);                         /* 한 턴에 이어 낼수록 소리가 올라간다 */
-  fire('cardPlay', card);
-
-  if (!b.over) {
-    if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
-  } else {
-    b.discardPile.push(card);
+  /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
+  try {
+    b.curCard = null;
+    b.played++;
+    logAdd('card', cname(card), 0);
+    chainFx(b.played);                       /* 한 턴에 이어 낼수록 소리가 올라간다 */
+    fire('cardPlay', card);
+    if (!b.over) {
+      if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
+    } else {
+      b.discardPile.push(card);
+    }
+    syncAll();
+    await wait(90);
+  } catch (err) {
+    console.error('부적 뒤처리 오류', d.id, err);
+  } finally {
+    FX_TINT = null;                          /* 빛깔은 이 부적에서 끝난다 */
+    b.busy = false;
   }
-  syncAll();
-  await wait(90);
-  FX_TINT = null;                            /* 빛깔은 이 부적에서 끝난다 */
-  b.busy = false;
   if (!b.over) { await checkDeaths(); syncAll(); await checkOver(); }
 }
 
@@ -8094,10 +8099,10 @@ async function checkDeaths() {
      ① 살아 있는 요괴가 없는데 끝나지 않았다
      ② 끝났다고 표시됐는데 전투가 치워지지 않았다
    ══════════════════════════════════════════════════════════ */
-let _bw = null, _bwDead = 0, _bwOver = 0;
+let _bw = null, _bwDead = 0, _bwOver = 0, _bwBusy = 0;
 function battleWatch(on) {
   if (_bw) { clearInterval(_bw); _bw = null; }
-  _bwDead = 0; _bwOver = 0;
+  _bwDead = 0; _bwOver = 0; _bwBusy = 0;
   if (!on) return;
   _bw = setInterval(async () => {
     const b = G.b;
@@ -8124,6 +8129,18 @@ function battleWatch(on) {
         else if (!$('#overlay').children.length) { try { showRewards(kind); } catch (e) { showMap(); } }
       }
     } else _bwOver = 0;
+    /* ③ busy 가 풀리지 않아 아무것도 못 한다 —
+       부적을 내다 중간에서 터지면 이 자물쇠가 걸린 채 남는다.
+       자동이든 손이든 「턴 종료」조차 눌리지 않으니 여기서 풀어 준다. */
+    if (b.busy && !b.over) {
+      if (++_bwBusy >= 8) {                 /* 3.2초 */
+        _bwBusy = 0;
+        console.warn('전투 감시견: busy 가 굳어 풀어 준다');
+        b.busy = false;
+        try { syncAll(); } catch (e) {}
+        if (AUTO.on) toast('막힌 자리를 풀었다');
+      }
+    } else _bwBusy = 0;
   }, 400);
 }
 async function checkOver() {
@@ -8284,6 +8301,8 @@ function autoBattleStep() {
     return;
   }
   AUTO.turns++;
+  /* 자물쇠가 걸려 있으면 턴 종료조차 되돌아 나온다 — 그 자리에서 푼다 */
+  if (b.busy && !b.over) { b.busy = false; syncAll(); }
   endTurn();
 }
 /* 타일의 g-<등급> 딱지에서 서열을 읽는다 */
@@ -10872,37 +10891,33 @@ const LAST_ACT = 25;
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
    ────────────────────────────────────────────────────────── */
 const ACT_SCALE = {
-  1: { hp: 0.97, dmg: 0.97 },              /* 첫 막만 그대로 둔다 */
-  2: { hp: 1.06, dmg: 1.03 },              /* 첫 막 바로 뒤라 계단을 낮춘다 */
-  3: { hp: 1.18, dmg: 1.12 },
-  4: { hp: 1.41, dmg: 1.25 },              /* 여기서부터가 본격이다 */
-  5: { hp: 1.63, dmg: 1.34 },
-  6: { hp: 1.85, dmg: 1.43 },
-  7: { hp: 2.08, dmg: 1.51 },
-  8: { hp: 2.35, dmg: 1.62 },
-  /* 「나(我)」와 「백귀야행」 — 여기서 벽이 너무 가팔라 계단을 낮췄다 */
-  9: { hp: 2.50, dmg: 1.66 },
-  /* ── 제10막 뒤로 계단을 눕혔다 ─────────────────────────
-     여기서부터 너무 세다는 말을 들었다. 오르는 기울기를
-     체력은 막마다 4.5%, 피해는 2.1%로 낮췄다.
-     제25막에서 체력 7.96→5.04, 피해 2.94→2.30 —
-     둘을 곱한 몸무게로는 절반이다.
+  1: { hp: 0.86, dmg: 0.62 },              /* 첫 막 */
+  2: { hp: 0.92, dmg: 0.66 },
+  3: { hp: 0.98, dmg: 0.69 },
+  4: { hp: 1.05, dmg: 0.72 },              /* 여기서부터가 본격이다 */
+  5: { hp: 1.12, dmg: 0.75 },
+  6: { hp: 1.18, dmg: 0.78 },
+  7: { hp: 1.24, dmg: 0.80 },
+  8: { hp: 1.30, dmg: 0.82 },
+  /* 「나(我)」와 「백귀야행」 */
+  9: { hp: 1.36, dmg: 0.84 },
+  /* ── 제10막 뒤로 계단을 완만히 폈다 ─────────────────────
+     제20막을 45% 깎았더니 앞막이 뒷막보다 세지는 뒤집힘이 났다.
+     제10막부터 끝까지 한 줄로 다시 잡아, 오르는 맛은 남기되
+     제25막이 언제나 가장 무겁게 했다.
      ────────────────────────────────────────────────────── */
-  10:{ hp: 2.60, dmg: 1.68 },
-  11:{ hp: 2.72, dmg: 1.72 },
-  12:{ hp: 2.84, dmg: 1.75 },
-  13:{ hp: 2.97, dmg: 1.79 },
-  14:{ hp: 3.10, dmg: 1.83 },
-  15:{ hp: 3.24, dmg: 1.86 },
+  10:{ hp: 1.42, dmg: 0.86 },
+  11:{ hp: 1.49, dmg: 0.88 },
+  12:{ hp: 1.56, dmg: 0.90 },
+  13:{ hp: 1.63, dmg: 0.91 },
+  14:{ hp: 1.70, dmg: 0.93 },
+  15:{ hp: 1.77, dmg: 0.95 },
   /* 무(無)를 넘어선 뒤 — 산이 문을 연 까닭까지 간다 */
-  16:{ hp: 3.39, dmg: 1.90 },
-  17:{ hp: 3.54, dmg: 1.94 },
-  18:{ hp: 3.70, dmg: 1.98 },
-  19:{ hp: 3.87, dmg: 2.03 },
-  /* ── 제20막 뒤로 요괴를 반쯤 덜어 냈다 ─────────────────
-     사신도의 요괴가 너무 세다는 말을 들었다.
-     체력도 피해도 앞서 값에서 45%를 깎았다.
-     ────────────────────────────────────────────────────── */
+  16:{ hp: 1.85, dmg: 0.97 },
+  17:{ hp: 1.92, dmg: 0.99 },
+  18:{ hp: 1.99, dmg: 1.01 },
+  19:{ hp: 2.07, dmg: 1.03 },
+  /* 산 너머 — 벗을 찾아가는 다섯 막 */
   20:{ hp: 2.15, dmg: 1.06 },
   21:{ hp: 2.17, dmg: 1.06 },
   22:{ hp: 2.20, dmg: 1.07 },
@@ -16808,9 +16823,6 @@ function bgSkyArt(a) {
     /* 사신도 — 찢어진 그림 속에서 그것이 이쪽을 본다.
        종이는 삭았고, 낙관은 피처럼 번졌고, 사신은 눈이 없다. */
     return `<defs>
-        <radialGradient id="sdeye"><stop offset="0%" stop-color="#ff2d3a"/>
-          <stop offset="55%" stop-color="#7a0a14" stop-opacity=".8"/>
-          <stop offset="100%" stop-color="#7a0a14" stop-opacity="0"/></radialGradient>
         <radialGradient id="sdhalo"><stop offset="0%" stop-color="#2a0a12" stop-opacity=".9"/>
           <stop offset="100%" stop-color="#2a0a12" stop-opacity="0"/></radialGradient>
       </defs>
@@ -16819,19 +16831,23 @@ function bgSkyArt(a) {
       <ellipse cx="500" cy="250" rx="440" ry="300" fill="url(#sdhalo)"/>
       <circle cx="500" cy="120" r="74" fill="none" stroke="#3a2a24" stroke-width="3" opacity=".4"/>
       <circle cx="500" cy="120" r="58" fill="#1a0e0c" opacity=".55"/>
-      <g opacity=".9">
-        <path d="M500,158 q-96,54 -110,190 q-8,74 22,140 q34,74 88,88 q54,-14 88,-88
-                 q30,-66 22,-140 q-14,-136 -110,-190 Z" fill="#07050a"/>
-        <path d="M500,152 q-58,34 -76,96 q22,-34 76,-40 q54,6 76,40 q-18,-62 -76,-96 Z"
-          fill="#120a12" opacity=".9"/>
-        <ellipse cx="500" cy="236" rx="54" ry="62" fill="#0a0508"/>
-        <ellipse cx="478" cy="228" rx="12" ry="16" fill="url(#sdeye)"/>
-        <ellipse cx="522" cy="228" rx="12" ry="16" fill="url(#sdeye)"/>
-        <path d="M470,272 q30,16 60,0" stroke="#5a1018" stroke-width="2.4" fill="none" opacity=".8"/>
-        <g opacity=".75" stroke="#07050a" stroke-width="9" stroke-linecap="round" fill="none">
-          <path d="M420,300 q-118,26 -166,140"/><path d="M580,300 q118,26 166,140"/></g>
-        <g opacity=".5" stroke="#2a1018" stroke-width="2" fill="none">
-          ${rep(7, i => `<path d="M${430 + i * 24},330 q${-8 + i * 3},90 ${-22 + i * 7},220"/>`)}</g>
+      <g opacity=".95">
+        <!-- 망토 — 어깨에서 발치까지 한 자락으로 흘러내린다 -->
+        <path d="M500,150 q-104,44 -128,168 q-24,124 -12,254 q4,28 30,28 l220,0
+                 q26,0 30,-28 q12,-130 -12,-254 q-24,-124 -128,-168 Z" fill="#050407"/>
+        <!-- 두건 — 안은 비어 있다 -->
+        <path d="M500,146 q-70,30 -84,110 q42,-46 84,-46 q42,0 84,46 q-14,-80 -84,-110 Z" fill="#0b0810"/>
+        <path d="M500,178 q-52,10 -58,74 q-4,44 26,66 q32,-18 32,-70 q0,52 32,70
+                 q30,-22 26,-66 q-6,-64 -58,-74 Z" fill="#000"/>
+        <!-- 소매 — 양쪽으로 늘어진다 -->
+        <path d="M394,262 q-96,44 -128,158 q54,-72 132,-96 Z" fill="#050407"/>
+        <path d="M606,262 q96,44 128,158 q-54,-72 -132,-96 Z" fill="#050407"/>
+        <!-- 옷자락의 결 -->
+        <g opacity=".45" stroke="#15101c" stroke-width="2.5" fill="none" stroke-linecap="round">
+          ${rep(6, i => `<path d="M${432 + i * 28},300 q${-6 + i * 2.4},96 ${-14 + i * 5.6},296"/>`)}
+        </g>
+        <!-- 발치에 고이는 어둠 -->
+        <ellipse cx="500" cy="600" rx="180" ry="34" fill="#050407" opacity=".8"/>
       </g>
       <g opacity=".55" stroke="#8a1a2a" stroke-width="2.4" fill="none" stroke-linecap="round">
         <path d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26"/></g>
