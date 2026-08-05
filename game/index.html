@@ -2216,6 +2216,15 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .elrow .elrel b{font-size:11.5px}
 .dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
 .dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
+/* ── 관리자의 컷씬 고르기 ─────────────────────────────────── */
+.cutgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;
+  width:min(560px,92vw);max-height:min(52vh,420px);overflow-y:auto;padding:2px;margin:8px 0}
+.cuttile{padding:10px 12px;border-radius:9px;cursor:pointer;text-align:left;
+  background:rgba(10,8,4,.5);border:1px solid rgba(220,190,120,.24);transition:.14s}
+.cuttile:hover{background:rgba(226,189,99,.18);border-color:rgba(226,189,99,.5)}
+.cuttile b{display:block;font-size:12.8px;font-weight:400;color:#f2e6cc;word-break:keep-all}
+.cuttile small{display:block;font-size:10.5px;color:#9a8d74;margin-top:3px}
+.adrow .val.yes{background:#7d1e22;border-color:#c2483e;color:#ffe6c8}
 /* ── 전투 기록(記) ────────────────────────────────────────── */
 /* 버린 더미와 겹쳐서 위로 옮겼다 — 상단바 바로 아래 오른쪽 */
 #blogbtn{position:absolute;right:20px;top:74px;z-index:12;width:38px;height:38px;border-radius:10px;
@@ -7553,6 +7562,8 @@ function calcAtk(src, tgt, base) {
   }
   if (src.s.weak) d = Math.floor(d * .75);
   if (tgt.s.vuln) d = Math.floor(d * 1.5);
+  /* 관리자 — 한 방 */
+  if (ADMIN.oneHit && src.isPlayer && !tgt.isPlayer) return 99999;
   return Math.max(0, Math.floor(d));
 }
 /* 실제 피해 적용. {hp: 체력으로 들어간 피해, blocked: 막은 양} */
@@ -15368,6 +15379,8 @@ const CODES = {
 };
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
 const ADMIN_CODE = '031675mj-156fy';
+/* 관리자 손잡이 — 개발용. 제출 전에 CODES 와 함께 지운다 */
+const ADMIN = { oneHit: false };
 function adminOn() { return !!(META.codes && META.codes[ADMIN_CODE]); }
 function showAdmin() {
   const run = G.run;
@@ -15394,6 +15407,10 @@ function showAdmin() {
         <div class="adrow"><b>체력</b><button class="val" id="ad_hp">가득</button></div>
         <div class="adrow"><b>기</b><button class="val" id="ad_qi">+3</button></div>
         <div class="adrow"><b>전부</b><button class="val" id="ad_all">부적·유물·비기·스킨·팻</button></div>
+        <div class="adrow"><b>보스</b><button class="val" id="ad_boss">이 막 보스와 붙는다</button></div>
+        <div class="adrow"><b>한 방</b><button class="val" id="ad_onehit">요괴를 한 대에 눕힌다</button></div>
+        <div class="adrow"><b>컷씬</b><button class="val" id="ad_cut">골라 본다</button></div>
+        <div class="adrow"><b>이야기</b><button class="val" id="ad_story">처음부터 끝까지</button></div>
       </div>
       <div class="scmain">
         <div class="adtabs">
@@ -15481,7 +15498,60 @@ function showAdmin() {
     saveMeta(); if (run) saveRun(); renderTop();
     SND.unlock(); toast('전부 넣었다');
   };
+  /* ── 보스와 바로 붙는다 ── */
+  p.querySelector('#ad_boss').onclick = () => {
+    if (!run) { SND.err(); toast('모험 중에만'); return; }
+    if (G.b) { G.b.over = true; G.b = null; }
+    closePanel(p);
+    run.bossPick = null;
+    startBattle([bossOf(run)], 'boss');
+  };
+  /* ── 요괴를 한 대에 ── */
+  p.querySelector('#ad_onehit').onclick = e => {
+    ADMIN.oneHit = !ADMIN.oneHit;
+    e.target.textContent = ADMIN.oneHit ? '켜짐 — 한 대에 눕는다' : '요괴를 한 대에 눕힌다';
+    e.target.classList.toggle('yes', ADMIN.oneHit);
+    SND.ui(); toast(ADMIN.oneHit ? '한 방 — 켜짐' : '한 방 — 꺼짐');
+  };
+  /* ── 컷씬만 골라 본다 ── */
+  p.querySelector('#ad_cut').onclick = () => showStoryPicker();
+  /* ── 이야기를 처음부터 끝까지 ── */
+  p.querySelector('#ad_story').onclick = async () => {
+    closePanel(p);
+    const keys = Object.keys(STORY);
+    for (const k of keys) { await showStory(k); }
+    toast('이야기를 다 보았다');
+    if (G.run && G.scene === 'map') showMap(); else showTitle();
+  };
   p.querySelector('#ad_back').onclick = () => { closePanel(p); if (G.run && G.scene === 'map') showMap(); };
+}
+/* 컷씬 하나를 골라 본다 */
+const STORY_LABEL = {
+  opening: '여는 이야기', end_taecho: '끝 — 태초', end_mugan: '끝 — 무간',
+  end_blackdragon: '끝 — 흑룡', end_yeomra: '끝 — 염라', end_sasindo: '끝 — 사신도',
+  act3_blackdragon: '제3막 — 흑룡', act3_yeomra: '제3막 — 염라'
+};
+function storyLabel(k) {
+  if (STORY_LABEL[k]) return STORY_LABEL[k];
+  const m = /^act(\d+)$/.exec(k);
+  if (m) return `제${m[1]}막 — ${ACT_NAME[+m[1]] || ''}`;
+  return k;
+}
+function showStoryPicker() {
+  const keys = Object.keys(STORY);
+  const p = modal(`<h2>컷 씬</h2>
+    <div class="hint">${keys.length}개 · 눌러서 본다</div>
+    <div class="cutgrid" id="cut_grid"></div>
+    <button class="brush-btn ghost" id="cut_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>`);
+  p.dataset.noauto = '1';
+  const g = p.querySelector('#cut_grid');
+  for (const k of keys) {
+    const pages = STORY[k] || [];
+    const t = el('div', 'cuttile', `<b>${storyLabel(k)}</b><small>${pages.length}쪽 · ${k}</small>`);
+    t.onclick = async () => { closeTop(); await showStory(k); showStoryPicker(); };
+    g.appendChild(t);
+  }
+  p.querySelector('#cut_x').onclick = closeTop;
 }
 /* ══════════════════════════════════════════════════════════
    공지사항(告) — 산에 붙은 방(榜)
