@@ -4752,40 +4752,7 @@ defCard({ id: 'stormfall', n: '만뢰붕락', g: '霆', type: 'attack', rar: 'ss
     syncAll();
   } });
 
-defCard({ id: 'janggi', n: '장기(將棋)', g: '將', type: 'skill', rar: 'unknown', cost: 2, tgt: 'all', exhaust: true,
-  v: u => ({ p: u ? 65 : 50, c: 60 }),
-  txt: v => `<b>${v.p}%</b> 확률로 <b>모든 적</b>의 체력을 <em>${v.c}%</em> 깎는다.<br>
-    빗나가면 카드를 2장 뽑고 기를 2 얻는다. 소멸.`,
-  play: async c => {
-    skillBanner('將 棋', true);
-    SND.jgMove(); await wait(220);
-    const hit = rnd() * 100 < c.v.p;
-    if (!hit) {
-      SND.err(); floatText(P(), '빗나갔다', '');
-      screenFlash('rgba(90,90,120,.4)', 420);
-      drawCards(2); energy(2); syncAll();
-      return;
-    }
-    SND.jgWin(); SND.gong();
-    screenFlash('radial-gradient(circle,rgba(255,255,255,.85),rgba(120,60,220,.7))', 780);
-    shake(true); hitstop(true);
-    for (const e of alive()) {
-      impact('void', e);
-      pure(e, Math.ceil(e.hp * c.v.c / 100));
-      FX.burst(centerOf(e.el).x, centerOf(e.el).y, 30, '150,90,255', 7, 50, 5);
-      await wait(120);
-    }
-    syncAll();
-  } });
-
-/* ══════════════════════════════════════════════════════════
-   또 한 벌 — 스물다섯 막을 걷자니 손이 심심하다
-   ──────────────────────────────────────────────────────────
-   3등급 열, 2등급 열, 1등급 여덟, S급 여섯, SSC급 넷, SSX급 넷.
-   서른둘. 새 상태를 만들지 않고 있는 것들끼리 엮어 결을 낸다.
-   ══════════════════════════════════════════════════════════ */
-
-/* ---------- 3등급 ---------- */
+/* ?급 장기 부적은 장기 상점과 함께 걷어 냈다 */
 defCard({ id: 'hookstrike', n: '갈고리치기', g: '鉤', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
   v: u => ({ d: u ? 9 : 7 }),
   txt: v => `<em>${v.d}</em>의 피해를 준다. 적의 방어도가 있으면 그 방어도를 <b>모두 깎는다</b>.`,
@@ -8825,7 +8792,6 @@ function showPlaces() {
   add('shop', '商', '떠돌이 상점', '부적 · 유물 · 물약을 산다', G.b ? 'lock' : '', () => openShop());
   add('arena', '鬪', '대전투장', arena ? '들어갈 수 있다' : `SSX급 ${ARENA_REQ}종 필요 (지금 ${ssxCount()}종)`,
     arena ? 'hot' : 'lock', () => openArena());
-  add('janggi', '將', '장기 상점', '노인과 한 판 · 이기면 상자', G.b ? 'lock' : '', () => openJanggi());
   add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
@@ -10583,7 +10549,7 @@ const CARD_FX = {
   skyweb: 'wind', cleaver: 'slash2', purgatory: 'fire', kalpa: 'fire', genesis: 'void',
   sandkick: 'wind', emberseal: 'fire', scatterbomb: 'fire', siphon: 'void', quickdraw: 'slash',
   windwheel: 'spin', soulbind: 'talisman', wolffang: 'claw', stormfall: 'lightning',
-  needle: 'pierce', twinfang: 'claw', graspwind: 'wind', venomfog: 'poison', janggi: 'void'
+  needle: 'pierce', twinfang: 'claw', graspwind: 'wind', venomfog: 'poison'
 };
 /* 이름을 크게 띄울 만한 카드 (희귀 이상이거나 무거운 것) */
 function worthBanner(card) {
@@ -10920,15 +10886,15 @@ function migrateMap(run) {
   run.mapCur = -1; run.mapDone = [];
   run.floor = 0;
 }
-const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', janggi: '將', boss: '魔' };
-const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', janggi: '장기 상점', boss: '보스' };
+const NODE_ICON = { battle: '刀', elite: '鬼', rest: '火', shop: '商', event: '?', treasure: '寶', special: '匣', boss: '魔' };
+const NODE_NAME = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '떠돌이 상인', event: '수상한 일', treasure: '보물', special: '특별 상자!', boss: '보스' };
 /* 지도에 바로 적어 넣는 짧은 이름 — 짚어 보지 않아도 읽히게 */
-const NODE_SHORT = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '상인', event: '수상한 일', treasure: '보물', special: '특별 상자', janggi: '장기', boss: '보스' };
+const NODE_SHORT = { battle: '요괴', elite: '엘리트', rest: '야영지', shop: '상인', event: '수상한 일', treasure: '보물', special: '특별 상자', boss: '보스' };
 /* 칸을 짚었을 때 한 줄로 알려 주는 말 */
 const NODE_HINT = { battle: '싸움 한 판. 이기면 부적과 돈.', elite: '굵은 놈. 대신 유물을 내어 준다.',
   rest: '체력을 30% 되찾거나 부적 한 장을 벼린다.', shop: '부적·유물·물약을 판다. 하나는 지울 수도.',
   event: '무슨 일이 있을지는 가 봐야 안다.', treasure: '유물 하나가 그냥 놓여 있다.',
-  special: '특대급 상자를 연다.', janggi: '노인과 장기 한 판. 이기면 상자.',
+  special: '특대급 상자를 연다.',
   boss: '이 막의 끝. 넘으면 다음 막으로.' };
 
 /* ══════════════════════════════════════════════════════════
@@ -12117,15 +12083,9 @@ function jgEnd(win) {
   }
 }
 /* ── 장기 상자 ──────────────────────────────────────────── */
-const JANGGI_CARD_CHANCE = 0.01;                        /* ?급 '장기' 부적 */
+/* ?급 장기 부적은 걷어 냈다 — 상자에서도 나오지 않는다 */
 function janggiLoot() {
   const run = G.run;
-  if (rnd() < JANGGI_CARD_CHANCE) {
-    const c = mkCard('janggi', false);
-    return { g: '將', n: '장기(將棋)', grade: 'unknown', jackpot: true,
-      d: `<b style="color:#7b4bd8">?급</b> — ` + CARDS.janggi.txt(CARDS.janggi.v(false), false).replace(/<[^>]+>/g, ''),
-      take: () => { run.deck.push(c); run.stats.cards++; dexAdd('cards', 'janggi'); } };
-  }
   const r = rnd();
   if (r < .18 && GRADE_POOL.special.length) {
     const id = pick(GRADE_POOL.special);
@@ -15071,9 +15031,11 @@ function showBattleLog() {
   p.querySelector('#bl_close').onclick = closeTop;
 }
 
-/* ── 기권(棄權) — 이 싸움만 내려놓는다 ────────────────────
-   보스 앞에서는 물러설 수 없다. 그 밖의 싸움은
-   체력 얼마와 골드를 내고 갈림길 앞으로 돌아간다.
+/* ── 라운드 포기 ──────────────────────────────────────────
+   이 칸을 내려놓고 <갈림길로 되돌아간다.>
+   넘어가는 것이 아니다 — 밟기 전으로 돌아가 다시 고른다.
+   그 값으로 체력과 골드를 문다. 보상은 없다.
+   보스 앞에서는 물러설 수 없다.
    ────────────────────────────────────────────────────────── */
 const YIELD_HP = 0.18;                        /* 최대 체력의 이만큼을 잃는다 */
 const YIELD_GOLD = 60;
@@ -15081,22 +15043,24 @@ function askYield() {
   const b = G.b, run = G.run;
   if (!b || b.over || !run) { SND.err(); toast('싸우는 중이 아니다'); return; }
   if (b.kind === 'boss') { SND.err(); toast('보스 앞에서는 물러설 수 없다'); return; }
-  if (b.kind === 'arena' || b.kind === 'colo') { SND.err(); toast('여기서는 기권할 수 없다 — 나가기를 쓰시오'); return; }
+  if (b.kind === 'arena' || b.kind === 'colo') { SND.err(); toast('여기서는 포기할 수 없다 — 나가기를 쓰시오'); return; }
+  if (!G.cp) { SND.err(); toast('돌아갈 갈림길이 없다'); return; }
   const hp = Math.max(1, Math.round(run.maxHp * YIELD_HP));
   const gold = Math.min(YIELD_GOLD, run.gold);
-  const p = modal(`<h2>기 권 (棄 權)</h2>
-    <div class="hint">이 싸움을 내려놓고 갈림길 앞으로 물러선다</div>
+  const p = modal(`<h2>라 운 드 포 기</h2>
+    <div class="hint">이 칸을 내려놓고 <b>밟기 전 갈림길로 되돌아간다</b></div>
     <div class="yieldbox">
-      <div class="ybg">棄</div>
+      <div class="ybg">退</div>
       <div class="ybt">
-        <p>싸움에서 물러서면 <b>이 칸의 보상은 없다.</b> 그래도 목숨은 건진다.</p>
+        <p>다음 칸으로 넘어가지 않는다. <b>갈림길로 되돌아가</b> 다시 고른다.<br>
+          이 칸의 보상은 없다. 그래도 목숨은 건진다.</p>
         <div class="ybrow"><span>잃는 체력</span><b>${hp}</b><em>(${run.hp} → ${Math.max(1, run.hp - hp)})</em></div>
         <div class="ybrow"><span>잃는 골드</span><b>${gold}</b><em>(${run.gold} → ${run.gold - gold})</em></div>
         <span class="ybwarn">체력이 그보다 적으면 1만 남는다 · 보스 앞에서는 물러설 수 없다</span>
       </div>
     </div>
     <div style="display:flex;gap:10px;margin-top:14px">
-      <button class="brush-btn red" id="yl_go" style="flex:1">물러선다</button>
+      <button class="brush-btn red" id="yl_go" style="flex:1">되돌아간다</button>
       <button class="brush-btn ghost" id="yl_x" style="color:#e9dfc9;border-color:#8a7f68">계속 싸운다</button>
     </div>`);
   p.dataset.noauto = '1';
@@ -15104,20 +15068,29 @@ function askYield() {
   p.querySelector('#yl_x').onclick = closeTop;
 }
 function doYield(hp, gold) {
-  const b = G.b, run = G.run; if (!b || !run) return;
-  autoStop('기권했다');
+  const b = G.b; if (!b || !G.run) return;
+  autoStop('라운드를 포기했다');
   battleWatch(false);
   b.over = true;
-  run.hp = Math.max(1, run.hp - hp);
-  run.gold = Math.max(0, run.gold - gold);
-  run.inBattle = false; run.inElite = false;
-  /* 밟기 전으로 되돌린다 — 그 칸은 지나간 것으로 치되 보상은 없다 */
   fire('battleEnd', 'flee');
   incenseBurn();
   G.b = null;
+  /* 밟기 전으로 되돌린다 — 그 칸은 아직 지나지 않은 것이 된다 */
+  let cp = null;
+  try { cp = G.cp ? JSON.parse(G.cp) : null; } catch (e) { cp = null; }
+  if (cp) adoptRun(cp);
+  else if (G.run.mapDone && G.run.mapDone.length) {   /* 표시점이 없으면 손으로 물린다 */
+    G.run.mapDone.pop();
+    G.run.mapCur = G.run.mapDone.length ? G.run.mapDone[G.run.mapDone.length - 1] : -1;
+    G.run.floor = Math.max(0, G.run.floor - 1);
+  }
+  const run = G.run;
+  run.hp = Math.max(1, run.hp - hp);
+  run.gold = Math.max(0, run.gold - gold);
+  run.inBattle = false; run.inElite = false;
   SND.err(); screenFlash('rgba(120,110,130,.34)', 520);
-  flash('기 권');
-  toast(`물러섰다 — 체력 ${hp}, 골드 ${gold}를 잃었다`);
+  flash('물 러 섰 다');
+  toast(`갈림길로 되돌아왔다 — 체력 ${hp}, 골드 ${gold}를 잃었다`);
   saveRun(); renderTop(); showMap();
 }
 function gameOver() {
@@ -15277,7 +15250,7 @@ function showMenu() {
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
       ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
-      ${G.b && !G.b.over ? '<button class="brush-btn red" id="m_yield">이 싸움을 기권한다</button>' : ''}
+      ${G.b && !G.b.over ? '<button class="brush-btn red" id="m_yield">라운드 포기 (갈림길로)</button>' : ''}
       <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
