@@ -2216,6 +2216,18 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .elrow .elrel b{font-size:11.5px}
 .dextile.inctile .g{color:var(--gdc)!important;text-shadow:0 0 14px var(--gdc)}
 .dextile.inctile.lit{box-shadow:0 0 0 2px var(--gdc),0 0 18px var(--gdc)}
+/* ── 수상한 일의 결과 한 줄 ───────────────────────────────── */
+.evtpop{position:fixed;transform:translate(-50%,-50%);z-index:46;pointer-events:none;
+  font-size:17px;letter-spacing:.08em;color:var(--ec,#f2e6cc);white-space:nowrap;
+  text-shadow:0 0 18px var(--ec,#f2e6cc),0 2px 8px rgba(0,0,0,.9);
+  animation:evtPop 1.15s cubic-bezier(.2,1,.3,1) forwards}
+@keyframes evtPop{0%{opacity:0;transform:translate(-50%,-20%) scale(.7)}
+  18%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+  32%{transform:translate(-50%,-50%) scale(1)}
+  74%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-140%) scale(.96)}}
+.evtbox .opt.picked{background:linear-gradient(120deg,rgba(226,189,99,.3),rgba(160,120,50,.18));
+  border-color:rgba(226,189,99,.7);transform:translateX(4px)}
 /* ── 관리자의 컷씬 고르기 ─────────────────────────────────── */
 .cutgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;
   width:min(560px,92vw);max-height:min(52vh,420px);overflow-y:auto;padding:2px;margin:8px 0}
@@ -2807,8 +2819,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 /* 장면이 천천히 밀려든다 */
 .story .sart{animation:artIn 1.1s ease-out}
 @keyframes artIn{0%{opacity:0;transform:scale(1.08)}100%{opacity:.9;transform:none}}
-.story .snext{position:absolute;bottom:44px;color:#9d9077;font-size:13px;letter-spacing:.24em;
-  animation:hintBlink 1.3s ease-in-out infinite;z-index:2}
+/* 아래 검은 띠(52px)에 글자가 반쯤 잘리던 것을 띄운다 */
+.story .snext{position:absolute;bottom:68px;color:#9d9077;font-size:13px;letter-spacing:.24em;
+  animation:hintBlink 1.3s ease-in-out infinite;z-index:4}
 .story .sskip{position:absolute;top:20px;right:24px;z-index:3;padding:7px 16px;border-radius:5px;font-size:13px;
   color:#c9bda2;background:rgba(255,255,255,.06);border:1px solid rgba(200,180,140,.3);letter-spacing:.1em}
 .story .sskip:hover{background:rgba(255,255,255,.14);color:#f2e9d3}
@@ -9981,6 +9994,8 @@ function friendBreak() {
   const old = $('#friendsay'); if (old) old.remove();
   SND.err(); SND.hiss({ dur: .9, vol: .12, freq: 1800, to: 200, filter: 'bandpass', q: 1.4, rev: .6 });
   screenFlash('rgba(60,90,120,.4)', 800);
+  /* 자동으로 돌 때는 창을 띄우지 않는다 — 스스로 닫지 못해 굳던 자리였다 */
+  if (AUTO.on) { toast('통 부적이 끊겼다'); return; }
   const p = modal(`<h2>통(通) 부적이 끊겼다</h2>
     <div class="friendcut"><div class="fcg">${FRIEND.g}</div>
       <div class="fct">"…야. 여기 뭔가 이상해."<br>
@@ -9990,7 +10005,11 @@ function friendBreak() {
     <div class="hint">벗의 부적이 타 버렸다. 이제 훈수는 없다.</div>
     <button class="brush-btn red" id="fb_ok">…단오야</button>`);
   p.dataset.noauto = '1';
-  p.querySelector('#fb_ok').onclick = closeTop;
+  /* 끊긴 그 자리의 이야기를 이어서 보여 준다 */
+  p.querySelector('#fb_ok').onclick = () => {
+    closeTop();
+    showStory('mugan_lost').then(() => { if (G.b) { setBg(); syncAll(); } });
+  };
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -11249,7 +11268,12 @@ function enterNode(n) {
         setTimeout(() => { if (G.b) friendBreak(); }, 1400);
       break;
     }
-    case 'boss': startBattle([bossOf(run)], 'boss'); break;
+    case 'boss':
+      startBattle([bossOf(run)], 'boss');
+      /* 정예를 한 번도 밟지 않고 올라온 사람에게도 한 번은 온다 */
+      if (run.act >= FRIEND_LOST && !run.friendLost)
+        setTimeout(() => { if (G.b) friendBreak(); }, 1400);
+      break;
     case 'rest': showRest(); break;
     case 'shop': restockShop(); showShop(); break;
     case 'treasure': showTreasure(); break;
@@ -14522,13 +14546,112 @@ function showEvent() {
     if (o.dis) b.disabled = true;
     b.onclick = async () => {
       box.querySelectorAll('button').forEach(x => x.disabled = true);
+      const was = evtSnap(run);              /* 무엇이 달라지는지 앞뒤로 재어 둔다 */
+      b.classList.add('picked');
+      SND.ui();
       await o.do();
+      await evtFx(run, was, b);              /* 달라진 만큼 연출을 얹는다 */
       renderTop(); closeOverlay(); saveRun();
       if (run._forceElite) { run._forceElite = false; startBattle(pick(ENCOUNTERS[run.act].elite), 'elite'); }
       else showMap();
     };
     box.appendChild(b);
   });
+}
+
+/* ══════════════════════════════════════════════════════════
+   수상한 일의 연출 — 고른 값을 앞뒤로 재어 그만큼 보여 준다
+   ──────────────────────────────────────────────────────────
+   사건마다 손으로 연출을 붙이면 스물몇 자리를 다 손봐야 한다.
+   대신 고르기 <전후>를 재어, 달라진 것에 맞는 연출을 자동으로 얹는다.
+   체력이 늘면 푸른 빛, 줄면 붉은 빛. 골드는 금빛 동전,
+   부적은 종이 한 장이 날아들고, 유물은 종이 울린다.
+   ══════════════════════════════════════════════════════════ */
+function evtSnap(r) {
+  return { hp: r.hp, maxHp: r.maxHp, gold: r.gold, dia: r.dia || 0,
+    deck: r.deck.length, relics: r.relics.length, pots: r.potions.length,
+    jp: META.jp || 0, skills: (r.skills || []).length, curse: r.curse ? 1 : 0,
+    elite: !!r._forceElite };
+}
+async function evtFx(r, was, btn) {
+  const now = evtSnap(r);
+  const at = btn ? centerOf(btn) : { x: innerWidth / 2, y: innerHeight * .6 };
+  const mid = { x: innerWidth / 2, y: innerHeight * .42 };
+  let any = false;
+  const wait2 = ms => new Promise(x => setTimeout(x, ms));
+
+  /* ── 다치거나 나았거나 ── */
+  const dh = now.hp - was.hp, dm = now.maxHp - was.maxHp;
+  if (dh > 0 || dm > 0) {
+    any = true;
+    SND.heal(); screenFlash('rgba(90,220,170,.3)', 560);
+    if (OPT.particles) FX.burst(mid.x, mid.y, 26, '90,220,170', 4.4, 56, 4);
+    evtPop(`체력 +${dh > 0 ? dh : dm}`, '#7fe6b0', mid);
+  } else if (dh < 0) {
+    any = true;
+    SND.hurt ? SND.hurt() : SND.err();
+    screenFlash('rgba(200,50,60,.34)', 520); shake(true);
+    if (OPT.particles) FX.blood(mid.x, mid.y, 24);
+    evtPop(`체력 ${dh}`, '#e2777a', mid);
+  }
+  if (dm < 0) { evtPop(`최대 체력 ${dm}`, '#e2777a', { x: mid.x, y: mid.y + 40 }); any = true; }
+
+  /* ── 돈 ── */
+  const dg = now.gold - was.gold, dd = now.dia - was.dia;
+  if (dg > 0) { any = true; SND.coinRain(Math.min(20, dg / 12));
+    if (OPT.particles) FX.gold(at.x, at.y, 22);
+    flyGet('金 +' + dg, '#ffd76a', '#goldv'); }
+  else if (dg < 0) { any = true; SND.coin(); evtPop(`골드 ${dg}`, '#e2777a', at); }
+  if (dd > 0) { any = true; SND.coinRain(6); flyGet('玉 +' + dd, '#6fd0e8', '#diav'); }
+
+  /* ── 부적 ── */
+  const dc = now.deck - was.deck;
+  if (dc > 0) { any = true; SND.card ? SND.card() : SND.unlock();
+    SND.hiss({ dur: .2, vol: .06, freq: 2600, to: 800, filter: 'bandpass', q: 1.1 });
+    if (OPT.particles) FX.ink(mid.x, mid.y, 18);
+    evtPop(`부적 +${dc}`, '#f2e2bd', mid); }
+  else if (dc < 0) { any = true; SND.err();
+    if (OPT.particles) FX.ink(mid.x, mid.y, 14);
+    evtPop(`부적 ${dc}`, '#9a8d74', mid); }
+
+  /* ── 유물 · 물약 · 비기 ── */
+  if (now.relics > was.relics) { any = true; SND.gong(); SND.relic();
+    screenFlash('rgba(255,210,120,.34)', 620);
+    if (OPT.particles) FX.burst(mid.x, mid.y, 30, '255,200,110', 5.4, 62, 4.6);
+    evtPop('유물을 얻었다', '#ffd76a', mid); }
+  if (now.pots > was.pots) { any = true; SND.unlock(); evtPop('물약을 얻었다', '#8fe6d0', at); }
+  if (now.skills > was.skills) { any = true; SND.power(); SND.gong();
+    screenFlash('rgba(180,120,255,.34)', 700);
+    if (OPT.particles) FX.burst(mid.x, mid.y, 28, '190,140,255', 5.2, 64, 4.4);
+    evtPop('비기를 얻었다', '#dcc8ff', mid); }
+
+  /* ── 정진 ── */
+  const dj = (META.jp || 0) - was.jp;
+  if (dj > 0) { any = true; SND.unlock(); evtPop(`정진 +${dj}`, '#ffd76a', at); }
+
+  /* ── 저주 ── */
+  if (now.curse && !was.curse) { any = true; SND.err(); SND.hiss({ dur: .8, vol: .1, freq: 1600, to: 180, rev: .5 });
+    screenFlash('rgba(120,40,160,.4)', 800); shake(true);
+    if (OPT.particles) FX.burst(mid.x, mid.y, 26, '150,60,190', 5, 70, 5);
+    stampWord('저 주', '#a04ac8'); }
+
+  /* ── 엘리트가 튀어나온다 ── */
+  if (now.elite && !was.elite) { any = true; SND.gong(); SND.thunder();
+    screenFlash('rgba(200,40,50,.42)', 800); shake(true);
+    stampWord('매 복', '#c8324a'); await wait2(420); }
+
+  /* ── 아무것도 안 달라졌으면 조용히 한 번 ── */
+  if (!any) { SND.blip(520, { dur: .12, type: 'sine', vol: .05, to: 380 });
+    if (OPT.particles) FX.ink(at.x, at.y, 8); }
+  await wait2(any ? 620 : 220);
+}
+/* 사건 결과 한 줄 — 화면 가운데에 떴다 사라진다 */
+function evtPop(text, col, at) {
+  const n = el('div', 'evtpop', text);
+  n.style.setProperty('--ec', col);
+  n.style.left = at.x + 'px'; n.style.top = at.y + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 1150);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -14540,7 +14663,9 @@ function storyScene(kind) {
     hero: ['#1d1a14', '#0b0a08'], fox: ['#241016', '#0c0508'],
     tiger: ['#241a0e', '#0d0906'], dragon: ['#12141d', '#07080c'],
     gate: ['#1a1626', '#08070c'], dawn: ['#2c2418', '#100c07'],
-    abyss: ['#0c0a14', '#030206'], first: ['#3a3222', '#1a1610'] }[kind] || ['#14110d', '#080706'];
+    abyss: ['#0c0a14', '#030206'], first: ['#3a3222', '#1a1610'],
+    voidless: ['#0a0a0b', '#020203'], ash: ['#1c1410', '#080605'],
+    dano: ['#161a20', '#07090c'] }[kind] || ['#14110d', '#080706'];
   const mt = (fill, d, op) => `<path d="${d}" fill="${fill}" opacity="${op}"/>`;
   let art = '';
   switch (kind) {
@@ -14573,6 +14698,95 @@ function storyScene(kind) {
       art = `<rect width="1000" height="600" fill="#1a1610"/>${halo}${rays}
         <circle cx="500" cy="300" r="52" fill="#fffbe8"/>
         <circle cx="500" cy="300" r="52" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`;
+      break;
+    }
+    case 'voidless': {                    /* 무간 — 있어야 할 것이 없는 자리 */
+      /* 그릴 것이 없다. 그래서 「지운 자국」만 그린다. */
+      let scratch = '';
+      for (let i = 0; i < 26; i++) {
+        const y = 24 + i * 22, w = 90 + ((i * 173) % 420), x = ((i * 211) % 700) + 30;
+        scratch += `<rect x="${x}" y="${y}" width="${w}" height="${1 + (i % 2)}"
+          fill="#5c5c70" opacity="${.10 + (i % 4) * .05}"/>`;
+      }
+      /* 사람 하나가 서 있던 자리 — 지워지고 테두리만 남았다 */
+      const fig = `M488,214 a24,24 0 1,1 .1,0 M478,238 L522,238 L534,300 L534,432
+        L516,432 L512,346 L488,346 L484,432 L466,432 L466,300 Z`;
+      art = `<rect width="1000" height="600" fill="#050506"/>${scratch}
+        <g opacity=".55">
+          <path d="${fig}" fill="#050506"/>
+          <path d="${fig}" fill="none" stroke="#8a8aa0" stroke-width="1.6"
+            stroke-dasharray="7 11" opacity=".8"/>
+        </g>
+        ${[1, 2].map(i => {
+          const s = 1 - i * .22, x = 500 + i * 150;
+          return `<g opacity="${.2 - i * .06}" transform="translate(${x} ${432 * (1 - s)}) scale(${s}) translate(${-500} 0)">
+            <path d="${fig}" fill="none" stroke="#6a6a80" stroke-width="${1.4 / s}" stroke-dasharray="${6 / s} ${10 / s}"/>
+          </g>`;
+        }).join('')}
+        <line x1="0" y1="432" x2="1000" y2="432" stroke="#3a3a48" stroke-width="1" opacity=".35"/>
+        <rect x="0" y="0" width="1000" height="600" fill="url(#vg)" opacity=".85"/>
+        <defs><radialGradient id="vg" cx=".5" cy=".52" r=".78">
+          <stop offset="0" stop-color="#000" stop-opacity="0"/>
+          <stop offset=".62" stop-color="#000" stop-opacity=".45"/>
+          <stop offset="1" stop-color="#000" stop-opacity=".96"/></radialGradient></defs>`;
+      break;
+    }
+    case 'ash': {                         /* 재 — 통 부적이 타고 남은 것 */
+      let flakes = '';
+      for (let i = 0; i < 34; i++) {
+        const x = 60 + (i * 149) % 900, y = 70 + (i * 233) % 470, s = 3 + (i % 4) * 3;
+        flakes += `<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="1" fill="#6a5c4c"
+          opacity="${.12 + (i % 5) * .1}" transform="rotate(${(i * 37) % 90} ${x + s / 2} ${y + s / 2})"/>`;
+      }
+      let embers = '';
+      for (let i = 0; i < 12; i++)
+        embers += `<circle cx="${120 + (i * 181) % 780}" cy="${120 + (i * 127) % 400}"
+          r="${1.5 + (i % 3)}" fill="#e2762a" opacity="${.25 + (i % 4) * .14}"/>`;
+      /* 반쯤 탄 부적 한 장 */
+      /* 부적은 가운데 글이 앉을 자리를 비켜 왼쪽 위에 둔다 */
+      art = `<rect width="1000" height="600" fill="#0d0907"/>${flakes}${embers}
+        <g transform="translate(-208 -78) rotate(-8 500 320)">
+          <path d="M440,190 L560,190 L560,404 Q536,430 500,414 Q470,438 440,404 Z" fill="#d8c9a4" opacity=".78"/>
+          <path d="M440,330 L560,330 L560,404 Q536,430 500,414 Q470,438 440,404 Z" fill="#241a12" opacity=".85"/>
+          <path d="M440,318 Q470,344 500,314 Q532,342 560,320 L560,340 L440,340 Z" fill="#e2762a" opacity=".55"/>
+          <text x="500" y="272" text-anchor="middle" font-size="86" fill="#a8272c"
+            font-family="serif" opacity=".85">通</text>
+        </g>
+        <ellipse cx="292" cy="486" rx="180" ry="24" fill="#000" opacity=".7"/>`;
+      break;
+    }
+    case 'dano': {                        /* 단오 — 등불을 든 뒷모습, 멀어진다 */
+      /* 걸어가는 사람 하나. 발치는 늘 y=470 에 둔다. */
+      const walker = (col, sc) => {
+        const H = 190 * sc, W = 40 * sc, hd = 21 * sc, top = 470 - H;
+        return `<g fill="${col}">
+          <rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="${5 * sc}"/>
+          <circle cx="0" cy="${top - hd * .82}" r="${hd}"/>
+          <rect x="${-hd * 1.5}" y="${top - hd * 1.5}" width="${hd * 3}" height="${hd * .6}" rx="${2 * sc}"/>
+          <rect x="${W / 2 - 2 * sc}" y="${top - hd * .4}" width="${3 * sc}" height="${H + hd * .4}"
+            rx="${1.5 * sc}" transform="rotate(7 ${W / 2} ${top + H / 2})"/></g>`;
+      };
+      let echo = '';
+      for (let i = 3; i >= 1; i--) {
+        const s = 1 - i * .16, x = 500 + i * 96;
+        echo += `<g opacity="${.13 - i * .028}" transform="translate(${x} ${470 * (1 - s) * .0})">${walker('#4a7ea0', s)}</g>`;
+      }
+      /* 등불 — 손에 든 빛. 그 빛만 이쪽까지 온다. */
+      const lampX = 452, lampY = 372;
+      art = mt('#151c26', 'M0,452 L200,352 L400,442 L600,344 L800,432 L1000,372 L1000,600 L0,600 Z', .9) +
+        echo +
+        `<g transform="translate(500 0)">${walker('#090c10', 1)}</g>
+         <g><circle cx="${lampX}" cy="${lampY}" r="72" fill="#d8a24a" opacity=".035"/>
+           <circle cx="${lampX}" cy="${lampY}" r="30" fill="#d8a24a" opacity=".07"/>
+           <circle cx="${lampX}" cy="${lampY}" r="13" fill="#e8b45c" opacity=".18"/>
+           <rect x="${lampX - 6}" y="${lampY - 8}" width="12" height="17" rx="3" fill="#e8b45c" opacity=".9"/>
+           <rect x="${lampX - 8}" y="${lampY - 11}" width="16" height="4" rx="2" fill="#0a0d11"/>
+           <path d="M${lampX},${lampY - 11} L${lampX},${lampY - 26} L481,${lampY - 34}"
+             fill="none" stroke="#0a0d11" stroke-width="2"/></g>
+         <ellipse cx="500" cy="474" rx="46" ry="9" fill="#000" opacity=".55"/>
+         <circle cx="500" cy="262" r="86" fill="none" stroke="#3a6a8a" stroke-width="2" opacity=".24"/>
+         <circle cx="500" cy="262" r="122" fill="none" stroke="#3a6a8a" stroke-width="1" opacity=".11"/>` +
+        mt('#0a0e14', 'M0,520 L220,486 L440,516 L660,482 L880,512 L1000,490 L1000,600 L0,600 Z', .95);
       break;
     }
     case 'moon':
@@ -14723,13 +14937,38 @@ const STORY = {
     { scene: 'dragon', who: '치우천왕', t: '"문 너머에는 아무것도 없다.\n아무것도 없는 것이 있다."\n\n"그것이 네 이름을 지웠다."' },
     { scene: 'gate', t: '구천의 끝, 무간(無間)의 입구가 열렸다.\n\n소리도, 빛도, 냄새도 없다.' }
   ],
+  /* 통 부적이 끊기는 그 자리 — 제6막 정예를 만나는 순간에 나온다 */
+  mugan_lost: [
+    { scene: 'voidless', t: '무간에 들어서자\n소리가 한 겹씩 벗겨졌다.\n\n발소리가 먼저 없어졌고,\n그다음에 숨소리가 없어졌다.' },
+    { scene: 'voidless', t: '남은 소리는 하나뿐이었다.\n귀 뒤에 붙여 둔 통(通) 부적.\n\n그 안에서 단오가 아직 걷고 있었다.' },
+    { scene: 'dano', who: '단오', t: '"야. 너 아직 거기 있냐?"\n\n"…나는 네 대답이 안 들려.\n한참 전부터 안 들렸어."' },
+    { scene: 'dano', who: '단오', t: '"괜찮아, 나 혼자 떠들면 되지 뭐.\n원래 내가 말 더 많았잖아."\n\n웃는 소리가 났다.\n무간에서는 그 소리가 어울리지 않았다.' },
+    { scene: 'voidless', who: '단오', t: '"근데 여기 뭔가 이상해."\n\n"엘리트가 아니야. 이건—\n이건 아무것도 아니야."' },
+    { scene: 'voidless', who: '단오', t: '"아무것도 아닌 게 나를 보고 있어."\n\n"눈이 없는데 보고 있는 걸\n어떻게 아는지 모르겠는데,\n\n알겠어."' },
+    { scene: 'ash', t: '부적 너머에서 종이 긁는 소리가 났다.\n단오가 무언가를 붙이고 있었다.\n급하게, 여러 장을, 겹쳐서.\n\n종이 찢어지는 소리가 그보다 더 빨랐다.' },
+    { scene: 'voidless', who: '단오', t: '"야."\n\n"…야, 내 이름이 뭐였지."\n\n"불러 줘. 빨리."' },
+    { scene: 'ash', t: '입을 열었다.\n\n소리가 나가지 않았다.\n무간이 먼저 그것을 가져갔다.' },
+    { scene: 'ash', t: '통 부적이 손 안에서 뜨거워졌다.\n通 자가 한 획씩 지워졌다.\n\n획이 다 빠지자\n아무 글자도 아니게 되었다.' },
+    { scene: 'ash', t: '"단오야!"\n\n그제야 소리가 나왔다.\n부적은 이미 재였다.\n\n재는 따뜻하지도 않았다.' },
+    { scene: 'voidless', t: '무간에는 메아리가 없다.\n\n부른 이름이 돌아오지 않았다.\n어디로 간 것도 아니고,\n그냥 없어졌다.\n\n부르기 전부터 없었던 것처럼.' }
+  ],
   act6: [
-    { scene: 'hero', t: '무간을 넘던 밤, 통 부적이 마지막으로 울었다.\n\n"…야. 여기 뭔가 이상해. 엘리트가 아니야. 이건—"\n\n그 뒤로 아무 소리도 나지 않았다.' },
-    { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
-    { scene: 'dragon', t: '부적이 한 장씩 타들어 갔다.\n마지막 한 장을 붙였을 때,\n\n비로소 소리가 돌아왔다.' },
-    { scene: 'abyss', t: '무간이 무너지자 바닥이 사라졌다.\n\n문 너머에 또 다른 아래가 있었다.\n떨어지는 데 이레가 걸렸다.' }
+    { scene: 'voidless', t: '무간을 걷는 데 며칠이 걸렸는지 모른다.\n\n해가 없어 날로 셀 수 없었고,\n배가 고프지 않아 끼니로도 셀 수 없었다.' },
+    { scene: 'voidless', t: '그래서 부적으로 셌다.\n한 장 붙일 때마다 하루로 쳤다.\n\n열이레째에 단오가 지나간 자리를 찾았다.' },
+    { scene: 'dano', t: '바닥에 부적이 스무 장쯤 흩어져 있었다.\n전부 다 쓴 것이었다.\n\n마지막 한 장에는 글씨가 없었다.\n쓰다 만 것이 아니라,\n쓴 것이 지워진 것이었다.' },
+    { scene: 'ash', t: '한 장을 주웠다.\n\n획 끝을 꼭 위로 튕겨 올리는 버릇이 남아 있었다.\n스승이 백 번을 고쳐도\n끝내 안 고쳐지던 그 버릇.' },
+    { scene: 'ash', t: '"…너 진짜 글씨 못 쓴다."\n\n아무도 대꾸하지 않았다.\n대꾸할 자리도 없었다.' },
+    { scene: 'voidless', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
+    { scene: 'voidless', t: '목소리를 잃은 얼굴이 아니었다.\n\n목소리라는 것을\n한 번도 겪어 본 적이 없는 얼굴이었다.' },
+    { scene: 'voidless', t: '무간은 때리지 않았다.\n닿는 것을 하나씩 없앨 뿐이었다.\n\n방어도가 없어지고,\n이름이 없어지고,\n없어졌다는 사실까지 없어졌다.' },
+    { scene: 'ash', t: '부적이 한 장씩 타들어 갔다.\n열 장이 재가 되고, 스무 장이 재가 되고,\n\n셀 수 있는 것이 재밖에 남지 않았을 때\n품 안에서 마지막 한 조각을 꺼냈다.' },
+    { scene: 'ash', t: '반쪽짜리, 재가 된 통 부적.\n\n재를 손바닥에 문질러\n없는 얼굴에 그대로 붙였다.\n\n通 — 통할 통.' },
+    { scene: 'voidless', who: '무간', t: '없는 것에게 처음으로 길이 났다.\n\n"…아."\n\n그 한마디에 그것이 무너졌다.' },
+    { scene: 'dano', t: '무너진 자리에 발자국이 있었다.\n두 사람 몫이 아니라 한 사람 몫이었고,\n아래로 이어져 있었다.\n\n단오는 떨어진 것이다. 혼자.' },
+    { scene: 'abyss', t: '그 발자국을 따라 뛰어내렸다.\n떨어지는 데 이레가 걸렸다.\n\n이레 내내 아무 소리도 나지 않아서,\n그동안 단오의 목소리를 되짚었다.\n\n잊으면 못 찾을 것 같아서.' }
   ],
   act7: [
+    { scene: 'abyss', t: '떨어지는 동안 재를 놓치지 않으려고\n주먹을 쥐고 있었다.\n\n이레 뒤 손을 펴 보니\n손금에 通 자 한 획이 눌려 있었다.' },
     { scene: 'abyss', who: '무저', t: '"여기가 바닥이라 생각했느냐."\n\n대답할 입이 그것에게도 없었다.' },
     { scene: 'abyss', t: '바닥이 갈라지고,\n그 아래에서 빛이 올라왔다.\n\n아래인데 빛이 올라왔다.' },
     { scene: 'first', t: '떨어지던 몸이 문득 떠올랐다.\n\n산도, 문도, 어둠도 없는 자리.\n아무것도 없던 자리에 닿았다.' }
@@ -15529,7 +15768,8 @@ function showAdmin() {
 const STORY_LABEL = {
   opening: '여는 이야기', end_taecho: '끝 — 태초', end_mugan: '끝 — 무간',
   end_blackdragon: '끝 — 흑룡', end_yeomra: '끝 — 염라', end_sasindo: '끝 — 사신도',
-  act3_blackdragon: '제3막 — 흑룡', act3_yeomra: '제3막 — 염라'
+  act3_blackdragon: '제3막 — 흑룡', act3_yeomra: '제3막 — 염라',
+  mugan_lost: '제6막 — 끊긴 통 부적'
 };
 function storyLabel(k) {
   if (STORY_LABEL[k]) return STORY_LABEL[k];
