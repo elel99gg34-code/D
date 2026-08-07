@@ -1077,6 +1077,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:var(--gc);color:#fff;font-size:9.5px;display:grid;place-items:center;line-height:1;
   border:1px solid rgba(255,255,255,.4)}
 .gunit.u-special{border-color:#e2622a;animation:flameGlow 1.7s ease-in-out infinite}
+.gunit.u-ssc{border-color:#1fb6c9;animation:sscGlow 1.5s ease-in-out infinite}
 .gunit.u-ssx{border-color:#ff2d55;animation:ssxGlow 1.25s ease-in-out infinite}
 .gunit.owned{opacity:.45}
 .gunit.u-unknown{border-color:#b98cff;background:linear-gradient(160deg,#efe6ff,#c9b6ee);
@@ -1172,6 +1173,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .pullitem .pwear.on{background:linear-gradient(#2c5f5a,#1d423f);color:#8fe6d0;border-color:#4fbfa8}
 .pullitem.p-special{border-color:#e2622a;animation:pullPop .45s cubic-bezier(.2,1.5,.4,1) forwards,
   flameGlow 1.7s ease-in-out infinite .45s}
+.pullitem.p-ssc{border-color:#1fb6c9;background:linear-gradient(160deg,#eafcff,#c2eaf3);
+  animation:pullPop .45s cubic-bezier(.2,1.5,.4,1) forwards,
+  sscGlow 1.5s ease-in-out infinite .45s}
 .pullitem.p-ssx{border-color:#ff2d55;animation:pullPop .45s cubic-bezier(.2,1.5,.4,1) forwards,
   ssxGlow 1.25s ease-in-out infinite .45s}
 .pullitem.p-unknown{border-color:#b98cff;background:linear-gradient(160deg,#efe6ff,#c9b6ee);
@@ -1193,6 +1197,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .dextile.gd_common{border-color:#3f7346}.dextile.gd_uncommon{border-color:#2f6d8f}
 .dextile.gd_rare{border-color:#b8912f;box-shadow:0 0 9px rgba(184,145,47,.45)}
 .dextile.gd_special{border-color:#e2622a;background:#fbeade;animation:flameGlow 1.7s ease-in-out infinite}
+/* SSC 가 뒤늦게 생기면서 도감에만 자리가 없었다 — 아우라가 하나도 없었다 */
+.dextile.gd_ssc{border-color:#1fb6c9;background:#e6f9fd;animation:sscGlow 1.5s ease-in-out infinite}
+.dextile.gd_ssc b{color:#0d5c68}
 .dextile.gd_ssx{border-color:#ff2d55;background:#ffe6ea;animation:ssxGlow 1.25s ease-in-out infinite}
 .dextile.gd_ssx b{color:#8e0f2c}
 .dextile.gd_unknown{border-color:#b98cff;background:#efe6ff;
@@ -1548,6 +1555,188 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   animation:skSpin 12s linear infinite}
 .card.sk-void .skaura{background:radial-gradient(circle,rgba(90,70,150,.6),transparent 62%);
   filter:blur(9px);animation:skBreathe 3.4s ease-in-out infinite}
+
+/* ══════════════════════════════════════════════════════════
+   더 늘린 옷 열 벌
+   ══════════════════════════════════════════════════════════ */
+@keyframes skRain{0%{transform:translateY(-120%)}100%{transform:translateY(120%)}}
+@keyframes skPetal{0%{transform:translate(0,-14px) rotate(0);opacity:0}
+  12%{opacity:.9}100%{transform:translate(var(--px,14px),118px) rotate(320deg);opacity:0}}
+@keyframes skCrack{0%,100%{opacity:.25}44%{opacity:.9}}
+@keyframes skTide{0%{background-position:0 0}100%{background-position:64px 0}}
+@keyframes skPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:.95}}
+
+/* 26. 한지(韓紙) — 닥나무 결이 그대로 비친다 */
+.card.sk-hanji{--scrim:rgba(255,255,255,.5)}
+.card.sk-hanji .face{background:linear-gradient(155deg,#f7f0dc,#ece0c2 55%,#ddcda6);border-color:#a8946c;
+  box-shadow:0 5px 14px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.5)}
+.card.sk-hanji .cname{color:#3a2f1e}
+.card.sk-hanji .txt{color:#3f3524}
+.card.sk-hanji .kind{color:#7d6f52;border-top-color:rgba(90,74,44,.24)}
+.card.sk-hanji .art .g{color:#2e2416;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.card.sk-hanji .art .ring{border-color:rgba(70,58,34,.26)}
+.card.sk-hanji .cost{background:linear-gradient(140deg,#c8b183,#7d6a44);color:#fff8e6;border-color:#e6d8b4}
+.card.sk-hanji .sklayer{opacity:.45;
+  background:repeating-linear-gradient(93deg,transparent 0 5px,rgba(140,118,74,.22) 5px 6px),
+    repeating-linear-gradient(3deg,transparent 0 9px,rgba(140,118,74,.14) 9px 10px)}
+.card.sk-hanji .skaura{background:radial-gradient(circle,rgba(200,175,120,.4),transparent 68%);
+  filter:blur(7px);animation:skBreathe 5s ease-in-out infinite}
+
+/* 27. 소나기(驟雨) — 종이 위로 비가 내리 긋는다 */
+.card.sk-rain .face{background:linear-gradient(170deg,#1b2a33,#0c161c 55%,#16242c);border-color:#5f93a8;
+  box-shadow:0 5px 16px rgba(0,0,0,.55),inset 0 0 26px rgba(30,80,105,.5)}
+.card.sk-rain .cname{color:#daf0fa}
+.card.sk-rain .txt{color:#bcd8e6}
+.card.sk-rain .txt em{color:#ffa0a8}.card.sk-rain .txt i{color:#9fe4ff}
+.card.sk-rain .kind{color:#7fa6b8;border-top-color:rgba(140,200,225,.26)}
+.card.sk-rain .art .g{color:#e8fbff;text-shadow:0 0 12px rgba(150,220,250,.85)}
+.card.sk-rain .art .ring{border-color:rgba(160,215,240,.38)}
+.card.sk-rain .cost{background:linear-gradient(140deg,#3d6a7d,#12262f);color:#e2f6ff;border-color:#8fc8dc}
+.card.sk-rain .sklayer{opacity:.55;
+  background:repeating-linear-gradient(105deg,transparent 0 7px,rgba(190,230,250,.34) 7px 8px);
+  background-size:100% 200%;animation:skRain 1.05s linear infinite}
+.card.sk-rain .skaura{background:radial-gradient(circle,rgba(90,170,210,.55),transparent 68%);
+  filter:blur(8px);animation:skBreathe 3.2s ease-in-out infinite}
+
+/* 28. 낙화(落花) — 꽃잎이 끊임없이 진다 */
+.card.sk-petal .face{background:linear-gradient(155deg,#3a1826,#200d16 55%,#2e1420);border-color:#e0709a;
+  box-shadow:0 5px 16px rgba(0,0,0,.5),inset 0 0 24px rgba(140,40,80,.42)}
+.card.sk-petal .cname{color:#ffdce8}
+.card.sk-petal .txt{color:#f2cdda}
+.card.sk-petal .txt em{color:#ff9ab0}.card.sk-petal .txt i{color:#9fd8ff}
+.card.sk-petal .kind{color:#b8748c;border-top-color:rgba(224,112,154,.3)}
+.card.sk-petal .art .g{color:#ffe4ee;text-shadow:0 0 14px rgba(255,140,180,.9)}
+.card.sk-petal .art .ring{border-color:rgba(255,170,200,.4)}
+.card.sk-petal .cost{background:linear-gradient(140deg,#c0426c,#4e0f28);color:#ffe6ef;border-color:#ffb0c8}
+.card.sk-petal .sklayer i{position:absolute;top:0;width:5px;height:4px;border-radius:60% 20% 60% 20%;
+  background:#ffb6ce;box-shadow:0 0 5px rgba(255,150,190,.8);animation:skPetal 3.6s linear infinite}
+.card.sk-petal .skaura{background:radial-gradient(circle,rgba(220,90,140,.55),transparent 68%);
+  filter:blur(8px);animation:skBreathe 3.6s ease-in-out infinite}
+
+/* 29. 균열(龜裂) — 갈라진 틈에서 빛이 샌다 */
+.card.sk-crack .face{background:linear-gradient(155deg,#2b2724,#141110 55%,#231f1c);border-color:#c8703a;
+  box-shadow:0 5px 16px rgba(0,0,0,.6),inset 0 0 22px rgba(200,90,30,.28)}
+.card.sk-crack .cname{color:#ffd9b8}
+.card.sk-crack .txt{color:#e8cdb4}
+.card.sk-crack .txt em{color:#ff9a6a}.card.sk-crack .txt i{color:#9fd0ff}
+.card.sk-crack .kind{color:#a8825f;border-top-color:rgba(200,112,58,.3)}
+.card.sk-crack .art .g{color:#ffb072;text-shadow:0 0 14px rgba(255,130,50,.9)}
+.card.sk-crack .art .ring{border-color:rgba(230,150,90,.42)}
+.card.sk-crack .cost{background:linear-gradient(140deg,#a8531f,#2e1408);color:#ffe0c4;border-color:#e8a06a}
+.card.sk-crack .sklayer{
+  background:linear-gradient(74deg,transparent 46%,rgba(255,140,50,.75) 47%,transparent 48%),
+    linear-gradient(-38deg,transparent 62%,rgba(255,170,80,.55) 63%,transparent 64%),
+    linear-gradient(28deg,transparent 28%,rgba(255,120,40,.45) 29%,transparent 30%);
+  animation:skCrack 2.4s ease-in-out infinite}
+.card.sk-crack .skaura{background:radial-gradient(circle,rgba(230,110,40,.6),transparent 66%);
+  filter:blur(8px);animation:skBreathe 2.4s ease-in-out infinite}
+
+/* 30. 청해파(靑海波) — 물결이 옆으로 흐른다 */
+.card.sk-seigaiha{--scrim:rgba(255,255,255,.5)}
+.card.sk-seigaiha .face{background:linear-gradient(155deg,#e2f2f6,#bfdfe8 55%,#98c6d4);border-color:#2f6d8f;
+  box-shadow:0 5px 14px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.5)}
+.card.sk-seigaiha .cname{color:#0f3a4c}
+.card.sk-seigaiha .txt{color:#173f50}
+.card.sk-seigaiha .kind{color:#3f7086;border-top-color:rgba(20,64,82,.24)}
+.card.sk-seigaiha .art .g{color:#0b3040;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.card.sk-seigaiha .art .ring{border-color:rgba(20,70,92,.3)}
+.card.sk-seigaiha .cost{background:linear-gradient(140deg,#3e88a8,#123a4c);color:#e8fbff;border-color:#a8dcee}
+.card.sk-seigaiha .sklayer{opacity:.5;
+  background:radial-gradient(circle at 0 100%,transparent 30%,rgba(30,100,130,.4) 31% 34%,transparent 35%) 0 0/32px 16px,
+    radial-gradient(circle at 100% 100%,transparent 30%,rgba(30,100,130,.4) 31% 34%,transparent 35%) 0 0/32px 16px;
+  animation:skTide 7s linear infinite}
+.card.sk-seigaiha .skaura{background:radial-gradient(circle,rgba(60,150,190,.5),transparent 68%);
+  filter:blur(7px);animation:skBreathe 4.4s ease-in-out infinite}
+
+/* 31. 놋쇠(鍮) — 두들긴 자국이 남은 놋그릇 빛 */
+.card.sk-brass .face{background:linear-gradient(155deg,#4a3a1a,#251b0c 55%,#3d2f14);border-color:#d0a83c;
+  box-shadow:0 5px 16px rgba(0,0,0,.5),inset 0 0 0 1px rgba(216,176,80,.4)}
+.card.sk-brass .cname{color:#ffe6a8}
+.card.sk-brass .txt{color:#eeddb2}
+.card.sk-brass .txt em{color:#ffa87a}.card.sk-brass .txt i{color:#9fd0ff}
+.card.sk-brass .kind{color:#a88a48;border-top-color:rgba(208,168,60,.3)}
+.card.sk-brass .art .g{color:#ffd97a;text-shadow:0 0 12px rgba(230,180,70,.8),0 2px 0 #4a3410}
+.card.sk-brass .art .ring{border-color:rgba(216,176,80,.44)}
+.card.sk-brass .cost{background:linear-gradient(140deg,#c8a03a,#584010);color:#2e2206;border-color:#ffe6a8}
+.card.sk-brass .sklayer{opacity:.4;mix-blend-mode:screen;
+  background:radial-gradient(circle at 22% 26%,rgba(255,225,150,.5),transparent 22%),
+    radial-gradient(circle at 68% 44%,rgba(255,225,150,.4),transparent 20%),
+    radial-gradient(circle at 40% 76%,rgba(255,225,150,.45),transparent 24%),
+    radial-gradient(circle at 82% 82%,rgba(255,225,150,.35),transparent 18%)}
+.card.sk-brass .skaura{background:conic-gradient(from 0deg,#7d5c14,#ffe6a8,#7d5c14,#d0a83c,#7d5c14);
+  filter:blur(9px);opacity:.55;animation:skSpin 8s linear infinite}
+
+/* 32. 안개(霧) — 골짜기 안개가 부적을 감았다 */
+.card.sk-mist{--scrim:rgba(255,255,255,.46)}
+.card.sk-mist .face{background:linear-gradient(160deg,#dfe4e2,#c2ccca 55%,#a6b2b0);border-color:#6b7a78;
+  box-shadow:0 5px 14px rgba(0,0,0,.32),inset 0 0 22px rgba(255,255,255,.5)}
+.card.sk-mist .cname{color:#2a3432}
+.card.sk-mist .txt{color:#313d3b}
+.card.sk-mist .kind{color:#5f6e6c;border-top-color:rgba(40,56,54,.24)}
+.card.sk-mist .art .g{color:#222c2a;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.card.sk-mist .art .ring{border-color:rgba(40,56,54,.26)}
+.card.sk-mist .cost{background:linear-gradient(140deg,#8fa09e,#3d4a48);color:#f0f6f4;border-color:#c8d4d2}
+.card.sk-mist .sklayer{opacity:.62;
+  background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.85) 42%,transparent 62%);
+  background-size:280% 100%;animation:skSweep 5.2s ease-in-out infinite}
+.card.sk-mist .skaura{background:radial-gradient(circle,rgba(200,215,212,.6),transparent 70%);
+  filter:blur(10px);animation:skBreathe 5.6s ease-in-out infinite}
+
+/* 33. 뼈(骨) — 종이가 아니라 얇게 저민 뼈다 */
+.card.sk-bone{--scrim:rgba(255,255,255,.48)}
+.card.sk-bone .face{background:linear-gradient(155deg,#efe8d6,#ddd2b8 55%,#c6b894);border-color:#6b6250;
+  box-shadow:0 5px 14px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.45)}
+.card.sk-bone .cname{color:#33291a}
+.card.sk-bone .txt{color:#3a3020}
+.card.sk-bone .kind{color:#75694e;border-top-color:rgba(60,50,30,.26)}
+.card.sk-bone .art .g{color:#241c10;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.card.sk-bone .art .ring{border-color:rgba(60,50,30,.3)}
+.card.sk-bone .cost{background:linear-gradient(140deg,#9a8c6c,#463c28);color:#f6efdc;border-color:#d8ccaa}
+.card.sk-bone .sklayer{opacity:.4;
+  background:radial-gradient(ellipse at 30% 20%,rgba(110,96,66,.4),transparent 26%),
+    radial-gradient(ellipse at 74% 52%,rgba(110,96,66,.34),transparent 22%),
+    radial-gradient(ellipse at 46% 84%,rgba(110,96,66,.36),transparent 24%),
+    repeating-linear-gradient(78deg,transparent 0 11px,rgba(110,96,66,.16) 11px 12px)}
+.card.sk-bone .skaura{background:radial-gradient(circle,rgba(150,135,100,.45),transparent 68%);
+  filter:blur(8px);animation:skBreathe 5s ease-in-out infinite}
+
+/* 34. 뇌전(雷電) — 번개가 종이 안에 갇혔다 */
+.card.sk-thunder .face{background:linear-gradient(160deg,#241d3a,#0e0a1c 55%,#1c1630);border-color:#a88cff;
+  box-shadow:0 5px 18px rgba(0,0,0,.6),inset 0 0 26px rgba(110,80,220,.42)}
+.card.sk-thunder .cname{color:#ecdcff}
+.card.sk-thunder .txt{color:#d4c4f2}
+.card.sk-thunder .txt em{color:#ff9ab0}.card.sk-thunder .txt i{color:#9fe0ff}
+.card.sk-thunder .kind{color:#8f7cc0;border-top-color:rgba(168,140,255,.3)}
+.card.sk-thunder .art .g{color:#fdf6ff;text-shadow:0 0 14px rgba(190,150,255,.95),0 0 34px rgba(120,200,255,.7)}
+.card.sk-thunder .art .ring{border-color:rgba(190,160,255,.42)}
+.card.sk-thunder .cost{background:linear-gradient(140deg,#5a3ec0,#1a1030);color:#f0e6ff;border-color:#bfa8ff}
+.card.sk-thunder .sklayer{mix-blend-mode:screen;
+  background:linear-gradient(66deg,transparent 40%,rgba(200,170,255,.85) 41.5%,transparent 43%),
+    linear-gradient(-52deg,transparent 56%,rgba(150,220,255,.7) 57.5%,transparent 59%);
+  animation:skCrack 1.7s steps(2) infinite}
+.card.sk-thunder .skaura{background:radial-gradient(circle,rgba(140,100,255,.65),transparent 66%);
+  filter:blur(8px);animation:skPulse 1.9s ease-in-out infinite}
+
+/* 35. 홍련(紅蓮) — SSX. 지옥의 불꽃이 연꽃으로 핀다 */
+.card.sk-lotus .face{background:linear-gradient(155deg,#4a0c18,#1c0308 52%,#3a0810);border-color:#ff3a5c;
+  box-shadow:0 5px 20px rgba(0,0,0,.6),inset 0 0 30px rgba(220,30,70,.45)}
+.card.sk-lotus .cname{color:#ffdfe6;text-shadow:0 0 12px rgba(255,80,120,.8)}
+.card.sk-lotus .txt{color:#f6cfd8}
+.card.sk-lotus .txt em{color:#ffb07a}.card.sk-lotus .txt i{color:#9fd8ff}
+.card.sk-lotus .kind{color:#c86a80;border-top-color:rgba(255,58,92,.34)}
+.card.sk-lotus .art .g{color:#fff0f2;text-shadow:0 0 16px rgba(255,60,100,1),0 0 40px rgba(255,140,60,.8)}
+.card.sk-lotus .art .ring{border-color:rgba(255,120,150,.5);
+  box-shadow:0 0 18px rgba(255,60,100,.5) inset}
+.card.sk-lotus .cost{background:linear-gradient(140deg,#e01840,#4a0410);color:#fff0f4;border-color:#ff8aa4}
+.card.sk-lotus .sklayer{mix-blend-mode:screen;opacity:.62;
+  background:conic-gradient(from 0deg at 50% 62%,transparent 0 8%,rgba(255,90,120,.5) 12%,transparent 16% 20%,
+    rgba(255,140,70,.45) 24%,transparent 28% 33%,rgba(255,90,120,.5) 37%,transparent 41% 46%,
+    rgba(255,140,70,.45) 50%,transparent 54% 58%,rgba(255,90,120,.5) 62%,transparent 66%);
+  animation:skSpin 11s linear infinite}
+.card.sk-lotus .sklayer i{position:absolute;bottom:-6px;width:3px;height:3px;border-radius:50%;
+  background:#ffb07a;box-shadow:0 0 6px rgba(255,140,60,.9);animation:skRise 2.8s linear infinite}
+.card.sk-lotus .skaura{background:conic-gradient(from 0deg,#ff3a5c,#ff8a2a,#ff3a5c,#c8103a,#ff3a5c);
+  filter:blur(10px);opacity:.7;animation:skSpin 5.5s linear infinite}
 
 /* ══ 스킨 고르기 ═════════════════════════════════════════ */
 .skinstage{position:relative;height:calc(var(--ch) + 26px);width:calc(var(--cw) + 40px);margin:6px auto 14px;
@@ -7848,7 +8037,13 @@ function blk(n, raw) {
   if (curseTag('weakblock')) v = Math.floor(v * .65);         /* 저주 — 방패가 삭는다 */
   p.block += v; SND.block(); blockFx(p, v); syncPlayer();
 }
-function eblk(e, n) { const v = Math.max(0, n + (e.s.dex || 0)); e.block += v; SND.block(); blockFx(e, v); }
+/* 요괴가 실제로 얻는 방어도 — 예고와 결과가 같도록 한 자리에서 셈한다 */
+function eblkAmt(e, n) {
+  const raw = Math.max(0, n + (e.s.dex || 0));
+  if (!raw) return 0;
+  return e.blkMul && e.blkMul !== 1 ? Math.max(1, Math.round(raw * e.blkMul)) : raw;
+}
+function eblk(e, n) { const v = eblkAmt(e, n); e.block += v; SND.block(); blockFx(e, v); }
 function st(ent, key, n) {
   if (!n || !ent) return;
   ent.s[key] = (ent.s[key] || 0) + n;
@@ -7922,6 +8117,9 @@ function startBattle(enemyIds, kind, opts) {
   const fs = finalSoft(run.act, kind);                /* 마지막 봉우리는 또 한 번 */
   if (kind === 'boss') sc = { hp: sc.hp * BOSS_SOFT.hp * ls.hp * fs.hp, dmg: sc.dmg * BOSS_SOFT.dmg * ls.dmg * fs.dmg };
   else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
+  /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
+  const es = kind === 'arena' ? 1 : endSoft(run.act);
+  if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
   const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
@@ -7929,7 +8127,7 @@ function startBattle(enemyIds, kind, opts) {
     hp = Math.round(hp * boost);
     if (opts.hpMul) hp = Math.round(hp * opts.hpMul);
     const e = { uid: 'e' + (ux++), id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
-                dmgMul: sc.dmg,
+                dmgMul: sc.dmg, blkMul: es,          /* 막는 힘도 마지막 세 막에서는 눅는다 */
                 hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false };
     if (d.init) d.init(e);
     if (opts.str) e.s.str = (e.s.str || 0) + opts.str;
@@ -9565,7 +9763,7 @@ function intentDesc(e, m) {
   if (e.s.stun) return '이번 턴 아무것도 하지 못한다.';
   const out = [];
   if (m.d) out.push(`<em style="color:#e2777a">${calcAtk(e, P(), m.d)}</em>의 피해를 ${(m.n || 1)}회 준다.`);
-  if (m.blk) out.push(`방어도 ${m.blk + (e.s.dex || 0)}를 얻는다.`);
+  if (m.blk) out.push(`방어도 ${eblkAmt(e, m.blk)}를 얻는다.`);   /* 실제로 얻는 만큼 보여 준다 */
   if (m.self) for (const k in m.self) out.push(`자신에게 ${STATUS[k].n} ${m.self[k]}`);
   if (m.deb) for (const k in m.deb) out.push(`나에게 ${STATUS[k].n} ${m.deb[k]}`);
   if (m.heal) out.push(`체력 ${m.heal} 회복`);
@@ -9600,6 +9798,21 @@ function skinBits(id) {
     let o = '';
     const pts = [[18,14],[34,26],[62,12],[78,30],[26,52],[52,44],[84,58],[14,72],[44,80],[70,88],[90,20],[8,36]];
     pts.forEach((p2, i) => { o += `<i style="left:${p2[0]}%;top:${p2[1]}%;animation-delay:${(i * .29).toFixed(2)}s"></i>`; });
+    return o;
+  }
+  if (id === 'petal') {                        /* 지는 꽃잎 */
+    let o = '';
+    for (let i = 0; i < 9; i++)
+      o += `<i style="left:${6 + i * 11}%;--px:${((i % 5) - 2) * 11}px;` +
+           `animation-delay:${(i * .41).toFixed(2)}s;` +
+           `animation-duration:${(3.1 + (i % 4) * .6).toFixed(1)}s"></i>`;
+    return o;
+  }
+  if (id === 'lotus') {                        /* 연꽃 아래서 오르는 불티 */
+    let o = '';
+    for (let i = 0; i < 8; i++)
+      o += `<i style="left:${10 + i * 11}%;animation-delay:${(i * .33).toFixed(2)}s;` +
+           `animation-duration:${(2.4 + (i % 3) * .5).toFixed(1)}s"></i>`;
     return o;
   }
   return '';
@@ -10081,14 +10294,21 @@ function dropOnKill(e) {
 
 /* ── 천운(天運) — 카드를 뽑을 때 아주 드물게 터진다 ─────────── */
 const FORTUNE_CHANCE = 0.02;
+const FORTUNE_MAX = 12;                        /* 한 번에 펼치는 장수의 한도 */
 async function tryFortune() {
   const b = G.b;
   if (!b || b.fortuneRolled || b.over) return false;
   b.fortuneRolled = true;                       /* 한 턴에 한 번만 굴린다 */
   if (rnd() >= FORTUNE_CHANCE) return false;
-  const pool = b.drawPile.concat(b.discardPile)
+  /* ── 덱이 두꺼워지면 천운이 재앙이 된다 ──────────────────
+     덱 170장이면 기술·술법만 여든 장이 넘는다. 그걸 다 펼치느라
+     한참을 잠가 두어 「턴 종료가 아예 안 눌린다」로 보였다.
+     펼치는 장수를 잘라 둔다.
+     ────────────────────────────────────────────────────── */
+  const all = b.drawPile.concat(b.discardPile)
     .filter(c => { const t = cdef(c).type; return t === 'skill' || t === 'power'; });
-  if (!pool.length) return false;
+  if (!all.length) return false;
+  const pool = all.length > FORTUNE_MAX ? shuffle(all.slice()).slice(0, FORTUNE_MAX) : all;
   b.busy = true;
   skillBanner('天 運', true);
   screenFlash('radial-gradient(circle,rgba(255,255,220,.9),rgba(255,150,40,.7))', 900);
@@ -10097,7 +10317,8 @@ async function tryFortune() {
   for (let i = 0; i < 5; i++)
     setTimeout(() => lightBeam(innerWidth * (.12 + i * .19), 'rgba(255,235,180,.6)', 130), i * 90);
   SND.gong(); SND.victory();
-  toast(`천운! 덱의 기술 ${pool.length}장이 저절로 펼쳐진다`);
+  toast(`천운! 덱의 기술 ${pool.length}장이 저절로 펼쳐진다`
+    + (all.length > pool.length ? ` (${all.length}장 가운데)` : ''));
   await wait(500);
   for (const c of pool) {
     const i1 = b.drawPile.indexOf(c); if (i1 >= 0) b.drawPile.splice(i1, 1);
@@ -10107,7 +10328,9 @@ async function tryFortune() {
     try {
       const t = d.tgt === 'enemy' ? (alive()[0] || null) : null;
       if (d.tgt === 'enemy' && !t) { b.exhaustPile.push(c); continue; }
-      await d.play({ v: cval(c), u: c.up, t, card: c, x: 0 });
+      /* 고르라고 창을 띄우는 부적이 섞이면 그 자리에서 영영 멎는다 —
+         한 장에 얼마 이상은 기다리지 않는다 */
+      await Promise.race([d.play({ v: cval(c), u: c.up, t, card: c, x: 0 }), wait(1400)]);
     } catch (err) { console.error('천운 처리 오류', d.id, err); }
     b.curCard = null;
     b.exhaustPile.push(c);
@@ -11193,6 +11416,15 @@ function lateSoft(act, kind) {
 const FINAL_SOFT = { hp: 0.80, dmg: 0.84 };
 function finalSoft(act, kind) {
   return (act >= LAST_ACT && kind === 'boss') ? FINAL_SOFT : { hp: 1, dmg: 1 };
+}
+/* ── 마지막 세 막 ─────────────────────────────────────────
+   제23~25막을 통째로 37% 눅인다 — 체력도, 치는 힘도, 막는 힘도.
+   계단(ACT_SCALE)은 건드리지 않고 이 자리에서만 덜어 낸다.
+   그래서 제23막은 제22막보다 눈에 띄게 가볍다. 그러라고 만든 것이다.
+   ────────────────────────────────────────────────────────── */
+const END_SOFT_FROM = 23, END_SOFT_CUT = 0.37;
+function endSoft(act) {
+  return (act || 1) >= END_SOFT_FROM ? 1 - END_SOFT_CUT : 1;
 }
 /* ══════════════════════════════════════════════════════════
    환생(還生) — 더 오를 데가 없을 때
@@ -14014,6 +14246,27 @@ defSkin({ id: 'aurora',    n: '구천', h: '九天', rar: 'ssx',      c: '#7fffd
   d: '하늘이 커튼처럼 흔들린다. 구천에서만 보이는 빛.' });
 defSkin({ id: 'void',      n: '무',   h: '無',   rar: 'ssx',      c: '#8a7ac0',
   d: '빛을 삼킨다. 글자가 검게 파여 테두리만 남는다.' });
+/* ── 또 늘린 열 벌 ───────────────────────────────────── */
+defSkin({ id: 'hanji',     n: '한지', h: '韓紙', rar: 'common',   c: '#c8b183',
+  d: '닥나무 결이 그대로 비친다. 아무것도 덧대지 않은 종이 그 자체.' });
+defSkin({ id: 'seigaiha',  n: '청해', h: '靑海', rar: 'common',   c: '#3e88a8',
+  d: '겹친 반원이 끝없이 옆으로 밀려간다. 파도를 세다 보면 잠이 온다.' });
+defSkin({ id: 'bone',      n: '골편', h: '骨',   rar: 'common',   c: '#9a8c6c',
+  d: '종이가 아니다. 얇게 저민 뼈에 글씨를 새겼다.' });
+defSkin({ id: 'rain',      n: '소나기', h: '驟雨', rar: 'uncommon', c: '#5f93a8',
+  d: '비가 비스듬히 내리 긋는다. 글씨가 번지지 않는 것이 이상하다.' });
+defSkin({ id: 'mist',      n: '안개', h: '霧',   rar: 'uncommon', c: '#8fa09e',
+  d: '골짜기 안개가 부적을 감았다. 걷혔다 싶으면 다시 밀려온다.' });
+defSkin({ id: 'brass',     n: '놋쇠', h: '鍮',   rar: 'uncommon', c: '#d0a83c',
+  d: '두들긴 자국이 그대로 남았다. 손에 놋내가 밴다.' });
+defSkin({ id: 'petal',     n: '낙화', h: '落花', rar: 'rare',     c: '#e0709a',
+  d: '꽃잎이 끊임없이 진다. 바닥에 쌓이지는 않는다.' });
+defSkin({ id: 'crack',     n: '균열', h: '龜裂', rar: 'rare',     c: '#c8703a',
+  d: '갈라진 틈에서 빛이 샌다. 안에 무엇이 들었는지는 모른다.' });
+defSkin({ id: 'thunder',   n: '뇌전', h: '雷電', rar: 'rare',     c: '#a88cff',
+  d: '번개 한 줄기가 종이 안에 갇혔다. 아직도 나가려 한다.' });
+defSkin({ id: 'lotus',     n: '홍련', h: '紅蓮', rar: 'ssx',      c: '#ff3a5c',
+  d: '지옥의 불이 연꽃으로 핀다. 꽃잎이 스물여덟 겹.' });
 const ALL_SKINS = Object.keys(SKINS);
 /* 스킨을 입힐 수 있는 등급 */
 const SKINNABLE = ['special', 'ssc', 'ssx', 'unknown'];
@@ -17407,8 +17660,15 @@ function bgSkyArt(a) {
       </g>
       <g opacity=".55" stroke="#8a1a2a" stroke-width="2.4" fill="none" stroke-linecap="round">
         <path d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26"/></g>
-      <g opacity=".6"><rect x="856" y="52" width="66" height="66" fill="none" stroke="#8a1a2a" stroke-width="3"/>
-        <path d="M872,70 L906,70 M872,86 L906,86 M872,102 L906,102" stroke="#8a1a2a" stroke-width="3"/></g>
+      <!-- 낙관(落款) — 그린 이의 도장. 예전에는 빈 네모에 줄 셋이라
+           그림이 아니라 깨진 단추처럼 보였다. 속을 채우고 글자를 팠다.
+           오른쪽 위는 단추들이 앉는 자리라 왼쪽으로 옮겼다. -->
+      <g opacity=".3" transform="translate(24 68)">
+        <rect width="38" height="38" rx="3" fill="#7a1622"/>
+        <rect width="38" height="38" rx="3" fill="none" stroke="#a82230" stroke-width="1.5"/>
+        <text x="19" y="28" text-anchor="middle" font-size="25" font-family="serif"
+          fill="#1a0a0c">冥</text>
+      </g>
       <g opacity=".34">${rep(20, i =>
         `<circle cx="${(i * 149) % 1000}" cy="${40 + (i * 83) % 320}" r="${.8 + (i % 3) * .6}" fill="#7a2a34"/>`)}</g>
     `;
@@ -17509,9 +17769,11 @@ function bgFarArt(a) {
     /* 사신도 — 먹으로 친 산과, 반쯤 지워진 글자 */
     return `<g opacity=".22" fill="none" stroke="#3a3228" stroke-width="3" stroke-linecap="round">
       <path d="M0,404 q90,-64 168,-6 q64,48 132,-26 q78,-84 160,-2 q70,70 148,-14 q76,-82 168,10 q88,88 224,22"/></g>
-      <g opacity=".2" fill="#2a2420">${rep(4, i =>
-      `<rect x="${906}" y="${180 + i * 62}" width="42" height="42" rx="3" fill="none" stroke="#2a2420" stroke-width="2"/>
-       <path d="M${914},${196 + i * 62} l26,0 M${914},${210 + i * 62} l26,0 M${927},${190 + i * 62} l0,26"/>`)}</g>`;
+      <!-- 화제(畵題) — 그림 옆에 내려쓴 글. 예전에는 빈 네모 넷이라
+           글이 아니라 깨진 칸처럼 보였다. 진짜 글자를 반쯤 지워 넣는다. -->
+      <g opacity=".1" fill="#3a3228" font-family="serif" font-size="27" text-anchor="middle">
+        ${rep(6, i => `<text x="26" y="${188 + i * 40}" opacity="${(1 - i * .13).toFixed(2)}"
+          >${'死生無間不還'[i]}</text>`)}</g>`;
   return '';
 }
 /* 가운데 능선 뒤 */
