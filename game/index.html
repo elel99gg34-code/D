@@ -795,6 +795,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .pricetag{position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);background:var(--ink);color:#e8c86a;
   font-size:12px;padding:2px 10px;border-radius:10px;white-space:nowrap;z-index:6;border:1px solid rgba(232,200,106,.4)}
 .pricetag.no{color:#b0553f}
+/* SSX 는 다이아 값 — 값표부터 다르게 */
+.pricetag.dia{color:#6fd0e8;border-color:rgba(111,208,232,.55);box-shadow:0 0 12px rgba(111,208,232,.3)}
+.pricetag.dia.no{color:#7a97a2;border-color:rgba(111,208,232,.25);box-shadow:none}
 .evtbox{max-width:640px;background:rgba(240,232,212,.96);padding:30px 34px;border-radius:4px;
   box-shadow:0 20px 60px rgba(0,0,0,.5);border-top:4px solid var(--red)}
 .evtbox h2{color:var(--ink);font-size:25px;margin-bottom:6px;letter-spacing:.14em;margin-left:.14em}
@@ -2874,7 +2877,10 @@ const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls)
 let SPEED = 1;                       /* 연출 속도 배율 (설정에서 조절) */
 /* VIP 2배속 — 켜져 있으면 모든 연출이 절반의 시간에 흐른다 */
 const turboX = () => (typeof OPT === 'object' && OPT && OPT.turbo && vipOn() ? .5 : 1);
-const wait = ms => new Promise(r => setTimeout(r, ms * SPEED * turboX()));
+/* 판이 살아 움직이고 있다는 맥박 — 감시견이 이것을 보고
+   「자물쇠는 걸렸는데 아무 일도 안 일어난다」를 가려낸다 */
+const wait = ms => { if (G.b) G.b.beat = Date.now();
+  return new Promise(r => setTimeout(r, ms * SPEED * turboX())); };
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
 /* --- 시드 기반 난수 (mulberry32) --- */
@@ -7841,6 +7847,16 @@ function pickIntent(e) {
 /* --- 플레이어 턴 시작 --- */
 async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
+  try { await _startPlayerTurn(b); }
+  catch (e) { console.error('차례 시작 오류', e); }
+  finally {
+    if (G.b === b && !b.over && b.busy) {
+      b.busy = false;
+      try { syncAll(); } catch (e) {}
+    }
+  }
+}
+async function _startPlayerTurn(b) {
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
   logAdd('turn', '그대의 차례', 0);
   b.freeTurn = false; b.halved = false; b.softened = false; b.cheap = 0;
@@ -7965,7 +7981,23 @@ async function usePotion(idx, target) {
 }
 
 /* --- 턴 종료 → 적 턴 --- */
+/* 차례 넘기기 — 바깥을 한 겹 싼다.
+   안쪽에는 중간에 빠져나가는 갈래가 여럿인데, 그 길로 나가면
+   busy 자물쇠가 걸린 채 남아 「턴 종료가 안 눌린다」가 되었다.
+   어느 갈래로 나가든 여기서 반드시 풀어 준다. */
 async function endTurn() {
+  const b = G.b;
+  if (!b || b.busy || b.over) return;
+  try { await _endTurn(); }
+  catch (e) { console.error('턴 종료 오류', e); }
+  finally {
+    if (G.b === b && !b.over && b.busy) {
+      b.busy = false;
+      try { syncAll(); } catch (e) {}
+    }
+  }
+}
+async function _endTurn() {
   const b = G.b, p = P();
   if (b.busy || b.over) return;
   /* 안전줄 — 어떤 길로 왔든, 요괴가 하나도 안 남았으면 그것은 이긴 것이다 */
@@ -8019,7 +8051,7 @@ async function endTurn() {
   if (b.over) return;
   syncAll();
   await wait(150);
-  startPlayerTurn();
+  await startPlayerTurn();          /* 기다려야 바깥의 자물쇠 풀이가 끼어들지 않는다 */
 }
 
 async function doMove(e, m) {
@@ -8155,15 +8187,20 @@ function battleWatch(on) {
     } else _bwOver = 0;
     /* ③ busy 가 풀리지 않아 아무것도 못 한다 —
        부적을 내다 중간에서 터지면 이 자물쇠가 걸린 채 남는다.
-       자동이든 손이든 「턴 종료」조차 눌리지 않으니 여기서 풀어 준다. */
+       자동이든 손이든 「턴 종료」조차 눌리지 않으니 여기서 풀어 준다.
+       다만 요괴가 넷씩 달려드는 긴 차례도 몇 초씩 걸린다.
+       맥박(b.beat)이 뛰고 있으면 일이 돌아가는 중이니 건드리지 않는다 —
+       예전에는 시간만 재다가 남의 차례를 끊고 들어가 판이 겹쳤다. */
     if (b.busy && !b.over) {
-      if (++_bwBusy >= 8) {                 /* 3.2초 */
+      const still = Date.now() - (b.beat || 0) > 2600;   /* 맥박이 멎었는가 */
+      if (still && ++_bwBusy >= 6) {        /* 멎은 채로 2.4초 더 */
         _bwBusy = 0;
         console.warn('전투 감시견: busy 가 굳어 풀어 준다');
         b.busy = false;
         try { syncAll(); } catch (e) {}
         if (AUTO.on) toast('막힌 자리를 풀었다');
       }
+      if (!still) _bwBusy = 0;
     } else _bwBusy = 0;
   }, 400);
 }
@@ -10923,30 +10960,32 @@ const LAST_ACT = 25;
 const ACT_SCALE = {
   1: { hp: 0.86, dmg: 0.62 },              /* 첫 막 */
   2: { hp: 0.92, dmg: 0.66 },
-  3: { hp: 0.98, dmg: 0.69 },
-  4: { hp: 1.05, dmg: 0.72 },              /* 여기서부터가 본격이다 */
-  5: { hp: 1.12, dmg: 0.75 },
-  6: { hp: 1.18, dmg: 0.78 },
-  7: { hp: 1.24, dmg: 0.80 },
-  8: { hp: 1.30, dmg: 0.82 },
-  /* 「나(我)」와 「백귀야행」 */
-  9: { hp: 1.36, dmg: 0.84 },
-  /* ── 제10막 뒤로 계단을 완만히 폈다 ─────────────────────
-     제20막을 45% 깎았더니 앞막이 뒷막보다 세지는 뒤집힘이 났다.
-     제10막부터 끝까지 한 줄로 다시 잡아, 오르는 맛은 남기되
-     제25막이 언제나 가장 무겁게 했다.
+  /* ── 제3~10막을 대폭 눅였다 ─────────────────────────────
+     제10막이 너무 세다는 말을 들었다. 앞 여덟 막의 계단을
+     한 칸씩만 오르게 다시 깔았다 (제10막 체력 1.42→1.16 ·
+     피해 0.86→0.735). 그리고 제11막이 벼랑이 되지 않도록
+     제19막까지도 함께 낮춰 제20막 값으로 부드럽게 잇는다.
      ────────────────────────────────────────────────────── */
-  10:{ hp: 1.42, dmg: 0.86 },
-  11:{ hp: 1.49, dmg: 0.88 },
-  12:{ hp: 1.56, dmg: 0.90 },
-  13:{ hp: 1.63, dmg: 0.91 },
-  14:{ hp: 1.70, dmg: 0.93 },
-  15:{ hp: 1.77, dmg: 0.95 },
+  3: { hp: 0.95, dmg: 0.665 },
+  4: { hp: 0.98, dmg: 0.675 },
+  5: { hp: 1.01, dmg: 0.685 },
+  6: { hp: 1.04, dmg: 0.695 },
+  7: { hp: 1.07, dmg: 0.705 },
+  8: { hp: 1.10, dmg: 0.715 },
+  /* 「나(我)」와 「백귀야행」 */
+  9: { hp: 1.13, dmg: 0.725 },
+  10:{ hp: 1.16, dmg: 0.735 },
+  /* 여기서부터가 본격이다 — 계단이 다시 넓어진다 */
+  11:{ hp: 1.26, dmg: 0.77 },
+  12:{ hp: 1.36, dmg: 0.81 },
+  13:{ hp: 1.46, dmg: 0.85 },
+  14:{ hp: 1.56, dmg: 0.88 },
+  15:{ hp: 1.66, dmg: 0.92 },
   /* 무(無)를 넘어선 뒤 — 산이 문을 연 까닭까지 간다 */
-  16:{ hp: 1.85, dmg: 0.97 },
-  17:{ hp: 1.92, dmg: 0.99 },
-  18:{ hp: 1.99, dmg: 1.01 },
-  19:{ hp: 2.07, dmg: 1.03 },
+  16:{ hp: 1.76, dmg: 0.95 },
+  17:{ hp: 1.86, dmg: 0.99 },
+  18:{ hp: 1.96, dmg: 1.02 },
+  19:{ hp: 2.06, dmg: 1.04 },
   /* 산 너머 — 벗을 찾아가는 다섯 막 */
   20:{ hp: 2.15, dmg: 1.06 },
   21:{ hp: 2.17, dmg: 1.06 },
@@ -12508,7 +12547,9 @@ function showFuse() {
 /* --- 상점 ---------------------------------------------------
    재고는 모험 상태에 저장된다. 창을 닫았다 다시 열어도 같은 물건이며,
    막이 바뀌거나 지도의 상점 노드를 밟으면 새로 채워진다.
+   SSX급만은 골드가 아니라 다이아로 판다 — 정가 3000, 에누리 없다.
    ----------------------------------------------------------- */
+const SSX_DIA_PRICE = 3000;
 function restockShop() {
   const run = G.run;
   run.merch = pick(MERCH_IDS);                 /* 상점마다 다른 사람이 앉는다 */
@@ -12524,9 +12565,14 @@ function restockShop() {
   while (cards.length < 5 && guard++ < 200) {
     const id = randomCard(w); if (seen.has(id)) continue; seen.add(id);
     const up = rnd() < .12;
+    /* SSX 는 골드로 팔지 않는다 — 다이아 정가 3000. 상인 값·미움도 안 탄다 */
+    if (CARDS[id].rar === 'ssx') {
+      cards.push({ id, up, p: SSX_DIA_PRICE, dia: true, sold: false });
+      continue;
+    }
     /* 막이 깊어지면 상인도 윗 등급을 내놓는다 — 값도 그만큼 */
     const base = { common: 52, uncommon: 78, rare: 135,
-                   special: 265, ssc: 430, ssx: 720 }[CARDS[id].rar] || 135;
+                   special: 265, ssc: 430 }[CARDS[id].rar] || 135;
     cards.push({ id, up, p: price(Math.round(base * (up ? 1.5 : 1) * (.9 + rnd() * .3))), sold: false });
   }
   const relics = [];
@@ -12748,7 +12794,8 @@ function restockShopPrices() {
   const cut = v => Math.max(1, Math.round(v * k));
   if (sh._cutAt === run.talkCut) return;
   sh._cutAt = run.talkCut;
-  sh.cards.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
+  sh.cards.forEach(it => { if (it.dia) return;   /* 다이아 값은 깎아 주지 않는다 */
+    it.p = cut(it.p0 || (it.p0 = it.p)); });
   sh.relics.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
   sh.pots.forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
   (sh.inc || []).forEach(it => { it.p = cut(it.p0 || (it.p0 = it.p)); });
@@ -12885,13 +12932,15 @@ function showShop() {
       const n = cardNode(card);
       if (it.sold) n.classList.add('dim');
       holder.appendChild(n);
-      holder.appendChild(el('div', 'pricetag' + (run.gold < it.p || it.sold ? ' no' : ''), it.sold ? '판매됨' : it.p + ' 골드'));
+      const have = it.dia ? (run.dia || 0) : run.gold;   /* SSX 는 다이아로 산다 */
+      holder.appendChild(el('div', 'pricetag' + (it.dia ? ' dia' : '') + (have < it.p || it.sold ? ' no' : ''),
+        it.sold ? '판매됨' : it.p + (it.dia ? ' 다이아' : ' 골드')));
       if (!it.sold) {
         n.classList.add('pick');
         n.onclick = () => buy(it.p, () => {
           it.sold = true; run.deck.push(mkCard(it.id, it.up)); run.stats.cards++;
           dexAdd('cards', it.id); toast(`${cname(card)} 구입`);
-        });
+        }, it.dia);
       }
       g.appendChild(holder);
     });
@@ -12943,11 +12992,13 @@ function showShop() {
     if (bb) bb.onclick = () => { if (run.betDone) { SND.err(); toast('한 상점에 한 번뿐일세'); return; }
       SND.ui(); showBet(() => draw()); };
   }
-  async function buy(cost, fn) {
-    if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
+  async function buy(cost, fn, dia) {
+    if (dia) { if ((run.dia || 0) < cost) { SND.err(); toast('다이아가 모자란다'); return; } }
+    else if (run.gold < cost) { SND.err(); toast('골드가 모자란다'); return; }
     const r = await fn();
     if (r === false) return;
-    run.gold -= cost; bought = true;           /* 하나라도 샀으면 미움이 풀린다 */
+    if (dia) run.dia = (run.dia || 0) - cost; else run.gold -= cost;
+    bought = true;                             /* 하나라도 샀으면 미움이 풀린다 */
     SND.coin(); saveRun(); renderTop(); draw();
   }
   draw();
