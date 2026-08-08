@@ -330,6 +330,31 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 @keyframes emberSpin{to{transform:rotate(360deg)}}
 @keyframes emberPulse{0%,100%{opacity:.55;filter:blur(7px)}50%{opacity:.95;filter:blur(11px)}}
 .card.g-s .face{animation:flameGlow 1.7s ease-in-out infinite}
+/* 0등급 — 서릿빛. 아우라가 있되 아주 희미하다 */
+@keyframes zeroGlow{
+  0%,100%{box-shadow:0 0 8px 1px rgba(190,215,228,.34),inset 0 0 10px rgba(230,244,250,.18)}
+  50%    {box-shadow:0 0 15px 4px rgba(210,232,242,.52),inset 0 0 16px rgba(240,250,255,.3)}}
+.card.g-zero .face{border-color:#9fb8c4;background:linear-gradient(155deg,#fbfdfe,#e8f1f5 54%,#d2e0e8);
+  animation:zeroGlow 2.6s ease-in-out infinite}
+.card.g-zero .grade{text-shadow:0 0 6px rgba(200,228,240,.9)}
+.card.g-zero .art .g{color:#3d5560;text-shadow:0 0 8px rgba(180,212,228,.6)}
+.card.g-zero .cname{color:#26343c}
+/* 뾰족한 별이 아니라 뿌연 무리로 — 「희미한 아우라」 */
+.card.g-zero::before{content:'';position:absolute;inset:-5px;border-radius:11px;z-index:0;opacity:.45;
+  background:radial-gradient(ellipse at 50% 50%,rgba(230,244,250,.9),rgba(168,198,212,.5) 58%,transparent 74%);
+  filter:blur(5px);animation:zeroHalo 3.4s ease-in-out infinite}
+@keyframes zeroHalo{0%,100%{opacity:.32;transform:scale(1)}50%{opacity:.6;transform:scale(1.035)}}
+.stile.g-zero{border-color:#9fb8c4;background:linear-gradient(160deg,#f4fafc,#dbe8ee);animation:zeroGlow 2.6s ease-in-out infinite}
+.relic.g-zero{border-color:#9fb8c4;animation:zeroGlow 2.6s ease-in-out infinite;background:#eef6fa}
+.rtile.g-zero{border-color:#9fb8c4;background:linear-gradient(160deg,#f4fafc,#dbe8ee);animation:zeroGlow 2.6s ease-in-out infinite}
+#skillbtn.sg-zero.ready{animation:zeroGlow 2.6s ease-in-out infinite}
+.dextile.gd_zero{border-color:#9fb8c4;background:#eef6fa;animation:zeroGlow 2.6s ease-in-out infinite}
+.dextile.gd_zero b{color:#3d5560}
+.gunit.u-zero{border-color:#9fb8c4;animation:zeroGlow 2.6s ease-in-out infinite}
+.pullitem.p-zero{border-color:#9fb8c4;background:linear-gradient(160deg,#f4fafc,#dbe8ee);
+  animation:pullPop .45s cubic-bezier(.2,1.5,.4,1) forwards, zeroGlow 2.6s ease-in-out infinite .45s}
+.skillname.zero{color:#eaf6fb;text-shadow:0 0 12px #bcd8e6,0 2px 6px rgba(0,0,0,.8)}
+
 .card.g-s .grade{text-shadow:0 0 7px rgba(255,190,120,.95)}
 .card.g-s::before{content:'';position:absolute;inset:-5px;border-radius:9px;z-index:0;
   background:conic-gradient(from 0deg,#ff8a00,#ffd24d,#e2622a,#ff8a00);
@@ -5440,6 +5465,61 @@ defCard({ id: 'immortalway', n: '장생결', g: '長', type: 'power', rar: 'ssx'
   play: c => { st(P(), 'str', c.v.x); st(P(), 'edge', c.v.x);
     st(P(), 'regenP', c.v.r); st(P(), 'flow', 1); SND.power(); } });
 
+/* ══════════════════════════════════════════════════════════
+   0등급(零) — 1등급을 넘어섰으나 S급에는 못 미친다
+   ──────────────────────────────────────────────────────────
+   서릿빛. 1등급보다 한 뼘씩만 세다. 값이 붙거나 소멸이 달리거나
+   조건이 걸려서, 세기만 놓고 보면 S급 앞에서 반걸음 물러선다.
+   ══════════════════════════════════════════════════════════ */
+defCard({ id: 'frostedge', n: '상인검', g: '霜', type: 'attack', rar: 'zero', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 15 : 12, k: u ? 2 : 1 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <b>약화</b> ${v.k}을 부여한다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'ice' }); st(c.t, 'weak', c.v.k); } });
+defCard({ id: 'stillwater', n: '지수부', g: '止', type: 'skill', rar: 'zero', cost: 1,
+  v: u => ({ b: u ? 15 : 12, x: u ? 2 : 1 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>민첩</b> ${v.x}을 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); } });
+defCard({ id: 'twinfrost', n: '쌍서리', g: '雙', type: 'attack', rar: 'zero', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 9 : 7, n: 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 둘 다 맞으면 <i>6</i>의 방어도를 얻는다.`,
+  play: c => { atk(c.t, c.v.d, { n: c.v.n, fx: 'ice' }); if (c.t.hp > 0) blk(6); } });
+defCard({ id: 'coldbrand', n: '한기낙인', g: '烙', type: 'skill', rar: 'zero', cost: 1, tgt: 'enemy',
+  v: u => ({ k: u ? 3 : 2 }),
+  txt: v => `<b>취약</b>과 <b>약화</b>를 각각 ${v.k} 부여하고 카드를 한 장 뽑는다.`,
+  play: c => { st(c.t, 'vuln', c.v.k); st(c.t, 'weak', c.v.k); drawCards(1); } });
+defCard({ id: 'snowtread', n: '설보', g: '雪', type: 'attack', rar: 'zero', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 8 : 6 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 이번 턴에 낸 첫 부적이면 카드를 한 장 뽑는다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'ice' }); const b = G.b; if (b && b.played === 0) drawCards(1); } });
+defCard({ id: 'frostwall', n: '빙벽', g: '氷', type: 'skill', rar: 'zero', cost: 2,
+  v: u => ({ b: u ? 26 : 21 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 다음 턴에 방어도가 절반 남는다.`,
+  play: c => { blk(c.v.b); st(P(), 'afterimg', Math.round(c.v.b / 2)); } });
+defCard({ id: 'icefang', n: '빙아', g: '牙', type: 'attack', rar: 'zero', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 24 : 19 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 대상이 <b>약화</b> 상태면 <i>7</i>의 방어도를 얻는다.`,
+  play: c => { const w = !!c.t.s.weak; atk(c.t, c.v.d, { fx: 'ice' }); if (w) blk(7); } });
+defCard({ id: 'winterveil', n: '동장막', g: '帳', type: 'skill', rar: 'zero', cost: 1, tgt: 'all',
+  v: u => ({ k: u ? 2 : 1, b: u ? 9 : 7 }),
+  txt: v => `모든 적에게 <b>약화</b> ${v.k}을 부여하고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { for (const e of alive()) st(e, 'weak', c.v.k); blk(c.v.b); } });
+defCard({ id: 'hailstorm', n: '우박', g: '雹', type: 'attack', rar: 'zero', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 12 : 9 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다.`,
+  play: c => { for (const e of alive()) atk(e, c.v.d, { fx: 'ice' }); } });
+defCard({ id: 'frostheart', n: '한심결', g: '心', type: 'power', rar: 'zero', cost: 2, exhaust: true,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>민첩</b> ${v.x}을 얻고, 매 턴 시작에 <i>3</i>의 방어도를 얻는다. 소멸.`,
+  play: c => { st(P(), 'dex', c.v.x); st(P(), 'turnblock', 3); SND.power(); } });
+defCard({ id: 'silvercut', n: '은편참', g: '銀', type: 'attack', rar: 'zero', cost: 1, tgt: 'enemy', exhaust: true,
+  v: u => ({ d: u ? 22 : 17 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 소멸.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'slash' }); } });
+defCard({ id: 'deepbreath', n: '심호흡', g: '息', type: 'skill', rar: 'zero', cost: 0, exhaust: true,
+  v: u => ({ n: u ? 3 : 2 }),
+  txt: v => `카드를 ${v.n}장 뽑고 기를 <b>1</b> 얻는다. 소멸.`,
+  play: c => { drawCards(c.v.n); if (G.b) G.b.energy += 1; } });
+
 /* ---------- 저주 ---------- */
 defCard({ id: 'curse_grudge', n: '원귀의 원한', g: '怨', type: 'curse', rar: 'curse', cost: -2,
   v: () => ({}), txt: () => `사용할 수 없다. 손에 있는 채로 턴을 마치면 체력을 2 잃는다.`, play: () => {} });
@@ -5504,26 +5584,29 @@ const GRADE = {
   common:   { n: '3등급', s: '3', c: '#3f7346', desc: '쓸 만한 부적' },
   uncommon: { n: '2등급', s: '2', c: '#2f6d8f', desc: '드문 부적' },
   rare:     { n: '1등급', s: '1', c: '#b8912f', desc: '귀한 부적' },
+  zero:     { n: '0등급', s: '0', c: '#cfe0e8', desc: '1등급을 넘어선 서릿빛 부적. S급에는 못 미치나 1등급보다 드물다.' },
   special:  { n: 'S급',   s: 'S', c: '#e2622a', desc: '특별 상자에서만 나오는 불타는 부적' },
   ssc:      { n: 'SSC급', s: 'SSC', c: '#1fb6c9', desc: 'S급을 넘어선 청람빛 부적. SSX에는 못 미치나, 그 아래는 전부 아래다.' },
   ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.1% 확률로만 모습을 드러낸다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
-const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'special', 'ssc', 'ssx', 'unknown'];
+const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'zero', 'special', 'ssc', 'ssx', 'unknown'];
 const RARITY_NAME = {};
 for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
 const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
-  : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown' : '';
+  : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown'
+  : rar === 'zero' ? ' g-zero' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* 보상 풀 */
 const POOL = { common: [], uncommon: [], rare: [] };
 const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전부 */
-const GRADE_POOL = { special: [], ssc: [], ssx: [], unknown: [] };
+const GRADE_POOL = { zero: [], special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in CARDS) {
   const c = CARDS[k];
   if (POOL[c.rar]) POOL[c.rar].push(k);
-  else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k); if (c.rar !== 'unknown') SPECIAL_CARDS.push(k); }
+  else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k);
+    if (c.rar !== 'unknown' && c.rar !== 'zero') SPECIAL_CARDS.push(k); }
 }
 /* 등급별 부적 하나 — 3등급 아래는 POOL, S급 위는 GRADE_POOL 에 있다 */
 function randomCard(rarWeights) {
@@ -5543,13 +5626,13 @@ function randomCard(rarWeights) {
 const REWARD_BANDS = [
   { to: 2,  w: { common: 70, uncommon: 26, rare: 4 } },
   { to: 4,  w: { common: 46, uncommon: 40, rare: 14 } },
-  { to: 6,  w: { common: 26, uncommon: 44, rare: 27, special: 3 } },
-  { to: 9,  w: { common: 12, uncommon: 38, rare: 40, special: 10 } },
-  { to: 12, w: { common: 5,  uncommon: 26, rare: 46, special: 20, ssc: 3 } },
-  { to: 15, w: { uncommon: 16, rare: 44, special: 30, ssc: 10 } },
-  { to: 18, w: { uncommon: 8,  rare: 36, special: 36, ssc: 18, ssx: 2 } },
-  { to: 21, w: { rare: 26, special: 40, ssc: 26, ssx: 8 } },
-  { to: 99, w: { rare: 14, special: 38, ssc: 33, ssx: 15 } }
+  { to: 6,  w: { common: 26, uncommon: 43, rare: 25, zero: 5, special: 1 } },
+  { to: 9,  w: { common: 12, uncommon: 36, rare: 36, zero: 12, special: 4 } },
+  { to: 12, w: { common: 5,  uncommon: 24, rare: 40, zero: 19, special: 11, ssc: 1 } },
+  { to: 15, w: { uncommon: 15, rare: 38, zero: 22, special: 19, ssc: 6 } },
+  { to: 18, w: { uncommon: 7,  rare: 32, zero: 24, special: 25, ssc: 11, ssx: 1 } },
+  { to: 21, w: { rare: 24, zero: 20, special: 31, ssc: 20, ssx: 5 } },
+  { to: 99, w: { rare: 13, zero: 12, special: 33, ssc: 28, ssx: 14 } }
 ];
 const GRADE_LABEL = { common: '3등급', uncommon: '2등급', rare: '1등급',
                       special: 'S급', ssc: 'SSC급', ssx: 'SSX급' };
@@ -6076,7 +6159,7 @@ defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
     energy(2); syncAll();
   } });
 
-const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], special: [], ssc: [], ssx: [], unknown: [] };
+const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], zero: [], special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in SKILLS) SKILL_POOL[SKILLS[k].rar].push(k);
 const ALL_SKILLS = Object.keys(SKILLS);
 function randomSkill(rar) {
@@ -8885,7 +8968,7 @@ const AUTO = { on: false, loop: false, cards: 0, turns: 0, fights: 0, storyAt: 0
 const AUTO_PACE = { slow: 1500, normal: 850, fast: 380 };
 const autoDelay = () => AUTO_PACE[OPT.autoPace] || 300;
 /* 등급 서열 — 이 값이 곧 우선순위다 */
-const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, special: 4, ssc: 5, ssx: 6, unknown: 7 };
+const AUTO_RANK = { basic: 0, common: 1, uncommon: 2, rare: 3, zero: 4, special: 5, ssc: 6, ssx: 7, unknown: 8 };
 
 /* 손에 든 한 장을 저울질한다. 쓸 수 없으면 null */
 function autoScore(c) {
@@ -12257,13 +12340,18 @@ function showRewards(kind) {
       act: () => { if (run.potions.length >= run.potSlots) { toast('물약을 더 지닐 수 없다'); return false; }
         run.potions.push(pid); SND.heal(); flyGet(POTIONS[pid].g, '#7fe6cf', '#potbar'); } });
   }
-  /* 엘리트가 이따금 S급을 남긴다 — 그 판은 부적 보상 자체가 S급으로 바뀐다.
-     제7막부터는 그 S급이 40% 확률로 한 등급 위인 SSC급이 된다. */
+  /* ── 엘리트가 남기는 것 ─────────────────────────────────
+     예전에는 제4막부터 곧장 S급을 남겨, 제10막쯤이면 S급이
+     흔해졌다. 이제 그 자리를 0등급이 받는다.
+     제13막을 넘어서야 그 0등급이 이따금 S급으로 오르고,
+     제17막부터는 그 S급이 다시 SSC급이 되기도 한다.
+     ────────────────────────────────────────────────────── */
   const sDrop = kind === 'elite' && run.act >= SPECIAL_DROP_FROM
-    && GRADE_POOL.special.length && rnd() < specialDropRate(run.act);
-  const sscDrop = sDrop && run.act >= SSC_DROP_FROM && GRADE_POOL.ssc.length && rnd() < .4;
-  const dropPool = sscDrop ? GRADE_POOL.ssc : GRADE_POOL.special;
-  const dropName = sscDrop ? 'SSC급' : 'S급';
+    && GRADE_POOL.zero.length && rnd() < specialDropRate(run.act);
+  const upS = sDrop && run.act >= SPECIAL_UP_FROM && GRADE_POOL.special.length && rnd() < .38;
+  const sscDrop = upS && run.act >= SSC_DROP_FROM && GRADE_POOL.ssc.length && rnd() < .4;
+  const dropPool = sscDrop ? GRADE_POOL.ssc : upS ? GRADE_POOL.special : GRADE_POOL.zero;
+  const dropName = sscDrop ? 'SSC급' : upS ? 'S급' : '0등급';
   if (kind === 'elite') {
     const rid = randomRelic();
     if (rid) items.push({ ic: RELICS[rid].g, t: RELICS[rid].n, s: RELICS[rid].d.replace(/<[^>]+>/g, ''), act: () => gainRelic(rid) });
@@ -12391,7 +12479,7 @@ function showRewards(kind) {
 }
 /* 보스가 내어 주는 비기 — 막에 따라 등급이 열린다.
    ?급 회광반조는 제10막을 넘어선 사람에게만 나온다. */
-const SKILL_GATE = { basic: 1, common: 1, uncommon: 2, rare: 4, special: 7, ssc: 10, ssx: 13, unknown: 17 };
+const SKILL_GATE = { basic: 1, common: 1, uncommon: 2, rare: 4, zero: 5, special: 7, ssc: 10, ssx: 13, unknown: 17 };
 async function pickSkill() {
   const act = (G.run && G.run.act) || 1;
   const good = Object.keys(SKILL_GATE).filter(r => act >= SKILL_GATE[r]);
@@ -13360,7 +13448,7 @@ function restockShop() {
       continue;
     }
     /* 막이 깊어지면 상인도 윗 등급을 내놓는다 — 값도 그만큼 */
-    const base = { common: 52, uncommon: 78, rare: 135,
+    const base = { common: 52, uncommon: 78, rare: 135, zero: 190,
                    special: 265, ssc: 430 }[CARDS[id].rar] || 135;
     cards.push({ id, up, p: price(Math.round(base * (up ? 1.5 : 1) * (.9 + rnd() * .3))), sold: false });
   }
@@ -14758,8 +14846,9 @@ function showSkinPicker(cardId, after) {
    여기서부터는 S급 없이 넘기 어렵다. 엘리트가 이따금 내어 준다.
    뽑기를 하지 않은 사람일수록 이 한 장이 크다.
    ────────────────────────────────────────────────────────── */
-const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내어 준다 */
-const SSC_DROP_FROM = 7;                     /* 이 막부터는 그것이 SSC급으로 오르기도 한다 */
+const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 0등급을 내어 준다 */
+const SPECIAL_UP_FROM = 13;                  /* 이 막부터 그 0등급이 S급으로 오르기도 한다 */
+const SSC_DROP_FROM = 17;                    /* 이 막부터는 그 S급이 SSC급이 되기도 한다 */
 /* 막을 넘어선 값으로 주는 특대급 상자 횟수. 제6막만 비워 둔다 */
 const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5, 11: 3, 13: 4, 16: 6, 18: 8, 21: 6, 23: 8 };
 const FUSED_GIFT_ACTS = [9, 14, 19, 22, 24];         /* 이 막들을 넘으면 SSX급 유물 둘 */
@@ -14999,7 +15088,7 @@ const MILESTONES = [
   { at: 60,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
   { at: 100, grade: 'ssx',     s: 'SSX', label: '[SSX급] 보너스', ssx: true }
 ];
-const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, special: 5, ssc: 6, ssx: 7, unknown: 8 };
+const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, zero: 5, special: 6, ssc: 7, ssx: 8, unknown: 9 };
 const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 
 /* 상자 하나에서 나오는 것 */
@@ -15035,7 +15124,7 @@ function boxLoot(tier) {
     const r = rnd();
     const grade = r < .001 && GRADE_POOL.unknown.length ? 'unknown'
                 : r < .101 && GRADE_POOL.ssx.length ? 'ssx'
-                : r < .361 && GRADE_POOL.ssc.length ? 'ssc' : 'special';
+                : r < .361 && GRADE_POOL.ssc.length ? 'ssc' : 'special';   /* 특대급에는 0등급이 없다 */
     const id = pick(GRADE_POOL[grade]);
     const up = grade === 'special' && rnd() < .35;
     const c = mkCard(id, up);
@@ -15055,8 +15144,12 @@ function boxLoot(tier) {
       take: () => { run.dia = (run.dia || 0) + n; } };
   }
   if (kind === 'card') {
-    const special = (tier >= 1 && rnd() < .35) || rnd() < .15;
-    const id = special && GRADE_POOL.special.length ? pick(GRADE_POOL.special) : pick(POOL.rare);
+    /* 0등급이 1등급과 S급 사이에 낀다 — 1등급보다는 드물게 */
+    const r0 = rnd();
+    const special = (tier >= 1 && r0 < .22) || r0 < .09;
+    const zero = !special && GRADE_POOL.zero.length && r0 < (tier >= 1 ? .50 : .30);
+    const id = special && GRADE_POOL.special.length ? pick(GRADE_POOL.special)
+             : zero ? pick(GRADE_POOL.zero) : pick(POOL.rare);
     const up = tier >= 2 && rnd() < .3;
     const c = mkCard(id, up);
     return { g: CARDS[id].g, n: cname(c), grade: CARDS[id].rar, card: c,
