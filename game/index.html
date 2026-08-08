@@ -594,6 +594,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:var(--red);color:#fff;border-radius:3px;box-shadow:0 4px 0 #6f1a1e;transition:.15s;margin-left:.14em}
 #endturn:hover{background:var(--red2);transform:translateY(-2px);box-shadow:0 6px 0 #6f1a1e}
 #endturn:disabled{background:#7a7263;box-shadow:0 4px 0 #55503f;opacity:.7;transform:none}
+/* 연출이 도는 동안 — 흐리게만 하고 잠그지는 않는다.
+   잠가 버리면 어쩌다 굳었을 때 빠져나갈 길이 아예 없어진다. */
+#endturn.wait{background:#7a7263;box-shadow:0 4px 0 #55503f;opacity:.7;transform:none}
+#endturn.wait:hover{background:#8a8272;transform:none}
 /* 자동 플레이 */
 #autobtn{pointer-events:auto;position:absolute;right:22px;bottom:140px;padding:8px 16px;font-size:13px;letter-spacing:.12em;
   background:rgba(23,19,15,.82);color:#d8cbaa;border:1.5px solid #6d6250;border-radius:3px;transition:.15s}
@@ -3907,6 +3911,7 @@ const OPT_DEF = {
   musicVol: .38,            /* 배경 음악 음량 — 귀가 어질하다는 말에 낮췄다 */
   autoPotion: true,         /* 위급할 때 물약을 쓴다 */
   autoSkill: true,          /* 비기를 알아서 쓴다 */
+  autoEnd: false,           /* 낼 것이 없으면 차례를 스스로 넘긴다 */
   noGuide: false,           /* 때가 되면 나서는 안내를 끈다 */
   noFriend: false,          /* 벗 단오의 훈수를 끈다 */
   noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
@@ -8161,6 +8166,48 @@ async function playCard(card, target) {
   if (!b.over) { await checkDeaths(); syncAll(); await checkOver(); }
 }
 
+/* ══════════════════════════════════════════════════════════
+   자동 턴 종료(終) — 낼 것이 없으면 스스로 넘긴다
+   ──────────────────────────────────────────────────────────
+   기가 모자라 아무것도 못 내는 자리에서 매번 손으로 누르는 것이
+   번거롭다는 말을 들었다. 손에 낼 수 있는 부적이 하나도 없고
+   비기도 팻도 물약도 쓸 수 없을 때만, 잠깐 기다렸다 넘긴다.
+   설정에서 켜고 끈다. 자동 플레이와는 따로 논다.
+   ══════════════════════════════════════════════════════════ */
+const AUTOEND_WAIT = 1200;
+let _autoEnd = null;
+function autoEndCancel() { if (_autoEnd) { clearTimeout(_autoEnd); _autoEnd = null; } }
+/* 지금 사람이 할 수 있는 일이 하나라도 남았는가 */
+function anyPlayLeft() {
+  const b = G.b, p = P(); if (!b || !p) return true;
+  for (const c of b.hand) {
+    const cost = ecost(c);
+    if (cost === -2) continue;                 /* 낼 수 없는 것 */
+    if (cost === -1 ? b.energy >= 1 : b.energy >= cost) return true;
+  }
+  if (G.run && G.run.skill && !b.skillUsed) return true;
+  if (b.pet && !b.pet.used && b.pet.hp > 0) return true;
+  if ((G.run.potions || []).length) return true;
+  return false;
+}
+function autoEndTick() {
+  autoEndCancel();
+  if (!OPT.autoEnd || AUTO.on) return;         /* 자동 플레이가 이미 돌면 나설 일이 없다 */
+  const b = G.b;
+  if (!b || b.over || b.busy) return;
+  if ($('#overlay') && $('#overlay').children.length) return;
+  if (anyPlayLeft()) return;
+  _autoEnd = setTimeout(() => {
+    _autoEnd = null;
+    const b2 = G.b;
+    if (!b2 || b2.over || b2.busy || AUTO.on) return;
+    if ($('#overlay') && $('#overlay').children.length) return;
+    if (anyPlayLeft()) return;
+    toast('낼 것이 없어 차례를 넘긴다');
+    endTurn();
+  }, AUTOEND_WAIT);
+}
+
 /* --- 물약 --- */
 async function usePotion(idx, target) {
   const run = G.run, id = run.potions[idx];
@@ -9500,7 +9547,18 @@ function renderBattle() {
   if (G.b) { G.b.pet = makePet(); buildPet(); }
   buildEnemies();
   battleWatch(true);
-  $('#endturn').onclick = () => endTurn();
+  /* 눌렀는데 굳어 있으면 — 맥박이 멎었으면 그 자리에서 풀고 넘긴다.
+     연출이 아직 도는 중이면 그냥 흘려보낸다. */
+  $('#endturn').onclick = () => {
+    const b = G.b; if (!b || b.over) return;
+    if (b.busy) {
+      if (Date.now() - (b.beat || 0) < 900) return;   /* 아직 무언가 돌고 있다 */
+      b.busy = false;
+      try { syncAll(); } catch (e) {}
+      toast('막힌 자리를 풀고 넘긴다');
+    }
+    endTurn();
+  };
   $('#skillbtn').onclick = () => useSkill();
   $('#petbtn').onclick = () => showPetMoves();
   const ab = $('#autobtn');
@@ -9628,7 +9686,11 @@ function syncPiles() {
   if (ev) ev.textContent = G.b.energy;
   if (emv) emv.textContent = G.b.maxEnergy + (P().s.focus || 0);
   const et = $('#endturn');
-  if (et) et.disabled = G.b.busy || G.b.over;
+  autoEndTick();                              /* 낼 것이 없으면 스스로 넘긴다 */
+  /* 「턴 종료」는 전투가 끝났을 때만 잠근다.
+     연출 중에는 흐리게만 해 두고 눌리게 남긴다 — 굳었을 때
+     사람이 스스로 빠져나올 문을 하나는 남겨 두어야 한다. */
+  if (et) { et.disabled = !!G.b.over; et.classList.toggle('wait', !!G.b.busy && !G.b.over); }
   syncSkill();
   syncIncoming();
 }
@@ -16434,6 +16496,9 @@ function showSettings() {
     () => OPT.autoPace, v => { OPT.autoPace = v; });
   row('물약 자동 사용', '체력이 위태로울 때만 딴다', () => OPT.autoPotion, v => { OPT.autoPotion = v; });
   row('비기 자동 사용', '싸움이 길어지면 알아서 쓴다', () => OPT.autoSkill, v => { OPT.autoSkill = v; });
+  row('자동 턴 종료', `손에 낼 수 있는 부적이 하나도 없으면 ${AUTOEND_WAIT / 1000}초 뒤에 스스로 넘긴다
+    (자동 플레이를 켜지 않아도 듣는다)`,
+    () => OPT.autoEnd, v => { OPT.autoEnd = v; if (!v) autoEndCancel(); });
 
   head('안 내');
   row('때맞춘 안내', `새 자리가 쓸모 있어지면 알려 준다 · 제${GUIDE_UNTIL}막까지만 ·
