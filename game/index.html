@@ -8599,10 +8599,10 @@ async function checkDeaths() {
      ① 살아 있는 요괴가 없는데 끝나지 않았다
      ② 끝났다고 표시됐는데 전투가 치워지지 않았다
    ══════════════════════════════════════════════════════════ */
-let _bw = null, _bwDead = 0, _bwOver = 0, _bwBusy = 0, _bwIdle = 0;
+let _bw = null, _bwDead = 0, _bwOver = 0, _bwBusy = 0, _bwIdle = 0, _bwHold = 0;
 function battleWatch(on) {
   if (_bw) { clearInterval(_bw); _bw = null; }
-  _bwDead = 0; _bwOver = 0; _bwBusy = 0; _bwIdle = 0;
+  _bwDead = 0; _bwOver = 0; _bwBusy = 0; _bwIdle = 0; _bwHold = 0;
   if (!on) return;
   _bw = setInterval(async () => {
     const b = G.b;
@@ -8642,7 +8642,11 @@ function battleWatch(on) {
         battleRescue(b, '맥박이 멎은 채 굳었다');
       }
       if (!still) _bwBusy = 0;
-    } else _bwBusy = 0;
+      /* 맥박과 상관없는 마지막 잣대 — 자물쇠가 20초를 넘기면
+         무슨 사정이든 되돌린다. 헛도는 고리가 맥박만 뛰게 하는
+         자리를 이것으로 잡는다. */
+      if (++_bwHold >= 50) { _bwHold = 0; _bwBusy = 0; battleRescue(b, '자물쇠가 20초를 넘겼다'); }
+    } else { _bwBusy = 0; _bwHold = 0; }
     /* ④ 자물쇠는 안 걸렸는데 사람이 둘 수 없는 판 —
        손도 비고 요괴 차례도 아니면 차례가 오다 만 것이다 */
     if (!b.busy && !b.over && !b.hand.length && alive().length && P() && P().hp > 0) {
@@ -9778,13 +9782,25 @@ function renderBattle() {
   battleWatch(true);
   /* 눌렀는데 굳어 있으면 — 맥박이 멎었으면 그 자리에서 풀고 넘긴다.
      연출이 아직 도는 중이면 그냥 흘려보낸다. */
+  /* 눌렀는데 굳어 있을 때 — 두 번 누르면 무조건 뚫린다.
+     맥박만 보고 막았더니, 헛도는 고리가 맥박을 계속 뛰게 하면
+     눌러도 아무 일이 없어 「아예 안 눌린다」가 되었다.
+     이제는 어떤 속사정이든 두 번째 누름을 막지 못한다. */
+  let _etTap = 0;
   $('#endturn').onclick = () => {
     const b = G.b; if (!b || b.over) return;
     if (b.busy) {
-      if (Date.now() - (b.beat || 0) < 900) return;   /* 아직 무언가 돌고 있다 */
-      b.busy = false;
-      try { syncAll(); } catch (e) {}
-      toast('막힌 자리를 풀고 넘긴다');
+      const now = Date.now();
+      const again = now - _etTap < 1600;              /* 잇달아 두 번 눌렀는가 */
+      _etTap = now;
+      if (!again && now - (b.beat || 0) < 900) {      /* 첫 누름 · 아직 도는 중 */
+        toast('아직 수가 도는 중 — 한 번 더 누르면 넘긴다');
+        SND.err();
+        return;
+      }
+      battleRescue(b, again ? '두 번 눌러 뚫었다' : '맥박이 멎어 뚫었다');
+      _etTap = 0;
+      if (!b.hand.length) return;                     /* 차례를 새로 열었으면 여기까지 */
     }
     endTurn();
   };
