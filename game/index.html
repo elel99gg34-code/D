@@ -128,9 +128,16 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .relic:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 4px 10px rgba(0,0,0,.4)}
 .relic.new{animation:relicPop .6s ease}
 @keyframes relicPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.4) rotate(10deg)}100%{transform:none}}
-.topbtn{position:relative;width:34px;height:34px;border-radius:5px;font-size:16px;line-height:1;
-  display:grid;place-items:center;color:#f2e7cc;background:rgba(157,124,46,.22);
+/* 윗줄 단추 — 한자만으로는 무엇인지 알 수 없다는 말에
+   글자 아래 우리말 이름을 한 줄 붙였다 */
+.topbtn{position:relative;min-width:42px;height:40px;padding:0 5px;border-radius:5px;line-height:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:#f2e7cc;background:rgba(157,124,46,.22);
   border:1.5px solid #9d7c2e;transition:.15s}
+.topbtn > b{font-size:15px;font-weight:400;line-height:1}
+.topbtn > i{font-style:normal;font-size:8.5px;letter-spacing:.02em;opacity:.85;
+  white-space:nowrap;line-height:1}
+@media (max-width:1180px){ .topbtn > i{display:none} .topbtn{min-width:34px;height:34px} }
 .topbtn:hover{transform:translateY(-2px);background:rgba(157,124,46,.42);box-shadow:0 4px 12px rgba(0,0,0,.45)}
 .topbtn.box{color:#dff4fb;background:rgba(47,127,153,.28);border-color:#6fd0e8;
   box-shadow:0 0 12px rgba(111,208,232,.35)}
@@ -152,6 +159,18 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn.fuse{color:#ffd9e0;background:rgba(190,40,80,.22);border-color:#d84a70}
 .topbtn.fuse:hover{background:rgba(190,40,80,.45)}
 .topbtn.fuse.ready{animation:ssxGlow 1.4s ease-in-out infinite}
+/* 터에서 꺼내 온 셋 */
+.topbtn.forge{color:#ffd9b8;background:rgba(160,80,26,.26);border-color:#c8763a}
+.topbtn.forge:hover{background:rgba(190,100,36,.5)}
+.topbtn.colo{color:#ffd6d6;background:rgba(150,40,40,.24);border-color:#c85050}
+.topbtn.colo:hover{background:rgba(180,55,55,.48)}
+.topbtn.illub{color:#e6d4ff;background:rgba(110,70,180,.26);border-color:#b98cff}
+.topbtn.illub:hover{background:rgba(130,85,210,.5)}
+.topbtn.illub.ready{animation:flameGlow 1.8s ease-in-out infinite;
+  box-shadow:0 0 0 2px rgba(185,140,255,.3),0 0 18px rgba(185,140,255,.55)}
+.topbtn.illub.ready em{background:#b98cff;color:#1c0f2e}
+.topbtn.illub.locked{opacity:.4;border-style:dashed}
+.topbtn.illub.spent{opacity:.5}
 .topbtn.box:hover{background:rgba(47,127,153,.5)}
 /* 응급 회복 — 체력이 바닥나면 나타난다 */
 .topbtn.heal{color:#dcffef;background:rgba(30,120,90,.34);border-color:#4fd3a0;
@@ -8914,14 +8933,17 @@ function renderTop() {
       <div id="potbar"></div>
       <div id="cursechip"></div>
       <div id="incchip"></div>
-      <button class="topbtn heal hide" id="healbtn">癒<em>${EMERGENCY_COST}</em></button>
-      <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리">場<em></em></button>
-      <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길">修<em></em></button>
-      <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를">神<em></em></button>
-      <button class="topbtn box" id="boxbtn" title="부적 뽑기">匣<em></em></button>
-      ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자">管<em></em></button>' : ''}
-      <button class="topbtn skill" id="skilltop" title="비기">祕<em></em></button>
-      <button class="topbtn fuse" id="fusebtn" title="유물 조합">合<em></em></button>
+      <button class="topbtn heal hide" id="healbtn" title="응급 회복"><b>癒</b><i>회복</i><em>${EMERGENCY_COST}</em></button>
+      <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리"><b>場</b><i>터</i><em></em></button>
+      <button class="topbtn forge" id="forgetop" title="대장간 — 부적을 두들겨 힘을 올린다"><b>冶</b><i>대장간</i><em></em></button>
+      <button class="topbtn colo" id="colotop" title="콜로세움 — 부적으로 겨룬다"><b>鬪</b><i>콜로세움</i><em></em></button>
+      <button class="topbtn illub" id="illutop" title="환상 — 무한 부적을 두들긴다"><b>幻</b><i>환상</i><em></em></button>
+      <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
+      <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를"><b>神</b><i>신전</i><em></em></button>
+      <button class="topbtn box" id="boxbtn" title="부적 뽑기"><b>匣</b><i>뽑기</i><em></em></button>
+      ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자"><b>管</b><i>관리자</i><em></em></button>' : ''}
+      <button class="topbtn skill" id="skilltop" title="비기"><b>祕</b><i>비기</i><em></em></button>
+      <button class="topbtn fuse" id="fusebtn" title="유물 조합"><b>合</b><i>조합</i><em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
       <button class="brush-btn ghost" id="menubtn" style="padding:6px 12px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c">≡</button>`;
     const rb = t.querySelector('#relicbar');
@@ -8961,6 +8983,20 @@ function renderTop() {
     t.querySelector('#trainbtn').onclick = () => { markUsed('train'); openTraining(); };
     t.querySelector('#shrinebtn').onclick = () => { markUsed('shrine'); openShrine(); };
     t.querySelector('#boxbtn').onclick = () => { markUsed('box'); openBoxes(); };
+    /* 터에서 꺼내 온 셋 — 자주 가는 자리라 윗줄에 둔다 */
+    t.querySelector('#forgetop').onclick = () => { markUsed('forge'); openForge(); };
+    t.querySelector('#colotop').onclick = () => { markUsed('colo'); openColosseum(); };
+    t.querySelector('#illutop').onclick = () => { markUsed('illu'); showIllusion(); };
+    bindTip(t.querySelector('#forgetop'), () => `<b>대장간</b> — 부적을 두들겨 힘을 올린다<br>
+      <span style="color:#9a8d74">최대 ${FORGE_MAX}단 · 실패하면 단이 내려갈 수 있다</span>`);
+    bindTip(t.querySelector('#colotop'), () => `<b>콜로세움</b> — 부적으로 겨룬다<br>
+      <span style="color:#9a8d74">참가비 ${COL_FEE}골드 · 상금 ${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}</span>`);
+    bindTip(t.querySelector('#illutop'), () => illuOk()
+      ? `<b style="color:#d8b4ff">환상</b> — 무한 부적을 ${ILLU_TIME / 1000}판 두들긴다<br>
+         두들길 때마다 골드·다이아·상자가 떨어진다<br>
+         <span style="color:#9a8d74">${illuLeft() ? '이 막에서 아직 안 다녀왔다' : '이 막에서는 이미 다녀왔다 — 다음 막에 또'}</span>`
+      : `<b>환상</b> — 아직 잠겨 있다<br>
+         <span style="color:#9a8d74">제${ILLU_ACT}막을 넘어서면 열린다 (지금 제${META.cleared || 0}막까지)</span>`);
     const ab2 = t.querySelector('#adminbtn'); if (ab2) ab2.onclick = () => { SND.ui(); showAdmin(); };
     bindTip(t.querySelector('#trainbtn'), () => `<b>수행터</b> — 져도 남는 길<br>
       모은 정진 <b style="color:#ffd76a">${META.jp}</b><br>
@@ -9006,6 +9042,20 @@ function renderTop() {
   pb2.querySelector('em').textContent = marks || '';
   pb2.classList.toggle('busy', !!G.b);
   pb2.classList.toggle('ready', marks > 0);
+  /* 꺼내 온 셋 — 싸우는 중에는 못 가고, 환상은 막마다 한 번 */
+  const ft2 = t.querySelector('#forgetop');
+  if (ft2) { ft2.classList.toggle('busy', !!G.b); ft2.classList.toggle('fresh', !usedPlace('forge')); }
+  const ct2 = t.querySelector('#colotop');
+  if (ct2) { ct2.classList.toggle('busy', !!G.b); ct2.classList.toggle('fresh', !usedPlace('colo')); }
+  const it2 = t.querySelector('#illutop');
+  if (it2) {
+    const on = illuOk() && illuLeft() && !G.b;
+    it2.classList.toggle('busy', !!G.b);
+    it2.classList.toggle('locked', !illuOk());
+    it2.classList.toggle('ready', on);
+    it2.classList.toggle('spent', illuOk() && !illuLeft());
+    it2.querySelector('em').textContent = on ? '!' : '';
+  }
   const bb = t.querySelector('#boxbtn'), cur = (run.summons || 0) % 100;
   const next = MILESTONES.find(m => m.at > cur);
   bb.querySelector('em').textContent = next ? (next.at - cur) : '';
@@ -9129,15 +9179,7 @@ function showPlaces() {
   add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
-  add('colo', '鬪', '콜로세움', `부적으로 겨룬다 · 참가비 ${COL_FEE}골드 · 상금 ${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}`,
-    G.b ? 'lock' : 'hot', () => openColosseum());
-  add('forge', '冶', '대장간', `부적을 두들겨 힘을 올린다 · 최대 ${FORGE_MAX}단`,
-    G.b ? 'lock' : 'hot', () => openForge());
-  add('illu', '幻', '환상', illuOk()
-      ? (illuLeft() ? `무한 부적을 ${ILLU_TIME / 1000}판 두들긴다 · 상자가 쏟아진다`
-                    : '이 막에서는 이미 다녀왔다 · 다음 막에 또')
-      : `제${ILLU_ACT}막을 넘어야 열린다 (지금 제${META.cleared || 0}막까지)`,
-    G.b ? 'lock' : illuOk() ? (illuLeft() ? 'hot' : '') : 'lock', () => showIllusion());
+  /* 대장간 · 콜로세움 · 환상은 윗줄로 꺼냈다 — 자주 가는 자리라 */
   add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
