@@ -2394,6 +2394,44 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 @keyframes comboPop{0%{opacity:0;transform:translateX(-50%) scale(.6)}
   25%{opacity:1;transform:translateX(-50%) scale(1.15)}75%{opacity:1;transform:translateX(-50%) scale(1)}
   100%{opacity:0;transform:translateX(-50%) scale(1.05)}}
+/* ══ 간지(氣) — 얹은 연출 ════════════════════════════════
+   전부 transform·opacity 만 건드린다. 판 하나에 한 겹씩만 뜨고
+   스스로 지워진다 — 레이아웃을 다시 재는 일이 없어 안 버벅인다. */
+/* ① 차례가 열릴 때 화면을 훑고 지나가는 먹 띠 */
+.inkband{position:fixed;left:-40%;top:0;width:36%;height:100%;z-index:29;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,238,200,.16) 42%,rgba(255,255,255,.34) 50%,
+    rgba(255,238,200,.14) 58%,transparent);
+  transform:skewX(-14deg);animation:inkBand .62s cubic-bezier(.3,.7,.3,1) forwards;will-change:transform}
+@keyframes inkBand{0%{transform:translateX(0) skewX(-14deg)}100%{transform:translateX(400%) skewX(-14deg)}}
+/* ② 화면을 가로지르는 참격 */
+.scrslash{position:fixed;left:50%;top:50%;width:190vw;height:8px;z-index:30;pointer-events:none;
+  margin:-4px 0 0 -95vw;border-radius:4px;transform-origin:50% 50%;
+  background:linear-gradient(90deg,transparent,var(--sc,#fff2c8) 32%,#fff 50%,var(--sc,#fff2c8) 68%,transparent);
+  filter:drop-shadow(0 0 12px var(--sc,#ffd76a));animation:scrSlash .42s cubic-bezier(.2,.9,.3,1) forwards;
+  will-change:transform,opacity}
+@keyframes scrSlash{0%{transform:rotate(var(--a,-22deg)) scaleX(0);opacity:0}
+  22%{opacity:1}55%{transform:rotate(var(--a,-22deg)) scaleX(1);opacity:.95}
+  100%{transform:rotate(var(--a,-22deg)) scaleX(1);opacity:0}}
+/* ③ 이어 낼수록 오르는 연격 표시 */
+.chainbig{position:fixed;right:34px;top:38%;z-index:31;pointer-events:none;text-align:right;
+  animation:chainBig .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes chainBig{0%{transform:translateX(26px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+.chainbig b{display:block;font-size:52px;font-weight:400;line-height:.9;color:var(--cc,#ffd76a);
+  text-shadow:0 0 22px var(--cc,#ffd76a),0 3px 10px rgba(0,0,0,.85)}
+.chainbig span{display:block;font-size:12px;letter-spacing:.34em;color:#e9dfc9;margin-right:-.34em}
+.chainbig.out{animation:chainOut .34s ease forwards}
+@keyframes chainOut{100%{transform:translateX(30px) scale(.86);opacity:0}}
+/* ④ 숨이 붙어 있을 때 — 가장자리가 붉게 뛴다 */
+.lowhp{position:fixed;inset:0;z-index:6;pointer-events:none;
+  box-shadow:inset 0 0 min(180px,18vw) rgba(180,20,40,.55);
+  animation:lowHp 1.35s ease-in-out infinite;will-change:opacity}
+@keyframes lowHp{0%,100%{opacity:.42}50%{opacity:.95}}
+/* ⑤ 눕힐 때 갈라지는 자국 */
+.killcrack{position:fixed;z-index:30;pointer-events:none;transform:translate(-50%,-50%);
+  animation:killCrack .5s ease-out forwards;will-change:transform,opacity}
+@keyframes killCrack{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
+  25%{opacity:1}100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}}
+
 .combomark{position:absolute;left:50%;z-index:31;pointer-events:none;font-size:26px;color:#ffd76a;
   letter-spacing:.16em;text-shadow:0 0 16px #ff8a00,0 2px 8px rgba(0,0,0,.8);
   animation:comboPop 1.1s ease-out forwards}
@@ -4015,6 +4053,7 @@ const OPT_DEF = {
   noGuide: false,           /* 때가 되면 나서는 안내를 끈다 */
   noFriend: false,          /* 벗 단오의 훈수를 끈다 */
   noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
+  flair: true,              /* 간지 — 먹 띠 · 참격 · 연격 · 균열 */
   turbo: false              /* VIP 2배속 */
 };
 let OPT = Object.assign({}, OPT_DEF);
@@ -8192,6 +8231,8 @@ async function _startPlayerTurn(b) {
   await tryFortune();
   SND.drum();
   showTurnLabel('당신의 차례');
+  inkBand();
+  lowHpGlow(p.hp <= p.maxHp * .3);
   b.busy = false;
   syncAll();
   if (friendOn()) setTimeout(() => friendAdvise(b.turn === 1), 520);
@@ -8252,6 +8293,7 @@ async function playCard(card, target) {
     b.played++;
     logAdd('card', cname(card), 0);
     chainFx(b.played);                       /* 한 턴에 이어 낼수록 소리가 올라간다 */
+    chainBig(b.played);                      /* 셋째 장부터 큰 글씨로 */
     fire('cardPlay', card);
     if (!b.over) {
       if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
@@ -8521,6 +8563,7 @@ async function checkDeaths() {
     if (e.hp <= 0 && !e.dead) {
       e.dead = true; any = true; killed++;
       fire('onKill', e);
+      if (e.el) { const c0 = centerOf(e.el); killCrack(c0.x, c0.y, tint('#fff2c8')); }
       killFx(e);
       dropOnKill(e);
     }
@@ -8643,6 +8686,7 @@ function winBattle() {
 function _winBattle() {
   const b = G.b, run = G.run;
   battleWatch(false);
+  lowHpGlow(false);
   if (!b || !run) return;                      /* 기다리는 사이 전투가 사라졌을 수 있다 */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
@@ -10052,6 +10096,7 @@ function hitstop(strong) {
 const CRIT_AT = 26;                           /* 이만큼 들어가면 '치명' */
 function hitFx(ent, hpDmg, blocked, splash) {
   if (!ent.el) return;
+  if (ent.isPlayer) lowHpGlow(ent.hp > 0 && ent.hp <= ent.maxHp * .3);
   const r = ent.el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   if (hpDmg > 0) {
     const crit = hpDmg >= CRIT_AT && !ent.isPlayer;
@@ -10065,6 +10110,7 @@ function hitFx(ent, hpDmg, blocked, splash) {
       if (FX_TINT && !ent.isPlayer)
         FX.burst(cx, cy, Math.min(16, 5 + (hpDmg >> 1)), hexRgb(shade(FX_TINT, .2)), 5, 38, 3.8);
     }
+    if (hpDmg >= 24 && !ent.isPlayer) screenSlash(tint('#ffe6a8'));
     if (crit) {
       const m = el('div', 'critmark', '치 명');
       if (FX_TINT) { m.style.color = shade(FX_TINT, .45); m.style.textShadow = `0 0 18px ${rgba(FX_TINT, .8)}`; }
@@ -10233,6 +10279,75 @@ function zoomPunch() {
   setTimeout(() => a.classList.remove('zoompunch'), 300);
 }
 /* 큰 글자를 쿵 하고 찍는다 */
+/* ══════════════════════════════════════════════════════════
+   간지(氣) — 얹은 연출 다섯
+   ──────────────────────────────────────────────────────────
+   전부 한 겹짜리 DOM 에 transform·opacity 만 물린다. 같은 것이
+   두 겹 겹치지 않게 먼저 지우고, 스스로 사라진다. 설정에서
+   「연출」을 끄면 하나도 안 뜬다.
+   ══════════════════════════════════════════════════════════ */
+function flairOn() { return OPT.flair !== false; }
+function oneOf(cls) { const o = $('.' + cls); if (o) o.remove(); }
+/* ① 차례가 열릴 때 훑고 지나가는 먹 띠 */
+function inkBand() {
+  if (!flairOn()) return;
+  oneOf('inkband');
+  const n = el('div', 'inkband');
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 660);
+}
+/* ② 화면을 가로지르는 참격 */
+function screenSlash(color, deg) {
+  if (!flairOn()) return;
+  oneOf('scrslash');
+  const n = el('div', 'scrslash');
+  n.style.setProperty('--sc', color || tint('#ffd76a'));
+  n.style.setProperty('--a', (deg != null ? deg : (-34 + Math.random() * 46).toFixed(0)) + 'deg');
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 460);
+}
+/* ③ 한 차례에 이어 낼수록 오르는 연격 */
+const CHAIN_FROM = 3;
+const CHAIN_WORD = ['', '', '', '연 격', '맹 공', '폭 풍', '무 쌍', '천 하 무 쌍'];
+function chainBig(n) {
+  if (!flairOn() || n < CHAIN_FROM) return;
+  oneOf('chainbig');
+  const k = Math.min(CHAIN_WORD.length - 1, n);
+  const col = n >= 7 ? '#ff5a7a' : n >= 5 ? '#ff9a3a' : tint('#ffd76a');
+  const b = el('div', 'chainbig', `<b>${n}</b><span>${CHAIN_WORD[k]}</span>`);
+  b.style.setProperty('--cc', col);
+  $('#app').appendChild(b);
+  clearTimeout(chainBig._t);
+  chainBig._t = setTimeout(() => {
+    b.classList.add('out');
+    setTimeout(() => b.remove(), 360);
+  }, 900);
+}
+/* ④ 숨이 붙어 있을 때 가장자리가 붉게 뛴다 */
+function lowHpGlow(on) {
+  const cur = $('.lowhp');
+  if (!on || !flairOn()) { if (cur) cur.remove(); return; }
+  if (cur) return;
+  $('#app').appendChild(el('div', 'lowhp'));
+}
+/* ⑤ 눕힐 때 갈라지는 자국 */
+function killCrack(x, y, color) {
+  if (!flairOn() || !OPT.particles) return;
+  const n = el('div', 'killcrack');
+  let g = '';
+  for (let i = 0; i < 7; i++) {
+    const a = (i * 51 + Math.random() * 26) * Math.PI / 180;
+    const L = 46 + Math.random() * 62;
+    g += `<line x1="60" y1="60" x2="${(60 + Math.cos(a) * L).toFixed(1)}"
+      y2="${(60 + Math.sin(a) * L).toFixed(1)}" stroke="${color || '#fff2c8'}"
+      stroke-width="${(1.4 + Math.random() * 2).toFixed(1)}" stroke-linecap="round"/>`;
+  }
+  n.innerHTML = `<svg width="120" height="120" viewBox="0 0 120 120">${g}</svg>`;
+  n.style.left = x + 'px'; n.style.top = y + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), 520);
+}
+
 function stampWord(text, color) {
   if (!OPT.banner) return;
   const n = el('div', 'stampword', text);
@@ -16834,6 +16949,10 @@ function showSettings() {
     if (!vipOn()) n.querySelector('.val').classList.add('no');
   }
   row('화면 흔들림', '묵직한 일격에 화면이 흔들린다', () => OPT.shake, v => { OPT.shake = v; if (v) shake(); });
+  row('간지 연출', '차례를 여는 먹 띠 · 화면을 가르는 참격 · 연격 표시 · 눕힐 때 갈라지는 자국 · 숨이 붙었을 때 붉은 테두리',
+    () => OPT.flair !== false, v => { OPT.flair = v;
+      if (!v) ['inkband', 'scrslash', 'chainbig', 'lowhp'].forEach(c2 => { const n2 = $('.' + c2); if (n2) n2.remove(); });
+      else inkBand(); });
   row('먹물 파편', '피와 먹이 튀는 입자 연출', () => OPT.particles, v => {
     OPT.particles = v;
     if (v) FX.ink(innerWidth / 2, innerHeight / 2, 18); else FX.ps.length = 0;
