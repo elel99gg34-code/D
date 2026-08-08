@@ -2194,6 +2194,53 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .placetile.hot{border-color:#ff8aa4;box-shadow:0 0 18px rgba(220,60,100,.28)}
 .placetile.lock{opacity:.45}
 
+/* ══ 환상(幻想) ══════════════════════════════════════════
+   무한(無限) 부적을 두들기는 자리. 상자가 쏟아진다. */
+.illu{position:fixed;inset:0;z-index:90;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,#2a1c3e 0%,#150e22 45%,#07050c 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;user-select:none}
+.illu:before{content:'';position:absolute;inset:-40%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 6%,rgba(190,140,255,.08) 7%,transparent 8% 14%,
+    rgba(120,210,255,.07) 15%,transparent 16%);animation:skSpin 26s linear infinite}
+/* 쏟아지는 상자들 */
+.illurain{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.illurain i{position:absolute;top:-60px;display:grid;place-items:center;
+  width:34px;height:34px;border-radius:5px;font-style:normal;font-size:19px;
+  background:linear-gradient(150deg,#4a3a1e,#241a0c);border:1.5px solid rgba(226,189,99,.6);
+  color:#ffdf9a;animation:illuFall linear infinite;opacity:.75}
+@keyframes illuFall{0%{transform:translateY(-60px) rotate(0)}
+  100%{transform:translateY(112vh) rotate(320deg)}}
+/* 가운데 무한 부적 */
+.illucard{position:relative;z-index:3;width:190px;height:266px;border-radius:10px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(155deg,#f6efdd,#e0d2b0 58%,#cbb992);
+  border:2.5px solid #b98cff;box-shadow:0 0 34px rgba(150,90,255,.6),0 12px 30px rgba(0,0,0,.6);
+  transition:transform .06s}
+.illucard:active{transform:scale(.94)}
+.illucard.hit{animation:illuHit .13s}
+@keyframes illuHit{0%{transform:scale(1)}40%{transform:scale(1.07) rotate(-1.5deg)}100%{transform:scale(1)}}
+.illucard .ig{font-size:74px;color:#3a1c6b;line-height:1;text-shadow:0 0 22px rgba(150,90,255,.7)}
+.illucard .in{font-size:15px;letter-spacing:.3em;color:#4a3a20;margin-left:.3em}
+.illucard .ih{font-size:11.5px;color:#7a6a4a;letter-spacing:.1em}
+/* 튀어오르는 전리품 */
+.illupop{position:absolute;z-index:6;pointer-events:none;font-size:17px;white-space:nowrap;
+  text-shadow:0 2px 8px rgba(0,0,0,.9);animation:illuPop .85s ease-out forwards}
+@keyframes illuPop{0%{transform:translate(-50%,0) scale(.7);opacity:0}
+  18%{opacity:1;transform:translate(-50%,-14px) scale(1.12)}
+  100%{transform:translate(-50%,-92px) scale(1);opacity:0}}
+/* 남은 시간 */
+.illubar{position:relative;z-index:3;width:min(460px,72vw);height:9px;border-radius:5px;
+  background:rgba(255,255,255,.12);overflow:hidden}
+.illubar i{position:absolute;inset:0;border-radius:5px;transform-origin:left;
+  background:linear-gradient(90deg,#b98cff,#7fd4f0)}
+.illutop{position:relative;z-index:3;text-align:center;color:#e9dfc9;letter-spacing:.2em;font-size:15px}
+.illutop b{color:#d8b4ff;font-weight:400}
+.illutally{position:relative;z-index:3;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  color:#c9bda2;font-size:13px;letter-spacing:.06em}
+.illutally span b{color:#ffd76a;font-weight:400;margin-left:4px}
+.illuskip{position:absolute;top:20px;right:24px;z-index:6;padding:8px 16px;border-radius:5px;font-size:13px;
+  color:#c9bda2;background:rgba(255,255,255,.07);border:1px solid rgba(200,180,140,.3)}
+
 /* ══ 대전투장 ════════════════════════════════════════════ */
 .arena{position:absolute;inset:0;display:flex;flex-direction:column;
   background:linear-gradient(165deg,#1a0f10 0%,#2a1418 45%,#120a0c 100%)}
@@ -9245,6 +9292,11 @@ function showPlaces() {
     G.b ? 'lock' : 'hot', () => openColosseum());
   add('forge', '冶', '대장간', `부적을 두들겨 힘을 올린다 · 최대 ${FORGE_MAX}단`,
     G.b ? 'lock' : 'hot', () => openForge());
+  add('illu', '幻', '환상', illuOk()
+      ? (illuLeft() ? `무한 부적을 ${ILLU_TIME / 1000}판 두들긴다 · 상자가 쏟아진다`
+                    : '이 막에서는 이미 다녀왔다 · 다음 막에 또')
+      : `제${ILLU_ACT}막을 넘어야 열린다 (지금 제${META.cleared || 0}막까지)`,
+    G.b ? 'lock' : illuOk() ? (illuLeft() ? 'hot' : '') : 'lock', () => showIllusion());
   add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
@@ -14478,6 +14530,174 @@ async function grantFusedRelics(n) {
   }
   if (!got) { G.run.gold += 400; toast('가질 유물이 남지 않아 값으로 받았다 (+400 골드)'); }
   saveRun(); renderTop();
+}
+
+/* ══════════════════════════════════════════════════════════
+   환상(幻想) — 무한(無限) 부적을 두들기는 자리
+   ──────────────────────────────────────────────────────────
+   제10막을 넘어선 사람에게 열린다. 한 막에 한 번 들어갈 수 있고,
+   들어가면 서른 판(초) 동안 화면 한가운데의 무한 부적을 두들긴다.
+   한 번 두들길 때마다 아래 표에서 하나가 나온다.
+     골드 50% · 다이아 30% · 정진 8% · 작은 상자 6% ·
+     큰 상자 2.5% · 스킨 상자 1.49% · 비기 상자 1% ·
+     특대급 상자 1% · VIP 0.01%
+   상자는 그 자리에서 열지 않고 쌓아 두었다가 끝나고 한꺼번에 준다 —
+   서른 판 동안 상자 여는 연출이 끼면 두들길 수가 없다.
+   ══════════════════════════════════════════════════════════ */
+const ILLU_ACT = 10;                            /* 이 막을 넘으면 열린다 */
+const ILLU_TIME = 30000;                        /* 서른 판 */
+const ILLU_DROPS = [
+  { w: 50,    k: 'gold' },
+  { w: 30,    k: 'dia' },
+  { w: 8,     k: 'jp' },
+  { w: 6,     k: 'box0',  tier: 0, n: '작은 상자' },
+  { w: 2.5,   k: 'box2',  tier: 2, n: '큰 상자' },
+  { w: 1.49,  k: 'box6',  tier: 6, n: '스킨 상자' },
+  { w: 1,     k: 'box5',  tier: 5, n: '비기 상자' },
+  { w: 1,     k: 'box3',  tier: 3, n: '특대급 상자' },
+  { w: 0.01,  k: 'vip' }
+];
+const ILLU_TOTAL = ILLU_DROPS.reduce((a, d) => a + d.w, 0);
+function illuOk() { return (META.cleared || 0) >= ILLU_ACT; }
+function illuLeft() {                           /* 이 막에서 아직 안 들어갔는가 */
+  const r = G.run; return !!r && r.illuAct !== r.act;
+}
+function illuRoll() {
+  let r = rnd() * ILLU_TOTAL;
+  for (const d of ILLU_DROPS) { r -= d.w; if (r <= 0) return d; }
+  return ILLU_DROPS[0];
+}
+/* 환상에서 나오는 골드·다이아는 막을 타되 완만하게 — 한 번에 수백 번 두들긴다 */
+function illuGold(act) { return Math.max(6, Math.round(ri(10, 30) * Math.sqrt(lootGold(act)))); }
+function illuDia(act) { return ri(3, 9) + Math.floor((act || 1) / 3); }
+
+function showIllusion() {
+  const run = G.run; if (!run) return;
+  if (!illuOk()) { SND.err(); toast(`제${ILLU_ACT}막을 넘어서야 열린다`); return; }
+  if (!illuLeft()) { SND.err(); toast('이 막에서는 이미 다녀왔다'); return; }
+  run.illuAct = run.act; saveRun();
+  G.scene = 'illusion';
+  SND.gong(); SND.bgm(true, 'boss');
+
+  const sc = el('div', 'illu');
+  sc.innerHTML = `
+    <div class="illurain">${[...Array(18)].map((_, i) =>
+      `<i style="left:${(i * 5.7 + (i % 4) * 3) % 98}%;animation-duration:${(3.4 + (i % 5) * .9).toFixed(1)}s;` +
+      `animation-delay:${(i * .37).toFixed(2)}s">${['匣', '匱', '櫃', '祕', '皮'][i % 5]}</i>`).join('')}</div>
+    <div class="illutop">환 상 <b id="il_t">30.0</b> 판 남음</div>
+    <div class="illubar"><i id="il_bar"></i></div>
+    <div class="illucard" id="il_card">
+      <div class="ig">無</div><div class="in">무 한</div>
+      <div class="ih">두들겨라</div>
+    </div>
+    <div class="illutally" id="il_tally"></div>
+    <button class="illuskip" id="il_stop">그만둔다</button>`;
+  $('#app').appendChild(sc);
+
+  const got = { taps: 0, gold: 0, dia: 0, jp: 0, vip: 0, boxes: [] };
+  const card = sc.querySelector('#il_card'), bar = sc.querySelector('#il_bar');
+  const tSpan = sc.querySelector('#il_t'), tally = sc.querySelector('#il_tally');
+  const drawTally = () => {
+    tally.innerHTML =
+      `<span>두들김<b>${got.taps}</b></span><span>金<b>${got.gold}</b></span>` +
+      `<span>玉<b>${got.dia}</b></span><span>精<b>${got.jp}</b></span>` +
+      `<span>상자<b>${got.boxes.length}</b></span>` + (got.vip ? `<span style="color:#e0bcff">VIP!</span>` : '');
+  };
+  drawTally();
+
+  /* 튀어오르는 글은 한꺼번에 몇 장까지만 — 손이 빠르면 카드가 안 보인다 */
+  const POP_MAX = 14;
+  let popRing = 0;
+  const pop = (text, col) => {
+    const live = sc.querySelectorAll('.illupop');
+    if (live.length >= POP_MAX) live[0].remove();
+    const n = el('div', 'illupop', text);
+    n.style.color = col;
+    const r = card.getBoundingClientRect();
+    /* 카드 둘레를 돌아가며 띄운다 — 글씨를 가리지 않게 */
+    const a = (popRing++ * 0.7) % (Math.PI * 2);
+    n.style.left = (r.left + r.width / 2 + Math.cos(a) * (r.width * .78 + 40)) + 'px';
+    n.style.top = (r.top + r.height / 2 + Math.sin(a) * (r.height * .38)) + 'px';
+    sc.appendChild(n);
+    setTimeout(() => n.remove(), 880);
+  };
+
+  let over = false;
+  const tap = () => {
+    if (over) return;
+    got.taps++;
+    card.classList.remove('hit'); void card.offsetWidth; card.classList.add('hit');
+    const d = illuRoll();
+    if (d.k === 'gold') { const g = illuGold(run.act); got.gold += g; run.gold += g;
+      run.stats.gold += g; SND.coin(); pop('金 +' + g, '#ffd76a'); }
+    else if (d.k === 'dia') { const v = illuDia(run.act); got.dia += v; run.dia = (run.dia || 0) + v;
+      SND.blip(1200, { dur: .05, type: 'sine', vol: .05, to: 1700 }); pop('玉 +' + v, '#6fd0e8'); }
+    else if (d.k === 'jp') { const v = ri(5, 15); got.jp += v; META.jp = (META.jp || 0) + v;
+      META.jpTotal = (META.jpTotal || 0) + v; SND.ui(); pop('精 +' + v, '#9fe6c8'); }
+    else if (d.k === 'vip') {
+      if (META.vip.owned) { const g = illuGold(run.act) * 8; got.gold += g; run.gold += g;
+        SND.unlock(); pop('金 +' + g + ' (이미 VIP)', '#ffd76a'); }
+      else { got.vip++; META.vip.owned = true; META.vip.at = Date.now(); META.vip.freeBoxAt = 0;
+        saveMeta(); SND.victory(); screenFlash('rgba(224,188,255,.6)', 900);
+        stampWord('V I P', '#e0bcff'); blink(2); zoomPunch();
+        pop('VIP 패키지!', '#e0bcff'); }
+    }
+    else { got.boxes.push(d); SND.gong();
+      screenFlash(d.tier === 3 ? 'rgba(255,180,80,.3)' : 'rgba(180,140,255,.18)', 420);
+      pop(d.n + '!', d.tier === 3 ? '#ffb648' : '#d8b4ff'); }
+    if (got.taps % 12 === 0) { renderTop(); saveRun(); saveMeta(); }
+    drawTally();
+  };
+  card.onpointerdown = e => { e.preventDefault(); tap(); };
+
+  const t0 = Date.now();
+  const tick = setInterval(() => {
+    const left = Math.max(0, ILLU_TIME - (Date.now() - t0));
+    tSpan.textContent = (left / 1000).toFixed(1);
+    bar.style.transform = `scaleX(${left / ILLU_TIME})`;
+    if (left <= 0) finish();
+  }, 60);
+
+  async function finish() {
+    if (over) return; over = true;
+    clearInterval(tick);
+    card.onpointerdown = null;
+    renderTop(); saveRun(); saveMeta();
+    sc.classList.add('fadeout');
+    await wait(260);
+    sc.remove();
+    SND.bgm(true, 'lobby');
+    await illuSettle(got);
+  }
+  sc.querySelector('#il_stop').onclick = finish;
+}
+
+/* 쌓아 둔 상자를 한꺼번에 연다 — 연출은 짧게, 결과만 늘어놓는다 */
+async function illuSettle(got) {
+  const items = [];
+  for (const d of got.boxes) {
+    try { const loot = boxLoot(d.tier); loot.take();
+      items.push({ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || null,
+        skin: loot.skin, card: loot.card }); }
+    catch (e) { console.error('환상 상자 오류', d.tier, e); }
+  }
+  saveRun(); saveMeta(); renderTop();
+  const p = modal(`<h2>환 상 이 걷혔다</h2>
+    <div class="hint">무한 부적을 <b style="color:#d8b4ff">${got.taps}</b>번 두들겼다</div>
+    <div class="rewardrow" style="max-width:min(680px,92vw);flex-wrap:wrap;justify-content:center">
+      <div class="rewitem taken"><div class="ic">金</div><div class="t"><b>골드 ${got.gold}</b><small>주머니가 무거워졌다</small></div></div>
+      <div class="rewitem taken"><div class="ic">玉</div><div class="t"><b>다이아 ${got.dia}</b><small>상자를 여는 값</small></div></div>
+      <div class="rewitem taken"><div class="ic">精</div><div class="t"><b>정진 ${got.jp}</b><small>수행터에서 쓴다</small></div></div>
+      ${got.vip ? `<div class="rewitem taken"><div class="ic">貴</div><div class="t"><b>VIP 패키지</b><small>만 번에 한 번을 뚫었다</small></div></div>` : ''}
+    </div>
+    <div class="hint" style="margin-top:10px">상자 <b style="color:#ffd76a">${got.boxes.length}</b>개에서 나온 것</div>
+    <button class="brush-btn red" id="il_ok" style="margin-top:12px">${items.length ? '열어 본다' : '돌아간다'}</button>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#il_ok').onclick = () => {
+    closeTop();
+    if (items.length) showPullResult(items, () => showMap());
+    else showMap();
+  };
 }
 
 /* ══ 부적 뽑기 상점 ════════════════════════════════════════
