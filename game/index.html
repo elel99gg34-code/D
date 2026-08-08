@@ -8131,12 +8131,16 @@ async function playCard(card, target) {
   const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
-  for (let k = 0; k < times; k++) {
-    if (k > 0) await wait(180);
-    try { await d.play(ctx); } catch (err) { console.error('카드 처리 오류', d.id, err); }
-    await checkDeaths();
-    if (b.over) break;
-  }
+  /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
+     아래 finally 를 건너뛰어 자물쇠가 걸린 채 남았다 */
+  try {
+    for (let k = 0; k < times; k++) {
+      if (k > 0) await wait(180);
+      try { await d.play(ctx); } catch (err) { console.error('카드 처리 오류', d.id, err); }
+      await checkDeaths();
+      if (b.over) break;
+    }
+  } catch (err) { console.error('부적 처리 오류', d.id, err); }
   /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
   try {
     b.curCard = null;
@@ -8170,11 +8174,16 @@ async function usePotion(idx, target) {
   if (d.tgt === 'enemy' && !target) { startPotionTargeting(idx); return; }
   run.potions.splice(idx, 1);
   SND.potion();
-  if (G.b) G.b.busy = true;
-  try { d.use(target); } catch (e) { console.error(e); }
-  fire('onPotion');
-  toast(`${d.n} 사용`);
-  if (G.b) { await checkDeaths(); G.b.busy = false; syncAll(); await checkOver(); }
+  const b0 = G.b;
+  if (b0) b0.busy = true;
+  try {
+    try { d.use(target); } catch (e) { console.error('물약 오류', id, e); }
+    fire('onPotion');
+    toast(`${d.n} 사용`);
+    if (G.b) await checkDeaths();
+  } catch (e) { console.error('물약 뒤처리 오류', id, e); }
+  finally { if (b0) b0.busy = false; }        /* 무슨 일이 나도 풀고 나간다 */
+  if (G.b) { syncAll(); await checkOver(); }
   else { renderTop(); saveRun(); }
 }
 
@@ -8390,13 +8399,13 @@ function battleWatch(on) {
        맥박(b.beat)이 뛰고 있으면 일이 돌아가는 중이니 건드리지 않는다 —
        예전에는 시간만 재다가 남의 차례를 끊고 들어가 판이 겹쳤다. */
     if (b.busy && !b.over) {
-      const still = Date.now() - (b.beat || 0) > 2600;   /* 맥박이 멎었는가 */
-      if (still && ++_bwBusy >= 6) {        /* 멎은 채로 2.4초 더 */
+      const still = Date.now() - (b.beat || 0) > 1800;   /* 맥박이 멎었는가 */
+      if (still && ++_bwBusy >= 4) {        /* 멎은 채로 1.6초 더 */
         _bwBusy = 0;
         console.warn('전투 감시견: busy 가 굳어 풀어 준다');
         b.busy = false;
         try { syncAll(); } catch (e) {}
-        if (AUTO.on) toast('막힌 자리를 풀었다');
+        toast('막힌 자리를 풀었다');        /* 손으로 할 때도 알려 준다 */
       }
       if (!still) _bwBusy = 0;
     } else _bwBusy = 0;
@@ -10160,28 +10169,30 @@ async function tryFortune() {
   SND.gong(); SND.victory();
   toast(`천운! 덱의 기술 ${pool.length}장이 저절로 펼쳐진다`
     + (all.length > pool.length ? ` (${all.length}장 가운데)` : ''));
-  await wait(500);
-  for (const c of pool) {
-    const i1 = b.drawPile.indexOf(c); if (i1 >= 0) b.drawPile.splice(i1, 1);
-    const i2 = b.discardPile.indexOf(c); if (i2 >= 0) b.discardPile.splice(i2, 1);
-    const d = cdef(c);
-    b.curCard = c;
-    try {
-      const t = d.tgt === 'enemy' ? (alive()[0] || null) : null;
-      if (d.tgt === 'enemy' && !t) { b.exhaustPile.push(c); continue; }
-      /* 고르라고 창을 띄우는 부적이 섞이면 그 자리에서 영영 멎는다 —
-         한 장에 얼마 이상은 기다리지 않는다 */
-      await Promise.race([d.play({ v: cval(c), u: c.up, t, card: c, x: 0 }), wait(1400)]);
-    } catch (err) { console.error('천운 처리 오류', d.id, err); }
-    b.curCard = null;
-    b.exhaustPile.push(c);
-    await checkDeaths();
-    if (b.over) break;
-    await wait(110);
-  }
-  FX.gold(innerWidth / 2, innerHeight / 2, 40);
+  try {
+    await wait(500);
+    for (const c of pool) {
+      const i1 = b.drawPile.indexOf(c); if (i1 >= 0) b.drawPile.splice(i1, 1);
+      const i2 = b.discardPile.indexOf(c); if (i2 >= 0) b.discardPile.splice(i2, 1);
+      const d = cdef(c);
+      b.curCard = c;
+      try {
+        const t = d.tgt === 'enemy' ? (alive()[0] || null) : null;
+        if (d.tgt === 'enemy' && !t) { b.exhaustPile.push(c); continue; }
+        /* 고르라고 창을 띄우는 부적이 섞이면 그 자리에서 영영 멎는다 —
+           한 장에 얼마 이상은 기다리지 않는다 */
+        await Promise.race([d.play({ v: cval(c), u: c.up, t, card: c, x: 0 }), wait(1400)]);
+      } catch (err) { console.error('천운 처리 오류', d.id, err); }
+      b.curCard = null;
+      b.exhaustPile.push(c);
+      await checkDeaths();
+      if (b.over) break;
+      await wait(110);
+    }
+    FX.gold(innerWidth / 2, innerHeight / 2, 40);
+  } catch (err) { console.error('천운 오류', err); }
+  finally { b.curCard = null; b.busy = false; }   /* 무슨 일이 나도 풀고 나간다 */
   syncAll();
-  b.busy = false;
   return true;
 }
 
@@ -10473,6 +10484,13 @@ async function petUse(key) {
   if (!b || b.busy || b.over || !pt || pt.used) return;
   const m = pt.def.moves[key]; if (!m) return;
   pt.used = true; b.busy = true; syncAll();
+  try { await petAct(b, pt, m); }             /* 안에서 터져도 자물쇠는 아래에서 푼다 */
+  catch (e) { console.error('팻 오류', key, e); }
+  finally { b.busy = false; }
+  syncAll();
+  await checkOver();
+}
+async function petAct(b, pt, m) {
   const foes = alive();
   const t = foes.length ? foes.slice().sort((a, z) => a.hp - z.hp)[0] : null;
   floatText(pt, m.label, 'blk');
@@ -10496,8 +10514,6 @@ async function petUse(key) {
   if (m.heal) { heal(Math.round(m.heal * petMul())); }
   syncAll();
   await checkDeaths();
-  b.busy = false; syncAll();
-  await checkOver();
 }
 function buildPet() {
   const pt = G.b && G.b.pet; if (!pt) return;
@@ -10710,10 +10726,13 @@ async function useSkill() {
   blink(1 + hi * .25); zoomPunch();
   if (hi >= 2) { rgbSplit(); rushVignette(rgba(GRADE[d.rar].c, .3)); }
   hitstop(hi >= 2);
-  await wait(hi >= 2 ? 420 : 300);
-  try { await d.use(); } catch (e) { console.error('비기 오류', id, e); }
-  await checkDeaths();
-  b.busy = false; syncAll();
+  try {
+    await wait(hi >= 2 ? 420 : 300);
+    try { await d.use(); } catch (e) { console.error('비기 오류', id, e); }
+    await checkDeaths();
+  } catch (e) { console.error('비기 뒤처리 오류', id, e); }
+  finally { b.busy = false; }                 /* 무슨 일이 나도 풀고 나간다 */
+  syncAll();
   await checkOver();
 }
 /* 이번 턴 적들에게 받을 피해 합계 */
