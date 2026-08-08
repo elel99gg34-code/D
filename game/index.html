@@ -1792,8 +1792,6 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
   100%{opacity:0;transform:translate(-50%,-50%) scale(1.35)}}
 /* 숫자가 튀어오른다 */
-@keyframes numPop{0%{transform:translate(-50%,0) scale(.4)}45%{transform:translate(-50%,-16px) scale(1.35)}
-  100%{transform:translate(-50%,-30px) scale(1)}}
 /* 기 구슬이 터질 때 */
 #energy.spend{animation:qiSpend .34s ease-out}
 @keyframes qiSpend{0%{transform:scale(1)}35%{transform:scale(.84);filter:brightness(1.6)}100%{transform:scale(1)}}
@@ -5262,7 +5260,6 @@ function rewardAct(boost) {
   return a + (boost === 'boss' ? 2 : boost === 'elite' ? 1 : 0);
 }
 const ACT_SPAN = 12;
-function progress() { const r = G.run; return r ? (r.act - 1) * ACT_SPAN + r.floor : 0; }
 function unlockedGrades(boost) {
   return Object.keys(rewardBand(rewardAct(boost)));
 }
@@ -11253,7 +11250,6 @@ function actScale(act) {
   const m = mercyMul(a);
   return m === 1 ? base : { hp: base.hp * m, dmg: base.dmg * m };
 }
-const actBoost = act => actScale(act).hp;
 /* 보스·엘리트만 따로 눅이는 배율 */
 const BOSS_SOFT  = { hp: 0.82, dmg: 0.82 };
 const ELITE_SOFT = { hp: 0.92, dmg: 0.92 };
@@ -11993,7 +11989,6 @@ const JG_GLYPH = {
   han: { K: '漢', A: '士', R: '車', N: '馬', B: '象', C: '包', P: '兵' }
 };
 const JG_VAL = { K: 10000, R: 130, C: 70, N: 50, B: 30, A: 30, P: 20 };
-const JG_NAME = { K: '왕', A: '사', R: '차', N: '마', B: '상', C: '포', P: '졸' };
 const idx = (x, y) => y * 9 + x;
 const onBoard = (x, y) => x >= 0 && x < 9 && y >= 0 && y < 10;
 const inPalace = (s, x, y) => x >= 3 && x <= 5 && (s === 'cho' ? y <= 2 : y >= 7);
@@ -12212,17 +12207,6 @@ function jgBestMove(b, depth) {
   return scored[0].m;
 }
 
-const JANGGI_GOODS = [
-  { piece: '車', side: 'red',   x: 0, y: 0, todo: true },
-  { piece: '馬', side: 'red',   x: 2, y: 0, todo: true },
-  { piece: '包', side: 'red',   x: 4, y: 2, todo: true },
-  { piece: '象', side: 'red',   x: 6, y: 0, todo: true },
-  { piece: '楚', side: 'red',   x: 4, y: 1, todo: true },
-  { piece: '卒', side: 'green', x: 2, y: 6, todo: true },
-  { piece: '兵', side: 'green', x: 6, y: 6, todo: true },
-  { piece: '士', side: 'green', x: 4, y: 8, todo: true },
-  { piece: '漢', side: 'green', x: 4, y: 9, todo: true }
-];
 function janggiBoardSvg() {
   /* 9줄 × 10줄, 양쪽 궁(宮)에 대각선 */
   let g = '';
@@ -12232,10 +12216,6 @@ function janggiBoardSvg() {
     <line x1="5" y1="${y0}" x2="3" y2="${y0 + 2}" stroke="#6b4a1e" stroke-width=".045"/>`;
   g += palace(0) + palace(7);
   return `<svg viewBox="-0.5 -0.5 9 10" preserveAspectRatio="none">${g}</svg>`;
-}
-function openJanggi() {
-  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
-  SND.ui(); showJanggi();
 }
 /* ── 장기 한 판 ─────────────────────────────────────────── */
 const JG = { b: null, sel: -1, moves: [], turn: 'han', over: false, thinking: false, last: null, taken: [] };
@@ -13321,7 +13301,6 @@ function curseTag(t) {
   return !!(c && c.left > 0 && CURSES[c.id] && CURSES[c.id].tags.indexOf(t) >= 0);
 }
 function hasBoon(b) { return !!(G.run && G.run.boons && G.run.boons.indexOf(b) >= 0); }
-function curseLeft() { const c = G.run && G.run.curse; return c ? c.left : 0; }
 function curseReady() { return Date.now() - (META.curseAt || 0) >= CURSE_COOLDOWN; }
 function curseWaitDays() { return Math.ceil((CURSE_COOLDOWN - (Date.now() - (META.curseAt || 0))) / (24 * 3600 * 1000)); }
 
@@ -13746,7 +13725,6 @@ function colDrawCard(foe) {
   b.colDisc.push(c);
   return c;
 }
-function colDrawId(foe) { return colDrawCard(foe).id; }
 /* 뽑은 부적을 「요괴의 수」로 옮긴다 */
 function colMoveFrom(foe) {
   const drawn = colDrawCard(foe);
@@ -13824,7 +13802,6 @@ for (const f of COL_FOES) {
     moves: { wait: { t: 'defend', label: '부적을 고른다', blk: 8 } },
     next: () => 'wait' });
 }
-function colBest() { return (META.col && META.col.best) || 0; }
 function colBeat(id) { return !!(META.col && META.col.beat && META.col.beat[id]); }
 function colUnlocked(i) { return i === 0 || colBeat(COL_FOES[i - 1].id); }
 /* ── 콜로세움 화면 ─────────────────────────────────────── */
@@ -14239,7 +14216,6 @@ function showSkinPicker(cardId, after) {
    ────────────────────────────────────────────────────────── */
 const SPECIAL_DROP_FROM = 4;                 /* 이 막부터 엘리트가 내어 준다 */
 const SSC_DROP_FROM = 7;                     /* 이 막부터는 그것이 SSC급으로 오르기도 한다 */
-const FREEBOX_ACT = 5;                       /* 이 막을 넘으면 특대급 상자 하나 */
 /* 막을 넘어선 값으로 주는 특대급 상자 횟수. 제6막만 비워 둔다 */
 const ACT_CLEAR_BOX = { 5: 1, 7: 2, 8: 5, 11: 3, 13: 4, 16: 6, 18: 8, 21: 6, 23: 8 };
 const FUSED_GIFT_ACTS = [9, 14, 19, 22, 24];         /* 이 막들을 넘으면 SSX급 유물 둘 */
@@ -15318,6 +15294,7 @@ const STORY = {
     { scene: 'ash', t: '부적이 한 장씩 타들어 갔다.\n열 장이 재가 되고, 스무 장이 재가 되고,\n\n셀 수 있는 것이 재밖에 남지 않았을 때\n품 안에서 마지막 한 조각을 꺼냈다.' },
     { scene: 'ash', t: '반쪽짜리, 재가 된 통 부적.\n\n재를 손바닥에 문질러\n없는 얼굴에 그대로 붙였다.\n\n通 — 통할 통.' },
     { scene: 'voidless', who: '무간', t: '없는 것에게 처음으로 길이 났다.\n\n"…아."\n\n그 한마디에 그것이 무너졌다.' },
+    { scene: 'ash', t: '무너지면서 그것이 재를 돌려주었다.\n\n붙였던 자리에서 재가 스르르 흘러\n손바닥에 도로 고였다.\n\n한 번 길이 난 재는 다시 붙일 수 있다.\n通 — 통할 통.' },
     { scene: 'dano', t: '무너진 자리에 발자국이 있었다.\n두 사람 몫이 아니라 한 사람 몫이었고,\n아래로 이어져 있었다.\n\n단오는 떨어진 것이다. 혼자.' },
     { scene: 'abyss', t: '그 발자국을 따라 뛰어내렸다.\n떨어지는 데 이레가 걸렸다.\n\n이레 내내 아무 소리도 나지 않아서,\n그동안 단오의 목소리를 되짚었다.\n\n잊으면 못 찾을 것 같아서.' }
   ],
@@ -15351,6 +15328,7 @@ const STORY = {
   act12: [
     { scene: 'hero', who: '이장', t: '"어서 오시게. 자네를 기다렸네."\n\n마을 사람 전부가 웃고 있었다.\n한 사람도 빠짐없이.' },
     { scene: 'moon', t: '우물에 비친 얼굴이 하나 더 많았다.\n\n세어 보니 마을 사람 수와 같았다.' },
+    { scene: 'village', t: '그 하나를 우물에서 끌어냈다.\n\n끌려 나온 것이 웃자 마을이 함께 웃었고,\n벽사부를 붙이자 마을이 함께 탔다.\n\n사람이 타는 냄새는 나지 않았다.\n애초에 사람이 없었기 때문이다.' },
     { scene: 'gate', t: '마을이 타고 남은 자리에\n북쪽으로 난 길이 있었다.\n\n왕도로 가는 길이었다.' }
   ],
   act13: [
@@ -15391,7 +15369,7 @@ const STORY = {
   act20: [
     { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
     { scene: 'dawn', t: '산이 숨을 멈췄다.\n문은 닫혔고, 백귀는 흩어졌다.\n\n그런데 아직 하나가 남았다.' },
-    { scene: 'hero', t: '품 안에서 재가 된 통 부적이\n한 번, 아주 약하게 떨렸다.\n\n단오가 어딘가에 있다.' }
+    { scene: 'hero', t: '산을 오르기 시작한 것이 여섯 해 전이다.\n무간에서 이레, 무저에서 이레,\n나머지는 세는 것을 잊었다.\n\n그동안 한 번도 울리지 않던 것이\n품 안에서 아주 약하게 떨렸다.\n\n재가 된 통 부적이었다.\n단오가 어딘가에 있다.' }
   ],
   act21: [
     { scene: 'hero', who: '사잇길', t: '"산은 끝났지. 하지만 길은 안 끝났네."' },
@@ -15415,6 +15393,7 @@ const STORY = {
   ],
   end_sasindo: [
     { scene: 'abyss', who: '사신도', t: '"이 그림에 들어온 것은 나가지 못한다."\n\n"네 벗은 여기 여섯 해째 걸려 있다."' },
+    { scene: 'abyss', who: '사신도', t: '"아까 네가 부른 것은 내가 그린 것이다.\n등만 베껴 놓으면 너희는 꼭 이름을 부르더라."\n\n"눈까지 그리기는 귀찮았다."' },
     { scene: 'abyss', t: '그림 속에서 단오가 이쪽을 보았다.\n입 모양만으로 무언가 말했다.\n\n— 야. 너 판 보는 눈 여전히 없네.' },
     { scene: 'dragon', t: '부적도 벽사부도 다 떨어졌다.\n남은 것은 재가 된 통 부적 한 조각.\n\n그것을 그림에 붙였다.\n通 — 통할 통.' },
     { scene: 'dawn', t: '그림이 찢어졌다.\n\n찢어진 자리에서 손이 하나 나왔다.\n잡았다. 따뜻했다.\n\n둘이서 산을 내려왔다.\n이번에는 길이 갈리지 않았다.' }
@@ -15445,7 +15424,7 @@ const STORY = {
     { scene: 'dawn', t: '문이 닫혔다.\n\n산은 다시 잠들었고, 백 년이 흘렀다.\n누군가 다시 오를 것이다.' }
   ],
   end_blackdragon: [
-    { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 나다."\n\n"백 년마다 닫는 손이 지겨웠을 뿐."' },
+    { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 내가 아니다."\n\n"다만 닫으러 온 손을 백 년 동안\n한 번도 막지 않았을 뿐."' },
     { scene: 'gate', t: '흑룡이 무너지자\n문이 스스로 닫히기 시작했다.\n\n부적을 마지막 한 장까지 붙였다.' },
     { scene: 'dawn', t: '아침이 왔다.\n\n산은 다시 잠들었고,\n행렬은 어디에도 없었다.' }
   ],
@@ -16712,7 +16691,6 @@ function showDex() {
   }
   p.querySelector('#dx_close').onclick = closeTop;
 }
-function SPEED_NAME() { return SPEED >= 1 ? '보통' : SPEED >= .6 ? '빠름' : '아주 빠름'; }
 /* ══ 안내서 — 그림과 함께 ═════════════════════════════════ */
 function figBattle() {
   return `<svg viewBox="0 0 900 380">
