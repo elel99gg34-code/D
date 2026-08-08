@@ -1891,6 +1891,40 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   100%{opacity:0;transform:translate(-50%,-50%) scale(1.12)}}
 
 /* ══ 첫걸음 ══════════════════════════════════════════════ */
+/* ══ 손짚기(指) — 첫 판에서 하나씩 짚어 준다 ════════════ */
+.tour{position:fixed;inset:0;z-index:88;pointer-events:none}
+/* 짚는 자리만 남기고 어둡게 — 큰 그림자 하나로 판다 */
+.tourhole{position:fixed;border-radius:10px;pointer-events:none;transition:.34s cubic-bezier(.2,.9,.3,1);
+  box-shadow:0 0 0 9999px rgba(8,6,4,.74),0 0 0 3px rgba(226,189,99,.9),0 0 26px rgba(226,189,99,.55)}
+.tourhole:after{content:'';position:absolute;inset:-7px;border-radius:13px;border:2px solid rgba(255,220,140,.7);
+  animation:tourRing 1.5s ease-out infinite}
+@keyframes tourRing{0%{transform:scale(.94);opacity:.9}100%{transform:scale(1.16);opacity:0}}
+/* 손 모양 화살표 */
+.tourcur{position:fixed;width:42px;height:42px;pointer-events:none;z-index:90;
+  transition:left .5s cubic-bezier(.3,.9,.3,1),top .5s cubic-bezier(.3,.9,.3,1);
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.8))}
+.tourcur.tap{animation:tourTap .7s ease-in-out infinite}
+@keyframes tourTap{0%,100%{transform:translate(0,0) scale(1)}
+  45%{transform:translate(-5px,-7px) scale(.9)}}
+.tourwave{position:fixed;width:16px;height:16px;border-radius:50%;pointer-events:none;z-index:89;
+  border:2px solid rgba(255,220,140,.9);animation:tourWave 1.2s ease-out infinite}
+@keyframes tourWave{0%{transform:translate(-50%,-50%) scale(.5);opacity:.95}
+  100%{transform:translate(-50%,-50%) scale(4.2);opacity:0}}
+/* 말 상자 */
+.tourbox{position:fixed;z-index:91;pointer-events:auto;max-width:min(360px,80vw);
+  background:linear-gradient(158deg,rgba(38,30,20,.98),rgba(20,16,11,.98));
+  border:1.5px solid rgba(226,189,99,.6);border-radius:10px;padding:14px 16px 12px;
+  box-shadow:0 14px 40px rgba(0,0,0,.7);animation:tourIn .3s cubic-bezier(.2,1.3,.4,1)}
+@keyframes tourIn{0%{opacity:0;transform:translateY(10px) scale(.96)}100%{opacity:1;transform:none}}
+.tourbox .tg{font-size:11px;letter-spacing:.24em;color:#c8a24a;margin-bottom:5px}
+.tourbox h4{font-size:16px;font-weight:400;color:#f4ead0;letter-spacing:.08em;margin:0 0 6px}
+.tourbox p{font-size:12.5px;line-height:1.75;color:#c3b79c;margin:0;word-break:keep-all}
+.tourbox .tdo{display:block;margin-top:8px;font-size:12px;color:#ffd76a;letter-spacing:.06em}
+.tourbox .trow{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:11px}
+.tourbox button{padding:7px 14px;border-radius:5px;font-size:12.5px;letter-spacing:.08em;
+  background:var(--red);color:#fff;border:none}
+.tourbox button.gh{background:rgba(255,255,255,.07);color:#b6ab92;border:1px solid rgba(200,180,140,.28)}
+
 .tutor{position:fixed;inset:0;z-index:80;display:grid;place-items:center;
   background:radial-gradient(ellipse at 50% 40%,#241d14 0%,#120e09 60%,#080605 100%);
   animation:tuIn .5s ease-out}
@@ -8161,6 +8195,9 @@ async function _startPlayerTurn(b) {
   b.busy = false;
   syncAll();
   if (friendOn()) setTimeout(() => friendAdvise(b.turn === 1), 520);
+  /* 첫 판의 첫 차례 — 손으로 하나씩 짚어 준다 */
+  if (!META.tourDone && !AUTO.on && b.turn === 1 && G.run && G.run.act === 1)
+    setTimeout(() => startTour(), 760);
 }
 
 /* --- 카드 사용 --- */
@@ -8240,6 +8277,49 @@ async function playCard(card, target) {
    비기도 팻도 물약도 쓸 수 없을 때만, 잠깐 기다렸다 넘긴다.
    설정에서 켜고 끈다. 자동 플레이와는 따로 논다.
    ══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   판 되돌리기(復) — 자물쇠를 푸는 대신 판을 되살린다
+   ──────────────────────────────────────────────────────────
+   지금껏 「굳으면 busy 를 풀어 준다」로 막아 왔는데, 요괴 차례
+   한가운데서 멎으면 자물쇠만 풀어 봐야 손은 비어 있고 차례도
+   안 넘어와 여전히 아무것도 못 한다. 그래서 방법을 바꿨다 —
+   어떤 길로 굳었든 「사람이 둘 수 있는 판」으로 되돌려 놓는다.
+     · 자물쇠를 풀고
+     · 수를 잃은 요괴에게 다시 수를 물리고
+     · 손이 비어 있으면 기를 채우고 다섯 장을 뽑아 내 차례로 만든다
+   요괴 차례에는 아무리 길어도 넘지 못할 마감도 두었다.
+   ══════════════════════════════════════════════════════════ */
+const ENDTURN_MAX = 16000;                     /* 요괴 차례의 마감 */
+function battleRescue(b, why) {
+  if (!b || b.over || G.b !== b) return false;
+  b.busy = false;
+  b.sel = null;
+  try { hideArrow(); } catch (e) {}
+  /* 수를 잃은 요괴에게 다시 수를 물린다 — 이것이 없으면 화면이 터진다 */
+  for (const e of b.enemies) {
+    if (e.dead || e.hp <= 0) continue;
+    if (!e.mv) { try { pickIntent(e); } catch (err) { e.mv = null; } }
+  }
+  /* 손이 빈 채로 굳었다 = 내 차례가 오다 말았다. 차례를 새로 연다. */
+  let reopened = false;
+  if (!b.hand.length) {
+    const p = P();
+    if (p) {
+      b.turn++; b.played = 0; b.attacked = false;
+      b.energy = b.maxEnergy + ((p.s && p.s.focus) || 0);
+      if (b.pet) b.pet.used = false;
+      try { drawCards(5 + ((p.s && p.s.flow) || 0)); } catch (e) {}
+      try { showTurnLabel('당신의 차례'); } catch (e) {}
+      reopened = true;
+    }
+  }
+  try { syncAll(); } catch (e) {}
+  logAdd('turn', '엉킨 판을 되돌렸다', 0);
+  toast(reopened ? '판이 엉켜 차례를 다시 열었다' : '막힌 자리를 풀었다');
+  console.warn('판 되돌리기:', why || '(까닭 모름)');
+  return true;
+}
+
 const AUTOEND_WAIT = 1200;
 let _autoEnd = null;
 function autoEndCancel() { if (_autoEnd) { clearTimeout(_autoEnd); _autoEnd = null; } }
@@ -8305,12 +8385,16 @@ async function usePotion(idx, target) {
 async function endTurn() {
   const b = G.b;
   if (!b || b.busy || b.over) return;
-  try { await _endTurn(); }
+  /* 요괴 차례에 마감을 둔다 — 아무리 길어도 이만큼이면 끝내고
+     사람이 둘 수 있는 판으로 되돌린다. 어디서 멎든 여기서 걸린다. */
+  let late = false;
+  const deadline = new Promise(r => setTimeout(() => { late = true; r(); }, ENDTURN_MAX));
+  try { await Promise.race([_endTurn(), deadline]); }
   catch (e) { console.error('턴 종료 오류', e); }
   finally {
-    if (G.b === b && !b.over && b.busy) {
-      b.busy = false;
-      try { syncAll(); } catch (e) {}
+    if (G.b === b && !b.over) {
+      if (late || !b.hand.length) battleRescue(b, late ? '요괴 차례가 마감을 넘겼다' : '차례가 오다 말았다');
+      else if (b.busy) { b.busy = false; try { syncAll(); } catch (e) {} }
     }
   }
 }
@@ -8472,10 +8556,10 @@ async function checkDeaths() {
      ① 살아 있는 요괴가 없는데 끝나지 않았다
      ② 끝났다고 표시됐는데 전투가 치워지지 않았다
    ══════════════════════════════════════════════════════════ */
-let _bw = null, _bwDead = 0, _bwOver = 0, _bwBusy = 0;
+let _bw = null, _bwDead = 0, _bwOver = 0, _bwBusy = 0, _bwIdle = 0;
 function battleWatch(on) {
   if (_bw) { clearInterval(_bw); _bw = null; }
-  _bwDead = 0; _bwOver = 0; _bwBusy = 0;
+  _bwDead = 0; _bwOver = 0; _bwBusy = 0; _bwIdle = 0;
   if (!on) return;
   _bw = setInterval(async () => {
     const b = G.b;
@@ -8512,13 +8596,15 @@ function battleWatch(on) {
       const still = Date.now() - (b.beat || 0) > 1800;   /* 맥박이 멎었는가 */
       if (still && ++_bwBusy >= 4) {        /* 멎은 채로 1.6초 더 */
         _bwBusy = 0;
-        console.warn('전투 감시견: busy 가 굳어 풀어 준다');
-        b.busy = false;
-        try { syncAll(); } catch (e) {}
-        toast('막힌 자리를 풀었다');        /* 손으로 할 때도 알려 준다 */
+        battleRescue(b, '맥박이 멎은 채 굳었다');
       }
       if (!still) _bwBusy = 0;
     } else _bwBusy = 0;
+    /* ④ 자물쇠는 안 걸렸는데 사람이 둘 수 없는 판 —
+       손도 비고 요괴 차례도 아니면 차례가 오다 만 것이다 */
+    if (!b.busy && !b.over && !b.hand.length && alive().length && P() && P().hp > 0) {
+      if (++_bwIdle >= 5) { _bwIdle = 0; battleRescue(b, '손이 빈 채로 멈춰 있었다'); }
+    } else _bwIdle = 0;
   }, 400);
 }
 async function checkOver() {
@@ -8670,6 +8756,11 @@ function autoBattleStep() {
     }
   }
   if (OPT.autoSkill && run.skill && !b.skillUsed && autoSkillWorth()) { useSkill(); return; }
+  /* 팻도 자동으로 부린다 — 한 차례에 한 번, 아끼지 않는다 */
+  if (b.pet && !b.pet.used && b.pet.hp > 0 && alive().length) {
+    const mk = Object.keys((b.pet.def && b.pet.def.moves) || {});
+    if (mk.length) { petUse(pick(mk)); return; }
+  }
   const cands = [];
   for (const c of b.hand) { const r = autoScore(c); if (r) cands.push(r); }
   if (cands.length) {
@@ -11486,6 +11577,13 @@ function newRun(asc, keepDeck) {
   applyTrainRun();                           /* 수행으로 쌓은 것이 여기서 몸에 붙는다 */
   gainRelic('redseal', true);
   G.run.relics[0].isNew = false;
+  /* 손짚기 안내를 아직 안 본 사람에게는 짚을 것을 하나씩 쥐여 준다 —
+     비기 · 물약. (유물은 벽사인이 이미 있다) */
+  if (!META.tourDone) {
+    const sk = randomSkill('common') || randomSkill();
+    if (sk) { G.run.skills = [sk]; G.run.skill = sk; }
+    G.run.potions = ['heal'];
+  }
   restockShop();
   gainSkill('shout', true);
   G.run.map = genMap(1);
@@ -16145,7 +16243,6 @@ function showMenu() {
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
       ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
       ${G.b && !G.b.over ? '<button class="brush-btn red" id="m_yield">라운드 포기 (갈림길로)</button>' : ''}
-      <button class="brush-btn red" id="m_quit">모험 포기</button>
       <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
     </div>`);
   p.dataset.noauto = '1';
@@ -16166,7 +16263,6 @@ function showMenu() {
   p.querySelector('#m_help').onclick = () => showHelp();
   const yb = p.querySelector('#m_yield');
   if (yb) yb.onclick = () => { closeTop(); askYield(); };
-  p.querySelector('#m_quit').onclick = () => { autoStop(); if (G.b) { G.b.over = true; G.b = null; } clearSave(); G.run = null; closeOverlay(); showTitle(); };
   p.querySelector('#m_close').onclick = closeTop;
 }
 /* ── 설정 ────────────────────────────────────────────────── */
@@ -17314,7 +17410,7 @@ const GUIDE = {
     <div class="icoline"><b>商</b><span>상인에게 간다</span></div>
     <div class="icoline"><b>匣</b><span>부적 뽑기. 곁의 숫자는 다음 누적 보너스까지 남은 횟수</span></div>
     <div class="icoline"><b>덱</b><span>지금 내 덱 전부 보기</span></div>
-    <div class="icoline"><b>≡</b><span>소리 · 진행 속도 · 도감 · 안내서 · 모험 포기</span></div>
+    <div class="icoline"><b>≡</b><span>소리 · 진행 속도 · 도감 · 안내서</span></div>
     <h3>진행이 느리게 느껴지면</h3>
     <p><b>≡ → 진행 속도</b>에서 보통 / 빠름 / 아주 빠름을 고를 수 있다.</p>
     <h3>도감</h3>
@@ -17390,6 +17486,110 @@ const TUTOR = [
         '이 첫걸음도 안내서에서 다시 볼 수 있다.',
         '산이 문을 열었다. 백귀가 내려온다.'] }
 ];
+/* ══════════════════════════════════════════════════════════
+   손짚기(指) — 첫 싸움에서 손가락으로 하나씩 짚어 준다
+   ──────────────────────────────────────────────────────────
+   글로만 읽히는 안내서와 달리, 실제 판 위에서 짚는 자리만
+   밝히고 손 모양이 그리로 옮겨 가 두드린다. 사람이 그 자리를
+   실제로 눌러야 다음으로 넘어간다 (건너뛸 수도 있다).
+   처음 모험을 시작한 사람에게 비기·유물·물약을 하나씩 쥐여 주고
+   그것들을 차례로 짚는다.
+   ══════════════════════════════════════════════════════════ */
+const TOUR = [
+  { g: '牌', t: '부적을 고른다', sel: () => $('#hand .card'),
+    b: '아래 늘어선 것이 손에 든 부적이다. 왼쪽 위 검은 구슬이 <b>드는 기(氣)</b>다.',
+    do: '부적 하나를 눌러 보시오' },
+  { g: '敵', t: '요괴에게 낸다', sel: () => $('#eside .unit'),
+    b: '고른 부적을 요괴에게 던진다. 요괴 머리 위 표시가 <b>다음에 할 짓</b>이다.',
+    do: '요괴를 눌러 부적을 내시오' },
+  { g: '祕', t: '비기(祕)', sel: () => $('#skillbtn'),
+    b: '한 판에 <b>딱 한 번</b> 쓰는 큰 수. 아껴 두었다가 판이 기울 때 쓴다.',
+    do: '눌러서 무엇인지 보시오', soft: true },
+  { g: '寶', t: '유물(寶)', sel: () => $('#relicbar .relic') || $('#relicbar'),
+    b: '윗줄에 놓인 것이 유물이다. <b>따로 쓰지 않아도 저절로 듣는다.</b> 모을수록 판이 쉬워진다.',
+    do: '올려 보면 무엇을 하는지 나온다', soft: true },
+  { g: '藥', t: '물약(藥)', sel: () => $('#potbar .potion:not(.empty)') || $('#potbar'),
+    b: '위급할 때 딴다. 한 번 쓰면 없어진다. <b>아끼다 죽는 것이 가장 아깝다.</b>',
+    do: '눌러서 쓸 수 있다', soft: true },
+  { g: '終', t: '차례를 넘긴다', sel: () => $('#endturn'),
+    b: '낼 것이 없으면 넘긴다. 넘기면 요괴가 움직이고, 손에 남은 부적은 버려진다.',
+    do: '「턴 종료」를 누르시오' }
+];
+let _tour = null;
+function tourStop(done) {
+  if (!_tour) return;
+  const t = _tour; _tour = null;
+  if (t.off) t.off();
+  [t.hole, t.cur, t.wave, t.box, t.root].forEach(n => { if (n && n.parentNode) n.remove(); });
+  if (done) { META.tourDone = true; saveMeta(); }
+}
+function startTour() {
+  if (_tour || META.tourDone || !G.b || G.b.over) return;
+  const root = el('div', 'tour');
+  const hole = el('div', 'tourhole');
+  const wave = el('div', 'tourwave');
+  const cur = el('div', 'tourcur tap');
+  cur.innerHTML = `<svg viewBox="0 0 42 42"><path d="M8,4 L8,30 L14,25 L18,37 L24,35 L20,23 L28,23 Z"
+    fill="#fff6e2" stroke="#2a2016" stroke-width="2" stroke-linejoin="round"/></svg>`;
+  const box = el('div', 'tourbox');
+  [root, hole, wave, cur, box].forEach(n => $('#app').appendChild(n));
+  _tour = { root, hole, wave, cur, box, i: 0, off: null };
+
+  function place(r) {
+    const pad = 8;
+    hole.style.left = (r.left - pad) + 'px'; hole.style.top = (r.top - pad) + 'px';
+    hole.style.width = (r.width + pad * 2) + 'px'; hole.style.height = (r.height + pad * 2) + 'px';
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    wave.style.left = cx + 'px'; wave.style.top = cy + 'px';
+    cur.style.left = (cx - 6) + 'px'; cur.style.top = (cy - 4) + 'px';
+    /* 말 상자는 짚은 자리를 가리지 않게 반대쪽으로 */
+    const below = r.top < innerHeight * .5;
+    box.style.left = Math.max(12, Math.min(innerWidth - 372, cx - 180)) + 'px';
+    box.style.top = below ? Math.min(innerHeight - 170, r.bottom + 26) + 'px'
+                          : Math.max(12, r.top - 176) + 'px';
+  }
+  function step() {
+    const t = _tour; if (!t) return;
+    if (t.off) { t.off(); t.off = null; }
+    if (t.i >= TOUR.length) { tourDone(); return; }
+    const d = TOUR[t.i];
+    let target = null;
+    try { target = d.sel(); } catch (e) {}
+    if (!target) { t.i++; step(); return; }        /* 그 자리가 없으면 건너뛴다 */
+    place(target.getBoundingClientRect());
+    box.innerHTML = `<div class="tg">${t.i + 1} / ${TOUR.length}</div>
+      <h4>${d.g} · ${d.t}</h4><p>${d.b}</p><span class="tdo">${d.do}</span>
+      <div class="trow">
+        <button class="gh" id="tr_skip">안내 그만</button>
+        ${d.soft ? '<button id="tr_next">알겠다</button>' : ''}
+      </div>`;
+    SND.blip(880, { dur: .07, type: 'sine', vol: .05, to: 1180 });
+    box.querySelector('#tr_skip').onclick = () => { SND.ui(); tourStop(true); toast('안내를 껐다'); };
+    const nx = box.querySelector('#tr_next');
+    if (nx) nx.onclick = () => { SND.ui(); t.i++; step(); };
+    /* 그 자리를 실제로 누르면 넘어간다 */
+    const on = () => { setTimeout(() => { if (_tour) { _tour.i++; step(); } }, d.soft ? 260 : 620); };
+    target.addEventListener('pointerdown', on, { once: true });
+    t.off = () => target.removeEventListener('pointerdown', on);
+    /* 판이 흔들려도 테두리가 따라간다 */
+    const follow = () => { if (_tour === t && target.isConnected) place(target.getBoundingClientRect()); };
+    const iv = setInterval(follow, 260);
+    const prevOff = t.off;
+    t.off = () => { clearInterval(iv); prevOff(); };
+  }
+  function tourDone() {
+    tourStop(true);
+    SND.unlock();
+    const p = modal(`<h2>이만하면 되었다</h2>
+      <div class="hint">나머지는 몸이 먼저 안다.<br>
+        헷갈리면 <b style="color:#e8c86a">≡ → 안내서</b>를 펼치시오.</div>
+      <button class="brush-btn red" id="tr_ok">가 보자</button>`);
+    p.dataset.noauto = '1';
+    p.querySelector('#tr_ok').onclick = closeTop;
+  }
+  step();
+}
+
 function showTutorial(fromHelp) {
   return new Promise(done => {
     let i = 0;
