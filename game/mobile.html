@@ -18075,7 +18075,7 @@ function setBg(act) {
     18: ['#8a9aa8', '#66727e', '#3c454e'], 19: ['#6a5a7a', '#4a3e58', '#2a2236'],
     20: ['#7e7a6a', '#5c584a', '#33302a'],
     21: ['#8a8fa0', '#666b7e', '#3c4050'], 22: ['#e2dcc0', '#c2b898', '#8e8466'],
-    23: ['#dfe8f2', '#bccbdf', '#8c9eb8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
+    23: ['#cfdcec', '#a4b9d6', '#6e86a8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
     25: ['#4a4038', '#2e2620', '#140f0c']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
@@ -18099,22 +18099,108 @@ function setBg(act) {
                 23: '#f6faff 0%,#dbe8f8 50%,#b4c8e4 100%',
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
                 25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
+  const A = bgAtmos(a, PAL);
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+     ${A.defs}
+     ${A.glow}
      ${bgSkyArt(a)}
-     <g opacity=".55">
-       <path fill="${far}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/>
+     ${A.ridge}
+     <g opacity="${A.op('far')}">
+       <path fill="${A.g('far')}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/>
      </g>
      ${bgFarArt(a)}
-     <g opacity=".6">
-       <path fill="${mid}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600 Z"/>
+     <g opacity="${A.op('mid')}">
+       <path fill="${A.g('mid')}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600 Z"/>
      </g>
      ${bgMidArt(a)}
-     <g opacity=".75">
-       <path fill="${near}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
+     <g opacity="${A.op('near')}">
+       <path fill="${A.g('near')}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
      </g>
      ${bgNearArt(a)}
+     ${A.motes}
+     ${A.floor}
    </svg>`;
+}
+/* ══════════════════════════════════════════════════════════
+   배경의 공기(氣) — 어느 막에나 같은 방식으로 깔린다
+   ──────────────────────────────────────────────────────────
+   제10막이 예쁜 까닭은 색이 아니라 「깊이」에 있었다. 하늘에
+   빛나는 것이 하나 있고, 능선과 능선 사이에 안개가 끼고,
+   티끌이 떠다니고, 발치가 어두워 앞판이 얹힐 자리가 있다.
+   나머지 막에는 그 셋이 전부 없어 색칠한 삼각형 셋으로 보였다.
+   여기서 한꺼번에 깔아 준다. 그림은 막이 바뀔 때 한 번만
+   만들어지므로 돌아가는 값은 늘지 않는다.
+   제1막만은 손대지 않는다 — 그대로가 좋다는 말을 들었다.
+   ══════════════════════════════════════════════════════════ */
+const BG_NONE = { defs: '', glow: '', ridge: '', motes: '', floor: '', g: () => '', op: () => '1' };
+/* 빛깔의 밝기 — 0(검정)에서 1(흰빛) */
+function bgLum(c) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c || '');
+  if (!m) return .5;
+  return (parseInt(m[1], 16) * .3 + parseInt(m[2], 16) * .59 + parseInt(m[3], 16) * .11) / 255;
+}
+/* 막마다 하늘에 걸리는 빛의 빛깔과 자리 */
+const BG_GLOW = {
+  2: ['#fff2d0', 180, 120, .18], 3: ['#e8e4f2', 150, 110, .2], 4: ['#b9a8e0', 150, 100, .24],
+  5: ['#dff0ff', 760, 130, .22], 6: ['#c0aae8', 500, 120, .26], 7: ['#8f7ab8', 500, 150, .3],
+  8: ['#fff0c0', 500, 130, .3], 9: ['#fff4d8', 500, 140, .22], 10:['#ff4a5a', 700, 150, .3],
+  11:['#ffd9a0', 500, 190, .34], 12:['#e6f0cf', 220, 120, .2], 13:['#dfe2ee', 500, 130, .22],
+  14:['#fff8d0', 500, 140, .34], 15:['#6a6a80', 500, 200, .16],
+  16:['#ffeec8', 200, 120, .24], 17:['#e0cbe8', 500, 130, .24], 18:['#e6f2ff', 780, 120, .22],
+  19:['#cbb8ea', 500, 140, .26], 20:['#fff0cc', 500, 150, .26],
+  21:['#cdd4e8', 500, 130, .22], 22:['#fffbe0', 500, 160, .34], 23:['#ffffff', 500, 150, .38],
+  24:['#ff8a5a', 500, 150, .34], 25:['#7a1a28', 500, 160, .22]
+};
+function bgAtmos(a, PAL) {
+  /* 제1막은 손대지 않는다 — 단색 능선과 예전 투명도 그대로 */
+  if (a === 1) return Object.assign({}, BG_NONE, {
+    g: k => ({ far: PAL[0], mid: PAL[1], near: PAL[2] }[k]),
+    op: k => ({ far: '.55', mid: '.6', near: '.75' }[k])
+  });
+  const g = BG_GLOW[a] || ['#ffffff', 500, 130, .2];
+  const [gc, gx, gy, go] = g;
+  const far = PAL[0], mid = PAL[1], near = PAL[2];
+  /* 안개 — 능선 위에 얇게 깔려 뒤와 앞을 갈라 놓는다 */
+  /* 능선마다 「위는 옅고 아래는 짙게」 — 이것이 곧 안개다.
+     전에는 가로 띠를 깔았는데, 띠의 위아래 가장자리가 자로 그은
+     줄처럼 보였다. 산 자체를 옅게 물들이면 줄이 생길 자리가 없다. */
+  const grad = k => `url(#at${a}${k})`;
+  /* 하나 더 놓는 아주 먼 능선 — 깊이가 한 겹 는다 */
+  const ridge = `<g opacity=".3"><path fill="${far}"
+    d="M0,392 L120,318 L210,362 L320,286 L430,352 L520,300 L620,358 L720,296 L830,350 L920,312 L1000,368 L1000,600 L0,600 Z"/></g>`;
+  /* 떠다니는 티끌 — 깊이마다 크기를 달리한다 */
+  let motes = '';
+  for (let i = 0; i < 26; i++) {
+    const x = (i * 173 + a * 37) % 1000, y = 120 + (i * 211 + a * 53) % 380;
+    const r = (i % 4) * .5 + .7;
+    motes += `<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${gc}" opacity="${(.1 + (i % 5) * .05).toFixed(2)}"/>`;
+  }
+  return {
+    defs: `<defs>
+      <radialGradient id="gl${a}"><stop offset="0" stop-color="${gc}" stop-opacity="${go}"/>
+        <stop offset="60%" stop-color="${gc}" stop-opacity="${(go * .3).toFixed(3)}"/>
+        <stop offset="100%" stop-color="${gc}" stop-opacity="0"/></radialGradient>
+      ${[['far', far, .55, 250, 600], ['mid', mid, .38, 330, 600], ['near', near, .22, 430, 600]]
+        .map(([k, c, lift, y0, y1]) => {
+          /* 안개는 어두운 것을 하늘빛으로 끌어올린다. 이미 밝은 능선은
+             끌어올릴 것이 없다 — 그대로 밀면 온통 하얘진다(제23막) */
+          const L = lift * (1 - bgLum(c) * .85);
+          return `<linearGradient id="at${a}${k}"
+          gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}">
+          <stop offset="0" stop-color="${shade(c, L)}"/>
+          <stop offset="55%" stop-color="${shade(c, L * .35)}"/>
+          <stop offset="100%" stop-color="${c}"/></linearGradient>`;
+        }).join('')}
+      <linearGradient id="fl${a}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${near}" stop-opacity="0"/>
+        <stop offset="100%" stop-color="${near}" stop-opacity=".55"/></linearGradient>
+    </defs>`,
+    glow: `<ellipse cx="${gx}" cy="${gy}" rx="420" ry="300" fill="url(#gl${a})"/>`,
+    ridge, motes: `<g>${motes}</g>`, g: grad,
+    op: k => ({ far: '.62', mid: '.68', near: '.82' }[k]),
+    floor: `<rect x="0" y="470" width="1000" height="130" fill="url(#fl${a})"/>`
+  };
 }
 /* ══════════════════════════════════════════════════════════
    겨루는 마당의 배경
@@ -18303,8 +18389,10 @@ function bgSkyArt(a) {
         <rect x="486" y="96" width="28" height="42" rx="2"/>
         <rect x="490" y="102" width="20" height="2"/><rect x="490" y="110" width="20" height="2"/>
         <rect x="490" y="118" width="20" height="2"/><rect x="499" y="102" width="2" height="28"/></g>
+      <!-- 처마 넷. 예전에는 폭 242에 간격 240이라 서로 맞붙어
+           화면을 가로지르는 한 줄로 보였다. 벌리고 높이를 엇갈렸다. -->
       <g opacity=".26" fill="#5c6874">${rep(4, i =>
-        `<path d="M${120 + i * 240},296 l46,-34 l150,0 l46,34 Z"/>`)}</g>
+        `<path d="M${104 + i * 236},${300 + (i % 2) * 16} l40,-30 l112,0 l40,30 Z"/>`)}</g>
       <g>${rep(7, i => bgBird(150 + i * 118, 200 + (i % 3) * 22, 8, '#5c6874', .4))}</g>`;
   }
   if (a === 19) {
