@@ -20,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Pages 를 아직 안 켰으면 여기서 켠다 (설정을 손으로 만질 것 없이)
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: 손전화판을 새로 뽑는다
         run: node game/build-mobile.mjs
       - name: 올릴 것만 모은다
