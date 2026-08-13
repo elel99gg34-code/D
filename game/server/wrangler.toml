@@ -7,7 +7,7 @@ compatibility_date = "2024-11-01"
 # 게임이 놓인 주소 — 쉼표로 여럿 적을 수 있다
 ALLOW_ORIGIN = "https://elel99gg34-code.github.io"
 # Creem 대시보드에서 만든 물건 id
-PROD_SKIN = ""
+PROD_SKIN = "prod_6KWjViSKaLkvPLOYjkhirx"
 PROD_VIP  = "prod_1yYgNhC1QxUEf5YmAeqdPR"
 
 # 이미 내어 준 주문을 적어 두는 곳 — 이미 만들어 두었다 (baekgwi-orders)

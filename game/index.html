@@ -14567,11 +14567,11 @@ function skinnable(id) { return CARDS[id] && SKINNABLE.indexOf(CARDS[id].rar) >=
 function ownSkin(cardId, skinId) {
   if (!META.skins) return false;
   if (META.skins.free && META.skins.free[skinId]) return true;
-  return !!META.skins.own[cardId + '|' + skinId];
+  return !!(META.skins.own && META.skins.own[cardId + '|' + skinId]);
 }
 function skinOf(cardId) {
   if (!skinnable(cardId)) return null;          /* S급 아래에는 입히지 않는다 */
-  const e = META.skins && META.skins.eq[cardId];
+  const e = META.skins && META.skins.eq && META.skins.eq[cardId];
   return e && SKINS[e] && ownSkin(cardId, e) ? e : null;
 }
 /* 어느 부적을 위한 어느 옷인가 — 이 한 벌이 소유의 단위다 */
@@ -15266,14 +15266,18 @@ function showSpecialShop(refill) {
   }
 
   async function doSummon(B, times) {
+    /* 스킨은 원화로만 판다. 치러 둔 것이 있으면 그것으로 열고,
+       없으면 값을 묻는다 — 어느 쪽이든 다이아는 건드리지 않는다. */
+    let owed = false;
     if (B.skin) {
-      /* 값을 치러 둔 것이 있으면 그것부터 쓴다 */
-      if ((META.owedSkins || 0) >= times) { META.owedSkins -= times; saveMeta(); }
+      if ((META.owedSkins || 0) >= times) owed = true;
       else { askKrw('스킨 상자', KRW.skin * (times === 11 ? 9 : 1),
         times === 11 ? '10+1회' : '1회'); return; }
     }
-    const cost = BOX_FREE ? 0 : B.price * (times === 11 ? 9 : 1);
+    const cost = (BOX_FREE || owed) ? 0 : B.price * (times === 11 ? 9 : 1);
     if (cost && (run.dia || 0) < cost) { SND.err(); toast('다이아가 모자란다'); return; }
+    /* 되돌아갈 일이 없어진 뒤에 깎는다 — 그러지 않으면 치른 값이 날아간다 */
+    if (owed) { META.owedSkins -= times; saveMeta(); }
     run.dia = (run.dia || 0) - cost;
     const before = run.summons;
     const items = [];
@@ -16974,7 +16978,7 @@ function newsCodeUsed(code) { return !!(code && META.codes && META.codes[code]);
    ══════════════════════════════════════════════════════════ */
 const CREEM = {
   test: true,                                /* 시험 결제창을 쓸 것인가 */
-  prod: { skin: '', vip: 'prod_1yYgNhC1QxUEf5YmAeqdPR' },  /* Creem 물건 id */
+  prod: { skin: 'prod_6KWjViSKaLkvPLOYjkhirx', vip: 'prod_1yYgNhC1QxUEf5YmAeqdPR' },
   verify: '',                                /* 확인 서버 주소 (Cloudflare Worker) */
   back: location.origin + location.pathname  /* 값을 치르고 돌아올 자리 */
 };
