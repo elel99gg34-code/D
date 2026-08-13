@@ -1,4 +1,10 @@
 # 게임을 인터넷에 올린다 — GitHub Pages
+#
+# 왜 이렇게 하는가
+#   Pages 를 켜는 API(configure-pages 의 enablement)는 administration 권한을
+#   요구하는데, 워크플로의 GITHUB_TOKEN 에는 그 권한을 줄 칸이 없다.
+#   그래서 Pages API 를 쓰지 않고, 옛 방식대로 gh-pages 가지에 결과물을
+#   그대로 밀어 넣는다. 저장소는 그 가지를 보고 알아서 내어 준다.
 name: 게임 올리기
 
 on:
@@ -7,9 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -20,10 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Pages 를 아직 안 켰으면 여기서 켠다 (설정을 손으로 만질 것 없이)
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: 손전화판을 새로 뽑는다
         run: node game/build-mobile.mjs
       - name: 올릴 것만 모은다
@@ -31,20 +31,27 @@ jobs:
           mkdir -p _site
           cp game/index.html _site/index.html
           cp game/mobile.html _site/mobile.html
-          # 손전화로 들어오면 손전화판으로 보낸다
+          # Jekyll 을 거치지 않는다 — 밑줄로 시작하는 이름도 그대로 둔다
+          touch _site/.nojekyll
+          # 없는 자리로 들어오면 첫 자리로 돌려보낸다
           cat > _site/404.html <<'HTML'
           <!doctype html><meta charset="utf-8">
-          <meta http-equiv="refresh" content="0;url=./">
+          <meta http-equiv="refresh" content="0;url=/D/">
           HTML
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: _site }
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.d.outputs.page_url }}
-    steps:
-      - id: d
-        uses: actions/deploy-pages@v4
+      - name: gh-pages 가지에 밀어 넣는다
+        run: |
+          cd _site
+          git init -q
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "올림 ${GITHUB_SHA::7}"
+          git push -q --force \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            HEAD:refs/heads/gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 어디로 들어가면 되는가
+        run: |
+          echo "### 올렸다" >> $GITHUB_STEP_SUMMARY
+          echo "https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_STEP_SUMMARY
