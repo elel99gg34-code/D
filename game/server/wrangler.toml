@@ -10,11 +10,10 @@ ALLOW_ORIGIN = "https://elel99gg34-code.github.io"
 PROD_SKIN = ""
 PROD_VIP  = ""
 
-# 이미 내어 준 주문을 적어 두는 곳
-# wrangler kv namespace create ORDERS 로 만들고 id 를 채운다
+# 이미 내어 준 주문을 적어 두는 곳 — 이미 만들어 두었다 (baekgwi-orders)
 [[kv_namespaces]]
 binding = "ORDERS"
-id = ""
+id = "47054fd1996b4f57af6458acd6501bea"
 
 # 비밀은 파일에 적지 않는다:
 #   wrangler secret put CREEM_API_KEY
