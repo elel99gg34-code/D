@@ -1,0 +1,20 @@
+# 값 치른 것을 확인해 주는 자리
+name = "baekgwi-creem"
+main = "creem-worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+# 게임이 놓인 주소 — 쉼표로 여럿 적을 수 있다
+ALLOW_ORIGIN = "https://elel99gg34-code.github.io"
+# Creem 대시보드에서 만든 물건 id
+PROD_SKIN = ""
+PROD_VIP  = ""
+
+# 이미 내어 준 주문을 적어 두는 곳
+# wrangler kv namespace create ORDERS 로 만들고 id 를 채운다
+[[kv_namespaces]]
+binding = "ORDERS"
+id = ""
+
+# 비밀은 파일에 적지 않는다:
+#   wrangler secret put CREEM_API_KEY

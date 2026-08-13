@@ -1,0 +1,46 @@
+# 게임을 인터넷에 올린다 — GitHub Pages
+name: 게임 올리기
+
+on:
+  push:
+    branches: [main, master, claude/game-development-syhzcd]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 손전화판을 새로 뽑는다
+        run: node game/build-mobile.mjs
+      - name: 올릴 것만 모은다
+        run: |
+          mkdir -p _site
+          cp game/index.html _site/index.html
+          cp game/mobile.html _site/mobile.html
+          # 손전화로 들어오면 손전화판으로 보낸다
+          cat > _site/404.html <<'HTML'
+          <!doctype html><meta charset="utf-8">
+          <meta http-equiv="refresh" content="0;url=./">
+          HTML
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
