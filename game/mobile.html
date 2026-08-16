@@ -3197,6 +3197,17 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .endscreen .stats{display:flex;flex-direction:column;gap:5px;color:#c3b79c;font-size:14px;margin:14px 0 20px;min-height:0}
 .endscreen .stats div{display:flex;justify-content:space-between;width:290px;border-bottom:1px dotted rgba(200,185,150,.25);padding:4px 0}
 .endscreen .stats b{color:#efe4cb;font-weight:400}
+/* 체험판이 끝나는 자리 — 전체판에 무엇이 있는지 */
+.demolist{display:flex;flex-direction:column;gap:6px;margin:2px 0 20px;max-width:340px;width:100%}
+.demolist div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:6px 10px;border:1px solid rgba(200,185,150,.16);border-radius:3px;
+  background:rgba(20,16,12,.35)}
+.demolist b{color:#e8c86a;font-weight:400;font-size:14px;white-space:nowrap}
+.demolist span{color:#9a8d74;font-size:12px;text-align:right}
+/* 체험판 표 — 제목 아래에 조그맣게 */
+.demotag{display:inline-block;margin-top:10px;padding:3px 12px;font-size:12px;letter-spacing:.28em;
+  color:#b9ab8d;border:1px solid rgba(200,185,150,.3);border-radius:2px;
+  background:rgba(20,16,12,.4)}
 
 /* 반응형 */
 /* 기 구슬이 비기 단추와 겹쳐서 오른쪽으로 물렸다 */
@@ -3382,6 +3393,23 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 </div>
 <script>
 "use strict";
+/* ══════════════════════════════════════════════════════════
+   어느 판인가 — 체험판/전체판, 웹/손전화앱/데스크톱
+   ──────────────────────────────────────────────────────────
+   한 벌의 알맹이로 여러 곳에 나간다. 무엇이 다른지는 여기
+   두 줄에만 적어 두고, 나머지 자리에서는 DEMO 와 PLAT 만 본다.
+     · 웹      체험판 — 제3막까지. 값을 받지 않는다.
+     · 안드로이드 전체판 — 값은 Google Play 결제로 받는다.
+     · 데스크톱  전체판 — 가게를 거치지 않으니 코드로 푼다.
+   짓는 스크립트가 이 위에 window.__EDITION / __PLAT 을 심는다.
+   아무것도 안 심으면 예전 그대로 「웹 전체판」이다.
+   ══════════════════════════════════════════════════════════ */
+const EDITION = typeof window.__EDITION === 'string' ? window.__EDITION : 'full';
+const PLAT    = typeof window.__PLAT    === 'string' ? window.__PLAT    : 'web';
+const DEMO = EDITION === 'demo';
+const DEMO_ACTS = 3;                 /* 체험판이 갈 수 있는 마지막 막 */
+const STORE_URL = '';                /* 전체판을 파는 자리 — 정해지면 적는다 */
+
 /* ══════════════════════════════════════════════════════════
    0. 코어 — 난수, 유틸, 사운드, 파티클, 툴팁
    ══════════════════════════════════════════════════════════ */
@@ -12449,7 +12477,10 @@ function showRewards(kind) {
         ? (STORY['end_' + G.run.bossPick] ? 'end_' + G.run.bossPick : 'end_taecho')
         : (STORY['act' + act + '_' + G.run.bossPick] ? 'act' + act + '_' + G.run.bossPick
                                                      : 'act' + act);
-      showStory(STORY[key] ? key : null).then(() => { if (act >= LAST_ACT) victory(); else nextAct(); });
+      showStory(STORY[key] ? key : null).then(() => {
+        if (DEMO && act >= DEMO_ACTS) { showDemoEnd(); return; }   /* 체험판은 여기까지 */
+        if (act >= LAST_ACT) victory(); else nextAct();
+      });
     }
     else showMap();
   };
@@ -17149,7 +17180,56 @@ function creemUrl(key, qty) {
   return `${base}${id}?request_id=${req}&success_url=${encodeURIComponent(CREEM.back)}`;
 }
 /* 값을 치르겠느냐 — 누르면 Creem 결제창으로 간다 */
+/* 체험판이 끝나는 자리 — 마지막 막의 보스를 꺾은 뒤.
+   「승천」·「쓰러졌다」와 같은 무게로 세운다. */
+function showDemoEnd() {
+  autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
+  jpGain(G.run, true); noteClear(DEMO_ACTS);
+  G.scene = 'demo';
+  closeOverlay();
+  const s = $('#scene');
+  const d = el('div', 'endscreen win');
+  d.innerHTML = `<div class="big">여 기 까 지</div>
+    <div style="color:#c3b79c;letter-spacing:.2em">제${DEMO_ACTS}막을 넘었다 — 체험판은 여기서 끝난다</div>
+    <div class="stats">${runStatsHtml()}</div>
+    <div class="demolist">
+      <div><b>제${DEMO_ACTS + 1}막 ~ 제${LAST_ACT}막</b><span>${LAST_ACT - DEMO_ACTS}막이 더 있다</span></div>
+      <div><b>환상</b><span>제10막을 넘으면 열리는 자리</span></div>
+      <div><b>환생</b><span>넘은 것을 지니고 다시 처음부터</span></div>
+      <div><b>0등급 · S급 · ?급</b><span>체험판에는 없는 부적들</span></div>
+      <div><b>스킨 ${ALL_SKINS.length}벌</b><span>부적에 입히는 옷</span></div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      ${STORE_URL ? '<button class="brush-btn gold" id="de_buy">전체판 보러 가기</button>' : ''}
+      <button class="brush-btn ghost" id="de_again"
+        style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
+    </div>`;
+  s.appendChild(d);
+  const buy = d.querySelector('#de_buy');
+  if (buy) buy.onclick = () => { SND.ui(); open(STORE_URL, '_blank'); };
+  d.querySelector('#de_again').onclick = () => { SND.ui(); d.remove(); showTitle(); };
+}
+
 function askKrw(name, price, qty) {
+  /* 체험판에서는 값을 받지 않는다 — 무엇이 있는지만 일러 준다 */
+  if (DEMO) {
+    SND.ui();
+    const p = modal(`<h2>${name}</h2>
+      <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9">
+        체험판에서는 값을 받지 않는다.<br>
+        <b style="color:#7fe6cf">${name}</b> 은 전체판에 있다.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        ${STORE_URL ? `<button class="brush-btn gold" id="kw_go">전체판 보러 가기</button>` : ''}
+        <button class="brush-btn ghost" id="kw_x"
+          style="color:#e9dfc9;border-color:#8a7f68">알겠다</button>
+      </div>`);
+    p.dataset.noauto = '1';
+    const g = p.querySelector('#kw_go');
+    if (g) g.onclick = () => { SND.ui(); open(STORE_URL, '_blank'); };
+    p.querySelector('#kw_x').onclick = closeTop;
+    return;
+  }
   SND.ui();
   const key = /스킨/.test(name) ? 'skin' : 'vip';
   const url = creemUrl(key, /10/.test(qty || '') ? 11 : 1);
@@ -17173,6 +17253,7 @@ function askKrw(name, price, qty) {
 }
 /* Creem 에서 돌아왔는가 — 돌아왔으면 물건을 내어 준다 */
 async function creemReturn() {
+  if (DEMO) return;                  /* 체험판은 값을 받지 않으니 돌아올 일도 없다 */
   let q;
   try { q = new URLSearchParams(location.search); } catch (e) { return; }
   const order = q.get('order_id'), req = q.get('request_id');
@@ -18882,6 +18963,7 @@ function showTitle() {
       <h1>수 묵 로 그 라 이 크</h1>
       <div class="big">백귀야행</div>
       <div class="sub">퇴마사의 등산</div>
+      ${DEMO ? `<div class="demotag">체 험 판 · 제${DEMO_ACTS}막 까 지</div>` : ''}
       <div class="menu">
         <button class="brush-btn red" id="t_new">새로운 모험</button>
         ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}

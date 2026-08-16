@@ -1,5 +1,7 @@
+*.pyc
 .env
 __pycache__/
-*.pyc
-data/
 collect.log
+data/
+dist/
+node_modules/
