@@ -246,7 +246,8 @@ const MOBILE_JS = `
 })();
 `;
 
-const src = readFileSync(SRC, 'utf8');
+/* 줄바꿈은 LF 로 고른다 — 윈도우에서 받으면 CRLF 가 되어 찾기가 어긋난다 */
+const src = readFileSync(SRC, 'utf8').replace(/\r\n/g, '\n');
 if (!src.includes('</style>\n</head>')) {
   console.error('index.html 의 생김새가 달라졌다 — </style></head> 를 찾지 못했다');
   process.exit(1);

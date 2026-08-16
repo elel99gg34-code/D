@@ -6,7 +6,7 @@
   "description": "백귀야행 — 데스크톱판. 알맹이는 game/index.html 하나다.",
   "main": "main.js",
   "scripts": {
-    "prepare:app": "node ../../game/build-apps.mjs && rm -rf app && mkdir -p app && cp ../../dist/desktop/index.html app/index.html",
+    "prepare:app": "node ../../game/build-apps.mjs",
     "start": "npm run prepare:app && electron .",
     "dist": "npm run prepare:app && electron-builder",
     "dist:win": "npm run prepare:app && electron-builder --win",

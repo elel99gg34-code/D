@@ -1,0 +1,8 @@
+# 짓는 스크립트가 알맹이에서 정해진 글자를 찾아 그 자리에 끼워 넣는다.
+# 윈도우에서 받을 때 줄바꿈이 CRLF 로 바뀌면 그 찾기가 어긋나므로,
+# 어느 기계에서 받든 LF 그대로 두게 한다.
+*.html text eol=lf
+*.mjs  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
