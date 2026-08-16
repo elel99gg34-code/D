@@ -1,6 +1,10 @@
 *.pyc
 .env
 __pycache__/
+app/android/android/
+app/android/www/
+app/desktop/app/
+app/desktop/out/
 collect.log
 data/
 dist/

@@ -1,0 +1,18 @@
+{
+  "appId": "kr.baekgwi.game",
+  "appName": "백귀야행",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0d0b09"
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "backgroundColor": "#0d0b09"
+    }
+  }
+}

@@ -17210,7 +17210,100 @@ function showDemoEnd() {
   d.querySelector('#de_again').onclick = () => { SND.ui(); d.remove(); showTitle(); };
 }
 
+/* ══════════════════════════════════════════════════════════
+   Google Play 결제 — 손전화앱에서만
+   ──────────────────────────────────────────────────────────
+   구글은 앱 안의 디지털 상품을 제 결제로만 팔게 한다. 그래서
+   앱으로 나갈 때는 Creem 이 아니라 이 길로 간다. 다리는
+   cordova-plugin-purchase 가 놓아 준다 — 앱으로 감싸지 않은
+   곳에서는 window.CdvPurchase 가 없으므로 아래는 다 잠잔다.
+
+   물건은 둘.
+     vip_package  한 번만 산다 (non-consumable)
+     skin_box     여러 번 산다 (consumable) — 한 번에 1회분
+   ══════════════════════════════════════════════════════════ */
+const PLAY_SKU = { vip: 'vip_package', skin: 'skin_box' };
+let _playStore = null;
+function playOn() { return PLAT === 'android' && !!window.CdvPurchase; }
+
+function playInit() {
+  if (!playOn() || _playStore) return;
+  const CP = window.CdvPurchase;
+  const store = CP.store;
+  store.register([
+    { id: PLAY_SKU.vip,  type: CP.ProductType.NON_CONSUMABLE, platform: CP.Platform.GOOGLE_PLAY },
+    { id: PLAY_SKU.skin, type: CP.ProductType.CONSUMABLE,     platform: CP.Platform.GOOGLE_PLAY }
+  ]);
+  /* 값이 치러졌다 — 물건을 내어 주고 구글에 「받았다」고 알린다.
+     알리지 않으면 사흘 뒤 구글이 저절로 물러 준다. */
+  store.when()
+    .approved(t => { try { playGrant(t); } catch (e) { console.error('물건 내주기', e); }
+                     t.verify(); })
+    .verified(r => r.finish())
+    .receiptUpdated(r => { /* 지난 것을 되살린다 — 기기를 바꿔도 VIP 는 따라온다 */
+      for (const t of r.transactions || [])
+        for (const p of t.products || [])
+          if (p.id === PLAY_SKU.vip && !META.vip.owned) { META.vip.owned = true; META.vip.at = Date.now(); saveMeta(); }
+    });
+  store.initialize([CP.Platform.GOOGLE_PLAY])
+    .then(() => { _playStore = store; })
+    .catch(e => console.error('가게를 못 열었다', e));
+}
+/* 한 거래에 담긴 물건을 실제로 내어 준다 */
+function playGrant(t) {
+  for (const p of t.products || []) {
+    if (p.id === PLAY_SKU.vip) {
+      if (!META.vip.owned) { META.vip.owned = true; META.vip.at = Date.now(); saveMeta();
+        toast('VIP 가 되었다'); SND.bell(); }
+    } else if (p.id === PLAY_SKU.skin) {
+      META.owedSkins = (META.owedSkins || 0) + 1; saveMeta();
+      toast('스킨 뽑기 1회가 들어왔다'); SND.bell();
+    }
+  }
+  renderTop && renderTop();
+}
+/* 산다 — 스킨 11회는 물건 하나를 열한 번 사는 것으로 친다 */
+function playBuy(key, qty) {
+  const store = _playStore;
+  if (!store) { toast('가게를 여는 중이다 — 잠시 뒤에'); SND.err(); return; }
+  const id = PLAY_SKU[key];
+  const prod = store.get(id, window.CdvPurchase.Platform.GOOGLE_PLAY);
+  const offer = prod && prod.getOffer();
+  if (!offer) { toast('그 물건을 찾지 못했다'); SND.err(); return; }
+  if (key === 'skin' && (qty || 1) > 1) {
+    /* 구글 결제창은 한 번에 하나씩만 받는다 — 남은 횟수로 쌓아 두고 차례로 산다 */
+    toast(`${qty}회는 한 번에 하나씩 산다`);
+  }
+  offer.order().catch(e => { console.error('사기 실패', e); toast('값을 치르지 못했다'); SND.err(); });
+}
+
 function askKrw(name, price, qty) {
+  const key = /스킨/.test(name) ? 'skin' : 'vip';
+  const times = /10/.test(qty || '') ? 11 : 1;
+
+  /* 손전화앱 — 구글 결제로 간다 */
+  if (PLAT === 'android') {
+    if (!playOn()) { toast('앱에서만 살 수 있다'); SND.err(); return; }
+    playInit(); playBuy(key, times); return;
+  }
+  /* 데스크톱 — 거칠 가게가 없다. 받은 코드로 푼다. */
+  if (PLAT === 'desktop') {
+    SND.ui();
+    const p = modal(`<h2>${name}</h2>
+      <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
+        내려받은 판에는 거칠 가게가 없다.<br>
+        받은 코드를 <b style="color:#7fe6cf">설정 → 코드</b> 에 적으면 열린다.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="brush-btn gold" id="kw_set">설정으로</button>
+        <button class="brush-btn ghost" id="kw_x"
+          style="color:#e9dfc9;border-color:#8a7f68">나중에</button>
+      </div>`);
+    p.dataset.noauto = '1';
+    p.querySelector('#kw_set').onclick = () => { SND.ui(); closeTop(); showSettings(); };
+    p.querySelector('#kw_x').onclick = closeTop;
+    return;
+  }
   /* 체험판에서는 값을 받지 않는다 — 무엇이 있는지만 일러 준다 */
   if (DEMO) {
     SND.ui();
@@ -17231,8 +17324,7 @@ function askKrw(name, price, qty) {
     return;
   }
   SND.ui();
-  const key = /스킨/.test(name) ? 'skin' : 'vip';
-  const url = creemUrl(key, /10/.test(qty || '') ? 11 : 1);
+  const url = creemUrl(key, times);
   const p = modal(`<h2>${name}</h2>
     <div class="hint">${qty ? qty + ' · ' : ''}<b style="color:#ffd76a;font-size:19px">${won(price)}</b></div>
     <div class="hint" style="max-width:420px;margin-top:8px">
@@ -19039,6 +19131,11 @@ addEventListener('pointerdown', () => SND.init(), { once: true });
 loadMeta();
 FX.init();
 creemReturn();                               /* 값을 치르고 돌아왔는가 */
+/* 앱으로 감쌌으면 다리가 놓인 뒤에 가게를 연다 */
+if (PLAT === 'android') {
+  if (window.CdvPurchase) playInit();
+  else document.addEventListener('deviceready', playInit, { once: true });
+}
 showTitle();
 syncAuto();
 console.log('%c백귀야행 百鬼夜行', 'font-size:20px;color:#a8272c', '\n카드', Object.keys(CARDS).length,

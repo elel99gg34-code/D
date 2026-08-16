@@ -1,0 +1,47 @@
+# PC판을 짓는다 — Electron
+#
+# 윈도우와 리눅스는 여기서 나온다. 맥은 애플의 서명이 있어야
+# 남에게 줄 수 있어 따로 둔다 (혼자 쓸 것은 mac 에서 npm run dist:mac).
+name: PC판 짓기
+
+on:
+  push:
+    branches: [main, master, claude/game-development-syhzcd]
+    paths: ['game/**', 'app/desktop/**', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: dist:linux
+            out: 'app/desktop/out/*.AppImage'
+          - os: windows-latest
+            target: dist:win
+            out: 'app/desktop/out/*.exe'
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: app/desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 껍데기 짐을 챙긴다
+        run: npm install --no-audit --no-fund
+      - name: 짓는다
+        run: npm run ${{ matrix.target }}
+        env:
+          # 서명은 안 한다 — 윈도우가 「모르는 만든이」라고 할 것이다
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baekgwi-${{ matrix.os }}
+          path: ${{ matrix.out }}
+          if-no-files-found: error

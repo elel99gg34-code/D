@@ -1,0 +1,29 @@
+{
+  "name": "baekgwi-desktop",
+  "productName": "백귀야행",
+  "version": "1.0.0",
+  "private": true,
+  "description": "백귀야행 — 데스크톱판. 알맹이는 game/index.html 하나다.",
+  "main": "main.js",
+  "scripts": {
+    "prepare:app": "node ../../game/build-apps.mjs && rm -rf app && mkdir -p app && cp ../../dist/desktop/index.html app/index.html",
+    "start": "npm run prepare:app && electron .",
+    "dist": "npm run prepare:app && electron-builder",
+    "dist:win": "npm run prepare:app && electron-builder --win",
+    "dist:mac": "npm run prepare:app && electron-builder --mac",
+    "dist:linux": "npm run prepare:app && electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "kr.baekgwi.game",
+    "productName": "백귀야행",
+    "files": ["main.js", "app/**"],
+    "directories": { "output": "out" },
+    "win": { "target": ["nsis", "portable"] },
+    "mac": { "target": ["dmg"], "category": "public.app-category.games" },
+    "linux": { "target": ["AppImage"], "category": "Game" }
+  }
+}

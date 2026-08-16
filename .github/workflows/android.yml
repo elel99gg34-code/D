@@ -1,0 +1,80 @@
+# 안드로이드판을 짓는다 — Capacitor
+#
+# 열쇠(서명)가 없으면 시험용 APK 만 짓고 끝낸다. 플레이 스토어에
+# 올릴 AAB 는 서명이 있어야 하므로, 저장소 비밀 넷을 넣어 두면
+# 그때부터 서명된 AAB 가 나온다.
+#   ANDROID_KEYSTORE_B64   열쇠집(.jks)을 base64 로 옮긴 것
+#   ANDROID_KEYSTORE_PASS  열쇠집 암호
+#   ANDROID_KEY_ALIAS      열쇠 이름
+#   ANDROID_KEY_PASS       열쇠 암호
+name: 손전화판 짓기
+
+on:
+  push:
+    branches: [main, master, claude/game-development-syhzcd]
+    paths: ['game/**', 'app/android/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: android-actions/setup-android@v3
+
+      - name: 껍데기 짐을 챙긴다
+        run: npm install --no-audit --no-fund
+      - name: 알맹이를 www 로 옮긴다
+        run: npm run prepare:www
+      - name: 안드로이드 판을 만든다
+        run: npx cap add android && npx cap sync android
+
+      - name: 열쇠가 있는가
+        id: k
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_B64 }}" ]; then echo "go=1" >> $GITHUB_OUTPUT
+          else echo "서명 열쇠가 없어 시험용 APK 만 짓는다" >> $GITHUB_STEP_SUMMARY; fi
+
+      - name: 시험용 APK
+        if: steps.k.outputs.go != '1'
+        run: cd android && ./gradlew --no-daemon assembleDebug
+
+      - name: 열쇠를 풀어 둔다
+        if: steps.k.outputs.go == '1'
+        run: echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > android/key.jks
+
+      - name: 서명된 AAB
+        if: steps.k.outputs.go == '1'
+        env:
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KS_KEYPASS: ${{ secrets.ANDROID_KEY_PASS }}
+        run: |
+          cd android
+          ./gradlew --no-daemon bundleRelease \
+            -Pandroid.injected.signing.store.file=$PWD/key.jks \
+            -Pandroid.injected.signing.store.password="$KS_PASS" \
+            -Pandroid.injected.signing.key.alias="$KS_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KS_KEYPASS"
+
+      - name: 열쇠를 치운다
+        if: always()
+        run: rm -f android/key.jks
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baekgwi-android
+          path: |
+            app/android/android/app/build/outputs/bundle/release/*.aab
+            app/android/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
