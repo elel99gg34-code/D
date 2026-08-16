@@ -5,7 +5,8 @@
   "description": "백귀야행 — 안드로이드판 껍데기. 알맹이는 game/index.html 하나다.",
   "scripts": {
     "prepare:www": "node ../../game/build-apps.mjs",
-    "add": "npm run prepare:www && npx cap add android",
+    "add": "npm run prepare:www && npx cap add android && npm run icons",
+    "icons": "npx capacitor-assets generate --android",
     "sync": "npm run prepare:www && npx cap sync android",
     "aab": "npm run sync && cd android && ./gradlew bundleRelease",
     "apk": "npm run sync && cd android && ./gradlew assembleDebug"
@@ -16,6 +17,7 @@
     "cordova-plugin-purchase": "^13.11.1"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.0.0"
   }
 }

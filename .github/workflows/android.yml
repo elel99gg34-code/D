@@ -38,6 +38,8 @@ jobs:
         run: npm run prepare:www
       - name: 안드로이드 판을 만든다
         run: npx cap add android && npx cap sync android
+      - name: 아이콘·첫 화면을 굽는다
+        run: npm run icons
 
       - name: 열쇠가 있는가
         id: k
