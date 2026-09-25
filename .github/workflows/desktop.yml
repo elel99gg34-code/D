@@ -81,5 +81,17 @@ jobs:
             found=$((found+1))
           done
           if [ "$found" = 0 ]; then echo "올릴 것을 찾지 못했다"; ls -l app/desktop/out || true; exit 1; fi
+          # 옛 이름으로 걸려 있던 것을 치운다 — 이름 짓기를 고치기 전에
+          # 올라간 「-1.0.0.AppImage」 같은 것들이 남아 헷갈린다.
+          gh release view pc --repo "$GITHUB_REPOSITORY" \
+            --json assets --jq '.assets[].name' 2>/dev/null \
+          | while IFS= read -r a; do
+              case "$a" in
+                baekgwi-*) ;;
+                '') ;;
+                *) echo "치운다: $a"
+                   gh release delete-asset pc "$a" --repo "$GITHUB_REPOSITORY" --yes || true ;;
+              esac
+            done
           echo "### 받는 자리" >> $GITHUB_STEP_SUMMARY
           echo "https://github.com/$GITHUB_REPOSITORY/releases/tag/pc" >> $GITHUB_STEP_SUMMARY
