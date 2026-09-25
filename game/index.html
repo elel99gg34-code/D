@@ -3204,6 +3204,57 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:rgba(20,16,12,.35)}
 .demolist b{color:#e8c86a;font-weight:400;font-size:14px;white-space:nowrap}
 .demolist span{color:#9a8d74;font-size:12px;text-align:right}
+/* ── 퍼뜨리는 자리 ───────────────────────────────────────── */
+.castbox{display:flex;flex-direction:column;gap:14px;padding:4px 2px 14px;max-width:560px}
+.castnow{background:rgba(10,20,16,.5);border:1px solid rgba(138,255,208,.22);border-radius:4px;padding:10px 12px}
+.castnow>b{display:block;color:#8affd0;font-size:12px;letter-spacing:.1em;margin-bottom:6px}
+.castnow div{font-size:12px;color:#c3b79c;line-height:1.8}
+.castnow .none{color:#6f6553}
+.castwarn{background:rgba(60,20,20,.5);border:1px solid rgba(232,120,120,.4);border-radius:4px;
+  padding:9px 11px;color:#ffb3b3;font-size:11.5px;line-height:1.7}
+.castsec{display:flex;flex-direction:column;gap:7px}
+.castsec>b{color:#e9dfc9;font-size:13px;letter-spacing:.08em}
+.casthint{color:#8a7f68;font-size:11px;line-height:1.6}
+.castsec textarea,.castrow input{background:rgba(12,10,8,.7);border:1px solid #4e4738;border-radius:3px;
+  color:#e9dfc9;padding:8px 10px;font-size:13px;font-family:inherit;width:100%;box-sizing:border-box}
+.castsec textarea{resize:vertical;line-height:1.6}
+.castrow{display:flex;gap:8px;flex-wrap:wrap}
+.castrow input[type=number]{flex:0 0 110px}
+.castrow input:not([type=number]){flex:1;min-width:190px}
+.castevs{display:flex;flex-direction:column;gap:7px}
+.castev{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;gap:2px 10px;
+  text-align:left;background:rgba(12,10,8,.6);border:1.5px solid #4e4738;border-radius:4px;
+  padding:9px 11px;color:#e9dfc9;cursor:pointer;transition:.15s}
+.castev:hover{border-color:var(--ec)}
+.castev.on{border-color:var(--ec);background:color-mix(in srgb,var(--ec) 14%,rgba(12,10,8,.6))}
+.castev i{grid-row:1/3;align-self:center;width:34px;height:34px;display:grid;place-items:center;
+  border-radius:4px;background:color-mix(in srgb,var(--ec) 24%,#0a0806);color:var(--ec);
+  font-size:17px;font-style:normal}
+.castev span{font-size:13px;color:var(--ec)}
+.castev em{font-size:10.5px;color:#9a8d74;font-style:normal;line-height:1.5}
+.castlog{font-size:11.5px;min-height:16px;letter-spacing:.02em}
+.castlog.ok{color:#8affd0}
+.castlog.no{color:#ff9a9a}
+.adtab.cast{color:#8affd0;border-color:rgba(138,255,208,.4)}
+
+/* ── 개발자가 하는 말 — 앱 맨 윗면 ─────────────────────── */
+#notice{position:fixed;left:0;right:0;top:0;z-index:70;display:flex;align-items:center;gap:9px;
+  padding:calc(7px + env(safe-area-inset-top,0px)) 12px 7px;
+  background:linear-gradient(#2a2118,#1d1712);border-bottom:1px solid rgba(200,185,150,.28);
+  color:#e9dfc9;font-size:12.5px;letter-spacing:.02em;line-height:1.5;
+  box-shadow:0 3px 12px rgba(0,0,0,.4)}
+#notice i{flex:0 0 auto;width:20px;height:20px;display:grid;place-items:center;border-radius:3px;
+  background:var(--red);color:#fff;font-size:12px;font-style:normal}
+#notice span{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical}
+#notice .nx{flex:0 0 auto;width:26px;height:26px;border-radius:3px;background:none;border:0;
+  color:#9a8d74;font-size:17px;line-height:1;cursor:pointer}
+#notice .nx:hover{color:#e9dfc9}
+/* 말이 걸리면 그만큼 아래로 민다 */
+body.hasnotice #topbar{top:var(--nh,38px)}
+body.hasnotice #field{top:calc(52px + var(--nh,38px))}
+body.hasnotice #title-scene{padding-top:var(--nh,38px)}
+
 /* 체험판 표 — 제목 아래에 조그맣게 */
 .demotag{display:inline-block;margin-top:10px;padding:3px 12px;font-size:12px;letter-spacing:.28em;
   color:#b9ab8d;border:1px solid rgba(200,185,150,.3);border-radius:2px;
@@ -5587,6 +5638,12 @@ function checkUnlockToast() {
   }
 }
 function rewardCards(n, boost) {
+  /* 혼돈 — 고를 것이 한 장 늘고, 등급이 위아래로 널뛴다.
+     좋은 쪽으로도 나쁜 쪽으로도 갈 수 있으나 장수는 늘어난다. */
+  if (typeof evOn === 'function' && evOn('chaos')) {
+    n += 1;
+    boost = rnd() < .5 ? (boost || 'elite') : null;
+  }
   const w = gradeWeights(boost);
   const out = [];
   let guard = 0;
@@ -12227,8 +12284,11 @@ function showRewards(kind) {
     sparkles(innerWidth / 2, innerHeight * .42, 16, '#ffe0a0', 180);
   }
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
-  const gm = vm * ASC.gold(ascLv()) * lootGold(run.act);   /* 환생할수록, 막이 오를수록 두둑하다 */
-  const dm = vm * ASC.dia(ascLv()) * lootDia(run.act);
+  /* 퍼뜨린 일이 걸려 있으면 여기서만 셈이 달라진다 — 싸움 자체는
+     건드리지 않는다. 남의 판을 흔드는 일이니 더해 주기만 한다. */
+  const em = evOn('gold') ? 2 : 1;
+  const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act);   /* 환생할수록, 막이 오를수록 두둑하다 */
+  const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act);
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * dm);
   const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
@@ -12242,6 +12302,17 @@ function showRewards(kind) {
       act: () => { if (broke) { SND.err(); toast('탐욕의 저주 — 다이아가 재가 되었다'); return; }
                    run.dia = (run.dia || 0) + dia; SND.coinRain(dia / 20);
                    flyGet('玉 +' + dia, '#6fd0e8', '#diav'); } }];
+  /* 슈팅 스타 — 싸움을 마칠 때마다 별 하나가 떨어진다 */
+  if (evOn('star')) {
+    const sg = Math.round(ri(40, 90) * lootGold(run.act));
+    const sd = Math.round(ri(18, 40) * lootDia(run.act));
+    items.push({ ic: '星', t: `떨어진 별 — 金 ${sg} · 玉 ${sd}`,
+      s: '하늘이 갈라진 자리에서 주웠다',
+      act: () => { run.gold += sg; run.stats.gold += sg; run.dia = (run.dia || 0) + sd;
+                   SND.coinRain(sg / 10);
+                   try { sparkles(innerWidth / 2, innerHeight * .38, 22, '#9fd8ff', 220); } catch (e) {}
+                   flyGet('星 +' + sg, '#9fd8ff', '#goldv'); } });
+  }
   const potChance = kind === 'elite' ? .62 : kind === 'boss' ? 1 : .42;
   if (rnd() < potChance && run.potions.length < run.potSlots) {
     const pid = randomPotion();
@@ -16569,6 +16640,12 @@ const CODES = {
     d: '관리자 창을 연다',
     give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '관리자 창'; }
   },
+  /* 퍼뜨리는 열쇠 — 제 기계만이 아니라 남의 앱까지 건드린다 */
+  '0316051509127567hxx14tr4cdminjuvv1!!': {
+    n: '관리자 (퍼뜨리기)',
+    d: '관리자 창을 열고, 모든 앱에 일을 퍼뜨릴 수 있게 한다',
+    give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '퍼뜨리는 권한'; }
+  },
   /* ── 나눠 주는 코드들 ─────────────────────────────────────
      너무 달다는 말을 들었다. 판을 건너뛰게 하는 몫이 아니라
      「한 발 거들어 주는」 정도로 낮췄다 — 특대급 상자는 뺐다.
@@ -16666,11 +16743,254 @@ const CODES = {
     }
   }
 };
+/* ══════════════════════════════════════════════════════════
+   한 하늘 아래 — 모든 앱이 같은 소식을 본다
+   ──────────────────────────────────────────────────────────
+   저마다의 기계에서 따로 도는 게임이 어떻게 같은 날 같은 일을
+   겪는가. 방법은 하나뿐이다 — 모두가 같은 자리를 들여다보는 것.
+
+     소식 자리 (LIVE_URL) 에 글 한 장이 놓여 있다
+       { notice, event, version, apk, at }
+     모든 앱이 켜질 때와 다섯 판마다 그것을 읽는다
+     관리자만이 그 글을 고쳐 쓸 수 있다 (서버가 암호를 쥔다)
+
+   인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
+   없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
+   ══════════════════════════════════════════════════════════ */
+const APP_VERSION = 1;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const LIVE_URL = '';                  /* 소식을 읽어 오는 자리 — 서버가 서면 적는다 */
+const LIVE_EVERY = 5 * 60 * 1000;     /* 다섯 판마다 다시 묻는다 */
+const LIVE_KEY = 'baekgwi_live';
+let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0 };
+
+/* ── 퍼뜨릴 수 있는 일들 ──────────────────────────────────
+   관리자가 켜면 모든 앱에서 한꺼번에 일어난다. 판을 망가뜨리지
+   않도록, 더해 주기만 하고 빼앗지는 않는다. */
+const WORLD = {
+  star: {
+    n: '슈팅 스타', g: '星', c: '#9fd8ff',
+    d: '하늘이 갈라지고 별이 쏟아진다. 싸움을 마칠 때마다 별 하나가 떨어져 값진 것을 남긴다.',
+    say: '오늘 밤, 하늘이 갈라진다'
+  },
+  chaos: {
+    n: '혼돈', g: '混', c: '#e08ad8',
+    d: '갈피가 흐트러진다. 싸움 뒤에 고를 부적이 한 장 늘고, 그 등급이 위아래로 널뛴다.',
+    say: '갈피가 흐트러졌다'
+  },
+  gold: {
+    n: '풍년', g: '豊', c: '#e8c86a',
+    d: '산이 넉넉해진다. 골드와 다이아가 곱절로 떨어진다.',
+    say: '산이 넉넉하다'
+  }
+};
+function liveEvent() { return LIVE.event && WORLD[LIVE.event] ? LIVE.event : ''; }
+function evOn(k) { return liveEvent() === k; }
+
+/* 읽어 둔 것을 되살린다 — 인터넷이 없어도 지난 소식은 보인다 */
+function liveLoad() {
+  try { const s = localStorage.getItem(LIVE_KEY);
+    if (s) LIVE = Object.assign(LIVE, JSON.parse(s)); } catch (e) {}
+}
+function liveSave() {
+  try { localStorage.setItem(LIVE_KEY, JSON.stringify(LIVE)); } catch (e) {}
+}
+/* 소식을 물으러 간다. 못 받아도 조용히 넘어간다. */
+async function liveFetch() {
+  if (!LIVE_URL) return;
+  try {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), 6000);
+    const r = await fetch(LIVE_URL + '?t=' + Date.now(), { signal: c.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d || typeof d !== 'object') return;
+    const was = { n: LIVE.notice, e: LIVE.event };
+    LIVE.notice = String(d.notice || '').slice(0, 300);
+    LIVE.noticeAt = +d.noticeAt || 0;
+    LIVE.event = String(d.event || '').slice(0, 24);
+    LIVE.eventAt = +d.eventAt || 0;
+    LIVE.version = +d.version || 0;
+    LIVE.apk = String(d.apk || '').slice(0, 300);
+    LIVE.at = Date.now();
+    liveSave();
+    noticeShow();
+    if (LIVE.event !== was.e && liveEvent()) eventAnnounce(liveEvent());
+    updateCheck();
+  } catch (e) { /* 인터넷이 없을 뿐이다 */ }
+}
+
+/* ── 개발자가 하는 말 — 앱 윗면에 걸린다 ───────────────── */
+function noticeShow() {
+  const old = $('#notice'); if (old) old.remove();
+  const msg = (LIVE.notice || '').trim();
+  if (!msg) return;
+  let hushed = 0;
+  try { hushed = +localStorage.getItem('baekgwi_notice_hush') || 0; } catch (e) {}
+  if (hushed && hushed >= (LIVE.noticeAt || 1)) return;     /* 이미 읽고 닫은 말 */
+  const n = el('div', 'notice');
+  n.id = 'notice';
+  n.innerHTML = `<i>言</i><span></span><button class="nx" aria-label="닫기">×</button>`;
+  n.querySelector('span').textContent = msg;
+  n.querySelector('.nx').onclick = () => {
+    try { localStorage.setItem('baekgwi_notice_hush', String(LIVE.noticeAt || Date.now())); } catch (e) {}
+    n.remove(); document.body.classList.remove('hasnotice');
+  };
+  document.body.appendChild(n);
+  document.body.classList.add('hasnotice');
+  /* 말의 길이에 따라 높이가 달라진다 — 그만큼만 판을 민다 */
+  const fit = () => document.documentElement.style.setProperty('--nh', n.offsetHeight + 'px');
+  fit(); addEventListener('resize', fit);
+}
+/* 일이 새로 시작되면 한 번 알린다 */
+function eventAnnounce(k) {
+  const e = WORLD[k]; if (!e) return;
+  try { SND.bell(); } catch (x) {}
+  const p = modal(`<h2 style="color:${e.c}">${e.g} ${e.n}</h2>
+    <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
+      <b style="color:${e.c}">${e.say}</b><br><br>${e.d}
+    </div>
+    <div style="margin-top:14px"><button class="brush-btn gold" id="ev_ok">알겠다</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#ev_ok').onclick = closeTop;
+}
+/* ── 새 판이 나왔는가 ───────────────────────────────────── */
+function updateCheck() {
+  if (!(LIVE.version > APP_VERSION) || !LIVE.apk) return;
+  if (PLAT !== 'android') return;              /* 웹은 새로 고치면 그만이다 */
+  let skip = 0;
+  try { skip = +localStorage.getItem('baekgwi_skipver') || 0; } catch (e) {}
+  if (skip >= LIVE.version) return;
+  const p = modal(`<h2>새 판이 나왔다</h2>
+    <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9">
+      지금 것은 ${APP_VERSION} 판, 나온 것은 <b style="color:#7fe6cf">${LIVE.version} 판</b>이다.<br>
+      받으면 그대로 덮어 깔린다.
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+      <button class="brush-btn gold" id="up_go">받으러 간다</button>
+      <button class="brush-btn ghost" id="up_x"
+        style="color:#e9dfc9;border-color:#8a7f68">나중에</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#up_go').onclick = () => { SND.ui(); open(LIVE.apk, '_blank'); };
+  p.querySelector('#up_x').onclick = () => {
+    try { localStorage.setItem('baekgwi_skipver', String(LIVE.version)); } catch (e) {}
+    closeTop();
+  };
+}
+
+/* ── 퍼뜨리는 자리 ────────────────────────────────────────
+   여기서 누르면 남의 기계에서도 일이 일어난다. 그러니 누르기
+   전에 무엇이 지금 걸려 있는지부터 보여 준다. */
+function drawCast(grid) {
+  const evs = Object.keys(WORLD);
+  grid.innerHTML = `<div class="castbox">
+    <div class="castnow">
+      <b>지금 걸린 것</b>
+      <div id="ct_now"></div>
+    </div>
+    ${LIVE_URL ? '' : `<div class="castwarn">소식 자리(LIVE_URL)가 비어 있다 —
+      아직 아무 데도 퍼지지 않는다. 서버를 세우고 그 주소를 적어야 한다.</div>`}
+
+    <div class="castsec"><b>개발자가 하는 말</b>
+      <div class="casthint">앱 맨 윗면에 걸린다. 비우고 퍼뜨리면 내려간다.</div>
+      <textarea id="ct_notice" maxlength="300" rows="3"
+        placeholder="이를테면 — 오늘 밤 아홉 시, 별이 쏟아집니다."></textarea>
+      <button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
+    </div>
+
+    <div class="castsec"><b>일 퍼뜨리기</b>
+      <div class="casthint">고른 하나만 걸린다. 끄면 모두 내려간다.</div>
+      <div class="castevs">
+        ${evs.map(k => `<button class="castev" data-k="${k}"
+          style="--ec:${WORLD[k].c}"><i>${WORLD[k].g}</i><span>${WORLD[k].n}</span>
+          <em>${WORLD[k].d}</em></button>`).join('')}
+      </div>
+      <button class="brush-btn ghost" id="ct_off"
+        style="color:#e9dfc9;border-color:#8a7f68">모두 끈다</button>
+    </div>
+
+    <div class="castsec"><b>새 판 알리기</b>
+      <div class="casthint">지금 이 앱은 ${APP_VERSION} 판이다. 더 큰 수를 적으면
+        모두에게 「새 판이 나왔다」고 뜬다.</div>
+      <div class="castrow">
+        <input id="ct_ver" type="number" min="0" max="9999" placeholder="판 번호"
+          value="${LIVE.version || APP_VERSION}">
+        <input id="ct_apk" placeholder="받는 자리 (APK 주소)" value="${(LIVE.apk || '').replace(/"/g, '&quot;')}">
+      </div>
+      <button class="brush-btn" id="ct_sendv">새 판 알리기</button>
+    </div>
+    <div class="castlog" id="ct_log"></div>
+  </div>`;
+
+  const log = grid.querySelector('#ct_log');
+  const say = (m, good) => { log.textContent = m; log.className = 'castlog ' + (good ? 'ok' : 'no'); };
+  const now = grid.querySelector('#ct_now');
+  const paint = () => {
+    const e = liveEvent();
+    now.innerHTML =
+      `<div>말 — ${LIVE.notice ? '<b>' + LIVE.notice.replace(/[<&]/g, c => c === '<' ? '&lt;' : '&amp;') + '</b>' : '<span class="none">없음</span>'}</div>` +
+      `<div>일 — ${e ? `<b style="color:${WORLD[e].c}">${WORLD[e].g} ${WORLD[e].n}</b>` : '<span class="none">없음</span>'}</div>` +
+      `<div>판 — <b>${LIVE.version || 0}</b>${LIVE.apk ? '' : ' <span class="none">(받는 자리 없음)</span>'}</div>` +
+      `<div>마지막으로 들은 때 — ${LIVE.at ? new Date(LIVE.at).toLocaleString() : '<span class="none">아직 없음</span>'}</div>`;
+    grid.querySelectorAll('.castev').forEach(b =>
+      b.classList.toggle('on', b.dataset.k === e));
+  };
+  paint();
+
+  grid.querySelector('#ct_notice').value = LIVE.notice || '';
+
+  const send = async (patch, what) => {
+    say('보내는 중…', true);
+    const r = await castSend(patch);
+    if (r.ok) { say(what + ' — 퍼뜨렸다', true); paint(); }
+    else say('못 퍼뜨렸다: ' + r.why, false);
+  };
+  grid.querySelector('#ct_sendn').onclick = () => {
+    const v = grid.querySelector('#ct_notice').value.trim();
+    send({ notice: v, noticeAt: Date.now() }, v ? '말' : '말 내리기');
+  };
+  grid.querySelectorAll('.castev').forEach(b => {
+    b.onclick = () => send({ event: b.dataset.k, eventAt: Date.now() }, WORLD[b.dataset.k].n);
+  });
+  grid.querySelector('#ct_off').onclick = () => send({ event: '', eventAt: Date.now() }, '모두 끄기');
+  grid.querySelector('#ct_sendv').onclick = () => {
+    const v = +grid.querySelector('#ct_ver').value || 0;
+    const a = grid.querySelector('#ct_apk').value.trim();
+    if (!a) { say('받는 자리(APK 주소)가 비었다', false); return; }
+    send({ version: v, apk: a }, v + ' 판');
+  };
+}
+/* 서버에 고쳐 쓰라고 이른다. 암호는 서버가 맞춰 본다. */
+async function castSend(patch) {
+  if (!LIVE_URL) return { ok: false, why: '소식 자리가 비어 있다' };
+  try {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), 15000);   /* 잠든 서버는 깨는 데 시간이 걸린다 */
+    const r = await fetch(LIVE_URL.replace(/\/live$/, '') + '/cast', {
+      method: 'POST', signal: c.signal,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ code: BROADCAST_CODE }, patch))
+    });
+    clearTimeout(t);
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) return { ok: false, why: (d && d.why) || ('서버가 ' + r.status) };
+    Object.assign(LIVE, d.live || {}, { at: Date.now() });
+    liveSave(); noticeShow();
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, why: e.name === 'AbortError' ? '서버가 답이 없다' : String(e.message || e) };
+  }
+}
+
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
 const ADMIN_CODE = '031675mj-156fy';
+/* 퍼뜨리는 권한을 가진 열쇠 — 이것을 쥔 사람만 남의 앱을 건드린다 */
+const BROADCAST_CODE = '0316051509127567hxx14tr4cdminjuvv1!!';
 /* 관리자 손잡이 — 개발용. 제출 전에 CODES 와 함께 지운다 */
 const ADMIN = { oneHit: false };
-function adminOn() { return !!(META.codes && META.codes[ADMIN_CODE]); }
+function adminOn() { return !!(META.codes && (META.codes[ADMIN_CODE] || META.codes[BROADCAST_CODE])); }
+function caster() { return !!(META.codes && META.codes[BROADCAST_CODE]); }
 function showAdmin() {
   const run = G.run;
   const p = overlay(`<div class="school admin">
@@ -16707,6 +17027,7 @@ function showAdmin() {
           <button class="adtab" data-t="relic">유물</button>
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -16719,6 +17040,8 @@ function showAdmin() {
   const draw = () => {
     const q = (find.value || '').trim();
     grid.innerHTML = '';
+    if (tab === 'cast') { find.style.display = 'none'; drawCast(grid); return; }
+    find.style.display = '';
     const add = (g, n, sub, col, fn) => {
       const t = el('div', 'trtile adtile',
         `<div class="tg" style="background:radial-gradient(circle at 35% 28%,${col},#06120e);color:#eafff6">${g}</div>
@@ -19050,11 +19373,18 @@ addEventListener('error', ev => {
 
 function boot() {
   loadMeta();
+  liveLoad();                                /* 지난번 소식을 되살린다 */
   FX.init();
   creemReturn();                             /* 값을 치르고 돌아왔는가 */
   showTitle();                               /* 판을 먼저 띄운다 */
   syncAuto();
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
+  /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
+  try {
+    noticeShow();
+    setTimeout(liveFetch, 1200);
+    setInterval(liveFetch, LIVE_EVERY);
+  } catch (e) { console.error('소식', e); }
   /* 가게는 판이 선 뒤에 연다. 여기서 넘어져도 판은 그대로 있어야 한다 —
      값을 못 받는 것과 놀지 못하는 것은 무게가 다르다. */
   if (PLAT === 'android') {
