@@ -5,7 +5,14 @@
   "type": "module",
   "description": "백귀야행 — 모두가 같은 소식을 보는 자리",
   "main": "live.mjs",
-  "scripts": { "start": "node live.mjs" },
-  "dependencies": { "redis": "^4.7.0" },
-  "engines": { "node": ">=20" }
+  "scripts": {
+    "start": "node live.mjs"
+  },
+  "dependencies": {
+    "redis": "^4.7.0",
+    "pg": "^8.13.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }

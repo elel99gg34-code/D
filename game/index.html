@@ -3204,6 +3204,23 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:rgba(20,16,12,.35)}
 .demolist b{color:#e8c86a;font-weight:400;font-size:14px;white-space:nowrap}
 .demolist span{color:#9a8d74;font-size:12px;text-align:right}
+/* ── 계정 ─────────────────────────────────────────────────── */
+.acctRow{flex-wrap:wrap;gap:8px}
+.acctform{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+.acctform input{flex:1;min-width:150px;background:rgba(12,10,8,.7);border:1px solid #4e4738;
+  border-radius:3px;color:#e9dfc9;padding:9px 11px;font-size:13px;font-family:inherit}
+.acctform input:focus{outline:none;border-color:#c8a94e}
+.acctbtns{display:flex;gap:8px;flex-wrap:wrap}
+.acctbtns .ghost{background:none;border-color:#6d6250;color:#a99d85}
+.acctsay{width:100%;font-size:11.5px;min-height:15px;letter-spacing:.02em}
+.pickrow{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.pickcol{flex:0 0 150px;background:rgba(12,10,8,.55);border:1px solid rgba(200,185,150,.22);
+  border-radius:4px;padding:11px 12px;font-size:12px;color:#c3b79c;line-height:1.9}
+.pickcol b{display:block;color:#e8c86a;font-size:13px;margin-bottom:5px;letter-spacing:.06em}
+.pickcol em{float:right;color:#efe4cb;font-style:normal}
+.pickcol .when{margin-top:6px;padding-top:6px;border-top:1px dotted rgba(200,185,150,.25);
+  color:#8a7f68;font-size:11px}
+
 /* ── 퍼뜨리는 자리 ───────────────────────────────────────── */
 .castbox{display:flex;flex-direction:column;gap:14px;padding:4px 2px 14px;max-width:560px}
 .castnow{background:rgba(10,20,16,.5);border:1px solid rgba(138,255,208,.22);border-radius:4px;padding:10px 12px}
@@ -4319,7 +4336,11 @@ function noteClear(act) {
   if (act > (META.cleared || 0)) { META.cleared = act; saveMeta(); }
 }
 function applyVol() { try { if (SND.master) SND.master.gain.value = OPT.vol; } catch (e) {} }
-function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {} }
+function saveMeta() {
+  try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {}
+  /* 이름을 걸어 두었으면 잠시 뒤에 스스로 올린다 */
+  if (typeof acctNudge === 'function') acctNudge();
+}
 function saveRun() {
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, cp: G.cp })); } catch (e) {}
@@ -16824,6 +16845,167 @@ async function liveFetch() {
   } catch (e) { /* 인터넷이 없을 뿐이다 */ }
 }
 
+/* ══════════════════════════════════════════════════════════
+   계정 — 걸어 두고, 다른 기계에서 찾아 온다
+   ──────────────────────────────────────────────────────────
+   게임은 늘 제 기계에 먼저 저장한다. 계정은 그것을 옮겨 주는
+   다리일 뿐이다. 그러니 서버가 잠들어 있어도, 인터넷이 없어도
+   판은 그대로 돌아간다 — 다른 기계로 못 옮길 뿐이다.
+
+   올릴 때는 손으로도 누를 수 있고, 뭔가 바뀌면 잠시 뒤에
+   스스로도 올린다. 내려받을 때는 어느 쪽이 새것인지 보여 주고
+   고르게 한다 — 말없이 덮으면 그것이 제일 무섭다.
+   ══════════════════════════════════════════════════════════ */
+const ACCT_KEY = 'baekgwi_acct';
+let ACCT = { id: '', token: '', at: 0 };
+function acctOn() { return !!(ACCT.token && ACCT.id); }
+function acctLoad() {
+  try { const s = localStorage.getItem(ACCT_KEY); if (s) ACCT = Object.assign(ACCT, JSON.parse(s)); }
+  catch (e) {}
+}
+function acctSave() {
+  try { localStorage.setItem(ACCT_KEY, JSON.stringify(ACCT)); } catch (e) {}
+}
+const acctBase = () => LIVE_URL.replace(/\/live$/, '');
+async function acctAsk(path, body, ms) {
+  if (!LIVE_URL) return { ok: false, why: '서버 자리가 비어 있다' };
+  try {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), ms || 20000);
+    const r = await fetch(acctBase() + path, {
+      method: body ? 'POST' : 'GET', signal: c.signal,
+      headers: body ? { 'content-type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    clearTimeout(t);
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) return { ok: false, why: d.why || ('서버가 ' + r.status) };
+    return d;
+  } catch (e) {
+    return { ok: false, why: e.name === 'AbortError' ? '서버가 답이 없다 (잠든 듯하다)' : '가 닿지 못했다' };
+  }
+}
+/* 올린다 — META 한 벌이 곧 그 사람의 모든 것이다 */
+async function acctPush() {
+  if (!acctOn()) return { ok: false, why: '들어와 있지 않다' };
+  const r = await acctAsk('/auth/push', { token: ACCT.token, save: META });
+  if (r.ok) { ACCT.at = r.at; acctSave(); }
+  else if (/들어와 있지 않다|없는 이름/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0 }; acctSave(); }
+  return r;
+}
+/* 뭔가 바뀌면 잠시 뒤에 스스로 올린다 — 누를 때마다 보내면 너무 잦다 */
+let _pushWait = null;
+function acctNudge() {
+  if (!acctOn()) return;
+  clearTimeout(_pushWait);
+  _pushWait = setTimeout(() => { acctPush().catch(() => {}); }, 8000);
+}
+/* 내려받는다 — 덮기 전에 어느 쪽이 새것인지 보여 준다 */
+function acctTake(save) {
+  try {
+    localStorage.setItem(META_KEY, JSON.stringify(save));
+    location.reload();
+  } catch (e) { toast('받아 오지 못했다'); }
+}
+function whenSay(t) {
+  if (!t) return '없음';
+  const d = new Date(t), n = Date.now() - t;
+  if (n < 60000) return '방금';
+  if (n < 3600000) return Math.floor(n / 60000) + '분 전';
+  if (n < 86400000) return Math.floor(n / 3600000) + '시간 전';
+  return d.toLocaleDateString();
+}
+/* 설정 안의 계정 칸 */
+function drawAcct(n) {
+  const has = acctOn();
+  n.innerHTML = has
+    ? `<div class="lb"><b>${ACCT.id}</b><small>걸어 둔 때 — ${whenSay(ACCT.at)}</small></div>
+       <div class="acctbtns">
+         <button class="val" id="ac_push">올린다</button>
+         <button class="val" id="ac_pull">받아온다</button>
+         <button class="val ghost" id="ac_out">나간다</button>
+       </div>
+       <div class="acctsay" id="ac_say"></div>`
+    : `<div class="lb"><b>이름을 걸어 두면</b><small>다른 기계에서도 이어서 할 수 있다. 안 걸어도 이 기계에서는 그대로 돈다.</small></div>
+       <div class="acctform">
+         <input id="ac_id" placeholder="이름" autocomplete="username" spellcheck="false" maxlength="20">
+         <input id="ac_pw" type="password" placeholder="암호 (여섯 글자 넘게)" autocomplete="current-password" maxlength="60">
+       </div>
+       <div class="acctbtns">
+         <button class="val" id="ac_in">들어간다</button>
+         <button class="val" id="ac_new">새로 건다</button>
+       </div>
+       <div class="acctsay" id="ac_say"></div>`;
+
+  const say = n.querySelector('#ac_say');
+  const tell = (m, good) => { say.textContent = m; say.style.color = good ? '#7fe6cf' : '#e08a7a'; };
+  const busy = b => n.querySelectorAll('button').forEach(x => x.disabled = b);
+
+  if (has) {
+    n.querySelector('#ac_push').onclick = async () => {
+      busy(true); tell('올리는 중…', true);
+      const r = await acctPush(); busy(false);
+      if (r.ok) { tell('올렸다 — ' + whenSay(r.at), true); SND.unlock(); drawAcct(n); }
+      else tell('못 올렸다: ' + r.why, false);
+    };
+    n.querySelector('#ac_pull').onclick = async () => {
+      busy(true); tell('찾아 오는 중…', true);
+      const r = await acctAsk('/pull?t=' + encodeURIComponent(ACCT.token)); busy(false);
+      if (!r.ok) { tell('못 찾았다: ' + r.why, false); return; }
+      if (!r.save) { tell('걸어 둔 것이 아직 없다', false); return; }
+      tell('', true);
+      acctPick(r.save, r.at);
+    };
+    n.querySelector('#ac_out').onclick = () => {
+      ACCT = { id: '', token: '', at: 0 }; acctSave(); SND.ui(); drawAcct(n);
+    };
+  } else {
+    const go = async (path, what) => {
+      const id = n.querySelector('#ac_id').value.trim();
+      const pw = n.querySelector('#ac_pw').value;
+      if (!id || !pw) { tell('이름과 암호를 적으시오', false); return; }
+      busy(true); tell(what + ' 중…', true);
+      const r = await acctAsk(path, { id, pw }); busy(false);
+      if (!r.ok) { tell(r.why, false); SND.err(); return; }
+      ACCT = { id: r.id, token: r.token, at: r.at || 0 }; acctSave();
+      SND.unlock();
+      if (r.save) { drawAcct(n); acctPick(r.save, r.at); }
+      else { drawAcct(n); const s2 = n.querySelector('#ac_say');
+             if (s2) { s2.textContent = '들어왔다. 「올린다」를 누르면 지금 것이 걸린다.'; s2.style.color = '#7fe6cf'; } }
+    };
+    n.querySelector('#ac_in').onclick = () => go('/auth/login', '들어가는');
+    n.querySelector('#ac_new').onclick = () => go('/auth/signup', '거는');
+  }
+}
+/* 어느 쪽을 쓸지 고르게 한다 — 말없이 덮지 않는다 */
+function acctPick(save, at) {
+  const mine = { jp: META.jpTotal || META.jp || 0, cleared: META.cleared || 0, runs: META.runs || 0 };
+  const theirs = { jp: save.jpTotal || save.jp || 0, cleared: save.cleared || 0, runs: save.runs || 0 };
+  const line = (t, d, when) => `<div class="pickcol">
+      <b>${t}</b>
+      <div>정진 <em>${d.jp}</em></div>
+      <div>넘은 막 <em>${d.cleared}</em></div>
+      <div>오른 횟수 <em>${d.runs}</em></div>
+      <div class="when">${when}</div>
+    </div>`;
+  const p = modal(`<h2>어느 쪽으로 이어 갈까</h2>
+    <div class="hint" style="max-width:420px;margin-top:6px">
+      받아 오면 이 기계의 것은 덮인다. 되돌릴 수 없다.
+    </div>
+    <div class="pickrow">
+      ${line('이 기계', mine, '지금')}
+      ${line('걸어 둔 것', theirs, whenSay(at))}
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+      <button class="brush-btn gold" id="pk_take">걸어 둔 것으로</button>
+      <button class="brush-btn ghost" id="pk_keep"
+        style="color:#e9dfc9;border-color:#8a7f68">이 기계 것으로</button>
+    </div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#pk_take').onclick = () => { SND.ui(); acctTake(save); };
+  p.querySelector('#pk_keep').onclick = () => { SND.ui(); closeTop(); acctPush().catch(() => {}); };
+}
+
 /* ── 개발자가 하는 말 — 앱 윗면에 걸린다 ───────────────── */
 function noticeShow() {
   const old = $('#notice'); if (old) old.remove();
@@ -17785,6 +17967,15 @@ function showSettings() {
       btn.textContent = '지웠다'; btn.disabled = true;
     };
     n.appendChild(btn); list.appendChild(n);
+  }
+
+  /* ── 계정 ─────────────────────────────────────────────── */
+  head('계 정');
+  {
+    const n = el('div', 'optrow acctRow');
+    n.id = 'acctrow';
+    list.appendChild(n);
+    drawAcct(n);
   }
 
   /* ── 코드 입력 ────────────────────────────────────────────
@@ -19382,6 +19573,7 @@ addEventListener('error', ev => {
 function boot() {
   loadMeta();
   liveLoad();                                /* 지난번 소식을 되살린다 */
+  acctLoad();                                /* 걸어 둔 이름이 있으면 되살린다 */
   FX.init();
   creemReturn();                             /* 값을 치르고 돌아왔는가 */
   showTitle();                               /* 판을 먼저 띄운다 */
