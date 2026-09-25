@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>[손전화] 백귀야행 百鬼夜行</title>
 <style>
 /* ============================================================
@@ -3222,9 +3222,24 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
    ══════════════════════════════════════════════════════════ */
 html, body { overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
 body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-/* 홈 표시줄·노치를 피한다 */
+
+/* ── 아래를 시스템에 내어 준다 ──────────────────────────
+   요즘 안드로이드는 화면 맨 아래 가운데에 제스처 막대가 있고,
+   그 둘레는 시스템이 쓸어 넘기는 자리다. 거기에 누를 것을 두면
+   눌리지 않거나 홈으로 나가 버린다.
+
+   env(safe-area-inset-bottom) 은 기계가 일러 주는 참값이지만,
+   판이 화면 끝까지 뻗지 않는 기계에서는 0 으로 온다. 그래서
+   바닥값을 하나 두어 어느 쪽이든 자리가 남게 한다.
+   ──────────────────────────────────────────────────────── */
+:root { --gb: max(env(safe-area-inset-bottom, 0px), 26px); }
+/* 가로로 누우면 막대가 얇아진다 — 높이가 아까우므로 조금만 둔다 */
+@media (orientation: landscape) and (max-height: 560px) {
+  :root { --gb: max(env(safe-area-inset-bottom, 0px), 20px); }
+}
+/* 노치·모서리를 피한다 (아래는 --gb 가 따로 맡는다) */
 #app { padding: env(safe-area-inset-top) env(safe-area-inset-right)
-              env(safe-area-inset-bottom) env(safe-area-inset-left); box-sizing: border-box; }
+              0 env(safe-area-inset-left); box-sizing: border-box; }
 
 /* 손가락에는 hover 가 없다 — 마우스를 올려야 뜨던 것들을 끈다 */
 @media (hover: none) {
@@ -3244,7 +3259,7 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .topbtn { width: 34px !important; height: 34px !important; font-size: 15px !important; flex: 0 0 auto; }
   #relicbar { min-width: 40px; }
 
-  #field { top: 42px; bottom: 176px; padding: 0 8px; align-items: flex-start; }
+  #field { top: 42px; bottom: calc(176px + var(--gb)); padding: 0 8px; align-items: flex-start; }
   #pside { width: 118px; gap: 4px; padding-top: 4px; }
   #eside { gap: 12px; padding-bottom: 2px; align-items: flex-start; padding-top: 4px; }
   .unit .body { width: 84px; height: 84px; }
@@ -3258,7 +3273,10 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .intent svg { width: 20px; height: 20px; }
   .unit .prev { height: 17px; font-size: 12px; }
 
-  #hud { height: 176px; }
+  /* 판 전체를 제스처 막대 위로 올린다 — 부적 패가 거기 깔리면
+     한 장 내려다 홈으로 나가 버린다 */
+  #hud { height: calc(176px + var(--gb)); padding-bottom: var(--gb); box-sizing: border-box; }
+  #pilebar { bottom: var(--gb); }
   .card .art { flex: 0 0 34px; margin: 3px 0; }
   .card .art .g { font-size: 23px; }
   .card .art .ring { width: 34px; height: 34px; }
@@ -3270,14 +3288,17 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .card .cost { width: 27px; height: 27px; left: -7px; top: -7px; font-size: 14px; }
   .card .grade { transform: scale(.8); transform-origin: top right; }
 
-  #energy { left: 62px; bottom: 62px; width: 54px; height: 54px; font-size: 16px; }
+  #energy { left: 62px; bottom: calc(62px + var(--gb)); width: 54px; height: 54px; font-size: 16px; }
   #energy small { font-size: 10px; }
-  #skillbtn { left: 8px; bottom: 66px; width: 50px; height: 50px; }
+  #skillbtn { left: 8px; bottom: calc(66px + var(--gb)); width: 50px; height: 50px; }
   #skillbtn b { font-size: 19px; } #skillbtn small { font-size: 8px; }
-  #petbtn { left: 8px; bottom: 124px; width: 50px; height: 46px; }
+  #petbtn { left: 8px; bottom: calc(124px + var(--gb)); width: 50px; height: 46px; }
   #petbtn b { font-size: 18px; } #petbtn small { font-size: 8px; max-width: 40px; }
-  #endturn { right: 10px; bottom: 58px; padding: 11px 16px; font-size: 14px; }
-  #autobtn { right: 10px; bottom: 106px; padding: 7px 11px; font-size: 12px; }
+  /* 손가락이 닿을 만큼 — 세로 44px 아래로는 내려가지 않게 */
+  #endturn { right: 10px; bottom: calc(58px + var(--gb)); padding: 13px 18px;
+             font-size: 14px; min-height: 46px; }
+  #autobtn { right: 10px; bottom: calc(114px + var(--gb)); padding: 13px 15px;
+             font-size: 12px; min-height: 46px; min-width: 46px; }
   #blogbtn { right: 10px; top: 50px; width: 32px; height: 32px; }
   #coldeckbtn { right: 48px; top: 50px; padding: 5px 9px; font-size: 11px; }
   .pile { width: 46px; height: 46px; font-size: 9px; }
@@ -3334,29 +3355,38 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   /* ── 아래 판을 세 층으로 나눈다 ─────────────────────────
      ┌ 기합 · 기 · 팻 ────────────────── 자동 ┐
      │            부적 다섯 장            │
-     └ 뽑을 더미 ── 턴 종료 ── 버린 더미 ─────┘
-     옆으로 늘어놓을 자리가 없으니 위아래로 쌓는다.
-     ──────────────────────────────────────────────────── */
-  #hud { height: 220px; }
-  #field { bottom: 220px; }
-  .card { top: 44px; }
+     └ 뽑을·버린 더미 ───────────── 턴 종료 ┘
+     ····· 아래 --gb 만큼은 제스처 막대 몫 ·····
 
-  #skillbtn { left: 8px;   bottom: 180px; width: 44px; height: 40px; }
-  #petbtn   { left: 58px;  bottom: 180px; width: 44px; height: 40px; }
-  #energy   { left: 108px; bottom: 180px; width: 44px; height: 40px;
+     턴 종료를 한가운데 두었더니 안드로이드 홈 막대에 깔려
+     눌리지 않았다. 오른쪽으로 물리고, 더미 둘은 왼쪽으로 모은다.
+     엄지가 닿는 자리이기도 하다.
+     ──────────────────────────────────────────────────── */
+  #hud { height: calc(224px + var(--gb)); padding-bottom: 0; }
+  #field { bottom: calc(224px + var(--gb)); }
+  /* 부적이 아래 줄(더미·턴 종료)을 덮으면 손가락이 엉뚱한 것을 짚는다 */
+  .card { top: 22px; }
+
+  #skillbtn { left: 8px;   bottom: calc(184px + var(--gb)); width: 46px; height: 46px; }
+  #petbtn   { left: 60px;  bottom: calc(184px + var(--gb)); width: 46px; height: 46px; }
+  #energy   { left: 112px; bottom: calc(184px + var(--gb)); width: 46px; height: 46px;
               border-radius: 12px; font-size: 15px; }
   #energy small { font-size: 9px; }
   #skillbtn b { font-size: 17px; } #skillbtn small { font-size: 7.5px; }
   #petbtn b { font-size: 16px; } #petbtn small { font-size: 7.5px; max-width: 36px; }
-  #autobtn { right: 8px; bottom: 184px; padding: 6px 9px; font-size: 11px; }
+  #autobtn { right: 8px; bottom: calc(184px + var(--gb)); padding: 12px 14px;
+             font-size: 11px; min-height: 46px; min-width: 46px; }
 
-  #pilebar { height: 56px; padding: 0 8px; }
-  .pile { width: 44px; height: 44px; font-size: 8px; }
+  /* 더미 둘을 왼쪽에 나란히, 오른쪽은 턴 종료에 내어 준다 */
+  #pilebar { height: 60px; bottom: var(--gb); padding: 0 8px;
+             justify-content: flex-start; gap: 10px; }
+  .pile { width: 46px; height: 46px; font-size: 8px; flex: 0 0 auto; }
   .pile b { font-size: 14px; }
-  #endturn { left: 50%; right: auto; bottom: 8px; width: 44vw;
-             padding: 12px 0; text-align: center; font-size: 14px;
-             transform: translateX(-50%); }
-  #endturn:hover, #endturn:disabled, #endturn:active { transform: translateX(-50%); }
+  #endturn { left: auto; right: 8px; bottom: calc(var(--gb) + 7px);
+             width: auto; min-width: 118px; min-height: 46px;
+             padding: 13px 18px; text-align: center; font-size: 14px;
+             transform: none; }
+  #endturn:hover, #endturn:disabled, #endturn:active { transform: none; }
 }
 
 /* ── 세로로 들었을 때 — 돌리라고 한 번 일러 준다 ───────── */
