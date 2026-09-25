@@ -16947,7 +16947,9 @@ const CODES = {
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
 const APP_VERSION = 1;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
-const LIVE_URL = '';                  /* 소식을 읽어 오는 자리 — 서버가 서면 적는다 */
+const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
+/* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
+const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
 const LIVE_EVERY = 5 * 60 * 1000;     /* 다섯 판마다 다시 묻는다 */
 const LIVE_KEY = 'baekgwi_live';
 let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0 };
@@ -17105,7 +17107,7 @@ function drawCast(grid) {
       <div class="castrow">
         <input id="ct_ver" type="number" min="0" max="9999" placeholder="판 번호"
           value="${LIVE.version || APP_VERSION}">
-        <input id="ct_apk" placeholder="받는 자리 (APK 주소)" value="${(LIVE.apk || '').replace(/"/g, '&quot;')}">
+        <input id="ct_apk" placeholder="받는 자리 (APK 주소)" value="${(LIVE.apk || APK_URL).replace(/"/g, '&quot;')}">
       </div>
       <button class="brush-btn" id="ct_sendv">새 판 알리기</button>
     </div>
