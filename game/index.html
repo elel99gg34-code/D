@@ -3232,6 +3232,47 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   <div id="toast"></div>
   <div id="tip"></div>
 </div>
+<!-- ══════════════════════════════════════════════════════════
+     판이 안 뜨면 까닭을 적어 두는 조각
+     ──────────────────────────────────────────────────────────
+     손전화 앱 안에서는 콘솔을 볼 수 없다. 아무 말 없는 빈 화면은
+     손쓸 데가 없으므로, 여덟 셈을 세도 판이 안 서면 무엇이 막았는지
+     그 자리에 적는다.
+
+     알맹이와 따로 둔 까닭: 알맹이가 아예 안 읽히는 때(옛 웹뷰가
+     문법을 모를 때)에도 이것만은 살아 있어야 한다. 그래서 여기는
+     옛 문법(var·function)만 쓴다.
+     ══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  var seen = [];
+  window.addEventListener('error', function (e) {
+    var m = e.message || (e.error && e.error.message) || '까닭 모름';
+    if (e.filename || e.lineno) m += '  (' + (e.filename || '') + ':' + (e.lineno || '') + ')';
+    if (e.error && e.error.stack) m += '\n' + e.error.stack;
+    seen.push(m);
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    seen.push('못 받아 낸 약속: ' + ((e.reason && (e.reason.stack || e.reason.message)) || e.reason));
+  });
+  window.__bootOk = function () { clearTimeout(window.__bootWatch); };
+  window.__bootWatch = setTimeout(function () {
+    if (document.querySelector('#title-scene, #topbar, .endscreen')) return;
+    var esc = function (s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    };
+    document.body.innerHTML =
+      '<div style="position:fixed;left:0;top:0;right:0;bottom:0;overflow:auto;padding:20px;' +
+      'background:#17130f;color:#e9dfc9;font:12px/1.7 monospace;' +
+      '-webkit-user-select:text;user-select:text">' +
+      '<div style="font-size:16px;color:#e8c86a;margin-bottom:8px">판을 펴지 못했다</div>' +
+      '<div style="color:#9a8d74;margin-bottom:14px">아래를 그대로 옮겨 주면 고칠 수 있다.</div>' +
+      '<pre style="white-space:pre-wrap;word-break:break-all;margin:0">' +
+      (seen.length ? esc(seen.join('\n\n')) : '터진 것은 없는데 판이 서지 않았다.') +
+      '\n\n---\n' + esc(navigator.userAgent) + '</pre></div>';
+  }, 8000);
+})();
+</script>
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════
@@ -17067,28 +17108,46 @@ const PLAY_SKU = { vip: 'vip_package', skin: 'skin_box' };
 let _playStore = null;
 function playOn() { return PLAT === 'android' && !!window.CdvPurchase; }
 
+let _playTried = false;
 function playInit() {
-  if (!playOn() || _playStore) return;
+  if (!playOn() || _playStore || _playTried) return;
   const CP = window.CdvPurchase;
-  const store = CP.store;
+  const store = CP && CP.store;
+  /* 다리가 아직 안 놓였으면 조용히 물러난다 — deviceready 때 다시 온다 */
+  if (!store || !CP.Platform || !CP.ProductType ||
+      typeof store.register !== 'function' || typeof store.initialize !== 'function') return;
+  _playTried = true;
   store.register([
     { id: PLAY_SKU.vip,  type: CP.ProductType.NON_CONSUMABLE, platform: CP.Platform.GOOGLE_PLAY },
     { id: PLAY_SKU.skin, type: CP.ProductType.CONSUMABLE,     platform: CP.Platform.GOOGLE_PLAY }
   ]);
   /* 값이 치러졌다 — 물건을 내어 주고 구글에 「받았다」고 알린다.
      알리지 않으면 사흘 뒤 구글이 저절로 물러 준다. */
-  store.when()
-    .approved(t => { try { playGrant(t); } catch (e) { console.error('물건 내주기', e); }
-                     t.verify(); })
-    .verified(r => r.finish())
-    .receiptUpdated(r => { /* 지난 것을 되살린다 — 기기를 바꿔도 VIP 는 따라온다 */
-      for (const t of r.transactions || [])
-        for (const p of t.products || [])
-          if (p.id === PLAY_SKU.vip && !META.vip.owned) { META.vip.owned = true; META.vip.at = Date.now(); saveMeta(); }
+  const w = typeof store.when === 'function' ? store.when() : null;
+  if (w && typeof w.approved === 'function') {
+    const chain = w.approved(t => {
+      try { playGrant(t); } catch (e) { console.error('물건 내주기', e); }
+      try { t.verify(); } catch (e) { try { t.finish(); } catch (x) {} }
     });
-  store.initialize([CP.Platform.GOOGLE_PLAY])
-    .then(() => { _playStore = store; })
-    .catch(e => console.error('가게를 못 열었다', e));
+    if (chain && typeof chain.verified === 'function') {
+      const c2 = chain.verified(r => { try { r.finish(); } catch (e) {} });
+      /* 지난 것을 되살린다 — 기기를 바꿔도 VIP 는 따라온다 */
+      if (c2 && typeof c2.receiptUpdated === 'function') c2.receiptUpdated(r => {
+        try {
+          for (const t of (r && r.transactions) || [])
+            for (const p of (t && t.products) || [])
+              if (p.id === PLAY_SKU.vip && !META.vip.owned) {
+                META.vip.owned = true; META.vip.at = Date.now(); saveMeta();
+              }
+        } catch (e) { console.error('되살리기', e); }
+      });
+    }
+  }
+  const r = store.initialize([CP.Platform.GOOGLE_PLAY]);
+  if (r && typeof r.then === 'function') {
+    r.then(() => { _playStore = store; })
+     .catch(e => { _playTried = false; console.error('가게를 못 열었다', e); });
+  } else _playStore = store;
 }
 /* 한 거래에 담긴 물건을 실제로 내어 준다 */
 function playGrant(t) {
@@ -18969,16 +19028,42 @@ addEventListener('resize', () => { if (G.b) syncHand(); if (G.scene === 'map' &&
 addEventListener('pointerdown', () => SND.init(), { once: true });
 
 /* --- 시작 --- */
-loadMeta();
-FX.init();
-creemReturn();                               /* 값을 치르고 돌아왔는가 */
-/* 앱으로 감쌌으면 다리가 놓인 뒤에 가게를 연다 */
-if (PLAT === 'android') {
-  if (window.CdvPurchase) playInit();
-  else document.addEventListener('deviceready', playInit, { once: true });
+/* 판이 안 뜨면 까닭을 그 자리에 적는다.
+   손전화 앱 안에서는 콘솔을 볼 수 없다. 아무 말 없는 빈 화면만큼
+   손쓸 데 없는 것이 없으므로, 엎어지면 무엇이 엎었는지 보여 준다. */
+function bootFail(e) {
+  try { autoStop(); } catch (x) {}
+  const say = (e && (e.stack || e.message)) || String(e);
+  document.body.innerHTML =
+    '<div style="position:fixed;inset:0;overflow:auto;padding:22px;' +
+    'background:#17130f;color:#e9dfc9;font:13px/1.7 monospace;-webkit-user-select:text;user-select:text">' +
+    '<div style="font-size:17px;color:#e8c86a;margin-bottom:10px">판을 펴지 못했다</div>' +
+    '<div style="color:#9a8d74;margin-bottom:14px">아래를 그대로 옮겨 주면 고칠 수 있다.</div>' +
+    '<pre style="white-space:pre-wrap;word-break:break-all;margin:0">' +
+    say.replace(/[<&]/g, c => (c === '<' ? '&lt;' : '&amp;')) + '</pre></div>';
 }
-showTitle();
-syncAuto();
+/* 늦게 터지는 것도 잡는다 — 판이 이미 서 있으면 건드리지 않는다 */
+addEventListener('error', ev => {
+  if (!document.querySelector('#title-scene, #topbar, .endscreen'))
+    bootFail(ev.error || ev.message);
+});
+
+function boot() {
+  loadMeta();
+  FX.init();
+  creemReturn();                             /* 값을 치르고 돌아왔는가 */
+  showTitle();                               /* 판을 먼저 띄운다 */
+  syncAuto();
+  if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
+  /* 가게는 판이 선 뒤에 연다. 여기서 넘어져도 판은 그대로 있어야 한다 —
+     값을 못 받는 것과 놀지 못하는 것은 무게가 다르다. */
+  if (PLAT === 'android') {
+    const open = () => { try { playInit(); } catch (e) { console.error('가게를 못 열었다', e); } };
+    setTimeout(open, 0);
+    document.addEventListener('deviceready', open, { once: true });
+  }
+}
+try { boot(); } catch (e) { console.error('부팅', e); bootFail(e); }
 console.log('%c백귀야행 百鬼夜行', 'font-size:20px;color:#a8272c', '\n카드', Object.keys(CARDS).length,
   '· 유물', Object.keys(RELICS).length, '· 물약', Object.keys(POTIONS).length, '· 요괴', Object.keys(ENEMIES).length);
 
