@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write        # 받을 수 있게 내놓으려면 쓰기가 있어야 한다
 
 jobs:
   build:
@@ -45,3 +45,34 @@ jobs:
           name: baekgwi-${{ matrix.os }}
           path: ${{ matrix.out }}
           if-no-files-found: error
+
+      # ── 받을 수 있게 내놓는다 ────────────────────────────
+      # Actions 의 산출물은 로그인해야 받을 수 있고 zip 으로 묶여
+      # 나온다. 늘 같은 이름표(pc)를 단 자리에 그대로 걸어 둔다.
+      #   https://github.com/<나>/D/releases/tag/pc
+      # 윈도우와 리눅스가 따로 끝나므로, 먼저 온 쪽이 자리를 만들고
+      # 나중 온 쪽은 거기에 얹는다 (--clobber 로 덮어쓴다).
+      - name: 받을 수 있게 내놓는다
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          gh release view pc --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create pc --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "백귀야행 — 컴퓨터판" \
+              --notes "$(printf '%s\n' \
+                '내려받아 그대로 쓴다. 인터넷 없이도 돈다.' \
+                '' \
+                '- **.exe** — 윈도우. 만든이 서명이 없어 「모르는 만든이」라고 한 번 물을 수 있다.' \
+                '  「추가 정보」 → 「실행」을 누르면 된다.' \
+                '- **.AppImage** — 리눅스. 받은 뒤 실행 권한을 주고 누른다.' \
+                '' \
+                '맥은 애플 서명이 있어야 남에게 줄 수 있어 여기 없다.')"
+          for f in $(ls app/desktop/out/*.exe app/desktop/out/*.AppImage 2>/dev/null); do
+            echo "올린다: $f"
+            gh release upload pc "$f" --repo "$GITHUB_REPOSITORY" --clobber
+          done
+          echo "### 받는 자리" >> $GITHUB_STEP_SUMMARY
+          echo "https://github.com/$GITHUB_REPOSITORY/releases/tag/pc" >> $GITHUB_STEP_SUMMARY

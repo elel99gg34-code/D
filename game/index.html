@@ -16761,6 +16761,8 @@ const APP_VERSION = 1;                /* 이 판의 나이. 소식의 version �
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
+/* 컴퓨터판을 받는 자리 — 판마다 받을 것이 다르다 */
+const PC_URL = 'https://github.com/elel99gg34-code/D/releases/tag/pc';
 const LIVE_EVERY = 5 * 60 * 1000;     /* 다섯 판마다 다시 묻는다 */
 const LIVE_KEY = 'baekgwi_live';
 let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0 };
@@ -16858,8 +16860,12 @@ function eventAnnounce(k) {
 }
 /* ── 새 판이 나왔는가 ───────────────────────────────────── */
 function updateCheck() {
-  if (!(LIVE.version > APP_VERSION) || !LIVE.apk) return;
-  if (PLAT !== 'android') return;              /* 웹은 새로 고치면 그만이다 */
+  if (!(LIVE.version > APP_VERSION)) return;
+  /* 웹은 새로 고치면 그만이니 묻지 않는다. 앱과 컴퓨터판만
+     받을 자리가 따로 있다 — 판마다 받을 것이 다르다. */
+  if (PLAT !== 'android' && PLAT !== 'desktop') return;
+  const where = PLAT === 'android' ? (LIVE.apk || APK_URL) : PC_URL;
+  if (!where) return;
   let skip = 0;
   try { skip = +localStorage.getItem('baekgwi_skipver') || 0; } catch (e) {}
   if (skip >= LIVE.version) return;
@@ -16874,7 +16880,7 @@ function updateCheck() {
         style="color:#e9dfc9;border-color:#8a7f68">나중에</button>
     </div>`);
   p.dataset.noauto = '1';
-  p.querySelector('#up_go').onclick = () => { SND.ui(); open(LIVE.apk, '_blank'); };
+  p.querySelector('#up_go').onclick = () => { SND.ui(); open(where, '_blank'); };
   p.querySelector('#up_x').onclick = () => {
     try { localStorage.setItem('baekgwi_skipver', String(LIVE.version)); } catch (e) {}
     closeTop();
