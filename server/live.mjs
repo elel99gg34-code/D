@@ -24,9 +24,19 @@ import http from 'http';
 const PORT = process.env.PORT || 10000;
 const CODE = process.env.CAST_CODE || '';
 const KEY = 'baekgwi:live';
+/* 한 번에 넣을 수 있는 몫 — 혼자 두드려 끝내지 못하게 막는다 */
+const HIT_CAP = 5000;
 
-/* 소식 한 장 — 이것이 전부다 */
-let live = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0 };
+/* 소식 한 장 — 이것이 전부다
+     gift  이벤트에 온 이에게 뿌리는 것. id 가 바뀌면 새 선물이다.
+     boss  모두가 함께 치는 적. hp 가 0 이 되면 끝난 것이고,
+           친 사람들(who)만 보상을 받는다. */
+let live = {
+  notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0,
+  gift: null,          /* { id, cards:[], say, at } */
+  boss: null           /* { id, n, g, hp, max, reward, done, at, hits } */
+};
+const WHO_KEY = 'baekgwi:boss:who';   /* 친 사람들 — 보스마다 따로 */
 
 /* ── 적어 두는 곳 ───────────────────────────────────────── */
 let redis = null;
@@ -204,10 +214,86 @@ const server = http.createServer(async (req, res) => {
     if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = +q.eventAt  || Date.now(); }
     if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
     if ('apk'     in q) live.apk = str(q.apk, 300);
+    /* 선물 — 카드 이름만 받는다. 무엇이 있는 이름인지는 게임이 안다. */
+    if ('gift' in q) {
+      if (!q.gift) live.gift = null;
+      else {
+        const cards = Array.isArray(q.gift.cards)
+          ? q.gift.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
+        live.gift = cards.length
+          ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now() }
+          : null;
+      }
+    }
+    /* 모두가 치는 적 — 새로 세우거나 거둔다 */
+    if ('boss' in q) {
+      if (!q.boss) live.boss = null;
+      else {
+        const max = Math.max(100, Math.min(100000000, parseInt(q.boss.max, 10) || 100000));
+        live.boss = {
+          id: Date.now(),
+          n: str(q.boss.n, 40) || '이름 없는 것',
+          g: str(q.boss.g, 4) || '鬼',
+          hp: max, max,
+          reward: str(q.boss.reward, 120),
+          done: false, at: Date.now(), hits: 0
+        };
+        const c0 = await store();
+        if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
+      }
+    }
     live.at = Date.now();
     await keep();
     console.log('퍼뜨렸다:', JSON.stringify(live));
     return send(res, 200, { ok: true, live });
+  }
+
+  /* ── 모두가 함께 치는 적 ──────────────────────────────────
+     누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
+     막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  if (url.pathname === '/hit' && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
+               req.socket.remoteAddress || '?';
+    if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 친다' });
+    let body = '';
+    for await (const chunk of req) {
+      body += chunk;
+      if (body.length > 2000) return send(res, 413, { ok: false, why: '너무 길다' });
+    }
+    let q;
+    try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const b = live.boss;
+    if (!b) return send(res, 409, { ok: false, why: '칠 것이 없다' });
+    if (String(q.id || '') !== String(b.id))
+      return send(res, 409, { ok: false, why: '다른 적을 치고 있었다' });
+
+    /* 한 번에 넣는 몫은 막아 둔다.
+       이미 거둔 적이면 더 넣지는 못하되 묻는 것은 받는다 —
+       「내가 쳤었나」를 알아야 보상을 받으러 올 수 있다. */
+    const n = b.done ? 0 : Math.max(0, Math.min(HIT_CAP, parseInt(q.n, 10) || 0));
+    const who = str(q.who, 64);
+    if (n > 0) {
+      b.hp = Math.max(0, b.hp - n);
+      b.hits++;
+      if (who) {
+        const c = await store();
+        if (c) { try { await c.sAdd(WHO_KEY, who); } catch (e) {} }
+        else { const s = mem.get(WHO_KEY); const set = s ? new Set(JSON.parse(s)) : new Set();
+               if (set.size < 20000) { set.add(who); mem.set(WHO_KEY, JSON.stringify([...set])); } }
+      }
+      if (b.hp <= 0 && !b.done) { b.done = true; b.at = Date.now();
+        console.log('모두가 잡았다:', b.n, '· 친 횟수', b.hits); }
+      live.at = Date.now();
+      await keep();
+    }
+    let mine = false;
+    if (who) {
+      const c = await store();
+      if (c) { try { mine = await c.sIsMember(WHO_KEY, who); } catch (e) {} }
+      else { const s = mem.get(WHO_KEY); mine = s ? JSON.parse(s).includes(who) : false; }
+    }
+    return send(res, 200, { ok: true, hp: b.hp, max: b.max, done: b.done, hits: b.hits, mine });
   }
 
   /* ── 장부 ──────────────────────────────────────────────── */
