@@ -70,9 +70,16 @@ jobs:
                 '- **.AppImage** — 리눅스. 받은 뒤 실행 권한을 주고 누른다.' \
                 '' \
                 '맥은 애플 서명이 있어야 남에게 줄 수 있어 여기 없다.')"
-          for f in $(ls app/desktop/out/*.exe app/desktop/out/*.AppImage 2>/dev/null); do
+          # $(ls ...) 로 받으면 이름 속 공백에서 쪼개진다
+          # (「백귀야행 Setup 1.0.0.exe」가 「백귀야행」이 되어 못 찾았다).
+          # 글로브를 그대로 돌리고 따옴표로 감싼다.
+          shopt -s nullglob
+          found=0
+          for f in app/desktop/out/*.exe app/desktop/out/*.AppImage; do
             echo "올린다: $f"
             gh release upload pc "$f" --repo "$GITHUB_REPOSITORY" --clobber
+            found=$((found+1))
           done
+          if [ "$found" = 0 ]; then echo "올릴 것을 찾지 못했다"; ls -l app/desktop/out || true; exit 1; fi
           echo "### 받는 자리" >> $GITHUB_STEP_SUMMARY
           echo "https://github.com/$GITHUB_REPOSITORY/releases/tag/pc" >> $GITHUB_STEP_SUMMARY
