@@ -22,8 +22,8 @@
     "productName": "백귀야행",
     "files": ["main.js", "app/**"],
     "directories": { "output": "out" },
-    "_주": "파일 이름은 로마자로 짓는다 — 제품명이 한글이라 그대로 두면 깎여 '-1.0.0.exe' 가 된다",
     "artifactName": "baekgwi-${version}.${ext}",
+    "publish": null,
     "win": {
       "target": ["nsis", "portable"]
     },
