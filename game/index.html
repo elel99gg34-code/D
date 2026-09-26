@@ -3210,6 +3210,53 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:rgba(20,16,12,.35)}
 .demolist b{color:#e8c86a;font-weight:400;font-size:14px;white-space:nowrap}
 .demolist span{color:#9a8d74;font-size:12px;text-align:right}
+/* ── 남은 때 띠 — 걸린 이벤트와 남은 시간 ────────────────── */
+.evpill{position:fixed;right:10px;top:calc(50px + env(safe-area-inset-top,0px));z-index:120;
+  display:flex;align-items:center;gap:7px;padding:5px 11px 5px 6px;border-radius:20px;
+  background:rgba(14,10,8,.88);border:1.5px solid var(--ec);color:#e9dfc9;font-size:12px;
+  box-shadow:0 0 16px color-mix(in srgb,var(--ec) 35%,transparent);pointer-events:none;
+  animation:pillIn .4s cubic-bezier(.2,1.2,.3,1)}
+.evpill i{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;font-style:normal;
+  background:color-mix(in srgb,var(--ec) 28%,#0a0806);color:var(--ec);font-size:12px}
+.evpill b{font-weight:400;color:var(--ec);letter-spacing:.06em}
+.evpill em{font-style:normal;font-variant-numeric:tabular-nums;color:#efe4cb;min-width:34px;text-align:right}
+.evpill.last em{color:#ff8a7a;animation:pillBeat 1s ease-in-out infinite}
+@keyframes pillIn{from{opacity:0;transform:translateY(-10px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes pillBeat{50%{opacity:.45}}
+
+/* ── 별비 — 슈팅 스타 ──────────────────────────────────── */
+.starsky{position:fixed;inset:0;z-index:25;pointer-events:none;overflow:hidden}
+.starsky i{position:absolute;top:-12%;width:2px;height:var(--l);border-radius:2px;
+  background:linear-gradient(transparent,rgba(190,230,255,.85) 70%,#fff);
+  box-shadow:0 0 8px rgba(160,220,255,.9);transform:rotate(24deg);opacity:0;
+  animation:starFall var(--d) linear var(--w) infinite}
+.starsky i::after{content:'';position:absolute;left:50%;bottom:-3px;width:6px;height:6px;margin-left:-3px;
+  border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(170,225,255,.9)}
+@keyframes starFall{0%{opacity:0;transform:translate(0,0) rotate(24deg)}
+  8%{opacity:1}75%{opacity:1}
+  100%{opacity:0;transform:translate(-46vh,118vh) rotate(24deg)}}
+
+/* ── 카드 대전 — 하늘에서 부적이 쏟아진다 ──────────────── */
+.rain{position:fixed;inset:0;z-index:110;pointer-events:none;overflow:hidden}
+.rainhud{position:absolute;left:50%;top:calc(52px + env(safe-area-inset-top,0px));transform:translateX(-50%);
+  display:flex;gap:12px;align-items:center;padding:6px 14px;border-radius:4px;
+  background:rgba(10,24,20,.86);border:1.5px solid #7fe6cf;color:#e9dfc9;font-size:12px}
+.rainhud b{color:#7fe6cf;font-weight:400;letter-spacing:.12em}
+.rcard{pointer-events:auto;position:absolute;top:-90px;width:54px;height:74px;padding:0;
+  border-radius:5px;border:2px solid var(--gc);cursor:pointer;touch-action:manipulation;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--gc) 22%,#1a140e),#0d0a08);
+  box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 12px color-mix(in srgb,var(--gc) 45%,transparent);
+  display:grid;place-items:center;animation:rainFall var(--d) linear forwards}
+.rcard::before{content:'';position:absolute;inset:-14px}        /* 떨어지는 것을 누르기 쉽게 */
+.rcard i{font-style:normal;font-size:24px;color:var(--gc)}
+.rcard.got{animation:rainGot .32s ease-out forwards;pointer-events:none}
+@keyframes rainFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(calc(100vh + 120px)) rotate(var(--r))}}
+@keyframes rainGot{to{transform:scale(1.7);opacity:0;filter:brightness(2.2)}}
+.rainfly{position:fixed;z-index:130;pointer-events:none;transform:translate(-50%,-50%);
+  font-size:15px;font-weight:700;letter-spacing:.04em;text-shadow:0 2px 6px rgba(0,0,0,.8);
+  white-space:nowrap;animation:rainUp .9s ease-out forwards}
+@keyframes rainUp{from{opacity:1;transform:translate(-50%,-50%)}to{opacity:0;transform:translate(-50%,-160%)}}
+
 /* ── 선물 ─────────────────────────────────────────────────── */
 .giftrow{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .giftcard{flex:0 0 92px;border:1.5px solid var(--gc);border-radius:5px;padding:10px 6px;
@@ -3258,11 +3305,23 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .wbar button{flex:0 0 auto;min-height:38px}
 
 /* ── 혼돈 — 산길이 제자리에 있지 못한다 ──────────────────── */
-body.chaos #map,body.chaos .maproot{animation:chaosSway 5.5s ease-in-out infinite}
-body.chaos .node{animation:chaosNode 2.8s ease-in-out infinite}
-body.chaos .node:nth-child(2n){animation-delay:-.7s}
-body.chaos .node:nth-child(3n){animation-delay:-1.5s}
-body.chaos #bg .sky{animation:chaosSky 9s ease-in-out infinite}
+/* 판 전체가 떤다 — #mapinner 에는 배율(scale)이 걸려 있어 거기를 흔들면
+   배율이 날아간다. 그 바깥 판(#mapsizer)을 흔든다. */
+body.chaos #mapsizer{animation:chaosQuake 1.9s steps(1) infinite}
+/* 칸 속 글자도 저마다 떤다 — 칸 자체에는 갈 칸 맥박(nodePulse)이 걸려
+   있어 거기를 덮으면 어디로 갈 수 있는지가 안 보인다 */
+body.chaos .mapnode .mg{display:inline-block;animation:chaosNode .9s ease-in-out infinite}
+body.chaos .mapnode:nth-child(2n) .mg{animation-delay:-.3s}
+body.chaos .mapnode:nth-child(3n) .mg{animation-delay:-.6s}
+body.chaos .mroad{animation:chaosRoad 2.4s ease-in-out infinite}
+body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
+@keyframes chaosQuake{
+  0%{transform:translate(0,0) rotate(0)}      6%{transform:translate(-4px,2px) rotate(-.4deg)}
+  12%{transform:translate(5px,-3px) rotate(.5deg)} 18%{transform:translate(-3px,-2px) rotate(-.2deg)}
+  24%{transform:translate(0,0) rotate(0)}     58%{transform:translate(0,0)}
+  62%{transform:translate(6px,3px) rotate(.6deg)} 67%{transform:translate(-6px,-2px) rotate(-.6deg)}
+  72%{transform:translate(3px,-3px)}         78%{transform:translate(0,0) rotate(0)}}
+@keyframes chaosRoad{0%,100%{filter:none;opacity:1}50%{filter:hue-rotate(40deg) saturate(1.6);opacity:.82}}
 @keyframes chaosSway{0%,100%{transform:translateX(0) skewX(0)}
   25%{transform:translateX(-5px) skewX(.5deg)}50%{transform:translateX(3px) skewX(-.4deg)}
   75%{transform:translateX(-2px) skewX(.3deg)}}
@@ -12096,8 +12155,8 @@ function nextAct() {
 function showMap() {
   G.scene = 'map'; G.b = null; battleWatch(false); if (G.run) G.run.inBattle = false;
   setTimeout(() => { try { bossBanner(); } catch (e) {} }, 60);
-  /* 혼돈이 걸려 있으면 산길이 제자리에 있지 못한다 */
-  document.body.classList.toggle('chaos', typeof evOn === 'function' && evOn('chaos'));
+  /* 혼돈·별비·카드 대전은 이벤트의 심장이 맡는다 — 지도를 펴자마자 한 번 뛰게 */
+  setTimeout(() => { try { liveTick(); } catch (e) {} }, 30);
   clearFloaters(); hideArrow(); renderTop(); SND.ambience(true, false); SND.bgm(true, 'map');
   const run = G.run;
   migrateMap(run);
@@ -12265,6 +12324,13 @@ let _mapFit = null;
 const MAP_TAP = 36;
 function enterNode(n) {
   const run = G.run;
+  /* 카드 대전 동안은 스테이지 잠금 — 모두가 하늘만 본다 */
+  if (typeof evOn === 'function' && evOn('rain')) {
+    const s = Math.ceil(evLeft() / 1000);
+    toast(`카드 대전 중 — ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} 뒤에 들어갈 수 있다`);
+    try { SND.err(); } catch (e) {}
+    return;
+  }
   boxCallHide();
   const gn = $('#gdnote'); if (gn) gn.remove();
   markCheckpoint();                       /* 쓰러져도 이 갈림길로 돌아올 수 있다 */
@@ -16905,7 +16971,7 @@ const LIVE_EVERY = 12000;             /* 열두 셈마다 다시 묻는다 — �
 const NOTICE_MS  = 3000;              /* 개발자의 말은 셋 셈 보였다가 사라진다 */
 const NOTICE_SEEN = 'baekgwi_notice_seen';  /* 이미 보인 말 — 다시 띄우지 않는다 */
 const LIVE_KEY = 'baekgwi_live';
-let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0,
+let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, eventUntil: 0, version: 0, apk: '', at: 0,
              gift: null, boss: null };
 
 /* ── 퍼뜨릴 수 있는 일들 ──────────────────────────────────
@@ -16926,10 +16992,26 @@ const WORLD = {
     n: '풍년', g: '豊', c: '#e8c86a',
     d: '산이 넉넉해진다. 골드와 다이아가 곱절로 떨어진다.',
     say: '산이 넉넉하다'
+  },
+  rain: {
+    n: '카드 대전', g: '札', c: '#7fe6cf',
+    d: '하늘에서 부적이 쏟아진다. 눌러서 줍는다 — 골드·다이아·유물·물약·정진. ' +
+       '그동안은 누구도 스테이지에 들어갈 수 없다.',
+    say: '부적이 쏟아진다'
   }
 };
-function liveEvent() { return LIVE.event && WORLD[LIVE.event] ? LIVE.event : ''; }
+/* 서버 시각 — 폰 시계가 틀려도 모두가 같은 셋 분을 겪게 한다 */
+let SRV_SKEW = 0;
+const srvNow = () => Date.now() + SRV_SKEW;
+/* 걸린 일 — 끝날 때가 지났으면 서버에 묻지 않아도 그 자리에서 끝낸다 */
+function liveEvent() {
+  if (!LIVE.event || !WORLD[LIVE.event]) return '';
+  if (LIVE.eventUntil && srvNow() > LIVE.eventUntil) return '';
+  return LIVE.event;
+}
 function evOn(k) { return liveEvent() === k; }
+/* 남은 때 (ms) — 0 이면 끝났다 */
+function evLeft() { return liveEvent() && LIVE.eventUntil ? Math.max(0, LIVE.eventUntil - srvNow()) : 0; }
 
 /* 읽어 둔 것을 되살린다 — 인터넷이 없어도 지난 소식은 보인다 */
 function liveLoad() {
@@ -16955,6 +17037,8 @@ async function liveFetch() {
     LIVE.noticeAt = +d.noticeAt || 0;
     LIVE.event = String(d.event || '').slice(0, 24);
     LIVE.eventAt = +d.eventAt || 0;
+    LIVE.eventUntil = +d.eventUntil || 0;
+    if (+d.now) SRV_SKEW = +d.now - Date.now();
     LIVE.version = +d.version || 0;
     LIVE.apk = String(d.apk || '').slice(0, 300);
     LIVE.gift = d.gift && typeof d.gift === 'object' ? d.gift : null;
@@ -16965,6 +17049,7 @@ async function liveFetch() {
     if (LIVE.event !== was.e && liveEvent()) eventAnnounce(liveEvent());
     try { giftCheck(); } catch (e) { console.error('선물', e); }
     try { bossWatch(); }  catch (e) { console.error('모두의 적', e); }
+    try { liveTick(); }   catch (e) {}
     updateCheck();
   } catch (e) { /* 인터넷이 없을 뿐이다 */ }
 }
@@ -17168,6 +17253,7 @@ function noticeShow() {
 function giftCheck() {
   const g = LIVE.gift;
   if (!g || !g.id || !Array.isArray(g.cards) || !g.cards.length) return;
+  if (g.until && srvNow() > g.until) return;       /* 때가 지났다 — 그 시각에 없던 사람 */
   META.gotGifts = META.gotGifts || {};
   if (META.gotGifts[g.id]) return;
   const real = g.cards.filter(id => CARDS[id]);
@@ -17217,7 +17303,11 @@ function meId() {
   } catch (e) { return 'ddd'; }
 }
 function worldBoss() { const b = LIVE.boss; return b && b.id ? b : null; }
-function bossAlive() { const b = worldBoss(); return !!(b && !b.done && b.hp > 0); }
+function bossAlive() {
+  const b = worldBoss();
+  return !!(b && !b.done && !b.fled && b.hp > 0 && !(b.until && srvNow() > b.until));
+}
+function bossLeft() { const b = worldBoss(); return bossAlive() && b.until ? Math.max(0, b.until - srvNow()) : 0; }
 
 let _bossSeen = 0;
 function bossWatch() {
@@ -17329,6 +17419,169 @@ async function bossSpoils(b) {
     toast('정진 300' + (G.run ? ' · 금 500 · 옥 150' : ''));
     closeTop();
   };
+}
+
+/* ══════════════════════════════════════════════════════════
+   이벤트의 심장 — 한 박자(1초)마다 뛴다
+   ──────────────────────────────────────────────────────────
+   무엇이 걸려 있고 얼마 남았는지를 띠로 보여 주고, 때가 다하면
+   서버에 묻지 않고도 그 자리에서 거둔다. 별비·흔들림·카드 대전·
+   스테이지 잠금이 모두 이 한 박자를 따른다.
+   ══════════════════════════════════════════════════════════ */
+let _evWas = '';
+function liveTick() {
+  const k = liveEvent(), left = evLeft();
+  /* 몸에 이름표를 달아 둔다 — 그림은 CSS 가 맡는다 */
+  for (const x of Object.keys(WORLD))
+    document.body.classList.toggle('ev-' + x, k === x);
+  document.body.classList.toggle('chaos', k === 'chaos' && G.scene === 'map');
+  /* 남은 때 띠 */
+  let pill = $('#evpill');
+  if (!k) { if (pill) pill.remove(); }
+  else {
+    if (!pill) { pill = el('div', 'evpill'); pill.id = 'evpill'; document.body.appendChild(pill); }
+    const w = WORLD[k], s = Math.ceil(left / 1000);
+    pill.style.setProperty('--ec', w.c);
+    pill.innerHTML = `<i>${w.g}</i><b>${w.n}</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em>`;
+    pill.classList.toggle('last', s <= 20);
+  }
+  /* 모두의 적이 서 있으면 그 띠도 */
+  const bl = bossLeft();
+  const bt = $('#wbar .wt');
+  if (bt) bt.textContent = bl ? `${Math.floor(bl / 60000)}:${String(Math.ceil(bl / 1000) % 60).padStart(2, '0')}` : '';
+  /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
+  const open = G.scene === 'map' || G.scene === 'title';
+  starSky(k === 'star' && open);
+  rainOn(k === 'rain' && open);
+  /* 때가 다했다 */
+  if (_evWas && !k) evEnded(_evWas);
+  _evWas = k;
+}
+function evEnded(k) {
+  const w = WORLD[k]; if (!w) return;
+  rainOn(false); starSky(false);
+  if (k === 'rain') rainSum();
+  toast(`${w.n} — 끝났다`);
+}
+
+/* ── 별비 — 슈팅 스타가 걸려 있는 동안 지도 위로 별똥별이 진다 ── */
+function starSky(on) {
+  let sky = $('#starsky');
+  if (!on) { if (sky) sky.remove(); return; }
+  if (sky) return;
+  sky = el('div', 'starsky'); sky.id = 'starsky';
+  /* 열여섯 줄기 — 저마다 다른 때 다른 자리에서 떨어진다 */
+  let h = '';
+  for (let i = 0; i < 16; i++) {
+    const x = Math.round(Math.random() * 120) - 10, d = (1.6 + Math.random() * 2.2).toFixed(2);
+    const delay = (Math.random() * 6).toFixed(2), len = 60 + Math.round(Math.random() * 90);
+    h += `<i style="left:${x}%;--d:${d}s;--w:${delay}s;--l:${len}px"></i>`;
+  }
+  sky.innerHTML = h;
+  document.body.appendChild(sky);
+}
+
+/* ══════════════════════════════════════════════════════════
+   카드 대전 — 하늘에서 부적이 쏟아진다
+   ──────────────────────────────────────────────────────────
+   누르면 줍는다. 한 사람이 한 번의 대전에서 주울 수 있는 몫은
+   막아 둔다 — 누르기만 하는 손(자동 누르개)이 판을 흐리지 않게.
+   그동안 스테이지에는 아무도 못 들어간다.
+   ══════════════════════════════════════════════════════════ */
+const RAIN_CAP = 70;              /* 한 번의 대전에서 받는 것은 여기까지 */
+const RAIN_RELIC_CAP = 2;         /* 유물은 두 번까지 */
+const RAIN_EVERY = 380;           /* 몇 셈마다 한 장 떨어지는가 (ms) */
+const RAIN_MAX = 14;              /* 한 화면에 동시에 떨어지는 장수 */
+const RAIN_DROPS = [
+  { w: 45, k: 'gold' }, { w: 26, k: 'dia' }, { w: 13, k: 'jp' },
+  { w: 9,  k: 'potion' }, { w: 3, k: 'relic' }, { w: 4, k: 'none' }
+];
+let _rain = null;
+function rainOn(on) {
+  if (!on) {
+    if (_rain) { clearInterval(_rain.t); _rain.layer.remove(); _rain.alive = false; _rain = null; }
+    return;
+  }
+  if (_rain) return;
+  const id = LIVE.eventAt || 1;
+  /* 같은 대전 안에서는 창을 닫았다 열어도 주운 수가 이어진다 */
+  META.rain = META.rain && META.rain.id === id ? META.rain : { id, got: 0, relics: 0, sum: {} };
+  const layer = el('div', 'rain'); layer.id = 'rain';
+  layer.innerHTML = `<div class="rainhud"><b>札 카드 대전</b><span id="rn_got"></span></div>`;
+  document.body.appendChild(layer);
+  _rain = { layer, alive: true, n: 0 };
+  const hud = () => { const g = META.rain.got;
+    layer.querySelector('#rn_got').textContent = g >= RAIN_CAP ? '주머니가 가득 찼다' : `주운 것 ${g} / ${RAIN_CAP}`; };
+  hud();
+  _rain.t = setInterval(() => {
+    if (!_rain || !_rain.alive) return;
+    if (layer.querySelectorAll('.rcard').length >= RAIN_MAX) return;
+    const c = el('button', 'rcard');
+    const pool = Object.keys(CARDS).filter(x => CARDS[x].rar !== 'curse');
+    const cid = pool[Math.floor(Math.random() * pool.length)];
+    c.innerHTML = `<i>${CARDS[cid].g}</i>`;
+    c.style.setProperty('--gc', GRADE[CARDS[cid].rar].c);
+    c.style.left = (4 + Math.random() * 88) + '%';
+    c.style.setProperty('--d', (3.2 + Math.random() * 2.6).toFixed(2) + 's');
+    c.style.setProperty('--r', (Math.random() * 60 - 30).toFixed(0) + 'deg');
+    c.onpointerdown = e => { e.preventDefault(); rainPick(c); hud(); };
+    c.addEventListener('animationend', () => c.remove());
+    layer.appendChild(c);
+  }, RAIN_EVERY);
+}
+function rainPick(c) {
+  if (c.dataset.got) return;
+  c.dataset.got = '1';
+  const r = META.rain;
+  const q = c.getBoundingClientRect(), x = q.left + q.width / 2, y = q.top + q.height / 2;
+  c.classList.add('got');
+  setTimeout(() => c.remove(), 320);
+  if (r.got >= RAIN_CAP) { rainFly(x, y, '가득', '#9a8d74'); return; }
+  r.got++;
+  let d = RAIN_DROPS[RAIN_DROPS.length - 1];
+  { let t = Math.random() * RAIN_DROPS.reduce((a, b) => a + b.w, 0);
+    for (const o of RAIN_DROPS) { t -= o.w; if (t <= 0) { d = o; break; } } }
+  const run = G.run, act = (run && run.act) || 1;
+  const add = (k, v) => { r.sum[k] = (r.sum[k] || 0) + v; };
+  /* 등반 중이 아니면 금·옥·유물·물약은 둘 곳이 없다 — 정진으로 바꿔 준다 */
+  if (!run && d.k !== 'jp' && d.k !== 'none') d = { k: 'jp' };
+  if (d.k === 'relic' && r.relics >= RAIN_RELIC_CAP) d = { k: 'gold' };
+  if (d.k === 'potion' && run && run.potions.length >= run.potSlots) d = { k: 'dia' };
+  try {
+    if (d.k === 'gold') { const v = Math.max(8, Math.round((15 + Math.random() * 25) * Math.sqrt(lootGold(act))));
+      run.gold += v; run.stats.gold += v; add('금', v); rainFly(x, y, '金 +' + v, '#ffd76a'); SND.coin && SND.coin(); }
+    else if (d.k === 'dia') { const v = 3 + Math.floor(Math.random() * 7) + Math.floor(act / 4);
+      run.dia = (run.dia || 0) + v; add('옥', v); rainFly(x, y, '玉 +' + v, '#6fd0e8'); }
+    else if (d.k === 'jp') { const v = 5 + Math.floor(Math.random() * 11);
+      META.jp = (META.jp || 0) + v; META.jpTotal = (META.jpTotal || 0) + v; add('정진', v);
+      rainFly(x, y, '精 +' + v, '#c9a8ff'); }
+    else if (d.k === 'potion') { const pid = randomPotion(); run.potions.push(pid); add('물약', 1);
+      rainFly(x, y, POTIONS[pid].g + ' ' + POTIONS[pid].n, '#8affd0'); }
+    else if (d.k === 'relic') { const rid = randomRelic ? randomRelic() : null;
+      if (rid && !run.relics.some(z => z.id === rid)) { gainRelic(rid); r.relics++; add('유물', 1);
+        rainFly(x, y, RELICS[rid].g + ' ' + RELICS[rid].n, '#e8c86a'); SND.unlock(); }
+      else { const v = 30; run.gold += v; add('금', v); rainFly(x, y, '金 +' + v, '#ffd76a'); } }
+    else rainFly(x, y, '빈 부적', '#8a7f68');
+  } catch (e) { console.error('줍기', e); }
+  saveMeta(); if (run) { saveRun(); renderTop(); }
+}
+function rainFly(x, y, t, c) {
+  const f = el('div', 'rainfly', t);
+  f.style.left = x + 'px'; f.style.top = y + 'px'; f.style.color = c;
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 900);
+}
+/* 끝나면 무엇을 주웠는지 한 번 보여 준다 */
+function rainSum() {
+  const r = META.rain; if (!r || !r.got) return;
+  const parts = Object.entries(r.sum || {}).map(([k, v]) => `${k} ${v}`).join(' · ');
+  const p = modal(`<h2 style="color:#7fe6cf">札 카드 대전 — 끝</h2>
+    <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9">
+      ${r.got}장을 주웠다.<br><b style="color:#e8c86a">${parts || '빈손'}</b>
+    </div>
+    <div style="margin-top:14px"><button class="brush-btn gold" id="rs_ok">알겠다</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#rs_ok').onclick = closeTop;
 }
 
 /* 일이 새로 시작되면 한 번 알린다 */
@@ -19954,6 +20207,8 @@ function boot() {
     noticeShow();
     setTimeout(liveFetch, 1200);
     setInterval(liveFetch, LIVE_EVERY);
+    /* 이벤트의 심장 — 한 박자마다 남은 때를 세고 때가 다하면 거둔다 */
+    setInterval(() => { try { liveTick(); } catch (e) { console.error('심장', e); } }, 1000);
     /* 창을 다시 보면 그 자리에서 묻는다 — 기다릴 것 없이 */
     addEventListener('visibilitychange', () => { if (!document.hidden) liveFetch(); });
     addEventListener('focus', () => liveFetch());

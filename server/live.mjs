@@ -26,6 +26,20 @@ const CODE = process.env.CAST_CODE || '';
 const KEY = 'baekgwi:live';
 /* 한 번에 넣을 수 있는 몫 — 혼자 두드려 끝내지 못하게 막는다 */
 const HIT_CAP = 5000;
+/* 모든 일은 셋 분 산다 — 그 시각에 와 있던 사람만 받는다(로블록스처럼).
+   때는 서버가 잰다. 폰 시계가 틀려도 모두가 같은 셋 분을 겪는다. */
+const EV_MS = +process.env.EV_MS || 3 * 60 * 1000;   /* 시험할 때만 줄인다 */
+/* 때가 지난 것을 거둔다 — 읽을 때마다 한 번씩 */
+function expire(now) {
+  let changed = false;
+  if (live.event && live.eventUntil && now > live.eventUntil) { live.event = ''; changed = true; }
+  if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
+  if (live.boss && !live.boss.done && !live.boss.fled && live.boss.until && now > live.boss.until) {
+    live.boss.fled = true; changed = true;
+    console.log('달아났다:', live.boss.n, '· 남은', live.boss.hp);
+  }
+  return changed;
+}
 
 /* 소식 한 장 — 이것이 전부다
      gift  이벤트에 온 이에게 뿌리는 것. id 가 바뀌면 새 선물이다.
@@ -194,7 +208,9 @@ const server = http.createServer(async (req, res) => {
 
   if (url.pathname === '/live' && req.method === 'GET') {
     await store();
-    return send(res, 200, live);
+    const now = Date.now();
+    if (expire(now)) await keep();
+    return send(res, 200, Object.assign({}, live, { now }));
   }
 
   if (url.pathname === '/cast' && req.method === 'POST') {
@@ -211,7 +227,8 @@ const server = http.createServer(async (req, res) => {
     await store();
     /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다 */
     if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); }
-    if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = +q.eventAt  || Date.now(); }
+    if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = Date.now();
+                          live.eventUntil = live.event ? Date.now() + EV_MS : 0; }
     if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
     if ('apk'     in q) live.apk = str(q.apk, 300);
     /* 선물 — 카드 이름만 받는다. 무엇이 있는 이름인지는 게임이 안다. */
@@ -221,7 +238,8 @@ const server = http.createServer(async (req, res) => {
         const cards = Array.isArray(q.gift.cards)
           ? q.gift.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
         live.gift = cards.length
-          ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now() }
+          ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now(),
+              until: Date.now() + EV_MS }
           : null;
       }
     }
@@ -236,7 +254,7 @@ const server = http.createServer(async (req, res) => {
           g: str(q.boss.g, 4) || '鬼',
           hp: max, max,
           reward: str(q.boss.reward, 120),
-          done: false, at: Date.now(), hits: 0
+          done: false, fled: false, at: Date.now(), until: Date.now() + EV_MS, hits: 0
         };
         const c0 = await store();
         if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
@@ -265,13 +283,14 @@ const server = http.createServer(async (req, res) => {
     await store();
     const b = live.boss;
     if (!b) return send(res, 409, { ok: false, why: '칠 것이 없다' });
+    if (expire(Date.now())) await keep();
     if (String(q.id || '') !== String(b.id))
       return send(res, 409, { ok: false, why: '다른 적을 치고 있었다' });
 
     /* 한 번에 넣는 몫은 막아 둔다.
        이미 거둔 적이면 더 넣지는 못하되 묻는 것은 받는다 —
        「내가 쳤었나」를 알아야 보상을 받으러 올 수 있다. */
-    const n = b.done ? 0 : Math.max(0, Math.min(HIT_CAP, parseInt(q.n, 10) || 0));
+    const n = (b.done || b.fled) ? 0 : Math.max(0, Math.min(HIT_CAP, parseInt(q.n, 10) || 0));
     const who = str(q.who, 64);
     if (n > 0) {
       b.hp = Math.max(0, b.hp - n);
@@ -293,7 +312,8 @@ const server = http.createServer(async (req, res) => {
       if (c) { try { mine = await c.sIsMember(WHO_KEY, who); } catch (e) {} }
       else { const s = mem.get(WHO_KEY); mine = s ? JSON.parse(s).includes(who) : false; }
     }
-    return send(res, 200, { ok: true, hp: b.hp, max: b.max, done: b.done, hits: b.hits, mine });
+    return send(res, 200, { ok: true, hp: b.hp, max: b.max, done: b.done, fled: !!b.fled,
+                            until: b.until, now: Date.now(), hits: b.hits, mine });
   }
 
   /* ── 장부 ──────────────────────────────────────────────── */
