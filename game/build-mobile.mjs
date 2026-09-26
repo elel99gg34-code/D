@@ -164,9 +164,11 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   /* 윗줄은 두 줄까지 접힌다 — 옆으로 밀어야 보이던 단추들을 앉힌다 */
   #topbar { height: auto; min-height: 40px; flex-wrap: wrap; row-gap: 4px;
             padding: 5px 8px; overflow: visible; }
-  #battle { padding-top: 84px; }
-  #field { top: 84px; }
-  #scene > #map, #scene > .lobby { padding-top: 34px; }
+  /* 윗줄이 몇 줄로 접히든 판은 그 아래에서 — --tbh 는 본판이 잰 참 높이 */
+  #battle { padding-top: var(--tbh, 84px); }
+  #field { top: calc(var(--tbh, 84px) + 2px); }
+  #scene > #map, #scene > .lobby { padding-top: max(34px, calc(var(--tbh, 84px) - 50px)); }
+  #blogbtn { top: calc(var(--tbh, 84px) + 6px); }
 
   /* 요괴가 위, 나는 그 아래 — 옆으로 나란히는 자리가 없다 */
   #field { flex-direction: column-reverse; justify-content: flex-end;

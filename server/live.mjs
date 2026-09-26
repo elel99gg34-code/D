@@ -29,6 +29,8 @@ const HIT_CAP = 5000;
 /* 모든 일은 셋 분 산다 — 그 시각에 와 있던 사람만 받는다(로블록스처럼).
    때는 서버가 잰다. 폰 시계가 틀려도 모두가 같은 셋 분을 겪는다. */
 const EV_MS = +process.env.EV_MS || 3 * 60 * 1000;   /* 시험할 때만 줄인다 */
+/* 하늘을 가르는 것만은 특별히 일곱 분 — 모두가 모여 칠 틈을 준다 */
+const BOSS_MS = +process.env.BOSS_MS || 7 * 60 * 1000;
 /* 때가 지난 것을 거둔다 — 읽을 때마다 한 번씩 */
 function expire(now) {
   let changed = false;
@@ -177,6 +179,26 @@ function tooMany(ip) {
   return recent.length > 20;
 }
 
+/* 모두의 적을 치는 손은 따로 센다.
+   폰은 통신사 하나 아래 수많은 사람이 IP 하나를 나눠 쓴다(학교·집
+   와이파이도 그렇다). 장부처럼 IP 로 분에 스무 번만 받으면 함께 치는
+   사람들이 서로를 막는다. 한 사람(who)은 한 셈 반에 한 번, 한 IP 는
+   분에 육백 번까지 받는다. 한 번에 넣는 몫은 HIT_CAP 이 막는다. */
+const hitWho = new Map(), hitIp = new Map();
+function hitTooFast(who, ip) {
+  const now = Date.now();
+  if (hitWho.size > 50000) hitWho.clear();
+  if (hitIp.size > 5000) hitIp.clear();
+  if (who) {
+    if (now - (hitWho.get(who) || 0) < 1500) return true;
+    hitWho.set(who, now);
+  }
+  const w = (hitIp.get(ip) || []).filter(t => now - t < 60000);
+  w.push(now);
+  hitIp.set(ip, w);
+  return w.length > 600;
+}
+
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
   'access-control-allow-origin': '*',
@@ -248,13 +270,21 @@ const server = http.createServer(async (req, res) => {
       if (!q.boss) live.boss = null;
       else {
         const max = Math.max(100, Math.min(100000000, parseInt(q.boss.max, 10) || 100000));
+        /* 거두면 줄 몫 — 관리자가 그때마다 정한다. 게임이 아는 부적만 쓰인다 */
+        const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+        const pq = q.boss.pay && typeof q.boss.pay === 'object' ? q.boss.pay : null;
+        const pay = pq ? {
+          jp: num(pq.jp, 100000), gold: num(pq.gold, 1000000), dia: num(pq.dia, 100000),
+          cards: Array.isArray(pq.cards) ? pq.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : []
+        } : null;
         live.boss = {
           id: Date.now(),
           n: str(q.boss.n, 40) || '이름 없는 것',
           g: str(q.boss.g, 4) || '鬼',
           hp: max, max,
           reward: str(q.boss.reward, 120),
-          done: false, fled: false, at: Date.now(), until: Date.now() + EV_MS, hits: 0
+          pay,
+          done: false, fled: false, at: Date.now(), until: Date.now() + BOSS_MS, hits: 0
         };
         const c0 = await store();
         if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
@@ -272,7 +302,6 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/hit' && req.method === 'POST') {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
                req.socket.remoteAddress || '?';
-    if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 친다' });
     let body = '';
     for await (const chunk of req) {
       body += chunk;
@@ -292,6 +321,8 @@ const server = http.createServer(async (req, res) => {
        「내가 쳤었나」를 알아야 보상을 받으러 올 수 있다. */
     const n = (b.done || b.fled) ? 0 : Math.max(0, Math.min(HIT_CAP, parseInt(q.n, 10) || 0));
     const who = str(q.who, 64);
+    /* 묻기만 하는 것(n=0)은 막지 않는다 — 보상을 받으러 오는 길이다 */
+    if (n > 0 && hitTooFast(who, ip)) return send(res, 429, { ok: false, why: '너무 자주 친다' });
     if (n > 0) {
       b.hp = Math.max(0, b.hp - n);
       b.hits++;
