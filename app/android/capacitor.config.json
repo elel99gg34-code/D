@@ -4,7 +4,8 @@
   "webDir": "www",
   "android": {
     "allowMixedContent": false,
-    "backgroundColor": "#0d0b09"
+    "backgroundColor": "#0d0b09",
+    "adjustMarginsForEdgeToEdge": "auto"
   },
   "server": {
     "androidScheme": "https"

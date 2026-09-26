@@ -3331,9 +3331,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .wrise em{font-size:12px;letter-spacing:.2em;color:#d8a08a;font-style:normal}
 .wrise em.wnote{color:#e8c86a;margin-top:6px}
 .whalf{position:absolute;inset:0;overflow:hidden;pointer-events:none;
-  transition:transform 1.3s cubic-bezier(.62,0,.24,1),filter 1.3s;will-change:transform}
-.wsplit.tear .whalf.l{transform:translateX(-64%) rotate(-6deg);filter:brightness(.5) saturate(.7)}
-.wsplit.tear .whalf.r{transform:translateX(64%) rotate(6deg);filter:brightness(.5) saturate(.7)}
+  transition:transform 1.3s cubic-bezier(.62,0,.24,1);will-change:transform}
+/* 찢겨 나가며 어두워진다 — filter 는 폰에서 매 장면 다시 그려 버벅인다. 덮개의 투명도만 바꾼다 */
+.whalf::after{content:'';position:absolute;inset:0;background:#0a0405;opacity:0;transition:opacity 1.3s}
+.wsplit.tear .whalf::after{opacity:.55}
+.wsplit.tear .whalf.l{transform:translateX(-64%) rotate(-6deg)}
+.wsplit.tear .whalf.r{transform:translateX(64%) rotate(6deg)}
 .wcrack{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
   filter:drop-shadow(0 0 5px #ff6a4a) drop-shadow(0 0 16px #ff2a1a);transition:opacity .35s}
 .wcrack polyline{fill:none;stroke:#fff0e0;stroke-width:3.5;stroke-linejoin:bevel;
@@ -6865,11 +6868,16 @@ defEnemy({ id: 'geuseundae', n: '그슨대', g: '暗', hp: [62, 70], col: '#2420
            stretch: { t: 'atkdef', label: '늘어나기', d: 6, blk: 10 } },
   next: e => lastIs(e, 'engulf', 2) ? 'stretch' : rnd() < .65 ? 'engulf' : 'stretch' });
 
-/* 첫 막의 엘리트다. 가시 5에 17 짜리 발구르기는 기본 덱에 너무 매웠다 */
-defEnemy({ id: 'jangseung', n: '장승 수호신', g: '柱', hp: [72, 80], col: '#6b4a2a', elite: true, big: true,
-  init: e => { e.s.thorns = 3; },
-  moves: { stomp: { t: 'attack', label: '천하대장군', d: 13, fx: 'blunt' },
-           root: { t: 'defend', label: '지하여장군', blk: 14, self: { thorns: 1 } },
+/* 첫 막의 엘리트다. 가시 5에 17 짜리 발구르기는 기본 덱에 너무 매웠다.
+   막아 설 때마다 가시가 끝없이 자라, 싸움이 길어지면 칠수록 제가 죽었다
+   (1막을 조금 굵게 하자 쓰러지거나, 이겨도 체력이 열 남짓 남았다).
+   가시는 하나로 시작해 셋에서 멈춘다. 공격 다섯 장인 첫 덱은 한 판에 열다섯 번쯤
+   치는데, 한 번에 셋씩 되받으니 그것만으로 마흔이 넘게 깎였다. */
+defEnemy({ id: 'jangseung', n: '장승 수호신', g: '柱', hp: [66, 74], col: '#6b4a2a', elite: true, big: true,
+  init: e => { e.s.thorns = 1; },
+  moves: { stomp: { t: 'attack', label: '천하대장군', d: 12, fx: 'blunt' },
+           root: { t: 'defend', label: '지하여장군', blk: 12,
+                   extra: e => { if ((e.s.thorns || 0) < 3) st(e, 'thorns', 1); } },
            glare: { t: 'debuff', label: '노려보기', deb: { weak: 2, vuln: 1 } } },
   next: e => e.hist.length === 0 ? 'root' : lastIs(e, 'stomp') ? (rnd() < .6 ? 'root' : 'glare') : rnd() < .55 ? 'stomp' : rnd() < .6 ? 'root' : 'glare' });
 
@@ -8638,8 +8646,10 @@ function applyDamage(ent, dmg, pierce) {
       if (ent.def.onHalf) ent.def.onHalf(ent);
     }
     /* 반이 깎이는 순간과 각성이 한꺼번에 올 수도 있으므로 따로 본다 */
+    /* 모두의 적은 제 나름의 반 꺾임(onHalf)이 있어 각성까지 얹지 않는다 —
+       둘이 겹치면 한 차례에 쉰 넘게 들어와, 함께 치러 온 사람을 곧장 밀어냈다 */
     if (ent.def.boss && !ent.awake && ent.hp <= ent.maxHp * AWAKEN_AT
-        && (G.run && G.run.act || 1) >= AWAKEN_FROM) {
+        && (G.run && G.run.act || 1) >= AWAKEN_FROM && !(G.b && G.b.kind === 'world')) {
       awaken(ent);                          /* 보스는 더 몰리면 눈을 뜬다 */
     }
   }
@@ -8788,19 +8798,21 @@ function startBattle(enemyIds, kind, opts) {
   };
   let ux = 1;
   /* 막마다 요괴가 굵어진다 (대전투장은 자체 배율을 쓴다) */
-  let sc = kind === 'arena' ? { hp: 1, dmg: 1 } : actScale(run.act);
+  let sc = kind === 'arena' ? { hp: 1, dmg: 1 } : kind === 'world' ? worldScale(run.act)
+         : kind === 'colo' && COLO_EARLY[run.act] ? Object.assign({}, COLO_EARLY[run.act]) : actScale(run.act);
   /* ── 보스가 너무 셌다 ──────────────────────────────────
      특별 상자를 까지 않으면 못 넘을 지경이라는 말을 들었다.
      보스만 따로 눅인다. 엘리트는 그보다 덜.
      ────────────────────────────────────────────────── */
-  const am = ASC.foe(run.asc || 0);                   /* 환생할수록 요괴도 사나워진다 */
+  const am = kind === 'world' ? 1 : ASC.foe(run.asc || 0);   /* 환생할수록 요괴도 사나워진다 */
   if (am !== 1) sc = { hp: sc.hp * am, dmg: sc.dmg * am };
   const ls = lateSoft(run.act, kind);                 /* 뒷막일수록 한 번 더 눅인다 */
   const fs = finalSoft(run.act, kind);                /* 마지막 봉우리는 또 한 번 */
-  if (kind === 'boss') sc = { hp: sc.hp * BOSS_SOFT.hp * ls.hp * fs.hp, dmg: sc.dmg * BOSS_SOFT.dmg * ls.dmg * fs.dmg };
+  const bs = (run.act || 1) <= 1 ? BOSS_SOFT_ACT1 : BOSS_SOFT;
+  if (kind === 'boss') sc = { hp: sc.hp * bs.hp * ls.hp * fs.hp, dmg: sc.dmg * bs.dmg * ls.dmg * fs.dmg };
   else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
   /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
-  const es = kind === 'arena' ? 1 : endSoft(run.act);
+  const es = kind === 'arena' || kind === 'world' ? 1 : endSoft(run.act);
   if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
   const boost = sc.hp;
   for (const id of enemyIds) {
@@ -12303,8 +12315,18 @@ const LAST_ACT = 25;
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
    ────────────────────────────────────────────────────────── */
 const ACT_SCALE = {
-  1: { hp: 0.86, dmg: 0.62 },              /* 첫 막 */
-  2: { hp: 0.92, dmg: 0.66 },
+  /* ── 제1·2막을 굵혔다 ────────────────────────────────────
+     「라운드마다 요괴가 너무 약하다」는 말을 들었다. 게임의 엔진과
+     자동 플레이로 막마다 싸움을 수십 번씩 돌려 재어 보니, 첫 덱으로도
+     1·2막 길목 싸움에서 체력을 거의 잃지 않았고(0~1), 첫 보스는 5 남짓만
+     깎았다. 그러다 3막 길목에서 갑자기 19씩 깎이는 벼랑이 있었다.
+     기가 넷이라 방어 두 장을 늘 낼 수 있어, 치는 힘이 방어를 넘지
+     못하면 아무것도 들어오지 않는다. 그래서 배율을 「기본」보다 위로 둔다.
+       1막  길목 첫 덱 9 · 부적 몇 장 얹으면 4 · 엘리트 ~25 · 보스 ~15
+       2막  길목 6~10 · 엘리트 ~27 · 보스 ~21   → 3막 길목 ~19 로 이어진다
+     ────────────────────────────────────────────────────── */
+  1: { hp: 1.35, dmg: 1.25 },              /* 첫 막 */
+  2: { hp: 1.30, dmg: 1.10 },
   /* ── 제3~10막을 대폭 눅였다 ─────────────────────────────
      제10막이 너무 세다는 말을 들었다. 앞 여덟 막의 계단을
      한 칸씩만 오르게 다시 깔았다 (제10막 체력 1.42→1.16 ·
@@ -12352,8 +12374,21 @@ function actScale(act) {
   const m = mercyMul(a);
   return m === 1 ? base : { hp: base.hp * m, dmg: base.dmg * m };
 }
+/* 모두의 적의 한 조각 — 막의 계단과 따로 간다. 갓 오른 이도 몇 번 치면
+   한 조각을 떼어 낼 수 있게, 깊이 오른 이에게는 그만큼 굵게.
+   (1막 조각 ≈170 · 10막 ≈350 · 20막 ≈550, 치는 힘은 0.8 에서 멈춘다) */
+function worldScale(act) {
+  const a = Math.max(1, act || 1);
+  return { hp: 0.6 + 0.08 * a, dmg: Math.min(0.8, 0.5 + 0.022 * a) };
+}
 /* 보스·엘리트만 따로 눅이는 배율 */
 const BOSS_SOFT  = { hp: 0.82, dmg: 0.82 };
+/* 콜로세움은 이번에 굵힌 1·2막 배율을 따르지 않는다 — 상대표(체력·힘)가 따로 있고,
+   윗줄 단추로 1막부터 들어갈 수 있어 모르는 새 곱절로 매워지지 않게 예전 값을 둔다 */
+const COLO_EARLY = { 1: { hp: 0.86, dmg: 0.62 }, 2: { hp: 0.92, dmg: 0.66 } };
+/* 첫 보스는 덜 눅인다 — 구미호가 칼 몇 번에 쓰러져 보스 같지가 않았다(5 남짓).
+   다 빼면 2막 보스보다 매워져(31 대 21) 조금만 남긴다 */
+const BOSS_SOFT_ACT1 = { hp: 0.92, dmg: 0.92 };
 const ELITE_SOFT = { hp: 0.92, dmg: 0.92 };
 /* ── 뒷막의 보스·엘리트는 한 번 더 눅인다 ──────────────────
    제10막부터 벽이 너무 높다는 말을 들었다. 막이 깊을수록
@@ -17604,6 +17639,7 @@ function giftCheck() {
   if (META.gotGifts[g.id]) return;
   const real = g.cards.filter(id => CARDS[id]);
   if (!real.length) { META.gotGifts[g.id] = 1; saveMeta(); return; }
+  if ($('#giftm')) return;              /* 이미 떠 있다 — 물을 때마다 겹쳐 쌓이던 것 */
   try { SND.bell(); } catch (e) {}
   const p = modal(`<h2 style="color:#e8c86a">선 물 이 왔 다</h2>
     <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
@@ -17615,6 +17651,7 @@ function giftCheck() {
         <i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><em>${GRADE[CARDS[id].rar].n}</em></div>`).join('')}
     </div>
     <div style="margin-top:14px"><button class="brush-btn gold" id="gf_ok">받는다</button></div>`);
+  p.id = 'giftm';
   p.dataset.noauto = '1';
   p.querySelector('#gf_ok').onclick = () => {
     META.gotGifts[g.id] = 1;
@@ -17640,13 +17677,18 @@ function giftCheck() {
    막아 두므로 혼자서는 끝내지 못한다.
    ══════════════════════════════════════════════════════════ */
 const MEID_KEY = 'baekgwi_me';
+let _meTmp = '';
 function meId() {
   try {
     let v = localStorage.getItem(MEID_KEY);
     if (!v) { v = Math.random().toString(36).slice(2) + Date.now().toString(36);
               localStorage.setItem(MEID_KEY, v); }
     return v;
-  } catch (e) { return 'ddd'; }
+  } catch (e) {
+    /* 적어 둘 곳이 없는 기계 — 켜 있는 동안만 쓰는 이름. 모두가 한 이름을
+       나눠 쓰면 서버가 한 사람으로 보고 서로의 손을 막는다 */
+    return _meTmp || (_meTmp = 't' + Math.random().toString(36).slice(2) + Date.now().toString(36));
+  }
 }
 function worldBoss() { const b = LIVE.boss; return b && b.id ? b : null; }
 function bossAlive() {
@@ -18258,6 +18300,7 @@ function eventAnnounce(k) {
   p.querySelector('#ev_ok').onclick = closeTop;
 }
 /* ── 새 판이 나왔는가 ───────────────────────────────────── */
+let _updShown = 0;
 function updateCheck() {
   if (!(LIVE.version > APP_VERSION)) return;
   /* 웹은 새로 고치면 그만이니 묻지 않는다. 앱과 컴퓨터판만
@@ -18268,6 +18311,9 @@ function updateCheck() {
   let skip = 0;
   try { skip = +localStorage.getItem('baekgwi_skipver') || 0; } catch (e) {}
   if (skip >= LIVE.version) return;
+  /* 한 번 켤 때 한 판에 한 번만 — 소식을 물을 때마다 창이 겹쳐 쌓였다 */
+  if (_updShown >= LIVE.version || $('#updm')) return;
+  _updShown = LIVE.version;
   const p = modal(`<h2>새 판이 나왔다</h2>
     <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9">
       지금 것은 ${APP_VERSION} 판, 나온 것은 <b style="color:#7fe6cf">${LIVE.version} 판</b>이다.<br>
@@ -18278,8 +18324,9 @@ function updateCheck() {
       <button class="brush-btn ghost" id="up_x"
         style="color:#e9dfc9;border-color:#8a7f68">나중에</button>
     </div>`);
+  p.id = 'updm';
   p.dataset.noauto = '1';
-  p.querySelector('#up_go').onclick = () => { SND.ui(); open(where, '_blank'); };
+  p.querySelector('#up_go').onclick = () => { SND.ui(); open(where, '_blank'); closeTop(); };
   p.querySelector('#up_x').onclick = () => {
     try { localStorage.setItem('baekgwi_skipver', String(LIVE.version)); } catch (e) {}
     closeTop();
@@ -18729,6 +18776,25 @@ const NEWS = [
         <div><code>petfriend</code><span>팻 뽑기 한 번</span></div>
       </div>
       <p class="nq">방을 붙이는 자는 이름을 적지 않는다.<br><span>— 산 어귀의 방(榜)</span></p>`
+  },
+  {
+    id: 'w4', at: '네 번째 방', tag: '갱신', hot: true,
+    t: '하늘이 갈라진다 — 모두의 적',
+    art: 'gate',
+    body: `
+      <p>이제 산에 <b>온 세상이 함께 겪는 일</b>이 내린다. 인터넷에 이어져 있으면
+      누구의 산에나 한꺼번에 닿는다. 일은 <b>셋 분</b>만 산다 — 그때 산에 와 있던 이만 받는다.</p>
+      <ul>
+        <li><b>하늘을 가르는 것</b> — 지도가 두 쪽으로 찢기고 모두가 싸움터로 끌려간다.
+          <b>일곱 분</b> 동안 서 있고, 저마다 넣은 피해가 한 체력에서 함께 깎인다.
+          쓰러뜨리면 한 번이라도 친 이만 보상을 받는다. 쓰러져도 등반은 끝나지 않는다.</li>
+        <li><b>카드 대전</b> — 하늘에서 부적이 쏟아진다. 눌러서 골드·다이아·유물을 줍는다.
+          그동안은 누구도 스테이지에 들어가지 못한다.</li>
+        <li><b>슈팅 스타 · 혼돈 · 풍년</b> — 별이 지고, 산길이 떨고, 산이 넉넉해진다.</li>
+        <li><b>제1·2막이 굵어졌다</b> — 요괴가 너무 가볍다는 말을 들었다. 첫 보스 구미호도 이제
+          보스답다. 대신 장승 수호신의 가시는 다섯에서 멈춘다.</li>
+      </ul>
+      <p class="nq">"하늘이 갈라지면, 산에 있는 사람은 다 같은 편이야."<br><span>— 단오</span></p>`
   }
 ];
 function newsRead(id) { return !!(META.newsRead && META.newsRead[id]); }
