@@ -120,8 +120,31 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .cardgrid { gap: 8px; }
   /* 지도 — 칸과 이름표를 손가락에 맞게 */
   .mapnode { width: 46px; height: 46px; margin: -23px 0 0 -23px; font-size: 19px; }
+  /* 보이는 동그라미는 작아도 눌리는 자리는 넓게 — 낮은 가로 폰에서는
+     동그라미가 30px 까지 작아진다. 지도째 줄어들므로(0.65배쯤) 그만큼
+     더 넓혀 둔다. 칸 사이가 100px 쯤이라 이웃과 겹치지 않는다.
+     (::before·::after 는 갈 칸 화살표·테두리 고리가 이미 쓰고 있다) */
+  .mapnode .mhit { display: block; inset: -18px; }
   .mapnode b { font-size: 9.5px; top: calc(100% + 4px); }
   #maphead .actsub { font-size: 10px; }
+  /* 지도는 끌어서 본다는 것을 알 수 있게 — 가장자리가 흐려진다 */
+  #mapstage { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22px,
+                                    #000 calc(100% - 22px), transparent 100%);
+              mask-image: linear-gradient(90deg, transparent 0, #000 22px,
+                                    #000 calc(100% - 22px), transparent 100%); }
+}
+/* 가로로 누운 낮은 화면 — 지도가 설 자리가 170px 밖에 안 됐다.
+   머리를 한 줄로 줄이고 범례는 걷는다. 칸 이름으로 알 수 있다. */
+@media (max-height: 560px) {
+  /* 상단바가 42px 인데 지도는 52px 에서 시작해 10px 을 버리고 있었다 */
+  #map { top: 42px; }
+  /* 머리가 여러 줄로 쌓여 63px 을 먹었다 — 한 줄로 누른다 */
+  #maphead { display: flex; align-items: center; justify-content: center; gap: 10px;
+             padding: 3px 0; font-size: 11.5px; letter-spacing: .16em; margin-left: 0; }
+  #maphead .actname { display: inline; margin: 0; font-size: 11px; }
+  #maphead .actbar { width: 90px; margin: 0; flex: 0 0 auto; }
+  #maphead .actsub { display: none; }
+  #maplegend { display: none; }
 }
 
 /* ── 더 좁은 화면(세로 손전화) ────────────────────────── */

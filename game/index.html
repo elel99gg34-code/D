@@ -702,8 +702,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 #maphead .actbar{width:min(460px,64vw);height:5px;margin:9px auto 0;border-radius:3px;background:rgba(23,19,15,.14);overflow:hidden}
 #maphead .actbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),#e2884a);transition:width .5s ease}
 #maphead .actsub{display:block;font-size:11.5px;letter-spacing:.1em;color:var(--ink3);margin-top:5px}
-#mapstage{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
-#mapinner{position:relative;transform-origin:50% 50%}
+#mapstage{position:relative;flex:1;width:100%;display:flex;min-height:0;overflow:auto;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y;scrollbar-width:none}
+#mapstage::-webkit-scrollbar{display:none}
+/* 지도의 참 크기를 무대에 알려 준다 — scale() 은 자리를 차지하지 않으므로 */
+#mapsizer{position:relative;flex:0 0 auto;margin:auto}
+#mapinner{position:absolute;left:0;top:0;transform-origin:0 0}
 /* 갈 수 있는 길 위로 흐르는 걸음표 */
 @keyframes walkFlow{to{stroke-dashoffset:-40}}
 .walkline{animation:walkFlow 1.1s linear infinite}
@@ -719,6 +723,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   border:2px solid var(--ink2);color:var(--ink);
   box-shadow:0 3px 10px rgba(23,19,15,.18),inset 0 -4px 10px rgba(23,19,15,.08)}
 .mapnode .mg{position:relative;z-index:2}
+/* 눌리는 자리 — 넓은 화면에서는 쓰지 않는다. 손전화 겉옷이 켜서 넓힌다 */
+.mapnode .mhit{position:absolute;inset:0;border-radius:50%;display:none}
 .mapnode:after{content:'';position:absolute;inset:4px;border-radius:50%;
   border:1px solid rgba(23,19,15,.14);pointer-events:none}
 .mapnode b{position:absolute;top:calc(100% + 7px);left:50%;transform:translateX(-50%);
@@ -12107,8 +12113,10 @@ function showMap() {
         <span class="actsub">${doneRows} / ${rows} 층 · ${run.act >= LAST_ACT ? '마지막 봉우리' : `제 ${run.act + 1} 막까지 ${rows - doneRows} 층`}</span>
       </div>
       <div id="mapstage">
-        <div id="mapinner" style="width:${m.w}px;height:${m.h}px">
-          <svg class="mroad" style="position:absolute;inset:0;width:${m.w}px;height:${m.h}px"></svg>
+        <div id="mapsizer">
+          <div id="mapinner" style="width:${m.w}px;height:${m.h}px">
+            <svg class="mroad" style="position:absolute;inset:0;width:${m.w}px;height:${m.h}px"></svg>
+          </div>
         </div>
       </div>
       <div id="maplegend">
@@ -12155,7 +12163,7 @@ function showMap() {
     const isAvail = availSet.has(n.id);
     const isCur = run.mapCur === n.id;
     const b = el('div', 'mapnode ' + n.type + (isAvail ? ' avail' : '') + (done.has(n.id) ? ' done' : '') + (isCur ? ' cur' : ''),
-      `<span class="mg">${NODE_ICON[n.type]}</span>`);
+      `<i class="mhit"></i><span class="mg">${NODE_ICON[n.type]}</span>`);
     b.style.left = n.x + 'px'; b.style.top = n.y + 'px';
     if (n.type === 'boss') bossOf(run);
     b.appendChild(el('b', '', (n.type === 'boss' ? ENEMIES[run.bossPick].n : NODE_SHORT[n.type])
@@ -12186,16 +12194,40 @@ function showMap() {
     lab.style.left = byCol[r] + 'px'; lab.style.top = (m.h - 24) + 'px';
     inner.appendChild(lab);
   }
-  /* 스크롤 없이 한 화면에 담는다 */
-  const fit = () => {
-    const stage = $('#mapstage'); if (!stage) return;
-    const availH = stage.clientHeight - 10, availW = stage.clientWidth - 24;
-    const k = Math.min(1, availH / m.h, availW / m.w);
-    inner.style.transform = `scale(${Math.max(.55, k)})`;
+  /* 담는다 — 넓은 화면은 한눈에, 좁은 화면은 끌어서 본다.
+     폰에서 한눈에 담으려면 0.24배까지 줄여야 해서 칸이 손가락보다
+     작아진다. 그래서 0.6배 밑으로는 줄이지 않고, 넘치는 쪽은
+     끌어서 옮기게 한다. 전에는 넘치는 쪽이 그냥 잘려 나갔다. */
+  const fit = (center) => {
+    const stage = $('#mapstage'), sizer = $('#mapsizer');
+    if (!stage || !sizer) return;
+    const availH = stage.clientHeight - 8, availW = stage.clientWidth - 8;
+    const small = innerWidth < 1000 || innerHeight < 560;
+    let k = small ? Math.min(1, availH / m.h) : Math.min(1, availH / m.h, availW / m.w);
+    /* 칸이 화면에서 MAP_TAP px 밑으로 작아지지 않게 — 폰은 칸을 46px 로
+       줄여 두므로 그 참 크기로 잰다 */
+    const nodePx = (inner.querySelector('.mapnode') || {}).offsetWidth || 58;
+    /* 360px 높이 가로 폰에서는 갈 칸 다섯이 36px 로는 한 화면에 안 든다 —
+       그런 화면에서만 30px 까지 허락한다 */
+    const tap = innerHeight < 400 ? 30 : MAP_TAP;
+    k = Math.max(small ? Math.min(1, tap / nodePx) : .55, k);
+    inner.style.transform = `scale(${k})`;
+    sizer.style.width = Math.ceil(m.w * k) + 'px';
+    sizer.style.height = Math.ceil(m.h * k) + 'px';
+    /* 처음 펼 때는 갈 수 있는 칸이 한가운데 오게 */
+    if (center) {
+      const ids = availIds.length ? availIds : (run.mapCur >= 0 ? [run.mapCur] : []);
+      if (ids.length) {
+        const xs = ids.map(i => m.nodes[i].x), ys = ids.map(i => m.nodes[i].y);
+        stage.scrollLeft = Math.max(0, (Math.min(...xs) + Math.max(...xs)) / 2 * k - stage.clientWidth / 2);
+        stage.scrollTop  = Math.max(0, (Math.min(...ys) + Math.max(...ys)) / 2 * k - stage.clientHeight / 2);
+      }
+    }
   };
-  fit();
-  requestAnimationFrame(fit);
-  _mapFit = fit;
+  fit(true);
+  requestAnimationFrame(() => fit(true));
+  /* 크기가 바뀌면(주소창이 오르내릴 때도) 배율만 고친다 — 보던 자리는 놔둔다 */
+  _mapFit = () => fit(false);
   saveRun();
   /* 길잡이 — 막에 갓 들어섰을 때만 하나. 그다음에 상자 권유 */
   setTimeout(() => {
@@ -12221,6 +12253,8 @@ function availableNodes() {
   return c ? c.next.slice() : [];
 }
 let _mapFit = null;
+/* 폰에서 칸이 이만큼(px) 밑으로 작아지지 않게 — 손가락이 닿아야 한다 */
+const MAP_TAP = 36;
 function enterNode(n) {
   const run = G.run;
   boxCallHide();
