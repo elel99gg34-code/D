@@ -3323,23 +3323,31 @@ body.chaos #bg .sky{animation:chaosSky 9s ease-in-out infinite}
 .castlog.no{color:#ff9a9a}
 .adtab.cast{color:#8affd0;border-color:rgba(138,255,208,.4)}
 
-/* ── 개발자가 하는 말 — 앱 맨 윗면 ─────────────────────── */
-#notice{position:fixed;left:0;right:0;top:0;z-index:70;display:flex;align-items:center;gap:9px;
-  padding:calc(7px + env(safe-area-inset-top,0px)) 12px 7px;
-  background:linear-gradient(#2a2118,#1d1712);border-bottom:1px solid rgba(200,185,150,.28);
-  color:#e9dfc9;font-size:12.5px;letter-spacing:.02em;line-height:1.5;
-  box-shadow:0 3px 12px rgba(0,0,0,.4)}
-#notice i{flex:0 0 auto;width:20px;height:20px;display:grid;place-items:center;border-radius:3px;
-  background:var(--red);color:#fff;font-size:12px;font-style:normal}
-#notice span{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
+/* ── 개발자가 하는 말 — 위에서 내려와 셋 셈 뒤 사라진다 ───
+   화면을 밀어내리지 않고 위에 겹쳐 뜬다. 밀었다가 셋 셈 뒤에
+   도로 튕겨 올라가면 판이 들썩여 오히려 거슬린다. */
+#notice{position:fixed;left:50%;top:0;z-index:180;display:flex;align-items:center;gap:10px;
+  max-width:min(560px,94vw);padding:10px 16px 10px 12px;
+  margin-top:calc(8px + env(safe-area-inset-top,0px));
+  background:linear-gradient(160deg,#3a2a1c,#1d1712);
+  border:1.5px solid #c8a94e;border-radius:6px;cursor:pointer;
+  color:#f3ead4;font-size:13.5px;letter-spacing:.02em;line-height:1.55;
+  box-shadow:0 8px 28px rgba(0,0,0,.55),0 0 22px rgba(232,200,106,.22);
+  transform:translate(-50%,-140%);opacity:0;
+  transition:transform .42s cubic-bezier(.2,1.1,.3,1),opacity .3s}
+#notice.on{transform:translate(-50%,0);opacity:1}
+#notice.off{transform:translate(-50%,-140%);opacity:0;
+  transition:transform .4s cubic-bezier(.6,0,.8,.4),opacity .35s}
+#notice i{flex:0 0 auto;width:26px;height:26px;display:grid;place-items:center;border-radius:4px;
+  background:var(--red);color:#fff;font-size:14px;font-style:normal;
+  box-shadow:0 0 12px rgba(168,39,44,.6)}
+#notice span{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;
   -webkit-box-orient:vertical}
-#notice .nx{flex:0 0 auto;width:26px;height:26px;border-radius:3px;background:none;border:0;
-  color:#9a8d74;font-size:17px;line-height:1;cursor:pointer}
-#notice .nx:hover{color:#e9dfc9}
-/* 말이 걸리면 그만큼 아래로 민다 */
-body.hasnotice #topbar{top:var(--nh,38px)}
-body.hasnotice #field{top:calc(52px + var(--nh,38px))}
-body.hasnotice #title-scene{padding-top:var(--nh,38px)}
+/* 사라지기까지 남은 때 — 아래 가장자리에 줄어드는 금줄 */
+#notice.on::after{content:'';position:absolute;left:10px;right:10px;bottom:3px;height:2px;
+  border-radius:2px;background:#e8c86a;transform-origin:left;opacity:.7;
+  animation:noticeLeft 3s linear forwards}
+@keyframes noticeLeft{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 
 /* 체험판 표 — 제목 아래에 조그맣게 */
 .demotag{display:inline-block;margin-top:10px;padding:3px 12px;font-size:12px;letter-spacing:.28em;
@@ -17106,7 +17114,8 @@ const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/ba
 /* 컴퓨터판을 받는 자리 — 판마다 받을 것이 다르다 */
 const PC_URL = 'https://github.com/elel99gg34-code/D/releases/tag/pc';
 const LIVE_EVERY = 12000;             /* 열두 셈마다 다시 묻는다 — 퍼뜨린 것이 곧 닿게 */
-const LIVE_KEEP  = 3000;              /* 걸린 말이 사라지지 않았는지 이따금 살핀다 */
+const NOTICE_MS  = 3000;              /* 개발자의 말은 셋 셈 보였다가 사라진다 */
+const NOTICE_SEEN = 'baekgwi_notice_seen';  /* 이미 보인 말 — 다시 띄우지 않는다 */
 const LIVE_KEY = 'baekgwi_live';
 let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0,
              gift: null, boss: null };
@@ -17335,25 +17344,31 @@ function acctPick(save, at) {
 
 /* ── 개발자가 하는 말 — 앱 윗면에 걸린다 ───────────────── */
 function noticeShow() {
-  const old = $('#notice'); if (old) old.remove();
   const msg = (LIVE.notice || '').trim();
   if (!msg) return;
-  let hushed = 0;
-  try { hushed = +localStorage.getItem('baekgwi_notice_hush') || 0; } catch (e) {}
-  if (hushed && hushed >= (LIVE.noticeAt || 1)) return;     /* 이미 읽고 닫은 말 */
+  /* 한 번 보인 말은 다시 띄우지 않는다 — 열두 셈마다 묻는데 그때마다
+     같은 말이 튀어나오면 안 된다. 새 말(noticeAt 이 다른 것)만 뜬다. */
+  let seen = 0;
+  try { seen = +localStorage.getItem(NOTICE_SEEN) || 0; } catch (e) {}
+  const at = LIVE.noticeAt || 1;
+  if (seen >= at) return;
+  try { localStorage.setItem(NOTICE_SEEN, String(at)); } catch (e) {}
+
+  const old = $('#notice'); if (old) old.remove();
   const n = el('div', 'notice');
   n.id = 'notice';
-  n.innerHTML = `<i>言</i><span></span><button class="nx" aria-label="닫기">×</button>`;
+  n.innerHTML = `<i>言</i><span></span>`;
   n.querySelector('span').textContent = msg;
-  n.querySelector('.nx').onclick = () => {
-    try { localStorage.setItem('baekgwi_notice_hush', String(LIVE.noticeAt || Date.now())); } catch (e) {}
-    n.remove(); document.body.classList.remove('hasnotice');
-  };
   document.body.appendChild(n);
-  document.body.classList.add('hasnotice');
-  /* 말의 길이에 따라 높이가 달라진다 — 그만큼만 판을 민다 */
-  const fit = () => document.documentElement.style.setProperty('--nh', n.offsetHeight + 'px');
-  fit(); addEventListener('resize', fit);
+  /* 소리 — 앱이 막 켜져 아직 한 번도 안 눌렀으면 기계가 소리를
+     막는다. 그때는 조용히 뜨기만 한다. */
+  try { SND.bell(); } catch (e) {}
+  requestAnimationFrame(() => n.classList.add('on'));
+  /* 셋 셈 뒤 사라진다. 눌러도 곧 사라진다. */
+  const bye = () => { n.classList.remove('on'); n.classList.add('off');
+                      setTimeout(() => n.remove(), 450); };
+  const t = setTimeout(bye, NOTICE_MS);
+  n.onclick = () => { clearTimeout(t); bye(); };
 }
 /* ══════════════════════════════════════════════════════════
    선물 — 이벤트에 와 준 이에게
@@ -20151,18 +20166,6 @@ function boot() {
     noticeShow();
     setTimeout(liveFetch, 1200);
     setInterval(liveFetch, LIVE_EVERY);
-    /* 걸어 둔 말이 어쩌다 지워져도 스스로 돌아온다.
-       무엇이 지우는지 끝내 못 찾았으므로, 찾는 대신 되살린다. */
-    setInterval(() => {
-      try {
-        if (!LIVE.notice) return;
-        if (document.querySelector('#notice')) return;
-        let hush = 0;
-        try { hush = +localStorage.getItem('baekgwi_notice_hush') || 0; } catch (e) {}
-        if (hush >= (LIVE.noticeAt || 1)) return;   /* 손으로 닫은 것은 그대로 둔다 */
-        noticeShow();
-      } catch (e) {}
-    }, LIVE_KEEP);
     /* 창을 다시 보면 그 자리에서 묻는다 — 기다릴 것 없이 */
     addEventListener('visibilitychange', () => { if (!document.hidden) liveFetch(); });
     addEventListener('focus', () => liveFetch());
