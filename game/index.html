@@ -4603,6 +4603,7 @@ function saveMeta() {
 function saveRun() {
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, cp: G.cp })); } catch (e) {}
+  if (typeof acctNudge === 'function') acctNudge();       /* 로그인했으면 잠시 뒤 서버에도 */
 }
 /* 갈림길에 들어서기 직전의 상태를 떠 둔다. 쓰러지면 여기로 돌아온다. */
 function markCheckpoint() { try { G.cp = JSON.stringify(G.run); } catch (e) { G.cp = null; } }
@@ -17394,11 +17395,16 @@ async function acctAsk(path, body, ms) {
   }
 }
 /* 올린다 — META 한 벌이 곧 그 사람의 모든 것이다 */
+/* 이어 가던 모험도 같이 싣는다 — 예전에는 META 만 올라가 기계를 바꾸면 모험이 없었다 */
+function runRaw() { try { return localStorage.getItem(SAVE_KEY) || null; } catch (e) { return null; } }
+function runSay(raw) {
+  try { const r = raw && JSON.parse(raw).run; return r ? `제${r.act}막 ${r.floor || 0}층` : '없음'; } catch (e) { return '없음'; }
+}
 async function acctPush() {
-  if (!acctOn()) return { ok: false, why: '들어와 있지 않다' };
-  const r = await acctAsk('/auth/push', { token: ACCT.token, save: META });
+  if (!acctOn()) return { ok: false, why: '로그인되어 있지 않다' };
+  const r = await acctAsk('/auth/push', { token: ACCT.token, save: Object.assign({}, META, { _run: runRaw() }) });
   if (r.ok) { ACCT.at = r.at; acctSave(); }
-  else if (/들어와 있지 않다|없는 이름/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0 }; acctSave(); }
+  else if (/들어와 있지 않다|없는 이름|없는 아이디/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0 }; acctSave(); }
   return r;
 }
 /* 뭔가 바뀌면 잠시 뒤에 스스로 올린다 — 누를 때마다 보내면 너무 잦다 */
@@ -17411,7 +17417,10 @@ function acctNudge() {
 /* 내려받는다 — 덮기 전에 어느 쪽이 새것인지 보여 준다 */
 function acctTake(save) {
   try {
+    const run = save._run; delete save._run;
     localStorage.setItem(META_KEY, JSON.stringify(save));
+    /* 걸어 둔 쪽에 모험이 있을 때만 덮는다 — 없으면 이 기계의 모험을 지킨다 */
+    if (run) localStorage.setItem(SAVE_KEY, run);
     location.reload();
   } catch (e) { toast('받아 오지 못했다'); }
 }
@@ -17427,21 +17436,21 @@ function whenSay(t) {
 function drawAcct(n) {
   const has = acctOn();
   n.innerHTML = has
-    ? `<div class="lb"><b>${ACCT.id}</b><small>걸어 둔 때 — ${whenSay(ACCT.at)}</small></div>
+    ? `<div class="lb"><b>${wEsc(ACCT.id)} 님</b><small>마지막 저장 — ${whenSay(ACCT.at)} · 바뀌면 스스로 저장된다</small></div>
        <div class="acctbtns">
-         <button class="val" id="ac_push">올린다</button>
-         <button class="val" id="ac_pull">받아온다</button>
-         <button class="val ghost" id="ac_out">나간다</button>
+         <button class="val" id="ac_push">지금 저장</button>
+         <button class="val" id="ac_pull">불러오기</button>
+         <button class="val ghost" id="ac_out">로그아웃</button>
        </div>
        <div class="acctsay" id="ac_say"></div>`
-    : `<div class="lb"><b>이름을 걸어 두면</b><small>다른 기계에서도 이어서 할 수 있다. 안 걸어도 이 기계에서는 그대로 돈다.</small></div>
+    : `<div class="lb"><b>로그인 · 회원가입</b><small>로그인해 두면 기록과 이어 가던 모험이 서버에 저장된다 — 폰을 바꾸거나 앱을 지워도 되찾는다.</small></div>
        <div class="acctform">
-         <input id="ac_id" placeholder="이름" autocomplete="username" spellcheck="false" maxlength="20">
-         <input id="ac_pw" type="password" placeholder="암호 (여섯 글자 넘게)" autocomplete="current-password" maxlength="60">
+         <input id="ac_id" placeholder="아이디" autocomplete="username" spellcheck="false" maxlength="20">
+         <input id="ac_pw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" maxlength="60">
        </div>
        <div class="acctbtns">
-         <button class="val" id="ac_in">들어간다</button>
-         <button class="val" id="ac_new">새로 건다</button>
+         <button class="val" id="ac_in">로그인</button>
+         <button class="val" id="ac_new">회원가입</button>
        </div>
        <div class="acctsay" id="ac_say"></div>`;
 
@@ -17453,33 +17462,40 @@ function drawAcct(n) {
     n.querySelector('#ac_push').onclick = async () => {
       busy(true); tell('올리는 중…', true);
       const r = await acctPush(); busy(false);
-      if (r.ok) { tell('올렸다 — ' + whenSay(r.at), true); SND.unlock(); drawAcct(n); }
-      else tell('못 올렸다: ' + r.why, false);
+      if (r.ok) { tell('저장했다 — ' + whenSay(r.at), true); SND.unlock(); drawAcct(n); }
+      else tell('저장하지 못했다: ' + r.why, false);
     };
     n.querySelector('#ac_pull').onclick = async () => {
       busy(true); tell('찾아 오는 중…', true);
       const r = await acctAsk('/pull?t=' + encodeURIComponent(ACCT.token)); busy(false);
       if (!r.ok) { tell('못 찾았다: ' + r.why, false); return; }
-      if (!r.save) { tell('걸어 둔 것이 아직 없다', false); return; }
+      if (!r.save) { tell('서버에 저장된 것이 아직 없다', false); return; }
       tell('', true);
       acctPick(r.save, r.at);
     };
     n.querySelector('#ac_out').onclick = () => {
       ACCT = { id: '', token: '', at: 0 }; acctSave(); SND.ui(); drawAcct(n);
+      if (typeof titleAcctPaint === 'function') titleAcctPaint();
     };
   } else {
     const go = async (path, what) => {
       const id = n.querySelector('#ac_id').value.trim();
       const pw = n.querySelector('#ac_pw').value;
-      if (!id || !pw) { tell('이름과 암호를 적으시오', false); return; }
+      if (!id || !pw) { tell('아이디와 비밀번호를 적으시오', false); return; }
       busy(true); tell(what + ' 중…', true);
       const r = await acctAsk(path, { id, pw }); busy(false);
       if (!r.ok) { tell(r.why, false); SND.err(); return; }
       ACCT = { id: r.id, token: r.token, at: r.at || 0 }; acctSave();
       SND.unlock();
       if (r.save) { drawAcct(n); acctPick(r.save, r.at); }
-      else { drawAcct(n); const s2 = n.querySelector('#ac_say');
-             if (s2) { s2.textContent = '들어왔다. 「올린다」를 누르면 지금 것이 걸린다.'; s2.style.color = '#7fe6cf'; } }
+      else {
+        /* 처음 들어왔다 — 지금 이 기계의 것을 곧바로 저장한다 */
+        drawAcct(n); const s2 = n.querySelector('#ac_say');
+        const pr = await acctPush();
+        if (s2) { s2.textContent = pr.ok ? '로그인했다 — 지금 기록을 서버에 저장했다' : '로그인했다 (저장은 잠시 뒤에 다시)';
+                  s2.style.color = '#7fe6cf'; }
+        if (typeof titleAcctPaint === 'function') titleAcctPaint();
+      }
     };
     n.querySelector('#ac_in').onclick = () => go('/auth/login', '들어가는');
     n.querySelector('#ac_new').onclick = () => go('/auth/signup', '거는');
@@ -17487,13 +17503,15 @@ function drawAcct(n) {
 }
 /* 어느 쪽을 쓸지 고르게 한다 — 말없이 덮지 않는다 */
 function acctPick(save, at) {
-  const mine = { jp: META.jpTotal || META.jp || 0, cleared: META.cleared || 0, runs: META.runs || 0 };
-  const theirs = { jp: save.jpTotal || save.jp || 0, cleared: save.cleared || 0, runs: save.runs || 0 };
+  const mine = { jp: META.jpTotal || META.jp || 0, cleared: META.cleared || 0, runs: META.runs || 0, run: runSay(runRaw()) };
+  const theirs = { jp: save.jpTotal || save.jp || 0, cleared: save.cleared || 0, runs: save.runs || 0,
+                   run: save._run ? runSay(save._run) : '없음 (이 기계 것을 둔다)' };
   const line = (t, d, when) => `<div class="pickcol">
       <b>${t}</b>
       <div>정진 <em>${d.jp}</em></div>
       <div>넘은 막 <em>${d.cleared}</em></div>
       <div>오른 횟수 <em>${d.runs}</em></div>
+      <div>이어 가던 모험 <em>${d.run}</em></div>
       <div class="when">${when}</div>
     </div>`;
   const p = modal(`<h2>어느 쪽으로 이어 갈까</h2>
@@ -17511,7 +17529,7 @@ function acctPick(save, at) {
     </div>`);
   p.dataset.noauto = '1';
   p.querySelector('#pk_take').onclick = () => { SND.ui(); acctTake(save); };
-  p.querySelector('#pk_keep').onclick = () => { SND.ui(); closeTop(); acctPush().catch(() => {}); };
+  p.querySelector('#pk_keep').onclick = () => { SND.ui(); closeTop(); acctPush().catch(() => {}); if (typeof titleAcctPaint === 'function') titleAcctPaint(); };
 }
 
 /* ── 개발자가 하는 말 — 앱 윗면에 걸린다 ───────────────── */
@@ -20808,8 +20826,9 @@ function showTitle() {
       <div class="sub">퇴마사의 등산</div>
       ${DEMO ? `<div class="demotag">체 험 판 · 제${DEMO_ACTS}막 까 지</div>` : ''}
       <div class="menu">
-        <button class="brush-btn red" id="t_new">새로운 모험</button>
-        ${hasSave() ? '<button class="brush-btn" id="t_cont">이어서 오르기</button>' : ''}
+        ${hasSave() ? '<button class="brush-btn red" id="t_cont">이어서 오르기</button>'
+                    : '<button class="brush-btn red" id="t_new">모험 시작</button>'}
+        <button class="brush-btn ghost" id="t_acct"></button>
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
         <button class="brush-btn ghost" id="t_dex">도감</button>
@@ -20819,7 +20838,12 @@ function showTitle() {
       </div>
       <div class="foot">${META.runs ? `등반 ${META.runs}회 · 등정 ${META.wins}회 · 최고 기록 ${META.best}` : '한 판에 30~45분'}</div>
     </div>`;
-  s.querySelector('#t_new').onclick = () => { SND.init(); SND.gong(); clearSave(); newRun(0); };
+  /* 「새로운 모험」은 뺐다 — 이어 가던 모험을 실수로 덮어 없앨 수 있었다.
+     모험이 없을 때만 「모험 시작」이 뜨고, 있으면 「이어서 오르기」만 뜬다. */
+  const tn = s.querySelector('#t_new');
+  if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; } newRun(0); };
+  s.querySelector('#t_acct').onclick = () => { SND.init(); SND.ui(); showAcct(); };
+  titleAcctPaint();
   s.querySelector('#t_help').onclick = () => { SND.init(); showHelp(); };
   /* 처음 오는 사람에게는 안내서를 권한다 */
   if (!META.runs && !hasSave()) setTimeout(() => {
@@ -20833,6 +20857,20 @@ function showTitle() {
   s.querySelector('#t_tutor').onclick = () => { SND.init(); SND.ui(); showTutorial(true); };
   const c = s.querySelector('#t_cont');
   if (c) c.onclick = () => { SND.init(); SND.ui(); resumeRun(); };
+}
+/* 첫 화면의 계정 단추 */
+function titleAcctPaint() {
+  const b = $('#t_acct'); if (!b) return;
+  b.innerHTML = acctOn() ? `<b style="color:#7fe6cf">●</b> ${wEsc(ACCT.id)} 님` : '로그인 · 회원가입';
+}
+/* 로그인 창 — 설정 속 계정 칸을 그대로 띄운다 */
+function showAcct() {
+  const p = modal(`<h2>${acctOn() ? '계 정' : '로그인 · 회원가입'}</h2>
+    <div class="optrow acctRow" id="acwin" style="max-width:440px;margin:10px auto 0;text-align:left"></div>
+    <div style="margin-top:14px"><button class="brush-btn" id="ac_close">닫기</button></div>`);
+  p.dataset.noauto = '1';
+  drawAcct(p.querySelector('#acwin'));
+  p.querySelector('#ac_close').onclick = () => { closeTop(); titleAcctPaint(); };
 }
 function resumeRun() {
   try {

@@ -492,9 +492,9 @@ const server = http.createServer(async (req, res) => {
     /* 이름을 새로 건다 */
     if (url.pathname === '/auth/signup') {
       const id = str(q.id, 20).trim(), pw = String(q.pw || '');
-      if (!nameOk(id)) return send(res, 400, { ok: false, why: '이름은 2~20 글자, 한글·영문·숫자·_.- 만' });
-      if (pw.length < 6) return send(res, 400, { ok: false, why: '암호는 여섯 글자 넘게' });
-      if (await soulGet(id)) return send(res, 409, { ok: false, why: '이미 있는 이름' });
+      if (!nameOk(id)) return send(res, 400, { ok: false, why: '아이디는 2~20 글자, 한글·영문·숫자·_.- 만' });
+      if (pw.length < 6) return send(res, 400, { ok: false, why: '비밀번호는 6자 이상' });
+      if (await soulGet(id)) return send(res, 409, { ok: false, why: '이미 있는 아이디' });
       const salt = crypto.randomBytes(16).toString('hex');
       const hash = await scrypt(pw, salt);
       await soulPut({ id, salt, hash, made: Date.now(), save: null, saved: 0 });
@@ -510,7 +510,7 @@ const server = http.createServer(async (req, res) => {
       /* 이름이 없을 때도 한 번 갈아 본다 — 빠르기로 있는 이름을 알아내지 못하게 */
       const salt = (s && s.salt) || '0000';
       const hash = await scrypt(pw, salt);
-      if (!s || !same(hash, s.hash)) return send(res, 403, { ok: false, why: '이름이나 암호가 다르다' });
+      if (!s || !same(hash, s.hash)) return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' });
       const tok = await tokMake(id);
       return send(res, 200, { ok: true, id, token: tok,
         save: s.save ? JSON.parse(s.save) : null, at: +s.saved || 0 });
@@ -523,7 +523,7 @@ const server = http.createServer(async (req, res) => {
       if (!q.save || typeof q.save !== 'object')
         return send(res, 400, { ok: false, why: '걸 것이 없다' });
       const s = await soulGet(id);
-      if (!s) return send(res, 401, { ok: false, why: '없는 이름' });
+      if (!s) return send(res, 401, { ok: false, why: '없는 아이디' });
       const at = Date.now();
       s.save = JSON.stringify(q.save); s.saved = at;
       await soulPut(s);
