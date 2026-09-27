@@ -5070,7 +5070,11 @@ defCard({ id: 'apex', n: '극의', g: '極', type: 'power', rar: 'rare', cost: 3
   txt: () => `<b>집중</b>을 얻는다. 이 전투 동안 턴마다 기를 1 더 얻는다. 소멸.`,
   play: () => { st(P(), 'focus', 1); SND.power(); } });
 
-defCard({ id: 'ninetail', n: '구천현녀검', g: '玄', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy', exhaust: true,
+/* 부적 여섯 장이 뒤에 생긴 부적과 같은 이름(id)을 쓰고 있어, 뒤의 것에 덮여
+   한 번도 판에 나온 적이 없었다(구천현녀검 · 혈맹 · 태산 · 철가시 · 유령쌍검 · 구중천).
+   뒤의 것들이 이미 저장된 덱에 들어 있으므로 그쪽이 이름을 지키고, 앞의 것들에
+   새 이름을 주어 되살렸다. 이름이 겹치던 둘(철심 · 유령검)은 부르는 이름도 바꿨다. */
+defCard({ id: 'hyeonnyeo', n: '구천현녀검', g: '玄', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy', exhaust: true,
   v: u => ({ d: u ? 9 : 7, n: 4 }),
   txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
   play: async c => { for (let i = 0; i < c.v.n; i++) { if (c.t.hp <= 0 && alive().length) { } atk(c.t, c.v.d); await wait(115); } } });
@@ -5200,7 +5204,7 @@ defCard({ id: 'sealarray', n: '봉마진', g: '陣', type: 'skill', rar: 'specia
   txt: v => `대상에게 <b>무력</b>을 부여해 다음 행동을 막고 <b>취약</b> ${v.k}를 부여한다. 소멸.`,
   exhaust: true,
   play: c => { SND.bell(); st(c.t, 'stun', 1); st(c.t, 'vuln', c.v.k); } });
-defCard({ id: 'bloodpact', n: '혈맹', g: '盟', type: 'skill', rar: 'special', cost: 0,
+defCard({ id: 'bloodoath', n: '혈맹', g: '盟', type: 'skill', rar: 'special', cost: 0,
   v: u => ({ h: u ? 8 : 11, e: 2 }),
   txt: v => `체력을 ${v.h} 잃고 기를 ${v.e} 얻는다. 카드를 1장 뽑는다.`,
   play: c => { lose(c.v.h); energy(c.v.e); drawCards(1); } });
@@ -5232,7 +5236,7 @@ defCard({ id: 'thousandarms', n: '천수관음', g: '手', type: 'power', rar: '
   v: u => ({ x: u ? 2 : 1 }),
   txt: v => `<b>기공</b> ${v.x}과 <b>집중</b> ${v.x}을 얻고, <b>힘</b>과 <b>민첩</b>을 3씩 얻는다.`,
   play: c => { st(P(), 'flow', c.v.x); st(P(), 'focus', c.v.x); st(P(), 'str', 3); st(P(), 'dex', 3); } });
-defCard({ id: 'ironmountain', n: '태산', g: '山', type: 'power', rar: 'ssx', cost: 2,
+defCard({ id: 'taesan', n: '태산', g: '山', type: 'power', rar: 'ssx', cost: 2,
   v: u => ({ b: u ? 18 : 14 }),
   txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>금강</b> 상태가 된다. 턴 시작 시 <i>${v.b}</i>의 방어도를 더 얻는다.`,
   play: c => { blk(c.v.b); st(P(), 'barricade', 1); st(P(), 'turnblock', c.v.b); } });
@@ -5347,7 +5351,7 @@ defCard({ id: 'windcut', n: '풍절', g: '截', type: 'attack', rar: 'uncommon',
   txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 준다.`,
   play: c => { for (const e of alive()) atk(e, c.v.d, { fx: 'wind' }); } });
 
-defCard({ id: 'ironwill', n: '철심', g: '鐵', type: 'skill', rar: 'uncommon', cost: 1,
+defCard({ id: 'ironthorn', n: '철가시', g: '鐵', type: 'skill', rar: 'uncommon', cost: 1,
   v: u => ({ b: u ? 13 : 10, t: u ? 3 : 2 }),
   txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.t}를 얻는다.`,
   play: c => { blk(c.v.b); st(P(), 'thorns', c.v.t); } });
@@ -5415,7 +5419,7 @@ defCard({ id: 'crushpalm', n: '벽공장', g: '掌', type: 'attack', rar: 'rare'
   play: c => { atk(c.t, c.v.d, { fx: 'blunt' }); st(c.t, 'vuln', 2); } });
 
 /* ---------- S급 ---------- */
-defCard({ id: 'ghostblade', n: '유령검', g: '幽', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy',
+defCard({ id: 'ghostpair', n: '유령쌍검', g: '幽', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy',
   v: u => ({ d: u ? 18 : 14, n: 2 }),
   txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
   play: c => atk(c.t, c.v.d, { n: c.v.n, pierce: true, fx: 'void' }) });
@@ -5461,7 +5465,7 @@ defCard({ id: 'quietmind', n: '적심', g: '寂', type: 'skill', rar: 'ssc', cos
   play: c => { drawCards(c.v.n); blk(c.v.b); } });
 
 /* ---------- SSX급 ---------- */
-defCard({ id: 'ninefold', n: '구중천', g: '九', type: 'attack', rar: 'ssx', cost: 3, tgt: 'enemy', exhaust: true,
+defCard({ id: 'ninesky', n: '구중천', g: '九', type: 'attack', rar: 'ssx', cost: 3, tgt: 'enemy', exhaust: true,
   v: u => ({ d: u ? 22 : 17, n: u ? 6 : 5 }),
   txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 소멸.`,
   play: async c => { for (let i = 0; i < c.v.n; i++) { if (c.t.hp <= 0) break;
@@ -5680,7 +5684,7 @@ defCard({ id: 'hookstrike', n: '갈고리치기', g: '鉤', type: 'attack', rar:
   txt: v => `<em>${v.d}</em>의 피해를 준다. 적의 방어도가 있으면 그 방어도를 <b>모두 깎는다</b>.`,
   play: c => { atk(c.t, c.v.d); if (c.t.block > 0) { c.t.block = 0; floatText(c.t, '방어도 파괴', 'buff'); } } });
 
-defCard({ id: 'saltline', n: '소금 뿌리기', g: '鹽', type: 'skill', rar: 'common', cost: 0,
+defCard({ id: 'saltline', n: '소금 경계', g: '鹽', type: 'skill', rar: 'common', cost: 0,
   v: u => ({ b: u ? 5 : 3 }),
   txt: v => `<i>${v.b}</i>의 방어도를 얻고 카드를 1장 뽑는다.`,
   play: c => { blk(c.v.b); drawCards(1); } });
@@ -5784,7 +5788,7 @@ defCard({ id: 'thunderpin', n: '벽력침', g: '霹', type: 'attack', rar: 'rare
   txt: v => `<em>${v.d}</em>의 피해를 준다. 대상이 <b>무력</b>이면 기를 2 되찾는다.`,
   play: c => { const stn = !!c.t.s.stun; atk(c.t, c.v.d, { fx: 'bolt' }); if (stn) energy(2); } });
 
-defCard({ id: 'ninefold', n: '구절편', g: '鞭', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
+defCard({ id: 'ninefold', n: '구절 연타', g: '鞭', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
   v: u => ({ d: u ? 6 : 5, n: u ? 5 : 4 }),
   txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
   play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); await wait(110); } } });
@@ -5845,7 +5849,7 @@ defCard({ id: 'bloodmoonB', n: '혈월심법', g: '朧', type: 'power', rar: 'sp
   txt: v => `<b>흡성</b> ${v.x}을 얻는다 — 공격할 때마다 그만큼 체력을 되찾는다.`,
   play: c => { st(P(), 'drain', c.v.x); SND.power(); } });
 
-defCard({ id: 'sealbind', n: '봉인부', g: '封', type: 'skill', rar: 'special', cost: 1, tgt: 'enemy', exhaust: true,
+defCard({ id: 'sealbind', n: '대봉인부', g: '封', type: 'skill', rar: 'special', cost: 1, tgt: 'enemy', exhaust: true,
   v: u => ({ n: u ? 2 : 1, k: u ? 3 : 2 }),
   txt: v => `적 하나에게 <b>무력</b> ${v.n}과 <b>취약</b> ${v.k}을 부여한다. 소멸.`,
   play: c => { st(c.t, 'stun', c.v.n); st(c.t, 'vuln', c.v.k); } });
@@ -7653,7 +7657,10 @@ defEnemy({ id: 'throne', n: '옥좌(玉座)', g: '座', hp: [1360, 1360], col: '
   } });
 
 /* ══ 제14막 · 천계 — 내려다보고만 있던 것들 ═════════════════ */
-defEnemy({ id: 'fairy', n: '선녀', g: '仙', hp: [222, 248], col: '#7ab8d8',
+/* 5막의 선녀와 이름(id)이 같아, 나중에 적힌 이쪽(체력 230·날개옷 66)이 5막 선녀를
+   덮어쓰고 있었다. 5막에서 천계의 선녀가 나와 방어 수백·재생이 쌓여 끝나지 않는 판이
+   생겼다. 이름을 따로 준다. */
+defEnemy({ id: 'fairy14', n: '비천 선녀', g: '仙', hp: [222, 248], col: '#7ab8d8',
   moves: { veil2:  { t: 'defend', label: '날개옷', blk: 66, self: { dex: 7, regenP: 8 } },
            ribbon: { t: 'attack', label: '띠를 휘두른다', d: 20, n: 3, fx: 'wind' },
            song:   { t: 'debuff', label: '노래', deb: { weak: 7, vuln: 7 } } },
@@ -8415,7 +8422,9 @@ const ENCOUNTERS = {
   },
   4: {
     weak:   [['reaper'], ['clerk', 'horseface'], ['torturer', 'wraith']],
-    normal: [['oxhead', 'horseface'], ['reaper', 'torturer'], ['clerk', 'clerk', 'reaper'],
+    /* 저승사자+형벌귀는 둘 다 첫머리에 「취약」을 걸고 둘 다 세게 쳐서(낫질 19 · 고문대 24)
+       한 차례에 마흔 넘게 들어왔다 — 길목 싸움 하나가 엘리트보다 매웠다. 짝을 바꾼다 */
+    normal: [['oxhead', 'horseface'], ['reaper', 'clerk'], ['clerk', 'clerk', 'reaper'],
              ['oxhead', 'clerk'], ['torturer', 'horseface'], ['reaper', 'reaper'],
              ['warlord', 'oxhead'], ['rakshasa', 'torturer']],
     elite:  [['jailer', 'clerk'], ['ghostgeneral'], ['gatekeeper', 'reaper'], ['jailer', 'horseface']],
@@ -8494,18 +8503,18 @@ const ENCOUNTERS = {
     boss:   ['throne']
   },
   14: {
-    weak:   [['fairy'], ['cloudthing'], ['heavensoldier']],
-    normal: [['fairy', 'heavensoldier'], ['cloudthing', 'fairy'], ['heavensoldier', 'heavensoldier'],
-             ['cloudthing', 'heavensoldier'], ['fairy', 'fairy', 'cloudthing'],
-             ['heavensoldier', 'fairy'], ['cloudthing', 'cloudthing'], ['fairy', 'guard2']],
-    elite:  [['devaking'], ['starcount'], ['devaking', 'heavensoldier'], ['starcount', 'fairy']],
+    weak:   [['fairy14'], ['cloudthing'], ['heavensoldier']],
+    normal: [['fairy14', 'heavensoldier'], ['cloudthing', 'fairy14'], ['heavensoldier', 'heavensoldier'],
+             ['cloudthing', 'heavensoldier'], ['fairy14', 'fairy14', 'cloudthing'],
+             ['heavensoldier', 'fairy14'], ['cloudthing', 'cloudthing'], ['fairy14', 'guard2']],
+    elite:  [['devaking'], ['starcount'], ['devaking', 'heavensoldier'], ['starcount', 'fairy14']],
     boss:   ['emperor']
   },
   15: {
     weak:   [['nothing1'], ['word'], ['lastbreath']],
     normal: [['nothing1', 'word'], ['lastbreath', 'nothing1'], ['word', 'word'],
              ['lastbreath', 'word'], ['nothing1', 'nothing1', 'lastbreath'],
-             ['word', 'lastbreath'], ['nothing1', 'cloudthing'], ['word', 'fairy']],
+             ['word', 'lastbreath'], ['nothing1', 'cloudthing'], ['word', 'fairy14']],
     elite:  [['thebegin'], ['theend'], ['thebegin', 'nothing1'], ['theend', 'word']],
     boss:   ['mu']
   },
@@ -8808,7 +8817,7 @@ function startBattle(enemyIds, kind, opts) {
   if (am !== 1) sc = { hp: sc.hp * am, dmg: sc.dmg * am };
   const ls = lateSoft(run.act, kind);                 /* 뒷막일수록 한 번 더 눅인다 */
   const fs = finalSoft(run.act, kind);                /* 마지막 봉우리는 또 한 번 */
-  const bs = (run.act || 1) <= 1 ? BOSS_SOFT_ACT1 : BOSS_SOFT;
+  const bs = (run.act || 1) <= 1 ? BOSS_SOFT_ACT1 : run.act === 2 ? BOSS_SOFT_ACT2 : BOSS_SOFT;
   if (kind === 'boss') sc = { hp: sc.hp * bs.hp * ls.hp * fs.hp, dmg: sc.dmg * bs.dmg * ls.dmg * fs.dmg };
   else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
   /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
@@ -9190,6 +9199,14 @@ async function _endTurn() {
     highlight(e, true);
     await wait(230);
     await doMove(e, e.mv);
+    /* 한 수를 적어 둔다 — 다음 수를 고를 때(next) 이것을 본다.
+       처음부터 이 한 줄이 없었다. 그래서 「첫 차례면 X」로 시작하는 요괴 백마흔 남짓이
+       판 내내 첫 수만 되풀이했다 — 멧돼지는 콧김만, 장승은 막기만, 뇌공은 모으기만. */
+    /* 다만 3막부터는 그 「첫 수만 되풀이하는」 요괴들을 두고 이미 판을 맞춰 두었다
+       (10막이 세다는 말에 눅인 계단). 재어 보고 맞춘 1·2막과 모두의 적에만 켠다 —
+       뒷막까지 켜려면 그 막들을 다시 재어 맞춰야 한다. */
+    if (e.mvKey && (b.kind === 'world' || (G.run && G.run.act || 1) <= HIST_ACTS)) {
+      e.hist.push(e.mvKey); if (e.hist.length > 12) e.hist.shift(); }
     /* 콜로세움의 상대는 한 차례에 여러 장을 낸다 */
     for (const m2 of (e.duelExtra || [])) {
       if (!G.b || b.over || e.hp <= 0 || !P() || P().hp <= 0) break;
@@ -12322,11 +12339,13 @@ const ACT_SCALE = {
      깎았다. 그러다 3막 길목에서 갑자기 19씩 깎이는 벼랑이 있었다.
      기가 넷이라 방어 두 장을 늘 낼 수 있어, 치는 힘이 방어를 넘지
      못하면 아무것도 들어오지 않는다. 그래서 배율을 「기본」보다 위로 둔다.
-       1막  길목 첫 덱 9 · 부적 몇 장 얹으면 4 · 엘리트 ~25 · 보스 ~15
-       2막  길목 6~10 · 엘리트 ~27 · 보스 ~21   → 3막 길목 ~19 로 이어진다
+     그리고 요괴가 한 수를 적어 두지 않아 첫 수만 되풀이하던 것을 1·2막에서 고쳤다
+     (멧돼지는 콧김만, 장승은 막기만 했다). 고친 뒤 다시 잰 값:
+       1막  길목 5 · 엘리트 ~14 · 보스 ~15
+       2막  길목 8 · 엘리트 ~12~20 · 보스 ~33
      ────────────────────────────────────────────────────── */
   1: { hp: 1.35, dmg: 1.25 },              /* 첫 막 */
-  2: { hp: 1.30, dmg: 1.10 },
+  2: { hp: 1.12, dmg: 0.92 },
   /* ── 제3~10막을 대폭 눅였다 ─────────────────────────────
      제10막이 너무 세다는 말을 들었다. 앞 여덟 막의 계단을
      한 칸씩만 오르게 다시 깔았다 (제10막 체력 1.42→1.16 ·
@@ -12389,6 +12408,10 @@ const COLO_EARLY = { 1: { hp: 0.86, dmg: 0.62 }, 2: { hp: 0.92, dmg: 0.66 } };
 /* 첫 보스는 덜 눅인다 — 구미호가 칼 몇 번에 쓰러져 보스 같지가 않았다(5 남짓).
    다 빼면 2막 보스보다 매워져(31 대 21) 조금만 남긴다 */
 const BOSS_SOFT_ACT1 = { hp: 0.92, dmg: 0.92 };
+/* 2막 보스(산군)는 수를 제대로 고르게 되자 절반을 쓰러뜨렸다 — 더 눅인다 */
+const BOSS_SOFT_ACT2 = { hp: 0.68, dmg: 0.52 };
+/* 요괴가 한 수를 적어 두고 다음 수를 고르는 막(여기까지) */
+const HIST_ACTS = 2;
 const ELITE_SOFT = { hp: 0.92, dmg: 0.92 };
 /* ── 뒷막의 보스·엘리트는 한 번 더 눅인다 ──────────────────
    제10막부터 벽이 너무 높다는 말을 들었다. 막이 깊을수록
@@ -18791,8 +18814,11 @@ const NEWS = [
         <li><b>카드 대전</b> — 하늘에서 부적이 쏟아진다. 눌러서 골드·다이아·유물을 줍는다.
           그동안은 누구도 스테이지에 들어가지 못한다.</li>
         <li><b>슈팅 스타 · 혼돈 · 풍년</b> — 별이 지고, 산길이 떨고, 산이 넉넉해진다.</li>
-        <li><b>제1·2막이 굵어졌다</b> — 요괴가 너무 가볍다는 말을 들었다. 첫 보스 구미호도 이제
-          보스답다. 대신 장승 수호신의 가시는 다섯에서 멈춘다.</li>
+        <li><b>제1·2막이 굵어졌다</b> — 요괴가 너무 가볍다는 말을 들었다. 알고 보니 많은 요괴가
+          <b>첫 수만 되풀이</b>하고 있었다(멧돼지는 콧김만, 장승은 막기만). 1·2막에서 이제 제 수를
+          고루 쓴다. 첫 보스 구미호도 보스답다. 대신 장승 수호신의 가시는 셋에서 멈춘다.</li>
+        <li><b>잃어버렸던 부적 여섯 장</b> — 이름이 겹쳐 한 번도 나오지 못하던 구천현녀검 · 혈맹 ·
+          태산 · 철가시 · 유령쌍검 · 구중천이 돌아왔다.</li>
       </ul>
       <p class="nq">"하늘이 갈라지면, 산에 있는 사람은 다 같은 편이야."<br><span>— 단오</span></p>`
   }
