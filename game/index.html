@@ -2121,6 +2121,11 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn.admin:hover{background:rgba(40,180,135,.55)}
 .school.admin{background:linear-gradient(165deg,#0b1613 0%,#12241e 45%,#050a08 100%)}
 .school.admin:before{background:radial-gradient(ellipse at 50% 0%,rgba(79,224,176,.2),transparent 62%)}
+/* 좁은 화면(세로 폰) — 관리자 창은 두 칸이 짓눌려 퍼뜨리기 칸이 잘렸다. 위아래로 쌓고 통째로 끈다 */
+@media (max-width:700px){
+  .admin .scbody{flex-direction:column;overflow-y:auto;padding:10px;gap:12px}
+  .admin .scside,.admin .scmain{width:auto;flex:none}
+}
 .admin .schead{background:linear-gradient(rgba(4,8,7,.94),rgba(16,34,28,.86));border-bottom-color:rgba(79,224,176,.3)}
 .admin .schead h2{color:#dafff2}.admin .schead .scnote{color:#4fe0b0;letter-spacing:.2em}
 .admin .schead .gback{background:rgba(79,224,176,.15);border-color:rgba(79,224,176,.42);color:#dafff2}
@@ -3459,7 +3464,7 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
   color:#8a7f68;font-size:11px}
 
 /* ── 퍼뜨리는 자리 ───────────────────────────────────────── */
-.castbox{display:flex;flex-direction:column;gap:14px;padding:4px 2px 14px;max-width:560px}
+.castbox{display:flex;flex-direction:column;gap:14px;padding:4px 2px 14px;max-width:640px;grid-column:1/-1;width:100%}
 .castnow{background:rgba(10,20,16,.5);border:1px solid rgba(138,255,208,.22);border-radius:4px;padding:10px 12px}
 .castnow>b{display:block;color:#8affd0;font-size:12px;letter-spacing:.1em;margin-bottom:6px}
 .castnow div{font-size:12px;color:#c3b79c;line-height:1.8}
@@ -3492,6 +3497,29 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
   letter-spacing:.06em}
 .castpay input[type=number]{flex:none;width:100%}
 .castlog{font-size:11.5px;min-height:16px;letter-spacing:.02em}
+.cpick{display:flex;flex-direction:column;gap:6px;border:1px solid #4e4738;border-radius:4px;padding:8px;
+  background:rgba(12,10,8,.45)}
+.cpsel{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:28px}
+.cpsel em{font-style:normal;color:#9a8d74;font-size:11.5px}
+.cpchip{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:14px;cursor:pointer;font-size:12px;
+  color:#efe4cb;border:1.5px solid var(--gc);background:color-mix(in srgb,var(--gc) 16%,#120e0a)}
+.cpchip i{font-style:normal;color:var(--gc)}
+.cpchip b{color:#ff9a8a;font-weight:400;margin-left:2px}
+.cpbar{display:flex;flex-direction:column;gap:5px}
+.cpq{background:rgba(12,10,8,.7);border:1px solid #4e4738;border-radius:3px;color:#e9dfc9;padding:7px 9px;
+  font-size:13px;font-family:inherit}
+.cpg{display:flex;flex-wrap:wrap;gap:4px}
+.cpgb{padding:3px 8px;border-radius:3px;font-size:11px;cursor:pointer;color:var(--gc,#e9dfc9);
+  background:rgba(12,10,8,.6);border:1px solid color-mix(in srgb,var(--gc,#8a7f68) 55%,transparent)}
+.cpgb.on{background:color-mix(in srgb,var(--gc,#c8a94e) 25%,#120e0a);border-color:var(--gc,#c8a94e);color:#fff}
+.cpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:5px;max-height:250px;overflow:auto;padding:2px}
+.cpc{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 4px;border-radius:4px;cursor:pointer;
+  border:1.5px solid color-mix(in srgb,var(--gc) 55%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--gc) 12%,#120e0a),#0d0a08)}
+.cpc i{font-style:normal;font-size:19px;color:var(--gc)}
+.cpc b{font-weight:400;font-size:11px;color:#efe4cb;text-align:center;line-height:1.25}
+.cpc em{font-style:normal;font-size:9px;color:var(--gc);opacity:.8}
+.cpc:hover{border-color:var(--gc)}
+.cpc.on{border-color:var(--gc);box-shadow:0 0 0 2px var(--gc),0 0 12px color-mix(in srgb,var(--gc) 50%,transparent)}
 .castsec.sched{border:1px solid rgba(232,200,106,.3);border-radius:4px;padding:10px;background:rgba(40,30,12,.25)}
 .scquick,.scadd{display:flex;flex-wrap:wrap;gap:5px}
 .scchip{padding:5px 9px;border-radius:3px;font-size:11.5px;color:#e9dfc9;background:rgba(12,10,8,.6);
@@ -18360,8 +18388,7 @@ function drawCast(grid) {
     </div>
 
     <div class="castsec"><b>이벤트에 온 이에게 — 선물</b>
-      <div class="casthint">부적 이름을 쉼표로 나눠 적는다 (여덟 장까지).
-        받은 사람은 두 번 받지 못한다.</div>
+      <div class="casthint">줄 부적을 아래에서 눌러 고른다 (여덟 장까지). 받은 사람은 두 번 받지 못한다.</div>
       <input id="ct_gsay" maxlength="120" placeholder="함께 적을 말 (비워도 된다)">
       <input id="ct_gcards" placeholder="이를테면 — seal, fire, thunder">
       <div class="castbtnrow">
@@ -18389,7 +18416,8 @@ function drawCast(grid) {
         <label>골드<input id="ct_bgold" type="number" min="0" max="1000000" value="500"></label>
         <label>다이아<input id="ct_bdia" type="number" min="0" max="100000" value="150"></label>
       </div>
-      <input id="ct_bcards" placeholder="보상 부적 — 쉼표로 나눠 여덟 장까지 (비워도 된다)">
+      <div class="casthint">보상 부적 — 눌러서 고른다 (여덟 장까지 · 안 골라도 된다)</div>
+      <input id="ct_bcards">
       <div class="casthint" id="ct_bpick"></div>
       <input id="ct_brew" maxlength="120" placeholder="보상과 함께 적을 말 (비워도 된다)">
       <div class="castbtnrow">
@@ -18472,6 +18500,7 @@ function drawCast(grid) {
     return good;
   };
   gcards.oninput = showPick;
+  cardPicker(gcards);
   grid.querySelector('#ct_gift').onclick = () => {
     const good = showPick();
     if (!good.length) { say('보낼 부적이 없다', false); return; }
@@ -18491,6 +18520,7 @@ function drawCast(grid) {
     return { good, bad };
   };
   bcards.oninput = bossCards;
+  cardPicker(bcards);
   grid.querySelector('#ct_boss').onclick = () => {
     const n = grid.querySelector('#ct_bn').value.trim();
     const g = grid.querySelector('#ct_bg').value.trim();
@@ -18614,6 +18644,62 @@ function drawSched(grid, send) {
     }
   }
   drawList();
+}
+/* ── 부적 고르개 — 쉼표로 id 를 적던 칸을 눌러서 고르는 것으로 ──────
+   이름으로 찾고, 등급으로 거르고, 부적을 눌러 담고 뺀다(여덟 장까지).
+   고른 것은 원래 칸(input)에 id 로 적어 두므로 선물·보상·예약이 그대로 쓴다. */
+function cardPicker(input, max) {
+  max = max || 8;
+  input.style.display = 'none';
+  const ids = () => input.value.split(',').map(x => x.trim()).filter(id => CARDS[id]);
+  const put = list => { input.value = list.join(', '); input.dispatchEvent(new Event('input')); draw(); };
+  const plain = h => String(h || '').replace(/<[^>]+>/g, '');
+  const all = Object.keys(CARDS).filter(id => CARDS[id].rar !== 'curse' && GRADE[CARDS[id].rar])
+    .sort((a, b) => GRADE_ORDER.indexOf(CARDS[a].rar) - GRADE_ORDER.indexOf(CARDS[b].rar) || CARDS[a].n.localeCompare(CARDS[b].n, 'ko'));
+  const box = el('div', 'cpick');
+  box.innerHTML = `<div class="cpsel"></div>
+    <div class="cpbar"><input class="cpq" placeholder="이름으로 찾기 — 이를테면 천둥, 봉인, 검">
+      <div class="cpg"></div></div>
+    <div class="cpgrid"></div>`;
+  input.after(box);
+  const sel = box.querySelector('.cpsel'), grid = box.querySelector('.cpgrid'), q = box.querySelector('.cpq');
+  let grade = '';
+  const gbar = box.querySelector('.cpg');
+  for (const g of [''].concat(GRADE_ORDER.filter(g => all.some(id => CARDS[id].rar === g)))) {
+    const b = el('button', 'cpgb' + (g ? '' : ' on'), g ? GRADE[g].n : '전체');
+    if (g) b.style.setProperty('--gc', GRADE[g].c);
+    b.onclick = () => { grade = g; gbar.querySelectorAll('.cpgb').forEach(x => x.classList.toggle('on', x === b)); draw(); };
+    gbar.appendChild(b);
+  }
+  q.oninput = draw;
+  function draw() {
+    const cur = ids();
+    sel.innerHTML = cur.length
+      ? cur.map(id => `<span class="cpchip" data-id="${id}" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}<b>×</b></span>`).join('')
+        + `<em>${cur.length} / ${max}</em>`
+      : `<em>고른 부적이 없다 — 아래에서 눌러 담는다 (${max}장까지)</em>`;
+    sel.querySelectorAll('.cpchip').forEach(c => c.onclick = () => put(cur.filter(x => x !== c.dataset.id)));
+    const w = q.value.trim();
+    const hit = all.filter(id => (!grade || CARDS[id].rar === grade) &&
+      (!w || CARDS[id].n.includes(w) || id.includes(w.toLowerCase())));
+    grid.innerHTML = '';
+    for (const id of hit.slice(0, 120)) {
+      const c = CARDS[id], on = cur.includes(id);
+      const b = el('button', 'cpc' + (on ? ' on' : ''),
+        `<i>${c.g}</i><b>${c.n}</b><em>${GRADE[c.rar].n}</em>`);
+      b.style.setProperty('--gc', GRADE[c.rar].c);
+      try { b.title = c.n + ' — ' + plain(c.txt(c.v ? c.v(false) : {})); } catch (e) { b.title = c.n; }
+      b.onclick = () => {
+        if (on) return put(cur.filter(x => x !== id));
+        if (cur.length >= max) { toast(`${max}장까지 고를 수 있다`); SND.err(); return; }
+        put(cur.concat(id));
+      };
+      grid.appendChild(b);
+    }
+    if (!hit.length) grid.innerHTML = '<div class="casthint">그런 부적이 없다</div>';
+    else if (hit.length > 120) grid.insertAdjacentHTML('beforeend', `<div class="casthint">… ${hit.length - 120}장 더 — 이름이나 등급으로 좁히시오</div>`);
+  }
+  draw();
 }
 /* 서버에 고쳐 쓰라고 이른다. 암호는 서버가 맞춰 본다. */
 async function castSend(patch) {
