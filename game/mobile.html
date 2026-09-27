@@ -190,6 +190,22 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .potion{width:30px;height:30px;border-radius:4px;display:grid;place-items:center;font-size:14px;color:#2a2219;
   background:#efe4cb;border:1.5px solid var(--jade);cursor:pointer;transition:.15s;line-height:1}
 .potion:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(0,0,0,.4)}
+.potion{position:relative}
+.potion sub{position:absolute;right:-4px;bottom:-5px;min-width:14px;height:14px;padding:0 2px;border-radius:7px;
+  background:#2a2219;color:#f2e6c4;font-size:9.5px;line-height:14px;text-align:center;box-sizing:border-box}
+.potion.dj{box-shadow:0 0 0 1.5px #7fe6cf,0 0 10px rgba(127,230,207,.55)}
+.potcnt{flex:none;font-size:11px;color:#a89a80;padding:2px 5px;border-radius:3px;border:1px dashed #5f5545;
+  font-variant-numeric:tabular-nums;cursor:help;white-space:nowrap}
+.potcnt.arm{color:#e8c86a;border-color:#e8c86a}
+/* 마우스 화면에서 물약 종류가 넷을 넘으면 두 줄 격자로 접는다 — 윗줄 오른쪽 단추가 밀려 나갔다 */
+@media (hover:hover) {
+  #potbar.many{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,21px);gap:2px 3px}
+  #potbar.many .potion{width:21px;height:21px;font-size:11px;border-radius:3px}
+  #potbar.many .potion sub{right:-5px;bottom:-4px;min-width:11px;height:11px;font-size:8px;line-height:11px}
+  #potbar.many .potion:hover{transform:translateY(-1px)}
+  #potbar.many .potcnt{grid-row:span 2;align-self:center;margin-left:3px}
+}
+.potcnt.dj{color:#0d1a16;background:#7fe6cf;border:1px solid #7fe6cf;font-weight:700;letter-spacing:.1em}
 .potion.empty{width:15px;background:rgba(255,255,255,.05);border:1.5px dashed #5f5545;cursor:default;border-radius:3px}
 .potion.empty:hover{transform:none;box-shadow:none}
 
@@ -4810,6 +4826,8 @@ function adoptRun(obj) {
   if (!G.run.arena) G.run.arena = { best: 0, cleared: 0 };
   if (!G.run.boons) G.run.boons = [];
   if (G.run.curse === undefined) G.run.curse = null;
+  /* 물약 자리가 셋에서 열로 늘었다 — 예전 저장은 늘어난 만큼 얹어 준다(수행·유물로 붙은 몫은 그대로) */
+  if (G.run.potBase !== POT_BASE) { G.run.potSlots = (G.run.potSlots || 3) + (POT_BASE - 3); G.run.potBase = POT_BASE; }
   /* 모두의 적과 싸우다 꺼졌다 — 들어가기 전 몸으로 */
   if (G.run.worldHp != null) { G.run.hp = Math.max(1, Math.min(G.run.maxHp, G.run.worldHp)); G.run.worldHp = null; }
   G.run.inBattle = false;
@@ -6644,6 +6662,25 @@ defPot({ id: 'fury', n: '분노의 물약', g: '怒', rar: 'rare', d: '<b>분신
 defPot({ id: 'immortal', n: '불사의 영약', g: '不', rar: 'rare', d: '<b>재생</b> 6과 <i>10</i>의 방어도를 얻는다.',
   use: () => { st(P(), 'regen', 6); blk(10); } });
 const POT_POOL = Object.keys(POTIONS);
+/* ── 물약 띠와 「다짐」 ─────────────────────────────────────
+   물약 자리는 열 칸(셋은 너무 적었다). 열 칸을 가득 채운 뒤 그 모험 안에서
+   띠를 모두 비우면(열 번 넘게 마시고) 「다짐」을 얻는다 —
+   그 모험이 끝날 때까지 물약의 효과가 곱절이 된다. */
+const POT_BASE = 10;
+const DAJIM_NEED = 10;
+function potWatch(run) {
+  if (!run || run.dajim || run.potArm) return;
+  if (run.potions.length >= DAJIM_NEED) {
+    run.potArm = true; run.potUsed = 0;
+    setTimeout(() => toast(`물약 띠가 가득 찼다 — 이 모험 안에 모두 비우면 「다짐」`), 300);
+  }
+}
+function dajimGet(run) {
+  run.dajim = true; run.potArm = false;
+  try { SND.gong(); SND.victory(); screenFlash('rgba(127,230,207,.45)', 800); stampWord('다 짐', '#7fe6cf'); } catch (e) {}
+  toast('「다짐」 — 이 모험 내내 물약의 효과가 곱절이 된다');
+  saveRun(); renderTop();
+}
 function randomPotion() {
   return pickWeighted(POT_POOL.map(id => ({ w: POTIONS[id].rar === 'common' ? 10 : POTIONS[id].rar === 'uncommon' ? 5 : 2, id }))).id;
 }
@@ -9133,8 +9170,14 @@ async function usePotion(idx, target) {
   if (b0) b0.busy = true;
   try {
     try { d.use(target); } catch (e) { console.error('물약 오류', id, e); }
+    /* 다짐 — 한 번 더 */
+    if (run.dajim) { try { if (d.tgt !== 'enemy' || (target && target.hp > 0)) d.use(target); } catch (e) {} }
     fire('onPotion');
-    toast(`${d.n} 사용`);
+    toast(`${d.n} 사용${run.dajim ? ' · 다짐 ×2' : ''}`);
+    if (run.potArm && !run.dajim) {
+      run.potUsed = (run.potUsed || 0) + 1;
+      if (!run.potions.length && run.potUsed >= DAJIM_NEED) dajimGet(run);
+    }
     if (G.b) await checkDeaths();
   } catch (e) { console.error('물약 뒤처리 오류', id, e); }
   finally { if (b0) b0.busy = false; }        /* 무슨 일이 나도 풀고 나간다 */
@@ -9811,7 +9854,9 @@ function renderTop() {
   /* 콜로세움·대전투장은 제 배경이 따로 있다 */
   setBg(G.b && (G.b.kind === 'colo' || G.b.kind === 'arena') ? G.b.kind : run.act);
 
-  const sig = run.relics.map(r => r.id).join(',') + '|' + run.potions.join(',') + '|' + run.potSlots;
+  potWatch(run);
+  const sig = run.relics.map(r => r.id).join(',') + '|' + run.potions.join(',') + '|' + run.potSlots +
+    '|' + (run.dajim ? 'D' : run.potArm ? 'A' + (run.potUsed || 0) : '');
   if (sig !== _topSig) {
     _topSig = sig;
     t.innerHTML = `
@@ -9858,16 +9903,25 @@ function renderTop() {
     cnt.onclick = () => { tipHide(); openFuse(); };
     cntBox.appendChild(cnt);
     const pb = t.querySelector('#potbar');
-    for (let i = 0; i < run.potSlots && i < 8; i++) {
-      const id = run.potions[i];
-      if (id) {
-        const d = POTIONS[id];
-        const n = el('div', 'potion', d.g);
-        bindTip(n, () => `<b>${d.n}</b><br>${d.d}<br><span style="color:#9a8d74">누르면 사용한다</span>`);
-        n.onclick = () => { tipHide(); usePotion(i); };
-        pb.appendChild(n);
-      } else pb.appendChild(el('div', 'potion empty', ''));
+    /* 열 칸이 한 줄로 늘어서면 폰 윗줄을 넘는다 — 같은 물약은 한 칸에 묶고 개수를 단다 */
+    const seen = {};
+    run.potions.forEach((id, i) => { if (seen[id]) seen[id].n++; else seen[id] = { i, n: 1 }; });
+    for (const id in seen) {
+      const d = POTIONS[id]; if (!d) continue;
+      const n = el('div', 'potion' + (run.dajim ? ' dj' : ''), d.g + (seen[id].n > 1 ? `<sub>${seen[id].n}</sub>` : ''));
+      bindTip(n, () => `<b>${d.n}</b>${seen[id].n > 1 ? ' ×' + seen[id].n : ''}<br>${d.d}` +
+        (run.dajim ? '<br><b style="color:#7fe6cf">다짐 — 효과 곱절</b>' : '') +
+        '<br><span style="color:#9a8d74">누르면 사용한다</span>');
+      n.onclick = () => { tipHide(); const k = run.potions.indexOf(id); if (k >= 0) usePotion(k); };
+      pb.appendChild(n);
     }
+    pb.classList.toggle('many', Object.keys(seen).length > 4);
+    const pc = el('div', 'potcnt' + (run.dajim ? ' dj' : run.potArm ? ' arm' : ''),
+      run.dajim ? '다짐' : `${run.potions.length}/${run.potSlots}`);
+    bindTip(pc, () => run.dajim ? '<b>다짐</b> — 이 모험 내내 물약의 효과가 곱절이 된다'
+      : run.potArm ? `<b>다짐까지</b> — 띠를 모두 비우면 된다 (마신 것 ${run.potUsed || 0} / ${DAJIM_NEED})`
+      : `물약 ${run.potions.length} / ${run.potSlots}<br><span style="color:#9a8d74">${DAJIM_NEED}칸을 가득 채운 뒤 이 모험 안에 모두 비우면 <b>다짐</b> — 물약 효과 곱절</span>`);
+    pb.appendChild(pc);
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
     t.querySelector('#placebtn').onclick = () => { markUsed('places'); showPlaces(); };
@@ -12475,7 +12529,7 @@ function newRun(asc, keepDeck) {
   G.run = {
     asc: asc || 0,
     maxHp: 80 - ASC.hpCut(asc || 0), hp: 80 - ASC.hpCut(asc || 0),
-    gold: 99, dia: 0, summons: 0, banner: 3, maxEnergy: 4, potSlots: 3,
+    gold: 99, dia: 0, summons: 0, banner: 3, maxEnergy: 4, potSlots: POT_BASE, potBase: POT_BASE,
     deck, relics: [], potions: [],
     act: 1, floor: 0, rewardCut: 0,
     map: null, mapCur: -1, mapDone: [], bossPick: null,
@@ -13673,7 +13727,7 @@ const EXCHANGE = [
   { g: '根', n: '최대 체력 +10', p: 700, d: '이번 모험 내내 · 그 자리에서 채워진다',
     act: async () => { G.run.maxHp += 10; G.run.hp += 10; SND.heal(); toast('최대 체력 +10'); } },
   { g: '囍', n: '물약 자리 +1', p: 650, d: '이번 모험 내내',
-    can: r => r.potSlots < 8, no: '더 늘릴 수 없다',
+    can: r => r.potSlots < POT_BASE + 4, no: '더 늘릴 수 없다',
     act: async () => { G.run.potSlots++; SND.bell(); toast('물약 자리 +1'); } },
   { g: '淨', n: '부적 태우기', p: 300, d: '덱에서 한 장을 없앤다',
     act: async () => {
