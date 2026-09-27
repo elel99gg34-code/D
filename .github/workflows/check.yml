@@ -1,0 +1,25 @@
+# 올릴 때마다 판을 검사한다 — 겹친 id · 없는 요괴 · 드러난 코드 ·
+# 문법 · 켜고 싸우는 동안의 오류 · 서버가 서는지
+name: 검사
+
+on:
+  push:
+    branches: [main, master, claude/game-development-syhzcd]
+    paths: ['game/**', 'server/**', '.github/workflows/check.yml']
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 브라우저를 챙긴다
+        run: |
+          npm install --no-save --no-audit --no-fund playwright-core
+          npx playwright-core install --with-deps chromium
+      - name: 서버 짐
+        run: cd server && npm install --omit=dev --no-audit --no-fund
+      - name: 검사
+        run: node game/check-all.mjs
