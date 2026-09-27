@@ -3492,6 +3492,30 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
   letter-spacing:.06em}
 .castpay input[type=number]{flex:none;width:100%}
 .castlog{font-size:11.5px;min-height:16px;letter-spacing:.02em}
+.castsec.sched{border:1px solid rgba(232,200,106,.3);border-radius:4px;padding:10px;background:rgba(40,30,12,.25)}
+.scquick,.scadd{display:flex;flex-wrap:wrap;gap:5px}
+.scchip{padding:5px 9px;border-radius:3px;font-size:11.5px;color:#e9dfc9;background:rgba(12,10,8,.6);
+  border:1px solid #4e4738;cursor:pointer}
+.scchip:hover{border-color:#c8a94e}
+.scchip.add{color:#e8c86a;border-style:dashed}
+.scsteps{display:flex;flex-direction:column;gap:5px}
+.scstep{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 8px;border-radius:3px;
+  background:rgba(12,10,8,.55);border:1px solid #4e4738;font-size:12px;color:#e9dfc9}
+.scstep>b{color:#e8c86a;font-weight:400;font-size:15px}
+.scstep>span{flex:1;min-width:120px}
+.scstep .sctext{flex:1 1 100%;background:rgba(12,10,8,.7);border:1px solid #4e4738;border-radius:3px;color:#e9dfc9;
+  padding:6px 8px;font-size:12.5px;font-family:inherit;order:9}
+.scstep label{display:flex;align-items:center;gap:4px;color:#9a8d74;font-size:11px}
+.scstep .scafter{width:58px;background:rgba(12,10,8,.7);border:1px solid #4e4738;border-radius:3px;color:#e9dfc9;padding:3px 5px}
+.scdel{padding:3px 9px;border-radius:3px;border:1px solid #8a4a3f;color:#ffb3a6;background:none;cursor:pointer;font-size:11.5px}
+.sclist{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+.sclh{color:#e9dfc9;font-size:12px;font-weight:400;letter-spacing:.08em}
+.scitem{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;padding:7px 9px;border-radius:3px;
+  background:rgba(10,20,16,.45);border:1px solid rgba(138,255,208,.2);font-size:12px;color:#c3b79c}
+.scitem b{color:#8affd0;font-weight:400;margin-right:6px}
+.scitem small{color:#e8c86a}
+.scitem em{display:block;font-style:normal;color:#9a8d74;font-size:11px;margin-top:3px;line-height:1.5}
+.scitem.done{opacity:.55}
 .castlog.ok{color:#8affd0}
 .castlog.no{color:#ff9a9a}
 .adtab.cast{color:#8affd0;border-color:rgba(138,255,208,.4)}
@@ -17557,6 +17581,7 @@ async function liveFetch() {
     LIVE.apk = String(d.apk || '').slice(0, 300);
     LIVE.gift = d.gift && typeof d.gift === 'object' ? d.gift : null;
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
+    if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.at = Date.now();
     liveSave();
     noticeShow();
@@ -18515,6 +18540,21 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec sched"><b>이벤트 예약 — 계획대로 퍼뜨리기</b>
+      <div class="casthint">정한 때가 되면 아래 장면들이 차례로 모든 앱에 퍼진다. 장면마다 「시작하고 몇 초 뒤」를 정한다.
+        아무도 없어 서버가 자고 있었으면 누가 들어와 깨울 때 이어서 하고, 15분 넘게 늦으면 건너뛴다.</div>
+      <div class="castrow">
+        <input id="sc_at" type="datetime-local">
+        <input id="sc_label" maxlength="60" placeholder="예약 이름 (예: 수요일 아침 축제)">
+      </div>
+      <div class="scquick" id="sc_quick"></div>
+      <div class="casthint" id="sc_when"></div>
+      <div class="scsteps" id="sc_steps"></div>
+      <div class="scadd" id="sc_add"></div>
+      <div class="castbtnrow"><button class="brush-btn gold" id="sc_go">예약한다</button></div>
+      <div class="sclist" id="sc_list"></div>
+    </div>
+
     <div class="castsec"><b>${DEV_NAME}의 말</b>
       <div class="casthint">앱 맨 윗면에 「${DEV_NAME}」 이름으로 걸린다. 비우고 퍼뜨리면 내려간다.</div>
       <textarea id="ct_notice" maxlength="300" rows="3"
@@ -18609,8 +18649,10 @@ function drawCast(grid) {
   const send = async (patch, what) => {
     say('보내는 중…', true);
     const r = await castSend(patch);
-    if (r.ok) { say(what + ' — 퍼뜨렸다', true); paint(); }
-    else say('못 퍼뜨렸다: ' + r.why, false);
+    const verb = patch.schedule ? '잡아 두었다' : patch.unschedule ? '거두었다' : '퍼뜨렸다';
+    if (r.ok) { say(what + ' — ' + verb, true); paint(); }
+    else say('못 했다: ' + r.why, false);
+    return r;
   };
   grid.querySelector('#ct_sendn').onclick = () => {
     const v = grid.querySelector('#ct_notice').value.trim();
@@ -18623,6 +18665,7 @@ function drawCast(grid) {
   const hype = (what, patch) => hypeBox.checked
     ? Object.assign(patch, { notice: HYPE_SAY + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
   grid.querySelector('#ct_hype').onclick = () => send({ notice: HYPE_SAY, noticeAt: Date.now() }, '이벤트 알림');
+  drawSched(grid, send);
   grid.querySelectorAll('.castev').forEach(b => {
     b.onclick = () => send(hype(WORLD[b.dataset.k].n, { event: b.dataset.k, eventAt: Date.now() }), WORLD[b.dataset.k].n);
   });
@@ -18681,6 +18724,110 @@ function drawCast(grid) {
     if (!a) { say('받는 자리(APK 주소)가 비었다', false); return; }
     send({ version: v, apk: a }, v + ' 판');
   };
+}
+/* ── 이벤트 예약 — 장면을 차례로 쌓아 정한 때에 퍼뜨린다 ─────────
+   이를테면 「이번 주 수요일 오전 7시 — 백야의 말 → 괴물 소환 → 슈팅 스타」.
+   모두의 적·선물은 쌓는 그 순간의 관리자 창 값(이름·체력·보상·부적)을 그대로 떠 둔다. */
+const WEEK = ['일', '월', '화', '수', '목', '금', '토'];
+function whenText(t) {
+  const d = new Date(t), left = t - Date.now();
+  const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2, '0');
+  const txt = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEK[d.getDay()]}) ${hh < 12 ? '오전' : '오후'} ${(hh % 12) || 12}:${mm}`;
+  if (left <= 0) return txt + ' · 지났다';
+  const m = Math.round(left / 60000), dd = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mi = m % 60;
+  return txt + ' · ' + (dd ? dd + '일 ' : '') + (h ? h + '시간 ' : '') + (dd ? '' : mi + '분 ') + '뒤';
+}
+function drawSched(grid, send) {
+  const $g = q => grid.querySelector(q);
+  const at = $g('#sc_at'), when = $g('#sc_when'), box = $g('#sc_steps'), list = $g('#sc_list');
+  const steps = [];
+  const local = t => { const d = new Date(t - new Date(t).getTimezoneOffset() * 60000); return d.toISOString().slice(0, 16); };
+  const showWhen = () => { const t = at.value ? new Date(at.value).getTime() : 0; when.textContent = t ? '→ ' + whenText(t) : '때를 고르시오'; };
+  /* 빠르게 고르기 — 다가오는 요일 아침 7시, 한 시간 뒤 */
+  const quick = $g('#sc_quick');
+  const nextDay = (wd, h) => { const d = new Date(); d.setHours(h, 0, 0, 0);
+    let add = (wd - d.getDay() + 7) % 7; if (add === 0 && d.getTime() <= Date.now()) add = 7; d.setDate(d.getDate() + add); return d.getTime(); };
+  const chips = [['1시간 뒤', () => Date.now() + 3600e3], ['내일 오전 7시', () => { const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(7, 0, 0, 0); return d.getTime(); }]]
+    .concat([1, 2, 3, 4, 5, 6, 0].map(w => [WEEK[w] + '요일 7시', () => nextDay(w, 7)]));
+  for (const [n, f] of chips) { const b = el('button', 'scchip', n); b.onclick = () => { at.value = local(f()); showWhen(); }; quick.appendChild(b); }
+  at.oninput = showWhen; showWhen();
+  /* 장면 추가 단추 */
+  const add = $g('#sc_add');
+  const kinds = [
+    ['notice', `+ ${DEV_NAME}의 말`], ['hype', '+ 이벤트 알림'],
+    ...Object.keys(WORLD).map(k => ['ev:' + k, '+ ' + WORLD[k].n]),
+    ['evoff', '+ 일 끄기'], ['boss', '+ 괴물 소환 (모두의 적)'], ['gift', '+ 선물']
+  ];
+  for (const [k, n] of kinds) { const b = el('button', 'scchip add', n); b.onclick = () => addStep(k); add.appendChild(b); }
+  function addStep(k) {
+    const prev = steps.length ? steps[steps.length - 1].after : -5;
+    const st = { kind: k, after: prev + 5, text: '' };
+    if (k === 'notice') { st.label = DEV_NAME + '의 말'; st.text = ($g('#ct_notice').value || '').trim(); }
+    else if (k === 'hype') st.label = HYPE_SAY;
+    else if (k.startsWith('ev:')) { const w = WORLD[k.slice(3)]; st.label = w.g + ' ' + w.n; }
+    else if (k === 'evoff') st.label = '일을 모두 끈다';
+    else if (k === 'boss') {
+      const n = $g('#ct_bn').value.trim() || '하늘을 가르는 것', max = +$g('#ct_bmax').value || 7000;
+      const num = id => Math.max(0, Math.floor(+$g(id).value || 0));
+      const cards = $g('#ct_bcards').value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
+      st.boss = { n, g: $g('#ct_bg').value.trim() || '天', max, reward: $g('#ct_brew').value.trim(),
+                  pay: { jp: num('#ct_bjp'), gold: num('#ct_bgold'), dia: num('#ct_bdia'), cards } };
+      st.label = `괴물 소환 「${n}」 체력 ${max.toLocaleString()}`;
+    } else if (k === 'gift') {
+      const cards = $g('#ct_gcards').value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
+      if (!cards.length) { toast('선물 칸에 부적 이름을 먼저 적으시오'); SND.err(); return; }
+      st.gift = { cards, say: $g('#ct_gsay').value.trim() };
+      st.label = '선물 — ' + cards.map(id => CARDS[id].n).join(' · ');
+    }
+    steps.push(st); drawSteps();
+  }
+  function drawSteps() {
+    box.innerHTML = steps.length ? '' : '<div class="casthint">아직 장면이 없다 — 아래 단추로 차례를 쌓는다</div>';
+    steps.forEach((st, i) => {
+      const r = el('div', 'scstep');
+      r.innerHTML = `<b>${'①②③④⑤⑥⑦⑧⑨⑩⑪⑫'[i] || i + 1}</b><span>${wEsc(st.label)}</span>
+        ${st.kind === 'notice' ? `<input class="sctext" maxlength="300" placeholder="할 말" value="${wEsc(st.text)}">` : ''}
+        <label><input class="scafter" type="number" min="0" max="3600" value="${st.after}">초 뒤</label>
+        <button class="scdel" title="빼기">×</button>`;
+      const tx = r.querySelector('.sctext'); if (tx) tx.oninput = () => { st.text = tx.value; };
+      r.querySelector('.scafter').oninput = e => { st.after = Math.max(0, Math.min(3600, +e.target.value || 0)); };
+      r.querySelector('.scdel').onclick = () => { steps.splice(i, 1); drawSteps(); };
+      box.appendChild(r);
+    });
+  }
+  drawSteps();
+  const toPatch = st => {
+    if (st.kind === 'notice') return { notice: st.text, noticeAt: Date.now() };
+    if (st.kind === 'hype') return { notice: HYPE_SAY, noticeAt: Date.now() };
+    if (st.kind.startsWith('ev:')) return { event: st.kind.slice(3), eventAt: Date.now() };
+    if (st.kind === 'evoff') return { event: '', eventAt: Date.now() };
+    if (st.kind === 'boss') return { boss: st.boss };
+    if (st.kind === 'gift') return { gift: st.gift };
+    return {};
+  };
+  $g('#sc_go').onclick = () => {
+    const t = at.value ? new Date(at.value).getTime() : 0;
+    if (!t || t < Date.now() - 60000) { toast('앞으로 올 때를 고르시오'); SND.err(); return; }
+    if (!steps.length) { toast('장면을 하나 넘게 쌓으시오'); SND.err(); return; }
+    if (steps.some(st => st.kind === 'notice' && !st.text.trim())) { toast(DEV_NAME + '의 말이 비었다'); SND.err(); return; }
+    const label = $g('#sc_label').value.trim() || steps.map(st => st.label).join(' → ').slice(0, 60);
+    send({ schedule: { at: t, label, steps: steps.map(st => ({ after: st.after, label: st.label, patch: toPatch(st) })) } },
+         '예약 — ' + whenText(t)).then(() => { steps.length = 0; drawSteps(); drawList(); });
+  };
+  function drawList() {
+    const all = (LIVE.sched || []).slice().sort((a, b) => a.at - b.at);
+    list.innerHTML = all.length ? '<b class="sclh">잡아 둔 예약</b>' : '<div class="casthint">잡아 둔 예약이 없다</div>';
+    for (const x of all) {
+      const r = el('div', 'scitem' + (x.done ? ' done' : ''));
+      const stepsTxt = (x.steps || []).map(t => `${t.after ? '+' + t.after + '초 ' : ''}${wEsc(t.label || '')}${t.done ? ' ✓' : ''}`).join(' → ');
+      r.innerHTML = `<div><b>${wEsc(x.label)}</b><small>${whenText(x.at)}${x.missed ? ' · 놓쳤다' : x.done ? ' · 끝났다' : ''}</small>
+        <em>${stepsTxt}</em></div>${x.done ? '' : '<button class="scdel" title="취소">취소</button>'}`;
+      const c = r.querySelector('.scdel');
+      if (c) c.onclick = () => send({ unschedule: x.id }, '예약 취소').then(drawList);
+      list.appendChild(r);
+    }
+  }
+  drawList();
 }
 /* 서버에 고쳐 쓰라고 이른다. 암호는 서버가 맞춰 본다. */
 async function castSend(patch) {

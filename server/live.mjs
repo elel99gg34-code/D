@@ -61,7 +61,8 @@ function expire(now) {
 let live = {
   notice: '', noticeAt: 0, event: '', eventAt: 0, version: 0, apk: '', at: 0,
   gift: null,          /* { id, cards:[], say, at } */
-  boss: null           /* { id, n, g, hp, max, reward, done, at, hits } */
+  boss: null,          /* { id, n, g, hp, max, reward, done, at, hits } */
+  sched: []            /* 예약 { id, at, label, patch, done } */
 };
 const WHO_KEY = 'baekgwi:boss:who';   /* 친 사람들 — 보스마다 따로 */
 
@@ -179,6 +180,80 @@ async function tokWho(tok) {
   return t ? t.id : null;
 }
 
+
+/* ══════════════════════════════════════════════════════════
+   뒷받침(백업) — 무료 서버가 지워져도 장부는 살아남게
+   ──────────────────────────────────────────────────────────
+   Key Value(무료)는 디스크에 적지 않는다 — 다시 서면 비어 버린다.
+   Postgres(무료)는 한 달 뒤 사라진다. 그래서 장부 전체를 잠가(AES-256-GCM)
+   /backup 으로 내어 주고, GitHub 이 주기적으로 받아 릴리스 「backup」에 걸어 둔다.
+   서버가 빈 채로 서면(계정이 하나도 없으면) BACKUP_FROM 에서 받아 되살린다.
+     BACKUP_PASS   잠그는 열쇠 — 이것 없이는 아무도 풀 수 없다(잃으면 되살릴 수 없다)
+     BACKUP_FROM   되살릴 때 받아 올 곳 (릴리스의 latest.bin)
+   ══════════════════════════════════════════════════════════ */
+function bkKey() { return crypto.scryptSync(process.env.BACKUP_PASS, 'baekgwi-backup-v1', 32); }
+function bkSeal(obj) {
+  const iv = crypto.randomBytes(12), c = crypto.createCipheriv('aes-256-gcm', bkKey(), iv);
+  const ct = Buffer.concat([c.update(JSON.stringify(obj), 'utf8'), c.final()]);
+  return Buffer.concat([Buffer.from('BGB1'), iv, c.getAuthTag(), ct]).toString('base64');
+}
+function bkOpen(b64) {
+  const buf = Buffer.from(String(b64).trim(), 'base64');
+  if (buf.slice(0, 4).toString() !== 'BGB1') throw new Error('뒷받침 모양이 아니다');
+  const iv = buf.slice(4, 16), tag = buf.slice(16, 32), ct = buf.slice(32);
+  const d = crypto.createDecipheriv('aes-256-gcm', bkKey(), iv); d.setAuthTag(tag);
+  return JSON.parse(Buffer.concat([d.update(ct), d.final()]).toString('utf8'));
+}
+/* 적어 둔 것을 모두 모은다 — 계정(u:) · 들어와 있는 표(t:) · 결제(pay:) · 소식 */
+async function bkCollect() {
+  const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
+  const c = await store();
+  if (c) {
+    for (const pat of ['u:*', 't:*', 'pay:*']) {
+      for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
+        const keys = Array.isArray(k) ? k : [k];
+        for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
+      }
+    }
+  } else for (const [k, v] of mem) if (/^(u|t|pay):/.test(k)) out.kv[k] = v;
+  const p = await db();
+  if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
+  return out;
+}
+async function bkCount() {
+  const c = await store();
+  if (c) { for await (const k of c.scanIterator({ MATCH: 'u:*', COUNT: 100 })) return (Array.isArray(k) ? k.length : 1); return 0; }
+  let n = 0; for (const k of mem.keys()) if (k.startsWith('u:')) n++;
+  const p = await db();
+  if (p) n += +(await p.query('select count(*) n from souls')).rows[0].n;
+  return n;
+}
+/* 빈 채로 섰으면 되살린다 — 계정이 하나라도 있으면 건드리지 않는다 */
+async function bkRestore() {
+  if (!process.env.BACKUP_PASS || !process.env.BACKUP_FROM) return;
+  try {
+    if (await bkCount() > 0) return;
+    const r = await fetch(process.env.BACKUP_FROM, { redirect: 'follow' });
+    if (!r.ok) { console.log('되살릴 뒷받침이 없다 (' + r.status + ')'); return; }
+    const d = bkOpen(await r.text());
+    const c = await store();
+    let n = 0;
+    for (const [k, v] of Object.entries(d.kv || {})) { if (c) await c.set(k, v); else mem.set(k, v); n++; }
+    const p = await db();
+    if (p && d.pg) {
+      for (const x of d.pg.souls || []) await p.query(`insert into souls(id,salt,hash,made,save,saved) values($1,$2,$3,$4,$5,$6)
+        on conflict(id) do nothing`, [x.id, x.salt, x.hash, x.made, x.save, x.saved]);
+      for (const x of d.pg.tokens || []) await p.query(`insert into tokens(tok,id,made) values($1,$2,$3) on conflict(tok) do nothing`, [x.tok, x.id, x.made]);
+    }
+    /* 예약·보스 같은 소식도 — 지금 소식이 비어 있을 때만 */
+    if (d.live && !live.at) { live = Object.assign(live, d.live); await keep(); }
+    console.log(`뒷받침에서 되살렸다 — ${n}개 · ${new Date(d.at).toISOString()} 의 것`);
+  } catch (e) { console.error('되살리지 못했다:', e.message); }
+}
+setTimeout(() => { bkRestore(); }, 1500);
+/* 서버는 그대로인데 Key Value 만 다시 서 비는 일도 있다 — 열 분마다 살핀다 */
+setInterval(() => { bkRestore(); }, 10 * 60 * 1000);
+
 /* 같은 곳에서 너무 자주 두드리면 잠시 물린다 */
 const knocks = new Map();
 function tooMany(ip) {
@@ -285,6 +360,92 @@ function hitTooFast(who, ip) {
   return w.length > 600;
 }
 
+/* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss'];
+function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
+async function applyCast(q) {
+  /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다 */
+  if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); }
+  if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = Date.now();
+                        live.eventUntil = live.event ? Date.now() + EV_MS : 0; }
+  if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
+  if ('apk'     in q) live.apk = str(q.apk, 300);
+  /* 선물 — 카드 이름만 받는다. 무엇이 있는 이름인지는 게임이 안다. */
+  if ('gift' in q) {
+    if (!q.gift) live.gift = null;
+    else {
+      const cards = Array.isArray(q.gift.cards)
+        ? q.gift.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
+      live.gift = cards.length
+        ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now(),
+            until: Date.now() + EV_MS }
+        : null;
+    }
+  }
+  /* 모두가 치는 적 — 새로 세우거나 거둔다 */
+  if ('boss' in q) {
+    if (!q.boss) live.boss = null;
+    else {
+      const max = Math.max(100, Math.min(100000000, parseInt(q.boss.max, 10) || 100000));
+      /* 거두면 줄 몫 — 관리자가 그때마다 정한다. 게임이 아는 부적만 쓰인다 */
+      const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+      const pq = q.boss.pay && typeof q.boss.pay === 'object' ? q.boss.pay : null;
+      const pay = pq ? {
+        jp: num(pq.jp, 100000), gold: num(pq.gold, 1000000), dia: num(pq.dia, 100000),
+        cards: Array.isArray(pq.cards) ? pq.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : []
+      } : null;
+      live.boss = {
+        id: Date.now(),
+        n: str(q.boss.n, 40) || '이름 없는 것',
+        g: str(q.boss.g, 4) || '鬼',
+        hp: max, max,
+        reward: str(q.boss.reward, 120),
+        pay,
+        done: false, fled: false, at: Date.now(), born: Date.now(), until: Date.now() + BOSS_MS, hits: 0
+      };
+      const c0 = await store();
+      if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
+    }
+  }
+}
+
+/* ── 예약 ─────────────────────────────────────────────────
+   정한 때가 되면 퍼뜨린다. 서버가 잠들어 있었으면(무료 서버는 아무도 없으면
+   잔다) 누군가 들어와 깨울 때 한다 — 다만 때를 15분 넘겼으면 건너뛴다
+   (그때 없던 이들에게 뒤늦게 이벤트가 쏟아지지 않게). */
+const SCHED_LATE = 15 * 60 * 1000, SCHED_MAX_AHEAD = 60 * 24 * 3600 * 1000;
+let _schedBusy = false;
+async function runSchedule(now) {
+  if (_schedBusy || !live.sched || !live.sched.length) return false;
+  _schedBusy = true;
+  let changed = false;
+  try {
+    for (const x of live.sched) {
+      if (x.done || now < x.at) continue;
+      const steps = x.steps || [{ after: 0, patch: x.patch || {} }];
+      /* 한 장면도 못 했는데 15분을 넘겼다 — 통째로 건너뛴다 */
+      if (!steps.some(t => t.done) && now - x.at > SCHED_LATE) {
+        x.done = x.missed = true; changed = true; console.log('예약을 놓쳤다:', x.label); continue;
+      }
+      for (const t of steps) {
+        if (t.done || now < x.at + t.after * 1000) continue;
+        t.done = true; changed = true;
+        /* 때가 된 말은 지금 시각으로 — 폰이 새 말로 알아보게 */
+        const patch = Object.assign({}, t.patch);
+        if ('notice' in patch) patch.noticeAt = now;
+        await applyCast(patch);
+        console.log('예약 장면:', x.label, '·', t.label || Object.keys(patch).join(','));
+      }
+      if (steps.every(t => t.done)) { x.done = true; changed = true; }
+    }
+    /* 끝난 예약은 하루 뒤 걷는다 */
+    live.sched = live.sched.filter(x => !x.done || now - x.at < 24 * 3600 * 1000);
+    if (changed) { live.at = now; await keep(); }
+  } finally { _schedBusy = false; }
+  return changed;
+}
+setInterval(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, 2000);
+
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
   'access-control-allow-origin': '*',
@@ -317,8 +478,12 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/live' && req.method === 'GET') {
     await store();
     const now = Date.now();
+    await runSchedule(now);
     if (expire(now)) await keep();
-    return send(res, 200, Object.assign({}, live, { now }));
+    /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
+    const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, done: !!x.done, missed: !!x.missed,
+      steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
+    return send(res, 200, Object.assign({}, live, { sched, now }));
   }
 
   if (url.pathname === '/cast' && req.method === 'POST') {
@@ -333,49 +498,23 @@ const server = http.createServer(async (req, res) => {
     if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
 
     await store();
-    /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다 */
-    if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); }
-    if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = Date.now();
-                          live.eventUntil = live.event ? Date.now() + EV_MS : 0; }
-    if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
-    if ('apk'     in q) live.apk = str(q.apk, 300);
-    /* 선물 — 카드 이름만 받는다. 무엇이 있는 이름인지는 게임이 안다. */
-    if ('gift' in q) {
-      if (!q.gift) live.gift = null;
-      else {
-        const cards = Array.isArray(q.gift.cards)
-          ? q.gift.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
-        live.gift = cards.length
-          ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now(),
-              until: Date.now() + EV_MS }
-          : null;
-      }
+    /* 예약 — 지금 하지 않고 정한 때에 한다 */
+    if (q.schedule && typeof q.schedule === 'object') {
+      const at = +q.schedule.at || 0, now = Date.now();
+      if (at < now - 60000 || at > now + SCHED_MAX_AHEAD) return send(res, 400, { ok: false, why: '예약 때가 이상하다 (지금부터 60일 안)' });
+      live.sched = (live.sched || []).filter(x => !x.done);
+      if (live.sched.length >= 50) return send(res, 400, { ok: false, why: '예약은 50개까지' });
+      /* 한 예약은 여러 장면의 차례 — 장면마다 「시작하고 몇 초 뒤」 */
+      const raw = Array.isArray(q.schedule.steps) ? q.schedule.steps : [{ after: 0, patch: q.schedule.patch || {} }];
+      const steps = raw.slice(0, 12).map(x => ({ after: Math.max(0, Math.min(3600, parseInt(x && x.after, 10) || 0)),
+                                                label: str(x && x.label, 40), patch: pickCast((x && x.patch) || {}) }))
+                       .filter(x => Object.keys(x.patch).length);
+      if (!steps.length) return send(res, 400, { ok: false, why: '예약할 장면이 없다' });
+      live.sched.push({ id: now + Math.floor(Math.random() * 1000), at, label: str(q.schedule.label, 60) || '예약한 일', steps });
+      live.sched.sort((x, y) => x.at - y.at);
     }
-    /* 모두가 치는 적 — 새로 세우거나 거둔다 */
-    if ('boss' in q) {
-      if (!q.boss) live.boss = null;
-      else {
-        const max = Math.max(100, Math.min(100000000, parseInt(q.boss.max, 10) || 100000));
-        /* 거두면 줄 몫 — 관리자가 그때마다 정한다. 게임이 아는 부적만 쓰인다 */
-        const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
-        const pq = q.boss.pay && typeof q.boss.pay === 'object' ? q.boss.pay : null;
-        const pay = pq ? {
-          jp: num(pq.jp, 100000), gold: num(pq.gold, 1000000), dia: num(pq.dia, 100000),
-          cards: Array.isArray(pq.cards) ? pq.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : []
-        } : null;
-        live.boss = {
-          id: Date.now(),
-          n: str(q.boss.n, 40) || '이름 없는 것',
-          g: str(q.boss.g, 4) || '鬼',
-          hp: max, max,
-          reward: str(q.boss.reward, 120),
-          pay,
-          done: false, fled: false, at: Date.now(), born: Date.now(), until: Date.now() + BOSS_MS, hits: 0
-        };
-        const c0 = await store();
-        if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
-      }
-    }
+    if ('unschedule' in q) live.sched = (live.sched || []).filter(x => String(x.id) !== String(q.unschedule));
+    await applyCast(pickCast(q));
     live.at = Date.now();
     await keep();
     console.log('퍼뜨렸다:', JSON.stringify(live));
@@ -433,6 +572,20 @@ const server = http.createServer(async (req, res) => {
                             until: b.until, now: Date.now(), hits: b.hits, mine });
   }
 
+
+
+  /* ── 뒷받침 — 잠긴 채로만 내어 준다 ── */
+  if (url.pathname === '/backup' && req.method === 'GET') {
+    if (!process.env.BACKUP_PASS) return send(res, 503, { ok: false, why: '뒷받침 열쇠가 없다' });
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    if (tooMany(ip)) return send(res, 429, { ok: false });
+    try {
+      await store();
+      const sealed = bkSeal(await bkCollect());
+      res.writeHead(200, Object.assign({ 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' }, CORS));
+      return res.end(sealed);
+    } catch (e) { console.error('뒷받침', e.message); return send(res, 500, { ok: false }); }
+  }
 
   /* ── 값 치른 것 확인 ───────────────────────────────────── */
   if ((url.pathname === '/pay/creem' || url.pathname === '/pay/play') && req.method === 'POST') {
