@@ -66,6 +66,11 @@ jobs:
 
       # 폰에 바로 넣을 것은 언제나 이것이다. 서명 안 된 release APK 는
       # 설치가 안 되므로, 손에 쥘 물건은 debug 로 짓는다.
+      # 서명 열쇠를 늘 같은 것으로 — 러너가 지을 때마다 새 시험용 열쇠를 만들어
+      # APK 마다 서명이 달랐다. 그러면 폰이 덮어 깔기를 거부하고(「앱이 설치되지
+      # 않았습니다」), 지우고 새로 깔면 저장이 날아간다. 시험용 열쇠라 비밀은 아니다.
+      - name: 늘 같은 서명 열쇠
+        run: mkdir -p ~/.android && cp debug.keystore ~/.android/debug.keystore
       - name: 폰에 넣을 APK
         run: cd android && ./gradlew --no-daemon assembleDebug
 
