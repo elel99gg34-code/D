@@ -29,17 +29,28 @@ const HIT_CAP = 5000;
 /* 모든 일은 셋 분 산다 — 그 시각에 와 있던 사람만 받는다(로블록스처럼).
    때는 서버가 잰다. 폰 시계가 틀려도 모두가 같은 셋 분을 겪는다. */
 const EV_MS = +process.env.EV_MS || 3 * 60 * 1000;   /* 시험할 때만 줄인다 */
-/* 하늘을 가르는 것만은 특별히 일곱 분 — 모두가 모여 칠 틈을 준다 */
-const BOSS_MS = +process.env.BOSS_MS || 7 * 60 * 1000;
+/* 하늘을 가르는 것은 다섯 분 — 이벤트 때만 서 있다가 사라진다 */
+const BOSS_MS = +process.env.BOSS_MS || 5 * 60 * 1000;
+/* 끝난(거둔·달아난) 적은 이만큼 뒤에 소식에서 아예 걷는다 — 보상을 받으러 올 틈만 남긴다 */
+const BOSS_KEEP = 30 * 60 * 1000;
 /* 때가 지난 것을 거둔다 — 읽을 때마다 한 번씩 */
 function expire(now) {
   let changed = false;
   if (live.event && live.eventUntil && now > live.eventUntil) { live.event = ''; changed = true; }
   if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
-  if (live.boss && !live.boss.done && !live.boss.fled && live.boss.until && now > live.boss.until) {
-    live.boss.fled = true; changed = true;
-    console.log('달아났다:', live.boss.n, '· 남은', live.boss.hp);
+  const b = live.boss;
+  if (b && !b.done && !b.fled) {
+    /* 끝나는 때(until)가 생기기 전에 세운 적은 until 이 없어 영원히 서 있었다.
+       세운 때(at)부터 BOSS_MS 가 지나면 무엇이든 거둔다 — 더 길게 적혀 있어도 줄인다 */
+    const born = +b.born || +b.at || 0;
+    const end = Math.min(+b.until || Infinity, born ? born + BOSS_MS : Infinity);
+    if (!born && !b.until) { b.fled = true; b.end = now; changed = true; }
+    else if (now > end) { b.fled = true; b.end = now; changed = true;
+      console.log('달아났다:', b.n, '· 남은', b.hp); }
+    else if (b.until !== end) { b.until = end; changed = true; }
   }
+  /* 끝난 지 오래된 적은 소식에서 걷는다 */
+  if (b && (b.done || b.fled) && now - (+b.end || +b.at || 0) > BOSS_KEEP) { live.boss = null; changed = true; }
   return changed;
 }
 
@@ -284,7 +295,7 @@ const server = http.createServer(async (req, res) => {
           hp: max, max,
           reward: str(q.boss.reward, 120),
           pay,
-          done: false, fled: false, at: Date.now(), until: Date.now() + BOSS_MS, hits: 0
+          done: false, fled: false, at: Date.now(), born: Date.now(), until: Date.now() + BOSS_MS, hits: 0
         };
         const c0 = await store();
         if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
@@ -332,7 +343,7 @@ const server = http.createServer(async (req, res) => {
         else { const s = mem.get(WHO_KEY); const set = s ? new Set(JSON.parse(s)) : new Set();
                if (set.size < 20000) { set.add(who); mem.set(WHO_KEY, JSON.stringify([...set])); } }
       }
-      if (b.hp <= 0 && !b.done) { b.done = true; b.at = Date.now();
+      if (b.hp <= 0 && !b.done) { b.done = true; b.end = Date.now();
         console.log('모두가 잡았다:', b.n, '· 친 횟수', b.hits); }
       live.at = Date.now();
       await keep();

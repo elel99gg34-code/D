@@ -17768,14 +17768,22 @@ function meId() {
   }
 }
 function worldBoss() { const b = LIVE.boss; return b && b.id ? b : null; }
+/* 모두의 적은 다섯 분만 선다. 서버가 늦게 거두거나, 끝나는 때(until)가 없이 세워진
+   옛 적이 남아 있어도 게임이 스스로 다섯 분에서 끊는다 — 들어올 때마다 끌려가던 것 */
+const BOSS_LIFE = 5 * 60 * 1000;
+function bossEnd(b) {
+  const born = +b.born || +b.at || 0;
+  if (!born && !b.until) return 0;                 /* 언제 섰는지 모르면 이미 끝난 것으로 */
+  return Math.min(+b.until || Infinity, born ? born + BOSS_LIFE + 5000 : Infinity);
+}
 function bossAlive() {
   const b = worldBoss();
-  return !!(b && !b.done && !b.fled && b.hp > 0 && !(b.until && srvNow() > b.until));
+  return !!(b && !b.done && !b.fled && b.hp > 0 && srvNow() < bossEnd(b));
 }
-function bossLeft() { const b = worldBoss(); return bossAlive() && b.until ? Math.max(0, b.until - srvNow()) : 0; }
+function bossLeft() { const b = worldBoss(); return bossAlive() ? Math.max(0, bossEnd(b) - srvNow()) : 0; }
 
 /* ── 모두의 적의 박자 ───────────────────────────────────────
-   서 있는 일곱 분 동안은 스테이지가 잠긴다. 지도에 서 있는 사람은
+   서 있는 다섯 분 동안은 스테이지가 잠긴다. 지도에 서 있는 사람은
    지도가 갈라지며 싸움터로 끌려간다. 저마다 제 앞의 한 조각과
    싸우고, 거기 넣은 피해가 모두의 체력에서 함께 깎인다.
    쓰러져도 등반은 끝나지 않는다 — 들어가기 전 체력으로 돌아와
@@ -18456,16 +18464,16 @@ function drawCast(grid) {
 
     <div class="castsec"><b>모두의 적 — 하늘을 가르는 것</b>
       <div class="casthint">세우면 모든 앱의 지도가 갈라지고, 지도에 선 사람은 모두 싸움터로
-        끌려간다. <b>일곱 분</b> 동안 서 있고 그동안 스테이지가 잠긴다. 저마다 제 앞의 한 조각과
+        끌려간다. <b>다섯 분</b> 동안만 서 있다가 사라지고, 그동안 스테이지가 잠긴다. 저마다 제 앞의 한 조각과
         싸우고, 넣은 피해가 아래 체력에서 함께 깎인다. 쓰러뜨리면 한 번이라도 친 사람만
         아래 보상을 받는다. 쓰러져도 등반은 끝나지 않는다.</div>
       <div class="castrow">
         <input id="ct_bn" maxlength="40" placeholder="이름" value="하늘을 가르는 것">
         <input id="ct_bg" maxlength="2" placeholder="글자" value="天" style="flex:0 0 70px">
-        <input id="ct_bmax" type="number" min="100" placeholder="체력" value="10000">
+        <input id="ct_bmax" type="number" min="100" placeholder="체력" value="7000">
       </div>
       <div class="casthint">체력 가늠 — 한 사람이 한 분에 대략 50~500 을 넣는다.
-        열 명이 일곱 분을 치면 1만 안팎.</div>
+        열 명이 다섯 분을 치면 7천 안팎.</div>
       <div class="castrow castpay">
         <label>정진<input id="ct_bjp" type="number" min="0" max="100000" value="300"></label>
         <label>골드<input id="ct_bgold" type="number" min="0" max="1000000" value="500"></label>
@@ -18573,7 +18581,7 @@ function drawCast(grid) {
     const num = id => Math.max(0, Math.floor(+grid.querySelector(id).value || 0));
     const pay = { jp: num('#ct_bjp'), gold: num('#ct_bgold'), dia: num('#ct_bdia'), cards: good };
     send({ boss: { n, g, max, pay, reward: grid.querySelector('#ct_brew').value.trim() } },
-         `모두의 적 「${n}」 — 일곱 분`);
+         `모두의 적 「${n}」 — 다섯 분`);
   };
   grid.querySelector('#ct_bosso').onclick = () => send({ boss: null }, '모두의 적 거두기');
   grid.querySelector('#ct_sendv').onclick = () => {
@@ -18863,7 +18871,7 @@ const NEWS = [
       누구의 산에나 한꺼번에 닿는다. 일은 <b>셋 분</b>만 산다 — 그때 산에 와 있던 이만 받는다.</p>
       <ul>
         <li><b>하늘을 가르는 것</b> — 지도가 두 쪽으로 찢기고 모두가 싸움터로 끌려간다.
-          <b>일곱 분</b> 동안 서 있고, 저마다 넣은 피해가 한 체력에서 함께 깎인다.
+          <b>다섯 분</b> 동안만 서 있다가 사라진다. 모두가 넣은 피해가 한 체력에서 함께 깎인다.
           쓰러뜨리면 한 번이라도 친 이만 보상을 받는다. 쓰러져도 등반은 끝나지 않는다.</li>
         <li><b>카드 대전</b> — 하늘에서 부적이 쏟아진다. 눌러서 골드·다이아·유물을 줍는다.
           그동안은 누구도 스테이지에 들어가지 못한다.</li>
