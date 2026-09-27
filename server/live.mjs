@@ -190,6 +190,81 @@ function tooMany(ip) {
   return recent.length > 20;
 }
 
+
+/* ══════════════════════════════════════════════════════════
+   값 치른 것을 확인한다 — 게임이 스스로 믿지 않게
+   ──────────────────────────────────────────────────────────
+   예전에는 결제창에서 돌아온 주소(order_id·request_id)만 보고
+   게임이 VIP·스킨을 내주었다. 주소는 누구나 손으로 적을 수 있다.
+   이제 서버가 결제 회사에 직접 물어 「정말 치렀는가」를 보고,
+   한 번 쓴 결제는 적어 두어 두 번 받지 못하게 한다.
+
+   설정 (Render 의 Environment 에서)
+     CREEM_API_KEY     Creem 대시보드의 API 키 (웹판 결제)
+     CREEM_TEST=1      시험 결제를 확인할 때
+     GOOGLE_PLAY_SA    Play 결제 — 구글 서비스 계정 JSON 한 덩어리
+   설정이 없으면 확인하지 않고 「준비 중」이라고만 답한다(내주지 않는다).
+   ══════════════════════════════════════════════════════════ */
+const PAY_PRODUCTS = {                                  /* 결제 회사의 상품 → 게임 속 물건 */
+  prod_1yYgNhC1QxUEf5YmAeqdPR: 'vip', prod_6KWjViSKaLkvPLOYjkhirx: 'skin',
+  vip_package: 'vip', skin_box: 'skin'
+};
+const PLAY_PKG = process.env.PLAY_PACKAGE || 'kr.baekgwi.game';
+/* 한 결제는 한 사람에게 한 번 — 누가 받았는지 적어 둔다 */
+async function payClaim(ref, who) {
+  const k = 'pay:' + ref, had = await get(k);
+  if (had && had.who && who && had.who !== who) return false;
+  if (!had) await put(k, { who: who || '', at: Date.now() });
+  return true;
+}
+async function creemCheck(checkoutId) {
+  const key = process.env.CREEM_API_KEY;
+  if (!key) return { ok: false, code: 503, why: '결제 확인이 아직 준비되지 않았다' };
+  const base = process.env.CREEM_BASE || (process.env.CREEM_TEST === '1' ? 'https://test-api.creem.io' : 'https://api.creem.io');
+  const r = await fetch(base + '/v1/checkouts?checkout_id=' + encodeURIComponent(checkoutId),
+                        { headers: { 'x-api-key': key } });
+  if (!r.ok) return { ok: false, code: 402, why: '그런 결제를 찾지 못했다 (' + r.status + ')' };
+  const c = await r.json();
+  const pid = c.product && typeof c.product === 'object' ? c.product.id : c.product;
+  const item = PAY_PRODUCTS[pid];
+  const paid = c.status === 'completed' || (c.order && (c.order.status === 'paid' || c.order.status === 'completed'));
+  if (!paid) return { ok: false, code: 402, why: '아직 값이 치러지지 않았다' };
+  if (!item) return { ok: false, code: 402, why: '모르는 물건이다' };
+  return { ok: true, item, qty: Math.max(1, Math.min(11, parseInt(c.units, 10) || 1)) };
+}
+/* 구글 — 서비스 계정으로 잠깐 쓰는 출입증을 받는다 */
+let _gTok = null;
+async function googleToken() {
+  if (_gTok && _gTok.exp > Date.now() + 60000) return _gTok.tok;
+  const sa = JSON.parse(process.env.GOOGLE_PLAY_SA);
+  const now = Math.floor(Date.now() / 1000);
+  const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
+  const head = b64({ alg: 'RS256', typ: 'JWT' });
+  const body = b64({ iss: sa.client_email, scope: 'https://www.googleapis.com/auth/androidpublisher',
+                     aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 });
+  const sig = crypto.createSign('RSA-SHA256').update(head + '.' + body).sign(sa.private_key).toString('base64url');
+  const r = await fetch('https://oauth2.googleapis.com/token', { method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + head + '.' + body + '.' + sig });
+  const j = await r.json();
+  if (!j.access_token) throw new Error('구글 출입증을 못 받았다');
+  _gTok = { tok: j.access_token, exp: Date.now() + (j.expires_in || 3600) * 1000 };
+  return _gTok.tok;
+}
+async function playCheck(productId, token) {
+  if (!process.env.GOOGLE_PLAY_SA) return { ok: false, code: 503, why: 'Play 결제 확인이 아직 준비되지 않았다' };
+  const t = await googleToken();
+  const u = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PLAY_PKG}` +
+            `/purchases/products/${encodeURIComponent(productId)}/tokens/${encodeURIComponent(token)}`;
+  const r = await fetch(u, { headers: { authorization: 'Bearer ' + t } });
+  if (!r.ok) return { ok: false, code: 402, why: '구글이 그런 결제를 모른다 (' + r.status + ')' };
+  const p = await r.json();
+  if (p.purchaseState !== 0) return { ok: false, code: 402, why: '값이 치러지지 않았다' };
+  const item = PAY_PRODUCTS[productId];
+  if (!item) return { ok: false, code: 402, why: '모르는 물건이다' };
+  return { ok: true, item, qty: 1 };
+}
+
 /* 모두의 적을 치는 손은 따로 센다.
    폰은 통신사 하나 아래 수많은 사람이 IP 하나를 나눠 쓴다(학교·집
    와이파이도 그렇다). 장부처럼 IP 로 분에 스무 번만 받으면 함께 치는
@@ -356,6 +431,38 @@ const server = http.createServer(async (req, res) => {
     }
     return send(res, 200, { ok: true, hp: b.hp, max: b.max, done: b.done, fled: !!b.fled,
                             until: b.until, now: Date.now(), hits: b.hits, mine });
+  }
+
+
+  /* ── 값 치른 것 확인 ───────────────────────────────────── */
+  if ((url.pathname === '/pay/creem' || url.pathname === '/pay/play') && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 묻는다' });
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 20000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    try {
+      if (url.pathname === '/pay/creem') {
+        const id = str(q.checkout_id, 80);
+        if (!id) return send(res, 400, { ok: false, why: '결제 번호가 없다' });
+        const c = await creemCheck(id);
+        if (!c.ok) return send(res, c.code, c);
+        if (!(await payClaim('creem:' + id, str(q.who, 64)))) return send(res, 409, { ok: false, why: '이미 다른 이가 받은 결제다' });
+        return send(res, 200, { ok: true, item: c.item, qty: c.qty, ref: id });
+      }
+      /* Play — cordova-plugin-purchase 의 validator 약속대로 답한다 */
+      const tr = q.transaction || {};
+      const token = str(tr.purchaseToken, 400), pid = str(q.id || tr.productId, 80);
+      if (!token || !pid) return send(res, 200, { ok: false, code: 6778001, message: '확인할 것이 없다' });
+      const c = await playCheck(pid, token);
+      if (!c.ok) return send(res, 200, { ok: false, code: 6778003, message: c.why });
+      if (!(await payClaim('play:' + token, str(q.who || (q.additionalData && q.additionalData.applicationUsername), 64))))
+        return send(res, 200, { ok: false, code: 6778003, message: '이미 다른 이가 받은 결제다' });
+      return send(res, 200, { ok: true, data: { id: pid, latest_receipt: true, transaction: tr } });
+    } catch (e) {
+      console.error('결제 확인 오류', e.message);
+      return send(res, 502, { ok: false, why: '결제 회사에 닿지 못했다' });
+    }
   }
 
   /* ── 장부 ──────────────────────────────────────────────── */

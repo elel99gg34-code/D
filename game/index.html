@@ -4481,6 +4481,9 @@ function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY))
   META.opt = Object.assign({}, OPT_DEF, META.opt || {});
   OPT = META.opt;
   META.vip = Object.assign({ owned: false, at: 0, freeBoxAt: 0 }, META.vip || {});
+  /* 예전에는 쓴 코드를 코드 그대로 적어 두었다 — 지문으로 옮긴다 */
+  if (META.codes) for (const c of Object.keys(META.codes))
+    if (!/^[0-9a-f]{64}$/.test(c)) { META.codes[codeKey(c)] = META.codes[c]; delete META.codes[c]; }
   META.skins = Object.assign({ own: {}, eq: {}, free: {} }, META.skins || {});
   META.skins.own = META.skins.own || {}; META.skins.eq = META.skins.eq || {};
   META.skins.free = META.skins.free || {};
@@ -17085,17 +17088,60 @@ function showMenu() {
 /* ── 설정 ────────────────────────────────────────────────── */
 const SCOPE_NAME = { battle: '전투만', run: '지도까지' };
 const PACE_NAME = { slow: '느긋', normal: '보통', fast: '빠름' };
+/* ── 지문(SHA-256) — 코드를 파일에 그대로 적지 않으려고 ──────
+   게임 파일은 누구나 열어 볼 수 있다(웹판). 코드를 그대로 적어 두면
+   관리자·퍼뜨리는 열쇠까지 다 보였다. 이제 파일에는 지문만 두고,
+   적은 코드의 지문을 떠서 견준다. 지문으로는 코드를 되살릴 수 없다. */
+function sha256(str) {
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,
+    0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,
+    0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,
+    0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,
+    0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const bytes = Array.from(new TextEncoder().encode(String(str)));
+  const L = bytes.length * 8;
+  bytes.push(0x80);
+  while (bytes.length % 64 !== 56) bytes.push(0);
+  for (let i = 7; i >= 0; i--) bytes.push(i >= 4 ? 0 : (L >>> (i * 8)) & 0xff);
+  let h = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const r = (x, n) => (x >>> n) | (x << (32 - n)), w = new Array(64);
+  for (let o = 0; o < bytes.length; o += 64) {
+    for (let i = 0; i < 16; i++) w[i] = (bytes[o + i * 4] << 24) | (bytes[o + i * 4 + 1] << 16) | (bytes[o + i * 4 + 2] << 8) | bytes[o + i * 4 + 3];
+    for (let i = 16; i < 64; i++) {
+      const s0 = r(w[i - 15], 7) ^ r(w[i - 15], 18) ^ (w[i - 15] >>> 3), s1 = r(w[i - 2], 17) ^ r(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    let [a, b, c, d, e, f, g, k] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 = (k + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+      const t2 = ((r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+      k = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+    }
+    const add = [a, b, c, d, e, f, g, k];
+    h = h.map((v, i) => (v + add[i]) | 0);
+  }
+  return h.map(v => (v >>> 0).toString(16).padStart(8, '0')).join('');
+}
+const codeKey = raw => sha256(String(raw || '').trim().toLowerCase());
+/* 관리자 · 퍼뜨리는 열쇠 · 맛보기 — 지문만 둔다 (예전 코드는 파일과 기록에 드러나 새로 바꿨다) */
+const ADMIN_H = '247d32b2dbfc8b32927e27c629138297f0ee0441b2598608653d2b0e9ac8e415';
+const CAST_H  = '6b9bfccda2c19aed37f9abae89b7d5a5bc51102835dd9dfe5bd3f27e3c6f949f';
+const TASTE_H = '08969be0aec9795c2512e2e22742dc356b62a9478ee43e0cf9999dacb9bedc78';
+const CASTKEY = 'baekgwi_castkey';     /* 퍼뜨리는 열쇠 — 그 열쇠를 적은 기계에만 남는다 */
+
 /* ══════════════════════════════════════════════════════════
-   코드 — 맛보기용. 제출 전에 이 덩어리째 지운다.
+   코드 — 열쇠는 코드의 지문(codeKey)이다. 코드 자체는 적지 않는다.
    ══════════════════════════════════════════════════════════ */
 const CODES = {
-  '031675mj-156fy': {
+  [ADMIN_H]: {
     n: '관리자',
     d: '관리자 창을 연다',
     give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '관리자 창'; }
   },
   /* 퍼뜨리는 열쇠 — 제 기계만이 아니라 남의 앱까지 건드린다 */
-  '0316051509127567hxx14tr4cdminjuvv1!!': {
+  [CAST_H]: {
     n: '관리자 (퍼뜨리기)',
     d: '관리자 창을 열고, 모든 앱에 일을 퍼뜨릴 수 있게 한다',
     give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '퍼뜨리는 권한'; }
@@ -17104,7 +17150,7 @@ const CODES = {
      너무 달다는 말을 들었다. 판을 건너뛰게 하는 몫이 아니라
      「한 발 거들어 주는」 정도로 낮췄다 — 특대급 상자는 뺐다.
      ────────────────────────────────────────────────────────── */
-  'baekgwi-welcome': {
+  'ff2acae1daa0c2fa52bed0f595b9dab0e58c4ef3d21660a29e2b3464d92680a1': {   /* baekgwi-welcome */
     n: '환영합니다',
     d: '첫걸음을 떼는 이에게 — 골드 150 · 정진 120 · 작은 상자 한 번',
     once: true,
@@ -17120,13 +17166,13 @@ const CODES = {
       return '골드 150 · 정진 120 · 작은 상자 1회';
     }
   },
-  'jeongjin1000': {
+  'c9a4d46df5577f0f15032144abf71ac6bd0d5ccca785ab6949179ebf749c7483': {   /* jeongjin1000 */
     n: '수행의 값',
     d: '정진 250',
     once: true,
     give() { META.jp = (META.jp || 0) + 250; saveMeta(); SND.unlock(); return '정진 250'; }
   },
-  'sasindo25': {
+  'ae1d159d754e5e9611e2fa5bfce12a25cd73220fafb7e2c70578cafd7fda8bd0': {   /* sasindo25 */
     n: '사신도의 부름',
     d: '2등급 부적 하나',
     once: true,
@@ -17140,7 +17186,7 @@ const CODES = {
       return CARDS[id].n;
     }
   },
-  'danobrother': {
+  '17b4218ea6f45cd86370d1aace32858ea3768cb83f3e8e138422ffcd47877afa': {   /* danobrother */
     n: '벗의 몫',
     d: '체력을 절반쯤 되찾고 골드 100',
     once: true,
@@ -17154,7 +17200,7 @@ const CODES = {
       return `체력 +${n} · 골드 100`;
     }
   },
-  'bigi-one': {
+  '0163e1cd67843abba8af34485ac9854faec788cc30a6c01fd9fa6506d91fab2c': {   /* bigi-one */
     n: '한 수',
     d: '비기 상자 한 번',
     once: true,
@@ -17165,7 +17211,7 @@ const CODES = {
       return '비기 하나';
     }
   },
-  'petfriend': {
+  '5d2a65d24fc78dfd0408b797e88774e1e120b6dfabdacacf05a7f31d3e5893b4': {   /* petfriend */
     n: '우리의 벗',
     d: '팻 뽑기 한 번',
     once: true,
@@ -17173,7 +17219,7 @@ const CODES = {
       META.pets.bonusPulls = (META.pets.bonusPulls || 0) + 1; saveMeta(); SND.unlock();
       return '팻 뽑기 1회'; }
   },
-  '0316bakgi75birt': {
+  [TASTE_H]: {
     n: '맛보기',
     d: '모든 부적과 모든 스킨을 준다',
     once: true,
@@ -18413,7 +18459,7 @@ async function castSend(patch) {
     const r = await fetch(LIVE_URL.replace(/\/live$/, '') + '/cast', {
       method: 'POST', signal: c.signal,
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(Object.assign({ code: BROADCAST_CODE }, patch))
+      body: JSON.stringify(Object.assign({ code: castKey() }, patch))
     });
     clearTimeout(t);
     const d = await r.json().catch(() => ({}));
@@ -18428,13 +18474,14 @@ async function castSend(patch) {
 }
 
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
-const ADMIN_CODE = '031675mj-156fy';
+
 /* 퍼뜨리는 권한을 가진 열쇠 — 이것을 쥔 사람만 남의 앱을 건드린다 */
-const BROADCAST_CODE = '0316051509127567hxx14tr4cdminjuvv1!!';
+
 /* 관리자 손잡이 — 개발용. 제출 전에 CODES 와 함께 지운다 */
 const ADMIN = { oneHit: false };
-function adminOn() { return !!(META.codes && (META.codes[ADMIN_CODE] || META.codes[BROADCAST_CODE])); }
-function caster() { return !!(META.codes && META.codes[BROADCAST_CODE]); }
+function adminOn() { return !!(META.codes && (META.codes[ADMIN_H] || META.codes[CAST_H])); }
+function castKey() { try { return localStorage.getItem(CASTKEY) || ''; } catch (e) { return ''; } }
+function caster() { return !!(META.codes && META.codes[CAST_H] && castKey()); }
 function showAdmin() {
   const run = G.run;
   const p = overlay(`<div class="school admin">
@@ -18814,7 +18861,7 @@ function showNews(startIdx) {
   p._esc = back;
   p.querySelector('#nw_back').onclick = () => { p._esc = null; back(); };
 }
-function newsCodeUsed(code) { return !!(code && META.codes && META.codes[code]); }
+function newsCodeUsed(code) { return !!(code && META.codes && META.codes[codeKey(code)]); }
 /* ══════════════════════════════════════════════════════════
    값 치르기(創) — Creem 결제
    ──────────────────────────────────────────────────────────
@@ -18840,7 +18887,7 @@ function newsCodeUsed(code) { return !!(code && META.codes && META.codes[code]);
 const CREEM = {
   test: true,                                /* 시험 결제창을 쓸 것인가 */
   prod: { skin: 'prod_6KWjViSKaLkvPLOYjkhirx', vip: 'prod_1yYgNhC1QxUEf5YmAeqdPR' },
-  verify: '',                                /* 확인 서버 주소 (Cloudflare Worker) */
+  verify: LIVE_URL ? LIVE_URL.replace(/\/live$/, '') : '',   /* 값 치른 것을 확인하는 서버 */
   back: location.origin + location.pathname  /* 값을 치르고 돌아올 자리 */
 };
 function creemUrl(key, qty) {
@@ -18912,25 +18959,21 @@ function playInit() {
   ]);
   /* 값이 치러졌다 — 물건을 내어 주고 구글에 「받았다」고 알린다.
      알리지 않으면 사흘 뒤 구글이 저절로 물러 준다. */
+  /* 값이 치러지면 서버가 구글에 직접 물어 확인한다(validator). 확인된 것만 내준다 —
+     예전에는 폰이 「치렀다」고 하면 그대로 내줬다. 지난 VIP 도 이 길로 되살아난다. */
+  if (CREEM.verify) store.validator = CREEM.verify + '/pay/play';
+  try { store.applicationUsername = () => meId(); } catch (e) {}
   const w = typeof store.when === 'function' ? store.when() : null;
   if (w && typeof w.approved === 'function') {
-    const chain = w.approved(t => {
-      try { playGrant(t); } catch (e) { console.error('물건 내주기', e); }
-      try { t.verify(); } catch (e) { try { t.finish(); } catch (x) {} }
-    });
+    const chain = w.approved(t => { try { t.verify(); } catch (e) { console.error('확인 부탁', e); } });
     if (chain && typeof chain.verified === 'function') {
-      const c2 = chain.verified(r => { try { r.finish(); } catch (e) {} });
-      /* 지난 것을 되살린다 — 기기를 바꿔도 VIP 는 따라온다 */
-      if (c2 && typeof c2.receiptUpdated === 'function') c2.receiptUpdated(r => {
-        try {
-          for (const t of (r && r.transactions) || [])
-            for (const p of (t && t.products) || [])
-              if (p.id === PLAY_SKU.vip && !META.vip.owned) {
-                META.vip.owned = true; META.vip.at = Date.now(); saveMeta();
-              }
-        } catch (e) { console.error('되살리기', e); }
+      chain.verified(r => {
+        try { for (const t of (r && r.transactions) || []) playGrant(t); } catch (e) { console.error('물건 내주기', e); }
+        try { r.finish(); } catch (e) {}
       });
     }
+    if (chain && typeof chain.unverified === 'function')
+      chain.unverified(() => toast('구글 결제를 확인하지 못했다 — 잠시 뒤 다시 켜 보시오'));
   }
   const r = store.initialize([CP.Platform.GOOGLE_PLAY]);
   if (r && typeof r.then === 'function') {
@@ -18940,15 +18983,14 @@ function playInit() {
 }
 /* 한 거래에 담긴 물건을 실제로 내어 준다 */
 function playGrant(t) {
+  META.orders = META.orders || {};
+  const ref = 'play:' + (t.transactionId || t.purchaseId || '');
+  if (ref !== 'play:' && META.orders[ref]) return;   /* 같은 거래로 두 번은 안 된다 */
   for (const p of t.products || []) {
-    if (p.id === PLAY_SKU.vip) {
-      if (!META.vip.owned) { META.vip.owned = true; META.vip.at = Date.now(); saveMeta();
-        toast('VIP 가 되었다'); SND.bell(); }
-    } else if (p.id === PLAY_SKU.skin) {
-      META.owedSkins = (META.owedSkins || 0) + 1; saveMeta();
-      toast('스킨 뽑기 1회가 들어왔다'); SND.bell();
-    }
+    if (p.id === PLAY_SKU.vip) payGive('vip', 1);
+    else if (p.id === PLAY_SKU.skin) payGive('skin', 1);
   }
+  if (ref !== 'play:') { META.orders[ref] = Date.now(); saveMeta(); }
   renderTop && renderTop();
 }
 /* 산다 — 스킨 11회는 물건 하나를 열한 번 사는 것으로 친다 */
@@ -19036,33 +19078,43 @@ function askKrw(name, price, qty) {
 async function creemReturn() {
   if (DEMO) return;                  /* 체험판은 값을 받지 않으니 돌아올 일도 없다 */
   let q;
-  try { q = new URLSearchParams(location.search); } catch (e) { return; }
-  const order = q.get('order_id'), req = q.get('request_id');
-  if (!order) return;
-  META.orders = META.orders || {};
-  if (META.orders[order]) return;            /* 같은 주문으로 두 번은 안 된다 */
-  let key, qty;
-  if (CREEM.verify) {
-    /* 서버에 물어본다 — 서명이 맞고 처음 보는 주문일 때만 참이라 한다 */
-    try {
-      const r = await fetch(CREEM.verify.replace(/\/$/, '') + '/verify', {
-        method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          checkout_id: q.get('checkout_id'), order_id: order,
-          product_id: q.get('product_id'), customer_id: q.get('customer_id'),
-          request_id: req, signature: q.get('signature')
-        })
-      });
-      const j = await r.json();
-      if (!j || !j.ok) { toast('값 치른 것을 확인하지 못했다'); return; }
-      key = j.item; qty = Math.max(1, Math.min(11, j.qty || 1));
-    } catch (e) { console.error('결제 확인 오류', e); toast('확인 서버에 닿지 못했다'); return; }
-  } else {
-    const parts = String(req || '').split(':');
-    key = parts[0]; qty = Math.max(1, Math.min(11, parseInt(parts[1], 10) || 1));
+  try { q = new URLSearchParams(location.search); } catch (e) { q = null; }
+  META.payPending = META.payPending || {};
+  const ck = q && q.get('checkout_id');
+  if (ck) {
+    META.payPending[ck] = Date.now(); saveMeta();
+    /* 주소에서 결제 자국을 지운다 — 새로 고쳐도 다시 묻지 않게 */
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
   }
-  META.orders[order] = Date.now();
+  /* 주소만 보고 내주지 않는다 — 누구나 주소를 손으로 적을 수 있다.
+     서버가 결제 회사에 직접 물어 치른 것이 맞을 때만 내준다.
+     서버가 준비 안 됐거나 닿지 않으면 쥐고 있다가 다음에 켤 때 다시 묻는다. */
+  for (const id of Object.keys(META.payPending)) {
+    META.orders = META.orders || {};
+    if (META.orders[id]) { delete META.payPending[id]; continue; }
+    if (!CREEM.verify) { toast('결제 확인 서버가 없다 — 관리자에게 알려 주시오'); return; }
+    let j = null, code = 0;
+    try {
+      const r = await fetch(CREEM.verify + '/pay/creem', { method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ checkout_id: id, who: meId() }) });
+      code = r.status; j = await r.json().catch(() => null);
+    } catch (e) { toast('결제 확인 서버에 닿지 못했다 — 다음에 켤 때 다시 묻는다'); return; }
+    if (!j || !j.ok) {
+      if (code === 503 || code === 502 || code === 429) { toast('결제를 확인하는 중이다 — 다음에 켤 때 다시 묻는다'); return; }
+      delete META.payPending[id]; saveMeta();
+      toast('값 치른 것을 확인하지 못했다' + (j && j.why ? ' — ' + j.why : '')); continue;
+    }
+    delete META.payPending[id];
+    META.orders[id] = Date.now();
+    payGive(j.item, j.qty || 1);
+  }
+  saveMeta();
+}
+/* 확인된 결제의 물건을 내준다 — 웹(Creem)과 폰(Play)이 같이 쓴다 */
+function payGive(key, qty) {
   if (key === 'vip') {
+    if (META.vip.owned) return;
     META.vip.owned = true; META.vip.at = Date.now(); META.vip.freeBoxAt = 0;
     saveMeta();
     setTimeout(() => { try { unlockAuto(true); applyVipRun(); renderTop(); syncAuto(); } catch (e) {}
@@ -19073,20 +19125,20 @@ async function creemReturn() {
     META.owedSkins = (META.owedSkins || 0) + qty;
     saveMeta();
     setTimeout(() => toast(`스킨 상자 ${qty}회를 치렀다 — 뽑기에서 연다`), 700);
-  } else { saveMeta(); return; }
-  saveMeta();
-  /* 주소에서 결제 자국을 지운다 — 새로 고쳐도 다시 받지 않게 */
-  try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  }
 }
 
 function redeemCode(raw) {
-  const k = String(raw || '').trim().toLowerCase();
-  if (!k) return { ok: false, msg: '코드를 적으시오' };
+  const plain = String(raw || '').trim();
+  if (!plain) return { ok: false, msg: '코드를 적으시오' };
+  const k = codeKey(plain);
   const c = CODES[k];
   if (!c) return { ok: false, msg: '없는 코드다' };
   META.codes = META.codes || {};
   if (c.once && META.codes[k]) return { ok: false, msg: '이미 쓴 코드다' };
   META.codes[k] = Date.now(); saveMeta();
+  /* 퍼뜨리는 열쇠는 서버에 보여 줘야 하므로 이 기계에만 적어 둔다 */
+  if (k === CAST_H) { try { localStorage.setItem(CASTKEY, plain.toLowerCase()); } catch (e) {} }
   let got = c.give();
   saveMeta();
   const tb = $('#topbar'); if (tb && G.run) { tb.remove(); renderTop(); }   /* 관리자 단추가 바로 보이도록 */
