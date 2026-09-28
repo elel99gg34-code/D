@@ -3499,12 +3499,48 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .evt-rain .streak{inset:-20% 0 0 0;background:repeating-linear-gradient(105deg,rgba(200,255,240,.09) 0 1px,transparent 1px 18px);
   animation:evStreak .6s linear infinite}
 @keyframes evStreak{to{transform:translate(-5px,18px)}}
+/* 긍정 혼란 — 무지갯빛 */
+.evs-joy{background:linear-gradient(135deg,#ffd1f0,#ffe9a8 25%,#c8ffd8 50%,#bfe4ff 75%,#e6caff);background-size:300% 300%;animation:evJoyBg 8s ease-in-out infinite}
+@keyframes evJoyBg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.evs-joy .rainbow{left:50%;top:68%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;border-radius:50%;opacity:.55;
+  background:radial-gradient(circle,transparent 38%,#ff4d6d 38.5%,#ff4d6d 40%,#ff9f1c 40%,#ff9f1c 41.5%,#ffe14d 41.5%,#ffe14d 43%,
+    #3ddc84 43%,#3ddc84 44.5%,#3aa8ff 44.5%,#3aa8ff 46%,#5b5bff 46%,#5b5bff 47.5%,#b44dff 47.5%,#b44dff 49%,transparent 49.5%);
+  filter:blur(2px);animation:evPulse 4s ease-in-out infinite}
+.evs-joy .rainbow.r2{top:74%;opacity:.25;filter:blur(8px);animation-delay:-2s}
+.evs-joy .glow{left:50%;top:30%;width:60vmax;height:60vmax;margin:-30vmax 0 0 -30vmax;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.75),rgba(255,255,255,0) 65%)}
+.evs-joy .bub{bottom:-12%;width:var(--s);height:var(--s);border-radius:50%;border:1.5px solid rgba(255,255,255,.8);
+  background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.9),rgba(255,160,230,.25) 40%,rgba(120,200,255,.2));
+  animation:evBub var(--d) linear infinite;animation-delay:var(--w)}
+@keyframes evBub{to{transform:translateY(-125vh) translateX(30px)}}
+.evt-joy .wash{inset:0;background:linear-gradient(90deg,#ff4d6d,#ff9f1c,#ffe14d,#3ddc84,#3aa8ff,#b44dff,#ff4d6d);background-size:200% 100%;
+  opacity:.16;mix-blend-mode:color;animation:evJoyWash 5s linear infinite}
+@keyframes evJoyWash{to{background-position:200% 0}}
+.evt-joy .conf{top:-3%;width:7px;height:12px;background:var(--c);border-radius:2px;opacity:.9;animation:evConf var(--d) linear infinite;animation-delay:var(--w)}
+@keyframes evConf{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--x),110vh) rotate(720deg)}}
+/* 저주의 밤 — 붉은 달 */
+.evs-night{background:linear-gradient(#0a0206 0%,#1e0610 40%,#3a0a16 75%,#12040a 100%)}
+.evs-night .bmoon{left:62%;top:8%;width:110px;height:110px;border-radius:50%;
+  background:radial-gradient(circle at 40% 38%,#ff9a7a,#d0304a 55%,#7a0e22);box-shadow:0 0 60px 20px rgba(220,40,60,.45),0 0 160px 60px rgba(160,10,40,.25);
+  animation:evPulse 5s ease-in-out infinite}
+.evs-night .fog{left:-20%;right:-20%;top:55%;height:30%;background:radial-gradient(ellipse at 50% 50%,rgba(120,20,40,.45),transparent 70%);
+  filter:blur(14px);animation:evFog 16s ease-in-out infinite}
+.evs-night .fog.f2{top:40%;height:22%;opacity:.7;animation-duration:22s;animation-direction:reverse}
+@keyframes evFog{50%{transform:translateX(8%)}}
+.evs-night .crow{left:-10%;font-size:14px;color:#050103;letter-spacing:-4px;text-decoration:none;animation:evCrow var(--d) linear infinite;animation-delay:var(--w)}
+@keyframes evCrow{0%{transform:translateX(0) translateY(0)}50%{transform:translateX(60vw) translateY(-14px)}100%{transform:translateX(125vw) translateY(0)}}
+.evs-night .eyes{width:16px;height:4px;text-decoration:none;
+  background:radial-gradient(circle at 20% 50%,#ff2a3a 0 2px,transparent 2.5px),radial-gradient(circle at 80% 50%,#ff2a3a 0 2px,transparent 2.5px);
+  filter:drop-shadow(0 0 4px #ff2a3a);opacity:0;animation:evEyes 6s ease-in-out infinite;animation-delay:var(--w)}
+@keyframes evEyes{0%,40%,100%{opacity:0}48%,70%{opacity:.9}52%{opacity:0}56%{opacity:.9}}
+.evt-night .wash{inset:0;background:linear-gradient(rgba(120,10,30,.22),rgba(40,0,10,.45));mix-blend-mode:multiply}
 @media (prefers-reduced-motion:reduce){.evsky *,.evtint *{animation:none!important}}
 /* 어두운 하늘 위에서는 먹 글씨가 묻힌다 — 싸움터의 글씨를 밝힌다 */
 #field.world .unit .body .glyph{color:#f2e6cc;text-shadow:0 0 10px rgba(255,110,80,.55),0 2px 4px #000}
 #field.world .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
 body.evdark #field .unit .body .glyph{color:#f2e6cc;text-shadow:0 0 10px rgba(160,190,255,.5),0 2px 4px #000}
 body.evdark #field .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
+body.evdark #maphead,body.evdark #maphead .actsub{color:#e9dfc9;text-shadow:0 1px 4px #000}
 /* 하늘을 가르는 것의 자리 — 틈이 숨 쉬고, 조각이 떠 흔들리고, 불티가 오른다 */
 .wbbg .wbcore{animation:wbCore 2.6s ease-in-out infinite}
 .wbbg .wbrift,.wbbg .wbglow{animation:wbGlow 2.6s ease-in-out infinite}
@@ -3650,6 +3686,37 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
 .scitem small{color:#e8c86a}
 .scitem em{display:block;font-style:normal;color:#9a8d74;font-size:11px;margin-top:3px;line-height:1.5}
 .scitem.done{opacity:.55}
+/* 관리자 — 투표 보기 칸 */
+.pollin{display:flex;flex-direction:column;gap:5px}
+.pollin label{display:flex;align-items:center;gap:6px}
+.pollin label b{font-weight:400;color:#e8c86a;width:18px}
+.pollin label .ct_po{flex:1;min-width:0;background:rgba(12,10,8,.7);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:6px 8px;font:inherit;font-size:13px}
+.pollin label em{font-style:normal;font-size:10.5px;color:#8a7f68}
+/* 숨은 부적 — 거의 보이지 않다가 이따금 반짝인다 */
+.huntspot{position:absolute;z-index:3;width:30px;height:30px;margin:-15px 0 0 -15px;border:none;background:none;padding:0;cursor:pointer}
+.huntspot i{display:grid;place-items:center;width:100%;height:100%;font-style:normal;font-size:19px;color:#7fe6cf;
+  opacity:.1;text-shadow:0 0 6px rgba(127,230,207,.5);animation:huntGlint 5.5s ease-in-out infinite;animation-delay:var(--w)}
+@keyframes huntGlint{0%,78%,100%{opacity:.1;transform:scale(1)}84%{opacity:.85;transform:scale(1.3) rotate(8deg)}90%{opacity:.15}}
+.huntspot.found i{opacity:1;animation:none;transform:scale(1.5)}
+/* 투표 · 퀴즈 */
+button.evpill{font:inherit;cursor:pointer}
+.pollq{max-width:440px;margin:10px auto 4px;font-size:16px;line-height:1.6;color:#f3ead4;text-align:center}
+.pollopts{display:flex;flex-direction:column;gap:8px;width:min(420px,84vw);margin:10px auto}
+.pollopt{display:flex;align-items:center;gap:10px;font:inherit;text-align:left;cursor:pointer;padding:10px 12px;border-radius:5px;
+  border:1.5px solid #6a604c;background:rgba(20,16,12,.8);color:#efe4cb;font-size:14px}
+.pollopt:hover:not(:disabled){border-color:#e8c86a;background:rgba(60,48,20,.8)}
+.pollopt:disabled{cursor:default;opacity:.7}
+.pollopt.on{border-color:#7fe6cf;background:rgba(20,70,60,.8);opacity:1}
+.pollopt b{font-weight:400;color:#e8c86a;font-size:16px}
+.pollres{display:flex;flex-direction:column;gap:7px;width:min(440px,86vw);margin:10px auto}
+.pollrow{position:relative;padding:8px 10px;border:1px solid #4e4738;border-radius:4px;overflow:hidden;font-size:13px;color:#e9dfc9;text-align:left}
+.pollrow i{position:absolute;left:0;top:0;bottom:0;background:rgba(232,200,106,.18);z-index:0}
+.pollrow span,.pollrow u{position:relative;z-index:1}
+.pollrow u{float:right;text-decoration:none;color:#c8bda3;font-variant-numeric:tabular-nums}
+.pollrow.ans{border-color:#7fe6cf}
+.pollrow.ans i{background:rgba(127,230,207,.25)}
+.pollrow b{font-weight:400;color:#7fe6cf;font-size:11px;border:1px solid;border-radius:3px;padding:0 4px;margin-left:4px}
+.pollrow em{font-style:normal;color:#e8c86a;font-size:11px;margin-left:4px}
 /* 관리자 — 지금 접속 */
 .castonline{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid rgba(138,255,208,.35);border-radius:5px;
   background:rgba(20,60,46,.35)}
@@ -4825,10 +4892,23 @@ var SONGS = {
     ch: ['Am7', 'Fmaj7', 'C', 'G', 'Am7', 'Fmaj7', 'C', 'G'],
     mel: ['E5 - - - C5 - D5 -', 'A4 - - - - - . .', 'G4 - C5 - E5 - G5 -', 'D5 - - - - - . .',
           'A5 - G5 - E5 - D5 -', 'C5 - - - A4 - - -', 'C5 - D5 - E5 - G5 -', 'A5 - - - - - . .'],
-    bass: 'x.......x...x...', kick: 'x.........x.....', hat: '..x...x...x...x.', arp: 'x...x...x...x...', arpInst: 'geo' }
+    bass: 'x.......x...x...', kick: 'x.........x.....', hat: '..x...x...x...x.', arp: 'x...x...x...x...', arpInst: 'geo' },
+  /* 무지개 — 네 박마다 북, 뒷박 찰박, 통통 튀는 옥타브 베이스, 반짝이 아르페지오, 손뼉 */
+  joy: { n: '무지개 대소동', g: '樂', d: '엄청 신나게 — 긍정 혼란에', bpm: 158, lead: 'sq', pad: 1,
+    ch: ['C', 'G', 'Am', 'F', 'C', 'G', 'F', 'G'],
+    mel: ['E5 G5 C6 - G5 E5 G5 A5', 'G5 - D5 - B4 D5 G5 -', 'A5 G5 E5 C5 E5 - A5 -', 'F5 A5 C6 A5 G5 F5 E5 D5',
+          'E5 - G5 - C6 - E6 -', 'D6 C6 B5 G5 D5 G5 B5 D6', 'C6 A5 F5 A5 C6 - D6 C6', 'B5 - D6 - G6 - - .'],
+    bass: 'x.o.x.o.x.o.x.o.', bassInst: 'saw', kick: 'X...x...X...x...', snare: '....x.......x...', hat: '..x...x...x...x.',
+    clap: '....x.......x..x', arp: 'xxxxxxxxxxxxxxxx', arpInst: 'pluck', sparkle: 1 },
+  /* 붉은 달 — 느리고 무겁게, 대금이 떨고 큰북이 멀리서 */
+  night: { n: '붉은 달', g: '咒', d: '으스스하게 — 저주의 밤에', bpm: 84, lead: 'daeg', pad: 2,
+    ch: ['Am', 'F', 'Dm', 'E', 'Am', 'F', 'Dm', 'E'],
+    mel: ['A4 - - - C5 - B4 -', 'A4 - - - - - . .', 'D5 - F5 - E5 - D5 -', 'G#4 - - - - - . .',
+          'E5 - - - F5 - E5 -', 'C5 - - - A4 - - -', 'D5 - C5 - B4 - A4 -', 'G#4 - B4 - E5 - . .'],
+    bass: 'x.......x.....x.', taiko: 'X.......x.....x.', hat: '......x.......x.', sparkle: 0 }
 };
 /* 이벤트마다 제 노래 */
-var EV_SONG = { star: 'star', chaos: 'chaos', gold: 'fest', rain: 'rain' };
+var EV_SONG = { star: 'star', chaos: 'chaos', gold: 'fest', rain: 'rain', joy: 'joy', night: 'night' };
 var SONG = {
   cur: '', timer: 0, step: 0, next: 0, bus: null,
   NOTE: { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 },
@@ -4906,6 +4986,7 @@ var SONG = {
     const sn = at(S.snare, s); if (sn !== '.') this.snare(t);
     const h = at(S.hat, s); if (h !== '.') this.hat(t, s % 4 === 2 ? 1 : .6);
     const tk = at(S.taiko, s); if (tk !== '.') this.taiko(t, tk === 'X' ? 1.3 : 1);
+    const cl = at(S.clap, s); if (cl !== '.') { this.noiseHit(t, 'bandpass', 1500, 1.2, .07, .12); this.noiseHit(t + .012, 'bandpass', 1700, 1.2, .05, .1); }
     const j = at(S.jang, s); if (j === 'k' || j === 'd') this.jang(t, j);
     /* 아르페지오 — 화음을 오르내린다 */
     if (S.arp && at(S.arp, s) === 'x') {
@@ -6671,6 +6752,13 @@ function rewardCards(n, boost) {
     n += 1;
     boost = rnd() < .5 ? (boost || 'elite') : null;
   }
+  /* 긍정 혼란 — 장수는 늘고 등급은 위로만 */
+  if (typeof evOn === 'function' && evOn('joy')) {
+    n += 1;
+    boost = boost ? 'boss' : rnd() < .5 ? 'boss' : 'elite';
+  }
+  /* 저주의 밤 — 한 단 위 */
+  if (typeof evOn === 'function' && evOn('night')) boost = boost ? 'boss' : 'elite';
   const w = gradeWeights(boost);
   const out = [];
   let guard = 0;
@@ -9394,6 +9482,8 @@ function startBattle(enemyIds, kind, opts) {
   /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
   const es = kind === 'arena' || kind === 'world' ? 1 : endSoft(run.act);
   if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
+  /* 저주의 밤 — 등반의 요괴만 사나워진다 (모두의 적·겨루는 마당은 그대로) */
+  if (evOn('night') && (kind === 'normal' || kind === 'elite' || kind === 'boss')) sc = { hp: sc.hp * 1.3, dmg: sc.dmg * 1.2 };
   const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
@@ -13484,7 +13574,7 @@ function showRewards(kind) {
   const vm = vipOn() ? 1.2 : 1;               /* VIP 은 전리품이 두둑하다 */
   /* 퍼뜨린 일이 걸려 있으면 여기서만 셈이 달라진다 — 싸움 자체는
      건드리지 않는다. 남의 판을 흔드는 일이니 더해 주기만 한다. */
-  const em = evOn('gold') ? 2 : 1;
+  const em = evOn('gold') || evOn('night') ? 2 : 1;          /* 풍년 · 저주의 밤 — 곱절 */
   const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act);   /* 환생할수록, 막이 오를수록 두둑하다 */
   const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act);
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
@@ -18013,7 +18103,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 5;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 6;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -18053,6 +18143,18 @@ const WORLD = {
     d: '하늘에서 부적이 쏟아진다. 눌러서 줍는다 — 골드·다이아·유물·물약·정진. ' +
        '그동안은 누구도 스테이지에 들어갈 수 없다.',
     say: '부적이 쏟아진다'
+  },
+  /* 긍정 혼란 — 혼돈의 밝은 쪽만. 무지갯빛 하늘과 신나는 노래 */
+  joy: {
+    n: '긍정 혼란', g: '樂', c: '#ff7ad9',
+    d: '온 세상이 무지갯빛으로 들뜬다. 싸움 뒤에 고를 부적이 한 장 늘고, 그 등급은 위로만 널뛴다.',
+    say: '하늘이 무지개로 들끓는다'
+  },
+  /* 저주의 밤 — 요괴가 사나워지는 대신 거두는 것이 곱절 */
+  night: {
+    n: '저주의 밤', g: '咒', c: '#e0566a',
+    d: '붉은 달이 뜬다. 요괴가 사나워지지만(체력 1.3배 · 치는 힘 1.2배) 싸움에서 얻는 골드·다이아가 곱절이고, 보상 부적의 등급이 한 단 오른다.',
+    say: '붉은 달이 떴다 — 요괴가 날뛴다'
   }
 };
 /* 서버 시각 — 폰 시계가 틀려도 모두가 같은 셋 분을 겪게 한다 */
@@ -18111,6 +18213,8 @@ async function liveFetch() {
     LIVE.apk = String(d.apk || '').slice(0, 300);
     LIVE.gift = d.gift && typeof d.gift === 'object' ? d.gift : null;
     LIVE.music = d.music && typeof d.music === 'object' ? d.music : null;    /* 관리자가 튼 노래 */
+    LIVE.hunt = d.hunt && typeof d.hunt === 'object' ? d.hunt : null;       /* 숨은 부적 찾기 */
+    LIVE.poll = d.poll && typeof d.poll === 'object' ? d.poll : null;       /* 투표 · 퀴즈 */
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
@@ -18120,6 +18224,7 @@ async function liveFetch() {
     noticeShow();
     if (LIVE.event !== was.e && liveEvent()) eventAnnounce(liveEvent());
     if (LIVE.rain && LIVE.rain.at !== was.r && liveRain()) eventAnnounce('rain');
+    try { huntAnnounce(); pollCheck(); } catch (e) { console.error('찾기·투표', e); }
     try { giftCheck(); } catch (e) { console.error('선물', e); }
     guestInbox().catch(() => {});
     try { bossWatch(); }  catch (e) { console.error('모두의 적', e); }
@@ -18350,6 +18455,203 @@ function noticeShow() {
    두 번 받지 못하게 한다. 판을 돌고 있으면 그 자리에서 덱에
    들어가고, 아니면 다음 등반이 시작될 때 딸려 온다.
    ══════════════════════════════════════════════════════════ */
+/* ── 받을 것을 내준다 — 숨은 부적·투표가 함께 쓴다 ────────── */
+function payOut(pay) {
+  const q = pay || {}, gold = Math.max(0, +q.gold || 0), dia = Math.max(0, +q.dia || 0), jp = Math.max(0, +q.jp || 0);
+  const cards = (Array.isArray(q.cards) ? q.cards : []).filter(id => CARDS[id]);
+  META.jp = (META.jp || 0) + jp; META.jpTotal = (META.jpTotal || 0) + jp;
+  if (G.run) {
+    G.run.gold += gold; G.run.dia = (G.run.dia || 0) + dia;
+    for (const id of cards) { G.run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
+    saveRun(); renderTop();
+  } else {
+    META.giftGold = (META.giftGold || 0) + gold; META.giftDia = (META.giftDia || 0) + dia;
+    if (cards.length) META.giftBag = (META.giftBag || []).concat(cards).slice(0, 40);
+  }
+  saveMeta();
+  return [gold ? '골드 ' + gold : '', dia ? '다이아 ' + dia : '', jp ? '정진 ' + jp : '', cards.length ? '부적 ' + cards.map(id => CARDS[id].n).join('·') : '']
+    .filter(Boolean).join(' · ') || '없음';
+}
+const payText = pay => { const q = pay || {};
+  return [q.gold ? '골드 ' + q.gold : '', q.dia ? '다이아 ' + q.dia : '', q.jp ? '정진 ' + q.jp : '',
+          (q.cards || []).filter(id => CARDS[id]).length ? '부적 ' + q.cards.filter(id => CARDS[id]).map(id => CARDS[id].n).join('·') : ''].filter(Boolean).join(' · ') || '없음'; };
+
+/* ══════════════════════════════════════════════════════════
+   숨은 부적 찾기 — 지도 어딘가에 희미한 부적이 숨는다
+   ──────────────────────────────────────────────────────────
+   부적은 저마다의 지도에 따로 숨는다(지도가 사람마다 다르다). 거의 보이지
+   않다가 몇 셈마다 한 번 반짝인다. 누르면 서버에 알리고, 먼저 찾은 max 명만
+   받는다(한 아이디에 한 번). 지도에 있을 때만 보인다.
+   ══════════════════════════════════════════════════════════ */
+let _huntSeen = 0, _huntPos = null, _huntBusy = false;
+function huntLive() {
+  const h = LIVE.hunt;
+  return h && h.id && srvNow() < (+h.until || 0) && (+h.found || 0) < (+h.max || 0) ? h : null;
+}
+function huntAnnounce() {
+  const h = huntLive();
+  if (!h || h.id === _huntSeen) return;
+  _huntSeen = h.id;
+  META.huntGot = META.huntGot || {};
+  if (META.huntGot[h.id]) return;
+  try { SND.bell(); } catch (e) {}
+  const p = modal(`<h2 style="color:#7fe6cf">符 숨은 부적 찾기</h2>
+    <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
+      <b style="color:#7fe6cf">지도 어딘가에 희미한 부적 하나가 숨었다.</b><br>
+      거의 보이지 않다가 이따금 반짝인다. 지도를 이리저리 살펴 찾아 누르시오.<br>
+      먼저 찾은 <b style="color:#e8c86a">${h.max}명</b>만 받는다 — ${wTime(h.until - srvNow())} 안에.<br>
+      <span style="color:#e8c86a">${payText(h.pay)}</span>
+    </div>
+    <div style="margin-top:14px"><button class="brush-btn gold" id="hu_ok">찾으러 간다</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#hu_ok').onclick = () => { closeTop(); if (G.run && G.scene !== 'map' && !G.b) showMap(); };
+}
+function huntTick() {
+  const h = huntLive(), got = h && META.huntGot && META.huntGot[h.id];
+  /* 띠 — 몇 명이 찾았고 얼마 남았나 */
+  let pill = $('#huntpill');
+  if (!h) { if (pill) pill.remove(); }
+  else {
+    if (!pill) { pill = el('div', 'evpill hunt'); pill.id = 'huntpill'; pill.style.setProperty('--ec', '#7fe6cf'); document.body.appendChild(pill); }
+    pill.innerHTML = `<i>符</i><b>${got ? '찾았다' : '숨은 부적'}</b><em>${h.found}/${h.max} · ${wTime(h.until - srvNow())}</em>`;
+    pill.style.top = `calc(var(--tbh,44px) + ${6 + 38 * document.querySelectorAll('.evpill:not(.hunt):not(.poll)').length}px + env(safe-area-inset-top,0px))`;
+  }
+  /* 지도에 숨긴다 */
+  const inner = $('#mapinner');
+  let spot = $('#huntspot');
+  if (!h || got || G.scene !== 'map' || !inner || G.b) { if (spot) spot.remove(); return; }
+  if (spot && spot.parentNode === inner) return;
+  if (!_huntPos || _huntPos.id !== h.id || _huntPos.w !== inner.offsetWidth) {
+    const W = inner.offsetWidth, H = inner.offsetHeight;
+    const nodes = [...inner.querySelectorAll('.mapnode')].map(n => [n.offsetLeft + n.offsetWidth / 2, n.offsetTop + n.offsetHeight / 2]);
+    let x = 0, y = 0;
+    for (let i = 0; i < 40; i++) {
+      x = W * (.06 + Math.random() * .88); y = H * (.08 + Math.random() * .84);
+      if (nodes.every(([a, b]) => Math.hypot(a - x, b - y) > 46)) break;
+    }
+    _huntPos = { id: h.id, w: W, x, y };
+  }
+  spot = el('button', 'huntspot'); spot.id = 'huntspot';
+  spot.innerHTML = '<i>符</i>';
+  spot.style.left = _huntPos.x + 'px'; spot.style.top = _huntPos.y + 'px';
+  spot.style.setProperty('--w', (-Math.random() * 5).toFixed(1) + 's');
+  spot.onclick = async e => {
+    e.stopPropagation();
+    if (_huntBusy) return; _huntBusy = true;
+    spot.classList.add('found');
+    const r = await acctAsk('/hunt', { token: ACCT.token, id: h.id }, 15000);
+    _huntBusy = false;
+    META.huntGot = META.huntGot || {};
+    if (!r.ok) {
+      if (/이미 찾았다|다 찾았다|끝났다/.test(r.why || '')) { META.huntGot[h.id] = 1; saveMeta(); spot.remove(); }
+      else spot.classList.remove('found');
+      toast(r.why); SND.err(); return;
+    }
+    META.huntGot[h.id] = 1;
+    const what = payOut(r.pay);
+    spot.remove();
+    try { SND.victory(); screenFlash('rgba(127,230,207,.35)', 700); sparkles(e.clientX, e.clientY, 30, '#7fe6cf', 240); } catch (x) {}
+    const p = modal(`<h2 style="color:#7fe6cf">符 찾 았 다</h2>
+      <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9">
+        <b style="color:#e8c86a;font-size:20px">${r.rank}번째</b>로 찾았다 (${r.max}명까지).<br>
+        <b style="color:#7fe6cf">${what}</b>
+        ${G.run ? '' : '<br><span style="color:#9a8d74">골드·다이아·부적은 다음 등반에 딸려 온다</span>'}
+      </div>
+      <div style="margin-top:14px"><button class="brush-btn gold" id="hf_ok">받았다</button></div>`);
+    p.dataset.noauto = '1';
+    p.querySelector('#hf_ok').onclick = closeTop;
+  };
+  inner.appendChild(spot);
+}
+
+/* ══════════════════════════════════════════════════════════
+   투표 · 퀴즈 — 객관식
+   ──────────────────────────────────────────────────────────
+   관리자가 물음과 보기(2~5개)를 건다. 「투표」면 고르기만 해도 받고,
+   「퀴즈」면 마감 뒤 정답이 열리고 맞힌 사람만 받는다(한 아이디에 한 번).
+   마감하면 모두에게 몇 명이 무엇을 골랐는지가 보인다.
+   ══════════════════════════════════════════════════════════ */
+function pollLive() { const p = LIVE.poll; return p && p.id && !p.done && srvNow() < (+p.until || 0) ? p : null; }
+function pollCheck() {
+  const p = LIVE.poll; if (!p || !p.id || !acctOn()) return;
+  META.pollMine = META.pollMine || {}; META.pollSeen = META.pollSeen || {};
+  const mine = META.pollMine[p.id];
+  /* 열려 있고 아직 안 골랐다 — 한 번 띄운다 (닫으면 띠를 눌러 다시) */
+  if (pollLive() && mine == null && !META.pollSeen[p.id + 'a']) { META.pollSeen[p.id + 'a'] = 1; saveMeta(); pollShow(); return; }
+  /* 마감했다 — 고른 사람에게 결과를 한 번 */
+  if (p.done && mine != null && !META.pollSeen[p.id + 'r'] && !$('#pollm')) { META.pollSeen[p.id + 'r'] = 1; saveMeta(); pollResult(); }
+}
+function pollShow() {
+  const p = LIVE.poll; if (!p || $('#pollm')) return;
+  const mine = (META.pollMine || {})[p.id];
+  if (p.done) { if (mine != null) pollResult(); return; }
+  try { SND.bell(); } catch (e) {}
+  const m = modal(`<h2 style="color:#e8c86a">票 ${p.mode === 'quiz' ? '퀴 즈' : '투 표'}</h2>
+    <div class="pollq">${wEsc(p.q)}</div>
+    <div class="pollopts">${p.opts.map((o, i) => `<button class="pollopt${mine === i ? ' on' : ''}" data-i="${i}" ${mine != null ? 'disabled' : ''}>
+      <b>${'①②③④⑤'[i]}</b><span>${wEsc(o)}</span></button>`).join('')}</div>
+    <div class="hint pollsay" id="po_say">${mine != null ? (p.mode === 'quiz' ? '골랐다 — 마감하면 정답이 열린다' : '골랐다')
+      : p.mode === 'quiz' ? `맞히면 — <b style="color:#e8c86a">${payText(p.pay)}</b> (마감 뒤 정답 공개)` : `고르기만 해도 — <b style="color:#e8c86a">${payText(p.pay)}</b>`}
+      <br><span style="color:#9a8d74">남은 때 <b class="pollt">${wTime(p.until - srvNow())}</b> · 지금까지 ${p.n || 0}명</span></div>
+    <div style="margin-top:12px"><button class="brush-btn ghost" id="po_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`);
+  m.id = 'pollm'; m.dataset.noauto = '1';
+  m.querySelector('#po_x').onclick = closeTop;
+  m.querySelectorAll('.pollopt').forEach(b => b.onclick = async () => {
+    const i = +b.dataset.i;
+    m.querySelectorAll('.pollopt').forEach(x => x.disabled = true);
+    const say = m.querySelector('#po_say');
+    const r = await acctAsk('/poll/vote', { token: ACCT.token, id: p.id, choice: i }, 15000);
+    if (!r.ok) {
+      say.textContent = r.why; SND.err();
+      if (/이미 골랐다/.test(r.why || '')) { META.pollMine[p.id] = i; saveMeta(); }
+      else m.querySelectorAll('.pollopt').forEach(x => x.disabled = false);
+      return;
+    }
+    META.pollMine = META.pollMine || {}; META.pollMine[p.id] = i; saveMeta();
+    b.classList.add('on'); SND.unlock();
+    if (r.pay) { const what = payOut(r.pay); say.innerHTML = `골랐다 — <b style="color:#7fe6cf">${what}</b> 받았다`; toast('투표 보상 — ' + what); }
+    else say.innerHTML = '골랐다 — 마감하면 정답이 열린다. 맞히면 받는다';
+  });
+}
+function pollResult() {
+  const p = LIVE.poll; if (!p || !p.done) return;
+  const mine = (META.pollMine || {})[p.id], tot = (p.counts || []).reduce((a, b) => a + b, 0) || 1;
+  const right = p.mode === 'quiz' && mine === p.answer;
+  const m = modal(`<h2 style="color:#e8c86a">票 ${p.mode === 'quiz' ? '정 답 공 개' : '투 표 결 과'}</h2>
+    <div class="pollq">${wEsc(p.q)}</div>
+    <div class="pollres">${p.opts.map((o, i) => { const c = (p.counts || [])[i] || 0, pc = Math.round(c / tot * 100);
+      return `<div class="pollrow${p.answer === i ? ' ans' : ''}${mine === i ? ' me' : ''}"><span>${'①②③④⑤'[i]} ${wEsc(o)}${p.answer === i ? ' <b>정답</b>' : ''}${mine === i ? ' <em>내 것</em>' : ''}</span>
+        <i style="width:${pc}%"></i><u>${c}명 · ${pc}%</u></div>`; }).join('')}</div>
+    <div class="hint" id="pr_say">${p.mode !== 'quiz' ? '고마웠다 — 투표 보상은 고를 때 받았다'
+      : mine == null ? '고르지 않았다' : right ? `<b style="color:#7fe6cf">맞혔다!</b> — ${payText(p.pay)}` : '아쉽다 — 틀렸다'}</div>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+      ${right ? '<button class="brush-btn gold" id="pr_take">받는다</button>' : ''}
+      <button class="brush-btn ghost" id="pr_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`);
+  m.id = 'pollm'; m.dataset.noauto = '1';
+  m.querySelector('#pr_x').onclick = closeTop;
+  const tk = m.querySelector('#pr_take');
+  if (tk) tk.onclick = async () => {
+    tk.disabled = true;
+    const r = await acctAsk('/poll/claim', { token: ACCT.token, id: p.id }, 15000);
+    const say = m.querySelector('#pr_say');
+    if (!r.ok) { say.textContent = r.why; if (!/이미 받았다/.test(r.why || '')) tk.disabled = false; return; }
+    const what = payOut(r.pay); say.innerHTML = `<b style="color:#7fe6cf">${what}</b> 받았다`; SND.unlock(); toast('정답 보상 — ' + what);
+  };
+}
+function pollTick() {
+  const p = LIVE.poll;
+  let pill = $('#pollpill');
+  const show = p && p.id && acctOn() && (pollLive() || (p.done && (META.pollMine || {})[p.id] != null));
+  if (!show) { if (pill) pill.remove(); }
+  else {
+    if (!pill) { pill = el('button', 'evpill poll'); pill.id = 'pollpill'; pill.style.setProperty('--ec', '#e8c86a');
+      pill.onclick = () => { SND.ui(); pollShow(); }; document.body.appendChild(pill); }
+    pill.innerHTML = `<i>票</i><b>${p.done ? '결과 보기' : p.mode === 'quiz' ? '퀴즈' : '투표'}</b><em>${p.done ? '' : wTime(p.until - srvNow())}</em>`;
+    const n = document.querySelectorAll('.evpill:not(.poll)').length;
+    pill.style.top = `calc(var(--tbh,44px) + ${6 + 38 * n}px + env(safe-area-inset-top,0px))`;
+  }
+  const t = $('#pollm .pollt'); if (t && p) t.textContent = wTime(p.until - srvNow());
+}
 function giftCheck() {
   const g = LIVE.gift;
   if (!g || !g.id) return;
@@ -18938,6 +19240,7 @@ function liveTick() {
   /* 이벤트 노래 · 이벤트 하늘 */
   songSync();
   try { evSky(k || (rn ? 'rain' : '')); } catch (e) { console.error('이벤트 하늘', e); }
+  try { huntTick(); pollTick(); } catch (e) { console.error('찾기·투표', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -18988,6 +19291,18 @@ const EV_SKY = {
     front: () => `<div class="wash"></div>` + Array.from({ length: 16 }, (_, i) =>
       `<i class="leaf" style="left:${rnd100()}%;--d:${(7 + Math.random() * 6).toFixed(1)}s;--w:${(-Math.random() * 12).toFixed(1)}s;--x:${(Math.random() * 120 - 60).toFixed(0)}px;--s:${(8 + Math.random() * 8).toFixed(0)}px"></i>`).join('')
   },
+  joy: {
+    back: () => `<div class="rainbow"></div><div class="rainbow r2"></div><div class="glow"></div>
+      ${Array.from({ length: 7 }, (_, i) => `<b class="bub" style="left:${rnd100()}%;--d:${(6 + Math.random() * 6).toFixed(1)}s;--w:${(-Math.random() * 10).toFixed(1)}s;--s:${(18 + Math.random() * 40).toFixed(0)}px"></b>`).join('')}`,
+    front: () => `<div class="wash"></div>` + Array.from({ length: 26 }, (_, i) =>
+      `<i class="conf" style="left:${rnd100()}%;--c:hsl(${(i * 47) % 360},95%,62%);--d:${(4 + Math.random() * 4).toFixed(1)}s;--w:${(-Math.random() * 8).toFixed(1)}s;--x:${(Math.random() * 90 - 45).toFixed(0)}px"></i>`).join('')
+  },
+  night: {
+    back: () => `<div class="bmoon"></div><div class="fog"></div><div class="fog f2"></div>
+      ${Array.from({ length: 6 }, (_, i) => `<b class="crow" style="top:${(8 + Math.random() * 30).toFixed(0)}%;--d:${(14 + Math.random() * 10).toFixed(1)}s;--w:${(-Math.random() * 20).toFixed(1)}s">⌒⌒</b>`).join('')}
+      ${Array.from({ length: 5 }, (_, i) => `<u class="eyes" style="left:${(8 + i * 19 + Math.random() * 6).toFixed(0)}%;top:${(52 + Math.random() * 14).toFixed(0)}%;--w:${(-i * 1.3).toFixed(1)}s"></u>`).join('')}`,
+    front: () => `<div class="wash"></div>`
+  },
   rain: {
     back: () => `<b class="cloud" style="top:4%;--w:0s"></b><b class="cloud c2" style="top:18%;--w:-15s"></b><b class="cloud c3" style="top:30%;--w:-30s"></b>
       ${['札', '符', '札', '籙', '符'].map((g, i) => `<u class="talis" style="left:${6 + i * 20}%;top:${10 + (i % 2) * 16}%;--w:${(-i * 2.1).toFixed(1)}s">${g}</u>`).join('')}
@@ -19000,7 +19315,7 @@ function evSky(k) {
   const own = G.b && (G.b.kind === 'world' || G.b.kind === 'colo' || G.b.kind === 'arena');
   const want = k && EV_SKY[k] && !own ? k : '';
   /* 어두운 하늘에서는 먹 글씨가 묻힌다 — 싸움터 글씨를 밝힌다 */
-  document.body.classList.toggle('evdark', want === 'star' || want === 'chaos' || want === 'rain');
+  document.body.classList.toggle('evdark', want === 'star' || want === 'chaos' || want === 'rain' || want === 'night');
   let a = bg.querySelector('.evsky'), f = bg.querySelector('.evtint');
   if (!want) { if (a) a.remove(); if (f) f.remove(); return; }
   if (a && f && a.dataset.k === want) return;           /* 이미 그 하늘이다 (막이 바뀌면 배경이 새로 그려져 없어진다) */
@@ -19260,6 +19575,50 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec"><b>숨은 부적 찾기</b>
+      <div class="casthint">모든 앱의 지도 어딘가에 희미한 부적이 숨는다(사람마다 다른 자리). 이따금 반짝인다.
+        먼저 찾은 사람만 받는다 — 한 아이디에 한 번. <span id="ct_hnow"></span></div>
+      <div class="castrow castpay">
+        <label>찾을 사람<input id="ct_hmax" type="number" min="1" max="100" value="10"></label>
+        <label>분<input id="ct_hmin" type="number" min="1" max="30" value="3"></label>
+      </div>
+      <div class="castrow castpay">
+        <label>골드<input id="ct_hgold" type="number" min="0" max="1000000" value="300"></label>
+        <label>다이아<input id="ct_hdia" type="number" min="0" max="100000" value="100"></label>
+        <label>정진<input id="ct_hjp" type="number" min="0" max="100000" value="0"></label>
+      </div>
+      <div class="casthint">보상 부적 — 눌러서 고른다 (네 장까지 · 안 골라도 된다)</div>
+      <input id="ct_hcards">
+      <div class="castbtnrow">
+        <button class="brush-btn gold" id="ct_hunt">숨긴다</button>
+        <button class="brush-btn ghost" id="ct_hunto" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+    </div>
+
+    <div class="castsec"><b>투표 · 퀴즈 — 객관식</b>
+      <div class="casthint">모든 앱에 물음 창이 뜬다(로그인한 사람, 한 아이디에 한 번).
+        <b>투표</b>는 고르기만 해도 보상, <b>퀴즈</b>는 마감 뒤 정답이 열리고 맞힌 사람만 보상. 마감하면 모두에게 결과가 보인다.</div>
+      <input id="ct_pq" maxlength="200" placeholder="물음 — 이를테면: 다음 이벤트로 무엇이 좋을까?">
+      <div class="pollin">${[0, 1, 2, 3, 4].map(i => `<label><b>${'①②③④⑤'[i]}</b><input class="ct_po" maxlength="60" placeholder="보기 ${i + 1}${i >= 2 ? ' (비워도 된다)' : ''}">
+        <input type="radio" name="ct_pa" value="${i}" ${i ? '' : 'checked'} title="정답"><em>정답</em></label>`).join('')}</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input type="radio" name="ct_pm" value="vote" checked> 투표 — 고르면 보상</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input type="radio" name="ct_pm" value="quiz"> 퀴즈 — 맞히면 보상 (정답에 표시)</label>
+      </div>
+      <div class="castrow castpay">
+        <label>분<input id="ct_pmin" type="number" min="1" max="30" value="3"></label>
+        <label>골드<input id="ct_pgold" type="number" min="0" max="1000000" value="100"></label>
+        <label>다이아<input id="ct_pdia" type="number" min="0" max="100000" value="30"></label>
+        <label>정진<input id="ct_pjp" type="number" min="0" max="100000" value="0"></label>
+      </div>
+      <div class="castbtnrow">
+        <button class="brush-btn gold" id="ct_poll">묻는다</button>
+        <button class="brush-btn" id="ct_pollc">지금 마감 (결과 공개)</button>
+        <button class="brush-btn ghost" id="ct_pollo" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+      <div class="pollres" id="ct_pres"></div>
+    </div>
+
     <div class="castsec"><b>이벤트에 온 이에게 — 선물 (부적·재화 뿌리기)</b>
       <div class="casthint">지금 켜 둔 사람 모두에게 한 번씩 닿는다(셋 분 동안). 받은 사람은 두 번 받지 못한다.
         재화만, 부적만, 둘 다 — 무엇이든 된다.</div>
@@ -19360,6 +19719,8 @@ function drawCast(grid) {
           : '<span class="none">틀지 않음' + (EV_SONG[e] ? ` (이벤트 노래 「${SONGS[EV_SONG[e]].n}」)` : '') + '</span>'}</div>` +
       `<div>모두의 적 — ${LIVE.boss ? `<b>${wEsc(LIVE.boss.n)}</b> ${LIVE.boss.done ? '(거둠)' : !bossAlive() ? '<span class="none">(때가 다해 물러감)</span>'
         : (+LIVE.boss.hp).toLocaleString() + ' / ' + (+LIVE.boss.max).toLocaleString() + ' · 남은 때 ' + wTime(bossLeft())}` : '<span class="none">없음</span>'}</div>` +
+      `<div>숨은 부적 — ${LIVE.hunt && srvNow() < LIVE.hunt.until ? `<b>${LIVE.hunt.found} / ${LIVE.hunt.max}명 찾음</b> · 남은 때 ${wTime(LIVE.hunt.until - srvNow())}` : '<span class="none">없음</span>'}</div>` +
+      `<div>투표 — ${LIVE.poll ? `<b>${wEsc(LIVE.poll.q)}</b> ${LIVE.poll.done ? '(마감)' : '· ' + (LIVE.poll.n || 0) + '명'}` : '<span class="none">없음</span>'}</div>` +
       `<div>판 — <b>${LIVE.version || 0}</b>${LIVE.apk ? '' : ' <span class="none">(받는 자리 없음)</span>'}</div>` +
       `<div>마지막으로 들은 때 — ${LIVE.at ? new Date(LIVE.at).toLocaleString() : '<span class="none">아직 없음</span>'}</div>`;
     grid.querySelectorAll('.castev:not(.song)').forEach(b =>
@@ -19462,6 +19823,48 @@ function drawCast(grid) {
          `모두의 적 「${n}」 — 다섯 분`);
   };
   grid.querySelector('#ct_bosso').onclick = () => send({ boss: null }, '모두의 적 거두기');
+  /* 숨은 부적 */
+  const hcards = grid.querySelector('#ct_hcards'); cardPicker(hcards, 4);
+  const hnum = id => Math.max(0, Math.floor(+grid.querySelector(id).value || 0));
+  const huntPatch = () => ({ hunt: { max: hnum('#ct_hmax') || 10, min: hnum('#ct_hmin') || 3, gold: hnum('#ct_hgold'), dia: hnum('#ct_hdia'), jp: hnum('#ct_hjp'),
+    cards: hcards.value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 4) } });
+  grid.querySelector('#ct_hunt').onclick = () => { const hp = huntPatch();
+    send(hype('숨은 부적 찾기', hp), `숨은 부적 — ${hp.hunt.max}명 · ${hp.hunt.min}분 · ${payText(hp.hunt)}`); };
+  grid.querySelector('#ct_hunto').onclick = () => send({ hunt: null }, '숨은 부적 거두기');
+  /* 투표 · 퀴즈 */
+  const pollPatch = () => {
+    const q = grid.querySelector('#ct_pq').value.trim();
+    const raw = [...grid.querySelectorAll('.ct_po')].map(x => x.value.trim());
+    const opts = raw.filter(Boolean);
+    const mode = (grid.querySelector('input[name=ct_pm]:checked') || {}).value || 'vote';
+    const pick = +(grid.querySelector('input[name=ct_pa]:checked') || {}).value || 0;
+    const answer = raw.slice(0, pick).filter(Boolean).length;           /* 빈 보기를 뺀 자리 */
+    if (!q || opts.length < 2) return null;
+    if (mode === 'quiz' && !raw[pick]) return 'noans';
+    return { poll: { q, opts, mode, answer, min: hnum('#ct_pmin') || 3, gold: hnum('#ct_pgold'), dia: hnum('#ct_pdia'), jp: hnum('#ct_pjp') } };
+  };
+  grid.querySelector('#ct_poll').onclick = () => {
+    const pp = pollPatch();
+    if (!pp) { say('물음과 보기 두 개 넘게 적으시오', false); return; }
+    if (pp === 'noans') { say('퀴즈 — 정답으로 고른 보기가 비었다', false); return; }
+    send(hype(pp.poll.mode === 'quiz' ? '퀴즈' : '투표', pp), `${pp.poll.mode === 'quiz' ? '퀴즈' : '투표'} 「${pp.poll.q}」 ${pp.poll.min}분`).then(pres2);
+  };
+  grid.querySelector('#ct_pollc').onclick = () => send({ pollClose: true }, '투표 마감').then(pres2);
+  grid.querySelector('#ct_pollo').onclick = () => send({ poll: null }, '투표 거두기').then(pres2);
+  /* 지금까지 고른 것 — 관리자만 미리 본다 */
+  const pollBox = grid.querySelector('#ct_pres');
+  async function pres2() {
+    if (!pollBox.isConnected) return;
+    const r = await acctAsk('/poll/admin', { code: castKey() }, 12000);
+    if (!pollBox.isConnected || !r.ok) return;
+    if (!r.poll) { pollBox.innerHTML = ''; return; }
+    const tot = r.counts.reduce((a, b) => a + b, 0) || 1;
+    pollBox.innerHTML = `<div class="casthint">「${wEsc(r.poll.q)}」 · ${r.poll.done ? '마감' : '남은 때 ' + wTime(r.poll.until - srvNow())} · ${r.counts.reduce((a, b) => a + b, 0)}명</div>` +
+      r.poll.opts.map((o, i) => `<div class="pollrow${r.answer === i ? ' ans' : ''}"><span>${'①②③④⑤'[i]} ${wEsc(o)}${r.answer === i ? ' <b>정답</b>' : ''}</span>
+        <i style="width:${Math.round(r.counts[i] / tot * 100)}%"></i><u>${r.counts[i]}명</u></div>`).join('');
+  }
+  const presT2 = setInterval(() => { if (!pollBox.isConnected) clearInterval(presT2); else pres2(); }, 5000);
+  pres2();
   grid.querySelector('#ct_bextgo').onclick = () => {
     if (!bossAlive()) { say('서 있는 모두의 적이 없다', false); return; }
     const m = Math.max(1, Math.min(30, Math.floor(+grid.querySelector('#ct_bext').value || 3)));
@@ -19506,7 +19909,8 @@ function drawSched(grid, send) {
     ['notice', `+ ${DEV_NAME}의 말`], ['hype', '+ 이벤트 알림'],
     ...Object.keys(WORLD).map(k => ['ev:' + k, '+ ' + WORLD[k].n]),
     ['evoff', '+ 일 끄기'], ['boss', '+ 괴물 소환 (모두의 적)'], ['gift', '+ 선물 (부적·재화)'],
-    ...Object.keys(SONGS).map(k => ['music:' + k, '+ 노래 「' + SONGS[k].n + '」']), ['musicoff', '+ 노래 끄기']
+    ...Object.keys(SONGS).map(k => ['music:' + k, '+ 노래 「' + SONGS[k].n + '」']), ['musicoff', '+ 노래 끄기'],
+    ['hunt', '+ 숨은 부적 찾기'], ['poll', '+ 투표·퀴즈']
   ];
   for (const [k, n] of kinds) { const b = el('button', 'scchip add', n); b.onclick = () => addStep(k); add.appendChild(b); }
   function addStep(k) {
@@ -19535,6 +19939,20 @@ function drawSched(grid, send) {
       const mk = k.slice(6), min = Math.max(1, Math.min(120, Math.floor(+$g('#ct_mmin').value || 10)));
       st.music = { k: mk, min }; st.label = `노래 「${SONGS[mk].n}」 ${min}분`;
     } else if (k === 'musicoff') st.label = '노래 끄기';
+    else if (k === 'hunt') {
+      const n = id => Math.max(0, Math.floor(+$g(id).value || 0));
+      st.hunt = { max: n('#ct_hmax') || 10, min: n('#ct_hmin') || 3, gold: n('#ct_hgold'), dia: n('#ct_hdia'), jp: n('#ct_hjp'),
+        cards: $g('#ct_hcards').value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 4) };
+      st.label = `숨은 부적 ${st.hunt.max}명 · ${payText(st.hunt)}`;
+    } else if (k === 'poll') {
+      const q = $g('#ct_pq').value.trim(), raw = [...grid.querySelectorAll('.ct_po')].map(x => x.value.trim()), opts = raw.filter(Boolean);
+      if (!q || opts.length < 2) { toast('투표 칸에 물음과 보기를 먼저 적으시오'); SND.err(); return; }
+      const mode = (grid.querySelector('input[name=ct_pm]:checked') || {}).value || 'vote';
+      const pick = +(grid.querySelector('input[name=ct_pa]:checked') || {}).value || 0;
+      const n = id => Math.max(0, Math.floor(+$g(id).value || 0));
+      st.poll = { q, opts, mode, answer: raw.slice(0, pick).filter(Boolean).length, min: n('#ct_pmin') || 3, gold: n('#ct_pgold'), dia: n('#ct_pdia'), jp: n('#ct_pjp') };
+      st.label = `${mode === 'quiz' ? '퀴즈' : '투표'} 「${q.slice(0, 20)}」`;
+    }
     steps.push(st); drawSteps();
   }
   function drawSteps() {
@@ -19561,6 +19979,8 @@ function drawSched(grid, send) {
     if (st.kind === 'gift') return { gift: st.gift };
     if (st.kind.startsWith('music:')) return { music: st.music };
     if (st.kind === 'musicoff') return { music: null };
+    if (st.kind === 'hunt') return { hunt: st.hunt };
+    if (st.kind === 'poll') return { poll: st.poll };
     return {};
   };
   $g('#sc_go').onclick = () => {

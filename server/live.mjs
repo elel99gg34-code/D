@@ -40,6 +40,11 @@ function expire(now) {
   if (live.rain && live.rain.until && now > live.rain.until) { live.rain = null; changed = true; }
   if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
   if (live.music && live.music.until && now > live.music.until) { live.music = null; changed = true; }
+  /* 숨은 부적 — 때가 지나고 한 분 뒤 걷는다 */
+  if (live.hunt && now > live.hunt.until + 60000) { live.hunt = null; changed = true; }
+  /* 투표 — 때가 되면 마감하고, 열 분 뒤 걷는다(결과를 볼 틈) */
+  if (live.poll && !live.poll.done && now > live.poll.until) { pollFinish(now); changed = true; }
+  if (live.poll && live.poll.done && now - live.poll.until > 10 * 60 * 1000) { live.poll = null; changed = true; }
   const b = live.boss;
   if (b && !b.done && !b.fled) {
     /* 끝나는 때(until)가 생기기 전에 세운 적은 until 이 없어 영원히 서 있었다.
@@ -363,7 +368,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -404,6 +409,34 @@ async function applyCast(q) {
     else { const min = Math.max(1, Math.min(120, parseInt(q.music.min, 10) || 10));
            live.music = { k: str(q.music.k, 12), at: Date.now(), until: Date.now() + min * 60000 }; }
   }
+  /* 숨은 부적 찾기 — 모든 앱의 지도 어딘가에 희미한 부적이 숨는다. 먼저 찾은 max 명만 받는다 */
+  if ('hunt' in q) {
+    if (!q.hunt) live.hunt = null;
+    else {
+      const h = q.hunt, now = Date.now();
+      const max = Math.max(1, Math.min(100, parseInt(h.max, 10) || 10)), min = Math.max(1, Math.min(30, parseInt(h.min, 10) || 3));
+      const cards = Array.isArray(h.cards) ? h.cards.slice(0, 4).map(c => str(c, 40)).filter(Boolean) : [];
+      live.hunt = { id: now, at: now, until: now + min * 60000, max, found: 0, who: [],
+                    pay: { gold: num(h.gold, 1000000), dia: num(h.dia, 100000), jp: num(h.jp, 100000), cards } };
+    }
+  }
+  /* 투표 · 퀴즈 — 객관식. 투표만 해도 받거나(vote), 맞혀야 받는다(quiz). 정답은 마감 전까지 숨긴다 */
+  if ('poll' in q) {
+    if (!q.poll) { live.poll = null; pollSec = null; await pollSave(); }
+    else {
+      const pq = q.poll, now = Date.now();
+      const opts = (Array.isArray(pq.opts) ? pq.opts : []).map(o => str(o, 60).trim()).filter(Boolean).slice(0, 5);
+      if (opts.length >= 2 && str(pq.q, 200).trim()) {
+        const mode = pq.mode === 'quiz' ? 'quiz' : 'vote';
+        const min = Math.max(1, Math.min(30, parseInt(pq.min, 10) || 3));
+        live.poll = { id: now, q: str(pq.q, 200).trim(), opts, mode, at: now, until: now + min * 60000, done: false, n: 0,
+                      counts: null, answer: null, pay: { gold: num(pq.gold, 1000000), dia: num(pq.dia, 100000), jp: num(pq.jp, 100000) } };
+        pollSec = { id: now, answer: mode === 'quiz' ? Math.max(0, Math.min(opts.length - 1, parseInt(pq.answer, 10) || 0)) : null, votes: {}, claimed: {} };
+        await pollSave();
+      }
+    }
+  }
+  if (q.pollClose && live.poll && !live.poll.done) pollFinish(Date.now());
   /* 모두의 적의 때를 늘린다 — 서 있는 동안만 */
   if ('bossExtend' in q && live.boss && !live.boss.done && !live.boss.fled) {
     const b = live.boss, add = Math.max(1, Math.min(30, parseInt(q.bossExtend, 10) || 0)) * 60000;
@@ -434,6 +467,21 @@ async function applyCast(q) {
       if (c0) { try { await c0.del(WHO_KEY); } catch (e) {} } else mem.delete(WHO_KEY);
     }
   }
+}
+
+/* 투표의 속 — 누가 무엇을 골랐는지·정답. 소식(/live)에는 싣지 않는다 */
+const POLL_KEY = 'baekgwi:poll';
+let pollSec = undefined;
+async function pollLoad() { if (pollSec === undefined) pollSec = (await get(POLL_KEY)) || null; return pollSec; }
+async function pollSave() { await put(POLL_KEY, pollSec || null).catch(() => {}); }
+/* 마감 — 몇 명이 무엇을 골랐는지와(퀴즈면) 정답을 연다 */
+function pollFinish(now) {
+  const p = live.poll; if (!p || p.done) return;
+  const counts = p.opts.map(() => 0);
+  if (pollSec && pollSec.id === p.id) for (const k in pollSec.votes) { const c = pollSec.votes[k]; if (counts[c] != null) counts[c]++; }
+  p.done = true; p.until = Math.min(p.until, now); p.counts = counts;
+  if (p.mode === 'quiz' && pollSec && pollSec.id === p.id) p.answer = pollSec.answer;
+  console.log('투표 마감:', p.q, JSON.stringify(counts));
 }
 
 /* ── 예약 ─────────────────────────────────────────────────
@@ -593,13 +641,15 @@ const server = http.createServer(async (req, res) => {
     await store();
     const now = Date.now();
     seenMark(url.searchParams.get('w'), url.searchParams.get('s'), now);
-    await chatLoad(); chatPrune(now);
+    await chatLoad(); chatPrune(now); await pollLoad();
     await runSchedule(now);
     if (expire(now)) await keep();
     /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
     const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, done: !!x.done, missed: !!x.missed,
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId() }));
+    /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
+    const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -611,6 +661,61 @@ const server = http.createServer(async (req, res) => {
     /* 관리자가 지운 것 — 이미 받아 간 앱에서도 걷어 내게 */
     return send(res, 200, { ok: true, list, last: chatLastId(), gone: (chat.gone || []).slice(-50), now: Date.now(),
                             first: chat.log.length ? chat.log[0].id : chatLastId() + 1, life: CHAT_LIFE });
+  }
+
+  /* ── 숨은 부적 찾기 · 투표 — 로그인한 사람만 (한 아이디에 한 번) ── */
+  if ((url.pathname === '/hunt' || url.pathname.startsWith('/poll/')) && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store(); await pollLoad();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    /* 관리자 — 지금까지 몇 명이 무엇을 골랐는지 */
+    if (url.pathname === '/poll/admin') {
+      if (!CODE || !same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+      const p = live.poll;
+      if (!p) return send(res, 200, { ok: true, poll: null });
+      const counts = p.opts.map(() => 0);
+      if (pollSec && pollSec.id === p.id) for (const k in pollSec.votes) { const c = pollSec.votes[k]; if (counts[c] != null) counts[c]++; }
+      return send(res, 200, { ok: true, poll: p, counts, answer: pollSec && pollSec.id === p.id ? pollSec.answer : null });
+    }
+    if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 두드린다' });
+    const acct = await tokWho(q.token);
+    if (!acct) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+
+    if (url.pathname === '/hunt') {
+      const h = live.hunt;
+      if (!h || String(h.id) !== String(q.id) || now > h.until) return send(res, 409, { ok: false, why: '숨은 부적 찾기가 끝났다' });
+      if (h.who.includes(acct)) return send(res, 409, { ok: false, why: '이미 찾았다' });
+      if (h.found >= h.max) return send(res, 409, { ok: false, why: `이미 ${h.max}명이 다 찾았다` });
+      h.who.push(acct); h.found++; live.at = now;
+      await keep();
+      console.log('숨은 부적을 찾았다:', acct, h.found + '/' + h.max);
+      return send(res, 200, { ok: true, rank: h.found, max: h.max, pay: h.pay });
+    }
+    const p = live.poll;
+    if (!p || String(p.id) !== String(q.id) || !pollSec || pollSec.id !== p.id) return send(res, 409, { ok: false, why: '그 투표는 끝났다' });
+    if (url.pathname === '/poll/vote') {
+      if (p.done || now > p.until) return send(res, 409, { ok: false, why: '이미 마감했다' });
+      const c = parseInt(q.choice, 10);
+      if (!(c >= 0 && c < p.opts.length)) return send(res, 400, { ok: false, why: '그런 보기가 없다' });
+      if (acct in pollSec.votes) return send(res, 409, { ok: false, why: '이미 골랐다' });
+      pollSec.votes[acct] = c; p.n++; live.at = now;
+      await pollSave(); await keep();
+      /* 투표면 고른 것만으로 받는다 — 한 아이디에 한 번 */
+      return send(res, 200, { ok: true, mode: p.mode, pay: p.mode === 'vote' ? p.pay : null });
+    }
+    if (url.pathname === '/poll/claim') {
+      if (p.mode !== 'quiz' || !p.done) return send(res, 409, { ok: false, why: '아직 정답이 나오지 않았다' });
+      if (!(acct in pollSec.votes)) return send(res, 403, { ok: false, why: '고르지 않았다' });
+      if (pollSec.votes[acct] !== pollSec.answer) return send(res, 403, { ok: false, why: '틀렸다' });
+      if (pollSec.claimed[acct]) return send(res, 409, { ok: false, why: '이미 받았다' });
+      pollSec.claimed[acct] = now; await pollSave();
+      return send(res, 200, { ok: true, pay: p.pay });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
   }
 
   /* ── 지금 켜 둔 사람 — 관리자만 ── */
@@ -653,6 +758,7 @@ const server = http.createServer(async (req, res) => {
       live.sched.sort((x, y) => x.at - y.at);
     }
     if ('unschedule' in q) live.sched = (live.sched || []).filter(x => String(x.id) !== String(q.unschedule));
+    await pollLoad();
     await applyCast(pickCast(q));
     live.at = Date.now();
     await keep();
