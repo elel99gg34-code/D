@@ -470,6 +470,60 @@ const guestView = g => Object.values(g).sort((a, b) => (a.state === 'ask' ? 0 : 
 const guestNameOk = n => nameOk(n) && !/백야|관리자|운영|개발자|admin|gm/i.test(n);
 function evActive(now) { return !!(live.event && (!live.eventUntil || now <= live.eventUntil)); }
 
+/* ══════════════════════════════════════════════════════════
+   지금 켜 둔 사람 — 소식을 물으러 올 때마다 누구(w)·어디(s)를 적는다
+   ──────────────────────────────────────────────────────────
+   앱은 열두 셈마다(보스가 서 있으면 다섯 셈마다) 소식을 묻는다. 배경에
+   내려간 창은 브라우저가 박자를 늦추므로 90초 안에 한 번이라도 물은
+   사람을 「지금 있다」로 센다. 기억에만 둔다 — 다시 서면 새로 센다.
+   ══════════════════════════════════════════════════════════ */
+const bootAt = Date.now();                /* 이 서버가 선 때 — 셈은 여기서부터다 */
+const SEEN_MS = 90 * 1000;
+const seen = new Map();                   /* who → { at, s, ip } */
+let seenPeak = 0, seenPeakAt = 0, seenDay = '', seenToday = new Set();
+const kstDay = t => new Date(t + 9 * 3600e3).toISOString().slice(0, 10);
+function seenMark(who, scene, now) {
+  if (!/^[\w-]{4,64}$/.test(who || '')) return;
+  if (seen.size > 20000) for (const [k, v] of seen) if (now - v.at > SEEN_MS) seen.delete(k);
+  seen.set(who, { at: now, s: /^[a-z]{2,12}$/.test(scene || '') ? scene : '?' });
+  const d = kstDay(now);
+  if (d !== seenDay) { seenDay = d; seenToday = new Set(); }
+  if (seenToday.size < 100000) seenToday.add(who);
+  const n = seenCount(now).n;
+  if (n > seenPeak) { seenPeak = n; seenPeakAt = now; }
+}
+function seenCount(now) {
+  const by = {}; let n = 0;
+  for (const v of seen.values()) if (now - v.at <= SEEN_MS) { n++; by[v.s] = (by[v.s] || 0) + 1; }
+  return { n, by };
+}
+
+/* ══════════════════════════════════════════════════════════
+   채팅 — 로그인한 사람끼리 한 마당에서
+   ──────────────────────────────────────────────────────────
+   이름은 서버가 표(token)로 알아본 아이디 — 남의 이름으로 말할 수 없다.
+   관리자 열쇠를 함께 보내면 「백야」로, 허락받은 게스트면 게스트 이름으로.
+   최근 150마디만 둔다. 한 사람은 2.5초에 한 마디, 120자까지.
+   관리자는 한 마디를 지우거나, 한 사람의 입을 잠시 막거나, 통째로 비운다.
+   ══════════════════════════════════════════════════════════ */
+const CHAT_KEY = 'baekgwi:chat', CHAT_KEEP = 150, CHAT_GAP = 2500, CHAT_LEN = 120;
+let chat = null;                          /* { log:[{id,n,t,at,k,u}], mute:{u:until} } */
+const chatLast = new Map();
+async function chatLoad() {
+  if (chat) return chat;
+  chat = (await get(CHAT_KEY)) || { log: [], mute: {} };
+  if (!Array.isArray(chat.log)) chat.log = [];
+  if (!chat.mute || typeof chat.mute !== 'object') chat.mute = {};
+  return chat;
+}
+const chatSave = () => put(CHAT_KEY, chat).catch(() => {});
+/* 거친 말은 가린다 — 가볍게만 */
+const CHAT_BAD = /(씨\s*발|시\s*발|ㅅ\s*ㅂ|ㅆ\s*ㅂ|병\s*신|ㅂ\s*ㅅ|좆|존\s*나|개\s*새|지\s*랄|fuck|shit|bitch)/gi;
+const chatClean = s => String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, ' ')
+  .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length));
+const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '' });
+const chatLastId = () => (chat && chat.log.length ? chat.log[chat.log.length - 1].id : 0);
+
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
   'access-control-allow-origin': '*',
@@ -502,12 +556,35 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/live' && req.method === 'GET') {
     await store();
     const now = Date.now();
+    seenMark(url.searchParams.get('w'), url.searchParams.get('s'), now);
+    await chatLoad();
     await runSchedule(now);
     if (expire(now)) await keep();
     /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
     const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, done: !!x.done, missed: !!x.missed,
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
-    return send(res, 200, Object.assign({}, live, { sched, now }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId() }));
+  }
+
+  /* ── 채팅 — 읽기 ── */
+  if (url.pathname === '/chat' && req.method === 'GET') {
+    await store(); await chatLoad();
+    const after = +url.searchParams.get('after') || 0;
+    const list = chat.log.filter(x => x.id > after).slice(-60).map(chatView);
+    /* 관리자가 지운 것 — 이미 받아 간 앱에서도 걷어 내게 */
+    return send(res, 200, { ok: true, list, last: chatLastId(), gone: (chat.gone || []).slice(-50), now: Date.now() });
+  }
+
+  /* ── 지금 켜 둔 사람 — 관리자만 ── */
+  if (url.pathname === '/presence' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    if (!CODE || !same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+    const now = Date.now(), c = seenCount(now);
+    if (kstDay(now) !== seenDay) { seenDay = kstDay(now); seenToday = new Set(); }
+    return send(res, 200, { ok: true, n: c.n, by: c.by, peak: seenPeak, peakAt: seenPeakAt,
+                            today: seenToday.size, since: bootAt, now });
   }
 
   if (url.pathname === '/cast' && req.method === 'POST') {
@@ -597,6 +674,56 @@ const server = http.createServer(async (req, res) => {
   }
 
 
+
+  /* ── 채팅 — 말하기 · 관리자의 손질 ── */
+  if ((url.pathname === '/chat/send' || url.pathname === '/chat/mod') && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store(); await chatLoad();
+    const now = Date.now();
+    const isDev = !!(CODE && q.code && same(String(q.code), CODE));
+
+    if (url.pathname === '/chat/mod') {
+      if (!isDev) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+      if (q.clear) { chat.gone = (chat.gone || []).concat(chat.log.map(x => x.id)).slice(-300); chat.log = []; }
+      if (q.del) { chat.log = chat.log.filter(x => x.id !== +q.del); chat.gone = (chat.gone || []).concat(+q.del).slice(-300); }
+      if (q.mute) {
+        const x = chat.log.find(v => v.id === +q.mute);
+        if (!x || !x.u) return send(res, 404, { ok: false, why: '그런 말이 없다' });
+        const min = Math.max(1, Math.min(1440, parseInt(q.min, 10) || 10));
+        chat.mute[x.u] = now + min * 60000;
+        /* 그 사람이 한 말은 걷는다 */
+        const ids = chat.log.filter(v => v.u === x.u).map(v => v.id);
+        chat.log = chat.log.filter(v => v.u !== x.u); chat.gone = (chat.gone || []).concat(ids).slice(-300);
+      }
+      await chatSave();
+      console.log('채팅 손질', JSON.stringify({ clear: !!q.clear, del: q.del, mute: q.mute }));
+      return send(res, 200, { ok: true, last: chatLastId(), gone: (chat.gone || []).slice(-50) });
+    }
+
+    /* 말하기 — 로그인한 사람만. 이름은 서버가 표로 알아본다 */
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 말할 수 있다' });
+    if (chat.mute[id] && chat.mute[id] > now) return send(res, 403, { ok: false, why: `관리자가 입을 막았다 — ${Math.ceil((chat.mute[id] - now) / 60000)}분 뒤에` });
+    if (now - (chatLast.get(id) || 0) < CHAT_GAP || tooMany(ip)) return send(res, 429, { ok: false, why: '너무 빠르다 — 잠시 뒤에' });
+    const t = chatClean(q.text);
+    if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+    let n = id, k = '';
+    if (isDev) { n = '백야'; k = 'dev'; }
+    else if (/^[0-9a-f]{32}$/.test(String(q.gsec || ''))) {
+      const me = (await guestsGet())[sha(q.gsec)];
+      if (me && me.state === 'ok') { n = me.name; k = 'guest'; }
+    }
+    chatLast.set(id, now);
+    if (chatLast.size > 20000) chatLast.clear();
+    const x = { id: Math.max(now, chatLastId() + 1), n, t, at: now, k, u: id };   /* id 는 늘 커진다 */
+    chat.log.push(x);
+    if (chat.log.length > CHAT_KEEP) chat.log = chat.log.slice(-CHAT_KEEP);
+    await chatSave();
+    return send(res, 200, { ok: true, msg: chatView(x) });
+  }
 
   /* ── 게스트 ── */
   if (url.pathname.startsWith('/guest/') && req.method === 'POST') {

@@ -3575,6 +3575,54 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
 .scitem small{color:#e8c86a}
 .scitem em{display:block;font-style:normal;color:#9a8d74;font-size:11px;margin-top:3px;line-height:1.5}
 .scitem.done{opacity:.55}
+/* 관리자 — 지금 접속 */
+.castonline{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid rgba(138,255,208,.35);border-radius:5px;
+  background:rgba(20,60,46,.35)}
+.castonline>i{font-style:normal;width:34px;height:34px;display:grid;place-items:center;border-radius:4px;
+  background:rgba(79,224,176,.18);color:#8affd0;font-size:18px}
+.castonline>div{flex:1;min-width:0}
+.castonline b{display:block;font-weight:400;color:#e9dfc9;font-size:13px;letter-spacing:.06em}
+.castonline b em{font-style:normal;color:#8affd0;font-size:20px;margin-left:6px;font-variant-numeric:tabular-nums}
+.castonline small{display:block;color:#9a8d74;font-size:11px;line-height:1.5}
+.castonline .val{font:inherit;cursor:pointer;background:rgba(30,110,80,.4);border:1px solid #4fe0b0;color:#c8ffe8;border-radius:3px;padding:4px 10px}
+/* 채팅 — 오른쪽 아래에 떠 있는 판. 판은 멈추지 않는다 */
+.topbtn.chat{color:#d8ecff;background:rgba(60,100,150,.28);border-color:#7fb0e0;position:relative}
+.topbtn.chat:hover{background:rgba(80,130,190,.5)}
+.chatdot{display:none;position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;
+  background:#ff5a4a;box-shadow:0 0 6px #ff5a4a;text-decoration:none}
+.chatdot.on{display:block}
+#t_chat{position:relative}
+.chatp{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:175;
+  width:min(360px,calc(100vw - 24px));height:min(440px,62vh);display:flex;flex-direction:column;
+  background:linear-gradient(170deg,rgba(26,22,18,.97),rgba(14,12,10,.97));border:1.5px solid #7fb0e0;border-radius:6px;
+  box-shadow:0 10px 34px rgba(0,0,0,.6);color:#e9dfc9;font-size:13px;animation:chIn .25s ease-out}
+@keyframes chIn{from{opacity:0;transform:translateY(12px)}}
+.chatp .chh{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 12px;border-bottom:1px solid rgba(127,176,224,.3)}
+.chatp .chh b{font-weight:400;color:#d8ecff;letter-spacing:.1em}
+.chatp .chh small{flex:1;min-width:0;color:#8a7f68;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chatp .chh small em{font-style:normal;color:#e8c86a}
+.chatp .chh button{font:inherit;cursor:pointer;background:none;border:1px solid #5a5040;color:#c8bda3;border-radius:3px;padding:2px 8px}
+.chatp .chh .chx{border:none;font-size:18px;line-height:1;padding:0 6px}
+.chatp .chh .chclr{font-size:11px;color:#ff9a8a;border-color:#8a3a30}
+.chatp .chl{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.chatp .chnone{color:#8a7f68;font-size:12px;text-align:center;margin:auto 0}
+.chatp .cm{line-height:1.5;word-break:break-word;position:relative;padding-right:34px}
+.chatp .cm b{font-weight:400;color:#9ec8f0;margin-right:6px}
+.chatp .cm b i{font-style:normal;font-size:9px;margin-left:4px;padding:0 4px;border:1px solid currentColor;border-radius:3px;opacity:.85}
+.chatp .cm.me b{color:#7fe6cf}
+.chatp .cm.dev b{color:#e8c86a}
+.chatp .cm.dev span{color:#fff3cf}
+.chatp .cm.guest b{color:#f0b8e8}
+.chatp .cm time{position:absolute;right:0;top:1px;font-size:9.5px;color:#6a604c}
+.chatp .cm u{text-decoration:none;font-size:10px;color:#ff9a8a;cursor:pointer;margin-left:6px;opacity:.7}
+.chatp .cm u:hover{opacity:1}
+.chatp .chf{display:flex;gap:6px;padding:8px;border-top:1px solid rgba(127,176,224,.25)}
+.chatp .chi{flex:1;min-width:0;font:inherit;background:rgba(0,0,0,.45);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:7px 9px}
+.chatp .chi:focus{outline:none;border-color:#7fb0e0}
+.chatp .chs{font:inherit;cursor:pointer;background:rgba(60,100,150,.5);border:1px solid #7fb0e0;color:#e8f4ff;border-radius:3px;padding:0 12px}
+.chatp .chw{font-size:11px;color:#8affd0;padding:0 10px 6px;min-height:0}
+.chatp .chw:empty{display:none}
+.chatp .chw.bad{color:#ff9a9a}
 /* 게스트 창 · 관리자의 게스트 탭 */
 .guestm{max-height:92vh;overflow-y:auto;text-align:left}
 .guestm h2{text-align:center}
@@ -10002,6 +10050,7 @@ function renderTop() {
       <button class="topbtn box" id="boxbtn" title="부적 뽑기"><b>匣</b><i>뽑기</i><em></em></button>
       ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자"><b>管</b><i>관리자</i><em></em></button>' : ''}
       ${guestOn() ? '<button class="topbtn guest" id="guestbtn" title="게스트"><b>客</b><i>게스트</i><em></em></button>' : ''}
+      <button class="topbtn chat" id="chatbtn" title="채팅"><b>話</b><i>채팅</i><em></em><s class="chatdot"></s></button>
       <button class="topbtn skill" id="skilltop" title="비기"><b>祕</b><i>비기</i><em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합"><b>合</b><i>조합</i><em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
@@ -10068,6 +10117,8 @@ function renderTop() {
          <span style="color:#9a8d74">제${ILLU_ACT}막을 넘어서면 열린다 (지금 제${META.cleared || 0}막까지)</span>`);
     const ab2 = t.querySelector('#adminbtn'); if (ab2) ab2.onclick = () => { SND.ui(); showAdmin(); };
     const gb2 = t.querySelector('#guestbtn'); if (gb2) gb2.onclick = () => { SND.ui(); showGuest(); };
+    t.querySelector('#chatbtn').onclick = () => { SND.ui(); chatToggle(); };
+    chatBadge();
     bindTip(t.querySelector('#trainbtn'), () => `<b>수행터</b> — 져도 남는 길<br>
       모은 정진 <b style="color:#ffd76a">${META.jp}</b><br>
       <span style="color:#9a8d74">이기든 지든 쌓인다. 영구히 몸을 만든다.</span>`);
@@ -17599,7 +17650,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 3;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 4;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -17668,7 +17719,10 @@ async function liveFetch() {
   try {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 6000);
-    const r = await fetch(LIVE_URL + '?t=' + Date.now(), { signal: c.signal, cache: 'no-store' });
+    /* 누구(w)·어디(s)를 함께 적는다 — 관리자 창의 「지금 접속」이 이것으로 센다 */
+    const r = await fetch(LIVE_URL + '?t=' + Date.now() + '&w=' + encodeURIComponent(meId()) +
+                          '&s=' + (G.b && G.b.kind === 'world' ? 'world' : G.b ? 'battle' : G.scene || 'title'),
+                          { signal: c.signal, cache: 'no-store' });
     clearTimeout(t);
     if (!r.ok) return;
     const d = await r.json();
@@ -17686,6 +17740,8 @@ async function liveFetch() {
     LIVE.gift = d.gift && typeof d.gift === 'object' ? d.gift : null;
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
+    LIVE.chatAt = +d.chatAt || 0;
+    try { chatBadge(); } catch (e) {}
     LIVE.at = Date.now();
     liveSave();
     noticeShow();
@@ -17817,7 +17873,7 @@ function drawAcct(n) {
       acctPick(r.save, r.at);
     };
     n.querySelector('#ac_out').onclick = () => {
-      ACCT = { id: '', token: '', at: 0 }; acctSave(); SND.ui();
+      ACCT = { id: '', token: '', at: 0 }; acctSave(); SND.ui(); chatClose();
       /* 로그인해야만 오른다 — 나가면 첫 화면(로그인 창)으로. 하던 모험은 이 기계에 남는다 */
       if (G.scene !== 'title') { try { if (G.run) saveRun(); } catch (e) {} G.run = null; showTitle(); return; }
       drawAcct(n);
@@ -18661,12 +18717,18 @@ function updateCheck() {
   };
 }
 
+/* 지금 접속 — 어디에 있는지 (소식을 물을 때 적은 자리) */
+const PRES_NAME = { title: '첫 화면', map: '지도', battle: '싸움', world: '모두의 적', shop: '상점', reward: '보상',
+  rest: '쉼터', event: '사건', treasure: '보물', train: '수행터', shrine: '신전', forge: '대장간', colosseum: '콜로세움',
+  arena: '대전투장', illusion: '환상', school: '공지', pets: '팻', over: '끝', win: '등정', special: '특별', janggi: '장기', demo: '체험' };
 /* ── 퍼뜨리는 자리 ────────────────────────────────────────
    여기서 누르면 남의 기계에서도 일이 일어난다. 그러니 누르기
    전에 무엇이 지금 걸려 있는지부터 보여 준다. */
 function drawCast(grid) {
   const evs = Object.keys(WORLD);
   grid.innerHTML = `<div class="castbox">
+    <div class="castonline"><i>人</i><div><b>지금 접속 <em id="ct_on">…</em></b><small id="ct_on2">서버에 묻는 중…</small></div>
+      <button class="val" id="ct_onre" title="다시 센다">↻</button></div>
     <div class="castnow">
       <b>지금 걸린 것</b>
       <div id="ct_now"></div>
@@ -18771,6 +18833,22 @@ function drawCast(grid) {
 
   const log = grid.querySelector('#ct_log');
   const say = (m, good) => { log.textContent = m; log.className = 'castlog ' + (good ? 'ok' : 'no'); };
+  /* 지금 접속 — 열 셈마다 다시 센다 (이 창이 열려 있는 동안만) */
+  const onA = grid.querySelector('#ct_on'), onB = grid.querySelector('#ct_on2');
+  const pres = async () => {
+    if (!onA.isConnected) { clearInterval(presT); return; }
+    const r = await acctAsk('/presence', { code: castKey() }, 15000);
+    if (!onA.isConnected) return;
+    if (!r.ok) { onA.textContent = '?'; onB.textContent = '셀 수 없다 — ' + r.why; return; }
+    onA.textContent = r.n + '명';
+    const by = Object.entries(r.by || {}).sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => (PRES_NAME[k] || '그 밖') + ' ' + v).join(' · ');
+    const hm = t => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+    onB.textContent = (by ? by + '  |  ' : '') + `오늘 다녀간 앱 ${r.today} · 가장 많을 때 ${r.peak}명${r.peakAt ? ' (' + hm(r.peakAt) + ')' : ''} · ${hm(r.since)}부터 셈`;
+  };
+  const presT = setInterval(pres, 10000);
+  pres();
+  grid.querySelector('#ct_onre').onclick = () => { SND.ui(); onA.textContent = '…'; pres(); };
   const now = grid.querySelector('#ct_now');
   const paint = () => {
     const e = liveEvent();
@@ -19226,6 +19304,117 @@ async function drawGuests(grid) {
   };
   grid.querySelector('#gu_re').onclick = async () => paint(await ask('list'));
   paint(await ask('list'));
+}
+
+/* ══════════════════════════════════════════════════════════
+   채팅 — 로그인한 사람끼리 한 마당에서
+   ──────────────────────────────────────────────────────────
+   창을 띄워도 판은 멈추지 않는다 — 오른쪽 아래에 떠 있는 작은 판이다.
+   열려 있는 동안만 세 셈마다 새 말을 묻고, 닫혀 있으면 소식(/live)의
+   chatAt 으로 새 말이 있는지만 보고 단추에 붉은 점을 단다.
+   이름은 서버가 로그인 표로 알아본다. 관리자는 「백야」로, 허락받은
+   게스트는 게스트 이름으로 말한다. 관리자는 지우기·입막기·비우기.
+   ══════════════════════════════════════════════════════════ */
+const CHAT_SEEN = 'baekgwi_chat_seen';
+const CHAT_POLL = 3000;
+let CHAT = { log: [], last: 0, timer: 0, busy: false };
+function chatSeen() { try { return +localStorage.getItem(CHAT_SEEN) || 0; } catch (e) { return 0; } }
+function chatSeenSet(v) { try { localStorage.setItem(CHAT_SEEN, String(v)); } catch (e) {} }
+/* 새 말이 있으면 단추에 점 — 열려 있으면 곧 읽으니 달지 않는다 */
+function chatBadge() {
+  const on = !$('#chatp') && acctOn() && (LIVE.chatAt || 0) > chatSeen();
+  document.querySelectorAll('.chatdot').forEach(d => d.classList.toggle('on', on));
+}
+function chatToggle() { if ($('#chatp')) chatClose(); else chatOpen(); }
+function chatClose() {
+  const p = $('#chatp'); if (p) p.remove();
+  clearInterval(CHAT.timer); CHAT.timer = 0;
+  chatBadge();
+}
+function chatOpen() {
+  if (!acctOn()) { toast('로그인해야 채팅할 수 있다'); SND.err(); return; }
+  if ($('#chatp')) return;
+  const dev = caster();
+  const p = el('div', 'chatp');
+  p.id = 'chatp';
+  p.innerHTML = `<div class="chh"><b>話 채팅</b><small>${wEsc(ACCT.id)}${dev ? ' · <em>백야로 말한다</em>' : ''}</small>
+      ${dev ? '<button class="chclr" title="모두 지운다">비우기</button>' : ''}<button class="chx" title="닫기">×</button></div>
+    <div class="chl"><div class="chnone">불러오는 중…</div></div>
+    <div class="chf"><input class="chi" maxlength="120" placeholder="할 말 — 엔터로 보낸다" spellcheck="false" autocomplete="off">
+      <button class="chs">보내기</button></div>
+    <div class="chw"></div>`;
+  document.body.appendChild(p);
+  const inp = p.querySelector('.chi'), warn = p.querySelector('.chw');
+  const tell = (m, bad) => { warn.textContent = m || ''; warn.classList.toggle('bad', !!bad); };
+  p.querySelector('.chx').onclick = () => { SND.ui(); chatClose(); };
+  const clr = p.querySelector('.chclr');
+  if (clr) clr.onclick = async () => {
+    if (clr.dataset.ask !== '1') { clr.dataset.ask = '1'; clr.textContent = '정말?'; setTimeout(() => { clr.dataset.ask = ''; clr.textContent = '비우기'; }, 2500); return; }
+    const r = await acctAsk('/chat/mod', { code: castKey(), clear: true });
+    if (r.ok) { CHAT.log = []; chatDraw(); tell('모두 지웠다'); } else tell(r.why, true);
+  };
+  const go = async () => {
+    const t = inp.value.trim();
+    if (!t || CHAT.busy) return;
+    CHAT.busy = true; tell('');
+    const g = guestOn() ? guestGet().sec : '';
+    const r = await acctAsk('/chat/send', { token: ACCT.token, text: t, code: dev ? castKey() : undefined,
+                                           gsec: g && /^[0-9a-f]{32}$/.test(g) ? g : undefined }, 15000);
+    CHAT.busy = false;
+    if (!r.ok) { tell(r.why, true); SND.err(); return; }
+    inp.value = '';
+    chatPull();
+  };
+  p.querySelector('.chs').onclick = go;
+  inp.onkeydown = e => {
+    e.stopPropagation();                                /* 적는 동안 판의 단축키(1~9·E·A·D)가 먹지 않게 */
+    if (e.key === 'Enter') { e.preventDefault(); go(); }
+    else if (e.key === 'Escape') { e.preventDefault(); chatClose(); }
+  };
+  chatDraw();
+  chatPull(true);
+  CHAT.timer = setInterval(() => { if (!$('#chatp')) { clearInterval(CHAT.timer); return; } if (!document.hidden) chatPull(); }, CHAT_POLL);
+  setTimeout(() => inp.focus(), 50);
+  chatBadge();
+}
+async function chatPull(first) {
+  const r = await acctAsk('/chat?after=' + (first ? 0 : CHAT.last), null, 12000);
+  const p = $('#chatp');
+  if (!p) return;
+  if (!r.ok) { if (first) { const l = p.querySelector('.chl'); if (l) l.innerHTML = `<div class="chnone">서버에 닿지 못했다 — ${wEsc(r.why)}</div>`; } return; }
+  const gone = new Set(r.gone || []);
+  let log = first ? [] : CHAT.log.filter(x => !gone.has(x.id));
+  for (const m of r.list || []) if (!log.some(x => x.id === m.id)) log.push(m);
+  log = log.slice(-150);
+  const changed = first || log.length !== CHAT.log.length || (log.length && log[log.length - 1].id !== (CHAT.log[CHAT.log.length - 1] || {}).id);
+  CHAT.log = log;
+  CHAT.last = Math.max(CHAT.last, +r.last || 0);
+  if (!r.last) CHAT.last = 0;
+  chatSeenSet(Math.max(chatSeen(), CHAT.last));
+  if (changed) chatDraw();
+}
+function chatDraw() {
+  const p = $('#chatp'); if (!p) return;
+  const l = p.querySelector('.chl');
+  const stick = l.scrollTop + l.clientHeight >= l.scrollHeight - 30;
+  const dev = caster();
+  if (!CHAT.log.length) { l.innerHTML = '<div class="chnone">아직 아무 말이 없다 — 먼저 말을 건네 보시오</div>'; return; }
+  l.innerHTML = CHAT.log.map(m => {
+    const d = new Date(m.at), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    const mine = !m.k && m.n === ACCT.id;
+    return `<div class="cm ${m.k || ''}${mine ? ' me' : ''}" data-id="${m.id}"><b>${wEsc(m.n)}${m.k === 'dev' ? '<i>개발자</i>' : m.k === 'guest' ? '<i>게스트</i>' : ''}</b>` +
+      `<span>${wEsc(m.t)}</span><time>${hm}</time>` +
+      (dev && m.k !== 'dev' ? '<u class="cmd" title="이 말을 지운다">지우기</u><u class="cmm" title="10분 동안 말을 막고 그 사람의 말을 걷는다">입막기</u>' : '') + '</div>';
+  }).join('');
+  if (dev) l.querySelectorAll('.cm').forEach(n => {
+    const id = +n.dataset.id;
+    const act = async body => { const r = await acctAsk('/chat/mod', Object.assign({ code: castKey() }, body));
+      if (r.ok) chatPull(true); else toast(r.why); };
+    const d = n.querySelector('.cmd'); if (d) d.onclick = () => act({ del: id });
+    const m = n.querySelector('.cmm'); if (m) m.onclick = () => act({ mute: id, min: 10 });
+  });
+  if (stick || l.dataset.drawn !== '1') l.scrollTop = l.scrollHeight;
+  l.dataset.drawn = '1';
 }
 
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
@@ -21669,6 +21858,7 @@ function showTitle() {
         ${hasSave() ? '<button class="brush-btn red" id="t_cont">이어서 오르기</button>'
                     : '<button class="brush-btn red" id="t_new">모험 시작</button>'}
         <button class="brush-btn ghost" id="t_acct"></button>
+        <button class="brush-btn ghost" id="t_chat">채팅<s class="chatdot"></s></button>
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
         <button class="brush-btn ghost" id="t_dex">도감</button>
@@ -21693,6 +21883,8 @@ function showTitle() {
   const tn = s.querySelector('#t_new');
   if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; } newRun(0); };
   s.querySelector('#t_acct').onclick = () => { SND.init(); SND.ui(); showAcct(); };
+  s.querySelector('#t_chat').onclick = () => { SND.init(); SND.ui(); chatToggle(); };
+  chatBadge();
   titleAcctPaint();
   /* 처음 오는 사람에게는 안내서를 권한다 */
   if (!META.runs && !hasSave()) setTimeout(() => {
@@ -21743,6 +21935,9 @@ function resumeRun() {
 
 /* --- 키보드 --- */
 addEventListener('keydown', e => {
+  /* 글을 적는 칸에서는 판의 단축키가 먹지 않는다 (채팅·관리자 찾기 칸에 a 를 치면 자동 플레이가 켜지던 것) */
+  const tg = e.target;
+  if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA') && e.key !== 'Escape') return;
   if (e.key === 'Escape') {
     const o = $('#overlay'), top = o.lastElementChild;
     if (top) {
