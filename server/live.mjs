@@ -37,13 +37,15 @@ const BOSS_KEEP = 30 * 60 * 1000;
 function expire(now) {
   let changed = false;
   if (live.event && live.eventUntil && now > live.eventUntil) { live.event = ''; changed = true; }
+  if (live.rain && live.rain.until && now > live.rain.until) { live.rain = null; changed = true; }
   if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
+  if (live.music && live.music.until && now > live.music.until) { live.music = null; changed = true; }
   const b = live.boss;
   if (b && !b.done && !b.fled) {
     /* 끝나는 때(until)가 생기기 전에 세운 적은 until 이 없어 영원히 서 있었다.
        세운 때(at)부터 BOSS_MS 가 지나면 무엇이든 거둔다 — 더 길게 적혀 있어도 줄인다 */
     const born = +b.born || +b.at || 0;
-    const end = Math.min(+b.until || Infinity, born ? born + BOSS_MS : Infinity);
+    const end = Math.min(+b.until || Infinity, born ? born + BOSS_MS + (+b.ext || 0) : Infinity);
     if (!born && !b.until) { b.fled = true; b.end = now; changed = true; }
     else if (now > end) { b.fled = true; b.end = now; changed = true;
       console.log('달아났다:', b.n, '· 남은', b.hp); }
@@ -361,27 +363,52 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend'];
+const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
+const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
 async function applyCast(q) {
   /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다.
      관리자의 말에는 이름을 달지 않는다(게임이 「백야」로 보인다) — 게스트의 말만 noticeBy 가 붙는다 */
   if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); live.noticeBy = ''; }
-  if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = Date.now();
-                        live.eventUntil = live.event ? Date.now() + EV_MS : 0; }
+  /* 일은 두 자리 — 슈팅 스타·혼돈·풍년은 한 자리를 나눠 쓰고(한 번에 하나),
+     카드 대전은 제 자리가 따로 있어 그 셋 가운데 하나와 함께 걸릴 수 있다.
+     빈 이름('')은 둘 다 끈다. */
+  if ('event' in q) {
+    const e = str(q.event, 24);
+    if (e === 'rain') live.rain = { at: Date.now(), until: Date.now() + EV_MS };
+    else if (e === 'rainoff') live.rain = null;
+    else {
+      live.event = e; live.eventAt = Date.now(); live.eventUntil = e ? Date.now() + EV_MS : 0;
+      if (!e) live.rain = null;
+    }
+  }
   if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
   if ('apk'     in q) live.apk = str(q.apk, 300);
-  /* 선물 — 카드 이름만 받는다. 무엇이 있는 이름인지는 게임이 안다. */
+  /* 선물 — 카드 이름과 재화(골드·다이아·정진). 무엇이 있는 이름인지는 게임이 안다. */
   if ('gift' in q) {
     if (!q.gift) live.gift = null;
     else {
       const cards = Array.isArray(q.gift.cards)
         ? q.gift.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
-      live.gift = cards.length
-        ? { id: Date.now(), cards, say: str(q.gift.say, 120), at: Date.now(),
+      const gold = num(q.gift.gold, 1000000), dia = num(q.gift.dia, 100000), jp = num(q.gift.jp, 100000);
+      live.gift = cards.length || gold || dia || jp
+        ? { id: Date.now(), cards, gold, dia, jp, say: str(q.gift.say, 120), at: Date.now(),
             until: Date.now() + EV_MS }
         : null;
     }
+  }
+  /* 노래 — 모든 앱에서 같은 곡이 나온다. 정한 분이 지나면 저절로 멎는다 */
+  if ('music' in q) {
+    if (!q.music || !q.music.k) live.music = null;
+    else { const min = Math.max(1, Math.min(120, parseInt(q.music.min, 10) || 10));
+           live.music = { k: str(q.music.k, 12), at: Date.now(), until: Date.now() + min * 60000 }; }
+  }
+  /* 모두의 적의 때를 늘린다 — 서 있는 동안만 */
+  if ('bossExtend' in q && live.boss && !live.boss.done && !live.boss.fled) {
+    const b = live.boss, add = Math.max(1, Math.min(30, parseInt(q.bossExtend, 10) || 0)) * 60000;
+    const room = Math.max(0, BOSS_EXT_MAX - (+b.ext || 0)), n = Math.min(add, room);
+    if (n > 0) { b.ext = (+b.ext || 0) + n; b.until = (+b.until || Date.now()) + n; console.log('모두의 적 연장', n / 60000, '분'); }
   }
   /* 모두가 치는 적 — 새로 세우거나 거둔다 */
   if ('boss' in q) {
@@ -389,7 +416,6 @@ async function applyCast(q) {
     else {
       const max = Math.max(100, Math.min(100000000, parseInt(q.boss.max, 10) || 100000));
       /* 거두면 줄 몫 — 관리자가 그때마다 정한다. 게임이 아는 부적만 쓰인다 */
-      const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
       const pq = q.boss.pay && typeof q.boss.pay === 'object' ? q.boss.pay : null;
       const pay = pq ? {
         jp: num(pq.jp, 100000), gold: num(pq.gold, 1000000), dia: num(pq.dia, 100000),
@@ -462,6 +488,10 @@ const GUEST_KEY = 'g:list';
 const GUEST_SAY_MS = 30 * 1000, GUEST_CHAOS_MS = 10 * 60 * 1000;
 const sha = s => crypto.createHash('sha256').update(String(s)).digest('hex');
 async function guestsGet() { return (await get(GUEST_KEY)) || {}; }
+/* 초대 — 관리자가 아이디를 골라 먼저 청한다. 받은 사람이 수락하면 곧바로 게스트다 (이레 동안 유효) */
+const INV_KEY = 'g:inv', INV_MS = 7 * 24 * 3600 * 1000;
+async function invGet() { const v = (await get(INV_KEY)) || {}; const now = Date.now();
+  for (const k in v) if (now - (+v[k].at || 0) > INV_MS) delete v[k]; return v; }
 async function guestsPut(g) { await put(GUEST_KEY, g); }
 /* 관리자에게 보이는 모양 — 열쇠의 지문은 빼고 */
 const guestView = g => Object.values(g).sort((a, b) => (a.state === 'ask' ? 0 : 1) - (b.state === 'ask' ? 0 : 1) || b.at - a.at)
@@ -469,6 +499,9 @@ const guestView = g => Object.values(g).sort((a, b) => (a.state === 'ask' ? 0 : 
 /* 백야·관리자를 사칭하는 이름은 받지 않는다 */
 const guestNameOk = n => nameOk(n) && !/백야|관리자|운영|개발자|admin|gm/i.test(n);
 function evActive(now) { return !!(live.event && (!live.eventUntil || now <= live.eventUntil)); }
+function rainActive(now) { return !!(live.rain && now <= (+live.rain.until || 0)); }
+/* 게스트가 뿌리는 선물은 이벤트 하나에 한 번 — 어느 이벤트인지 */
+const evMark = now => evActive(now) ? live.eventAt : rainActive(now) ? 'r' + live.rain.at : 0;
 
 /* ══════════════════════════════════════════════════════════
    지금 켜 둔 사람 — 소식을 물으러 올 때마다 누구(w)·어디(s)를 적는다
@@ -523,6 +556,9 @@ const chatClean = s => String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-�
   .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length));
 const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '' });
 const chatLastId = () => (chat && chat.log.length ? chat.log[chat.log.length - 1].id : 0);
+/* 채팅은 셋 분만 남는다 — 한 마디는 말한 지 셋 분이 지나면 사라진다 */
+const CHAT_LIFE = 3 * 60 * 1000;
+function chatPrune(now) { if (chat && chat.log.length && now - chat.log[0].at > CHAT_LIFE) chat.log = chat.log.filter(x => now - x.at <= CHAT_LIFE); }
 
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
@@ -557,7 +593,7 @@ const server = http.createServer(async (req, res) => {
     await store();
     const now = Date.now();
     seenMark(url.searchParams.get('w'), url.searchParams.get('s'), now);
-    await chatLoad();
+    await chatLoad(); chatPrune(now);
     await runSchedule(now);
     if (expire(now)) await keep();
     /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
@@ -568,11 +604,13 @@ const server = http.createServer(async (req, res) => {
 
   /* ── 채팅 — 읽기 ── */
   if (url.pathname === '/chat' && req.method === 'GET') {
-    await store(); await chatLoad();
+    await store(); await chatLoad(); chatPrune(Date.now());
     const after = +url.searchParams.get('after') || 0;
     const list = chat.log.filter(x => x.id > after).slice(-60).map(chatView);
+    /* 셋 분이 지나 사라진 것 — 앱도 걷어 내게 가장 오래된 살아 있는 id 를 알려 준다 */
     /* 관리자가 지운 것 — 이미 받아 간 앱에서도 걷어 내게 */
-    return send(res, 200, { ok: true, list, last: chatLastId(), gone: (chat.gone || []).slice(-50), now: Date.now() });
+    return send(res, 200, { ok: true, list, last: chatLastId(), gone: (chat.gone || []).slice(-50), now: Date.now(),
+                            first: chat.log.length ? chat.log[0].id : chatLastId() + 1, life: CHAT_LIFE });
   }
 
   /* ── 지금 켜 둔 사람 — 관리자만 ── */
@@ -683,6 +721,7 @@ const server = http.createServer(async (req, res) => {
     let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store(); await chatLoad();
     const now = Date.now();
+    chatPrune(now);
     const isDev = !!(CODE && q.code && same(String(q.code), CODE));
 
     if (url.pathname === '/chat/mod') {
@@ -739,6 +778,19 @@ const server = http.createServer(async (req, res) => {
       if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
       if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
       const g = await guestsGet();
+      const inv = await invGet();
+      if (q.act === 'invite' || q.act === 'uninvite') {
+        const user = str(q.user, 20).trim();
+        if (q.act === 'uninvite') delete inv[user];
+        else {
+          if (!nameOk(user) || !(await soulGet(user))) return send(res, 404, { ok: false, why: '그런 아이디가 없다' });
+          if (Object.values(g).some(v => v.acct === user && v.state === 'ok')) return send(res, 409, { ok: false, why: '이미 게스트다' });
+          inv[user] = { at: Date.now() };
+          console.log('게스트로 초대:', user);
+        }
+        await put(INV_KEY, inv);
+        return send(res, 200, { ok: true, guests: guestView(g), invites: Object.keys(inv) });
+      }
       const x = q.id ? Object.values(g).find(v => v.id === String(q.id)) : null;
       if (q.act && q.act !== 'list') {
         if (!x) return send(res, 404, { ok: false, why: '그런 게스트가 없다' });
@@ -751,7 +803,29 @@ const server = http.createServer(async (req, res) => {
         await guestsPut(g);
         console.log('게스트', q.act, x.name);
       }
-      return send(res, 200, { ok: true, guests: guestView(g) });
+      return send(res, 200, { ok: true, guests: guestView(g), invites: Object.keys(inv) });
+    }
+
+    /* 초대 받은 이 — 로그인 표로 알아본다 */
+    if (url.pathname === '/guest/inbox' || url.pathname === '/guest/accept' || url.pathname === '/guest/decline') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+      const inv = await invGet();
+      if (url.pathname === '/guest/inbox') return send(res, 200, { ok: true, invite: !!inv[id] });
+      if (!inv[id]) return send(res, 404, { ok: false, why: '받은 초대가 없다' });
+      delete inv[id]; await put(INV_KEY, inv);
+      if (url.pathname === '/guest/decline') { console.log('초대를 거절:', id); return send(res, 200, { ok: true }); }
+      const sec = String(q.sec || '');
+      if (!/^[0-9a-f]{32}$/.test(sec)) return send(res, 400, { ok: false, why: '게스트 열쇠가 이상하다' });
+      const g = await guestsGet();
+      const want = str(q.name, 20).trim();
+      let name = guestNameOk(want) ? want : guestNameOk(id) ? id : '게스트' + crypto.randomBytes(2).toString('hex');
+      if (Object.values(g).some(v => v.name === name && v !== g[sha(sec)])) name = name.slice(0, 16) + crypto.randomBytes(1).toString('hex');
+      const had = g[sha(sec)];
+      g[sha(sec)] = Object.assign(had || { id: crypto.randomBytes(5).toString('hex'), gift: false }, { name, state: 'ok', at: now, acct: id });
+      await guestsPut(g);
+      console.log('초대를 받아 게스트가 되었다:', id, '→', name);
+      return send(res, 200, { ok: true, state: 'ok', name, gift: !!g[sha(sec)].gift });
     }
 
     /* 여기서부터는 게스트 자신 — 제 기계가 만든 열쇠로 알아본다 */
@@ -784,7 +858,7 @@ const server = http.createServer(async (req, res) => {
       if (!me) return send(res, 200, { ok: true, state: '', name: '', gift: false });
       return send(res, 200, { ok: true, state: me.state, name: me.name, gift: !!me.gift,
         sayIn: Math.max(0, (me.lastSay || 0) + GUEST_SAY_MS - now), chaosIn: Math.max(0, (me.lastChaos || 0) + GUEST_CHAOS_MS - now),
-        giftUsed: !!(live.eventAt && me.lastGiftEv === live.eventAt) });
+        giftUsed: !!(evMark(now) && me.lastGiftEv === evMark(now)) });
     }
     /* 퍼뜨린다 */
     if (url.pathname === '/guest/cast') {
@@ -804,14 +878,14 @@ const server = http.createServer(async (req, res) => {
         me.lastChaos = now;
       } else if (q.gift && typeof q.gift === 'object') {
         if (!me.gift) return send(res, 403, { ok: false, why: '부적 뿌리기는 관리자가 따로 허락해야 한다' });
-        if (!evActive(now)) return send(res, 409, { ok: false, why: '이벤트가 걸려 있을 때만 뿌릴 수 있다' });
-        if (me.lastGiftEv === live.eventAt) return send(res, 429, { ok: false, why: '이 이벤트에는 이미 뿌렸다' });
+        if (!evMark(now)) return send(res, 409, { ok: false, why: '이벤트가 걸려 있을 때만 뿌릴 수 있다' });
+        if (me.lastGiftEv === evMark(now)) return send(res, 429, { ok: false, why: '이 이벤트에는 이미 뿌렸다' });
         if (live.gift && (!live.gift.until || now <= live.gift.until)) return send(res, 409, { ok: false, why: '지금 다른 선물이 걸려 있다' });
         const cards = Array.isArray(q.gift.cards) ? q.gift.cards.slice(0, 3).map(c => str(c, 40)).filter(Boolean) : [];
         if (!cards.length) return send(res, 400, { ok: false, why: '뿌릴 부적이 없다' });
         live.gift = { id: now, cards, say: str(q.gift.say, 120), by: me.name, at: now,
-                      until: Math.min(now + EV_MS, live.eventUntil || now + EV_MS) };
-        me.lastGiftEv = live.eventAt;
+                      until: Math.min(now + EV_MS, evActive(now) ? live.eventUntil || now + EV_MS : live.rain.until) };
+        me.lastGiftEv = evMark(now);
       } else return send(res, 400, { ok: false, why: '무엇을 할지 없다' });
       live.at = now;
       await keep(); await guestsPut(g);
