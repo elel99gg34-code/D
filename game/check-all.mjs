@@ -53,7 +53,7 @@ for (const kind of ['defCard', 'defEnemy', 'defRelic', 'defPot', 'defSkill']) {
 
 /* ③ 파일에 코드를 그대로 적지 않았는가 — 지문(SHA-256)만 두어야 한다 */
 {
-  const leaks = [/cdminjuvv/, /031675mj/, /0316bakgi75/, /baekya-(admin|cast|taste)-[a-z0-9]{6,}/];
+  const leaks = [/cdminjuvv/, /031675mj/, /0316bakgi75/, /baekya-(admin|cast|taste|guest)-[a-z0-9]{6,}/];
   const hit = leaks.filter(re => re.test(html) || re.test(fs.readFileSync(path.join(ROOT, 'server/live.mjs'), 'utf8')));
   if (hit.length) no('코드가 파일에 그대로 적혀 있다: ' + hit.map(String).join(' '));
   else ok('관리자·퍼뜨리기 코드가 파일에 없다');

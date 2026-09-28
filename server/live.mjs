@@ -209,13 +209,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay):/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g):/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -364,8 +364,9 @@ function hitTooFast(who, ip) {
 const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss'];
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
 async function applyCast(q) {
-  /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다 */
-  if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); }
+  /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다.
+     관리자의 말에는 이름을 달지 않는다(게임이 「백야」로 보인다) — 게스트의 말만 noticeBy 가 붙는다 */
+  if ('notice'  in q) { live.notice  = str(q.notice, 300); live.noticeAt = +q.noticeAt || Date.now(); live.noticeBy = ''; }
   if ('event'   in q) { live.event   = str(q.event, 24);   live.eventAt  = Date.now();
                         live.eventUntil = live.event ? Date.now() + EV_MS : 0; }
   if ('version' in q) live.version = Math.max(0, Math.min(9999, parseInt(q.version, 10) || 0));
@@ -445,6 +446,29 @@ async function runSchedule(now) {
   return changed;
 }
 setInterval(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, 2000);
+
+/* ══════════════════════════════════════════════════════════
+   게스트 — 관리자가 허락한 손님
+   ──────────────────────────────────────────────────────────
+   게스트 코드를 적은 사람이 이름을 달아 청하고, 관리자가 허락하면
+   게스트가 된다. 게스트는
+     · 말을 퍼뜨린다 — 앱 윗면에 제 이름으로 뜬다 (30초에 한 번)
+     · 혼돈만 퍼뜨린다 — 다른 일이 걸려 있지 않을 때, 10분에 한 번
+     · 부적을 뿌린다 — 관리자가 따로 허락했고, 이벤트가 걸려 있을 때만,
+       이벤트 하나에 한 번 (3장까지)
+   게스트의 열쇠(sec)는 그 기계가 만들어 쥐고, 서버는 지문만 둔다.
+   ══════════════════════════════════════════════════════════ */
+const GUEST_KEY = 'g:list';
+const GUEST_SAY_MS = 30 * 1000, GUEST_CHAOS_MS = 10 * 60 * 1000;
+const sha = s => crypto.createHash('sha256').update(String(s)).digest('hex');
+async function guestsGet() { return (await get(GUEST_KEY)) || {}; }
+async function guestsPut(g) { await put(GUEST_KEY, g); }
+/* 관리자에게 보이는 모양 — 열쇠의 지문은 빼고 */
+const guestView = g => Object.values(g).sort((a, b) => (a.state === 'ask' ? 0 : 1) - (b.state === 'ask' ? 0 : 1) || b.at - a.at)
+  .map(x => ({ id: x.id, name: x.name, state: x.state, gift: !!x.gift, at: x.at, says: x.says || 0 }));
+/* 백야·관리자를 사칭하는 이름은 받지 않는다 */
+const guestNameOk = n => nameOk(n) && !/백야|관리자|운영|개발자|admin|gm/i.test(n);
+function evActive(now) { return !!(live.event && (!live.eventUntil || now <= live.eventUntil)); }
 
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
@@ -573,6 +597,102 @@ const server = http.createServer(async (req, res) => {
   }
 
 
+
+  /* ── 게스트 ── */
+  if (url.pathname.startsWith('/guest/') && req.method === 'POST') {
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+
+    /* 관리자 — 청한 이를 보고, 허락하고, 거두고, 부적 뿌리기를 맡긴다 */
+    if (url.pathname === '/guest/admin') {
+      if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
+      if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+      const g = await guestsGet();
+      const x = q.id ? Object.values(g).find(v => v.id === String(q.id)) : null;
+      if (q.act && q.act !== 'list') {
+        if (!x) return send(res, 404, { ok: false, why: '그런 게스트가 없다' });
+        if (q.act === 'ok') x.state = 'ok';
+        else if (q.act === 'no') { x.state = 'no'; x.gift = false; }
+        else if (q.act === 'gift') x.gift = true;
+        else if (q.act === 'nogift') x.gift = false;
+        else if (q.act === 'drop') { for (const k in g) if (g[k] === x) delete g[k]; }
+        else return send(res, 400, { ok: false, why: '모르는 일' });
+        await guestsPut(g);
+        console.log('게스트', q.act, x.name);
+      }
+      return send(res, 200, { ok: true, guests: guestView(g) });
+    }
+
+    /* 여기서부터는 게스트 자신 — 제 기계가 만든 열쇠로 알아본다 */
+    const sec = String(q.sec || '');
+    if (!/^[0-9a-f]{32}$/.test(sec)) return send(res, 400, { ok: false, why: '게스트 열쇠가 이상하다' });
+    const h = sha(sec);
+    const g = await guestsGet();
+    let me = g[h] || null;
+
+    /* 청한다 — 이름을 달아서 */
+    if (url.pathname === '/guest/ask') {
+      if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 두드린다' });
+      const name = str(q.name, 20).trim();
+      if (!guestNameOk(name)) return send(res, 400, { ok: false, why: '이름은 2~20 글자, 한글·영문·숫자·_.- 만 (백야·관리자 따위는 못 쓴다)' });
+      if (Object.values(g).some(v => v !== me && v.name === name)) return send(res, 409, { ok: false, why: '이미 있는 게스트 이름이다' });
+      if (me && me.state === 'ok') { me.name = name; await guestsPut(g); return send(res, 200, { ok: true, state: me.state, name, gift: !!me.gift }); }
+      if (me && me.state === 'no' && now - me.at < 10 * 60 * 1000) return send(res, 429, { ok: false, why: '거절된 지 얼마 안 되었다 — 10분 뒤에 다시 청하시오' });
+      if (!me) {
+        const all = Object.values(g);
+        if (all.length >= 300) return send(res, 503, { ok: false, why: '게스트 자리가 가득 찼다' });
+        if (all.filter(v => v.state === 'ask').length >= 50) return send(res, 503, { ok: false, why: '청한 이가 너무 많다 — 잠시 뒤에' });
+        me = g[h] = { id: crypto.randomBytes(5).toString('hex'), name, state: 'ask', gift: false, at: now };
+      } else { me.name = name; me.state = 'ask'; me.at = now; }
+      await guestsPut(g);
+      console.log('게스트가 청했다:', name);
+      return send(res, 200, { ok: true, state: me.state, name, gift: false });
+    }
+    /* 제 처지를 묻는다 */
+    if (url.pathname === '/guest/me') {
+      if (!me) return send(res, 200, { ok: true, state: '', name: '', gift: false });
+      return send(res, 200, { ok: true, state: me.state, name: me.name, gift: !!me.gift,
+        sayIn: Math.max(0, (me.lastSay || 0) + GUEST_SAY_MS - now), chaosIn: Math.max(0, (me.lastChaos || 0) + GUEST_CHAOS_MS - now),
+        giftUsed: !!(live.eventAt && me.lastGiftEv === live.eventAt) });
+    }
+    /* 퍼뜨린다 */
+    if (url.pathname === '/guest/cast') {
+      if (!me || me.state !== 'ok') return send(res, 403, { ok: false, why: '관리자의 허락이 아직 없다' });
+      if (expire(now)) await keep();
+      if ('notice' in q) {
+        if (now - (me.lastSay || 0) < GUEST_SAY_MS) return send(res, 429, { ok: false, why: '말은 30초에 한 번' });
+        const t = str(q.notice, 200).trim();
+        if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+        live.notice = t; live.noticeAt = now; live.noticeBy = me.name;
+        me.lastSay = now; me.says = (me.says || 0) + 1;
+      } else if (q.chaos) {
+        if (evActive(now)) return send(res, 409, { ok: false, why: '이미 다른 일이 걸려 있다 — 끝난 뒤에' });
+        if (now - (me.lastChaos || 0) < GUEST_CHAOS_MS) return send(res, 429, { ok: false, why: '혼돈은 10분에 한 번' });
+        await applyCast({ event: 'chaos' });
+        live.notice = '혼돈을 뿌렸습니다!'; live.noticeAt = now; live.noticeBy = me.name;
+        me.lastChaos = now;
+      } else if (q.gift && typeof q.gift === 'object') {
+        if (!me.gift) return send(res, 403, { ok: false, why: '부적 뿌리기는 관리자가 따로 허락해야 한다' });
+        if (!evActive(now)) return send(res, 409, { ok: false, why: '이벤트가 걸려 있을 때만 뿌릴 수 있다' });
+        if (me.lastGiftEv === live.eventAt) return send(res, 429, { ok: false, why: '이 이벤트에는 이미 뿌렸다' });
+        if (live.gift && (!live.gift.until || now <= live.gift.until)) return send(res, 409, { ok: false, why: '지금 다른 선물이 걸려 있다' });
+        const cards = Array.isArray(q.gift.cards) ? q.gift.cards.slice(0, 3).map(c => str(c, 40)).filter(Boolean) : [];
+        if (!cards.length) return send(res, 400, { ok: false, why: '뿌릴 부적이 없다' });
+        live.gift = { id: now, cards, say: str(q.gift.say, 120), by: me.name, at: now,
+                      until: Math.min(now + EV_MS, live.eventUntil || now + EV_MS) };
+        me.lastGiftEv = live.eventAt;
+      } else return send(res, 400, { ok: false, why: '무엇을 할지 없다' });
+      live.at = now;
+      await keep(); await guestsPut(g);
+      console.log('게스트가 퍼뜨렸다:', me.name, Object.keys(q).filter(k => k !== 'sec').join(','));
+      return send(res, 200, { ok: true });          /* 예약 따위는 게스트에게 보이지 않는다 — 게임이 /live 로 다시 듣는다 */
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
 
   /* ── 뒷받침 — 잠긴 채로만 내어 준다 ── */
   if (url.pathname === '/backup' && req.method === 'GET') {
