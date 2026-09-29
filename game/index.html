@@ -3534,7 +3534,29 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   filter:drop-shadow(0 0 4px #ff2a3a);opacity:0;animation:evEyes 6s ease-in-out infinite;animation-delay:var(--w)}
 @keyframes evEyes{0%,40%,100%{opacity:0}48%,70%{opacity:.9}52%{opacity:0}56%{opacity:.9}}
 .evt-night .wash{inset:0;background:linear-gradient(rgba(120,10,30,.22),rgba(40,0,10,.45));mix-blend-mode:multiply}
-@media (prefers-reduced-motion:reduce){.evsky *,.evtint *{animation:none!important}}
+/* 박에 맞춘 이펙트 */
+#bg .beatglow{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .38s ease-out;
+  background:radial-gradient(ellipse at 50% 35%,rgba(var(--bc),.28),rgba(var(--bc),0) 65%)}
+#bg .beatglow.small{opacity:.45;transition:none}
+#bg .beatglow.big{opacity:1;transition:none}
+#bg .beatflash{position:absolute;inset:0;z-index:2;pointer-events:none;animation:beatFlash .26s ease-out forwards}
+@keyframes beatFlash{from{opacity:1}to{opacity:0}}
+#bg .bigmet{position:absolute;z-index:1;width:220px;height:3px;border-radius:3px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),#fff 80%,#cfe4ff);box-shadow:0 0 12px #bcd8ff;
+  transform:rotate(-24deg);animation:bigMet 1.3s ease-in forwards}
+@keyframes bigMet{0%{opacity:0;transform:rotate(-24deg) translateX(0)}10%{opacity:1}100%{opacity:0;transform:rotate(-24deg) translateX(-520px)}}
+#bg.glitch{animation:bgGlitch .18s steps(2) 1}
+@keyframes bgGlitch{0%{transform:translate(6px,-2px);filter:hue-rotate(80deg)}50%{transform:translate(-8px,3px);filter:hue-rotate(-60deg) saturate(1.6)}100%{transform:none;filter:none}}
+#bg .rring{position:absolute;z-index:1;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;pointer-events:none;
+  border:4px solid transparent;background:conic-gradient(#ff4d6d,#ff9f1c,#ffe14d,#3ddc84,#3aa8ff,#b44dff,#ff4d6d) border-box;
+  -webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);
+  animation:rRing .9s ease-out forwards}
+@keyframes rRing{from{transform:scale(.3);opacity:1}to{transform:scale(4.5);opacity:0}}
+.evs-night .bmoon.thump{animation:moonThump .4s ease-out}
+@keyframes moonThump{30%{transform:scale(1.12);box-shadow:0 0 90px 36px rgba(255,40,70,.6)}}
+.wbbg .wbcore.thump{animation:wbThump .35s ease-out}
+@keyframes wbThump{30%{opacity:1;filter:brightness(1.8)}}
+@media (prefers-reduced-motion:reduce){.evsky *,.evtint *{animation:none!important}#bg .beatglow,#bg .beatflash,#bg .bigmet,#bg .rring{display:none}}
 /* 어두운 하늘 위에서는 먹 글씨가 묻힌다 — 싸움터의 글씨를 밝힌다 */
 #field.world .unit .body .glyph{color:#f2e6cc;text-shadow:0 0 10px rgba(255,110,80,.55),0 2px 4px #000}
 #field.world .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
@@ -3717,6 +3739,175 @@ button.evpill{font:inherit;cursor:pointer}
 .pollrow.ans i{background:rgba(127,230,207,.25)}
 .pollrow b{font-weight:400;color:#7fe6cf;font-size:11px;border:1px solid;border-radius:3px;padding:0 4px;margin-left:4px}
 .pollrow em{font-style:normal;color:#e8c86a;font-size:11px;margin-left:4px}
+/* ══ 멀티플레이 ══════════════════════════════════════════ */
+body.pvp #topbar{display:none}
+body.pvp #field .unit .body .glyph{color:#f2e6cc;text-shadow:0 0 10px rgba(180,160,255,.55),0 2px 4px #000}
+body.pvp #field .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
+.brush-btn.mpbtn{border-color:#b98cff;color:#e6d4ff;background:linear-gradient(160deg,rgba(60,30,110,.55),rgba(20,10,40,.4))}
+.mpbgsvg .mprune{animation:mpRune 30s linear infinite}
+.mpbgsvg .mprune.r2{animation-duration:18s;animation-direction:reverse}
+@keyframes mpRune{to{stroke-dashoffset:-720}}
+.mpbgsvg .mpflag{transform-box:fill-box;transform-origin:left center;animation:mpFlag 3.2s ease-in-out infinite}
+.mpbgsvg .mpflag.r{transform-origin:right center;animation-delay:-1.6s}
+@keyframes mpFlag{50%{transform:skewY(-4deg) scaleX(.94)}}
+.mpbgsvg .mplamp{animation:mpLamp 2.4s ease-in-out infinite}
+@keyframes mpLamp{50%{opacity:.3}}
+.mpbgsvg .mppaper{animation:mpPaper 9s ease-in-out infinite}
+@keyframes mpPaper{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-40px) rotate(12deg)}}
+.mpbgsvg .mpmoonring{animation:mpLamp 5s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.mpbgsvg *{animation:none!important}}
+/* 로비 */
+.mplobby{position:relative;overflow:hidden}
+.mplobby .mpbgwrap{position:absolute;inset:0;z-index:0;opacity:.9}
+.mplobby .mpbgwrap svg{position:absolute;inset:0;width:100%;height:100%}
+.mplobby .mpbgwrap .sky{position:absolute;inset:0}
+.mplobby .schead,.mplobby .mpbody{position:relative;z-index:1}
+.mpbody{display:flex;flex-direction:column;gap:12px;padding:10px 16px 18px;max-width:880px;margin:0 auto;width:100%;box-sizing:border-box;overflow-y:auto;max-height:calc(100% - 60px)}
+.mpme{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:8px;background:rgba(12,8,22,.78);border:1px solid rgba(185,140,255,.35)}
+.mpmi{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mpmi b{font-size:19px;font-weight:400;letter-spacing:.06em}
+.mpmi span{color:#c8bda3;font-size:12px}
+.mpmi small{color:#9a8d74;font-size:11px}
+.mprp{height:7px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.mprp i{display:block;height:100%;border-radius:4px}
+.mptok{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 12px;border-radius:6px;background:rgba(232,200,106,.1);border:1px solid rgba(232,200,106,.35)}
+.mptok i{font-style:normal;color:#e8c86a;font-size:16px}
+.mptok b{color:#ffe7a0;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums}
+.mptok small{color:#9a8d74;font-size:10px}
+.mpmodes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mpmode{font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:18px 10px;border-radius:10px;
+  border:2px solid #3a78d0;background:linear-gradient(160deg,rgba(28,63,122,.85),rgba(12,18,40,.9));color:#e6f0ff;box-shadow:0 6px 22px rgba(0,0,0,.4);transition:transform .15s}
+.mpmode.two{border-color:#d0404a;background:linear-gradient(160deg,rgba(122,28,38,.85),rgba(40,10,14,.9));color:#ffe6e6}
+.mpmode:hover:not(:disabled){transform:translateY(-2px)}
+.mpmode:disabled{opacity:.45;cursor:default}
+.mpmode b{font-size:24px;font-weight:400;letter-spacing:.2em}
+.mpmode span{font-size:13px;letter-spacing:.1em}
+.mpmode em{font-style:normal;font-size:11px;opacity:.7}
+.mpstatus:empty{display:none}
+.mpq{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:6px;background:rgba(12,8,22,.8);border:1px solid rgba(127,230,207,.4)}
+.mpq b{font-weight:400;color:#8affd0}
+.mpq em{font-style:normal;color:#c8bda3;font-size:12px;font-variant-numeric:tabular-nums}
+.mpspin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(127,230,207,.3);border-top-color:#8affd0;animation:mpSpin .8s linear infinite;display:inline-block;flex:none}
+@keyframes mpSpin{to{transform:rotate(360deg)}}
+.mprow{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.mpbox{padding:10px 12px;border-radius:6px;background:rgba(12,8,22,.75);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:8px}
+.mpbox>b{font-weight:400;color:#e9dfc9;font-size:13px;letter-spacing:.06em}
+.mpbtns{display:flex;gap:8px;flex-wrap:wrap}
+.mpbtns.col{flex-direction:column}
+.mpbody .val,.mpbox .val,.mproom .val,.mpq .val{font:inherit;font-size:12.5px;cursor:pointer;padding:6px 12px;border-radius:4px;background:rgba(40,32,60,.9);border:1px solid #6a5a8a;color:#e9dfc9}
+.mpbody .val.gold,.mproom .val.gold,.mpq .val.gold{background:rgba(90,70,20,.9);border-color:#e8c86a;color:#ffe7a0}
+.mpjoin{display:flex;gap:6px}
+.mpjoin input{flex:1;min-width:0;font:inherit;font-size:14px;letter-spacing:.2em;text-transform:uppercase;background:rgba(0,0,0,.45);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:6px 9px}
+.mproom{padding:12px;border-radius:8px;background:rgba(12,8,22,.85);border:1px solid rgba(232,200,106,.4);display:flex;flex-direction:column;gap:10px}
+.mprc{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mprc small{color:#9a8d74;font-size:11px}
+.mprc b{font-size:28px;letter-spacing:.3em;color:#ffe7a0;font-weight:400;font-variant-numeric:tabular-nums}
+.mpteams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.mpteam{padding:8px;border-radius:6px;min-height:58px;display:flex;flex-direction:column;gap:5px}
+.mpteam.a{background:rgba(28,63,122,.4);border:1px solid #3a78d0}
+.mpteam.b{background:rgba(122,28,38,.4);border:1px solid #d0404a}
+.mpteam h4{margin:0;font-weight:400;font-size:12px;letter-spacing:.2em;color:#e9dfc9}
+.mpvs{font-size:20px;color:#ffe7a0;letter-spacing:.1em}
+.mpmem{display:flex;align-items:center;gap:6px;font-size:13px;color:#efe4cb}
+.mpmem b{font-weight:400}
+.mpmem em{font-style:normal;font-size:10px;color:#e8c86a;border:1px solid;border-radius:3px;padding:0 4px}
+.mpmem.none{color:#6a604c;font-size:12px}
+.mpinv:empty{display:none}
+.mpinvrow{padding:8px 12px;border-radius:6px;background:rgba(60,48,16,.8);border:1px solid #e8c86a;color:#efe4cb;display:flex;align-items:center;gap:8px}
+.mpinvrow .val{margin-left:auto}
+/* 랭크 휘장 */
+.mpemb{display:inline-grid;place-items:center;width:26px;height:26px;flex:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  font-style:normal;position:relative}
+.mpemb i{font-style:normal;font-size:13px;line-height:1;color:#1a1208;font-weight:700}
+.mpemb.sm{width:20px;height:20px}.mpemb.sm i{font-size:10px}
+.mpemb.big{width:54px;height:54px}.mpemb.big i{font-size:24px}
+.mpemb.huge{width:84px;height:84px}.mpemb.huge i{font-size:38px}
+.mpemb.t-bronze{background:linear-gradient(145deg,#f0b27a,#a0582a 55%,#6a3414)}
+.mpemb.t-silver{background:linear-gradient(145deg,#ffffff,#b8c2d0 50%,#6a7486)}
+.mpemb.t-emerald{background:linear-gradient(145deg,#b8ffe0,#2fcf8a 50%,#0a6a44)}
+.mpemb.t-master{background:linear-gradient(145deg,#ecd8ff,#a070f0 50%,#4a2090)}
+.mpemb.t-master i,.mpemb.t-emerald i{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.mpemb.t-infinity{background:conic-gradient(#ff4d6d,#ff9f1c,#ffe14d,#3ddc84,#3aa8ff,#b44dff,#ff4d6d);animation:mpInf 3s linear infinite}
+.mpemb.t-infinity i{color:#fff;text-shadow:0 0 6px #000,0 0 2px #000}
+@keyframes mpInf{to{filter:hue-rotate(360deg)}}
+/* 덱 편성 · 교환소 · 랭킹 */
+.mpdeckm,.mpshopm,.mptopm{max-height:92vh;overflow-y:auto}
+.mpdeckbar{display:flex;align-items:center;gap:10px;width:min(620px,86vw);margin:8px auto;font-size:13px;color:#e9dfc9}
+.mpdeckbar .mprp{flex:1}
+.mpdeckbar em{font-style:normal;font-size:12px}
+.mpdecksel{display:flex;flex-wrap:wrap;gap:5px;width:min(620px,86vw);margin:0 auto 8px;min-height:30px}
+.mpdeckpool{width:min(640px,88vw);margin:0 auto;max-height:44vh;overflow-y:auto}
+.mptokbig{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:8px 0;color:#e8c86a}
+.mptokbig i{font-style:normal;font-size:20px}.mptokbig b{font-size:30px;font-weight:400;color:#ffe7a0}.mptokbig span{font-size:12px;color:#9a8d74}
+.mpshopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;width:min(660px,88vw);margin:0 auto}
+.mpshopit{font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;border-radius:6px;
+  background:rgba(20,16,12,.85);border:1.5px solid #6a604c;color:#efe4cb;text-align:center}
+.mpshopit:hover{border-color:#e8c86a}
+.mpshopit i{font-style:normal;font-size:22px;color:var(--gc,#e8c86a)}
+.mpshopit b{font-weight:400;font-size:13.5px}
+.mpshopit em{font-style:normal;font-size:10.5px}
+.mpshopit small{color:#9a8d74;font-size:10.5px;line-height:1.4}
+.mpshopit u{text-decoration:none;color:#ffe7a0;font-size:13px;margin-top:auto}
+.mpshopit.card{border-color:rgba(232,200,106,.5);background:linear-gradient(160deg,rgba(60,48,16,.8),rgba(20,16,12,.9))}
+.mptiers{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:6px 0 10px;font-size:12px;color:#e9dfc9}
+.mptiers span{display:flex;align-items:center;gap:5px}.mptiers em{font-style:normal;color:#9a8d74;font-size:10.5px}
+.mptop{display:flex;flex-direction:column;gap:4px;width:min(520px,88vw);margin:0 auto;max-height:52vh;overflow-y:auto}
+.mptoprow{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:4px;background:rgba(20,16,12,.7);font-size:13px;color:#efe4cb}
+.mptoprow b{width:26px;text-align:right;color:#e8c86a;font-weight:400}
+.mptoprow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.mptoprow em{font-style:normal;font-size:11px;color:#c8bda3}.mptoprow u{text-decoration:none;font-size:11px;color:#9a8d74}
+.mptoprow.me{border:1px solid #7fe6cf;background:rgba(20,70,60,.6)}
+/* 싸움터 */
+.mphud{position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:12;display:flex;align-items:center;gap:10px;padding:5px 8px 5px 12px;border-radius:18px;
+  background:rgba(12,8,22,.88);border:1.5px solid rgba(185,140,255,.55);box-shadow:0 6px 20px rgba(0,0,0,.5);font-size:13px;color:#e9dfc9;white-space:nowrap}
+.mphud .mptag{font-size:11px;color:#b98cff;letter-spacing:.06em}
+.mphud .mpturn{font-weight:400;color:#c8bda3}
+.mphud .mpturn.mine{color:#8affd0;text-shadow:0 0 8px rgba(138,255,208,.6)}
+.mphud .mptime{font-style:normal;font-variant-numeric:tabular-nums;color:#ffe7a0;min-width:32px}
+.mphud .mptime.last{color:#ff8a7a;animation:pillBeat 1s ease-in-out infinite}
+.mphud .mpgiveup{font:inherit;font-size:11px;cursor:pointer;padding:3px 10px;border-radius:12px;background:rgba(90,20,20,.8);border:1px solid #e08a7a;color:#ffd0c8}
+.mpwait{position:absolute;left:50%;top:46px;transform:translateX(-50%);z-index:11;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:14px;
+  background:rgba(12,8,22,.8);border:1px solid rgba(255,255,255,.2);color:#e9dfc9;font-size:13px}
+.mpwait b{font-weight:400;color:#ffb0a0}
+.mpally{position:absolute;left:10px;top:52px;z-index:10;width:170px;padding:7px 9px;border-radius:6px;background:rgba(12,18,40,.85);border:1.5px solid #3a78d0;color:#e6f0ff;font-size:12px}
+.mpally.down{opacity:.45;filter:grayscale(.8)}
+.mpal-h{display:flex;align-items:center;gap:6px}.mpal-h b{font-weight:400;flex:1;overflow:hidden;text-overflow:ellipsis}.mpal-h em{font-style:normal;font-size:10px;color:#8ab8ff}
+.mpal-bar{position:relative;height:14px;margin-top:5px;border-radius:3px;background:rgba(0,0,0,.5);overflow:hidden}
+.mpal-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#a8323a,#e05a4a)}
+.mpal-bar span{position:relative;display:block;text-align:center;font-size:10px;line-height:14px;color:#fff}
+.mpal-s{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}.mpal-s i{font-style:normal;font-size:10px;padding:0 3px;border-radius:2px;background:rgba(255,255,255,.12)}
+.mpintro{position:fixed;inset:0;z-index:190;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;padding:0 6vw;
+  background:radial-gradient(ellipse at center,rgba(40,20,70,.9),rgba(5,3,10,.96));animation:chIn .3s ease-out;pointer-events:none}
+.mpintro.out{opacity:0;transition:opacity .45s}
+.mpside{display:flex;flex-direction:column;gap:14px}
+.mpside.a{align-items:flex-end;animation:mpSlideL .6s cubic-bezier(.2,1.2,.3,1)}
+.mpside.b{align-items:flex-start;animation:mpSlideR .6s cubic-bezier(.2,1.2,.3,1)}
+@keyframes mpSlideL{from{transform:translateX(-60vw)}}@keyframes mpSlideR{from{transform:translateX(60vw)}}
+.mpside>div{display:flex;align-items:center;gap:10px;flex-direction:row}
+.mpside.b>div{flex-direction:row-reverse}
+.mpside b{font-size:22px;font-weight:400;color:#fff;letter-spacing:.06em}
+.mpside em{font-style:normal;font-size:12px;color:#c8bda3}
+.mpvsbig{font-size:64px;color:#ffe7a0;text-shadow:0 0 30px rgba(255,200,90,.7);animation:mpVs .6s cubic-bezier(.2,1.6,.3,1)}
+@keyframes mpVs{from{transform:scale(3);opacity:0}}
+.mpmodetag{grid-column:1/-1;text-align:center;color:#b98cff;letter-spacing:.3em;font-size:14px}
+.mpres{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0}
+.mpres>div{display:flex;flex-direction:column;gap:3px;text-align:left}
+.mpres b{font-size:22px;font-weight:400}
+.mpres em{font-style:normal;font-size:20px}.mpres em.plus{color:#8affd0}.mpres em.minus{color:#ff8a7a}
+.mpres small{color:#9a8d74;font-size:12px}
+.mptierup{color:#ffe7a0;font-size:14px;animation:pillBeat 1s ease-in-out 3}
+.mptierdn{color:#ff9a8a;font-size:12px}
+.mptokgain{display:flex;align-items:baseline;justify-content:center;gap:6px;color:#e8c86a;font-size:15px}
+.mptokgain i{font-style:normal}.mptokgain b{font-size:20px;color:#ffe7a0;font-weight:400}.mptokgain small{color:#9a8d74;font-size:11px}
+@media (max-width:640px){
+  .mpmodes,.mprow{grid-template-columns:1fr}
+  .mpme{flex-wrap:wrap}
+  .mpintro{grid-template-columns:1fr;gap:10px;padding:20vh 8vw}
+  .mpside.a,.mpside.b{align-items:center}
+  .mpvsbig{font-size:44px;text-align:center}
+  .mpally{top:auto;bottom:calc(var(--handh,190px) + 8px);width:150px}
+  .mphud{font-size:12px;gap:7px}
+}
 /* 관리자 — 지금 접속 */
 .castonline{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid rgba(138,255,208,.35);border-radius:5px;
   background:rgba(20,60,46,.35)}
@@ -4679,6 +4870,13 @@ var SONGS = {
     mel: ['E5 - - - C5 - D5 -', 'A4 - - - - - . .', 'G4 - C5 - E5 - G5 -', 'D5 - - - - - . .',
           'A5 - G5 - E5 - D5 -', 'C5 - - - A4 - - -', 'C5 - D5 - E5 - G5 -', 'A5 - - - - - . .'],
     bass: 'x.......x...x...', kick: 'x.........x.....', hat: '..x...x...x...x.', arp: 'x...x...x...x...', arpInst: 'geo' },
+  /* 대전 — 팽팽하게, 큰북이 마디를 열고 피리가 몰아친다 (멀티플레이) */
+  duel: { n: '맞수', g: '鬪', d: '팽팽하게 몰아친다 — 멀티플레이 대전에', bpm: 132, lead: 'piri', pad: 2,
+    ch: ['Em', 'C', 'D', 'B', 'Em', 'C', 'Am', 'B'],
+    mel: ['E5 - G5 F#5 E5 - B4 -', 'C5 - E5 - G5 - E5 -', 'D5 - F#5 - A5 G5 F#5 D5', 'D#5 - F#5 - B5 - - .',
+          'E5 G5 B5 - A5 G5 F#5 E5', 'C5 E5 G5 - C6 - B5 A5', 'A5 - C6 B5 A5 - E5 -', 'D#5 - F#5 A5 B5 - - .'],
+    bass: 'X.x.x.x.X.x.x.xo', bassInst: 'saw', kick: 'X...x..xX...x...', snare: '....x.......x..x', hat: 'x.x.x.x.x.x.x.x.',
+    taiko: 'X...............' },
   /* 무지개 — 네 박마다 북, 뒷박 찰박, 통통 튀는 옥타브 베이스, 반짝이 아르페지오, 손뼉 */
   joy: { n: '무지개 대소동', g: '樂', d: '엄청 신나게 — 긍정 혼란에', bpm: 158, lead: 'sq', pad: 1,
     ch: ['C', 'G', 'Am', 'F', 'C', 'G', 'F', 'G'],
@@ -4768,10 +4966,11 @@ var SONG = {
     const bc = at(S.bass, s);
     if (bc !== '.' && bc) this.bassN(this.hz(C.root - 12 + (bc === 'o' ? 12 : bc === 'f' ? 7 : 0)), t, sp * 2, S.bassInst, bc === 'X');
     /* 북 · 장구 */
-    const k = at(S.kick, s); if (k !== '.') this.kick(t, k === 'X' ? 1.25 : 1);
-    const sn = at(S.snare, s); if (sn !== '.') this.snare(t);
+    const k = at(S.kick, s); if (k !== '.') { this.kick(t, k === 'X' ? 1.25 : 1); this.beat(t, s === 0 ? 'bar' : k === 'X' ? 'acc' : 'kick'); }
+    const sn = at(S.snare, s); if (sn !== '.') { this.snare(t); this.beat(t, 'snare'); }
     const h = at(S.hat, s); if (h !== '.') this.hat(t, s % 4 === 2 ? 1 : .6);
-    const tk = at(S.taiko, s); if (tk !== '.') this.taiko(t, tk === 'X' ? 1.3 : 1);
+    const tk = at(S.taiko, s); if (tk !== '.') { this.taiko(t, tk === 'X' ? 1.3 : 1); this.beat(t, tk === 'X' ? 'acc' : 'kick'); }
+    if (s === 0 && !S.kick && !S.taiko) this.beat(t, 'bar');         /* 북이 없는 곡(별밤)도 마디마다 한 번 */
     const cl = at(S.clap, s); if (cl !== '.') { this.noiseHit(t, 'bandpass', 1500, 1.2, .07, .12); this.noiseHit(t + .012, 'bandpass', 1700, 1.2, .05, .1); }
     const j = at(S.jang, s); if (j === 'k' || j === 'd') this.jang(t, j);
     /* 아르페지오 — 화음을 오르내린다 */
@@ -4796,6 +4995,12 @@ var SONG = {
     if (S.sparkle && s % 4 === 3 && Math.random() < .35) this.inst('bell', this.hz(C.notes[Math.floor(Math.random() * C.notes.length)] + 36), t, .6, .014);
     /* 혼돈 — 찢기는 소리 */
     if (S.glitch && s === 15 && Math.random() < .5) this.zap(t, sp * 4);
+  },
+  /* 박에 맞춰 화면이 뛴다 — 소리가 실제로 나는 때에 맞춰 부른다 */
+  beat(t, kind) {
+    const ms = Math.max(0, (t - SND.ctx.currentTime) * 1000);
+    const cur = this.cur;
+    setTimeout(() => { if (this.cur === cur) { try { songBeat(cur, kind); } catch (e) {} } }, ms);
   },
   /* ── 악기들 — 모두 t(소리 시계)에 맞춰 울린다 ── */
   env(g, t, a, peak, dur, rel) {
@@ -4915,9 +5120,56 @@ function songWant() {
   const m = LIVE.music;
   if (m && m.k && SONGS[m.k] && (!m.until || srvNow() < m.until)) return m.k;
   if (G.b && G.b.kind === 'world' && !G.b.over) return 'boss';
+  if ((G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) || (typeof MP === 'object' && MP.lobby)) return 'duel';
   return liveRain() ? 'rain' : EV_SONG[liveEvent()] || '';
 }
 function songSync() { try { SONG.want(songWant()); } catch (e) { console.error('노래', e); } }
+/* ══════════════════════════════════════════════════════════
+   박에 맞춘 이펙트 — 노래가 나오는 동안 하늘이 박자를 탄다
+     축제(풍년)   북마다 금빛 불티가 해에서 튄다
+     별밤         마디마다 큰 별똥별 하나
+     혼돈         센박마다 화면이 비틀리며 색이 번쩍
+     부적 대전    작은북마다 청록 번개
+     무지개       마디마다 색종이 폭죽, 작은북마다 무지개 고리
+     붉은 달      큰북마다 붉은 번개와 달이 맥박친다
+     하늘을 가르는 것  큰북마다 틈이 번쩍인다
+   빛·번개·별똥별은 배경 층(#bg)에서만, 불티·색종이만 가볍게 판 위로 흩어진다.
+   ══════════════════════════════════════════════════════════ */
+let _beatBusy = 0;
+function songBeat(k, kind) {
+  if (document.hidden) return;
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+  const bg = $('#bg'); if (!bg) return;
+  const now = performance.now();
+  if (kind === 'kick' && now - _beatBusy < 90) return;          /* 너무 잦으면 건너뛴다 */
+  _beatBusy = now;
+  /* 공통 — 배경이 한 번 숨 쉰다 */
+  let g = bg.querySelector('.beatglow');
+  if (!g) { g = el('div', 'beatglow'); bg.appendChild(g); }
+  const col = { fest: '255,200,90', star: '170,200,255', chaos: '255,80,220', rain: '120,240,210', joy: '255,140,230',
+                night: '255,60,80', boss: '255,110,80', calm: '220,210,170' }[k] || '255,255,255';
+  g.style.setProperty('--bc', col);
+  g.classList.remove('on'); void g.offsetWidth; g.classList.add(kind === 'kick' ? 'on' : 'on', kind === 'acc' || kind === 'bar' ? 'big' : 'small');
+  setTimeout(() => g.classList.remove('big', 'small'), 260);
+  const W = innerWidth, H = innerHeight, parts = OPT.particles !== false;
+  const flash = (c, ms) => { const f = el('div', 'beatflash'); f.style.background = c; bg.appendChild(f); setTimeout(() => f.remove(), ms || 260); };
+  if (k === 'fest' && (kind === 'kick' || kind === 'bar') && parts) FX.burst(W * .28, H * .34, kind === 'bar' ? 14 : 6, '255,210,110', 4, 40, 3);
+  else if (k === 'star' && kind === 'bar') {
+    const m = el('s', 'bigmet'); m.style.left = (30 + Math.random() * 60) + '%'; m.style.top = (4 + Math.random() * 22) + '%';
+    bg.appendChild(m); setTimeout(() => m.remove(), 1400);
+  }
+  else if (k === 'chaos' && (kind === 'acc' || kind === 'bar')) {
+    bg.classList.remove('glitch'); void bg.offsetWidth; bg.classList.add('glitch'); setTimeout(() => bg.classList.remove('glitch'), 180);
+  }
+  else if (k === 'rain' && kind === 'snare') flash('rgba(190,255,240,.16)', 160);
+  else if (k === 'joy') {
+    if (kind === 'bar' && parts) for (let i = 0; i < 3; i++)
+      FX.burst(W * (.15 + Math.random() * .7), H * (.12 + Math.random() * .25), 12, `${Math.floor(Math.random() * 200 + 55)},${Math.floor(Math.random() * 200 + 55)},${Math.floor(Math.random() * 200 + 55)}`, 5, 44, 3);
+    if (kind === 'snare') { const r = el('i', 'rring'); r.style.left = (20 + Math.random() * 60) + '%'; r.style.top = (15 + Math.random() * 40) + '%'; bg.appendChild(r); setTimeout(() => r.remove(), 900); }
+  }
+  else if (k === 'night' && kind === 'acc') { flash('rgba(255,40,70,.18)', 200); const m = bg.querySelector('.bmoon'); if (m) { m.classList.remove('thump'); void m.offsetWidth; m.classList.add('thump'); } }
+  else if (k === 'boss' && (kind === 'acc' || kind === 'bar')) { const r = bg.querySelector('.wbcore'); if (r) { r.classList.remove('thump'); void r.offsetWidth; r.classList.add('thump'); } flash('rgba(255,160,120,.12)', 180); }
+}
 
 /* --- 캔버스 먹물 파티클 --- */
 /* 파편이 끝없이 쌓이면 화면이 버벅인다 — 뚜껑을 씌운다 */
@@ -5206,6 +5458,7 @@ function saveMeta() {
   if (typeof acctNudge === 'function') acctNudge();
 }
 function saveRun() {
+  if (G.run && G.run._pvp) return;                 /* 멀티플레이용 몸 — 모험 저장을 덮지 않는다 */
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, cp: G.cp })); } catch (e) {}
   if (typeof acctNudge === 'function') acctNudge();       /* 로그인했으면 잠시 뒤 서버에도 */
@@ -5235,6 +5488,7 @@ function adoptRun(obj) {
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
+  if (kind === 'enemies' && /^mp[f_]/.test(id)) return false;      /* 멀티플레이의 상대는 도감에 적지 않는다 */
   if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
   return false;
 }
@@ -5311,7 +5565,7 @@ defCard({ id: 'roc', n: '대붕격', g: '鵬', type: 'attack', rar: 'common', co
 
 /* ---------- 일반 · 기술 ---------- */
 defCard({ id: 'wall', n: '철벽결계', g: '壁', type: 'skill', rar: 'common', cost: 2,
-  v: u => ({ b: u ? 17 : 12 }),
+  v: u => ({ b: u ? 20 : 15 }),
   txt: v => `<i>${v.b}</i>의 방어도를 얻는다.`,
   play: c => blk(c.v.b) });
 
@@ -5321,7 +5575,7 @@ defCard({ id: 'step', n: '신법', g: '步', type: 'skill', rar: 'common', cost:
   play: c => { blk(c.v.b); drawCards(1); } });
 
 defCard({ id: 'insight', n: '도인술', g: '導', type: 'skill', rar: 'common', cost: 1,
-  v: u => ({ n: u ? 3 : 2 }),
+  v: u => ({ n: u ? 4 : 3 }),
   txt: v => `카드를 ${v.n}장 뽑는다.`,
   play: c => drawCards(c.v.n) });
 
@@ -5367,7 +5621,7 @@ defCard({ id: 'formless', n: '무형검', g: '無', type: 'attack', rar: 'uncomm
   play: c => atk(c.t, c.v.d, { pierce: true }) });
 
 defCard({ id: 'immovable', n: '부동명왕격', g: '不', type: 'attack', rar: 'uncommon', cost: 1, tgt: 'enemy',
-  v: u => ({ d: u ? 7 : 3 }),
+  v: u => ({ d: u ? 9 : 6 }),
   txt: v => `현재 방어도 + <em>${v.d}</em>만큼의 피해를 준다.`,
   play: c => atk(c.t, P().block + c.v.d) });
 
@@ -5462,10 +5716,10 @@ defCard({ id: 'clone', n: '분신술', g: '分', type: 'skill', rar: 'rare', cos
   play: c => st(P(), 'dbl', 1) });
 
 defCard({ id: 'diamond', n: '금강불괴', g: '剛', type: 'power', rar: 'rare', cost: 3,
-  v: u => ({}),
+  v: u => ({ b: u ? 14 : 10 }),
   costOf: u => u ? 2 : 3,
-  txt: () => `<b>금강</b> 상태가 된다. 턴이 끝나도 방어도가 사라지지 않는다.`,
-  play: () => st(P(), 'barricade', 1) });
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 <b>금강</b> 상태가 된다. 턴이 끝나도 방어도가 사라지지 않는다.`,
+  play: c => { blk(c.v.b); st(P(), 'barricade', 1); } });
 
 defCard({ id: 'berserk', n: '폭주', g: '狂', type: 'power', rar: 'rare', cost: 1,
   v: u => ({ x: u ? 2 : 1 }),
@@ -5479,7 +5733,7 @@ defCard({ id: 'flysword', n: '이기어검', g: '劍', type: 'power', rar: 'rare
 
 defCard({ id: 'circulate', n: '기공 순환', g: '流', type: 'power', rar: 'rare', cost: 2,
   v: u => ({ x: 1 }),
-  costOf: u => u ? 1 : 2,
+  costOf: u => u ? 0 : 1,
   txt: () => `<b>기공</b>을 얻는다. 매 턴 카드를 1장 더 뽑는다.`,
   play: c => st(P(), 'flow', 1) });
 
@@ -5504,7 +5758,7 @@ defCard({ id: 'thunder', n: '천둥벼락', g: '雷', type: 'attack', rar: 'rare
   play: async c => { SND.gong(); for (const e of alive()) { atk(e, c.v.d); st(e, 'vuln', c.v.k); } } });
 
 defCard({ id: 'rainflower', n: '만천화우', g: '雨', type: 'attack', rar: 'rare', cost: 1, tgt: 'all',
-  v: u => ({ d: u ? 9 : 7 }),
+  v: u => ({ d: u ? 12 : 9 }),
   txt: v => `손에 남은 카드를 모두 소멸시키고, 소멸한 장수 × <em>${v.d}</em>의 피해를 모든 적에게 준다.`,
   play: async c => {
     const rest = G.b.hand.slice();
@@ -5532,9 +5786,9 @@ defCard({ id: 'insighteye', n: '심안', g: '眼', type: 'skill', rar: 'rare', c
     drawCards(c.v.n); energy(1); } });
 
 defCard({ id: 'shadowblade', n: '무영검', g: '影', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 10 : 8, n: 3 }),
-  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 타격할 때마다 <b>힘</b>을 1 얻는다.`,
-  play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); st(P(), 'str', 1); await wait(130); } } });
+  v: u => ({ d: u ? 8 : 6, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 그 뒤 <b>힘</b>을 1 얻는다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); await wait(130); } st(P(), 'str', 1); } });
 
 /* ---------- 특별 (특별 상자에서만 나온다) ---------- */
 defCard({ id: 'mu', n: '없을 무', g: '無', type: 'skill', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
@@ -5624,9 +5878,9 @@ defCard({ id: 'sealarray', n: '봉마진', g: '陣', type: 'skill', rar: 'specia
   exhaust: true,
   play: c => { SND.bell(); st(c.t, 'stun', 1); st(c.t, 'vuln', c.v.k); } });
 defCard({ id: 'bloodoath', n: '혈맹', g: '盟', type: 'skill', rar: 'special', cost: 0,
-  v: u => ({ h: u ? 8 : 11, e: 2 }),
-  txt: v => `체력을 ${v.h} 잃고 기를 ${v.e} 얻는다. 카드를 1장 뽑는다.`,
-  play: c => { lose(c.v.h); energy(c.v.e); drawCards(1); } });
+  v: u => ({ h: u ? 4 : 6, e: 2, n: u ? 2 : 1 }),
+  txt: v => `체력을 ${v.h} 잃고 기를 ${v.e} 얻는다. 카드를 ${v.n}장 뽑는다.`,
+  play: c => { lose(c.v.h); energy(c.v.e); drawCards(c.v.n); } });
 
 /* --- SSX급 추가 --- */
 defCard({ id: 'ghostparade', n: '백귀야행', g: '百', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', exhaust: true,
@@ -5745,9 +5999,9 @@ defCard({ id: 'doublecut', n: '겹베기', g: '疊', type: 'attack', rar: 'commo
   play: c => atk(c.t, c.v.d, { n: c.v.n, fx: 'slash' }) });
 
 defCard({ id: 'saltthrow', n: '소금 뿌리기', g: '鹽', type: 'skill', rar: 'common', cost: 1, tgt: 'all',
-  v: u => ({ x: u ? 2 : 1 }),
-  txt: v => `모든 적에게 <b>약화</b>를 ${v.x} 부여한다.`,
-  play: c => { for (const e of alive()) st(e, 'weak', c.v.x); } });
+  v: u => ({ x: u ? 2 : 1, b: u ? 6 : 4 }),
+  txt: v => `모든 적에게 <b>약화</b>를 ${v.x} 부여하고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { for (const e of alive()) st(e, 'weak', c.v.x); blk(c.v.b); } });
 
 defCard({ id: 'oxbreath', n: '황소 숨', g: '牛', type: 'skill', rar: 'common', cost: 0,
   v: u => ({ b: u ? 6 : 4 }),
@@ -5781,7 +6035,7 @@ defCard({ id: 'seizeqi', n: '탈기', g: '奪', type: 'attack', rar: 'uncommon',
   play: c => { const b0 = c.t.hp; atk(c.t, c.v.d, { fx: 'lance' }); if (b0 > 0 && c.t.hp <= 0) energy(1); } });
 
 defCard({ id: 'mirrorward', n: '반사부', g: '鏡', type: 'skill', rar: 'uncommon', cost: 1,
-  v: u => ({ t: u ? 6 : 4 }),
+  v: u => ({ t: u ? 5 : 3 }),
   txt: v => `<b>가시</b>를 ${v.t} 얻는다.`,
   play: c => st(P(), 'thorns', c.v.t) });
 
@@ -5833,7 +6087,7 @@ defCard({ id: 'boneread', n: '골점(骨占)', g: '占', type: 'skill', rar: 'ra
   play: c => { drawCards(c.v.n); G.b.drawMod = (G.b.drawMod || 0) + 1; } });
 
 defCard({ id: 'crushpalm', n: '벽공장', g: '掌', type: 'attack', rar: 'rare', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 30 : 23 }),
+  v: u => ({ d: u ? 24 : 18 }),
   txt: v => `<em>${v.d}</em>의 피해를 주고 <b>취약</b> 2를 부여한다.`,
   play: c => { atk(c.t, c.v.d, { fx: 'blunt' }); st(c.t, 'vuln', 2); } });
 
@@ -5849,7 +6103,7 @@ defCard({ id: 'tigerroar', n: '호포', g: '咆', type: 'skill', rar: 'special',
   play: c => { SND.charge(); for (const e of alive()) { st(e, 'weak', c.v.x); st(e, 'vuln', c.v.x); } blk(c.v.b); } });
 
 defCard({ id: 'goldenbody', n: '금강신', g: '金', type: 'power', rar: 'special', cost: 2,
-  v: u => ({ b: u ? 9 : 6 }),
+  v: u => ({ b: u ? 10 : 7 }),
   txt: v => `매 턴 시작할 때 <i>${v.b}</i>의 방어도를 얻는다.`,
   play: c => { st(P(), 'turnblock', c.v.b); SND.power(); } });
 
@@ -5962,7 +6216,7 @@ defCard({ id: 'warcry', n: '기합성', g: '喝', type: 'skill', rar: 'common', 
 
 /* ---------- 2등급 ---------- */
 defCard({ id: 'counterstance', n: '반격세', g: '返', type: 'skill', rar: 'uncommon', cost: 1,
-  v: u => ({ b: u ? 8 : 5, t: u ? 5 : 3 }),
+  v: u => ({ b: u ? 8 : 5, t: u ? 3 : 2 }),
   txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.t}를 얻는다.`,
   play: c => { blk(c.v.b); st(P(), 'thorns', c.v.t); } });
 
@@ -5987,9 +6241,9 @@ defCard({ id: 'dustveil', n: '먼지 장막', g: '塵', type: 'skill', rar: 'com
   play: c => { blk(c.v.b); for (const e of alive()) st(e, 'weak', c.v.k); } });
 
 defCard({ id: 'stoneskin', n: '석피술', g: '皮', type: 'skill', rar: 'common', cost: 2,
-  v: u => ({ b: u ? 15 : 11 }),
-  txt: v => `<i>${v.b}</i>의 방어도를 얻는다.`,
-  play: c => blk(c.v.b) });
+  v: u => ({ b: u ? 15 : 12, x: 1 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>민첩</b> ${v.x}을 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'dex', c.v.x); } });
 
 defCard({ id: 'needle', n: '침봉', g: '針', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
   v: u => ({ d: u ? 4 : 3, n: 2, p: u ? 3 : 2 }),
@@ -6055,22 +6309,22 @@ defCard({ id: 'soulbind', n: '결박부', g: '縛', type: 'skill', rar: 'rare', 
   play: c => { st(c.t, 'stun', 1); st(c.t, 'vuln', c.v.k); st(c.t, 'weak', c.v.k); SND.bell(); } });
 
 defCard({ id: 'scaleoflife', n: '천칭', g: '秤', type: 'skill', rar: 'rare', cost: 2,
-  v: u => ({ r: u ? 1 : .6 }),
-  txt: (v, u) => `잃은 체력의 ${u ? '전부' : '60%'}만큼 <i>방어도</i>를 얻는다.`,
+  v: u => ({ r: u ? 1 : .7 }),
+  txt: (v, u) => `잃은 체력의 ${u ? '전부' : '70%'}만큼 <i>방어도</i>를 얻는다(최소 10).`,
   play: c => { const p = P(); const lost = Math.max(0, p.maxHp - p.hp);
-    blk(Math.max(3, Math.floor(lost * c.v.r))); SND.bell(); } });
+    blk(Math.max(10, Math.floor(lost * c.v.r))); SND.bell(); } });
 
 /* ---------- S급 ---------- */
 defCard({ id: 'wolffang', n: '혈랑아', g: '狼', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 11 : 8, n: 3 }),
-  txt: v => `<em>${v.d}</em>의 피해를 세 번 준다. 매 타격마다 <b>힘</b> 1을 얻는다.`,
+  v: u => ({ d: u ? 9 : 7, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 세 번 준다. 그 뒤 <b>힘</b> 2를 얻는다.`,
   play: async c => {
     for (let i = 0; i < 3; i++) {
       if (!alive().length) break;
       atk(c.t && c.t.hp > 0 ? c.t : alive()[0], c.v.d);
-      st(P(), 'str', 1);
       await wait(150);
     }
+    st(P(), 'str', 2);
   } });
 
 defCard({ id: 'dragonpillar', n: '반룡주', g: '龍', type: 'power', rar: 'special', cost: 2,
@@ -6161,7 +6415,7 @@ defCard({ id: 'ironwill', n: '철심결', g: '芯', type: 'skill', rar: 'uncommo
   play: c => { blk(c.v.b); st(P(), 'endblock', c.v.e); } });
 
 defCard({ id: 'gutstab', n: '내장 가르기', g: '腸', type: 'attack', rar: 'uncommon', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 15 : 12, p: u ? 8 : 5 }),
+  v: u => ({ d: u ? 13 : 10, p: u ? 7 : 4 }),
   txt: v => `<em>${v.d}</em>의 피해를 주고 <b>중독</b> ${v.p}을 부여한다.`,
   play: c => { atk(c.t, c.v.d); st(c.t, 'poison', c.v.p); } });
 
@@ -6249,7 +6503,7 @@ defCard({ id: 'skyfall', n: '낙성참', g: '隕', type: 'attack', rar: 'special
   play: c => { for (const e of alive()) { atk(e, c.v.d, { fx: 'bolt' }); st(e, 'vuln', c.v.k); } } });
 
 defCard({ id: 'ironrain', n: '철우', g: '雨', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy',
-  v: u => ({ d: u ? 9 : 7, n: u ? 6 : 5 }),
+  v: u => ({ d: u ? 7 : 5, n: u ? 5 : 4 }),
   txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 준다. 낼 때마다 <b>검기</b> 1을 얻는다.`,
   play: async c => { for (let i = 0; i < c.v.n; i++) { atk(c.t, c.v.d); await wait(100); } st(P(), 'edge', 1); } });
 
@@ -6407,7 +6661,12 @@ function fgOdds(lv) {
   const base = FORGE_ODDS[lv] != null ? FORGE_ODDS[lv] : 0;
   return base <= 0 ? 0 : Math.min(0.97, base + ASC.forge(ascLv()));   /* 환생할수록 손이 트인다 */
 }
-function fgCost(lv) { return FORGE_COST[lv] != null ? FORGE_COST[lv] : 9999; }
+function fgCost(lv) {
+  const base = FORGE_COST[lv] != null ? FORGE_COST[lv] : 9999;
+  /* 벼리는 값도 막을 탄다 — 뒷막 골드의 쓸 곳 */
+  const act = (typeof G === 'object' && G.run && G.run.act) || 1;
+  return Math.round(base * shopMul(act));
+}
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
 function cval(c) {
   const v = cdef(c).v(c.up);
@@ -6453,12 +6712,74 @@ const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
   : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown'
   : rar === 'zero' ? ' g-zero' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
+/* ── 새 부적 (판 7) — 3등급부터 S급까지, 비어 있던 자리를 메운다 ── */
+defCard({ id: 'palmstrike', n: '쌍장타', g: '拍', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
+  v: u => ({ d: u ? 7 : 5, b: u ? 7 : 5 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 <i>${v.b}</i>의 방어도를 얻는다.`,
+  play: c => { atk(c.t, c.v.d, { fx: 'blunt' }); blk(c.v.b); } });
+defCard({ id: 'inkdart', n: '먹침', g: '墨', type: 'attack', rar: 'common', cost: 0, tgt: 'enemy',
+  v: u => ({ d: u ? 5 : 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 주고 카드를 1장 뽑는다.`,
+  play: c => { atk(c.t, c.v.d); drawCards(1); } });
+defCard({ id: 'talisguard', n: '호부막', g: '幕', type: 'skill', rar: 'common', cost: 1,
+  v: u => ({ b: u ? 8 : 6, a: u ? 6 : 4 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻는다. 다음 턴 시작에 <i>${v.a}</i>를 더 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'afterimg', c.v.a); } });
+defCard({ id: 'poisonrain', n: '독우', g: '霪', type: 'skill', rar: 'uncommon', cost: 1, tgt: 'all',
+  v: u => ({ p: u ? 5 : 3 }),
+  txt: v => `모든 적에게 <b>중독</b> ${v.p}을 부여한다.`,
+  play: c => { for (const e of alive()) st(e, 'poison', c.v.p); } });
+defCard({ id: 'tigerclaw', n: '호조', g: '爪', type: 'attack', rar: 'uncommon', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 10 : 8, w: u ? 2 : 1 }),
+  txt: v => `<em>${v.d}</em>의 피해를 두 번 주고 <b>약화</b> ${v.w}를 부여한다.`,
+  play: async c => { atk(c.t, c.v.d); await wait(130); if (c.t && c.t.hp > 0) atk(c.t, c.v.d); if (c.t && c.t.hp > 0) st(c.t, 'weak', c.v.w); } });
+defCard({ id: 'ironcore', n: '철심공', g: '芯', type: 'power', rar: 'uncommon', cost: 1,
+  v: u => ({ x: u ? 5 : 3 }),
+  txt: v => `<b>철심</b> ${v.x}을 얻는다 — 턴이 끝날 때마다 방어도 ${v.x}.`,
+  play: c => { st(P(), 'endblock', c.v.x); SND.power(); } });
+defCard({ id: 'chainbolt', n: '연환뢰', g: '鏈', type: 'attack', rar: 'rare', cost: 2, tgt: 'all',
+  v: u => ({ d: u ? 9 : 7, n: 3 }),
+  txt: v => `모든 적에게 <em>${v.d}</em>의 피해를 주고, 무작위 적에게 <em>${v.d}</em>를 ${v.n - 1}번 더 준다.`,
+  play: async c => { for (const e of alive()) atk(e, c.v.d, { fx: 'bolt' });
+    for (let i = 1; i < c.v.n; i++) { await wait(120); const l = alive(); if (!l.length) break; atk(pick(l), c.v.d, { fx: 'bolt' }); } } });
+defCard({ id: 'swordheart', n: '검심', g: '鋒', type: 'power', rar: 'rare', cost: 1,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>검기</b> ${v.x}을 얻고 카드를 1장 뽑는다.`,
+  play: c => { st(P(), 'edge', c.v.x); drawCards(1); SND.power(); } });
+defCard({ id: 'moonsever', n: '월단참', g: '斷', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy',
+  v: u => ({ d: u ? 28 : 22, e: 2 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 이것으로 적을 쓰러뜨리면 기를 ${v.e} 얻고 카드를 2장 뽑는다.`,
+  play: c => { const t = c.t; atk(t, c.v.d, { fx: 'slash' }); if (t && t.hp <= 0) { energy(c.v.e); drawCards(2); } } });
+defCard({ id: 'cloudstep', n: '운룡보', g: '雲', type: 'skill', rar: 'special', cost: 1, exhaust: true,
+  v: u => ({ b: u ? 16 : 12 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 기를 1 얻으며 카드를 2장 뽑는다. 소멸.`,
+  play: c => { blk(c.v.b); energy(1); drawCards(2); } });
+
 /* 보상 풀 */
+/* ── 멀티 교환소 부적 — 토큰으로만 얻는다 (보상·상자·상점에는 나오지 않는다) ── */
+defCard({ id: 'mp_duel', n: '결투의 맹세', g: '誓', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy', mpOnly: true,
+  v: u => ({ d: u ? 14 : 10, x: u ? 10 : 8 }),
+  txt: v => `<em>${v.d}</em>의 피해를 준다. 대상의 체력이 나보다 많으면 <em>${v.x}</em>를 더 준다.`,
+  play: c => atk(c.t, c.v.d + (c.t.hp > P().hp ? c.v.x : 0)) });
+defCard({ id: 'mp_twin', n: '쌍검무', g: '雙', type: 'attack', rar: 'special', cost: 2, tgt: 'enemy', mpOnly: true,
+  v: u => ({ d: u ? 9 : 7, n: 3 }),
+  txt: v => `<em>${v.d}</em>의 피해를 ${v.n}번 주고 <b>힘</b>을 1 얻는다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { if (!c.t || c.t.hp <= 0) break; atk(c.t, c.v.d); await wait(110); } st(P(), 'str', 1); } });
+defCard({ id: 'mp_mirror', n: '거울 결계', g: '鏡', type: 'skill', rar: 'special', cost: 1, mpOnly: true,
+  v: u => ({ b: u ? 14 : 10, x: u ? 6 : 4 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.x}를 얻는다.`,
+  play: c => { blk(c.v.b); st(P(), 'thorns', c.v.x); } });
+defCard({ id: 'mp_crown', n: '왕관의 무게', g: '冠', type: 'power', rar: 'ssc', cost: 2, mpOnly: true,
+  v: u => ({ x: u ? 3 : 2 }),
+  txt: v => `<b>집중</b> 1과 <b>힘</b> ${v.x}를 얻는다. (턴마다 기 +1)`,
+  play: c => { st(P(), 'focus', 1); st(P(), 'str', c.v.x); } });
+
 const POOL = { common: [], uncommon: [], rare: [] };
 const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전부 */
 const GRADE_POOL = { zero: [], special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in CARDS) {
   const c = CARDS[k];
+  if (c.mpOnly) continue;                    /* 멀티 교환소에서만 — 보상·상자·상점에는 나오지 않는다 */
   if (POOL[c.rar]) POOL[c.rar].push(k);
   else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k);
     if (c.rar !== 'unknown' && c.rar !== 'zero') SPECIAL_CARDS.push(k); }
@@ -6639,6 +6960,9 @@ const RELIC_GRADE = { common: 'common', uncommon: 'uncommon', rare: 'rare', boss
                       special: 'special', ssc: 'ssc', fused: 'ssx' };
 const rgrade = id => RELIC_GRADE[RELICS[id].rar] || 'common';
 const RELIC_SLOTS = 10;
+/* 유물 주머니 — 상점에서 골드로 칸을 늘린다 (뒷막에 쌓이는 골드의 쓸 곳) */
+const RELIC_SLOT_BUY_MAX = 4;
+function relicSlots(run) { run = run || (typeof G === 'object' && G.run); return RELIC_SLOTS + ((run && run.slotBuy) || 0); }
 
 /* ── 유물 합성 ──────────────────────────────────────────────
    재료 둘을 태워 하나로 만든다. 결과물은 전부 SSX급. */
@@ -6795,7 +7119,7 @@ function pipe(hook, val, ...args) {
 function hasRelic(id) { return G.run && G.run.relics.some(r => r.id === id); }
 function gainRelic(id, silent) {
   if (hasRelic(id)) return false;
-  if (G.run.relics.length >= RELIC_SLOTS) { relicOverflow(id); return true; }
+  if (G.run.relics.length >= relicSlots()) { relicOverflow(id); return true; }
   const r = { id: id, used: false, isNew: true };
   G.run.relics.push(r);
   const d = RELICS[id];
@@ -6810,7 +7134,7 @@ function gainRelic(id, silent) {
 function relicOverflow(newId) { setTimeout(() => showRelicOverflow(newId), 90); }
 function showRelicOverflow(newId) {
   const run = G.run, d = RELICS[newId];
-  if (run.relics.length < RELIC_SLOTS) {           /* 그 사이 자리가 났다면 그냥 준다 */
+  if (run.relics.length < relicSlots()) {           /* 그 사이 자리가 났다면 그냥 준다 */
     const r = { id: newId, used: false, isNew: true };
     run.relics.push(r);
     if (d.h && d.h.onGain) d.h.onGain(r);
@@ -6818,7 +7142,7 @@ function showRelicOverflow(newId) {
     renderTop(); saveRun(); return;
   }
   const p = modal(`<h2>유물 자리가 없다</h2>
-    <div class="hint">유물은 ${RELIC_SLOTS}개까지만 지닐 수 있다 · 하나를 버리거나, 새 유물을 포기한다<br>
+    <div class="hint">유물은 ${relicSlots()}개까지만 지닐 수 있다 · 하나를 버리거나, 새 유물을 포기한다<br>
       <b style="color:#9ab0cc">버리기 아깝다면 ≡ → 터 → 신성의 신전에 바치고 가호를 받으시오</b></div>
     <div class="relicgrid" id="ro_old"></div>
     <div class="hint" style="margin-top:6px">새로 얻은 것</div>
@@ -9252,13 +9576,14 @@ function startBattle(enemyIds, kind, opts) {
   };
   let ux = 1;
   /* 막마다 요괴가 굵어진다 (대전투장은 자체 배율을 쓴다) */
-  let sc = kind === 'arena' ? { hp: 1, dmg: 1 } : kind === 'world' ? worldScale(run.act)
+  const mpK = kind === 'pvp' || kind === 'mpbot';      /* 멀티플레이 — 막의 배율도 가호도 없이 맨몸으로 */
+  let sc = kind === 'arena' || mpK ? { hp: 1, dmg: 1 } : kind === 'world' ? worldScale(run.act)
          : kind === 'colo' && COLO_EARLY[run.act] ? Object.assign({}, COLO_EARLY[run.act]) : actScale(run.act);
   /* ── 보스가 너무 셌다 ──────────────────────────────────
      특별 상자를 까지 않으면 못 넘을 지경이라는 말을 들었다.
      보스만 따로 눅인다. 엘리트는 그보다 덜.
      ────────────────────────────────────────────────── */
-  const am = kind === 'world' ? 1 : ASC.foe(run.asc || 0);   /* 환생할수록 요괴도 사나워진다 */
+  const am = kind === 'world' || mpK ? 1 : ASC.foe(run.asc || 0);   /* 환생할수록 요괴도 사나워진다 */
   if (am !== 1) sc = { hp: sc.hp * am, dmg: sc.dmg * am };
   const ls = lateSoft(run.act, kind);                 /* 뒷막일수록 한 번 더 눅인다 */
   const fs = finalSoft(run.act, kind);                /* 마지막 봉우리는 또 한 번 */
@@ -9266,7 +9591,7 @@ function startBattle(enemyIds, kind, opts) {
   if (kind === 'boss') sc = { hp: sc.hp * bs.hp * ls.hp * fs.hp, dmg: sc.dmg * bs.dmg * ls.dmg * fs.dmg };
   else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
   /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
-  const es = kind === 'arena' || kind === 'world' ? 1 : endSoft(run.act);
+  const es = kind === 'arena' || kind === 'world' || mpK ? 1 : endSoft(run.act);
   if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
   /* 저주의 밤 — 등반의 요괴만 사나워진다 (모두의 적·겨루는 마당은 그대로) */
   if (evOn('night') && (kind === 'normal' || kind === 'elite' || kind === 'boss')) sc = { hp: sc.hp * 1.3, dmg: sc.dmg * 1.2 };
@@ -9288,13 +9613,13 @@ function startBattle(enemyIds, kind, opts) {
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world') { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && !mpK) { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
   SND.bgm(true, kind === 'boss' || kind === 'world' ? 'boss' : 'battle');
   if (kind === 'boss' || kind === 'world') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
-  if (friendOn()) setTimeout(() => friendSay(kind === 'boss' ? '"보스야. 천천히 가자."'
+  if (friendOn() && !mpK) setTimeout(() => friendSay(kind === 'boss' ? '"보스야. 천천히 가자."'
     : kind === 'elite' ? '"이건 굵다. 조심해."' : '"붙자."', 3000), 700);
   if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
   fire('battleStart');
@@ -9356,6 +9681,8 @@ function pickIntent(e) {
 /* --- 플레이어 턴 시작 --- */
 async function startPlayerTurn() {
   const b = G.b; if (!b || b.over) return;
+  /* 멀티플레이 — 내 차례가 온 것은 서버가 알려 준다. 그전에는 기다린다 */
+  if (b.kind === 'pvp' && !b.mpMine) { b.busy = true; try { syncAll(); } catch (e) {} return; }
   try { await _startPlayerTurn(b); }
   catch (e) { console.error('차례 시작 오류', e); }
   finally {
@@ -9437,6 +9764,7 @@ async function playCard(card, target) {
   if (d.rar === 'ssc') SND.blip(1046, { dur: .5, type: 'sine', vol: .06, to: 1568, rev: .7 });
 
   b.curCard = card;
+  if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
   if (d.rar === 'ssx' || d.rar === 'unknown') {
     blink(1.3); zoomPunch(); rgbSplit();
@@ -9610,7 +9938,7 @@ async function endTurn() {
   try { await Promise.race([_endTurn(), deadline]); }
   catch (e) { console.error('턴 종료 오류', e); }
   finally {
-    if (G.b === b && !b.over) {
+    if (G.b === b && !b.over && b.kind !== 'pvp') {
       if (late || !b.hand.length) battleRescue(b, late ? '요괴 차례가 마감을 넘겼다' : '차례가 오다 말았다');
       else if (b.busy) { b.busy = false; try { syncAll(); } catch (e) {} }
     }
@@ -9638,6 +9966,8 @@ async function _endTurn() {
   syncAll();
   await wait(220);
   decay(p);
+  /* 멀티플레이 — 상대는 여기서 움직이지 않는다. 결과를 적어 보내고 다음 사람을 기다린다 */
+  if (b.kind === 'pvp') { await mpCommitTurn(); return; }
 
   /* 적들의 행동 */
   for (const e of b.enemies) {
@@ -9791,6 +10121,9 @@ function battleWatch(on) {
   _bw = setInterval(async () => {
     const b = G.b;
     if (!b) { _bwDead = 0; _bwOver = 0; return; }
+    /* 멀티플레이 — 남의 차례를 기다리는 동안 손이 비고 자물쇠가 걸려 있는 것이 정상이다.
+       끝을 가리는 것도 서버다. 감시견은 손대지 않는다 */
+    if (b.kind === 'pvp') return;
     /* ① 다 죽었는데 안 끝난다 */
     if (!b.over && !alive().length && P() && P().hp > 0) {
       if (++_bwDead >= 3) {                 /* 1.2초를 견디면 손을 쓴다 */
@@ -9811,6 +10144,7 @@ function battleWatch(on) {
         if (kind === 'arena') { try { arenaRetire(); } catch (e) { showMap(); } }
         else if (kind === 'colo') { try { coloLose(); } catch (e) { showMap(); } }
         else if (kind === 'world') { try { worldEnd(false); } catch (e) { showMap(); } }
+        else if (kind === 'mpbot') { try { mpBotEnd(false); } catch (e) { showMap(); } }
         else if (!$('#overlay').children.length) { try { showRewards(kind); } catch (e) { showMap(); } }
       }
     } else _bwOver = 0;
@@ -9857,6 +10191,8 @@ async function checkOver() {
     if (b.kind === 'arena') arenaLose();
     else if (b.kind === 'colo') coloLose();
     else if (b.kind === 'world') worldEnd(false);   /* 끌려간 싸움 — 등반은 끝나지 않는다 */
+    else if (b.kind === 'pvp') mpDied();            /* 멀티플레이 — 결과를 적어 보내고 관전 */
+    else if (b.kind === 'mpbot') mpBotEnd(false);
     else gameOver();
     return true;
   }
@@ -9880,6 +10216,8 @@ function _winBattle() {
   if (!b || !run) return;                      /* 기다리는 사이 전투가 사라졌을 수 있다 */
   /* 모두의 적 — 끌려간 싸움이라 향초·저주·유물의 「싸움 끝」은 돌지 않는다 */
   if (b.kind === 'world') { run.inBattle = false; SND.victory(); worldEnd(true); return; }
+  if (b.kind === 'pvp') { mpCommitTurn(); return; }          /* 상대가 모두 쓰러졌다 — 서버가 끝을 선언한다 */
+  if (b.kind === 'mpbot') { mpBotEnd(true); return; }
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
@@ -10262,7 +10600,8 @@ function renderTop() {
   if (!run) { if (t) t.remove(); _topSig = ''; tbGone(); return; }
   if (!t) { t = el('div', ''); t.id = 'topbar'; $('#app').appendChild(t); _topSig = ''; tbWatch(t); }
   /* 콜로세움·대전투장은 제 배경이 따로 있다 */
-  setBg(G.b && (G.b.kind === 'colo' || G.b.kind === 'arena' || G.b.kind === 'world') ? G.b.kind : run.act);
+  setBg(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot') ? 'pvp'
+    : G.b && (G.b.kind === 'colo' || G.b.kind === 'arena' || G.b.kind === 'world') ? G.b.kind : run.act);
 
   potWatch(run);
   const sig = run.relics.map(r => r.id).join(',') + '|' + run.potions.join(',') + '|' + run.potSlots +
@@ -10307,9 +10646,9 @@ function renderTop() {
     rb.onwheel = e => { if (rb.scrollWidth <= rb.clientWidth) return;
       e.preventDefault(); rb.scrollLeft += (e.deltaY || e.deltaX); };
     const cntBox = t.querySelector('#reliccnt');
-    const cnt = el('div', 'cnt' + (run.relics.length >= RELIC_SLOTS ? ' full' : ''),
-      run.relics.length + '/' + RELIC_SLOTS);
-    bindTip(cnt, () => `유물은 ${RELIC_SLOTS}개까지 지닐 수 있다<br>눌러서 <b>조합</b>하기`);
+    const cnt = el('div', 'cnt' + (run.relics.length >= relicSlots() ? ' full' : ''),
+      run.relics.length + '/' + relicSlots());
+    bindTip(cnt, () => `유물은 ${relicSlots()}개까지 지닐 수 있다<br>눌러서 <b>조합</b>하기`);
     cnt.style.cursor = 'pointer';
     cnt.onclick = () => { tipHide(); openFuse(); };
     cntBox.appendChild(cnt);
@@ -10360,7 +10699,7 @@ function renderTop() {
       <span style="color:#9a8d74">이기든 지든 쌓인다. 영구히 몸을 만든다.</span>`);
     bindTip(t.querySelector('#shrinebtn'), () => `<b>신성의 신전</b><br>
       유물을 바치면 <b style="color:#9ab0cc">가호</b>가 남는다 — 버릴 때 아깝지 않도록.<br>
-      <span style="color:#9a8d74">지닌 유물 ${G.run ? G.run.relics.length : 0} / ${RELIC_SLOTS}</span>`);
+      <span style="color:#9a8d74">지닌 유물 ${G.run ? G.run.relics.length : 0} / ${relicSlots()}</span>`);
     bindTip(t.querySelector('#placebtn'), () => `<b>터</b> — 갈 만한 자리<br>
       상점 · 대전투장 · 장기 · 저주의 서당<br>
       <span style="color:#9a8d74">부적 뽑기는 옆의 匣 단추</span>`);
@@ -10390,9 +10729,9 @@ function renderTop() {
     tb2.disabled = !!G.b; }
   const sb2 = t.querySelector('#shrinebtn');
   if (sb2) { const n2 = run.relics.length; const e3 = sb2.querySelector('em');
-    e3.textContent = n2 >= RELIC_SLOTS ? '滿' : '';
-    e3.style.display = n2 >= RELIC_SLOTS ? '' : 'none';
-    sb2.classList.toggle('ready', n2 >= RELIC_SLOTS - 2);
+    e3.textContent = n2 >= relicSlots() ? '滿' : '';
+    e3.style.display = n2 >= relicSlots() ? '' : 'none';
+    sb2.classList.toggle('ready', n2 >= relicSlots() - 2);
     sb2.disabled = !!G.b; }
   const pb2 = t.querySelector('#placebtn');
   const marks = (arenaReady() ? 1 : 0) + (curseReady() && !run.curse ? 1 : 0);
@@ -10635,7 +10974,7 @@ const GUIDES = [
     warn: () => '저주는 도중에 못 푼다. 각오하고 받는 편이 좋다.',
     go: () => openSchool(), goN: '서당으로' },
   { id: 'forge', g: '冶', n: '대장간 — 부적을 두들겨 힘을 올린다',
-    when: r => r.gold >= FORGE_COST[0],
+    when: r => r.gold >= fgCost(0),
     say: () => `터(場) 안에 <em>대장간</em>이 있다. 골드로 부적을 두들긴다.<br>
       한 단 오를 때마다 <i>피해 · 방어도 · 회복 · 독</i>이 크게 뛴다 —
       ${FORGE_MUL.map((m, i) => i ? `${i}단 ×${m.toFixed(2)}` : '').filter(Boolean).join(' · ')}.
@@ -10842,7 +11181,7 @@ function showForge() {
         <div class="fgtable">
           ${FORGE_ODDS.map((o, i) => `<div class="fgtr"><span>${i}→${i + 1}단</span>
             <b style="color:${o >= .5 ? '#8fe6d0' : o >= .3 ? '#ffd76a' : '#e2777a'}">${Math.round(o * 100)}%</b>
-            <em>×${FORGE_MUL[i + 1].toFixed(2)}</em><i>${FORGE_COST[i]}</i></div>`).join('')}
+            <em>×${FORGE_MUL[i + 1].toFixed(2)}</em><i>${fgCost(i)}</i></div>`).join('')}
           <div class="fgwarn">${FORGE_BACK_FROM}단부터는 실패하면 한 단이 도로 내려간다</div>
         </div>
       </div>
@@ -10995,7 +11334,7 @@ function renderBattle() {
   cardEls = {};
   buildPlayer();
   incenseFx(true);                              /* 향초가 타고 있으면 연기가 오른다 */
-  if (G.b) { G.b.pet = makePet(); buildPet(); }
+  if (G.b && G.b.kind !== 'pvp' && G.b.kind !== 'mpbot') { G.b.pet = makePet(); buildPet(); }
   buildEnemies();
   battleWatch(true);
   /* 눌렀는데 굳어 있으면 — 맥박이 멎었으면 그 자리에서 풀고 넘긴다.
@@ -13013,6 +13352,15 @@ function applyVipRun() {
 }
 function nextAct() {
   const run = G.run;
+  /* 이번 막의 보스 칸을 넘어선 자리에서만 넘어간다.
+     보스 뒤 이야기가 길 때 자동 플레이가 지도를 먼저 펴면, 지도가 「갈 곳 없음」을 보고
+     한 번, 이야기가 끝나며 또 한 번 — 막이 두 번 넘어가 한 막을 건너뛰고,
+     제25막에서는 없는 제26막으로 가 멈췄다. */
+  if (run.act >= 1) {
+    const m = run.map, last = m && m.nodes && m.nodes[m.nodes.length - 1];
+    if (last && run.mapCur !== last.id) return;
+    if (run.act >= LAST_ACT) { victory(); return; }
+  }
   noteClear(run.act);                       /* 이 막은 넘었다 — 오기는 여기서 걷힌다 */
   run.act++;
   run.floor = 0;
@@ -13339,7 +13687,12 @@ function chooseCards(list, n, title) {
      다이아 ×1.124^(막-1)  → 제1막 12~28   제25막  200~ 467
    엘리트·보스는 같은 배수를 타므로 사이가 그대로 벌어져 있다.
    ══════════════════════════════════════════════════════════ */
-const LOOT_G = 1.2075, LOOT_D = 1.1248;
+/* 다이아는 너무 넉넉했다 — 무과금 한 판(1~25막)에 6만 남짓, 특대급 상자 쉰 개어치.
+   배수를 1.1248 → 1.08 로 낮춰 절반 가까이로 줄였다 (제25막 한 판 12~28 → 약 80~190). */
+const LOOT_G = 1.2075, LOOT_D = 1.08;
+/* 상점·대장간 값도 막을 탄다 — 골드는 제25막에 90배가 되는데 값은 제1막 그대로라
+   뒷막에서 골드가 십만 넘게 남아돌았다. 골드 배수의 0.55 제곱(제25막 약 12배)만큼 오른다. */
+const shopMul = act => Math.pow(lootGold(act || 1), .55);
 const lootMul = (r, act) => Math.pow(r, Math.max(0, Math.min(25, act || 1) - 1));
 const lootGold = act => lootMul(LOOT_G, act);
 const lootDia = act => lootMul(LOOT_D, act);
@@ -14410,7 +14763,7 @@ function showFuse() {
 
   const p = modal(`<h2>유물 조합</h2>
     <div class="hint">재료 둘을 태워 <b style="color:#ff2d55">SSX급</b> 유물 하나로 만든다 ·
-      지금 지닌 유물 <b>${run.relics.length} / ${RELIC_SLOTS}</b>
+      지금 지닌 유물 <b>${run.relics.length} / ${relicSlots()}</b>
       ${ready.length ? ` · <b style="color:#ffd76a">${ready.length}개 조합 가능</b>` : ''}</div>
     <div class="fusehead">지 닌 유 물</div>
     <div class="relicgrid" id="fz_mine"></div>
@@ -14474,7 +14827,7 @@ function restockShop() {
   run.talkCut = 0;
   /* 앞서 이 상인을 빈손으로 지나쳤다면 그 값을 여기서 치른다 */
   const mm = MERCHANTS[run.merch].mul * snubMul(run, run.merch);
-  const price = v => pipe('modPrice', Math.round(v * mm));
+  const price = v => pipe('modPrice', Math.round(v * mm * shopMul(run.act)));
   const cards = [], seen = new Set();
   const w = gradeWeights('elite');            /* 상인은 한 등급 앞서 판다 */
   let guard = 0;
@@ -14807,7 +15160,9 @@ function showShop() {
   const run = G.run;
   if (!run.shop) restockShop();
   const sh = run.shop;
-  const purgePrice = pipe('modPrice', 72 + (run.purges || 0) * 20);
+  const purgePrice = pipe('modPrice', Math.round((72 + (run.purges || 0) * 20) * shopMul(run.act)));
+  /* 유물 주머니 — 칸 하나 늘리는 값. 살수록 비싸진다 */
+  const slotPrice = Math.round(900 * shopMul(run.act) * (1 + (run.slotBuy || 0)));
 
   const m = merchOf(run);
   run.merchMet = run.merchMet || {};
@@ -14889,6 +15244,9 @@ function showShop() {
       irow.appendChild(n);
     });
     if (!(sh.inc || []).length) irow.appendChild(el('div', 'lbnone', '오늘은 향초가 없다'));
+    if ((run.slotBuy || 0) < RELIC_SLOT_BUY_MAX)
+      addRow('囊', '유물 주머니', `유물 칸이 하나 는다 (지금 ${relicSlots()}칸 · ${RELIC_SLOT_BUY_MAX - (run.slotBuy || 0)}번 더)`, slotPrice, false,
+        () => { run.slotBuy = (run.slotBuy || 0) + 1; toast(`유물 칸 ${relicSlots()}칸이 되었다`); renderTop(); });
     addRow('淨', '부적 태우기', '덱에서 카드 한 장을 없앤다', purgePrice, sh.purged,
       async () => {
         const c = await pickFromList(run.deck, '없앨 카드를 고르시오', { cancel: true });
@@ -15242,7 +15600,7 @@ function showShrine() {
         <div class="mercylist" id="sr_have"></div>
       </div>
       <div class="scmain">
-        <div class="schint">바칠 유물을 고른다 · 지닌 유물 <b>${run.relics.length}</b> / ${RELIC_SLOTS}</div>
+        <div class="schint">바칠 유물을 고른다 · 지닌 유물 <b>${run.relics.length}</b> / ${relicSlots()}</div>
         <div class="trgrid" id="sr_grid"></div>
       </div>
     </div>
@@ -15353,7 +15711,7 @@ const COL_FOES = [
     say: '"나는 진 적이 없다. 세어 본 적도 없고."',
     win: '"…처음이군. 이 느낌이."', lose: '"그럴 줄 알았다."' }
 ];
-const colFoe = id => COL_FOES.find(f => f.id === id) || COL_FOES[0];
+const colFoe = id => COL_FOES.find(f => f.id === id) || (typeof MP_BOT_FOES === 'object' && MP_BOT_FOES.find(f => f.id === id)) || COL_FOES[0];
 /* ── 상대에게도 진짜 덱을 쥐여 준다 ───────────────────────
    전에는 그때그때 아무 부적이나 뽑아 쓰는 시늉만 했다.
    이제는 싸움을 시작할 때 열넉 장짜리 덱을 짜 주고,
@@ -17674,12 +18032,14 @@ function victory() {
 const worldFighting = () => !!(G.b && G.b.kind === 'world' && !G.b.over);
 function showMenu() {
   if (worldFighting()) { toast('모두의 적과 싸우는 중 — 나가려면 위 띠의 「나간다」'); return; }
+  if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) { mpMenu(); return; }
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
       <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : `자동 플레이 (제${AUTO_ACT}막 클리어)`}</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
+      ${!G.b ? '<button class="brush-btn mpbtn" id="m_mp">對 멀티플레이</button>' : ''}
       ${guestOn() ? '<button class="brush-btn" id="m_guest" style="color:#f0b8e8;border-color:#e08ad8">客 게스트 창</button>' : ''}
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
@@ -17700,6 +18060,7 @@ function showMenu() {
   if (mm) mm.onclick = () => { closeOverlay(); saveRun(); showMap(); };
   p.querySelector('#m_set').onclick = () => showSettings();
   const mg = p.querySelector('#m_guest'); if (mg) mg.onclick = () => { closeTop(); showGuest(); };
+  const mm2 = p.querySelector('#m_mp'); if (mm2) mm2.onclick = () => { closeTop(); showMulti(); };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_news').onclick = () => { closeTop(); showNews(); };
   p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
@@ -17889,7 +18250,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 6;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 7;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -18013,6 +18374,7 @@ async function liveFetch() {
     try { huntAnnounce(); pollCheck(); } catch (e) { console.error('찾기·투표', e); }
     try { giftCheck(); } catch (e) { console.error('선물', e); }
     guestInbox().catch(() => {});
+    mpInboxCheck().catch(() => {});
     try { bossWatch(); }  catch (e) { console.error('모두의 적', e); }
     try { liveTick(); }   catch (e) {}
     updateCheck();
@@ -19242,6 +19604,16 @@ function rainSum() {
 function eventAnnounce(k) {
   const e = WORLD[k]; if (!e) return;
   try { SND.bell(); } catch (x) {}
+  /* 일이 열리는 순간 — 그 빛깔로 화면이 한 번 터진다 */
+  try {
+    const hex = e.c.replace('#', ''), rgb = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16)).join(',');
+    screenFlash(`rgba(${rgb},.38)`, 700);
+    if (OPT.particles !== false) {
+      FX.burst(innerWidth / 2, innerHeight * .42, 70, rgb, 8, 60, 5);
+      setTimeout(() => { FX.burst(innerWidth * .25, innerHeight * .3, 30, rgb, 6, 50, 4); FX.burst(innerWidth * .75, innerHeight * .3, 30, rgb, 6, 50, 4); }, 220);
+    }
+    stampWord(e.n.split('').join(' '), e.c);
+  } catch (x) {}
   const p = modal(`<h2 style="color:${e.c}">${e.g} ${e.n}</h2>
     <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
       <b style="color:${e.c}">${e.say}</b><br><br>${e.d}
@@ -20240,6 +20612,692 @@ function chatDraw() {
   });
   if (stick || l.dataset.drawn !== '1') l.scrollTop = l.scrollHeight;
   l.dataset.drawn = '1';
+}
+
+/* ══════════════════════════════════════════════════════════
+   겨루는 달밤 — 멀티플레이의 자리
+   ──────────────────────────────────────────────────────────
+   큰 달 아래 돌로 쌓은 둥근 마당. 왼쪽에 청(靑)의 깃발, 오른쪽에 홍(紅)의
+   깃발이 바람에 펄럭이고, 바닥에는 부적 글자가 새겨진 고리가 천천히 돈다.
+   관중석을 따라 등불이 걸리고, 부적 종이가 공중을 떠돈다. 싸움터와 로비가
+   같은 자리를 쓴다.
+   ══════════════════════════════════════════════════════════ */
+function setMpBg(host) {
+  if (!host) return;
+  const R = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join('');
+  let stars = '';
+  for (let i = 0; i < 60; i++) stars += `<circle cx="${(i * 137 + 11) % 1000}" cy="${(i * 71 + 7) % 230}" r="${(i % 3) * .5 + .5}" fill="#e8e4ff" opacity="${(.25 + (i % 4) * .15).toFixed(2)}"/>`;
+  const runes = '靑紅鬪符誓劍盾氣魂霧'.split('');
+  host.innerHTML = `<div class="sky" style="background:linear-gradient(#070814 0%,#15123a 38%,#2a1846 64%,#1a0f22 100%)"></div>
+  <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMax slice" class="mpbgsvg">
+    <defs>
+      <radialGradient id="mpmoon" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff8e0"/><stop offset=".6" stop-color="#f2e2b8"/><stop offset="1" stop-color="#c8b288"/></radialGradient>
+      <radialGradient id="mpmg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9b0" stop-opacity=".35"/><stop offset="1" stop-color="#ffe9b0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mpfl" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#6a5a8a"/><stop offset=".7" stop-color="#2e2440"/><stop offset="1" stop-color="#140e1c"/></radialGradient>
+      <linearGradient id="mpblue" x1="0" x2="1"><stop offset="0" stop-color="#1c3f7a"/><stop offset="1" stop-color="#3a78d0"/></linearGradient>
+      <linearGradient id="mpred" x1="1" x2="0"><stop offset="0" stop-color="#7a1c26"/><stop offset="1" stop-color="#d0404a"/></linearGradient>
+    </defs>
+    <g>${stars}</g>
+    <ellipse cx="500" cy="92" rx="200" ry="170" fill="url(#mpmg)"/>
+    <circle cx="500" cy="90" r="54" fill="url(#mpmoon)"/>
+    <circle cx="500" cy="90" r="68" fill="none" stroke="#ffe9b0" stroke-opacity=".25" stroke-width="1.5" class="mpmoonring"/>
+    <!-- 관중석 — 층층이 -->
+    <path d="M0,250 Q500,170 1000,250 L1000,320 Q500,235 0,320 Z" fill="#241a33" opacity=".8"/>
+    <path d="M0,295 Q500,222 1000,295 L1000,360 Q500,285 0,360 Z" fill="#1c1428" opacity=".85"/>
+    <g fill="#0e0a14" opacity=".55" transform="translate(0,-48)">${R(34, i => { const x = 15 + i * 29.5, y = 300 - Math.sin(i / 33 * Math.PI) * 78; return `<ellipse cx="${x}" cy="${y + 26}" rx="8" ry="10"/><circle cx="${x}" cy="${y + 12}" r="5"/>`; })}</g>
+    <!-- 등불 -->
+    <g class="mplamps" opacity=".75">${R(11, i => { const x = 60 + i * 88, y = 236 - Math.sin((x / 1000) * Math.PI) * 76;
+      return `<line x1="${x}" y1="${y - 26}" x2="${x}" y2="${y - 8}" stroke="#3a2a1a" stroke-width="2"/><ellipse cx="${x}" cy="${y}" rx="9" ry="12" fill="${i % 2 ? '#ff7a5a' : '#ffb45a'}"/>
+        <ellipse cx="${x}" cy="${y}" rx="26" ry="30" fill="${i % 2 ? '#ff7a5a' : '#ffb45a'}" opacity=".16" class="mplamp" style="animation-delay:${(i * .37).toFixed(2)}s"/>`; })}</g>
+    <!-- 마당 -->
+    <ellipse cx="500" cy="500" rx="560" ry="150" fill="url(#mpfl)"/>
+    <ellipse cx="500" cy="500" rx="430" ry="108" fill="none" stroke="#9a86c8" stroke-opacity=".35" stroke-width="3"/>
+    <ellipse class="mprune" cx="500" cy="500" rx="330" ry="82" fill="none" stroke="#ffd98a" stroke-opacity=".55" stroke-width="2.5" stroke-dasharray="22 14"/>
+    <ellipse class="mprune r2" cx="500" cy="500" rx="250" ry="62" fill="none" stroke="#8ad8ff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="6 10"/>
+    <g font-size="22" fill="#ffe9b0" fill-opacity=".38" text-anchor="middle">${R(runes.length, i => { const a = i / runes.length * Math.PI * 2;
+      return `<text x="${(500 + Math.cos(a) * 380).toFixed(0)}" y="${(508 + Math.sin(a) * 95).toFixed(0)}">${runes[i]}</text>`; })}</g>
+    <!-- 깃발 — 청 · 홍 -->
+    <line x1="60" y1="24" x2="60" y2="330" stroke="#2a1e14" stroke-width="6"/>
+    <path class="mpflag l" d="M63,30 Q115,22 162,38 Q140,66 162,96 Q115,84 63,92 Z" fill="url(#mpblue)" opacity=".92"/>
+    <text x="110" y="74" font-size="30" fill="#e6f0ff" text-anchor="middle" class="mpflag l">靑</text>
+    <line x1="940" y1="24" x2="940" y2="330" stroke="#2a1e14" stroke-width="6"/>
+    <path class="mpflag r" d="M937,30 Q885,22 838,38 Q860,66 838,96 Q885,84 937,92 Z" fill="url(#mpred)" opacity=".92"/>
+    <text x="890" y="74" font-size="30" fill="#ffe6e6" text-anchor="middle" class="mpflag r">紅</text>
+    <!-- 떠도는 부적 -->
+    ${R(7, i => `<g class="mppaper" style="animation-delay:${(-i * 1.9).toFixed(1)}s"><rect x="${80 + i * 130}" y="${360 + (i % 3) * 40}" width="16" height="30" rx="2" fill="#efe6c8" opacity=".55"/>
+      <text x="${88 + i * 130}" y="${381 + (i % 3) * 40}" font-size="11" fill="#a8323a" text-anchor="middle" opacity=".8">${runes[i]}</text></g>`)}
+    <rect x="0" y="520" width="1000" height="80" fill="#0a0610" opacity=".55"/>
+  </svg>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   멀티플레이 — 1대1 · 2대2
+   ──────────────────────────────────────────────────────────
+   싸움은 이 앱의 진짜 부적 엔진으로 한다. 상대는 「요괴」 자리에 서지만
+   스스로 움직이지 않는다. 내 차례가 끝나면 모두의 체력·방어도·상태를 서버에
+   적어 보내고, 서버가 다음 사람에게 차례를 넘긴다. 남의 차례에는 그가 낸
+   부적이 그의 자리에서 떠오르고, 차례가 끝나면 그 결과가 이쪽 판에 내려앉는다.
+     랜덤 매치(랭크)  1대1 · 2대2 — 점수가 비슷한 사람끼리
+     방 코드(친선)    친구끼리 1대1 · 2대2 · 둘이 파티로 랭크 2대2
+     초대             아이디로 부르면 그 사람 앱에 창이 뜬다
+     그림자 연습      사람이 없을 때 — 토큰 조금 (하루 열 번)
+   덱은 도감에 오른(가져 본 적 있는) 부적으로 짠다 — 12~20장, 등급마다 점수가
+   있어 모두 45점 안에서. 체력·기는 모두 같다. 유물·물약·팻·수행·가호는 없다.
+   ══════════════════════════════════════════════════════════ */
+var MP = { on: false, lobby: false, t: 0, since: 0, prof: null, tiers: null, shop: null, match: null, room: null, queue: null,
+           inv: [], saved: null, busy: false, evq: [], evBusy: false, myNo: 0, resShown: false, topCache: null, inboxAt: 0, seenInv: {} };
+const MP_POINTS = { basic: 0, common: 1, uncommon: 2, rare: 3, zero: 4, special: 5, ssc: 7, ssx: 9, unknown: 12 };
+const MP_BUDGET = 45, MP_DECK_MIN = 12, MP_DECK_MAX = 20, MP_ENERGY = 3;
+const MP_TIER_INFO = {
+  bronze:   { n: '브론즈', g: '銅', c: '#c8844a', min: 0, next: 300 },
+  silver:   { n: '실버', g: '銀', c: '#cfd6e0', min: 300, next: 700 },
+  emerald:  { n: '에메랄드', g: '翠', c: '#3ddc97', min: 700, next: 1200 },
+  master:   { n: '마스터', g: '師', c: '#b98cff', min: 1200, next: 1800 },
+  infinity: { n: '인피니티 랭커', g: '∞', c: '#ffd76a', min: 1800, next: 0 }
+};
+const MP_SHOP_ITEMS = [
+  { k: 'gold',  g: '金', n: '골드 800', d: '모험 중이면 바로, 아니면 다음 등반에 딸려 온다', give: () => payOut({ gold: 800 }) },
+  { k: 'dia',   g: '玉', n: '다이아 150', d: '상자를 여는 값', give: () => payOut({ dia: 150 }) },
+  { k: 'jp',    g: '精', n: '정진 200', d: '수행터에서 영구히 몸을 만든다', give: () => payOut({ jp: 200 }) },
+  { k: 'bigbox', g: '櫃', n: '특대급 상자 1회', d: '특별 부적만 나온다 — 모험 중에만', run: true,
+    give: async () => { const l = boxLoot(3); l.take(); saveRun(); renderTop(); await boxOpenScene('櫃', l.grade || 'special');
+      showPullResult([{ g: l.g, n: l.n, d: l.d, grade: l.grade, card: l.card }], () => {}); return l.n; } },
+  { k: 'card_duel',   card: 'mp_duel' }, { k: 'card_twin', card: 'mp_twin' },
+  { k: 'card_mirror', card: 'mp_mirror' }, { k: 'card_crown', card: 'mp_crown' }
+];
+function mpTierOf(rp) { let k = 'bronze'; for (const t in MP_TIER_INFO) if (rp >= MP_TIER_INFO[t].min) k = t; return k; }
+/* 랭크 이름 — 인피니티 밑으로는 III·II·I 세 칸 */
+function mpTierName(rp) {
+  const k = mpTierOf(rp), t = MP_TIER_INFO[k];
+  if (!t.next) return t.n;
+  const span = (t.next - t.min) / 3, div = 3 - Math.min(2, Math.floor((rp - t.min) / span));
+  return t.n + ' ' + ['', 'I', 'II', 'III'][div];
+}
+function mpEmblem(rp, size) {
+  const k = mpTierOf(rp || 0), t = MP_TIER_INFO[k];
+  return `<span class="mpemb t-${k}${size ? ' ' + size : ''}" title="${t.n}"><i>${t.g}</i></span>`;
+}
+const mpAsk = (path, body) => acctAsk('/mp/' + path, Object.assign({ token: ACCT.token, ver: APP_VERSION }, body || {}), 15000);
+/* ── 덱 ─────────────────────────────────────────────────── */
+function mpOwned() {
+  const ids = Object.keys((META.dex && META.dex.cards) || {}).filter(id => CARDS[id] && CARDS[id].rar !== 'curse' && MP_POINTS[CARDS[id].rar] != null);
+  for (const b of ['strike', 'defend', 'ward']) if (!ids.includes(b)) ids.push(b);
+  return ids;
+}
+const mpCost = ids => ids.reduce((a, id) => a + (MP_POINTS[(CARDS[id] || {}).rar] || 0), 0);
+const mpCap = id => (CARDS[id] && CARDS[id].rar === 'basic') ? 5 : 2;
+function mpDeckOk(ids) {
+  if (!Array.isArray(ids)) return '덱이 없다';
+  if (ids.length < MP_DECK_MIN) return `덱이 ${MP_DECK_MIN}장보다 적다`;
+  if (ids.length > MP_DECK_MAX) return `덱이 ${MP_DECK_MAX}장보다 많다`;
+  if (mpCost(ids) > MP_BUDGET) return `점수가 ${MP_BUDGET}을 넘는다`;
+  const own = new Set(mpOwned());
+  for (const id of ids) { if (!own.has(id)) return '가져 본 적 없는 부적이 있다'; if (ids.filter(x => x === id).length > mpCap(id)) return `${CARDS[id].n}은(는) ${mpCap(id)}장까지`; }
+  return '';
+}
+/* 추천 덱 — 기본 여섯에, 가진 것 가운데 좋은 것부터 점수 안에서 */
+function mpAutoDeck() {
+  const ids = ['strike', 'strike', 'strike', 'defend', 'defend', 'defend', 'ward'];
+  const pool = mpOwned().filter(id => CARDS[id].rar !== 'basic')
+    .sort((a, z) => (MP_POINTS[CARDS[z].rar] - MP_POINTS[CARDS[a].rar]) || (Math.random() - .5));
+  for (const id of pool) {
+    if (ids.length >= 16) break;
+    if (mpCost(ids) + MP_POINTS[CARDS[id].rar] > MP_BUDGET) continue;
+    ids.push(id);
+  }
+  /* 모자라면 기본 부적으로 채운다 — 저마다 다섯 장까지 (갓 시작한 사람은 기본 셋뿐이다) */
+  for (let g = 0; ids.length < MP_DECK_MIN && g < 30; g++) {
+    const id = ['strike', 'defend', 'ward'][g % 3];
+    if (ids.filter(x => x === id).length < mpCap(id)) ids.push(id);
+  }
+  return ids;
+}
+function mpDeck() {
+  if (!META.mpDeck || mpDeckOk(META.mpDeck)) { META.mpDeck = mpAutoDeck(); saveMeta(); }
+  return META.mpDeck;
+}
+/* ── 묻는 박자 — 로비·줄·방·판에 있는 동안만 ────────────── */
+function mpStartLoop() { if (MP.t) return; MP.on = true; MP.t = setInterval(mpPoll, 1000); mpPoll(); }
+function mpStopLoop() { clearInterval(MP.t); MP.t = 0; MP.on = false; }
+async function mpPoll() {
+  if (MP.busy || !acctOn()) return;
+  MP.busy = true;
+  try {
+    const r = await mpAsk('poll', { since: MP.match ? MP.since : 0 });
+    if (!r.ok) { if (/로그인/.test(r.why || '')) mpStopLoop(); return; }
+    MP.prof = r.prof; MP.queue = r.queue; MP.room = r.room; MP.inv = r.inv || [];
+    if (r.match && !r.match.over && (!MP.match || MP.match.id !== r.match.id)) mpBegin(r.match);
+    else if (r.match && MP.match && MP.match.id === r.match.id) mpUpdate(r.match);
+    else if (!r.match && MP.match && !MP.resShown && G.b && G.b.kind === 'pvp') {
+      /* 판이 사라졌다(서버가 다시 섰거나 오래 끊겼다) — 모험으로 돌려보낸다 */
+      MP.match = null; MP.turn = null; toast('판이 끊겼다 — 로비로 돌아간다'); mpRestore(); showMulti(); return;
+    }
+    else if (r.match && r.match.over && !MP.match) { /* 이미 끝난 판 — 결과만 */ }
+    if (!MP.match && !MP.lobby && !MP.queue && !MP.room) mpStopLoop();
+    if (MP.lobby) mpPaintLobby();
+  } catch (e) { console.error('멀티 묻기', e); }
+  finally { MP.busy = false; }
+}
+/* ══ 로비 ══════════════════════════════════════════════════ */
+function showMulti() {
+  if (!acctOn()) { toast('로그인해야 멀티플레이를 할 수 있다'); SND.err(); return; }
+  if (G.b) { toast('싸우는 중에는 갈 수 없다'); SND.err(); return; }
+  closeOverlay();
+  MP.lobby = true; MP.prevScene = G.scene;
+  const p = overlay(`<div class="school mplobby">
+    <div class="mpbgwrap" id="mp_bg"></div>
+    <div class="schead"><button class="gback" id="mp_back">←</button><h2>멀티플레이</h2><div class="scnote">對 戰</div></div>
+    <div class="mpbody">
+      <div class="mpme" id="mp_me"><div class="casthint">서버에 묻는 중… (잠든 서버는 깨는 데 조금 걸린다)</div></div>
+      <div class="mpmodes">
+        <button class="mpmode" data-q="1v1"><b>1 대 1</b><span>랭크 매치</span><em>점수가 비슷한 상대와</em></button>
+        <button class="mpmode two" data-q="2v2"><b>2 대 2</b><span>랭크 매치</span><em>모르는 이와 한 편이 된다</em></button>
+      </div>
+      <div class="mpstatus" id="mp_status"></div>
+      <div class="mprow">
+        <div class="mpbox"><b>친구와 — 방 코드</b>
+          <div class="mpbtns"><button class="val" id="mp_r1">1대1 방 만들기</button><button class="val" id="mp_r2">2대2 방 만들기</button></div>
+          <div class="mpjoin"><input id="mp_code" maxlength="6" placeholder="코드 여섯 자" spellcheck="false" autocomplete="off"><button class="val" id="mp_join">들어가기</button></div>
+        </div>
+        <div class="mpbox"><b>준비</b>
+          <div class="mpbtns col">
+            <button class="val" id="mp_deck">덱 편성</button>
+            <button class="val gold" id="mp_shop">교환소</button>
+            <button class="val" id="mp_top">랭킹</button>
+          </div>
+        </div>
+      </div>
+      <div class="mpinv" id="mp_inv"></div>
+    </div>
+  </div>`, 'mppanel');
+  p.dataset.noauto = '1';
+  setMpBg(p.querySelector('#mp_bg'));
+  p.querySelector('#mp_back').onclick = mpCloseLobby;
+  p.querySelectorAll('.mpmode').forEach(b => b.onclick = async () => {
+    const err = mpDeckOk(mpDeck()); if (err) { toast(err); SND.err(); return; }
+    SND.ui(); const r = await mpAsk('queue', { mode: b.dataset.q, deck: mpDeck() });
+    if (!r.ok) { toast(r.why); SND.err(); } else { MP.queueAt = Date.now(); mpPoll(); }
+  });
+  const room = async mode => { SND.ui(); const r = await mpAsk('room', { act: 'create', mode, deck: mpDeck() }); if (!r.ok) { toast(r.why); SND.err(); } else { MP.room = r.room; mpPaintLobby(); } };
+  p.querySelector('#mp_r1').onclick = () => room('1v1');
+  p.querySelector('#mp_r2').onclick = () => room('2v2');
+  const join = async () => { const c = p.querySelector('#mp_code').value.trim().toUpperCase();
+    if (c.length !== 6) { toast('코드는 여섯 자'); SND.err(); return; }
+    const r = await mpAsk('room', { act: 'join', code: c, deck: mpDeck() }); if (!r.ok) { toast(r.why); SND.err(); } else { SND.unlock(); MP.room = r.room; mpPaintLobby(); } };
+  p.querySelector('#mp_join').onclick = join;
+  p.querySelector('#mp_code').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') join(); };
+  p.querySelector('#mp_deck').onclick = () => { SND.ui(); showMpDeck(); };
+  p.querySelector('#mp_shop').onclick = () => { SND.ui(); showMpShop(); };
+  p.querySelector('#mp_top').onclick = () => { SND.ui(); showMpTop(); };
+  mpStartLoop();
+  songSync();
+}
+function mpCloseLobby() {
+  SND.ui();
+  MP.lobby = false;
+  const p = document.querySelector('.mplobby'); if (p) closePanel(p.closest('.panel') || p.parentNode);
+  closeOverlay();
+  if (!MP.queue && !MP.room && !MP.match) mpStopLoop();
+  songSync();
+  if (G.run && MP.prevScene !== 'title') showMap(); else showTitle();
+}
+function mpPaintLobby() {
+  const box = document.querySelector('.mplobby'); if (!box) return;
+  const pr = MP.prof;
+  const me = box.querySelector('#mp_me');
+  if (pr) {
+    const k = mpTierOf(pr.rp), t = MP_TIER_INFO[k];
+    const pct = t.next ? Math.round((pr.rp - t.min) / (t.next - t.min) * 100) : 100;
+    me.innerHTML = `${mpEmblem(pr.rp, 'big')}
+      <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.id)}</span>
+        <div class="mprp"><i style="width:${pct}%;background:${t.c}"></i></div>
+        <small>${pr.rp} 점${t.next ? ` · 다음 랭크까지 ${t.next - pr.rp}` : ' · 꼭대기'} · 랭크 ${pr.w}승 ${pr.l}패${pr.streak > 1 ? ` · <b style="color:#ff9a5a">${pr.streak}연승</b>` : ''} · 친선 ${pr.fw}승 ${pr.fl}패</small></div>
+      <div class="mptok"><i>幣</i><b>${pr.tok}</b><small>멀티 토큰</small></div>`;
+  }
+  /* 줄 · 방 */
+  const stt = box.querySelector('#mp_status');
+  box.querySelectorAll('.mpmode').forEach(b => b.disabled = !!(MP.queue || MP.room));
+  if (MP.queue) {
+    const w = Math.floor(MP.queue.wait / 1000);
+    stt.innerHTML = `<div class="mpq"><span class="mpspin"></span><b>${MP.queue.mode === '2v2' ? '2대2' : '1대1'}${MP.queue.party ? ' 파티' : ''} 상대를 찾는 중</b>
+      <em>${Math.floor(w / 60)}:${String(w % 60).padStart(2, '0')} · 같은 줄에 ${MP.queue.n}명</em>
+      <button class="val" id="mp_cancel">그만 찾기</button>
+      ${w >= 30 ? '<button class="val gold" id="mp_bot">기다리는 동안 그림자와 붙기</button>' : ''}</div>
+      ${w >= 30 ? '<div class="casthint">사람이 적은 때다 — 그림자 퇴마사와 연습하면 토큰을 조금 받는다(하루 열 번). 그동안 줄은 풀린다.</div>' : ''}`;
+    stt.querySelector('#mp_cancel').onclick = async () => { await mpAsk('cancel'); MP.queue = null; mpPaintLobby(); };
+    const bt = stt.querySelector('#mp_bot'); if (bt) bt.onclick = async () => { await mpAsk('cancel'); MP.queue = null; mpBotStart(); };
+  } else if (MP.room) {
+    const r = MP.room, mine = r.owner === ACCT.id, cap = r.mode === '2v2' ? 4 : 2;
+    const col = t => r.members.filter(x => x.team === t).map(x => `<div class="mpmem${x.acct === r.owner ? ' own' : ''}">${mpEmblem(x.rp, 'sm')}<b>${wEsc(x.acct)}</b>${x.acct === r.owner ? '<em>방장</em>' : ''}</div>`).join('')
+      || '<div class="mpmem none">비었다</div>';
+    stt.innerHTML = `<div class="mproom">
+      <div class="mprc"><small>방 코드 · ${r.mode === '2v2' ? '2대2' : '1대1'} · ${r.members.length}/${cap}명</small><b id="mp_rcode">${r.code}</b>
+        <button class="val" id="mp_copy">코드 복사</button></div>
+      <div class="mpteams"><div class="mpteam a"><h4>靑 청</h4>${col('A')}</div><div class="mpvs">VS</div><div class="mpteam b"><h4>紅 홍</h4>${col('B')}</div></div>
+      <div class="mpbtns">
+        ${r.mode === '2v2' ? '<button class="val" id="mp_ta">청으로</button><button class="val" id="mp_tb">홍으로</button>' : ''}
+        ${mine ? '<button class="val gold" id="mp_start">친선전 시작</button>' : '<span class="casthint">방장이 시작하면 곧바로 싸움이 열린다</span>'}
+        ${mine && r.mode === '2v2' && r.members.length === 2 ? '<button class="val gold" id="mp_party">둘이 파티로 랭크 2대2 찾기</button>' : ''}
+        <button class="val" id="mp_leave">방에서 나간다</button></div>
+      <div class="mpjoin"><input id="mp_invid" maxlength="20" placeholder="초대할 친구 아이디" spellcheck="false"><button class="val" id="mp_invgo">초대</button></div>
+    </div>`;
+    const q = s => stt.querySelector(s);
+    q('#mp_copy').onclick = () => { try { navigator.clipboard.writeText(r.code); toast('코드를 복사했다 — ' + r.code); } catch (e) { toast(r.code); } };
+    const act = async body => { const x = await mpAsk('room', body); if (!x.ok) { toast(x.why); SND.err(); } else { SND.ui(); if (x.room) MP.room = x.room; mpPoll(); } };
+    if (q('#mp_ta')) q('#mp_ta').onclick = () => act({ act: 'team', team: 'A' });
+    if (q('#mp_tb')) q('#mp_tb').onclick = () => act({ act: 'team', team: 'B' });
+    if (q('#mp_start')) q('#mp_start').onclick = () => act({ act: 'start', deck: mpDeck() });
+    if (q('#mp_party')) q('#mp_party').onclick = () => act({ act: 'queue', deck: mpDeck() });
+    q('#mp_leave').onclick = async () => { await mpAsk('room', { act: 'leave' }); MP.room = null; mpPaintLobby(); };
+    const inv = async () => { const to = q('#mp_invid').value.trim(); if (!to) return;
+      const x = await mpAsk('invite', { to }); if (!x.ok) { toast(x.why); SND.err(); } else { toast(`${to}에게 초대를 보냈다`); q('#mp_invid').value = ''; } };
+    q('#mp_invgo').onclick = inv;
+    q('#mp_invid').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') inv(); };
+  } else stt.innerHTML = '';
+  /* 받은 초대 */
+  const iv = box.querySelector('#mp_inv');
+  iv.innerHTML = (MP.inv || []).map(x => `<div class="mpinvrow">📜 <b>${wEsc(x.from)}</b>의 ${x.mode === '2v2' ? '2대2' : '1대1'} 방 초대 <button class="val gold" data-c="${x.code}">참가</button></div>`).join('');
+  iv.querySelectorAll('button').forEach(b => b.onclick = async () => {
+    const x = await mpAsk('room', { act: 'join', code: b.dataset.c, deck: mpDeck() });
+    await mpAsk('inbox', { drop: b.dataset.c });
+    if (!x.ok) { toast(x.why); SND.err(); } else { SND.unlock(); MP.room = x.room; mpPaintLobby(); }
+  });
+}
+/* 로비 밖에서도 초대는 받는다 — 소식을 물을 때(열두 셈마다) 스무 셈에 한 번 */
+async function mpInboxCheck() {
+  if (!acctOn() || MP.lobby || MP.match || Date.now() - MP.inboxAt < 20000) return;
+  MP.inboxAt = Date.now();
+  const r = await mpAsk('inbox'); if (!r.ok) return;
+  const x = (r.inv || []).find(v => !MP.seenInv[v.code + v.at]); if (!x || $('#mpinvm')) return;
+  MP.seenInv[x.code + x.at] = 1;
+  try { SND.bell(); } catch (e) {}
+  const p = modal(`<h2 style="color:#e8c86a">對 멀티플레이 초대</h2>
+    <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9"><b style="color:#7fe6cf">${wEsc(x.from)}</b>이(가) ${x.mode === '2v2' ? '2대2' : '1대1'} 방에 부른다.</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="mi_go">참가한다</button>
+      <button class="brush-btn ghost" id="mi_no" style="color:#e9dfc9;border-color:#8a7f68">거절</button></div>`);
+  p.id = 'mpinvm'; p.dataset.noauto = '1';
+  p.querySelector('#mi_no').onclick = () => { closeTop(); mpAsk('inbox', { drop: x.code }); };
+  p.querySelector('#mi_go').onclick = async () => {
+    closeTop();
+    if (G.b) { toast('싸움을 마친 뒤 멀티플레이에서 코드로 들어가시오 — ' + x.code); return; }
+    const j = await mpAsk('room', { act: 'join', code: x.code, deck: mpDeck() }); await mpAsk('inbox', { drop: x.code });
+    if (!j.ok) { toast(j.why); SND.err(); return; }
+    MP.room = j.room; showMulti();
+  };
+}
+/* ══ 덱 편성 ══════════════════════════════════════════════ */
+function showMpDeck() {
+  let ids = mpDeck().slice();
+  const own = mpOwned().sort((a, z) => GRADE_ORDER.indexOf(CARDS[a].rar) - GRADE_ORDER.indexOf(CARDS[z].rar) || CARDS[a].n.localeCompare(CARDS[z].n, 'ko'));
+  const p = modal(`<h2>덱 편성 — 멀티플레이</h2>
+    <div class="hint">가져 본 적 있는(도감에 오른) 부적으로 짠다 · ${MP_DECK_MIN}~${MP_DECK_MAX}장 · 등급 점수 합 ${MP_BUDGET} 안 · 같은 부적은 두 장(기본은 다섯 장)까지</div>
+    <div class="mpdeckbar" id="md_bar"></div>
+    <div class="mpdecksel" id="md_sel"></div>
+    <div class="cpgrid mpdeckpool" id="md_pool"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap">
+      <button class="brush-btn" id="md_auto">추천 덱</button><button class="brush-btn gold" id="md_save">저장</button>
+      <button class="brush-btn ghost" id="md_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'mpdeckm');
+  p.dataset.noauto = '1';
+  const draw = () => {
+    const cost = mpCost(ids), err = mpDeckOk(ids);
+    p.querySelector('#md_bar').innerHTML = `<span>${ids.length}장</span><div class="mprp"><i style="width:${Math.min(100, cost / MP_BUDGET * 100)}%;background:${cost > MP_BUDGET ? '#ff6a5a' : '#7fe6cf'}"></i></div>
+      <span>점수 <b>${cost}</b> / ${MP_BUDGET}</span><em style="color:${err ? '#ff9a8a' : '#8affd0'}">${err || '쓸 수 있는 덱'}</em>`;
+    const cnt = {}; ids.forEach(i => cnt[i] = (cnt[i] || 0) + 1);
+    p.querySelector('#md_sel').innerHTML = Object.keys(cnt).sort((a, z) => GRADE_ORDER.indexOf(CARDS[z].rar) - GRADE_ORDER.indexOf(CARDS[a].rar))
+      .map(i => `<span class="cpchip" data-id="${i}" style="--gc:${GRADE[CARDS[i].rar].c}"><i>${CARDS[i].g}</i>${CARDS[i].n}${cnt[i] > 1 ? ' ×' + cnt[i] : ''}<b>−</b></span>`).join('');
+    p.querySelectorAll('#md_sel .cpchip').forEach(c => c.onclick = () => { const k = ids.indexOf(c.dataset.id); if (k >= 0) ids.splice(k, 1); SND.ui(); draw(); });
+    const pool = p.querySelector('#md_pool'); pool.innerHTML = '';
+    for (const id of own) {
+      const c = CARDS[id], n = cnt[id] || 0;
+      const b = el('button', 'cpc' + (n ? ' on' : ''), `<i>${c.g}</i><b>${c.n}</b><em>${GRADE[c.rar].n} · ${MP_POINTS[c.rar]}점${n ? ' · ' + n + '장' : ''}</em>`);
+      b.style.setProperty('--gc', GRADE[c.rar].c);
+      try { b.title = c.n + ' — ' + String(c.txt(c.v ? c.v(false) : {})).replace(/<[^>]+>/g, ''); } catch (e) {}
+      b.onclick = () => {
+        if (n >= mpCap(id)) { toast(`${c.n}은(는) ${mpCap(id)}장까지`); SND.err(); return; }
+        if (ids.length >= MP_DECK_MAX) { toast(`${MP_DECK_MAX}장까지`); SND.err(); return; }
+        ids.push(id); SND.ui(); draw();
+      };
+      pool.appendChild(b);
+    }
+  };
+  draw();
+  p.querySelector('#md_auto').onclick = () => { ids = mpAutoDeck(); SND.ui(); draw(); };
+  p.querySelector('#md_save').onclick = async () => {
+    const err = mpDeckOk(ids); if (err) { toast(err); SND.err(); return; }
+    META.mpDeck = ids.slice(); saveMeta(); SND.unlock(); toast('덱을 저장했다');
+    if (MP.room) await mpAsk('room', { act: 'deck', deck: ids });
+    closeTop();
+  };
+  p.querySelector('#md_x').onclick = closeTop;
+}
+/* ══ 교환소 ═══════════════════════════════════════════════ */
+function showMpShop() {
+  const p = modal(`<h2>교환소 — 멀티 토큰</h2>
+    <div class="hint">대전에서 받은 토큰을 바꾼다 · 랭크 승리 20(2대2 16) · 패배 6(5) · 그림자 연습 6 / 2</div>
+    <div class="mptokbig" id="ms_tok"></div>
+    <div class="mpshopgrid" id="ms_grid"></div>
+    <div style="margin-top:10px"><button class="brush-btn" id="ms_x">닫기</button></div>`, 'mpshopm');
+  p.dataset.noauto = '1';
+  const price = k => (MP.shop || {})[k] || { gold: 10, dia: 20, jp: 15, bigbox: 60, card_duel: 120, card_twin: 120, card_crown: 160, card_mirror: 160 }[k];
+  const draw = () => {
+    p.querySelector('#ms_tok').innerHTML = `<i>幣</i><b>${MP.prof ? MP.prof.tok : '…'}</b><span>멀티 토큰</span>`;
+    const g = p.querySelector('#ms_grid'); g.innerHTML = '';
+    for (const it of MP_SHOP_ITEMS) {
+      const c = it.card && CARDS[it.card];
+      const n = el('button', 'mpshopit' + (c ? ' card' : ''),
+        c ? `<i style="--gc:${GRADE[c.rar].c}">${c.g}</i><b>${c.n}</b><em style="color:${GRADE[c.rar].c}">${GRADE[c.rar].n} · 멀티 전용</em>
+             <small>${String(c.txt(c.v(false))).replace(/<[^>]+>/g, '')}</small><u>幣 ${price(it.k)}</u>`
+          : `<i>${it.g}</i><b>${it.n}</b><small>${it.d}</small><u>幣 ${price(it.k)}</u>`);
+      n.onclick = async () => {
+        if (it.run && !G.run) { toast('모험 중에만 열 수 있다'); SND.err(); return; }
+        if (MP.prof && MP.prof.tok < price(it.k)) { toast(`토큰이 ${price(it.k) - MP.prof.tok}개 모자란다`); SND.err(); return; }
+        const r = await mpAsk('shop', { item: it.k });
+        if (!r.ok) { toast(r.why); SND.err(); return; }
+        MP.prof = r.prof; SND.unlock();
+        if (c) {
+          dexAdd('cards', it.card);
+          if (G.run) { G.run.deck.push(mkCard(it.card, false)); saveRun(); } else { META.giftBag = (META.giftBag || []).concat(it.card).slice(0, 40); }
+          saveMeta(); toast(`${c.n} — 도감에 올랐다 · 멀티 덱에도 넣을 수 있다`);
+        } else { const what = await it.give(); toast(`${it.n} — 받았다${typeof what === 'string' && it.k === 'bigbox' ? ' · ' + what : ''}`); }
+        draw(); mpPaintLobby();
+      };
+      g.appendChild(n);
+    }
+  };
+  draw();
+  if (!MP.prof) mpAsk('me').then(r => { if (r.ok) { MP.prof = r.prof; MP.shop = r.shop; draw(); } });
+  else if (!MP.shop) mpAsk('me').then(r => { if (r.ok) { MP.shop = r.shop; draw(); } });
+  p.querySelector('#ms_x').onclick = closeTop;
+}
+/* ══ 랭킹 ═════════════════════════════════════════════════ */
+async function showMpTop() {
+  const p = modal(`<h2>랭킹</h2><div class="hint">랭크 매치 점수 · 위에서 쉰 명</div>
+    <div class="mptiers">${Object.keys(MP_TIER_INFO).map(k => `<span>${mpEmblem(MP_TIER_INFO[k].min, 'sm')} ${MP_TIER_INFO[k].n} <em>${MP_TIER_INFO[k].min}+</em></span>`).join('')}</div>
+    <div class="mptop" id="mt_list"><div class="casthint">불러오는 중…</div></div>
+    <div style="margin-top:10px"><button class="brush-btn" id="mt_x">닫기</button></div>`, 'mptopm');
+  p.dataset.noauto = '1';
+  p.querySelector('#mt_x').onclick = closeTop;
+  const r = await acctAsk('/mp/top', null, 15000);
+  const box = p.querySelector('#mt_list'); if (!box.isConnected) return;
+  if (!r.ok) { box.innerHTML = `<div class="casthint">못 불러왔다 — ${wEsc(r.why)}</div>`; return; }
+  box.innerHTML = (r.top || []).length ? r.top.map((x, i) => `<div class="mptoprow${x.id === ACCT.id ? ' me' : ''}"><b>${i + 1}</b>${mpEmblem(x.rp, 'sm')}
+    <span>${wEsc(x.id)}</span><em>${mpTierName(x.rp)}</em><u>${x.rp}점 · ${x.w}승 ${x.l}패</u></div>`).join('')
+    : '<div class="casthint">아직 랭크 매치를 한 사람이 없다 — 첫 이름을 올리시오</div>';
+}
+/* ══ 싸움 ═════════════════════════════════════════════════ */
+function mpMakeRun(deckIds, hp) {
+  return { _pvp: true, asc: 0, maxHp: hp, hp, gold: 0, dia: 0, summons: 0, banner: 3, maxEnergy: MP_ENERGY, potSlots: 0, potBase: POT_BASE,
+    deck: deckIds.map(id => mkCard(id, false)), relics: [], potions: [], act: 8, floor: 0, rewardCut: 0,
+    map: null, mapCur: -1, mapDone: [], bossPick: null, skills: [], skill: null, curse: null, boons: [], curseHp: 0, sorrow: 0,
+    talkBoons: [], shrine: {}, arena: { best: 0, cleared: 0 }, stats: { battles: 0, elites: 0, cards: 0, gold: 0, floors: 0, revives: 0 },
+    unlocked: [], train: {}, startedAt: Date.now() };
+}
+function mpSave() {
+  if (MP.saved) return;
+  MP.saved = { run: G.run, cp: G.cp, scene: G.scene };
+}
+function mpRestore() {
+  const sv = MP.saved; MP.saved = null;
+  battleWatch(false); G.b = null;
+  document.body.classList.remove('pvp');
+  ['#mphud', '#mpally', '#mpwait'].forEach(s => { const n = $(s); if (n) n.remove(); });
+  G.run = sv ? sv.run : null; G.cp = sv ? sv.cp : null;
+  _bgKey = '';
+  if (G.run) { renderTop(); showMap(); } else showTitle();
+}
+const mpName = acct => { const p = MP.match && MP.match.players.find(x => x.acct === acct); return p ? p.name : acct; };
+const mpUnitEnt = acct => {
+  if (!G.b) return null;
+  if (MP.match && acct === MP.match.me) return P();
+  return G.b.enemies.find(e => e.mpAcct === acct) || null;
+};
+function mpBegin(mv) {
+  MP.match = { id: mv.id, mode: mv.mode, ranked: mv.ranked, me: mv.me, players: mv.players, order: mv.order };
+  MP.since = 0; MP.myNo = 0; MP.resShown = false; MP.evq = []; MP.lastUnits = mv.units;
+  MP.lobby = false; MP.room = null; MP.queue = null;
+  closeOverlay();
+  mpSave();
+  const me = mv.players.find(p => p.acct === mv.me), myTeam = me.team;
+  const foes = mv.players.filter(p => p.team !== myTeam), ally = mv.players.find(p => p.team === myTeam && p.acct !== mv.me);
+  G.run = mpMakeRun(mpDeck(), mv.units[mv.me].maxHp);
+  document.body.classList.add('pvp');
+  const ids = foes.map((f, i) => {
+    const id = 'mpf_' + i;
+    defEnemy({ id, n: f.name, g: (f.name || '?').slice(0, 1).toUpperCase(), hp: [mv.units[f.acct].maxHp, mv.units[f.acct].maxHp],
+      col: myTeam === 'A' ? '#a8323a' : '#2f5f9a', big: foes.length === 1,
+      moves: { wait: { t: 'buff', label: '차례를 기다린다' } }, next: () => 'wait' });
+    return id;
+  });
+  startBattle(ids, 'pvp');
+  G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; });
+  G.b.mpMine = false; G.b.busy = true;
+  /* 두 번째로 두는 쪽은 첫 차례에 한 장 더 */
+  if (mv.order[0] !== mv.me) G.b.drawMod = (G.b.drawMod || 0) + 1;
+  mpApplyUnits(mv.units, false);
+  mpHud(mv);
+  if (ally) mpAllyPanel(ally);
+  /* 누가 누구와 — 이름과 랭크를 크게 */
+  const intro = el('div', 'mpintro');
+  intro.innerHTML = `<div class="mpside a">${mv.players.filter(p => p.team === myTeam).map(p => `<div>${mpEmblem(p.rp, 'big')}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+    <div class="mpvsbig">VS</div>
+    <div class="mpside b">${foes.map(p => `<div>${mpEmblem(p.rp, 'big')}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+    <div class="mpmodetag">${mv.mode === '2v2' ? '2 대 2' : '1 대 1'} · ${mv.ranked ? '랭크 매치' : '친선전'}</div>`;
+  document.body.appendChild(intro);
+  try { SND.gong(); SND.boss(); screenFlash('rgba(255,215,140,.3)', 600); } catch (e) {}
+  setTimeout(() => { intro.classList.add('out'); setTimeout(() => intro.remove(), 500); }, 2400);
+  mpStartLoop();
+  songSync();
+  setTimeout(() => mpUpdate(mv), 2500);
+}
+/* 판의 모양을 이쪽 엔진에 내려앉힌다 — 줄어든 체력은 맞은 것처럼 */
+async function mpApplyUnits(units, fx) {
+  if (!G.b || !units) return;
+  MP.lastUnits = units;
+  for (const acct in units) {
+    const u = units[acct];
+    if (MP.match && acct !== MP.match.me && !G.b.enemies.some(e => e.mpAcct === acct)) { mpAllyPaint(acct, u); continue; }
+    const ent = mpUnitEnt(acct); if (!ent) continue;
+    const lost = Math.max(0, ent.hp - u.hp), blkLost = Math.max(0, ent.block - u.block);
+    ent.hp = u.hp; ent.block = u.block; ent.s = Object.assign({}, u.s || {});
+    if (ent === P() && G.run) G.run.hp = u.hp;
+    if (fx && (lost || blkLost)) { try { hitFx(ent, lost, blkLost, ent === P()); impact('slash2', ent); } catch (e) {} }
+  }
+  try { await checkDeaths(); } catch (e) {}
+  try { syncAll(); } catch (e) {}
+}
+/* 서버에서 온 일들 — 차례로 풀어 보인다 */
+function mpUpdate(mv) {
+  if (!MP.match || mv.id !== MP.match.id) return;
+  MP.turn = mv.turn; MP.turnAt = Date.now();
+  for (const e of mv.ev) if (e.seq > MP.since) { MP.evq.push(e); MP.since = e.seq; }
+  mpDrain(mv);
+  mpHudPaint();
+}
+async function mpDrain(mv) {
+  if (MP.evBusy) return;
+  MP.evBusy = true;
+  try {
+    while (MP.evq.length) {
+      const e = MP.evq.shift();
+      const me = MP.match && MP.match.me;
+      if (e.kind === 'play' && e.acct !== me && CARDS[e.card]) {
+        const ent = mpUnitEnt(e.acct) || { el: $('#mpally'), n: mpName(e.acct) };
+        try { colPlayFx(ent.el ? ent : { el: null, n: mpName(e.acct) }, { cardId: e.card, up: e.up }); } catch (x) {}
+        logAdd('hurt', `${mpName(e.acct)} — ${CARDS[e.card].n}`, 0);
+        await wait(520);
+      } else if (e.kind === 'end' && e.acct !== me) { await mpApplyUnits(e.units, true); await wait(260); }
+      else if (e.kind === 'timeout') { toast(`${mpName(e.acct)} — 시간이 다해 차례가 넘어갔다`); }
+      else if (e.kind === 'gone') { toast(`${mpName(e.acct)}이(가) ${e.acct === me ? '쓰러졌다' : '판을 떠났다'}`); }
+      else if (e.kind === 'turn' || e.kind === 'start') {
+        if (e.acct === me && !(e.kind === 'start' && MP.myNo)) await mpMyTurn(mv);
+        else if (e.acct !== me) { mpWaitLabel(e.acct); }
+      }
+    }
+    if (mv.over && mv.res && !MP.resShown) mpResult(mv);
+    else if (mv.over && !mv.res) { /* 셈을 기다린다 */ }
+    /* 끊겼다 다시 이어졌을 때 — 내 차례인데 아직 안 열었다 */
+    if (!mv.over && mv.turn.acct === MP.match.me && MP.myNo !== mv.turn.no && G.b && !G.b.mpMine) await mpMyTurn(mv);
+  } finally { MP.evBusy = false; }
+}
+async function mpMyTurn(mv) {
+  const b = G.b; if (!b || b.over) return;
+  if (MP.myNo === mv.turn.no && b.mpMine) return;
+  MP.myNo = mv.turn.no;
+  await mpApplyUnits(mv.units, false);
+  const w = $('#mpwait'); if (w) w.remove();
+  const p = P();
+  if (!p || p.hp <= 0) return;
+  /* 무력 — 이번 차례를 건너뛴다 */
+  if (p.s.stun) { st(p, 'stun', -1); toast('무력 — 이번 차례를 건너뛴다'); b.mpMine = true; await mpCommitTurn(); return; }
+  b.mpMine = true; b.busy = false;
+  try { SND.gong(); } catch (e) {}
+  await startPlayerTurn();
+  mpHudPaint();
+}
+function mpWaitLabel(acct) {
+  let w = $('#mpwait');
+  if (!w) { w = el('div', 'mpwait'); w.id = 'mpwait'; ($('#battle') || document.body).appendChild(w); }
+  const ally = MP.match && MP.match.players.find(p => p.acct === acct && p.team === MP.match.players.find(x => x.acct === MP.match.me).team);
+  w.innerHTML = `<span class="mpspin"></span><b>${wEsc(mpName(acct))}</b>${ally ? ' (한 편)' : ''}의 차례`;
+  if (G.b) for (const e of G.b.enemies) try { highlight(e, e.mpAcct === acct); } catch (x) {}
+}
+/* 차례를 마친다 — 모두의 모양을 적어 보낸다 */
+let _mpCommitting = false;
+async function mpCommitTurn() {
+  const b = G.b; if (!b || !MP.match || _mpCommitting) return;
+  if (!b.mpMine) return;
+  _mpCommitting = true;
+  b.mpMine = false; b.busy = true;
+  const p = P(), units = {};
+  units[MP.match.me] = { hp: Math.max(0, p.hp), block: p.block, s: p.s };
+  for (const e of b.enemies) if (e.mpAcct) units[e.mpAcct] = { hp: Math.max(0, e.hp), block: e.block, s: e.s };
+  try {
+    for (let i = 0; i < 3; i++) {
+      const r = await mpAsk('end', { id: MP.match.id, units });
+      if (r.ok || /차례가 아니다|끝난 판/.test(r.why || '')) break;
+      await wait(800);
+    }
+  } finally { _mpCommitting = false; }
+  try { syncAll(); } catch (e) {}
+  mpHudPaint();
+  mpPoll();
+}
+function mpSendPlay(card, target) {
+  if (!MP.match) return;
+  mpAsk('play', { id: MP.match.id, card: card.id, up: !!card.up, target: target && target.mpAcct || '' }).catch(() => {});
+}
+function mpDied() { const b = G.b; if (b) b.mpMine = true; mpCommitTurn(); toast('쓰러졌다 — 판이 끝날 때까지 지켜본다'); }
+/* 싸움터 위의 띠 — 차례·남은 때·항복 */
+function mpHud(mv) {
+  let h = $('#mphud'); if (h) h.remove();
+  h = el('div', 'mphud'); h.id = 'mphud';
+  h.innerHTML = `<span class="mptag">${mv.mode === '2v2' ? '2대2' : '1대1'} · ${mv.ranked ? '랭크' : '친선'}</span><b class="mpturn"></b><em class="mptime"></em>
+    <button class="mpgiveup">항복</button>`;
+  ($('#battle') || document.body).appendChild(h);
+  h.querySelector('.mpgiveup').onclick = () => mpMenu();
+  mpHudPaint();
+}
+function mpHudPaint() {
+  const h = $('#mphud'); if (!h || !MP.turn || !MP.match) return;
+  const mine = MP.turn.acct === MP.match.me;
+  const left = Math.max(0, MP.turn.left - (Date.now() - (MP.turnAt || Date.now())));
+  h.querySelector('.mpturn').textContent = mine ? '그대의 차례' : `${mpName(MP.turn.acct)}의 차례`;
+  h.querySelector('.mpturn').classList.toggle('mine', mine);
+  const s = Math.ceil(left / 1000);
+  h.querySelector('.mptime').textContent = `${s}초`;
+  h.querySelector('.mptime').classList.toggle('last', s <= 10);
+  /* 내 차례 — 마감 네 셈 전에 스스로 넘긴다(내 몫을 잃지 않게) */
+  if (mine && G.b && G.b.mpMine && !G.b.busy && left < 4000 && !_mpCommitting) { toast('시간이 다해 차례를 넘긴다'); endTurn(); }
+}
+setInterval(() => { try { if (MP.match) mpHudPaint(); } catch (e) {} }, 500);
+/* 2대2 — 한 편의 모습 */
+function mpAllyPanel(ally) {
+  let a = $('#mpally'); if (a) a.remove();
+  a = el('div', 'mpally'); a.id = 'mpally'; a.dataset.acct = ally.acct;
+  a.innerHTML = `<div class="mpal-h">${mpEmblem(ally.rp, 'sm')}<b>${wEsc(ally.name)}</b><em>한 편</em></div>
+    <div class="mpal-bar"><i></i><span></span></div><div class="mpal-s"></div>`;
+  ($('#battle') || document.body).appendChild(a);
+  if (MP.lastUnits && MP.lastUnits[ally.acct]) mpAllyPaint(ally.acct, MP.lastUnits[ally.acct]);
+}
+function mpAllyPaint(acct, u) {
+  const a = $('#mpally'); if (!a || a.dataset.acct !== acct) return;
+  a.querySelector('.mpal-bar i').style.width = Math.max(0, u.hp / u.maxHp * 100) + '%';
+  a.querySelector('.mpal-bar span').textContent = `${u.hp} / ${u.maxHp}${u.block ? ' · 방어 ' + u.block : ''}`;
+  a.querySelector('.mpal-s').innerHTML = Object.entries(u.s || {}).map(([k, v]) => STATUS[k] ? `<i title="${STATUS[k].n}">${STATUS[k].g}${v}</i>` : '').join('');
+  a.classList.toggle('down', u.hp <= 0);
+}
+function mpMenu() {
+  if (G.b && G.b.kind === 'mpbot') {
+    const p = modal(`<h2>그만둘까</h2><div class="hint">그림자와의 연습을 그만두면 진 것으로 친다</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn red" id="mm_y">그만둔다</button><button class="brush-btn" id="mm_n">계속한다</button></div>`);
+    p.querySelector('#mm_n').onclick = closeTop; p.querySelector('#mm_y').onclick = () => { closeTop(); if (G.b) G.b.over = true; mpBotEnd(false); };
+    return;
+  }
+  const p = modal(`<h2>항복할까</h2><div class="hint">${MP.match && MP.match.ranked ? '랭크 매치에서 항복하면 진 것으로 셈한다 (점수를 잃는다)' : '친선전 — 진 것으로 적힌다'}${MP.match && MP.match.mode === '2v2' ? '<br>2대2 — 한 편은 혼자 남아 싸운다' : ''}</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn red" id="mm_y">항복한다</button><button class="brush-btn" id="mm_n">계속한다</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#mm_n').onclick = closeTop;
+  p.querySelector('#mm_y').onclick = async () => { closeTop(); if (!MP.match) return; await mpAsk('leave', { id: MP.match.id }); if (G.b) { G.b.over = true; } mpPoll(); };
+}
+/* 판이 끝났다 */
+function mpResult(mv) {
+  if (MP.resShown) return;
+  MP.resShown = true;
+  const r = mv.res, won = r && r.won;
+  if (G.b) { G.b.over = true; G.b.busy = true; }
+  const w = $('#mpwait'); if (w) w.remove();
+  try { won ? (SND.victory(), screenFlash('rgba(255,215,120,.45)', 900), FX.gold(innerWidth / 2, innerHeight * .4, 60)) : SND.lose(); } catch (e) {}
+  const up = r && r.tier !== r.tierBefore && MP_TIER_INFO[r.tier].min > MP_TIER_INFO[r.tierBefore].min;
+  const down = r && r.tier !== r.tierBefore && !up;
+  const p = modal(`<h2 style="color:${won ? '#e8c86a' : '#ff8a7a'}">${won ? '승 리' : '패 배'}</h2>
+    <div class="hint">${mv.mode === '2v2' ? '2대2' : '1대1'} · ${mv.ranked ? '랭크 매치' : '친선전'}</div>
+    ${r ? `<div class="mpres">
+      ${mpEmblem(r.rp, 'huge')}
+      <div><b style="color:${MP_TIER_INFO[r.tier].c}">${mpTierName(r.rp)}</b>
+        ${mv.ranked ? `<em class="${r.dRp >= 0 ? 'plus' : 'minus'}">${r.dRp >= 0 ? '+' : ''}${r.dRp} 점</em><small>${r.rp} 점</small>` : '<small>친선전은 점수에 들지 않는다</small>'}
+        ${up ? `<div class="mptierup">랭크가 올랐다 — ${MP_TIER_INFO[r.tier].n}!</div>` : down ? `<div class="mptierdn">랭크가 내려갔다</div>` : ''}
+      </div></div>
+      ${r.tok ? `<div class="mptokgain"><i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>(모두 ${r.tokAll})</small></div>` : ''}` : '<div class="hint">셈을 기다리는 중…</div>'}
+    <div style="margin-top:14px"><button class="brush-btn gold" id="mr_ok">로비로</button></div>`);
+  p.dataset.noauto = '1';
+  if (up) { try { stampWord(MP_TIER_INFO[r.tier].n.split('').join(' '), MP_TIER_INFO[r.tier].c); SND.unlock(); } catch (e) {} }
+  p.querySelector('#mr_ok').onclick = () => {
+    closeTop(); const id = MP.match && MP.match.id; MP.match = null; MP.turn = null;
+    mpAsk('leave', { id }).catch(() => {});
+    mpRestore(); showMulti();
+  };
+}
+/* ══ 그림자 연습 — 사람이 없을 때 ═════════════════════════════ */
+var MP_BOT_FOES = [{ id: 'mp_bot', n: '그림자 퇴마사', g: '影', col: '#4a3a6a', hp: 90, pow: 1, draw: 1, tier: 2,
+  pools: ['common', 'uncommon', 'rare'], say: '"네 수는 이미 보았다."', win: '"…다음엔 안 진다."', lose: '"아직이다."' }];
+defEnemy({ id: 'mp_bot', n: '그림자 퇴마사', g: '影', hp: [90, 90], col: '#4a3a6a', big: true, duel: 'mp_bot',
+  moves: { wait: { t: 'defend', label: '부적을 고른다', blk: 8 } }, next: () => 'wait' });
+function mpBotStart() {
+  if (G.b) return;
+  const rp = (MP.prof && MP.prof.rp) || 0, ti = Object.keys(MP_TIER_INFO).indexOf(mpTierOf(rp));
+  const f = MP_BOT_FOES[0];
+  f.pow = 0.85 + ti * 0.08; f.draw = ti >= 2 ? 2 : 1;
+  f.pools = [['common', 'uncommon'], ['uncommon', 'rare'], ['rare', 'rare', 'special'], ['rare', 'special', 'special'], ['special', 'special', 'ssc']][ti];
+  MP.lobby = false; closeOverlay();
+  mpSave();
+  G.run = mpMakeRun(mpDeck(), 90);
+  document.body.classList.add('pvp');
+  startBattle(['mp_bot'], 'mpbot');
+  mpStartLoop(); songSync();
+  setTimeout(() => { const n = el('div', 'aroundbig', '그림자 퇴마사'); $('#app').appendChild(n); setTimeout(() => n.remove(), 1600); SND.gong(); }, 260);
+}
+async function mpBotEnd(win) {
+  battleWatch(false);
+  if (G.b) G.b.over = true;
+  try { win ? SND.victory() : SND.lose(); } catch (e) {}
+  const r = await mpAsk('bot', { win: !!win });
+  const p = modal(`<h2 style="color:${win ? '#e8c86a' : '#ff8a7a'}">${win ? '이 겼 다' : '졌 다'}</h2>
+    <div class="hint">그림자 퇴마사와의 연습 · 점수에는 들지 않는다</div>
+    <div class="mptokgain">${r.ok && r.tok ? `<i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>오늘 ${r.left}번 더</small>` : r.ok ? '<small>오늘 연습 토큰은 다 받았다</small>' : '<small>' + wEsc(r.why) + '</small>'}</div>
+    <div style="margin-top:14px"><button class="brush-btn gold" id="mb_ok">로비로</button></div>`);
+  p.dataset.noauto = '1';
+  if (r.ok) MP.prof = r.prof;
+  p.querySelector('#mb_ok').onclick = () => { closeTop(); mpRestore(); showMulti(); };
 }
 
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
@@ -21495,7 +22553,7 @@ const GUIDE = {
     <div class="tip"><b>뽑기(匣)는 지도에 없다.</b> 화면 위쪽 <b>匣</b> 단추로 언제든 간다.</div>
     <div class="tip">보스 직전 층은 항상 <b>야영지</b>다. 그 전에 체력을 아끼지 말고 써도 된다.</div>
     <h3>유물</h3>
-    <p>엘리트를 잡거나 보물을 열면 나온다. <b>${RELIC_SLOTS}개까지</b> 지닐 수 있고,
+    <p>엘리트를 잡거나 보물을 열면 나온다. <b>${relicSlots()}개까지</b> 지닐 수 있고,
     둘을 태워 SSX급으로 <b>조합</b>할 수 있다. 자세한 것은 <b>유물</b> 탭을 보라.</p>
     <h3>부적 등급 해금</h3>
     <p>전투 보상에 나오는 부적은 <b>산을 오를수록 좋아진다.</b></p>
@@ -21563,7 +22621,7 @@ const GUIDE = {
     <h3>유물</h3>
     <p>화면 위쪽에 동그랗게 붙는 것들. 한 번 얻으면 <b>그 판 내내</b> 계속 효과를 낸다.
     엘리트·보물·상인에게서 나온다.</p>
-    <div class="warn"><b>유물은 ${RELIC_SLOTS}개까지만</b> 지닐 수 있다.
+    <div class="warn"><b>유물은 ${relicSlots()}개까지만</b> 지닐 수 있다.
     자리가 꽉 찬 채로 새 유물을 얻으면 <u>무엇을 버릴지</u> 고르게 된다.</div>
     <h3>등급</h3>
     <table>
@@ -21863,6 +22921,7 @@ function setBg(act) {
   /* ── 겨루는 마당 — 막과는 다른 자리다 ─────────────────── */
   if (act === 'colo' || act === 'arena') { setArenaBg(act); return; }
   if (act === 'world') { setWorldBg(); return; }
+  if (act === 'pvp') { setMpBg($('#bg')); return; }
   const a = Math.min(LAST_ACT, Math.max(1, act || 1));
   const PAL = {
     1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
@@ -22683,6 +23742,7 @@ function showTitle() {
       </div>` : `<div class="menu">
         ${hasSave() ? '<button class="brush-btn red" id="t_cont">이어서 오르기</button>'
                     : '<button class="brush-btn red" id="t_new">모험 시작</button>'}
+        <button class="brush-btn mpbtn" id="t_mp">對 멀티플레이</button>
         <button class="brush-btn ghost" id="t_acct"></button>
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
@@ -22708,6 +23768,7 @@ function showTitle() {
   const tn = s.querySelector('#t_new');
   if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; } newRun(0); };
   s.querySelector('#t_acct').onclick = () => { SND.init(); SND.ui(); showAcct(); };
+  s.querySelector('#t_mp').onclick = () => { SND.init(); SND.ui(); showMulti(); };
   chatBadge();
   titleAcctPaint();
   /* 처음 오는 사람에게는 안내서를 권한다 */
@@ -22789,6 +23850,8 @@ addEventListener('keydown', e => {
 });
 addEventListener('resize', () => { if (G.b) syncHand(); if (G.scene === 'map' && _mapFit) _mapFit(); });
 addEventListener('pointerdown', () => SND.init(), { once: true });
+/* 키보드만 쓰는 사람도 — 첫 키를 누르면 소리가 열린다 (브라우저는 누르기 전엔 소리를 막는다) */
+addEventListener('keydown', () => SND.init(), { once: true });
 
 /* --- 시작 --- */
 /* 판이 안 뜨면 까닭을 그 자리에 적는다.
