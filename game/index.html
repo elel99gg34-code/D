@@ -3173,58 +3173,156 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .icoline b{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;font-size:17px;flex:none;
   background:#efe6d0;border:1.5px solid #6b6053;color:#22190f}
 
-/* ══ 이야기 ══════════════════════════════════════════════ */
-.story{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:#0d0b09;cursor:pointer;overflow:hidden}
-.story .sart{position:absolute;inset:0;opacity:.9}
-.story .sart svg{width:100%;height:100%;display:block}
-.story .svig{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 45%,transparent 30%,rgba(6,5,4,.86) 100%)}
-.story .stext{position:relative;z-index:2;max-width:min(760px,86vw);text-align:center;
-  color:#f0e6d0;font-size:24px;line-height:2.05;letter-spacing:.06em;white-space:pre-line;
-  text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 40px rgba(0,0,0,.8);min-height:150px;
-  display:flex;align-items:center;justify-content:center}
-.story .stext .cur{opacity:.7;animation:hintBlink .7s ease-in-out infinite}
-/* 말하는 이 — 이름패 */
-.story .swho{position:relative;z-index:2;color:#f4e2b0;font-size:14px;letter-spacing:.34em;
-  margin-bottom:16px;margin-left:.34em;padding:7px 22px;border-radius:3px;
-  background:linear-gradient(90deg,transparent,rgba(120,90,40,.5),transparent);
-  border-top:1px solid rgba(200,169,78,.45);border-bottom:1px solid rgba(200,169,78,.45);
-  text-shadow:0 0 14px rgba(255,200,110,.6);animation:whoIn .5s cubic-bezier(.2,.9,.3,1)}
-.story .swho:empty{display:none}
-@keyframes whoIn{0%{opacity:0;transform:translateY(10px) scale(.9);letter-spacing:.6em}
-  100%{opacity:1;transform:none}}
-/* 글이 한 줄씩 밀려 올라온다 */
-.story .stext{animation:textIn .45s cubic-bezier(.2,.9,.3,1)}
-@keyframes textIn{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
-/* 위아래 검은 띠 — 영화처럼 */
-.story:before,.story:after{content:'';position:absolute;left:0;right:0;height:52px;z-index:3;pointer-events:none;
-  background:#050403;animation:barIn .6s cubic-bezier(.2,.9,.3,1)}
-.story:before{top:0;box-shadow:0 3px 22px rgba(0,0,0,.8)}
-.story:after{bottom:0;box-shadow:0 -3px 22px rgba(0,0,0,.8)}
-@keyframes barIn{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
-.story:before{transform-origin:top}.story:after{transform-origin:bottom}
-/* 화면을 떠도는 먼지 */
-.story .sdust{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-.story .sdust i{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,235,190,.55);
-  box-shadow:0 0 7px rgba(255,220,160,.6);animation:dustGo linear infinite}
-@keyframes dustGo{0%{transform:translate(0,0);opacity:0}
-  12%{opacity:.85}80%{opacity:.5}100%{transform:translate(var(--dx,30px),-120vh);opacity:0}}
-/* 장면이 천천히 밀려든다 */
-.story .sart{animation:artIn 1.1s ease-out}
-@keyframes artIn{0%{opacity:0;transform:scale(1.08)}100%{opacity:.9;transform:none}}
-/* 아래 검은 띠(52px)에 글자가 반쯤 잘리던 것을 띄운다 */
-.story .snext{position:absolute;bottom:68px;color:#9d9077;font-size:13px;letter-spacing:.24em;
-  animation:hintBlink 1.3s ease-in-out infinite;z-index:4}
-.story .sskip{position:absolute;top:20px;right:24px;z-index:3;padding:7px 16px;border-radius:5px;font-size:13px;
-  color:#c9bda2;background:rgba(255,255,255,.06);border:1px solid rgba(200,180,140,.3);letter-spacing:.1em}
-.story .sskip:hover{background:rgba(255,255,255,.14);color:#f2e9d3}
-.story .stitle{position:relative;z-index:2;font-size:52px;letter-spacing:.28em;margin-left:.28em;color:#e9dfc9;
-  margin-bottom:6px;text-shadow:0 0 40px rgba(168,39,44,.6)}
-.story.fadeout{animation:storyOut .6s ease forwards}
-@keyframes storyOut{to{opacity:0}}
-.story .sart.kenburns{animation:kenburns 9s ease-out forwards}
-@keyframes kenburns{0%{transform:scale(1.14) translateY(10px)}100%{transform:scale(1) translateY(0)}}
+/* ══ 컷씬 ══════════════════════════════════════════════════ */
+.cut{position:fixed;inset:0;z-index:500;background:#000;overflow:hidden;animation:cutIn .45s ease;user-select:none;-webkit-user-select:none}
+.cut.out{animation:cutOut .5s ease forwards}
+@keyframes cutIn{from{opacity:0}}
+@keyframes cutOut{to{opacity:0}}
+.cutview{position:absolute;left:50%;top:50%;width:1600px;height:900px;margin:-450px 0 0 -800px;perspective:1500px;perspective-origin:50% 50%}
+.cutshake,.cutworld,.cutstage{position:absolute;inset:0;transform-style:preserve-3d}
+.cutworld{transform-origin:800px 450px}
+.cutstage .cl{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:800px 450px}
+.cutstage svg{display:block;overflow:visible}
+.cpiece{position:absolute;transform-style:preserve-3d}
+.cutfx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.cutflash{position:absolute;inset:0;pointer-events:none;z-index:6;opacity:0}
+.cutdark{position:absolute;inset:0;pointer-events:none;z-index:7;background:#000;opacity:0}
+.cutbars i{position:absolute;left:0;right:0;height:10vh;background:#000;z-index:8;transform:scaleY(0);transition:transform .8s cubic-bezier(.2,.9,.3,1)}
+.cutbars i:first-child{top:0;transform-origin:top}.cutbars i:last-child{bottom:0;transform-origin:bottom}
+.cut.barsin .cutbars i{transform:scaleY(1)}
+.cutsub{position:absolute;left:50%;bottom:calc(10vh + 22px);transform:translateX(-50%);z-index:9;color:#f3e9d2;font-size:clamp(15px,2.2vw,25px);
+  letter-spacing:.16em;text-shadow:0 2px 12px #000,0 0 30px #000;opacity:0;transition:opacity .5s;white-space:nowrap;text-align:center;pointer-events:none}
+.cutsub.on{opacity:1}
+.cuttitle{position:absolute;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;transition:opacity 1s}
+.cuttitle.fade{opacity:0}
+.cutskip{position:absolute;right:14px;top:calc(10vh + 12px);z-index:10;padding:6px 14px;border-radius:14px;font:inherit;font-size:12.5px;letter-spacing:.1em;
+  color:#e9dfc9;background:rgba(0,0,0,.45);border:1px solid rgba(233,223,201,.35);cursor:pointer}
+.cutskip:hover{background:rgba(255,255,255,.14)}
+body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden}
+/* 퇴마사 */
+.cmanw svg{transition:transform .12s}
+.cmanw .cm-rarm{transform-origin:122px 146px;transition:transform .5s cubic-bezier(.2,.9,.3,1)}
+.cmanw.armup .cm-rarm{transform:rotate(-150deg)}
+.cmanw.pouchon .cm-pglow{opacity:1;animation:cPulse .5s ease-in-out infinite alternate}
+.cmanw.small{transform-origin:50% 100%}
+.cmanw.small svg{transform:scale(.62);transform-origin:50% 100%}
+@keyframes cPulse{from{opacity:.4}to{opacity:1}}
+.cmanw .cm-cape{animation:cCape 1.6s ease-in-out infinite alternate;transform-origin:100px 130px}
+@keyframes cCape{from{transform:skewX(-2deg)}to{transform:skewX(2deg)}}
+/* 부적 */
+.ctal{width:28px;height:64px;background:linear-gradient(#f6e6a0,#e8cc6a);border:1.5px solid #a8272c;border-radius:2px;display:grid;place-items:center;
+  box-shadow:0 0 12px rgba(255,220,120,.8),0 0 30px rgba(255,200,90,.5)}
+.ctal b{color:#a8272c;font-size:20px;font-weight:700}
+.cfly.glow .ctal{animation:cTalGlow .4s ease-in-out infinite alternate}
+@keyframes cTalGlow{to{box-shadow:0 0 22px #fff3b0,0 0 60px rgba(255,210,100,.9)}}
+.cringr{transform-style:preserve-3d;animation:cRing 2.2s linear infinite}
+.cringi{position:absolute;left:-14px;top:-32px;transform-style:preserve-3d}
+@keyframes cRing{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
+/* 요괴 */
+.cykb{animation:cBob .34s ease-in-out infinite alternate}
+.cyk svg{filter:drop-shadow(0 0 6px rgba(255,40,40,.35))}
+@keyframes cBob{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.cslash svg{filter:drop-shadow(0 0 14px #fff) drop-shadow(0 0 30px rgba(255,120,90,.8))}
+.cslpath{stroke-dasharray:100;stroke-dashoffset:100;animation:cSlash .22s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes cSlash{to{stroke-dashoffset:0}}
+.cslash{animation:cSlashOut .42s ease forwards}
+@keyframes cSlashOut{0%,55%{opacity:1}100%{opacity:0}}
+.cseal{animation:cSealIn 1s cubic-bezier(.2,.9,.3,1) both,cSpin 7s linear infinite;filter:drop-shadow(0 0 16px #ffd76a) drop-shadow(0 0 40px rgba(255,200,90,.7))}
+@keyframes cSealIn{from{opacity:0;scale:.1}to{opacity:1;scale:1}}
+@keyframes cSpin{from{rotate:0deg}to{rotate:360deg}}
+.cutcount{position:absolute;right:5vw;top:calc(10vh + 52px);z-index:9;font-size:clamp(26px,4vw,52px);color:#ffe7a0;letter-spacing:.06em;opacity:0;transition:opacity .4s;
+  text-shadow:0 0 14px rgba(255,180,80,.9),0 3px 10px #000;font-variant-numeric:tabular-nums;pointer-events:none}
+.cutcount.on{opacity:1}
+.cutcount small{display:block;font-size:.34em;letter-spacing:.5em;color:#e9dfc9;text-align:right}
+/* 百 鬼 夜 行 */
+.cstamp{display:flex;gap:clamp(6px,2vw,28px)}
+.cstamp span{display:inline-block;font-size:clamp(60px,12vw,180px);color:#efe6d0;opacity:0;font-weight:700;
+  text-shadow:0 0 30px rgba(168,39,44,.8),0 0 80px rgba(168,39,44,.45),0 6px 20px #000}
+.cstamp span.in{animation:cStamp .55s cubic-bezier(.2,1.4,.3,1) forwards}
+@keyframes cStamp{0%{opacity:0;transform:scale(2.8);filter:blur(12px)}55%{opacity:1;transform:scale(.93);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
+.cstampsub{margin-top:18px;color:#b8ad96;letter-spacing:1.4em;margin-left:1.4em;font-size:clamp(13px,1.6vw,20px);opacity:0;transition:opacity 1.2s}
+.cstampsub.in{opacity:1}
+.cstampseal{margin-top:22px;width:clamp(54px,6vw,84px);height:clamp(54px,6vw,84px);display:grid;place-items:center;background:#a8272c;color:#f4e2c8;
+  font-size:clamp(16px,2vw,26px);border-radius:6px;opacity:0;box-shadow:0 0 30px rgba(168,39,44,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.cstampseal.in{animation:cSeal .45s cubic-bezier(.2,1.5,.3,1) forwards}
+@keyframes cSeal{0%{opacity:0;transform:scale(3) rotate(-20deg)}100%{opacity:1;transform:scale(1) rotate(-6deg)}}
+/* 보스 등장 */
+.cboss .cbwrap{position:relative;width:560px;height:560px;opacity:0;transform-style:preserve-3d}
+.cbaura{position:absolute;inset:40px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--bc) 85%,#fff) 0%,var(--bc) 30%,transparent 70%);
+  filter:blur(8px);animation:cAura 1.4s ease-in-out infinite alternate}
+@keyframes cAura{from{transform:scale(.92);opacity:.75}to{transform:scale(1.08);opacity:1}}
+.cbglyph{position:absolute;inset:0;display:grid;place-items:center;font-size:250px;font-weight:700;color:#f4ecd8;
+  text-shadow:0 0 30px var(--bc),0 0 90px var(--bc),0 10px 30px #000}
+.cextra{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.ctails path{animation:cTail 1.2s ease-in-out infinite alternate;transform-origin:300px 380px}
+@keyframes cTail{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+.ccoil path{stroke-dasharray:100;stroke-dashoffset:100;animation:cSlash 1.6s ease forwards}
+.cmaster{opacity:.55;filter:blur(1px)}
+.cmaster svg{transform:scale(1.6)}
+.cboss.in.ent-fog .cbwrap{animation:eFog 1.4s ease forwards}
+.cboss.in.ent-rise .cbwrap{animation:eRise 1.1s cubic-bezier(.2,.9,.3,1) forwards}
+.cboss.in.ent-descend .cbwrap{animation:eDesc .9s cubic-bezier(.5,0,.3,1.3) forwards}
+.cboss.in.ent-split .cbwrap{animation:eSplit 1s cubic-bezier(.2,.9,.3,1) forwards}
+.cboss.in.ent-shatter .cbwrap{animation:eShat .8s cubic-bezier(.2,1.3,.3,1) forwards}
+.cboss.in.ent-glow .cbwrap{animation:eGlow 1.3s ease forwards}
+.cboss.in.ent-mirror .cbwrap{animation:eMirror 1.2s cubic-bezier(.2,.9,.3,1) forwards}
+.cboss.in.ent-crowd .cbwrap{animation:eRise 1.2s cubic-bezier(.2,.9,.3,1) forwards}
+.cboss.in.ent-scroll .cbwrap{animation:eFog 1.2s .4s ease forwards}
+@keyframes eFog{0%{opacity:0;filter:blur(30px);transform:scale(1.3)}100%{opacity:1;filter:blur(0);transform:none}}
+@keyframes eRise{0%{opacity:0;transform:translateY(420px) scale(.8)}100%{opacity:1;transform:none}}
+@keyframes eDesc{0%{opacity:0;transform:translateY(-700px) scale(1.2)}100%{opacity:1;transform:none}}
+@keyframes eSplit{0%{opacity:1;clip-path:inset(49% 0 49% 0);transform:scaleX(1.3)}100%{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+@keyframes eShat{0%{opacity:0;transform:scale(3.2) rotate(18deg);filter:blur(6px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes eGlow{0%{opacity:0;filter:brightness(6) blur(10px)}100%{opacity:1;filter:none}}
+@keyframes eMirror{0%{opacity:0;transform:rotateY(180deg) translateX(400px)}100%{opacity:1;transform:none}}
+.cutact{position:absolute;left:5vw;top:calc(10vh + 22px);z-index:9;color:#e9dfc9;opacity:0;transform:translateX(-20px);transition:opacity .8s,transform .8s;pointer-events:none;
+  text-shadow:0 2px 10px #000}
+.cutact.on{opacity:1;transform:none}
+.cutact small{display:block;font-size:13px;letter-spacing:.5em;color:#c8a94e}
+.cutact b{font-size:clamp(20px,2.6vw,32px);font-weight:400;letter-spacing:.3em}
+.cbname{position:absolute;right:0;bottom:calc(10vh + 26px);display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding:10px 6vw 10px 18vw;
+  background:linear-gradient(to left,rgba(0,0,0,.62),rgba(0,0,0,.35) 60%,transparent);animation:cName .6s cubic-bezier(.2,1.3,.3,1) both}
+.cbname i{font-style:normal;font-size:clamp(40px,6vw,76px);color:#fff;text-shadow:0 0 24px var(--bc),0 0 60px var(--bc)}
+.cbname b{font-size:clamp(34px,5.6vw,72px);letter-spacing:.3em;margin-left:.3em;color:#f4ecd8;font-weight:700;
+  text-shadow:0 0 20px var(--bc),0 4px 14px #000;padding:0 0 0 .6em;margin-left:0;margin-right:-.3em;border-bottom:3px solid color-mix(in srgb,var(--bc) 70%,#fff)}
+.cbname em{font-style:normal;color:#c8bda3;letter-spacing:.3em;font-size:clamp(12px,1.4vw,17px);text-shadow:0 2px 8px #000}
+.cbname.out{animation:cNameOut .5s ease forwards}
+@keyframes cName{0%{opacity:0;transform:translateX(60px) scale(1.3);filter:blur(8px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes cNameOut{to{opacity:0;transform:scale(.9)}}
+.cut.mono .cutview{filter:grayscale(1) contrast(1.2)}
+.cut.bright .cbglyph{color:#1a1410;text-shadow:0 0 30px var(--bc),0 0 90px #fff}
+/* 막의 모양 — 움직이는 것들 */
+.cbolt{animation:cBolt 2.4s steps(1) infinite}
+@keyframes cBolt{0%,86%,92%,100%{opacity:0}88%,94%{opacity:1}}
+.cflag{animation:cFlag 1.1s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:left center}
+@keyframes cFlag{to{transform:skewY(6deg) scaleX(.92)}}
+.cspin{animation:cSpin 26s linear infinite}
+.cspin.rev{animation-direction:reverse}
+.clamp{animation:cLamp 1.4s ease-in-out infinite alternate}
+@keyframes cLamp{from{opacity:.55}to{opacity:1}}
+.censo{stroke-dasharray:100;stroke-dashoffset:100;animation:cSlash 2.4s .3s ease forwards}
+.cfloat{animation:cFloat 4s ease-in-out infinite alternate;transform-box:fill-box}
+@keyframes cFloat{to{transform:translateY(-24px)}}
+.cpage{animation:cPage 5s linear infinite;transform-box:fill-box}
+@keyframes cPage{from{transform:translateY(-300px) rotate(0)}to{transform:translateY(900px) rotate(540deg)}}
+.crise{animation:cRise 3s cubic-bezier(.2,.9,.3,1) both}
+@keyframes cRise{from{transform:translateY(500px)}}
+.cfire{animation:cFire .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom}
+@keyframes cFire{to{transform:scaleY(1.18) skewX(4deg)}}
+.cglowdoor{animation:cLamp 1.2s ease-in-out infinite alternate}
+.cdoorl,.cdoorr{transition:transform 1.6s cubic-bezier(.4,0,.2,1);transform-box:fill-box}
+.cdoorl{transform-origin:left center}.cdoorr{transform-origin:right center}
+.cut.dooropen .cdoorl{transform:scaleX(.08)}.cut.dooropen .cdoorr{transform:scaleX(.08)}
+.cgap{transition:transform 1.6s;transform-box:fill-box;transform-origin:center}
+.cut.dooropen .cgap{transform:scaleX(36)}
+.cscroll{transform-box:view-box;transform-origin:160px 450px;transform:scaleX(0);transition:transform 1.8s cubic-bezier(.4,0,.2,1)}
+.cscrollr{transition:transform 1.8s cubic-bezier(.4,0,.2,1);transform:translateX(-1280px)}
+.cut.unroll .cscroll{transform:none}.cut.unroll .cscrollr{transform:none}
+.cutgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:8px 0}
+.cutgrid2 button{font:inherit;font-size:12.5px;padding:8px;border-radius:5px;cursor:pointer;background:rgba(40,30,60,.6);color:#e9dfc9;border:1px solid #6a5a8a;text-align:left}
+.cutgrid2 button:hover{background:rgba(80,60,120,.7)}
+.cutgrid2 button small{display:block;color:#9a8d74;font-size:11px}
+@media (prefers-reduced-motion:reduce){.cutworld{transition:none}}
 
 /* 결과 화면 */
 .endscreen{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
@@ -3616,6 +3714,7 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
 .acctform input{flex:1;min-width:150px;background:rgba(12,10,8,.7);border:1px solid #4e4738;
   border-radius:3px;color:#e9dfc9;padding:9px 11px;font-size:13px;font-family:inherit}
 .acctform input:focus{outline:none;border-color:#c8a94e}
+.acctpwnote{font-size:11px;color:#8f846c;margin-top:6px;line-height:1.6}
 .acctbtns{display:flex;gap:8px;flex-wrap:wrap}
 .acctbtns .ghost{background:none;border-color:#6d6250;color:#a99d85}
 .acctsay{width:100%;font-size:11.5px;min-height:15px;letter-spacing:.02em}
@@ -5328,6 +5427,7 @@ const OPT_DEF = {
   particles: true,          /* 먹물 파편 */
   tips: true,               /* 설명 풍선 */
   banner: true,             /* 큰 기술 이름 연출 */
+  cuts: true,               /* 보스 등장 컷씬 */
   autoScope: 'battle',      /* battle = 전투만 · run = 지도까지 스스로 나아간다 */
   autoPace: 'normal',       /* slow · normal · fast */
   music: true,              /* 배경 음악 */
@@ -10463,14 +10563,8 @@ async function autoLoop() {
       /* 상자가 터지는 중이면 끝날 때까지 기다린다 */
       if ($('#app > .openscene')) { AUTO.lost = 0; continue; }
       /* 이야기는 읽을 틈을 두고 넘긴다 */
-      const story = $('#app > .story:not(.fadeout)');
-      if (story) {
-        const now = Date.now();
-        if (!AUTO.storyAt) AUTO.storyAt = now;
-        if (now - AUTO.storyAt > 1500) { AUTO.storyAt = now; story.click(); }
-        continue;
-      }
-      AUTO.storyAt = 0;
+      /* 컷씬은 끝날 때까지 본다 */
+      if (cutPlaying()) continue;
       const o = $('#overlay');
       if (o.style.display === 'block' && o.lastElementChild) { autoOverlay(o.lastElementChild); continue; }
       AUTO.wait = 0;
@@ -10495,7 +10589,7 @@ async function autoLoop() {
 function autoStart() {
   if (AUTO.on) return;
   if (!G.run) { toast('모험 중에만 쓸 수 있다'); return; }
-  if (!autoOk()) { SND.err(); toast('자동 플레이는 제1막을 넘어선 자에게 열린다 (VIP는 곧바로)'); return; }
+  if (!autoOk()) { SND.err(); toast('자동 플레이는 아직 잠겨 있다 — VIP 패키지로 곧바로 열린다'); return; }
   if (!G.b && OPT.autoScope !== 'run') { SND.err(); toast('싸울 때만 대신해 준다 — 지도까지 맡기려면 설정에서 범위를 바꾸시오'); return; }
   AUTO.on = true; SND.ui();
   toast(OPT.autoScope === 'run' ? '자동 플레이 — 지도까지 스스로 나아간다' : '자동 플레이 — 전투를 대신한다');
@@ -10541,7 +10635,7 @@ function unlockAuto(quiet) {
     SND.unlock(); screenFlash('rgba(120,220,200,.35)', 700);
     FX.spark(innerWidth / 2, innerHeight * .4, 40, '90,230,190');
     const p = modal(`<h2>자 동 플 레 이</h2>
-      <div class="hint">제1막을 넘어선 자에게만 주어지는 권한</div>
+      <div class="hint">제${AUTO_ACT}막을 넘어선 자에게 주어지는 권한</div>
       <div class="autogift">
         <div class="agseal">自</div>
         <div class="agtxt">
@@ -10631,7 +10725,6 @@ function renderTop() {
       <button class="topbtn heal hide" id="healbtn" title="응급 회복"><b>癒</b><i>회복</i><em>${EMERGENCY_COST}</em></button>
       <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리"><b>場</b><i>터</i><em></em></button>
       <button class="topbtn forge" id="forgetop" title="대장간 — 부적을 두들겨 힘을 올린다"><b>冶</b><i>대장간</i><em></em></button>
-      <button class="topbtn colo" id="colotop" title="콜로세움 — 부적으로 겨룬다"><b>鬪</b><i>콜로세움</i><em></em></button>
       <button class="topbtn mpgo" id="mptopbtn" title="대전 — 다른 퇴마사와 겨룬다"><b>對</b><i>대전</i><em></em></button>
       <button class="topbtn illub" id="illutop" title="환상 — 무한 부적을 두들긴다"><b>幻</b><i>환상</i><em></em></button>
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
@@ -10691,15 +10784,12 @@ function renderTop() {
     t.querySelector('#boxbtn').onclick = () => { markUsed('box'); openBoxes(); };
     /* 터에서 꺼내 온 셋 — 자주 가는 자리라 윗줄에 둔다 */
     t.querySelector('#forgetop').onclick = () => { markUsed('forge'); openForge(); };
-    t.querySelector('#colotop').onclick = () => { markUsed('colo'); openColosseum(); };
     t.querySelector('#mptopbtn').onclick = () => { if (G.b) return; SND.ui(); showMulti(); };
     bindTip(t.querySelector('#mptopbtn'), () => `<b style="color:#c8a8ff">대전</b> — 지금 모험 그대로 다른 퇴마사와 겨룬다<br>
       1대1 · 2대2 랭크 매치, 방 코드로 친구와 팀전<br><span style="color:#9a8d74">모험에는 아무것도 남지 않는다 · 이기면 멀티 토큰</span>`);
     t.querySelector('#illutop').onclick = () => { markUsed('illu'); showIllusion(); };
     bindTip(t.querySelector('#forgetop'), () => `<b>대장간</b> — 부적을 두들겨 힘을 올린다<br>
       <span style="color:#9a8d74">최대 ${FORGE_MAX}단 · 실패하면 단이 내려갈 수 있다</span>`);
-    bindTip(t.querySelector('#colotop'), () => `<b>콜로세움</b> — 부적으로 겨룬다<br>
-      <span style="color:#9a8d74">참가비 ${COL_FEE}골드 · 상금 ${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}</span>`);
     bindTip(t.querySelector('#illutop'), () => illuOk()
       ? `<b style="color:#d8b4ff">환상</b> — 무한 부적을 ${ILLU_TIME / 1000}판 두들긴다<br>
          두들길 때마다 골드·다이아·상자가 떨어진다<br>
@@ -10891,7 +10981,7 @@ function showPlaces() {
   add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
-  /* 대장간 · 콜로세움 · 환상은 윗줄로 꺼냈다 — 자주 가는 자리라 */
+  /* 대장간 · 환상은 윗줄로 꺼냈다 — 자주 가는 자리라. 콜로세움은 멀티 대전이 생겨 뺐다 */
   add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
@@ -10927,7 +11017,7 @@ const GUIDES = [
   { id: 'places', g: '場', n: '터 — 갈 만한 자리를 모아 두었다',
     when: r => r.act >= 2 || r.floor >= 4,
     say: () => `위쪽 <em>場</em> 단추 안에 <i>떠돌이 상점 · 대전투장 · 장기 상점 · 저주의 서당 ·
-      콜로세움 · 팻 우리</i>가 다 들어 있다.<br>
+      팻 우리</i>가 다 들어 있다.<br>
       싸우는 중만 아니면 <em>언제든</em> 들를 수 있다. 지도 위에서 굳이 그 칸을 밟지 않아도 된다.`,
     warn: () => '「새로」가 붙은 자리는 아직 한 번도 안 들러 본 곳이다.',
     go: () => showPlaces(), goN: '둘러본다' },
@@ -10971,12 +11061,6 @@ const GUIDES = [
       <i>뽑기는 계정당 ${PET_PULLS_BASE}번뿐이다.</i> 신중히.`,
     warn: () => `제${PET_BONUS_ACT}막을 넘으면 ${PET_PULLS_BONUS}번이 더 붙는다. 팻이 죽으면 엘리트 ${PET_REVIVE_ELITES}을 잡아야 되살아난다.`,
     go: () => openPets(), goN: '팻 우리로' },
-  { id: 'colo', soft: true, g: '鬪', n: '콜로세움 — 심심하면 겨룬다',
-    when: r => r.act >= 3 && r.gold >= COL_FEE,
-    say: () => `터(場) 안에 <em>콜로세움</em>이 있다. 참가비 <i>${COL_FEE}골드</i>, 상금은 상대에 따라 <i>${COL_PRIZE_BY_TIER[1]}~${COL_PRIZE}골드</i>.<br>
-      끝까지 올라가 <em>무마두</em>를 넘으면 ?급 부적 <b>무마두의 숨결</b>이 나온다. 아주 어렵다.`,
-    warn: () => '져도 참가비만 잃는다 — 모험은 그대로다.',
-    go: () => openColosseum(), goN: '겨루러 간다' },
   { id: 'arena', soft: true, g: '鬪', n: '대전투장 — SSX급을 모은 자만',
     when: () => arenaReady(),
     say: () => `SSX급 유물이 <em>${ARENA_REQ}종</em> 모였다. 터(場) 안 <em>대전투장</em>이 열린다.<br>
@@ -11385,7 +11469,7 @@ function renderBattle() {
     ? `<b>자동 플레이</b> <span style="color:#9a8d74">(A)</span><br>
        좋은 등급의 부적을 먼저 쓰는 방식으로 대신 싸운다.<br>
        지금 범위: <b>${OPT.autoScope === 'run' ? '지도까지' : '전투만'}</b> · 설정에서 바꿀 수 있다.`
-    : `<b>자동 플레이 — 아직 잠겨 있다</b><br>제1막의 보스를 넘어서면 보상으로 열린다.<br>
+    : `<b>자동 플레이 — 아직 잠겨 있다</b><br>
        <span style="color:#e0bcff">VIP 패키지를 얻으면 곧바로 쓸 수 있다.</span>`);
   syncAuto();
   if (G.b && G.b.kind === 'world') worldHud();   /* 모두의 체력 띠 — 판이 서자마자 */
@@ -12232,7 +12316,7 @@ function friendBreak() {
   /* 끊긴 그 자리의 이야기를 이어서 보여 준다 */
   p.querySelector('#fb_ok').onclick = () => {
     closeTop();
-    showStory('mugan_lost').then(() => { if (G.b) { setBg(); syncAll(); } });
+    if (G.b) { setBg(); syncAll(); }
   };
 }
 
@@ -13324,7 +13408,7 @@ function newRun(asc, keepDeck) {
   G.run.map = genMap(1);
   META.runs++; saveMeta();
   SND.ambience(false);
-  const go = () => showStory('opening').then(() => { SND.ambience(true, false); showMap(); });
+  const go = () => { SND.ambience(true, false); showMap(); };
   if (!META.tutorDone) showTutorial().then(go); else go();
 }
 /* 수행 나무가 모험 첫머리에 하는 일 */
@@ -13595,12 +13679,17 @@ function enterNode(n) {
         setTimeout(() => { if (G.b) friendBreak(); }, 1400);
       break;
     }
-    case 'boss':
-      startBattle([bossOf(run)], 'boss');
-      /* 정예를 한 번도 밟지 않고 올라온 사람에게도 한 번은 온다 */
-      if (run.act >= FRIEND_LOST && !run.friendLost)
-        setTimeout(() => { if (G.b) friendBreak(); }, 1400);
+    case 'boss': {
+      const go = () => {
+        startBattle([bossOf(run)], 'boss');
+        /* 정예를 한 번도 밟지 않고 올라온 사람에게도 한 번은 온다 */
+        if (run.act >= FRIEND_LOST && !run.friendLost)
+          setTimeout(() => { if (G.b) friendBreak(); }, 1400);
+      };
+      /* 보스 등장 컷씬 — 막마다 한 번 */
+      if (cutBossOk(run)) cutBossPlay(run, bossOf(run)).then(go); else go();
       break;
+    }
     case 'rest': showRest(); break;
     case 'shop': restockShop(); showShop(); break;
     case 'treasure': showTreasure(); break;
@@ -13862,21 +13951,14 @@ function showRewards(kind) {
   /* 초반에는 그냥 지나치려 할 때 한 번 붙잡는다 — 뒤가 가팔라진다.
      잦다는 말을 들어 제2막까지로 줄였다. */
   const doLeave = () => {
-    /* 그냥 지나쳤더라도 제1막을 넘었으면 자동 플레이는 준다 */
+    /* 그냥 지나쳤더라도 그 막을 넘었으면 자동 플레이는 준다 */
     if (kind === 'boss' && run.act === AUTO_ACT) unlockAuto(true);
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
-      /* 한 막에 보스가 둘일 수 있다 — 실제로 꺾은 쪽의 이야기를 꺼낸다.
-         그러지 않으면 염라를 잡고 흑룡이 말하는 일이 생긴다. */
-      const key = act >= LAST_ACT
-        ? (STORY['end_' + G.run.bossPick] ? 'end_' + G.run.bossPick : 'end_taecho')
-        : (STORY['act' + act + '_' + G.run.bossPick] ? 'act' + act + '_' + G.run.bossPick
-                                                     : 'act' + act);
-      showStory(STORY[key] ? key : null).then(() => {
-        if (DEMO && act >= DEMO_ACTS) { showDemoEnd(); return; }   /* 체험판은 여기까지 */
-        if (act >= LAST_ACT) victory(); else nextAct();
-      });
+      /* 예전엔 여기서 이야기 만화가 떴다 — 보관본(game/archive/story-comic.js)으로 옮겼다 */
+      if (DEMO && act >= DEMO_ACTS) { showDemoEnd(); return; }   /* 체험판은 여기까지 */
+      if (act >= LAST_ACT) victory(); else nextAct();
     }
     else showMap();
   };
@@ -16780,7 +16862,7 @@ function showSpecialShop(refill) {
       { g: 'S', t: 'SSX급 부적 5종', d: '사는 즉시 덱에 들어가고, <b>새 모험을 시작할 때마다</b> 다시 다섯 장을 얹어 준다', hot: true },
       { g: '櫃', t: '특대급 상자 무료', d: '<b>한 달에 한 번</b>, 값을 치르지 않고 특대급 상자를 연다' },
       { g: '疾', t: '2배속 플레이', d: '모든 연출이 절반의 시간에 흐른다 · 설정에서 켜고 끈다' },
-      { g: '自', t: '자동 플레이 즉시 개방', d: '제1막을 넘지 않았어도 <b>곧바로</b> 쓸 수 있다' }
+      { g: '自', t: '자동 플레이 즉시 개방', d: '막을 넘지 않았어도 <b>곧바로</b> 쓸 수 있다' }
     ];
     const main = p.querySelector('.gmain');
     main.innerHTML = `<div class="vipwrap">
@@ -17221,524 +17303,661 @@ function evtPop(text, col, at) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   12-B. 이야기 — 오프닝과 막간
+   컷씬(場面) — 카메라가 돌고, 부적이 날고, 글이 내려앉는다
+   ──────────────────────────────────────────────────────────
+   무대는 1600×900 한 장. 그 위에 층(하늘·먼 산·가운데·앞)을 깔고
+   카메라가 무대를 통째로 밀고 당기고 돌린다(3D 원근 — 앞 층은 더 빨리 흐른다).
+   불티·먹물·잎 같은 알갱이는 화면 위 캔버스가 따로 그린다.
+   컷씬 하나는 { len, build(S), tl:[[몇 ms, S => 할 일]] } — 시각표다.
+   건너뛰기(단추·Esc)는 언제든. 끝나면 약속(Promise)이 풀린다.
+   예전의 「이야기 만화」(글이 찍히는 장면들)는 game/archive/story-comic.js 로 옮겨 두었다.
    ══════════════════════════════════════════════════════════ */
-function storyScene(kind) {
-  const sky = { moon: ['#131826', '#0b0d14'], parade: ['#1a1220', '#0a0710'],
-    village: ['#2a1410', '#0d0605'], master: ['#181a16', '#0a0b09'],
-    hero: ['#1d1a14', '#0b0a08'], fox: ['#241016', '#0c0508'],
-    tiger: ['#241a0e', '#0d0906'], dragon: ['#12141d', '#07080c'],
-    gate: ['#1a1626', '#08070c'], dawn: ['#2c2418', '#100c07'],
-    abyss: ['#0c0a14', '#030206'], first: ['#3a3222', '#1a1610'],
-    voidless: ['#0a0a0b', '#020203'], ash: ['#1c1410', '#080605'],
-    dano: ['#161a20', '#07090c'] }[kind] || ['#14110d', '#080706'];
-  const mt = (fill, d, op) => `<path d="${d}" fill="${fill}" opacity="${op}"/>`;
-  let art = '';
-  switch (kind) {
-    case 'abyss': {                       /* 무저갱 — 아래로 끝없이 */
-      let rings = '';
-      for (let i = 0; i < 9; i++) {
-        const rx = 460 - i * 48, ry = 150 - i * 15, cy = 300 + i * 30;
-        rings += `<ellipse cx="500" cy="${cy}" rx="${rx}" ry="${Math.max(6, ry)}" fill="none"
-          stroke="#6a5f86" stroke-width="${(9 - i) * .5}" opacity="${.5 - i * .045}"/>`;
-      }
-      let dust = '';
-      for (let i = 0; i < 26; i++)
-        dust += `<circle cx="${40 + (i * 137) % 920}" cy="${60 + (i * 211) % 500}" r="${1 + (i % 3)}"
-          fill="#b9a8e0" opacity="${.14 + (i % 5) * .05}"/>`;
-      art = `<rect width="1000" height="600" fill="#07060c"/>${rings}${dust}
-        <ellipse cx="500" cy="588" rx="200" ry="34" fill="#000" opacity=".9"/>`;
-      break;
-    }
-    case 'first': {                       /* 태초 — 아무것도 없던 자리 */
-      let halo = '';
-      for (let i = 6; i >= 1; i--)
-        halo += `<circle cx="500" cy="300" r="${i * 62}" fill="#ffe9a8" opacity="${.045 * (7 - i)}"/>`;
-      let rays = '';
-      for (let i = 0; i < 20; i++) {
-        const a = i * 18 * Math.PI / 180, L = 200 + (i % 4) * 110;
-        rays += `<line x1="500" y1="300" x2="${(500 + Math.cos(a) * L).toFixed(1)}"
-          y2="${(300 + Math.sin(a) * L).toFixed(1)}" stroke="#fff3ce" stroke-width="${1 + (i % 3)}"
-          opacity="${.1 + (i % 3) * .06}"/>`;
-      }
-      art = `<rect width="1000" height="600" fill="#1a1610"/>${halo}${rays}
-        <circle cx="500" cy="300" r="52" fill="#fffbe8"/>
-        <circle cx="500" cy="300" r="52" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`;
-      break;
-    }
-    case 'voidless': {                    /* 무간 — 있어야 할 것이 없는 자리 */
-      /* 그릴 것이 없다. 그래서 「지운 자국」만 그린다. */
-      let scratch = '';
-      for (let i = 0; i < 26; i++) {
-        const y = 24 + i * 22, w = 90 + ((i * 173) % 420), x = ((i * 211) % 700) + 30;
-        scratch += `<rect x="${x}" y="${y}" width="${w}" height="${1 + (i % 2)}"
-          fill="#5c5c70" opacity="${.10 + (i % 4) * .05}"/>`;
-      }
-      /* 사람 하나가 서 있던 자리 — 지워지고 테두리만 남았다 */
-      const fig = `M488,214 a24,24 0 1,1 .1,0 M478,238 L522,238 L534,300 L534,432
-        L516,432 L512,346 L488,346 L484,432 L466,432 L466,300 Z`;
-      art = `<rect width="1000" height="600" fill="#050506"/>${scratch}
-        <g opacity=".55">
-          <path d="${fig}" fill="#050506"/>
-          <path d="${fig}" fill="none" stroke="#8a8aa0" stroke-width="1.6"
-            stroke-dasharray="7 11" opacity=".8"/>
-        </g>
-        ${[1, 2].map(i => {
-          const s = 1 - i * .22, x = 500 + i * 150;
-          return `<g opacity="${.2 - i * .06}" transform="translate(${x} ${432 * (1 - s)}) scale(${s}) translate(${-500} 0)">
-            <path d="${fig}" fill="none" stroke="#6a6a80" stroke-width="${1.4 / s}" stroke-dasharray="${6 / s} ${10 / s}"/>
-          </g>`;
-        }).join('')}
-        <line x1="0" y1="432" x2="1000" y2="432" stroke="#3a3a48" stroke-width="1" opacity=".35"/>
-        <rect x="0" y="0" width="1000" height="600" fill="url(#vg)" opacity=".85"/>
-        <defs><radialGradient id="vg" cx=".5" cy=".52" r=".78">
-          <stop offset="0" stop-color="#000" stop-opacity="0"/>
-          <stop offset=".62" stop-color="#000" stop-opacity=".45"/>
-          <stop offset="1" stop-color="#000" stop-opacity=".96"/></radialGradient></defs>`;
-      break;
-    }
-    case 'ash': {                         /* 재 — 통 부적이 타고 남은 것 */
-      let flakes = '';
-      for (let i = 0; i < 34; i++) {
-        const x = 60 + (i * 149) % 900, y = 70 + (i * 233) % 470, s = 3 + (i % 4) * 3;
-        flakes += `<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="1" fill="#6a5c4c"
-          opacity="${.12 + (i % 5) * .1}" transform="rotate(${(i * 37) % 90} ${x + s / 2} ${y + s / 2})"/>`;
-      }
-      let embers = '';
-      for (let i = 0; i < 12; i++)
-        embers += `<circle cx="${120 + (i * 181) % 780}" cy="${120 + (i * 127) % 400}"
-          r="${1.5 + (i % 3)}" fill="#e2762a" opacity="${.25 + (i % 4) * .14}"/>`;
-      /* 반쯤 탄 부적 한 장 */
-      /* 부적은 가운데 글이 앉을 자리를 비켜 왼쪽 위에 둔다 */
-      art = `<rect width="1000" height="600" fill="#0d0907"/>${flakes}${embers}
-        <g transform="translate(-208 -78) rotate(-8 500 320)">
-          <path d="M440,190 L560,190 L560,404 Q536,430 500,414 Q470,438 440,404 Z" fill="#d8c9a4" opacity=".78"/>
-          <path d="M440,330 L560,330 L560,404 Q536,430 500,414 Q470,438 440,404 Z" fill="#241a12" opacity=".85"/>
-          <path d="M440,318 Q470,344 500,314 Q532,342 560,320 L560,340 L440,340 Z" fill="#e2762a" opacity=".55"/>
-          <text x="500" y="272" text-anchor="middle" font-size="86" fill="#a8272c"
-            font-family="serif" opacity=".85">通</text>
-        </g>
-        <ellipse cx="292" cy="486" rx="180" ry="24" fill="#000" opacity=".7"/>`;
-      break;
-    }
-    case 'dano': {                        /* 단오 — 등불을 든 뒷모습, 멀어진다 */
-      /* 걸어가는 사람 하나. 발치는 늘 y=470 에 둔다. */
-      const walker = (col, sc) => {
-        const H = 190 * sc, W = 40 * sc, hd = 21 * sc, top = 470 - H;
-        return `<g fill="${col}">
-          <rect x="${-W / 2}" y="${top}" width="${W}" height="${H}" rx="${5 * sc}"/>
-          <circle cx="0" cy="${top - hd * .82}" r="${hd}"/>
-          <rect x="${-hd * 1.5}" y="${top - hd * 1.5}" width="${hd * 3}" height="${hd * .6}" rx="${2 * sc}"/>
-          <rect x="${W / 2 - 2 * sc}" y="${top - hd * .4}" width="${3 * sc}" height="${H + hd * .4}"
-            rx="${1.5 * sc}" transform="rotate(7 ${W / 2} ${top + H / 2})"/></g>`;
-      };
-      let echo = '';
-      for (let i = 3; i >= 1; i--) {
-        const s = 1 - i * .16, x = 500 + i * 96;
-        echo += `<g opacity="${.13 - i * .028}" transform="translate(${x} ${470 * (1 - s) * .0})">${walker('#4a7ea0', s)}</g>`;
-      }
-      /* 등불 — 손에 든 빛. 그 빛만 이쪽까지 온다. */
-      const lampX = 452, lampY = 372;
-      art = mt('#151c26', 'M0,452 L200,352 L400,442 L600,344 L800,432 L1000,372 L1000,600 L0,600 Z', .9) +
-        echo +
-        `<g transform="translate(500 0)">${walker('#090c10', 1)}</g>
-         <g><circle cx="${lampX}" cy="${lampY}" r="72" fill="#d8a24a" opacity=".035"/>
-           <circle cx="${lampX}" cy="${lampY}" r="30" fill="#d8a24a" opacity=".07"/>
-           <circle cx="${lampX}" cy="${lampY}" r="13" fill="#e8b45c" opacity=".18"/>
-           <rect x="${lampX - 6}" y="${lampY - 8}" width="12" height="17" rx="3" fill="#e8b45c" opacity=".9"/>
-           <rect x="${lampX - 8}" y="${lampY - 11}" width="16" height="4" rx="2" fill="#0a0d11"/>
-           <path d="M${lampX},${lampY - 11} L${lampX},${lampY - 26} L481,${lampY - 34}"
-             fill="none" stroke="#0a0d11" stroke-width="2"/></g>
-         <ellipse cx="500" cy="474" rx="46" ry="9" fill="#000" opacity=".55"/>
-         <circle cx="500" cy="262" r="86" fill="none" stroke="#3a6a8a" stroke-width="2" opacity=".24"/>
-         <circle cx="500" cy="262" r="122" fill="none" stroke="#3a6a8a" stroke-width="1" opacity=".11"/>` +
-        mt('#0a0e14', 'M0,520 L220,486 L440,516 L660,482 L880,512 L1000,490 L1000,600 L0,600 Z', .95);
-      break;
-    }
-    case 'moon':
-      art = `<circle cx="700" cy="150" r="86" fill="#c9585c" opacity=".55"/>
-        <circle cx="700" cy="150" r="86" fill="none" stroke="#e8a0a2" stroke-width="1.5" opacity=".4"/>` +
-        mt('#2a2a3a', 'M0,420 L150,250 L260,340 L380,190 L500,330 L620,240 L760,360 L880,270 L1000,400 L1000,600 L0,600 Z', .85) +
-        mt('#14141e', 'M0,500 L120,410 L230,470 L340,380 L470,460 L600,400 L720,470 L860,390 L1000,450 L1000,600 L0,600 Z', .95);
-      break;
-    case 'parade': {
-      let lanterns = '';
-      for (let i = 0; i < 16; i++) {
-        const x = 60 + i * 58, y = 300 + Math.sin(i * .9) * 46;
-        lanterns += `<circle cx="${x}" cy="${y}" r="${7 + (i % 3) * 2}" fill="#e2a13a" opacity=".85"/>
-          <circle cx="${x}" cy="${y}" r="${18 + (i % 3) * 4}" fill="#e2a13a" opacity=".13"/>`;
-      }
-      art = mt('#241a2e', 'M0,430 L180,300 L320,380 L460,260 L620,370 L780,290 L1000,410 L1000,600 L0,600 Z', .9) +
-        lanterns + mt('#0e0a14', 'M0,520 L200,470 L420,510 L640,460 L860,505 L1000,470 L1000,600 L0,600 Z', .95);
-      break;
-    }
-    case 'village': {
-      let fire = '';
-      for (let i = 0; i < 9; i++) {
-        const x = 180 + i * 78, h = 40 + (i % 4) * 26;
-        fire += `<path d="M${x},480 Q${x - 14},${480 - h} ${x},${480 - h * 1.5} Q${x + 14},${480 - h} ${x},480 Z"
-          fill="#e2622a" opacity=".55"/>`;
-      }
-      art = mt('#3a1a12', 'M0,440 L200,330 L420,420 L640,320 L860,410 L1000,350 L1000,600 L0,600 Z', .8) + fire +
-        `<g opacity=".9" fill="#120806">
-          <rect x="220" y="450" width="90" height="70"/><rect x="380" y="430" width="120" height="90"/>
-          <rect x="560" y="455" width="100" height="65"/><rect x="720" y="440" width="110" height="80"/>
-        </g>` + mt('#0b0504', 'M0,520 L1000,520 L1000,600 L0,600 Z', 1);
-      break;
-    }
-    case 'master':
-      art = mt('#1e2019', 'M0,450 L220,320 L440,430 L660,310 L880,420 L1000,370 L1000,600 L0,600 Z', .8) +
-        `<g opacity=".9"><rect x="470" y="330" width="58" height="190" rx="6" fill="#0d0e0c"/>
-          <circle cx="499" cy="308" r="26" fill="#0d0e0c"/></g>
-         <g opacity=".85">${[0, 1, 2, 3, 4, 5].map(i =>
-            `<rect x="${300 + i * 78}" y="${180 + (i % 3) * 34}" width="26" height="42" rx="2"
-              fill="#e8dcc0" transform="rotate(${-18 + i * 7} ${313 + i * 78} ${201 + (i % 3) * 34})" opacity=".8"/>`).join('')}</g>`;
-      break;
-    case 'hero':
-      art = mt('#22201a', 'M0,470 L180,340 L360,450 L540,330 L720,440 L900,350 L1000,410 L1000,600 L0,600 Z', .85) +
-        `<g opacity=".95"><rect x="478" y="300" width="46" height="200" rx="5" fill="#0c0b09"/>
-          <circle cx="501" cy="280" r="24" fill="#0c0b09"/>
-          <rect x="524" y="250" width="7" height="230" rx="3" fill="#0c0b09" transform="rotate(9 527 365)"/></g>
-         <circle cx="501" cy="280" r="70" fill="none" stroke="#a8272c" stroke-width="2" opacity=".35"/>`;
-      break;
-    case 'fox': {
-      let tails = '';
-      for (let i = 0; i < 9; i++) {
-        const a = -76 + i * 19;
-        tails += `<path d="M500,360 Q${500 + Math.cos(a * Math.PI / 180) * 200},${360 + Math.sin(a * Math.PI / 180) * 150}
-          ${500 + Math.cos(a * Math.PI / 180) * 300},${330 + Math.sin(a * Math.PI / 180) * 190}"
-          fill="none" stroke="#c94a58" stroke-width="12" stroke-linecap="round" opacity=".4"/>`;
-      }
-      art = mt('#2a1018', 'M0,470 L250,350 L500,450 L750,340 L1000,440 L1000,600 L0,600 Z', .85) + tails +
-        `<circle cx="500" cy="330" r="60" fill="#160810" opacity=".9"/>
-         <circle cx="482" cy="322" r="7" fill="#ffcf5a"/><circle cx="520" cy="322" r="7" fill="#ffcf5a"/>`;
-      break;
-    }
-    case 'tiger':
-      art = mt('#2e2312', 'M0,430 L200,270 L400,400 L600,250 L800,390 L1000,300 L1000,600 L0,600 Z', .85) +
-        `<g opacity=".9"><ellipse cx="500" cy="360" rx="130" ry="105" fill="#1a1208"/>
-          <circle cx="455" cy="335" r="10" fill="#ffd34a"/><circle cx="545" cy="335" r="10" fill="#ffd34a"/>
-          ${[0, 1, 2, 3].map(i => `<rect x="${390 + i * 62}" y="255" width="12" height="52" rx="6"
-            fill="#c07a1f" opacity=".65" transform="rotate(${-14 + i * 9} ${396 + i * 62} 281)"/>`).join('')}</g>`;
-      break;
-    case 'dragon': {
-      let coil = '';
-      for (let i = 0; i < 5; i++)
-        coil += `<path d="M${120 + i * 30},${520 - i * 74} Q500,${430 - i * 74} ${880 - i * 30},${520 - i * 74}"
-          fill="none" stroke="#2b3348" stroke-width="${20 - i * 2}" stroke-linecap="round" opacity=".8"/>`;
-      art = coil + `<circle cx="500" cy="180" r="52" fill="#161a26"/>
-        <circle cx="480" cy="172" r="8" fill="#4fe0a0"/><circle cx="522" cy="172" r="8" fill="#4fe0a0"/>`;
-      break;
-    }
-    case 'gate':
-      art = mt('#1d1828', 'M0,470 L250,360 L500,450 L750,350 L1000,440 L1000,600 L0,600 Z', .85) +
-        `<g opacity=".92"><rect x="330" y="140" width="34" height="380" fill="#0e0b16"/>
-          <rect x="636" y="140" width="34" height="380" fill="#0e0b16"/>
-          <rect x="286" y="110" width="428" height="30" rx="6" fill="#0e0b16"/>
-          <rect x="364" y="170" width="272" height="350" fill="#3a2f5c" opacity=".55"/>
-          <rect x="364" y="170" width="272" height="350" fill="url(#gg)" opacity=".7"/></g>
-        <defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#b98cff" stop-opacity=".85"/><stop offset="1" stop-color="#2de1ff" stop-opacity="0"/>
-        </linearGradient></defs>`;
-      break;
-    case 'dawn':
-      art = `<circle cx="500" cy="330" r="120" fill="#f0c877" opacity=".45"/>
-        <circle cx="500" cy="330" r="200" fill="#f0c877" opacity=".12"/>` +
-        mt('#3a2f1c', 'M0,420 L180,290 L360,400 L540,280 L720,390 L900,300 L1000,360 L1000,600 L0,600 Z', .8) +
-        mt('#1a150d', 'M0,500 L200,450 L420,495 L640,445 L860,490 L1000,455 L1000,600 L0,600 Z', .95);
-      break;
-    default:
-      art = mt('#1c1913', 'M0,460 L250,340 L500,440 L750,330 L1000,430 L1000,600 L0,600 Z', .85);
+const CUT = { on: null, seen: {}, boss: {} };
+const CUT_W = 1600, CUT_H = 900;
+function cutPlaying() { return !!CUT.on; }
+function cutPlay(def) {
+  if (CUT.on) return CUT.on.p;
+  try { SND.init(); } catch (e) {}
+  let done;
+  const p = new Promise(r => { done = r; });
+  const root = el('div', 'cut');
+  root.innerHTML = `<div class="cutview"><div class="cutshake"><div class="cutworld"><div class="cutstage"></div></div></div></div>
+    <canvas class="cutfx"></canvas><div class="cutflash"></div><div class="cutdark"></div>
+    <div class="cutbars"><i></i><i></i></div>
+    <div class="cutsub"></div><div class="cuttitle"></div>
+    <button class="cutskip">건너뛰기 ▸▸</button>`;
+  document.body.appendChild(root);
+  const q = s => root.querySelector(s);
+  const S = {
+    root, view: q('.cutview'), shakeEl: q('.cutshake'), world: q('.cutworld'), stage: q('.cutstage'),
+    cv: q('.cutfx'), flashEl: q('.cutflash'), dark: q('.cutdark'), sub: q('.cutsub'), title: q('.cuttitle'),
+    cam: { x: 800, y: 450, s: 1, rx: 0, ry: 0, rz: 0 }, timers: [], parts: [], amb: [], alive: true, t0: performance.now(), refs: {}
+  };
+  CUT.on = { p, S };
+  document.body.classList.add('cutting');
+  /* 화면에 맞춘다 — 가로는 꽉 채우고, 세로 폰에서는 무대가 너무 잘리지 않게 줄인다(위아래는 검게) */
+  const fit = () => {
+    const w = innerWidth, h = innerHeight;
+    const k = Math.min(Math.max(w / CUT_W, h / CUT_H), w / 700);
+    S.view.style.transform = `scale(${k})`; S.k = k;
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    S.cv.width = Math.round(w * dpr); S.cv.height = Math.round(h * dpr);
+    S.ctx = S.cv.getContext('2d'); S.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S.W = w; S.H = h;
+  };
+  fit(); addEventListener('resize', fit);
+  cutApplyCam(S);
+  /* 알갱이 — 한 박자에 한 번 */
+  const tick = now => {
+    if (!S.alive) return;
+    cutParticles(S, now);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  const finish = () => {
+    if (!S.alive) return;
+    S.alive = false;
+    for (const t of S.timers) clearTimeout(t);
+    removeEventListener('resize', fit);
+    removeEventListener('keydown', key, true);
+    root.classList.add('out');
+    setTimeout(() => { root.remove(); document.body.classList.remove('cutting'); CUT.on = null; done(); }, 520);
+  };
+  S.end = finish;
+  const key = e => { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); finish(); } };
+  addEventListener('keydown', key, true);
+  q('.cutskip').onclick = e => { e.stopPropagation(); finish(); };
+  setTimeout(() => root.classList.add('barsin'), 30);
+  try { def.build && def.build(S); } catch (e) { console.error('컷씬 짓기', e); }
+  for (const [t, fn] of def.tl || [])
+    S.timers.push(setTimeout(() => { if (S.alive) try { fn(S); } catch (e) { console.error('컷씬', e); } }, t));
+  S.timers.push(setTimeout(finish, def.len || 8000));
+  return p;
+}
+/* ── 카메라 ─────────────────────────────────────────────── */
+const cutTf = c => `rotateZ(${c.rz}deg) rotateX(${c.rx}deg) rotateY(${c.ry}deg) scale(${c.s}) translate(${800 - c.x}px,${450 - c.y}px)`;
+function cutApplyCam(S) { S.world.style.transform = cutTf(S.cam); }
+function cutCam(S, to, dur = 1000, ease = 'cubic-bezier(.45,0,.2,1)') {
+  const from = getComputedStyle(S.world).transform;
+  for (const a of S.world.getAnimations()) { try { a.commitStyles(); } catch (e) {} a.cancel(); }
+  Object.assign(S.cam, to);
+  const tf = cutTf(S.cam);
+  if (!dur) { S.world.style.transform = tf; return; }
+  const an = S.world.animate([{ transform: from === 'none' ? cutTf({ x: 800, y: 450, s: 1, rx: 0, ry: 0, rz: 0 }) : from }, { transform: tf }],
+    { duration: dur, easing: ease, fill: 'forwards' });
+  an.onfinish = () => { S.world.style.transform = tf; };
+}
+function cutShake(S, px = 10, ms = 400) {
+  const k = [];
+  for (let i = 0; i <= 8; i++) { const f = 1 - i / 8; k.push({ transform: `translate(${(Math.random() * 2 - 1) * px * f}px,${(Math.random() * 2 - 1) * px * f}px)` }); }
+  k[k.length - 1] = { transform: 'none' };
+  S.shakeEl.animate(k, { duration: ms, easing: 'linear' });
+}
+function cutFlash(S, col = '#fff', ms = 420, peak = 1) {
+  S.flashEl.style.background = col;
+  S.flashEl.animate([{ opacity: peak }, { opacity: 0 }], { duration: ms, easing: 'ease-out' });
+}
+function cutFade(S, to, ms = 600) {   /* 검게 덮거나(1) 걷는다(0) */
+  const from = +getComputedStyle(S.dark).opacity || 0;
+  S.dark.animate([{ opacity: from }, { opacity: to }], { duration: ms, fill: 'forwards', easing: 'ease' });
+}
+/* 멈춘 듯한 한 박자 — 모든 움직임을 잠깐 세운다 */
+function cutHitstop(S, ms = 70) {
+  /* 돌고 있는 것만 — 끝난 것을 멈췄다 다시 틀면 처음부터 다시 돈다 */
+  const an = S.root.getAnimations({ subtree: true }).filter(a => a.playState === 'running');
+  for (const a of an) try { a.pause(); } catch (e) {}
+  S.freeze = true;
+  S.timers.push(setTimeout(() => { S.freeze = false; for (const a of an) try { if (a.playState === 'paused') a.play(); } catch (e) {} }, ms));
+}
+function cutSfx(name, ...a) { try { if (SND[name]) SND[name](...a); } catch (e) {} }
+function cutSay(S, text, ms = 2400) {
+  S.sub.innerHTML = text; S.sub.classList.add('on');
+  clearTimeout(S.subT); S.subT = setTimeout(() => S.sub.classList.remove('on'), ms);
+}
+/* 무대에 하나 놓는다 — (x,y) 는 무대 좌표, z 는 앞(+)·뒤(−) 깊이 */
+function cutPut(S, html, o = {}) {
+  const n = el('div', 'cpiece' + (o.cls ? ' ' + o.cls : ''), html);
+  const ax = o.ax == null ? .5 : o.ax, ay = o.ay == null ? .5 : o.ay;
+  n.style.left = (o.x || 0) + 'px'; n.style.top = (o.y || 0) + 'px';
+  if (o.w) n.style.width = o.w + 'px';
+  if (o.h) n.style.height = o.h + 'px';
+  n.style.transform = `translate(${-ax * 100}%,${-ay * 100}%) translateZ(${o.z || 0}px)${o.tf ? ' ' + o.tf : ''}`;
+  if (o.zi != null) n.style.zIndex = o.zi;
+  (o.into || S.stage).appendChild(n);
+  return n;
+}
+function cutLayer(S, svg, z = 0, zi = 0, cls = '') {
+  /* 뒤로 갈수록 작게 보이니 그만큼 키워 화면을 채운다 */
+  const k = 1 - z / 1600;
+  const n = el('div', 'cl' + (cls ? ' ' + cls : ''), svg);
+  n.style.transform = `translateZ(${z}px) scale(${k.toFixed(3)})`;
+  n.style.zIndex = zi;
+  S.stage.appendChild(n);
+  return n;
+}
+/* 무대 위 무엇의 화면 자리 */
+function cutAt(n) { const r = n.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }; }
+/* ── 알갱이 ─────────────────────────────────────────────── */
+function cutEmit(S, type, x, y, n = 20, o = {}) {
+  for (let i = 0; i < n && S.parts.length < 1100; i++) {
+    const a = o.ang != null ? o.ang + (Math.random() - .5) * (o.spread || 1) : Math.random() * Math.PI * 2;
+    const sp = (o.sp || 6) * (.35 + Math.random() * .9);
+    S.parts.push({ t: type, x: x + (Math.random() - .5) * (o.r || 0), y: y + (Math.random() - .5) * (o.r || 0),
+      vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 0, max: (o.life || 60) * (.6 + Math.random() * .8),
+      sz: (o.sz || 4) * (.5 + Math.random()), rot: Math.random() * 6.3, vr: (Math.random() - .5) * .3, col: o.col, g: o.g == null ? .15 : o.g });
   }
-  return `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
-    <rect width="1000" height="600" fill="${sky[0]}"/>
-    <rect width="1000" height="600" fill="url(#skyg)" opacity=".9"/>
-    <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient></defs>
-    ${art}</svg>`;
 }
-
-const STORY = {
-  opening: [
-    { scene: 'moon', title: '백귀야행', t: '백 년에 한 번,\n산이 문을 연다.' },
-    { scene: 'parade', t: '그 밤이면 온갖 것들이 줄을 지어 내려온다.\n등을 들고, 노래를 부르며, 천천히.\n\n사람들은 그 행렬을 백귀야행이라 불렀다.' },
-    { scene: 'village', t: '올해는 문이 닫히지 않았다.\n\n세 마을이 하룻밤에 사라졌다.\n비명을 들은 사람은 아무도 없었다.' },
-    { scene: 'master', who: '스승', t: '"문은 산꼭대기에 있다.\n누군가 안에서 열어 두었어."\n\n스승은 부적 한 짐을 지고 올라갔다.' },
-    { scene: 'master', t: '이레 뒤,\n돌아온 것은 부적 열 장뿐이었다.\n\n참격 다섯, 호신 넷, 벽사부 하나.' },
-    { scene: 'hero', t: '남은 퇴마사는 둘이다.\n\n나와, 같은 날 스승을 잃은 단오(丹午).' },
-    { scene: 'hero', who: '단오', t: '"산 어귀에서 길이 둘로 갈려."\n\n"네가 왼쪽, 내가 오른쪽. 위에서 만나자."' },
-    { scene: 'hero', t: '단오가 부적 두 장을 반으로 갈라 한 쪽을 건넸다.\n通 — 통할 통.\n\n"이게 붙어 있는 동안은 서로 목소리가 들려."\n"내가 봐 줄게. 너 판 보는 눈이 영 없잖아."' },
-    { scene: 'hero', t: '부적 열 장과 통 부적 한 조각을 품고,\n산을 오른다.\n\n귓가에서 단오가 웃는 소리가 들린다.' }
-  ],
-  act1: [
-    { scene: 'fox', who: '구미호', t: '"……어리구나. 스승보다 더."\n\n꼬리 아홉이 하나씩 스러진다.' },
-    { scene: 'fox', who: '구미호', t: '"우리가 문을 연 것이 아니다.\n우리도 쫓겨 내려온 것뿐."' },
-    { scene: 'moon', t: '여우가 재로 흩어진 자리에\n안개가 밀려 내려왔다.\n\n위쪽에서 무언가가 부르고 있었다.' }
-  ],
-  act2: [
-    { scene: 'tiger', who: '산군', t: '"나는 이 산의 문지기였다."\n\n호랑이의 눈에서 노란빛이 빠져나간다.' },
-    { scene: 'tiger', who: '산군', t: '"천 년을 지켰는데,\n위에서 부르는 소리를 견디지 못했다.\n\n……너는 견딜 수 있겠느냐."' },
-    { scene: 'gate', t: '봉우리 너머,\n구천으로 오르는 벼랑이 드러났다.\n\n문은 아직 열려 있다.' }
-  ],
-  /* 제3막에는 보스가 둘이다 — 꺾은 쪽에 따라 다른 말이 나온다 */
-  act3_blackdragon: [
-    { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 내가 아니다."\n\n"나도 이 아래에서 쫓겨 올라온 것뿐."' },
-    { scene: 'gate', t: '비늘이 흩어진 자리에 또 다른 문이 있었다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
-  ],
-  act3_yeomra: [
-    { scene: 'gate', who: '염라', t: '"명부에 네 이름이 없구나."\n\n붓끝이 허공에서 멎는다.' },
-    { scene: 'gate', who: '염라', t: '"위에서 무언가가 명부를 찢고 있다.\n나는 그것을 막으러 내려왔을 뿐이다."\n\n"…네가 대신 가겠느냐."' },
-    { scene: 'gate', t: '염라가 붓을 내려놓자\n벼랑 끝에 또 다른 문이 열렸다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
-  ],
-  act3: [
-    { scene: 'gate', t: '벼랑 끝에 또 다른 문이 있었다.\n이번에는 아래로 내려가는 문이었다.\n\n명계로 가는 길이다.' }
-  ],
-  act4: [
-    { scene: 'gate', who: '강림도령', t: '"명부에 네 이름이 세 번 적혔다가 세 번 지워졌다."\n\n"누가 지운 줄 아느냐."' },
-    { scene: 'moon', t: '저승사자가 흩어지자\n명계의 천장이 갈라지며 빛이 쏟아졌다.\n\n위로, 더 위로 가야 한다.' }
-  ],
-  act5: [
-    { scene: 'hero', who: '단오', t: '"야, 나 여기 좀 이상해."\n\n"위로 갈수록 부적이 지지직거려.\n네 목소리도 끊겨."' },
-    { scene: 'tiger', who: '치우천왕', t: '"하늘도 저것을 막지 못했다."\n\n구리 이마가 갈라지며 피가 흐른다.' },
-    { scene: 'dragon', who: '치우천왕', t: '"문 너머에는 아무것도 없다.\n아무것도 없는 것이 있다."\n\n"그것이 네 이름을 지웠다."' },
-    { scene: 'gate', t: '구천의 끝, 무간(無間)의 입구가 열렸다.\n\n소리도, 빛도, 냄새도 없다.' }
-  ],
-  /* 통 부적이 끊기는 그 자리 — 제6막 정예를 만나는 순간에 나온다 */
-  mugan_lost: [
-    { scene: 'voidless', t: '무간에 들어서자\n소리가 한 겹씩 벗겨졌다.\n\n발소리가 먼저 없어졌고,\n그다음에 숨소리가 없어졌다.' },
-    { scene: 'voidless', t: '남은 소리는 하나뿐이었다.\n귀 뒤에 붙여 둔 통(通) 부적.\n\n그 안에서 단오가 아직 걷고 있었다.' },
-    { scene: 'dano', who: '단오', t: '"야. 너 아직 거기 있냐?"\n\n"…나는 네 대답이 안 들려.\n한참 전부터 안 들렸어."' },
-    { scene: 'dano', who: '단오', t: '"괜찮아, 나 혼자 떠들면 되지 뭐.\n원래 내가 말 더 많았잖아."\n\n웃는 소리가 났다.\n무간에서는 그 소리가 어울리지 않았다.' },
-    { scene: 'voidless', who: '단오', t: '"근데 여기 뭔가 이상해."\n\n"엘리트가 아니야. 이건—\n이건 아무것도 아니야."' },
-    { scene: 'voidless', who: '단오', t: '"아무것도 아닌 게 나를 보고 있어."\n\n"눈이 없는데 보고 있는 걸\n어떻게 아는지 모르겠는데,\n\n알겠어."' },
-    { scene: 'ash', t: '부적 너머에서 종이 긁는 소리가 났다.\n단오가 무언가를 붙이고 있었다.\n급하게, 여러 장을, 겹쳐서.\n\n종이 찢어지는 소리가 그보다 더 빨랐다.' },
-    { scene: 'voidless', who: '단오', t: '"야."\n\n"…야, 내 이름이 뭐였지."\n\n"불러 줘. 빨리."' },
-    { scene: 'ash', t: '입을 열었다.\n\n소리가 나가지 않았다.\n무간이 먼저 그것을 가져갔다.' },
-    { scene: 'ash', t: '통 부적이 손 안에서 뜨거워졌다.\n通 자가 한 획씩 지워졌다.\n\n획이 다 빠지자\n아무 글자도 아니게 되었다.' },
-    { scene: 'ash', t: '"단오야!"\n\n그제야 소리가 나왔다.\n부적은 이미 재였다.\n\n재는 따뜻하지도 않았다.' },
-    { scene: 'voidless', t: '무간에는 메아리가 없다.\n\n부른 이름이 돌아오지 않았다.\n어디로 간 것도 아니고,\n그냥 없어졌다.\n\n부르기 전부터 없었던 것처럼.' }
-  ],
-  act6: [
-    { scene: 'voidless', t: '무간을 걷는 데 며칠이 걸렸는지 모른다.\n\n해가 없어 날로 셀 수 없었고,\n배가 고프지 않아 끼니로도 셀 수 없었다.' },
-    { scene: 'voidless', t: '그래서 부적으로 셌다.\n한 장 붙일 때마다 하루로 쳤다.\n\n열이레째에 단오가 지나간 자리를 찾았다.' },
-    { scene: 'dano', t: '바닥에 부적이 스무 장쯤 흩어져 있었다.\n전부 다 쓴 것이었다.\n\n마지막 한 장에는 글씨가 없었다.\n쓰다 만 것이 아니라,\n쓴 것이 지워진 것이었다.' },
-    { scene: 'ash', t: '한 장을 주웠다.\n\n획 끝을 꼭 위로 튕겨 올리는 버릇이 남아 있었다.\n스승이 백 번을 고쳐도\n끝내 안 고쳐지던 그 버릇.' },
-    { scene: 'ash', t: '"…너 진짜 글씨 못 쓴다."\n\n아무도 대꾸하지 않았다.\n대꾸할 자리도 없었다.' },
-    { scene: 'voidless', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
-    { scene: 'voidless', t: '목소리를 잃은 얼굴이 아니었다.\n\n목소리라는 것을\n한 번도 겪어 본 적이 없는 얼굴이었다.' },
-    { scene: 'voidless', t: '무간은 때리지 않았다.\n닿는 것을 하나씩 없앨 뿐이었다.\n\n방어도가 없어지고,\n이름이 없어지고,\n없어졌다는 사실까지 없어졌다.' },
-    { scene: 'ash', t: '부적이 한 장씩 타들어 갔다.\n열 장이 재가 되고, 스무 장이 재가 되고,\n\n셀 수 있는 것이 재밖에 남지 않았을 때\n품 안에서 마지막 한 조각을 꺼냈다.' },
-    { scene: 'ash', t: '반쪽짜리, 재가 된 통 부적.\n\n재를 손바닥에 문질러\n없는 얼굴에 그대로 붙였다.\n\n通 — 통할 통.' },
-    { scene: 'voidless', who: '무간', t: '없는 것에게 처음으로 길이 났다.\n\n"…아."\n\n그 한마디에 그것이 무너졌다.' },
-    { scene: 'ash', t: '무너지면서 그것이 재를 돌려주었다.\n\n붙였던 자리에서 재가 스르르 흘러\n손바닥에 도로 고였다.\n\n한 번 길이 난 재는 다시 붙일 수 있다.\n通 — 통할 통.' },
-    { scene: 'dano', t: '무너진 자리에 발자국이 있었다.\n두 사람 몫이 아니라 한 사람 몫이었고,\n아래로 이어져 있었다.\n\n단오는 떨어진 것이다. 혼자.' },
-    { scene: 'abyss', t: '그 발자국을 따라 뛰어내렸다.\n떨어지는 데 이레가 걸렸다.\n\n이레 내내 아무 소리도 나지 않아서,\n그동안 단오의 목소리를 되짚었다.\n\n잊으면 못 찾을 것 같아서.' }
-  ],
-  act7: [
-    { scene: 'abyss', t: '떨어지는 동안 재를 놓치지 않으려고\n주먹을 쥐고 있었다.\n\n이레 뒤 손을 펴 보니\n손금에 通 자 한 획이 눌려 있었다.' },
-    { scene: 'abyss', who: '무저', t: '"여기가 바닥이라 생각했느냐."\n\n대답할 입이 그것에게도 없었다.' },
-    { scene: 'abyss', t: '바닥이 갈라지고,\n그 아래에서 빛이 올라왔다.\n\n아래인데 빛이 올라왔다.' },
-    { scene: 'first', t: '떨어지던 몸이 문득 떠올랐다.\n\n산도, 문도, 어둠도 없는 자리.\n아무것도 없던 자리에 닿았다.' }
-  ],
-  act8: [
-    { scene: 'first', who: '태초', t: '"네가 지운 것이 나다."\n\n"내가 지운 것도 너다."' },
-    { scene: 'first', t: '처음이 닫히자 빛이 걷혔다.\n\n그 자리에 낯익은 것이 서 있었다.\n산이었다. 처음 오르던 그 산.' },
-    { scene: 'hero', t: '길도, 요괴도, 부적도 그대로였다.\n\n다만 앞서 가는 사람의 뒷모습이\n어쩐지 낯이 익었다.' }
-  ],
-  act9: [
-    { scene: 'hero', who: '나', t: '"여기까지 온 것을 축하하네."\n\n돌아본 얼굴은 내 얼굴이었다.' },
-    { scene: 'hero', who: '나', t: '"단오를 찾나?"\n\n"찾을 수 있을 걸세. 다만 자네가 아는 단오는 아닐지도."' },
-    { scene: 'moon', who: '나', t: '"백 년마다 하나가 오르지.\n그리고 백 년마다 하나가 남네."\n\n"이번엔 자네 차례일세."' },
-    { scene: 'parade', t: '재가 흩어진 자리에서\n등불이 하나둘 켜지기 시작했다.\n\n행렬이 돌아오고 있었다.' }
-  ],
-  act10: [
-    { scene: 'parade', who: '백귀야행', t: '수천의 등불이 산을 감았다.\n\n노래는 없었다. 발소리뿐이었다.' },
-    { scene: 'parade', t: '행렬의 맨 앞이 걸음을 멈췄다.\n그리고 뒤로 돌아섰다.\n\n등불이 하나씩 꺼졌다.' },
-    { scene: 'dawn', t: '재만 남은 능선 위로\n하늘 끝이 붉어지기 시작했다.\n\n밤이 끝나가고 있었다.' }
-  ],
-  act11: [
-    { scene: 'dawn', who: '여명', t: '"밤을 이겼다고 생각하나."\n\n해가 눈을 찔렀다. 밤보다 아팠다.' },
-    { scene: 'dawn', t: '해가 다 뜨자 산이 훤히 보였다.\n\n산은 비어 있었다.\n요괴는 한 마리도 남지 않았다.' },
-    { scene: 'hero', t: '그제야 알았다.\n행렬은 산을 내려간 것이다.\n\n서둘러 내려가야 했다.' }
-  ],
-  act12: [
-    { scene: 'hero', who: '이장', t: '"어서 오시게. 자네를 기다렸네."\n\n마을 사람 전부가 웃고 있었다.\n한 사람도 빠짐없이.' },
-    { scene: 'moon', t: '우물에 비친 얼굴이 하나 더 많았다.\n\n세어 보니 마을 사람 수와 같았다.' },
-    { scene: 'village', t: '그 하나를 우물에서 끌어냈다.\n\n끌려 나온 것이 웃자 마을이 함께 웃었고,\n벽사부를 붙이자 마을이 함께 탔다.\n\n사람이 타는 냄새는 나지 않았다.\n애초에 사람이 없었기 때문이다.' },
-    { scene: 'gate', t: '마을이 타고 남은 자리에\n북쪽으로 난 길이 있었다.\n\n왕도로 가는 길이었다.' }
-  ],
-  act13: [
-    { scene: 'gate', who: '국사', t: '"백 년 전에도 하나가 올라왔지."\n\n"그자는 여기서 벼슬을 받았네."' },
-    { scene: 'gate', who: '옥좌', t: '"산을 연 것이 누구라 생각하나."\n\n옥좌는 비어 있었고, 목소리만 앉아 있었다.' },
-    { scene: 'moon', t: '옥좌가 갈라지자\n그 안에서 하늘로 난 계단이 나왔다.\n\n밟을 때마다 발이 가벼워졌다.' }
-  ],
-  act14: [
-    { scene: 'moon', who: '천제', t: '"우리는 보고만 있었다."\n\n"보는 것도 하는 것이라 하겠느냐."' },
-    { scene: 'dragon', t: '천군이 흩어지고 구름이 걷혔다.\n\n구름 위에는 아무것도 없었다.\n하늘조차 없었다.' },
-    { scene: 'first', t: '발밑이 사라졌다.\n떨어지는 느낌도 없었다.\n\n떨어질 아래가 없었기 때문이다.' }
-  ],
-  act15: [
-    { scene: 'first', who: '무', t: '"여기까지 온 사람이 몇 있었다."\n\n"전부 여기 있다. 없는 채로."' },
-    { scene: 'first', t: '없음이 없어졌다.\n\n눈을 뜨니 산 아래였다.\n마을에는 밥 짓는 연기가 올랐다.' },
-    { scene: 'hero', t: '길 어귀에 낯익은 팻말이 서 있었다.\n\n제1막, 요괴 숲.\n\n다시 처음이었다.' }
-  ],
-  act16: [
-    { scene: 'hero', who: '되풀이', t: '"몇 번째인지 세지 않네."\n\n"자네도 세지 말게. 세면 못 오르네."' },
-    { scene: 'moon', t: '두 번째로 오르는 산은 낯설었다.\n요괴들이 나를 알아보았기 때문이다.\n\n"또 왔구나." 하고 웃었다.' },
-    { scene: 'abyss', t: '되풀이를 끊자 되풀이가 멈췄다.\n\n멈춘 자리에 지금껏 죽인 것들이\n전부 서서 나를 보고 있었다.' }
-  ],
-  act17: [
-    { scene: 'abyss', who: '기억', t: '"너는 하나도 잊지 않았다."\n\n"우리도 하나도 잊지 않았다."' },
-    { scene: 'moon', t: '이름을 하나씩 불러 주었다.\n부를 이름이 없는 것에는\n이름을 지어 주었다.\n\n그러자 흩어졌다.' },
-    { scene: 'gate', t: '마지막 하나가 흩어지며 말했다.\n\n"자네 스승도 여기 있었네."' }
-  ],
-  act18: [
-    { scene: 'gate', who: '스승', t: '"늦었구나."\n\n벽사부를 쥐여 주던 그 손이었다.' },
-    { scene: 'hero', who: '스승', t: '"백 년 전에도 산이 열렸지.\n그때 오른 것이 나였네."\n\n"나는 문 앞에서 멈췄네."' },
-    { scene: 'parade', t: '스승이 흩어지자 길이 열렸다.\n\n그 길에 사람이 서 있었다.\n하나가 아니었다. 백 명이었다.' }
-  ],
-  act19: [
-    { scene: 'parade', who: '백년', t: '"백 년에 하나씩, 백 명이 올랐다."\n\n"아무도 넘지 못했다."' },
-    { scene: 'dawn', t: '백 명이 하나씩 길을 비켰다.\n비킨 자리마다 발자국이 남았다.\n\n발자국은 전부 위를 향하고 있었다.' },
-    { scene: 'first', t: '마지막 발자국 앞에\n산이 통째로 서 있었다.\n\n문을 연 것은 요괴가 아니었다.' }
-  ],
-  act20: [
-    { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
-    { scene: 'dawn', t: '산이 숨을 멈췄다.\n문은 닫혔고, 백귀는 흩어졌다.\n\n그런데 아직 하나가 남았다.' },
-    { scene: 'hero', t: '산을 오르기 시작한 것이 여섯 해 전이다.\n무간에서 이레, 무저에서 이레,\n나머지는 세는 것을 잊었다.\n\n그동안 한 번도 울리지 않던 것이\n품 안에서 아주 약하게 떨렸다.\n\n재가 된 통 부적이었다.\n단오가 어딘가에 있다.' }
-  ],
-  act21: [
-    { scene: 'hero', who: '사잇길', t: '"산은 끝났지. 하지만 길은 안 끝났네."' },
-    { scene: 'moon', t: '산 너머에 길이 하나 더 있었다.\n어느 지도에도 없는 길이었다.\n\n재가 된 부적이 그쪽으로 기울었다.' },
-    { scene: 'gate', t: '길 끝에 문이 있었다.\n이번 문은 위로 나 있었다.\n\n문 너머가 환했다.' }
-  ],
-  act22: [
-    { scene: 'gate', who: '문지기', t: '"네 이름은 명부에 없다."\n\n"산 사람은 못 들어간다."' },
-    { scene: 'moon', t: '문틈으로 들여다보았다.\n하얗고, 넓고, 조용했다.\n\n그 안 어딘가에서 낯익은 웃음소리가 났다.' },
-    { scene: 'dragon', t: '문을 부수고 들어갔다.\n\n퇴마사가 천국의 문을 부순 것은\n아마 내가 처음일 것이다.' }
-  ],
-  act23: [
-    { scene: 'dragon', who: '천국', t: '"여기 있으면 아프지 않다."\n\n"네 벗도 그래서 남았다."' },
-    { scene: 'hero', t: '단오를 찾아 헤맸다.\n웃음소리는 자꾸 들리는데\n돌아보면 빈자리뿐이었다.' },
-    { scene: 'parade', t: '천국의 하늘이 검게 갈라졌다.\n\n갈라진 틈으로 낫이 먼저 들어왔다.' }
-  ],
-  act24: [
-    { scene: 'parade', who: '사신 장군', t: '"천국은 오래 살찐 밭이다."\n\n"거둘 때가 됐다."' },
-    { scene: 'abyss', t: '복 받은 것들이 줄줄이 거두어졌다.\n비명도 없었다. 여기 사람들은\n비명 지르는 법을 잊은 지 오래였다.' },
-    { scene: 'abyss', t: '무너지는 천국의 끝에서\n낯익은 등이 하나 서 있었다.\n\n"…단오야?"\n\n돌아본 얼굴에는 눈이 없었다.' }
-  ],
-  end_sasindo: [
-    { scene: 'abyss', who: '사신도', t: '"이 그림에 들어온 것은 나가지 못한다."\n\n"네 벗은 여기 여섯 해째 걸려 있다."' },
-    { scene: 'abyss', who: '사신도', t: '"아까 네가 부른 것은 내가 그린 것이다.\n등만 베껴 놓으면 너희는 꼭 이름을 부르더라."\n\n"눈까지 그리기는 귀찮았다."' },
-    { scene: 'abyss', t: '그림 속에서 단오가 이쪽을 보았다.\n입 모양만으로 무언가 말했다.\n\n— 야. 너 판 보는 눈 여전히 없네.' },
-    { scene: 'dragon', t: '부적도 벽사부도 다 떨어졌다.\n남은 것은 재가 된 통 부적 한 조각.\n\n그것을 그림에 붙였다.\n通 — 통할 통.' },
-    { scene: 'dawn', t: '그림이 찢어졌다.\n\n찢어진 자리에서 손이 하나 나왔다.\n잡았다. 따뜻했다.\n\n둘이서 산을 내려왔다.\n이번에는 길이 갈리지 않았다.' }
-  ],
-  end_mountain: [
-    { scene: 'first', who: '산', t: '"나는 백 년에 한 번 숨을 쉰다."\n\n"숨을 쉬면 문이 열린다. 그뿐이다."' },
-    { scene: 'dragon', t: '부적도, 벽사부도, 이름도 다 떨어졌다.\n\n남은 것은 산을 오른 발뿐이었다.\n그 발로 정상을 밟았다.' },
-    { scene: 'dawn', t: '산이 숨을 멈췄다.\n\n백 년 뒤에도 문은 열리지 않았고,\n그다음 백 년에도 열리지 않았다.\n\n산이 잠들었기 때문이다.\n누군가 끝까지 올라갔기 때문이다.' }
-  ],
-  end_mu: [
-    { scene: 'first', who: '무', t: '"여기까지 온 사람이 몇 있었다."\n\n"전부 여기 있다. 없는 채로."' },
-    { scene: 'first', t: '부적은 진작 다 떨어졌다.\n스승의 벽사부도 재가 되었다.\n\n남은 것은 손 하나뿐이었다.\n그 손으로 붙였다.' },
-    { scene: 'dawn', t: '없음이 없어졌다.\n\n눈을 뜨니 산 아래였다.\n마을에는 밥 짓는 연기가 올랐고,\n아무도 나를 알아보지 못했다.\n\n그것으로 되었다.' }
-  ],
-  end_hyakki: [
-    { scene: 'parade', who: '백귀야행', t: '수천의 등불이 산을 감았다.\n\n노래는 없었다. 발소리뿐이었다.' },
-    { scene: 'parade', t: '스승의 벽사부가 마지막으로 타올랐다.\n\n행렬의 맨 앞이 걸음을 멈췄다.\n그리고 뒤로 돌아섰다.' },
-    { scene: 'dawn', t: '문이 닫혔다. 이번에는 안쪽에서.\n\n산은 다시 잠들었고,\n백 년 뒤에도 행렬은 오지 않았다.\n\n누군가 끝까지 올라갔기 때문이다.' }
-  ],
-  end_taecho: [
-    { scene: 'first', who: '태초', t: '"네가 지운 것이 나다."\n\n"내가 지운 것도 너다."' },
-    { scene: 'first', t: '부적은 진작 다 떨어졌다.\n\n마지막으로 남은 것은\n스승이 남긴 벽사부 한 장이었다.' },
-    { scene: 'dawn', t: '처음이 닫혔다.\n\n산은 다시 잠들었고,\n백 년 뒤 누군가 다시 오를 것이다.\n\n그때는 문 앞에서 멈추기를.' }
-  ],
-  end_mugan: [
-    { scene: 'gate', who: '무간', t: '"……"\n\n그것은 아무 말도 하지 않았다.\n애초에 입이 없었다.' },
-    { scene: 'dragon', t: '부적이 한 장씩 타들어 갔다.\n마지막 한 장을 붙였을 때,\n\n비로소 소리가 돌아왔다.' },
-    { scene: 'dawn', t: '문이 닫혔다.\n\n산은 다시 잠들었고, 백 년이 흘렀다.\n누군가 다시 오를 것이다.' }
-  ],
-  end_blackdragon: [
-    { scene: 'dragon', who: '흑룡', t: '"문을 연 것은 내가 아니다."\n\n"다만 닫으러 온 손을 백 년 동안\n한 번도 막지 않았을 뿐."' },
-    { scene: 'gate', t: '흑룡이 무너지자\n문이 스스로 닫히기 시작했다.\n\n부적을 마지막 한 장까지 붙였다.' },
-    { scene: 'dawn', t: '아침이 왔다.\n\n산은 다시 잠들었고,\n행렬은 어디에도 없었다.' }
-  ],
-  end_yeomra: [
-    { scene: 'gate', who: '염라', t: '"명부에 네 이름이 없구나."\n\n"살아서 여기까지 온 자는 처음이다."' },
-    { scene: 'gate', t: '염라는 붓을 내려놓고 문을 닫았다.\n\n"백 년 뒤에 다시 오너라.\n그때는 이름을 적어 두마."' },
-    { scene: 'dawn', t: '아침이 왔다.\n\n산은 다시 잠들었고,\n행렬은 어디에도 없었다.' }
-  ]
-};
-
-/* 한 글자씩 찍히는 이야기 화면 */
-function showStory(key) {
-  const pages = key && STORY[key];
-  if (!pages || !pages.length) return Promise.resolve();
-  return new Promise(done => {
-    let i = 0, typing = null, finished = false;
-    const sc = el('div', 'story');
-    sc.innerHTML = `<div class="sart"></div><div class="svig"></div>
-      <div class="sdust">${[...Array(22)].map((_, k) =>
-        `<i style="left:${(k * 4.7 + (k % 3) * 9) % 100}%;bottom:-8px;` +
-        `animation-duration:${(9 + (k % 5) * 4)}s;animation-delay:${(k * .7).toFixed(1)}s;` +
-        `--dx:${((k % 7) - 3) * 22}px;width:${2 + (k % 3)}px;height:${2 + (k % 3)}px"></i>`).join('')}</div>
-      <div class="swho"></div><div class="stitle"></div>
-      <div class="stext"></div><div class="snext">눌러서 계속</div>
-      <button class="sskip">건너뛰기</button>`;
-    $('#app').appendChild(sc);
-    const art = sc.querySelector('.sart'), who = sc.querySelector('.swho'),
-      title = sc.querySelector('.stitle'), text = sc.querySelector('.stext'),
-      next = sc.querySelector('.snext');
-
-    function finish() {
-      if (finished) return; finished = true;
-      clearInterval(typing);
-      sc.classList.add('fadeout');
-      setTimeout(() => { sc.remove(); done(); }, 600);
+function cutBurst(S, x, y, col = '200,40,70', big = 1) {
+  cutEmit(S, 'spark', x, y, 26 * big, { sp: 11 * big, life: 26, sz: 3, g: .1 });
+  cutEmit(S, 'blot', x, y, 18 * big, { sp: 6 * big, life: 55, sz: 11 * big, col, g: .22 });
+  cutEmit(S, 'smoke', x, y, 8 * big, { sp: 2.2, life: 70, sz: 34 * big, g: -.02 });
+  cutEmit(S, 'ring', x, y, 1, { sp: 0, life: 22, sz: 40 * big, g: 0 });
+}
+/* 줄곧 내리는 것 — 잎·안개·불티·눈·꽃잎·재·별·금가루·넋·비 */
+function cutAmbient(S, type, rate = 1, col) { S.amb.push({ type, rate, col, acc: 0 }); }
+function cutParticles(S, now) {
+  const c = S.ctx; if (!c) return;
+  const W = S.W, H = S.H;
+  c.clearRect(0, 0, W, H);
+  if (!S.freeze) for (const a of S.amb) {
+    a.acc += a.rate * (W / 1000);
+    while (a.acc >= 1) {
+      a.acc--;
+      const t = a.type, rx = Math.random() * W;
+      const P = { t, life: 0, rot: Math.random() * 6.3, vr: (Math.random() - .5) * .08, col: a.col, g: 0 };
+      if (t === 'leaf' || t === 'petal' || t === 'ash' || t === 'snow') Object.assign(P, { x: rx, y: -20, vx: (Math.random() - .3) * 1.4, vy: 1 + Math.random() * 1.6, max: 420, sz: t === 'ash' ? 2 + Math.random() * 2 : 4 + Math.random() * 5 });
+      else if (t === 'rain') Object.assign(P, { x: rx + 120, y: -30, vx: -4, vy: 18 + Math.random() * 8, max: 90, sz: 16 + Math.random() * 14 });
+      else if (t === 'mist') Object.assign(P, { x: Math.random() < .5 ? -150 : W + 150, y: H * (.35 + Math.random() * .6), vx: 0, vy: -.05, max: 700, sz: 120 + Math.random() * 160 }), P.vx = P.x < 0 ? .5 + Math.random() * .5 : -.5 - Math.random() * .5;
+      else if (t === 'ember' || t === 'gold' || t === 'soul') Object.assign(P, { x: rx, y: H + 10, vx: (Math.random() - .5) * .8, vy: -(1 + Math.random() * 2.2), max: 380, sz: t === 'soul' ? 5 + Math.random() * 5 : 1.5 + Math.random() * 2.5 });
+      else if (t === 'star') Object.assign(P, { x: rx, y: Math.random() * H * .7, vx: 0, vy: 0, max: 160 + Math.random() * 120, sz: .8 + Math.random() * 1.8 });
+      else if (t === 'inkup') Object.assign(P, { x: rx, y: H + 20, vx: (Math.random() - .5) * .5, vy: -(.5 + Math.random()), max: 600, sz: 20 + Math.random() * 40 });
+      else continue;
+      if (S.parts.length < 1100) S.parts.push(P);
     }
-    function page() {
-      const p = pages[i];
-      art.innerHTML = storyScene(p.scene);
-      art.classList.remove('kenburns'); void art.offsetWidth; art.classList.add('kenburns');
-      who.textContent = p.who || '';
-      title.textContent = p.title || '';
-      title.style.display = p.title ? '' : 'none';
-      next.style.opacity = '0';
-      const full = p.t;
-      let n = 0;
-      clearInterval(typing);
-      text.classList.remove('stext'); void text.offsetWidth; text.classList.add('stext');
-      if (p.who) { who.style.animation = 'none'; void who.offsetWidth; who.style.animation = ''; }
-      SND.hiss({ dur: .06, vol: .05, freq: 3000, filter: 'bandpass', q: 2 });
-      typing = setInterval(() => {
-        n += 1;
-        text.innerHTML = full.slice(0, n).replace(/\n/g, '<br>') + (n < full.length ? '<span class="cur">▍</span>' : '');
-        if (n % 3 === 0 && full[n - 1] && full[n - 1].trim())
-          SND.blip(1400 + Math.random() * 400, { dur: .02, type: 'square', vol: .012 });
-        if (n >= full.length) { clearInterval(typing); typing = null; next.style.opacity = ''; }
-      }, 42);
+  }
+  const out = [];
+  for (const p of S.parts) {
+    if (!S.freeze) {
+      p.life++;
+      p.x += p.vx; p.y += p.vy; p.vy += p.g || 0; p.rot += p.vr || 0;
+      if (p.t === 'spark') { p.vx *= .92; p.vy *= .92; }
+      if (p.t === 'blot' || p.t === 'smoke') { p.vx *= .95; p.vy *= .96; }
+      if (p.t === 'leaf' || p.t === 'petal' || p.t === 'snow') p.x += Math.sin(p.life / 18 + p.rot) * .8;
     }
-    function advance() {
-      if (typing) {                       /* 타자 중이면 즉시 완성 */
-        clearInterval(typing); typing = null;
-        text.innerHTML = pages[i].t.replace(/\n/g, '<br>');
-        next.style.opacity = '';
-        return;
+    const f = p.life / p.max;
+    if (f >= 1 || p.y > H + 200 || p.y < -300) continue;
+    out.push(p);
+    const al = f < .1 ? f * 10 : 1 - Math.max(0, (f - .6) / .4);
+    c.globalAlpha = Math.max(0, al);
+    switch (p.t) {
+      case 'spark':
+        c.strokeStyle = '#fff4c8'; c.lineWidth = p.sz * (1 - f); c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 3, p.y - p.vy * 3); c.stroke(); break;
+      case 'blot': {   /* 먹물이 튄다 — 겹친 방울 셋, 가운데가 짙다 */
+        const r = p.sz * (1 - f * .45), col = p.col || '200,40,70';
+        const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+        g.addColorStop(0, `rgba(${col},.95)`); g.addColorStop(.7, `rgba(${col},.75)`); g.addColorStop(1, `rgba(${col},0)`);
+        c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r, 0, 7); c.fill();
+        c.fillStyle = `rgba(${col},.8)`;
+        c.beginPath(); c.arc(p.x + Math.cos(p.rot) * r * .9, p.y + Math.sin(p.rot) * r * .9, r * .28, 0, 7); c.fill();
+        c.beginPath(); c.arc(p.x - Math.sin(p.rot) * r * 1.2, p.y + Math.cos(p.rot) * r * .7, r * .16, 0, 7); c.fill(); break; }
+      case 'smoke': {
+        const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz * (1 + f));
+        g.addColorStop(0, 'rgba(60,50,70,.5)'); g.addColorStop(1, 'rgba(60,50,70,0)');
+        c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, p.sz * (1 + f), 0, 7); c.fill(); break; }
+      case 'ring':
+        c.strokeStyle = 'rgba(255,240,200,.9)'; c.lineWidth = 5 * (1 - f); c.beginPath(); c.arc(p.x, p.y, p.sz * (.3 + f * 2.4), 0, 7); c.stroke(); break;
+      case 'leaf': case 'petal':
+        c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.col || (p.t === 'petal' ? '#f4b6c8' : '#a8322a');
+        c.beginPath(); c.ellipse(0, 0, p.sz, p.sz * .45, 0, 0, 7); c.fill(); c.restore(); break;
+      case 'ash': c.fillStyle = p.col || '#8a8494'; c.fillRect(p.x, p.y, p.sz, p.sz); break;
+      case 'snow': c.fillStyle = '#f4f6ff'; c.beginPath(); c.arc(p.x, p.y, p.sz * .5, 0, 7); c.fill(); break;
+      case 'rain': c.strokeStyle = 'rgba(170,190,230,.55)'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x + p.vx * 2, p.y + p.sz); c.stroke(); break;
+      case 'mist': {
+        const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz);
+        g.addColorStop(0, `rgba(${p.col || '200,200,220'},.16)`); g.addColorStop(1, `rgba(${p.col || '200,200,220'},0)`);
+        c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, p.sz, 0, 7); c.fill(); break; }
+      case 'ember': case 'gold': {
+        const col = p.t === 'gold' ? '255,220,120' : (p.col || '255,140,60');
+        c.fillStyle = `rgba(${col},1)`; c.shadowColor = `rgba(${col},1)`; c.shadowBlur = 8;
+        c.beginPath(); c.arc(p.x + Math.sin(p.life / 12) * 2, p.y, p.sz, 0, 7); c.fill(); c.shadowBlur = 0; break; }
+      case 'soul': {
+        const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz * 2.4);
+        g.addColorStop(0, `rgba(${p.col || '140,200,255'},.9)`); g.addColorStop(1, `rgba(${p.col || '140,200,255'},0)`);
+        c.fillStyle = g; c.beginPath(); c.arc(p.x + Math.sin(p.life / 14) * 6, p.y, p.sz * 2.4, 0, 7); c.fill(); break; }
+      case 'star': c.fillStyle = '#fffbe8'; c.globalAlpha *= .5 + .5 * Math.sin(p.life / 9 + p.rot); c.beginPath(); c.arc(p.x, p.y, p.sz, 0, 7); c.fill(); break;
+      case 'inkup': {
+        const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz);
+        g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, p.sz, 0, 7); c.fill(); break; }
+    }
+  }
+  c.globalAlpha = 1;
+  S.parts = out;
+}
+/* ── 그림 조각 ──────────────────────────────────────────── */
+/* 퇴마사 — 갓을 쓰고 도포를 입었다. 허리에 붉은 띠와 부적 주머니. 오른팔은 따로 든다 */
+let _cutId = 0;
+function cutManSvg(col = '#17120d', sash = '#a8272c') {
+  const u = ++_cutId;
+  return `<svg viewBox="0 0 200 400" width="200" height="400" class="cman">
+    <defs><linearGradient id="cmrobe${u}" x1="0" x2="1"><stop offset="0" stop-color="${col}"/><stop offset=".55" stop-color="#2b231a"/><stop offset="1" stop-color="${col}"/></linearGradient>
+      <radialGradient id="cmglow${u}"><stop offset="0" stop-color="#fff2b0" stop-opacity=".95"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient></defs>
+    <path class="cm-cape" d="M100 118 C58 128 34 230 22 392 Q100 380 178 392 C166 230 142 128 100 118Z" fill="url(#cmrobe${u})"/>
+    <path d="M100 150 L92 392 M100 150 L108 392" stroke="#3a3024" stroke-width="1.5" opacity=".6"/>
+    <path d="M72 138 C54 170 48 230 56 272 L70 270 C66 232 72 182 86 150Z" fill="#1d1712"/>
+    <path d="M62 212 Q100 226 138 212 L141 228 Q100 242 59 228Z" fill="${sash}"/>
+    <path d="M86 228 L78 290 L90 288 L96 232Z" fill="${sash}" opacity=".85"/>
+    <g class="cm-pouch"><circle cx="130" cy="256" r="26" fill="url(#cmglow${u})" class="cm-pglow" opacity="0"/>
+      <path d="M122 232 q-15 5 -13 26 q2 18 21 18 q19 0 21-18 q2-21 -13-26 z" fill="#6a1a1e" stroke="#e8c86a" stroke-width="1.6"/>
+      <path d="M119 236 q11 -7 22 0" stroke="#e8c86a" stroke-width="2" fill="none"/><circle cx="130" cy="240" r="3" fill="#e8c86a"/>
+      <text x="130" y="265" font-size="13" fill="#e8c86a" text-anchor="middle">符</text></g>
+    <g class="cm-rarm"><path d="M126 138 C150 168 158 214 150 256 L136 258 C140 218 132 180 114 150Z" fill="#1d1712"/>
+      <circle cx="143" cy="258" r="7" fill="#e3d4b8"/></g>
+    <ellipse cx="100" cy="104" rx="15" ry="18" fill="#e6d8bd"/>
+    <path d="M88 100 q5 -3 9 0 M103 100 q5 -3 9 0" stroke="#2a2018" stroke-width="2" fill="none"/>
+    <path d="M86 118 L100 146 L114 118" fill="#1d1712"/>
+    <ellipse cx="100" cy="88" rx="62" ry="11" fill="#0b0907" opacity=".88"/>
+    <ellipse cx="100" cy="86" rx="62" ry="9" fill="none" stroke="#3a3024" stroke-width="1"/>
+    <path d="M84 88 L86 54 Q100 47 114 54 L116 88Z" fill="#0b0907"/>
+    <path d="M86 90 Q84 112 96 124 M114 90 Q116 112 104 124" stroke="#6a5a44" stroke-width="1.2" fill="none"/>
+  </svg>`;
+}
+/* 요괴 — 도깨비·넋불·외눈·여우. 눈만 붉게 빛난다 */
+function cutYokaiSvg(kind, col = '#1c1024') {
+  const eye = (x, y, r = 5) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#ff3a3a"/><circle cx="${x}" cy="${y}" r="${r * 2.2}" fill="#ff3a3a" opacity=".25"/>`;
+  if (kind === 1) return `<svg viewBox="0 0 120 150" width="120" height="150"><path d="M60 8 C95 20 104 70 98 110 Q90 140 70 146 L66 128 L58 146 L50 128 L44 146 Q20 136 20 104 C16 60 28 20 60 8Z" fill="${col}"/>${eye(60, 56, 9)}</svg>`;
+  if (kind === 2) return `<svg viewBox="0 0 160 120" width="160" height="120"><path d="M20 70 Q30 40 60 42 L78 20 L84 44 Q120 40 140 60 L156 50 L150 76 Q140 100 110 104 L106 118 L96 104 L64 106 L58 118 L50 104 Q24 100 20 70Z" fill="${col}"/>${eye(118, 62, 4)}${eye(132, 60, 4)}</svg>`;
+  if (kind === 3) return `<svg viewBox="0 0 130 150" width="130" height="150"><path d="M30 146 C18 110 20 60 40 40 Q65 16 90 40 C110 60 112 110 100 146 Q84 134 76 146 Q66 132 56 146 Q44 134 30 146Z" fill="${col}"/>${eye(65, 70, 14)}<circle cx="65" cy="70" r="5" fill="#1a0006"/></svg>`;
+  return `<svg viewBox="0 0 140 160" width="140" height="160"><path d="M38 30 L30 4 L52 24 Q70 18 88 24 L110 4 L102 30 Q122 50 120 90 Q118 130 96 156 L84 132 L70 156 L56 132 L44 156 Q20 130 20 90 Q18 50 38 30Z" fill="${col}"/>${eye(54, 70)}${eye(86, 70)}<path d="M50 104 L58 96 L66 104 L74 96 L82 104 L90 96" stroke="#ff7a5a" stroke-width="2.5" fill="none"/></svg>`;
+}
+function cutTalis(g = '破') { return `<div class="ctal"><b>${g}</b></div>`; }
+/* 부적 진(陣) — 바닥에 눕혀 돌린다 */
+function cutSealSvg(col = '#ffd76a', glyphs = '破邪顯正退魔滅鬼') {
+  const gs = glyphs.split('');
+  return `<svg viewBox="0 0 600 600" width="600" height="600" class="cseal"><g fill="none" stroke="${col}">
+    <circle cx="300" cy="300" r="290" stroke-width="5"/><circle cx="300" cy="300" r="250" stroke-width="2" stroke-dasharray="18 10"/>
+    <circle cx="300" cy="300" r="150" stroke-width="3"/>
+    <path d="M300 10 L551 445 L49 445Z M300 590 L49 155 L551 155Z" stroke-width="2.5" opacity=".8"/></g>
+    <g fill="${col}" font-size="40" text-anchor="middle">${gs.map((g, i) => { const a = i / gs.length * Math.PI * 2;
+      return `<text x="${(300 + Math.cos(a) * 200).toFixed(0)}" y="${(314 + Math.sin(a) * 200).toFixed(0)}">${g}</text>`; }).join('')}</g>
+    <text x="300" y="336" font-size="110" fill="${col}" text-anchor="middle">滅</text></svg>`;
+}
+/* 하늘 · 먼 산 · 달 */
+function cutSkySvg(top, mid, bot, moon, moonCol = '#f4ead0') {
+  return `<svg viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="none"><defs>
+    <linearGradient id="cskyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset=".6" stop-color="${mid}"/><stop offset="1" stop-color="${bot}"/></linearGradient>
+    <radialGradient id="cmoong"><stop offset="0" stop-color="${moonCol}" stop-opacity=".55"/><stop offset="1" stop-color="${moonCol}" stop-opacity="0"/></radialGradient></defs>
+    <rect x="-400" y="-400" width="2400" height="1700" fill="url(#cskyg)"/>
+    ${moon ? `<circle cx="${moon[0]}" cy="${moon[1]}" r="${moon[2] * 3}" fill="url(#cmoong)"/><circle cx="${moon[0]}" cy="${moon[1]}" r="${moon[2]}" fill="${moonCol}"/>` : ''}</svg>`;
+}
+function cutRidge(col, base, amp, seed = 1, op = 1) {
+  let d = `M-400 900 L-400 ${base}`;
+  for (let x = -400; x <= 2000; x += 40) {
+    const y = base - Math.abs(Math.sin(x / 260 + seed) * amp) - Math.abs(Math.sin(x / 97 + seed * 3) * amp * .3);
+    d += ` L${x} ${y.toFixed(0)}`;
+  }
+  return `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible"><path d="${d} L2000 1300 L-400 1300Z" fill="${col}" opacity="${op}"/></svg>`;
+}
+/* ══ 시험 컷씬 — 무쌍(無雙) ═══════════════════════════════
+   퇴마사가 주머니에서 부적 한 장을 꺼낸다 → 부적이 여덟으로 갈라져 몸을 돈다 →
+   백귀가 양쪽에서 쏟아진다 → 베고, 날리고, 터뜨린다 → 바닥에 진이 서고 모두 사라진다 →
+   어둠 속에 「百 鬼 夜 行」이 한 자씩 찍힌다.
+   ═════════════════════════════════════════════════════════ */
+function cutMusou() {
+  const MAN = { x: 800, y: 740 };
+  const spawn = (S, side, i, far) => {
+    const kind = (Math.random() * 4) | 0, sc = .55 + Math.random() * .5;
+    const x0 = side < 0 ? -260 - Math.random() * 300 : 1860 + Math.random() * 300;
+    const x1 = side < 0 ? 170 + Math.random() * 480 : 950 + Math.random() * 480;
+    const y = 700 + Math.random() * 90, z = (Math.random() - .5) * 240;
+    const n = cutPut(S, `<div class="cykb" style="animation-delay:${(-Math.random()).toFixed(2)}s">${cutYokaiSvg(kind, ['#1c1024', '#24101a', '#101a24', '#1a1a10'][kind])}</div>`, { x: x0, y, z, ax: .5, ay: 1, cls: 'cyk', zi: 3 });
+    n.querySelector('svg').style.transform = `scale(${(side < 0 ? -1 : 1) * sc},${sc})`;
+    const dur = far ? 900 : 1000 + Math.random() * 700;
+    n.animate([{ left: x0 + 'px' }, { left: x1 + 'px' }], { duration: dur, easing: 'cubic-bezier(.3,.7,.4,1)', fill: 'forwards', delay: i * 45 });
+    n.dataset.x = x1; n.dataset.side = side;
+    S.refs.yk.push(n);
+    return n;
+  };
+  const kill = (S, near, big) => {
+    const alive = S.refs.yk.filter(n => !n.dead);
+    alive.sort((a, b) => Math.abs(+a.dataset.x - near) - Math.abs(+b.dataset.x - near));
+    const k = Math.min(alive.length, big ? alive.length : 3 + ((Math.random() * 3) | 0));
+    for (let i = 0; i < k; i++) {
+      const n = alive[i]; n.dead = true;
+      const at = cutAt(n);
+      cutBurst(S, at.x, at.y, ['200,40,70', '150,60,220', '220,120,40', '60,150,220'][i % 4], big ? 1.3 : 1);
+      n.animate([{ opacity: 1, filter: 'brightness(4)' }, { opacity: 0, filter: 'brightness(1) blur(6px)', transform: n.style.transform + ' scale(1.4)' }], { duration: 260, fill: 'forwards' });
+      setTimeout(() => n.remove(), 300);
+    }
+    S.refs.count += k * (big ? 9 : 4) + ((Math.random() * 6) | 0);
+    S.refs.cnt.innerHTML = `<small>擊 破</small>${S.refs.count}`;
+    S.refs.cnt.animate([{ transform: 'scale(1.35)' }, { transform: 'scale(1)' }], { duration: 220 });
+  };
+  const slash = (S, x, y, rot, col = '#fff6dc') => {
+    const n = cutPut(S, `<svg viewBox="0 0 700 300" width="700" height="300"><path d="M20 250 Q350 -60 680 180" stroke="${col}" stroke-width="16" fill="none" stroke-linecap="round" pathLength="100" class="cslpath"/>
+      <path d="M40 240 Q350 -30 660 170" stroke="#ff6a5a" stroke-width="4" fill="none" pathLength="100" class="cslpath" opacity=".8"/></svg>`,
+      { x, y, z: 60, tf: `rotate(${rot}deg)`, cls: 'cslash', zi: 6 });
+    setTimeout(() => n.remove(), 420);
+  };
+  const dash = (S, x) => {
+    const man = S.refs.man, from = S.refs.manX;
+    S.refs.manX = x;
+    man.animate([{ left: from + 'px' }, { left: x + 'px' }], { duration: 170, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+    man.querySelector('svg').style.transform = `scaleX(${x < from ? -1 : 1})`;
+    const at = cutAt(man);
+    cutEmit(S, 'smoke', at.x, at.y + at.h * .4, 6, { sp: 2, life: 40, sz: 26, g: -.02 });
+  };
+  const beat = (S, i) => {
+    const side = i % 2 ? 1 : -1;
+    const tx = side < 0 ? 300 + Math.random() * 280 : 1020 + Math.random() * 280;
+    dash(S, tx);
+    cutCam(S, { x: tx + side * 40, y: 600, s: 1.3 + Math.random() * .3, rz: side * (4 + Math.random() * 4), ry: side * -10, rx: 0 }, 240, 'cubic-bezier(.2,.9,.3,1)');
+    setTimeout(() => {
+      if (!S.alive) return;
+      slash(S, tx, 600 + (Math.random() - .5) * 80, (Math.random() - .5) * 70 + (side < 0 ? 180 : 0));
+      cutSfx(i % 3 ? 'slash2S' : 'slashS'); cutSfx('hit');
+      kill(S, tx, false); cutHitstop(S, 70); cutShake(S, 12, 240);
+      if (i % 3 === 2) { /* 고리의 부적이 반대쪽으로 날아간다 */
+        const ox = side < 0 ? 1200 : 400;
+        for (let k = 0; k < 4; k++) {
+          const t = cutPut(S, cutTalis('破'), { x: tx, y: 560, z: 80, cls: 'cfly', zi: 7 });
+          t.animate([{ left: tx + 'px', top: '560px', transform: t.style.transform + ' rotate(0deg)' },
+                     { left: (ox + (k - 1.5) * 90) + 'px', top: (650 + k * 25) + 'px', transform: t.style.transform + ' rotate(720deg)' }],
+                    { duration: 330, easing: 'cubic-bezier(.3,.1,.6,1)', fill: 'forwards', delay: k * 50 });
+          setTimeout(() => { if (!S.alive) return; const at = cutAt(t); cutEmit(S, 'gold', at.x, at.y, 22, { sp: 7, life: 36, g: .05 }); t.remove(); }, 330 + k * 50);
+        }
+        setTimeout(() => { if (S.alive) { kill(S, ox, false); cutSfx('holyhit'); cutFlash(S, 'rgba(255,230,150,.5)', 200); } }, 420);
       }
-      i++;
-      if (i >= pages.length) { finish(); return; }
-      SND.ui(); page();
-    }
-    sc.onclick = advance;
-    sc.querySelector('.sskip').onclick = e => { e.stopPropagation(); finish(); };
-    const key2 = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); advance(); } };
-    addEventListener('keydown', key2);
-    const origDone = done;
-    done = () => { removeEventListener('keydown', key2); origDone(); };
-    page();
-  });
+      /* 모자라면 또 온다 — 끝이 없는 행렬 */
+      if (S.refs.yk.filter(n => !n.dead).length < 14) for (let k = 0; k < 6; k++) spawn(S, k % 2 ? 1 : -1, k, true);
+    }, 200);
+  };
+  return {
+    len: 25400,
+    build(S) {
+      cutLayer(S, cutSkySvg('#07060c', '#1a1224', '#3a1e2a', [1180, 200, 70]), -900, 0);
+      cutLayer(S, cutRidge('#1c1522', 560, 170, 1.3, .95), -600, 1);
+      cutLayer(S, cutRidge('#120e16', 660, 120, 2.1), -300, 2);
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible"><path d="M-500 760 Q800 700 2100 760 L2100 1400 L-500 1400Z" fill="#0a080c"/>
+        <path d="M-500 762 Q800 702 2100 762" stroke="#3a2a3a" stroke-width="3" fill="none"/></svg>`, 0, 2);
+      S.refs.yk = []; S.refs.count = 0; S.refs.manX = MAN.x;
+      S.refs.man = cutPut(S, cutManSvg(), { x: MAN.x, y: MAN.y, ax: .5, ay: 1, cls: 'cmanw', zi: 5 });
+      S.refs.cnt = el('div', 'cutcount', ''); S.root.appendChild(S.refs.cnt);
+      cutAmbient(S, 'mist', .02, '170,150,200');
+      cutAmbient(S, 'ash', .25, '#6a5a70');
+      cutCam(S, { x: 800, y: 330, s: .92, rz: -4, rx: 6 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1400);
+    },
+    tl: [
+      [200, S => { cutSfx('bell'); cutCam(S, { x: 800, y: 560, s: 1.15, rz: 0, rx: 0 }, 3000); }],
+      [500, S => cutSay(S, '백 년에 한 번, 산문(山門)이 열리는 밤.', 2300)],
+      /* 주머니를 비춘다 */
+      [2900, S => { cutCam(S, { x: 832, y: 598, s: 3.5, rz: 8, ry: -12 }, 950); cutSfx('swoosh'); }],
+      [3600, S => { S.refs.man.classList.add('pouchon'); cutSfx('charge'); }],
+      [3900, S => {
+        cutSay(S, '주머니 속 — 스승이 남긴 부적 한 장.', 2000);
+        const t = cutPut(S, cutTalis('破'), { x: 830, y: 590, z: 20, cls: 'cfly glow', zi: 6 });
+        S.refs.tal = t;
+        t.animate([{ top: '590px', opacity: 0, transform: t.style.transform + ' scale(.6)' },
+                   { top: '520px', opacity: 1, transform: t.style.transform + ' scale(1) rotate(-12deg)' }], { duration: 800, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+        cutSfx('talismanS');
+        const at = cutAt(t); cutEmit(S, 'gold', at.x, at.y, 30, { sp: 3, life: 60, g: -.03 });
+      }],
+      /* 치켜든다 */
+      [5000, S => {
+        S.refs.man.classList.add('armup');
+        const t = S.refs.tal;
+        t.animate([{ left: '830px', top: '520px' }, { left: '850px', top: '372px' }], { duration: 520, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+        cutCam(S, { x: 810, y: 470, s: 2.1, rz: -5, ry: 20 }, 800);
+      }],
+      [5700, S => {
+        cutFlash(S, 'rgba(255,236,170,.95)', 500); cutSfx('power'); cutSfx('unlock');
+        S.refs.tal.remove();
+        /* 여덟 장이 몸을 돈다 — 진짜 입체 고리 */
+        const ring = cutPut(S, '<div class="cringr">' + Array.from({ length: 8 }, (_, i) => `<div class="cringi" style="transform:rotateY(${i * 45}deg) translateZ(190px)">${cutTalis('破邪顯正退魔滅鬼破'[i])}</div>`).join('') + '</div>',
+          { x: 800, y: 470, z: 0, cls: 'cring', zi: 6 });
+        S.refs.ring = ring;
+        cutCam(S, { x: 800, y: 500, s: 1.7, rz: 3, ry: -34, rx: 10 }, 1700, 'ease-in-out');
+        const at = cutAt(ring); cutEmit(S, 'gold', at.x, at.y, 60, { sp: 9, life: 50, g: .02 });
+      }],
+      /* 백귀가 쏟아진다 */
+      [7400, S => {
+        cutCam(S, { x: 800, y: 500, s: .8, rz: 0, ry: 0, rx: 0 }, 650, 'cubic-bezier(.2,.9,.3,1)');
+        for (let i = 0; i < 24; i++) spawn(S, i % 2 ? 1 : -1, i >> 1);
+        cutSfx('boss'); cutSfx('drum'); cutShake(S, 9, 700);
+        cutSay(S, '백귀(百鬼)가 산을 내려온다.', 1900);
+      }],
+      [8400, S => { S.refs.cnt.classList.add('on'); S.refs.cnt.innerHTML = '<small>擊 破</small>0'; }],
+      ...Array.from({ length: 12 }, (_, i) => [8800 + i * 640, S => beat(S, i)]),
+      /* 마무리 — 뛰어올라 진을 편다 */
+      [16700, S => {
+        dash(S, 800);
+        S.refs.man.animate([{ top: MAN.y + 'px' }, { top: (MAN.y - 250) + 'px' }], { duration: 520, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+        cutCam(S, { x: 800, y: 470, s: 1.05, rx: -14, rz: 0, ry: 0 }, 800);
+        cutSfx('swoosh'); cutSfx('charge');
+        const seal = cutPut(S, cutSealSvg(), { x: 800, y: 752, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' });
+        S.refs.seal = seal;
+        for (const n of S.refs.yk) if (!n.dead) n.animate([{ top: n.style.top }, { top: (parseFloat(n.style.top) - 60) + 'px' }], { duration: 900, fill: 'forwards', easing: 'ease-out' });
+      }],
+      [17700, S => { cutSfx('gong'); cutShake(S, 6, 900); cutSay(S, '破 邪 顯 正', 1500); }],
+      [18400, S => {
+        cutFlash(S, '#fff', 700); cutSfx('thunder'); cutSfx('crit'); cutShake(S, 22, 700); cutHitstop(S, 120);
+        kill(S, 800, true);
+        for (let i = 0; i < 6; i++) cutBurst(S, S.W * (.15 + i * .14), S.H * (.55 + (i % 2) * .1), '255,210,120', 1.2);
+        S.refs.cnt.innerHTML = '<small>擊 破</small>百 鬼';
+      }],
+      [19300, S => { cutFade(S, 1, 800); S.refs.cnt.classList.remove('on'); S.amb.length = 0; }],
+      /* 엄중한 글 — 한 자씩 찍힌다 */
+      [20300, S => {
+        S.title.innerHTML = `<div class="cstamp">${'百鬼夜行'.split('').map(c => `<span>${c}</span>`).join('')}</div><div class="cstampsub">백 귀 야 행</div><div class="cstampseal"><span>退</span><span>魔</span></div>`;
+      }],
+      ...[0, 1, 2, 3].map(i => [20400 + i * 620, S => {
+        const sp = S.title.querySelectorAll('.cstamp span')[i]; if (!sp) return;
+        sp.classList.add('in'); cutSfx('gong'); cutShake(S, 5 + i * 2, 300);
+        const at = cutAt(sp); cutEmit(S, 'smoke', at.x, at.y, 8, { sp: 3, life: 60, sz: 50, g: -.01 });
+      }]),
+      [23000, S => { S.title.querySelector('.cstampseal').classList.add('in'); S.title.querySelector('.cstampsub').classList.add('in'); cutSfx('relic'); cutShake(S, 4, 200); }],
+      [24600, S => S.title.classList.add('fade')]
+    ]
+  };
 }
+/* ══ 보스 등장 컷씬 — 제1막부터 제25막까지 ══════════════════
+   막마다 그 산의 모양(하늘·땅·날리는 것)과 보스의 나타나는 법, 카메라 길이 다르다.
+   대사는 아직 없다 — 이름과 막의 이름만. 나중에 막마다 말을 얹는다(say).
+   ═════════════════════════════════════════════════════════ */
+const CUT_ACT = {
+  1:  { sky: ['#0c0708', '#2a0f14', '#4a1a1c'], moon: [1240, 190, 64, '#ffb0a0'], ridge: ['#1a0c10', '#120709'], amb: [['leaf', .5, '#8a2020'], ['mist', .02, '200,120,130']], motif: 'forest', ent: 'fog', path: 'dolly', sp: 'tails', sfx: 'bell' },
+  2:  { sky: ['#0e1216', '#2a3440', '#56606a'], moon: [400, 170, 50], ridge: ['#262e36', '#1a2026'], amb: [['mist', .06, '210,220,230']], motif: 'peaks', ent: 'rise', path: 'crane', sp: 'eyes', sfx: 'drum' },
+  3:  { sky: ['#05060a', '#141826', '#262a3a'], ridge: ['#10121a', '#0a0b10'], amb: [['rain', 1.4], ['ash', .1]], motif: 'cliff', ent: 'descend', path: 'dutch', sp: 'coil', sfx: 'thunder' },
+  4:  { sky: ['#07070d', '#15152a', '#232336'], ridge: ['#12121f', '#0b0b14'], amb: [['soul', .12, '120,170,255'], ['mist', .03, '120,140,200']], motif: 'gate', ent: 'fog', path: 'orbit', sp: 'chains', sfx: 'bell' },
+  5:  { sky: ['#1a0505', '#4a1010', '#7a2a14'], moon: [800, 150, 90, '#ff8a4a'], ridge: ['#2a0808', '#1a0404'], amb: [['ember', .6]], motif: 'war', ent: 'descend', path: 'whip', sp: 'weapons', sfx: 'drum' },
+  6:  { sky: ['#000', '#07060b', '#0f0d16'], ridge: ['#0a0910', '#050408'], amb: [['inkup', .08]], motif: 'void', ent: 'split', path: 'dolly', sp: 'silence', sfx: 'gong' },
+  7:  { sky: ['#020304', '#0b1016', '#141c24'], ridge: ['#0a0e12', '#06080a'], amb: [['ash', .5, '#4a5a6a']], motif: 'abyss', ent: 'rise', path: 'fall', sfx: 'gong' },
+  8:  { sky: ['#0a0a14', '#1a1830', '#3a3050'], ridge: ['#141224', '#0c0a16'], amb: [['star', .5], ['gold', .15]], motif: 'origin', ent: 'glow', path: 'orbit', sfx: 'unlock' },
+  9:  { sky: ['#081010', '#1a2a2a', '#2a3a3a'], moon: [800, 160, 70, '#dff4f0'], ridge: ['#142222', '#0c1616'], amb: [['mist', .03, '180,230,220']], motif: 'mirror', ent: 'mirror', path: 'orbit', sfx: 'bell' },
+  10: { sky: ['#08040a', '#1e0c1c', '#3a1426'], moon: [1250, 180, 60, '#ffcf9a'], ridge: ['#180a16', '#10060e'], amb: [['ember', .35], ['leaf', .15, '#5a1a2a']], motif: 'parade', ent: 'crowd', path: 'whip', sfx: 'drum' },
+  11: { sky: ['#1a1024', '#8a4a3a', '#f0a060'], moon: [800, 640, 120, '#ffd890'], ridge: ['#3a2020', '#241414'], amb: [['gold', .25], ['mist', .03, '255,210,170']], motif: 'dawn', ent: 'rise', path: 'crane', sfx: 'bell' },
+  12: { sky: ['#101014', '#2a2a30', '#4a4440'], ridge: ['#1e1c1c', '#141212'], amb: [['snow', .5]], motif: 'village', ent: 'fog', path: 'dolly', sfx: 'bell' },
+  13: { sky: ['#0a0a18', '#1a1a34', '#2a2a4a'], ridge: ['#141428', '#0c0c1a'], amb: [['gold', .2]], motif: 'throne', ent: 'glow', path: 'dolly', sfx: 'gong' },
+  14: { sky: ['#3a2a10', '#a8843a', '#f4dc9a'], moon: [800, 150, 110, '#fff4c8'], ridge: ['#c8a860', '#a88840'], amb: [['gold', .5]], motif: 'clouds', ent: 'descend', path: 'crane', sfx: 'unlock' },
+  15: { sky: ['#000', '#000', '#050505'], ridge: ['#050505', '#020202'], amb: [], motif: 'enso', ent: 'split', path: 'dutch', sp: 'silence', sfx: 'gong' },
+  16: { sky: ['#0a1010', '#1a2a2a', '#2a3a3a'], ridge: ['#142020', '#0c1414'], amb: [['star', .3]], motif: 'rings', ent: 'shatter', path: 'orbit', sfx: 'crit' },
+  17: { sky: ['#120a10', '#2e1a26', '#4a2a3a'], ridge: ['#22141c', '#160c12'], amb: [['petal', .35, '#c890a8']], motif: 'memory', ent: 'fog', path: 'orbit', sfx: 'bell' },
+  18: { sky: ['#0a0e12', '#1a2430', '#2a3a4a'], ridge: ['#141c24', '#0c1218'], amb: [['rain', 1]], motif: 'master', ent: 'fog', path: 'dolly', sp: 'master', sfx: 'gong' },
+  19: { sky: ['#100a14', '#26182e', '#3a2a4a'], moon: [420, 200, 56], ridge: ['#1c1424', '#120c18'], amb: [['leaf', .2, '#c87a2a'], ['petal', .15], ['snow', .15]], motif: 'century', ent: 'glow', path: 'crane', sfx: 'bell' },
+  20: { sky: ['#0c0c0a', '#24241e', '#3a3a30'], ridge: ['#1c1c16', '#12120e'], amb: [['snow', .6]], motif: 'mountain', ent: 'rise', path: 'crane', sfx: 'thunder' },
+  21: { sky: ['#0c0c14', '#26263a', '#4a4a60'], ridge: ['#1a1a2a', '#10101c'], amb: [['mist', .05, '200,200,230']], motif: 'path', ent: 'split', path: 'dolly', sfx: 'bell' },
+  22: { sky: ['#2a2410', '#8a7a4a', '#e8dcaa'], ridge: ['#6a5a30', '#4a3e20'], amb: [['gold', .4]], motif: 'heavengate', ent: 'split', path: 'dolly', sfx: 'gong' },
+  23: { sky: ['#d8d0b0', '#f0e8d0', '#fffaf0'], moon: [800, 200, 130, '#fff'], ridge: ['#e0d8c0', '#d0c8b0'], amb: [['petal', .35, '#fff4e0'], ['gold', .2]], motif: 'heaven', ent: 'glow', path: 'crane', sfx: 'unlock' },
+  24: { sky: ['#140404', '#3a0a0a', '#7a2a10'], ridge: ['#200606', '#140404'], amb: [['ember', 1.1], ['ash', .4, '#3a2a2a']], motif: 'invasion', ent: 'crowd', path: 'whip', sfx: 'boss' },
+  25: { sky: ['#0a0a0e', '#16161e', '#22222c'], ridge: ['#141418', '#0c0c10'], amb: [['inkup', .06], ['ash', .2]], motif: 'scroll', ent: 'scroll', path: 'dolly', sfx: 'gong' }
+};
+/* 막의 모양 — 가운데 층에 깐다 */
+function cutMotif(k, bc) {
+  const W = 1600, sv = (inner, st = '') => `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible;${st}">${inner}</svg>`;
+  const rep = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join('');
+  switch (k) {
+    case 'forest': return sv(rep(14, i => { const x = i * 125 - 60, h = 380 + (i * 53) % 160;
+      return `<path d="M${x} 900 L${x + 14} ${900 - h} L${x + 28} 900Z" fill="#0c0508"/><path d="M${x - 40} ${900 - h * .55} L${x + 14} ${900 - h - 20} L${x + 70} ${900 - h * .55}Z" fill="#12070a"/>`; }));
+    case 'peaks': return sv(`<path d="M-200 900 L300 300 L520 520 L780 180 L1080 560 L1300 340 L1800 900Z" fill="#2c343c" opacity=".9"/>
+      <path d="M780 180 L720 280 L790 250 L840 290Z" fill="#dfe6ec" opacity=".7"/>`);
+    case 'cliff': return sv(`<path d="M-200 900 L-200 200 L260 240 L380 520 L300 900Z" fill="#0c0e14"/><path d="M1800 900 L1800 160 L1300 220 L1220 560 L1320 900Z" fill="#0c0e14"/>
+      <path d="M980 0 L940 180 L1000 170 L930 380" stroke="#cfe0ff" stroke-width="4" fill="none" class="cbolt"/>`);
+    case 'gate': return sv(`<g fill="#0c0c16"><rect x="560" y="300" width="36" height="600"/><rect x="1004" y="300" width="36" height="600"/>
+      <path d="M480 290 Q800 250 1120 290 L1120 320 L480 320Z"/><rect x="530" y="360" width="540" height="22"/></g>
+      <rect x="596" y="382" width="408" height="518" fill="#2a2a50" opacity=".35" class="cglowdoor"/>`);
+    case 'war': return sv(rep(9, i => { const x = 120 + i * 170;
+      return `<line x1="${x}" y1="900" x2="${x + 30}" y2="360" stroke="#1a0404" stroke-width="7"/><path d="M${x + 30} 360 L${x + 130} 380 L${x + 110} 420 L${x + 30} 430Z" fill="${i % 2 ? '#6a1010' : '#8a3a10'}" class="cflag"/>`; }));
+    case 'void': return sv(rep(6, i => `<circle cx="800" cy="470" r="${90 + i * 90}" fill="none" stroke="#fff" stroke-opacity="${.07 - i * .01}" stroke-width="2"/>`));
+    case 'abyss': return sv(`<path d="M-200 -100 L420 -100 L560 900 L-200 900Z" fill="#070a0e"/><path d="M1800 -100 L1180 -100 L1040 900 L1800 900Z" fill="#070a0e"/>
+      ${rep(8, i => `<line x1="${430 + i * 6}" y1="${i * 120}" x2="${470 + i * 6}" y2="${i * 120 + 60}" stroke="#2a3a4a" stroke-width="2"/>`)}`);
+    case 'origin': return sv(`<g class="cspin" style="transform-origin:800px 450px">${rep(5, i => `<ellipse cx="800" cy="450" rx="${160 + i * 110}" ry="${60 + i * 36}" fill="none" stroke="#d8c8ff" stroke-opacity="${.3 - i * .05}" stroke-width="2" transform="rotate(${i * 30} 800 450)"/>`)}</g>`);
+    case 'mirror': return sv(`<line x1="800" y1="120" x2="800" y2="900" stroke="#dff4f0" stroke-opacity=".5" stroke-width="3"/><rect x="0" y="700" width="1600" height="200" fill="#9ad0c8" opacity=".08"/>`);
+    case 'parade': return sv(rep(16, i => { const x = i * 105 + 20, y = 560 + Math.sin(i) * 30;
+      return `<line x1="${x}" y1="${y - 60}" x2="${x}" y2="${y - 20}" stroke="#2a1a14" stroke-width="2"/><ellipse cx="${x}" cy="${y}" rx="15" ry="22" fill="${i % 2 ? '#ff7a4a' : '#ffb45a'}" class="clamp" style="animation-delay:${i * .2}s"/>`; })
+      + rep(20, i => `<ellipse cx="${i * 84}" cy="${740 + (i % 3) * 10}" rx="24" ry="44" fill="#0a0408"/>`));
+    case 'dawn': return sv(rep(12, i => `<line x1="800" y1="640" x2="${800 + Math.cos(Math.PI + i * Math.PI / 11) * 1200}" y2="${640 + Math.sin(Math.PI + i * Math.PI / 11) * 1200}" stroke="#ffd890" stroke-opacity=".12" stroke-width="30"/>`));
+    case 'village': return sv(rep(8, i => { const x = i * 210 - 40, y = 640 + (i % 2) * 40;
+      return `<path d="M${x} ${y} Q${x + 90} ${y - 70} ${x + 180} ${y} L${x + 160} ${y} L${x + 160} ${y + 120} L${x + 20} ${y + 120} L${x + 20} ${y}Z" fill="#141210"/><rect x="${x + 70}" y="${y + 40}" width="30" height="30" fill="#ffb45a" opacity="${i % 3 ? .0 : .5}"/>`; }));
+    case 'throne': return sv(rep(6, i => `<rect x="${140 + i * 250}" y="160" width="60" height="740" fill="#10102a"/><rect x="${130 + i * 250}" y="150" width="80" height="24" fill="#8a7a3a" opacity=".6"/>`)
+      + `<path d="M680 900 L700 520 L900 520 L920 900Z" fill="#1a1a3a"/><path d="M660 520 L800 380 L940 520Z" fill="#8a7a3a" opacity=".7"/>`);
+    case 'clouds': return sv(rep(10, i => `<ellipse cx="${i * 180}" cy="${700 + (i % 3) * 40}" rx="200" ry="70" fill="#fff4d8" opacity=".55"/>`));
+    case 'enso': return sv(`<path d="M800 180 A270 270 0 1 1 610 260" stroke="#e8e8e8" stroke-width="28" fill="none" stroke-linecap="round" opacity=".9" pathLength="100" class="censo"/>`);
+    case 'rings': return sv(rep(4, i => `<g class="cspin${i % 2 ? ' rev' : ''}" style="transform-origin:800px 450px"><circle cx="800" cy="450" r="${140 + i * 100}" fill="none" stroke="#bfe" stroke-opacity=".35" stroke-width="3" stroke-dasharray="${30 + i * 10} 16"/></g>`));
+    case 'memory': return sv(rep(9, i => { const x = 120 + (i * 173) % 1400, y = 160 + (i * 97) % 420;
+      return `<rect x="${x}" y="${y}" width="120" height="84" fill="#f0d8e0" opacity=".12" stroke="#f0d8e0" stroke-opacity=".4" transform="rotate(${(i % 5 - 2) * 8} ${x + 60} ${y + 42})" class="cfloat" style="animation-delay:${i * .4}s"/>`; }));
+    case 'master': return sv(`<rect x="0" y="720" width="1600" height="180" fill="#0c1218"/>`);
+    case 'century': return sv(rep(14, i => `<rect x="${(i * 121) % 1600}" y="${(i * 67) % 600}" width="44" height="60" fill="#efe6c8" opacity=".35" class="cpage" style="animation-delay:${-i * .7}s"/>`));
+    case 'mountain': return sv(`<path d="M-100 900 L800 90 L1700 900Z" fill="#2a2a22" class="crise"/><path d="M800 90 L700 250 L800 210 L900 250Z" fill="#e8e8e0" class="crise"/>`);
+    case 'path': return sv(`<rect x="0" y="0" width="800" height="900" fill="#000" opacity=".35"/><rect x="800" y="0" width="800" height="900" fill="#fff" opacity=".06"/>
+      <path d="M720 900 L790 420 L810 420 L880 900Z" fill="#8a8aa0" opacity=".35"/>`);
+    case 'heavengate': return sv(`<rect x="420" y="120" width="380" height="780" fill="#8a7a3a" class="cdoorl"/><rect x="800" y="120" width="380" height="780" fill="#8a7a3a" class="cdoorr"/>
+      <rect x="420" y="120" width="760" height="780" fill="none" stroke="#f4e4a0" stroke-width="10"/><rect x="790" y="120" width="20" height="780" fill="#fff8d8" class="cgap"/>`);
+    case 'heaven': return sv(rep(9, i => `<line x1="${200 + i * 150}" y1="-100" x2="${100 + i * 170}" y2="900" stroke="#fff" stroke-opacity=".3" stroke-width="40"/>`)
+      + rep(8, i => `<ellipse cx="${i * 220}" cy="${760 + (i % 2) * 30}" rx="240" ry="80" fill="#fff" opacity=".7"/>`));
+    case 'invasion': return sv(rep(10, i => { const x = i * 170;
+      return `<path d="M${x} 900 Q${x + 40} ${620 - (i % 3) * 60} ${x + 20} ${520 - (i % 4) * 40} Q${x + 80} ${640} ${x + 110} 900Z" fill="${i % 2 ? '#c8401a' : '#e8781a'}" opacity=".55" class="cfire" style="animation-delay:${i * .13}s"/>`; })
+      + rep(12, i => `<ellipse cx="${60 + i * 135}" cy="760" rx="28" ry="60" fill="#0a0404"/>`));
+    case 'scroll': return sv(`<rect x="160" y="140" width="1280" height="620" fill="#e8dcbc" class="cscroll"/><rect x="140" y="130" width="24" height="640" fill="#4a2a1a"/><rect x="1436" y="130" width="24" height="640" fill="#4a2a1a" class="cscrollr"/>
+      <path d="M300 640 Q500 420 700 600 T1100 560 T1300 640" stroke="#2a2420" stroke-width="10" fill="none" opacity=".6" class="cscroll"/>`);
+  }
+  return '';
+}
+/* 보스만의 곁모양 — 꼬리·눈·몸통·장부·사슬·병장기·스승 */
+function cutBossExtra(sp, col) {
+  const rep = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join('');
+  switch (sp) {
+    case 'tails': return `<svg viewBox="0 0 600 500" width="600" height="500" class="cextra ctails">${rep(9, i => { const a = -150 + i * 15;
+      return `<path d="M300 380 Q${300 + Math.cos(a * Math.PI / 180) * 160} ${380 + Math.sin(a * Math.PI / 180) * 160} ${300 + Math.cos(a * Math.PI / 180) * 290} ${380 + Math.sin(a * Math.PI / 180) * 300}" stroke="${col}" stroke-width="34" stroke-linecap="round" fill="none" opacity=".85" style="animation-delay:${i * .08}s"/>`; })}</svg>`;
+    case 'eyes': return `<svg viewBox="0 0 600 300" width="600" height="300" class="cextra"><ellipse cx="210" cy="150" rx="60" ry="24" fill="#ffd040"/><ellipse cx="390" cy="150" rx="60" ry="24" fill="#ffd040"/>
+      <ellipse cx="210" cy="150" rx="10" ry="22" fill="#000"/><ellipse cx="390" cy="150" rx="10" ry="22" fill="#000"/></svg>`;
+    case 'coil': return `<svg viewBox="0 0 1200 500" width="1200" height="500" class="cextra ccoil"><path d="M-100 380 Q150 80 400 300 T900 220 T1300 120" stroke="${col}" stroke-width="80" fill="none" stroke-linecap="round" pathLength="100"/>
+      <path d="M-100 380 Q150 80 400 300 T900 220 T1300 120" stroke="#3a4a6a" stroke-width="80" fill="none" stroke-dasharray="3 5" pathLength="100" opacity=".6"/></svg>`;
+    case 'chains': return `<svg viewBox="0 0 800 600" width="800" height="600" class="cextra">${rep(4, i => `<path d="M${i < 2 ? 0 : 800} ${60 + i * 140} L400 300" stroke="#8a8aa8" stroke-width="10" stroke-dasharray="26 12" opacity=".8"/>`)}</svg>`;
+    case 'weapons': return `<svg viewBox="0 0 700 500" width="700" height="500" class="cextra">${rep(5, i => { const a = -160 + i * 35;
+      return `<line x1="350" y1="300" x2="${350 + Math.cos(a * Math.PI / 180) * 330}" y2="${300 + Math.sin(a * Math.PI / 180) * 300}" stroke="#c8c0b0" stroke-width="8"/>`; })}</svg>`;
+    case 'master': return `<div class="cextra cmaster">${cutManSvg('#243240', '#3a5a7a')}</div>`;
+  }
+  return '';
+}
+function cutBoss(act, bossId) {
+  const T = CUT_ACT[act] || CUT_ACT[1];
+  const E = ENEMIES[bossId] || { n: '???', g: '?', col: '#6a2a2a' };
+  const col = E.col || '#6a2a2a';
+  const BX = 1060, BY = 470;
+  const camPath = {
+    dolly: [{ x: 800, y: 470, s: .9 }, { x: 860, y: 480, s: 1.1 }],
+    crane: [{ x: 800, y: 700, s: 1.2, rx: -10 }, { x: 820, y: 430, s: 1, rx: 4 }],
+    dutch: [{ x: 780, y: 460, s: 1.05, rz: 10 }, { x: 860, y: 470, s: 1.1, rz: -6 }],
+    orbit: [{ x: 800, y: 470, s: 1.05, ry: -28 }, { x: 860, y: 470, s: 1.1, ry: 22 }],
+    whip: [{ x: 420, y: 520, s: 1.3, rz: -6 }, { x: 1000, y: 480, s: 1.05, rz: 3 }],
+    fall: [{ x: 800, y: -300, s: 1.3, rx: 30 }, { x: 820, y: 480, s: 1, rx: 0 }]
+  }[T.path] || [{ x: 800, y: 470, s: 1 }, { x: 820, y: 470, s: 1.1 }];
+  const Z = { x: 800, y: 450, s: 1, rx: 0, ry: 0, rz: 0 };
+  return {
+    len: 8600,
+    build(S) {
+      cutLayer(S, cutSkySvg(T.sky[0], T.sky[1], T.sky[2], T.moon, T.moon && T.moon[3]), -900, 0);
+      cutLayer(S, cutRidge(T.ridge[0], 560, 150, act * .7, .9), -560, 1);
+      cutLayer(S, cutMotif(T.motif, col), -220, 2, 'cmotif');
+      cutLayer(S, cutRidge(T.ridge[1], 780, 50, act * 1.3), 0, 3);
+      for (const a of T.amb) cutAmbient(S, a[0], a[1], a[2]);
+      /* 보스 — 먹의 기운 속에 큰 글자, 그 뒤로 제 곁모양 */
+      const extra = cutBossExtra(T.sp, col);
+      const boss = cutPut(S, `<div class="cbwrap"><div class="cbaura" style="--bc:${col}"></div>${extra}<div class="cbglyph" style="--bc:${col}">${E.g}</div></div>`, { x: BX, y: BY, z: 60, cls: 'cboss ent-' + T.ent, zi: 4 });
+      S.refs.boss = boss;
+      S.refs.man = cutPut(S, cutManSvg(), { x: 470, y: 800, ax: .5, ay: 1, z: 140, cls: 'cmanw small', zi: 5 });
+      S.refs.act = el('div', 'cutact', `<small>第 ${act} 幕</small><b>${wEsc(ACT_NAME[act] || '')}</b>`);
+      S.root.appendChild(S.refs.act);
+      cutCam(S, Object.assign({}, Z, camPath[0]), 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 900);
+      if (T.sp === 'silence') S.root.classList.add('mono');
+      if (act === 23 || act === 14 || act === 22) S.root.classList.add('bright');
+    },
+    tl: [
+      [100, S => { cutSfx(T.sfx); cutCam(S, Object.assign({}, Z, camPath[1]), 2600); S.refs.act.classList.add('on'); }],
+      [2500, S => {
+        S.refs.boss.classList.add('in');
+        cutCam(S, { x: BX - 40, y: BY + 10, s: 1.55, rz: T.path === 'dutch' ? 6 : 0, rx: 0, ry: T.path === 'orbit' ? -12 : 0 }, 1100, 'cubic-bezier(.3,0,.2,1)');
+        if (T.ent === 'split' || T.ent === 'shatter') cutFlash(S, 'rgba(255,255,255,.7)', 500);
+        if (T.motif === 'heavengate') S.root.classList.add('dooropen');
+        if (T.motif === 'scroll') S.root.classList.add('unroll');
+      }],
+      [3600, S => {
+        cutSfx('boss'); cutShake(S, T.path === 'whip' || act === 24 ? 20 : 14, 800);
+        cutFlash(S, col, 450, .55);
+        const at = cutAt(S.refs.boss.querySelector('.cbglyph'));
+        cutEmit(S, 'ring', at.x, at.y, 1, { sp: 0, life: 26, sz: 70, g: 0 });
+        cutEmit(S, 'spark', at.x, at.y, 30, { sp: 14, life: 30, sz: 3, g: .05 });
+        S.refs.act.classList.remove('on');
+      }],
+      [4200, S => {
+        cutHitstop(S, 110); cutSfx('gong');
+        /* 이름패가 오른쪽에 서니 보스를 왼쪽으로 비킨다 */
+        S.timers.push(setTimeout(() => S.alive && cutCam(S, { x: BX + Math.min(250, S.W / S.k * .22), y: BY + 40, s: 1.3, rz: 0, rx: 0, ry: 0 }, 900, 'cubic-bezier(.3,0,.2,1)'), 130));
+        S.title.innerHTML = `<div class="cbname" style="--bc:${col}"><i>${E.g}</i><b>${wEsc(E.n)}</b><em>제${act}막 · ${wEsc(ACT_NAME[act] || '')}</em></div>`;
+      }],
+      [6400, S => {
+        S.title.firstElementChild && S.title.firstElementChild.classList.add('out');
+        cutCam(S, { x: 780, y: 520, s: .95, rz: 0, rx: 0, ry: 0 }, 900);
+        S.refs.man.classList.add('armup'); cutSfx('charge');
+      }],
+      [7400, S => { const at = cutAt(S.refs.man); cutEmit(S, 'gold', at.x + 20, at.y - at.h * .3, 40, { sp: 6, life: 40, g: .02 }); cutSfx('talismanS'); }],
+      [7900, S => { cutFlash(S, '#fff', 600); cutFade(S, 1, 600); }]
+    ]
+  };
+}
+/* 보스 칸을 밟았을 때 — 한 모험에서 막마다 한 번 (다시 붙을 때는 건너뛴다) */
+/* 쓰러져 갈림길로 돌아와도 모험은 되감기니 모험 밖(CUT.boss)에 적어 둔다 */
+const cutBossKey = run => (run.startedAt || 0) + ':' + (run.asc || 0) + ':' + run.act;
+function cutBossOk(run) {
+  if (!OPT.cuts || !run || run._pvp) return false;
+  return !CUT.boss[cutBossKey(run)];
+}
+function cutBossPlay(run, bossId) {
+  CUT.boss[cutBossKey(run)] = 1;
+  const prev = G.scene; G.scene = 'cutscene';
+  return cutPlay(cutBoss(run.act, bossId)).then(() => { if (G.scene === 'cutscene') G.scene = prev; });
+}
+/* 이름으로 부른다 — 관리자가 뿌리는 것도 이 이름을 쓴다 */
+const CUT_LIST = { musou: { n: '무쌍 — 백귀야행', make: () => cutMusou() } };
+for (let a = 1; a <= 25; a++) CUT_LIST['boss' + a] = { n: `제${a}막 보스 — ${ACT_NAME[a]}`, make: () => cutBoss(a, (ENCOUNTERS[a] && ENCOUNTERS[a].boss[0]) || 'gumiho') };
+function cutByName(k) {
+  const c = CUT_LIST[k]; if (!c) return Promise.resolve();
+  const prev = G.scene; if (!G.b) G.scene = 'cutscene';
+  return cutPlay(c.make()).then(() => { if (G.scene === 'cutscene') G.scene = prev; });
+}
+/* 관리자가 뿌린 컷씬 — 막 뿌린 것(1분 안)만, 한 번씩. 대전·모두의 적 한가운데에서는 틀지 않는다 */
+function cutLiveCheck() {
+  const c = LIVE.cut;
+  if (!c || !c.k || !CUT_LIST[c.k] || CUT.seen[c.id]) return;
+  if (srvNow() - (c.at || 0) > 60000) return;
+  if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'world')) return;
+  if (!acctOn() || cutPlaying()) return;
+  CUT.seen[c.id] = 1;
+  cutByName(c.k).then(() => { if (G.b) try { syncAll(); } catch (e) {} });
+}
+
 
 /* ══════════════════════════════════════════════════════════
    13. 결과 · 메뉴
@@ -18015,7 +18234,6 @@ async function doReborn(n, deck) {
   clearSave();
   newRun(n, deck);
   META.asc = Math.max(META.asc || 0, n); saveMeta();
-  document.querySelectorAll('.story').forEach(x => x.remove());
   toast(`${n}회째 환생 — 부적 ${deck.length}장을 안고 제1막으로`);
   flash(`還 生 ${n}`);
   saveRun(); renderTop(); showMap();
@@ -18051,7 +18269,7 @@ function showMenu() {
   if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) { mpMenu(); return; }
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
-      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : `자동 플레이 (제${AUTO_ACT}막 클리어)`}</button>
+      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (VIP)'}</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
@@ -18266,7 +18484,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 8;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 9;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -18379,6 +18597,7 @@ async function liveFetch() {
     LIVE.hunt = d.hunt && typeof d.hunt === 'object' ? d.hunt : null;       /* 숨은 부적 찾기 */
     LIVE.poll = d.poll && typeof d.poll === 'object' ? d.poll : null;       /* 투표 · 퀴즈 */
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
+    LIVE.cut = d.cut && typeof d.cut === 'object' ? d.cut : null;          /* 관리자가 뿌린 컷씬 */
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
     try { chatBadge(); } catch (e) {}
@@ -18479,8 +18698,9 @@ function whenSay(t) {
 function drawAcct(n) {
   const has = acctOn();
   n.innerHTML = has
-    ? `<div class="lb"><b>${wEsc(ACCT.id)} 님</b><small>마지막 저장 — ${whenSay(ACCT.at)} · 바뀌면 스스로 저장된다</small></div>
+    ? `<div class="lb"><b>${wEsc(ACCT.nick || ACCT.id)} 님</b><small>아이디 ${wEsc(ACCT.id)} · 마지막 저장 — ${whenSay(ACCT.at)} · 바뀌면 스스로 저장된다</small></div>
        <div class="acctbtns">
+         <button class="val" id="ac_nick">닉네임 바꾸기</button>
          <button class="val" id="ac_push">지금 저장</button>
          <button class="val" id="ac_pull">불러오기</button>
          <button class="val ghost" id="ac_out">로그아웃</button>
@@ -18489,8 +18709,10 @@ function drawAcct(n) {
     : `<div class="lb"><b>로그인 · 회원가입</b><small>로그인해 두면 기록과 이어 가던 모험이 서버에 저장된다 — 폰을 바꾸거나 앱을 지워도 되찾는다.</small></div>
        <div class="acctform">
          <input id="ac_id" placeholder="아이디" autocomplete="username" spellcheck="false" maxlength="20">
-         <input id="ac_pw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" maxlength="60">
+         <input id="ac_pw" type="password" placeholder="비밀번호" autocomplete="current-password" maxlength="60">
+         <input id="ac_nk" placeholder="닉네임 (회원가입 때 · 남에게 보이는 이름)" spellcheck="false" maxlength="12" autocomplete="off">
        </div>
+       <div class="acctpwnote">새 비밀번호는 8자 이상 · 너무 쉬운 것·아이디가 든 것은 안 된다. 비밀번호는 서버에도 그대로 남지 않는다(되돌릴 수 없게 갈아 둔다).</div>
        <div class="acctbtns">
          <button class="val" id="ac_in">로그인</button>
          <button class="val" id="ac_new">회원가입</button>
@@ -18502,6 +18724,7 @@ function drawAcct(n) {
   const busy = b => n.querySelectorAll('button').forEach(x => x.disabled = b);
 
   if (has) {
+    n.querySelector('#ac_nick').onclick = () => { SND.ui(); showNickSet(false, () => drawAcct(n)); };
     n.querySelector('#ac_push').onclick = async () => {
       busy(true); tell('올리는 중…', true);
       const r = await acctPush(); busy(false);
@@ -18510,14 +18733,14 @@ function drawAcct(n) {
     };
     n.querySelector('#ac_pull').onclick = async () => {
       busy(true); tell('찾아 오는 중…', true);
-      const r = await acctAsk('/pull?t=' + encodeURIComponent(ACCT.token)); busy(false);
+      const r = await acctAsk('/pull', { token: ACCT.token }); busy(false);
       if (!r.ok) { tell('못 찾았다: ' + r.why, false); return; }
       if (!r.save) { tell('서버에 저장된 것이 아직 없다', false); return; }
       tell('', true);
       acctPick(r.save, r.at);
     };
     n.querySelector('#ac_out').onclick = () => {
-      ACCT = { id: '', token: '', at: 0 }; acctSave(); SND.ui(); chatClose();
+      ACCT = { id: '', token: '', at: 0, nick: '' }; acctSave(); SND.ui(); chatClose();
       /* 로그인해야만 오른다 — 나가면 첫 화면(로그인 창)으로. 하던 모험은 이 기계에 남는다 */
       if (G.scene !== 'title') { try { if (G.run) saveRun(); } catch (e) {} G.run = null; showTitle(); return; }
       drawAcct(n);
@@ -18525,12 +18748,18 @@ function drawAcct(n) {
   } else {
     const go = async (path, what) => {
       const id = n.querySelector('#ac_id').value.trim();
-      const pw = n.querySelector('#ac_pw').value;
+      const pwEl = n.querySelector('#ac_pw'), pw = pwEl.value;
+      const nick = n.querySelector('#ac_nk').value.trim();
+      const signup = path === '/auth/signup';
       if (!id || !pw) { tell('아이디와 비밀번호를 적으시오', false); return; }
+      if (signup && !nick) { tell('회원가입에는 닉네임이 있어야 한다', false); n.querySelector('#ac_nk').focus(); return; }
       busy(true); tell(what + ' 중… (서버가 잠들어 있으면 깨는 데 1분쯤 걸린다)', true);
-      const r = await acctAsk(path, { id, pw }, 70000); busy(false);
+      const body = signup ? { id, pw, nick } : { id, pw };
+      if (signup && castKey()) body.code = castKey();
+      const r = await acctAsk(path, body, 70000); busy(false);
       if (!r.ok) { tell(r.why, false); SND.err(); return; }
-      ACCT = { id: r.id, token: r.token, at: r.at || 0 }; acctSave();
+      pwEl.value = '';                        /* 적은 비밀번호는 곧바로 지운다 — 화면에도 기억에도 남기지 않는다 */
+      ACCT = { id: r.id, token: r.token, at: r.at || 0, nick: r.nick || '' }; acctSave();
       SND.unlock();
       if (r.save) { drawAcct(n); acctPick(r.save, r.at); }
       else {
@@ -18544,10 +18773,54 @@ function drawAcct(n) {
     };
     n.querySelector('#ac_in').onclick = () => go('/auth/login', '로그인하는');
     n.querySelector('#ac_new').onclick = () => go('/auth/signup', '회원가입하는');
-    n.querySelectorAll('input').forEach(i => i.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); go('/auth/login', '로그인하는'); } });
+    n.querySelectorAll('input').forEach(i => i.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); go(i.id === 'ac_nk' ? '/auth/signup' : '/auth/login', i.id === 'ac_nk' ? '회원가입하는' : '로그인하는'); } });
   }
   /* 로그인 창(첫 화면)에서 들어왔으면 곧바로 첫 화면을 연다 */
   if (has && typeof titleAcctPaint === 'function') titleAcctPaint();
+}
+/* 닉네임 — 남에게 보이는 이름. 채팅·멀티·랭킹에 뜬다.
+   must: 아직 없는 사람(옛 계정) — 닫을 수 없다. 정해야 오른다. */
+const NICK_RE_C = /^[a-zA-Z0-9가-힣_]{2,12}$/;
+function showNickSet(must, done) {
+  const p = modal(`<h2>${must ? '닉네임을 정하시오' : '닉네임 바꾸기'}</h2>
+    <div class="hint" style="max-width:420px;margin-top:6px;line-height:1.8">${must ? '이제 모두 닉네임이 있어야 한다 — 채팅·멀티플레이·랭킹에 이 이름이 뜬다.<br>' : ''}
+      2~12 글자, 한글·영문·숫자·_ 만. 겹치면 안 된다. 「백야」·관리자·운영 따위는 못 쓴다.</div>
+    <div class="acctform" style="max-width:360px;margin:12px auto 0"><input id="nk_in" maxlength="12" placeholder="닉네임" spellcheck="false" autocomplete="off" value="${wEsc(ACCT.nick || '')}"></div>
+    <div class="acctsay" id="nk_say" style="min-height:18px;margin-top:6px"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
+      <button class="brush-btn gold" id="nk_go">정한다</button>
+      ${must ? '' : '<button class="brush-btn ghost" id="nk_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>'}</div>`, 'nickm');
+  p.dataset.noauto = '1';
+  if (must) p.dataset.lock = '1';
+  const inp = p.querySelector('#nk_in'), say = p.querySelector('#nk_say');
+  const tell = (m, ok) => { say.textContent = m; say.style.color = ok ? '#7fe6cf' : '#e08a7a'; };
+  const go = async () => {
+    const v = inp.value.trim();
+    if (!NICK_RE_C.test(v)) { tell('2~12 글자, 한글·영문·숫자·_ 만', false); SND.err(); return; }
+    p.querySelector('#nk_go').disabled = true; tell('정하는 중…', true);
+    const body = { token: ACCT.token, nick: v }; if (castKey()) body.code = castKey();
+    const r = await acctAsk('/auth/nick', body, 60000);
+    p.querySelector('#nk_go').disabled = false;
+    if (!r.ok) { tell(r.why, false); SND.err(); return; }
+    ACCT.nick = r.nick; acctSave(); SND.unlock(); toast(`닉네임 — ${r.nick}`);
+    p.dataset.lock = '0'; closePanel(p); if (done) done();
+  };
+  p.querySelector('#nk_go').onclick = go;
+  inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') go(); };
+  const x = p.querySelector('#nk_x'); if (x) x.onclick = closeTop;
+  setTimeout(() => inp.focus(), 60);
+}
+/* 옛 계정 — 서버에 닉네임이 있는지 먼저 묻고, 없으면 정하게 한다 */
+let _nickAsking = false;
+async function nickCheck() {
+  if (!acctOn() || ACCT.nick || _nickAsking || $('.nickm')) return;
+  _nickAsking = true;
+  try {
+    const r = await acctAsk('/auth/me', { token: ACCT.token }, 60000);
+    if (r.ok && r.nick) { ACCT.nick = r.nick; acctSave(); titleAcctPaint(); return; }
+    if (!r.ok && /들어와 있지 않다/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0, nick: '' }; acctSave(); showTitle(); return; }
+    if (r.ok) showNickSet(true, () => titleAcctPaint());
+  } finally { _nickAsking = false; }
 }
 /* 어느 쪽을 쓸지 고르게 한다 — 말없이 덮지 않는다 */
 function acctPick(save, at) {
@@ -19048,7 +19321,7 @@ function bossForce(now) {
   if (_wBusy || !bossAlive() || !G.run || G.b || G.scene !== 'map') return;
   if (bossOut()) return;                  /* 스스로 나왔다 — 다시 들어갈 때까지 두고 본다 */
   const o = $('#overlay'); if (o && o.children.length) return;
-  if ($('#app > .story') || $('#app > .openscene')) return;
+  if (cutPlaying() || $('#app > .openscene')) return;
   if (!now && Date.now() < _wRest) return;
   if (evOn('rain')) return;               /* 카드 대전이 겹치면 그것부터 — 비가 그치면 끌려간다 */
   const b = worldBoss();
@@ -19405,6 +19678,7 @@ function liveTick() {
   songSync();
   try { evSky(k || (rn ? 'rain' : '')); } catch (e) { console.error('이벤트 하늘', e); }
   try { huntTick(); pollTick(); } catch (e) { console.error('찾기·투표', e); }
+  try { cutLiveCheck(); } catch (e) { console.error('컷씬', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -19749,6 +20023,12 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec"><b>컷씬 뿌리기</b>
+      <div class="casthint">지금 켜 둔 모든 앱에서 같은 컷씬이 한 번 흐른다 (뿌린 뒤 1분 안에 접속한 사람까지). 멀티 대전·모두의 적 한가운데에서는 틀지 않는다. 누구나 건너뛸 수 있다.</div>
+      <div class="cutgrid2" id="ct_cuts">${Object.keys(CUT_LIST).map(k => `<button data-k="${k}">${CUT_LIST[k].n}<small>${k}</small></button>`).join('')}</div>
+      <div class="castbtnrow"><button class="brush-btn" id="ct_cuttry">내 기계에서만 보기 (무쌍)</button></div>
+    </div>
+
     <div class="castsec"><b>숨은 부적 찾기</b>
       <div class="casthint">모든 앱의 지도 어딘가에 희미한 부적이 숨는다(사람마다 다른 자리). 이따금 반짝인다.
         먼저 찾은 사람만 받는다 — 한 아이디에 한 번. <span id="ct_hnow"></span></div>
@@ -19944,6 +20224,9 @@ function drawCast(grid) {
   };
   grid.querySelector('#ct_moff').onclick = () => send({ music: null }, '노래 끄기').then(() => { _songTry = 0; songSync(); });
   grid.querySelector('#ct_off').onclick = () => send({ event: '', eventAt: Date.now() }, '모두 끄기');
+  /* 컷씬 — 모두에게 한 번 */
+  grid.querySelectorAll('#ct_cuts button').forEach(b => b.onclick = () => send({ cut: { k: b.dataset.k } }, `컷씬 「${CUT_LIST[b.dataset.k].n}」`));
+  grid.querySelector('#ct_cuttry').onclick = () => cutByName('musou');
 
   /* 선물 — 적은 이름이 실제로 있는 부적인지 먼저 보여 준다 */
   const gcards = grid.querySelector('#ct_gcards');
@@ -20537,6 +20820,7 @@ function chatClose() {
 }
 function chatOpen() {
   if (!acctOn()) { toast('로그인해야 채팅할 수 있다'); SND.err(); return; }
+  if (!ACCT.nick) { toast('닉네임을 먼저 정하시오'); SND.err(); nickCheck(); return; }
   if ($('#chatp')) return;
   const dev = caster();
   const p = el('div', 'chatp');
@@ -20889,7 +21173,7 @@ function mpPaintLobby() {
     const bt = stt.querySelector('#mp_bot'); if (bt) bt.onclick = async () => { await mpAsk('cancel'); MP.queue = null; mpBotStart(); };
   } else if (MP.room) {
     const r = MP.room, mine = r.owner === ACCT.id, cap = r.mode === '2v2' ? 4 : 2;
-    const col = t => r.members.filter(x => x.team === t).map(x => `<div class="mpmem${x.acct === r.owner ? ' own' : ''}">${mpEmblem(x.rp, 'sm')}<b>${wEsc(x.acct)}</b>${x.acct === r.owner ? '<em>방장</em>' : ''}</div>`).join('')
+    const col = t => r.members.filter(x => x.team === t).map(x => `<div class="mpmem${x.acct === r.owner ? ' own' : ''}">${mpEmblem(x.rp, 'sm')}<b>${wEsc(x.name || x.acct)}</b>${x.acct === r.owner ? '<em>방장</em>' : ''}</div>`).join('')
       || '<div class="mpmem none">비었다</div>';
     stt.innerHTML = `<div class="mproom">
       <div class="mprc"><small>방 코드 · ${r.mode === '2v2' ? '2대2' : '1대1'} · ${r.members.length}/${cap}명</small><b id="mp_rcode">${r.code}</b>
@@ -20900,7 +21184,7 @@ function mpPaintLobby() {
         ${mine ? '<button class="val gold" id="mp_start">친선전 시작</button>' : '<span class="casthint">방장이 시작하면 곧바로 싸움이 열린다</span>'}
         ${mine && r.mode === '2v2' && r.members.length === 2 ? '<button class="val gold" id="mp_party">둘이 파티로 랭크 2대2 찾기</button>' : ''}
         <button class="val" id="mp_leave">방에서 나간다</button></div>
-      <div class="mpjoin"><input id="mp_invid" maxlength="20" placeholder="초대할 친구 아이디" spellcheck="false"><button class="val" id="mp_invgo">초대</button></div>
+      <div class="mpjoin"><input id="mp_invid" maxlength="20" placeholder="초대할 친구 닉네임 또는 아이디" spellcheck="false"><button class="val" id="mp_invgo">초대</button></div>
     </div>`;
     const q = s => stt.querySelector(s);
     q('#mp_copy').onclick = () => { try { navigator.clipboard.writeText(r.code); toast('코드를 복사했다 — ' + r.code); } catch (e) { toast(r.code); } };
@@ -20917,7 +21201,7 @@ function mpPaintLobby() {
   } else stt.innerHTML = '';
   /* 받은 초대 */
   const iv = box.querySelector('#mp_inv');
-  iv.innerHTML = (MP.inv || []).map(x => `<div class="mpinvrow">📜 <b>${wEsc(x.from)}</b>의 ${x.mode === '2v2' ? '2대2' : '1대1'} 방 초대 <button class="val gold" data-c="${x.code}">참가</button></div>`).join('');
+  iv.innerHTML = (MP.inv || []).map(x => `<div class="mpinvrow">📜 <b>${wEsc(x.fromN || x.from)}</b>의 ${x.mode === '2v2' ? '2대2' : '1대1'} 방 초대 <button class="val gold" data-c="${x.code}">참가</button></div>`).join('');
   iv.querySelectorAll('button').forEach(b => b.onclick = async () => {
     const x = await mpAsk('room', { act: 'join', code: b.dataset.c, deck: mpDeck() });
     await mpAsk('inbox', { drop: b.dataset.c });
@@ -20933,7 +21217,7 @@ async function mpInboxCheck() {
   MP.seenInv[x.code + x.at] = 1;
   try { SND.bell(); } catch (e) {}
   const p = modal(`<h2 style="color:#e8c86a">對 멀티플레이 초대</h2>
-    <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9"><b style="color:#7fe6cf">${wEsc(x.from)}</b>이(가) ${x.mode === '2v2' ? '2대2' : '1대1'} 방에 부른다.</div>
+    <div class="hint" style="max-width:400px;margin-top:8px;line-height:1.9"><b style="color:#7fe6cf">${wEsc(x.fromN || x.from)}</b>이(가) ${x.mode === '2v2' ? '2대2' : '1대1'} 방에 부른다.</div>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="mi_go">참가한다</button>
       <button class="brush-btn ghost" id="mi_no" style="color:#e9dfc9;border-color:#8a7f68">거절</button></div>`);
   p.id = 'mpinvm'; p.dataset.noauto = '1';
@@ -20998,7 +21282,7 @@ async function showMpTop() {
   const box = p.querySelector('#mt_list'); if (!box.isConnected) return;
   if (!r.ok) { box.innerHTML = `<div class="casthint">못 불러왔다 — ${wEsc(r.why)}</div>`; return; }
   box.innerHTML = (r.top || []).length ? r.top.map((x, i) => `<div class="mptoprow${x.id === ACCT.id ? ' me' : ''}"><b>${i + 1}</b>${mpEmblem(x.rp, 'sm')}
-    <span>${wEsc(x.id)}</span><em>${mpTierName(x.rp)}</em><u>${x.rp}점 · ${x.w}승 ${x.l}패</u></div>`).join('')
+    <span>${wEsc(x.nick || x.id)}</span><em>${mpTierName(x.rp)}</em><u>${x.rp}점 · ${x.w}승 ${x.l}패</u></div>`).join('')
     : '<div class="casthint">아직 랭크 매치를 한 사람이 없다 — 첫 이름을 올리시오</div>';
 }
 /* ══ 싸움 ═════════════════════════════════════════════════ */
@@ -21332,8 +21616,7 @@ function showAdmin() {
         <div class="adrow"><b>전부</b><button class="val" id="ad_all">부적·유물·비기·스킨·팻</button></div>
         <div class="adrow"><b>보스</b><button class="val" id="ad_boss">이 막 보스와 붙는다</button></div>
         <div class="adrow"><b>한 방</b><button class="val" id="ad_onehit">요괴를 한 대에 눕힌다</button></div>
-        <div class="adrow"><b>컷씬</b><button class="val" id="ad_cut">골라 본다</button></div>
-        <div class="adrow"><b>이야기</b><button class="val" id="ad_story">처음부터 끝까지</button></div>
+        <div class="adrow"><b>컷씬</b><button class="val" id="ad_cut">골라 본다 (이 기계에서만)</button></div>
       </div>
       <div class="scmain">
         <div class="adtabs">
@@ -21441,44 +21724,16 @@ function showAdmin() {
     SND.ui(); toast(ADMIN.oneHit ? '한 방 — 켜짐' : '한 방 — 꺼짐');
   };
   /* ── 컷씬만 골라 본다 ── */
-  p.querySelector('#ad_cut').onclick = () => showStoryPicker();
-  /* ── 이야기를 처음부터 끝까지 ── */
-  p.querySelector('#ad_story').onclick = async () => {
-    closePanel(p);
-    const keys = Object.keys(STORY);
-    for (const k of keys) { await showStory(k); }
-    toast('이야기를 다 보았다');
-    if (G.run && G.scene === 'map') showMap(); else showTitle();
-  };
+  p.querySelector('#ad_cut').onclick = () => showCutPicker();
   p.querySelector('#ad_back').onclick = () => { closePanel(p); if (G.run && G.scene === 'map') showMap(); };
 }
-/* 컷씬 하나를 골라 본다 */
-const STORY_LABEL = {
-  opening: '여는 이야기', end_taecho: '끝 — 태초', end_mugan: '끝 — 무간',
-  end_blackdragon: '끝 — 흑룡', end_yeomra: '끝 — 염라', end_sasindo: '끝 — 사신도',
-  act3_blackdragon: '제3막 — 흑룡', act3_yeomra: '제3막 — 염라',
-  mugan_lost: '제6막 — 끊긴 통 부적'
-};
-function storyLabel(k) {
-  if (STORY_LABEL[k]) return STORY_LABEL[k];
-  const m = /^act(\d+)$/.exec(k);
-  if (m) return `제${m[1]}막 — ${ACT_NAME[+m[1]] || ''}`;
-  return k;
-}
-function showStoryPicker() {
-  const keys = Object.keys(STORY);
-  const p = modal(`<h2>컷 씬</h2>
-    <div class="hint">${keys.length}개 · 눌러서 본다</div>
-    <div class="cutgrid" id="cut_grid"></div>
+/* 컷씬을 골라 본다 — 이 기계에서만 */
+function showCutPicker() {
+  const p = modal(`<h2>컷 씬</h2><div class="hint">눌러서 본다 · 이 기계에서만 (모두에게는 운영 창의 「컷씬 뿌리기」)</div>
+    <div class="cutgrid2">${Object.keys(CUT_LIST).map(k => `<button data-k="${k}">${CUT_LIST[k].n}<small>${k}</small></button>`).join('')}</div>
     <button class="brush-btn ghost" id="cut_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>`);
   p.dataset.noauto = '1';
-  const g = p.querySelector('#cut_grid');
-  for (const k of keys) {
-    const pages = STORY[k] || [];
-    const t = el('div', 'cuttile', `<b>${storyLabel(k)}</b><small>${pages.length}쪽 · ${k}</small>`);
-    t.onclick = async () => { closeTop(); await showStory(k); showStoryPicker(); };
-    g.appendChild(t);
-  }
+  p.querySelectorAll('.cutgrid2 button').forEach(b => b.onclick = () => { closeTop(); cutByName(b.dataset.k); });
   p.querySelector('#cut_x').onclick = closeTop;
 }
 /* ══════════════════════════════════════════════════════════
@@ -22064,6 +22319,7 @@ function showSettings() {
     if (v) FX.ink(innerWidth / 2, innerHeight / 2, 18); else FX.ps.length = 0;
   });
   row('큰 이름 연출', '귀한 부적을 쓸 때 이름이 크게 지나간다', () => OPT.banner, v => { OPT.banner = v; });
+  row('보스 컷씬', '막마다 보스가 나타날 때 카메라가 도는 장면을 튼다 (건너뛰기·Esc 로 넘긴다)', () => OPT.cuts, v => { OPT.cuts = v; });
   row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
 
   head('자 동 플 레 이');
@@ -22138,7 +22394,8 @@ function showSettings() {
       `<div class="lb"><b>코드 입력</b><small>받은 코드가 있다면 여기에 적는다 (개발자용 · 나중에 삭제)</small></div>`);
     const box = el('div', 'codebox');
     const inp = el('input', 'codein');
-    inp.type = 'text'; inp.placeholder = '코드'; inp.spellcheck = false;
+    /* 적는 동안 화면에 드러나지 않게 — 관리자 코드는 어깨너머로 새기 쉽다 */
+    inp.type = 'password'; inp.placeholder = '코드'; inp.spellcheck = false;
     inp.setAttribute('autocomplete', 'off');
     const btn = el('button', 'val'); btn.textContent = '입력';
     const say = el('div', 'codesay');
@@ -22146,7 +22403,8 @@ function showSettings() {
       const r = redeemCode(inp.value);
       say.textContent = r.msg;
       say.style.color = r.ok ? '#7fe6cf' : '#e08a7a';
-      if (r.ok) { inp.value = ''; SND.unlock(); screenFlash('rgba(255,215,120,.3)', 520); }
+      inp.value = '';
+      if (r.ok) { SND.unlock(); screenFlash('rgba(255,215,120,.3)', 520); }
       else SND.err();
     };
     btn.onclick = go;
@@ -22718,7 +22976,7 @@ const TUTOR = [
         'S급 이상 부적은 도감에서 <b>스킨을 갈아입힌다.</b>',
         '≡ 메뉴 · 타이틀 화면 어디서나 열 수 있다.'] },
   { g: '自', t: '지치면 맡겨도 된다', c: '#4fd3a0',
-    b: '제1막을 넘어서면 <b>자동 플레이</b>가 열린다. <b>등급이 높은 부적을 먼저</b> 쓰는 식으로 대신 싸운다.',
+    b: 'VIP 패키지로 <b>자동 플레이</b>가 열린다. <b>등급이 높은 부적을 먼저</b> 쓰는 식으로 대신 싸운다.',
     s: ['전투 화면의 <b>자동 ▶</b> 단추 · 아무 때나 <span class="kbd">A</span> 키.',
         '설정에서 <b>전투만 / 지도까지</b>와 속도를 고른다.',
         '급하면 상단바 <b>癒</b> — 체력이 30 아래로 떨어지면 골드 60에 전부 회복한다.'] },
@@ -23782,7 +24040,8 @@ function titleAcctPaint() {
   const ts = $('#title-scene');
   if (ts && G.scene === 'title' && !!ts.dataset.gate !== !acctOn()) { showTitle(); return; }
   const b = $('#t_acct'); if (!b) return;
-  b.innerHTML = acctOn() ? `<b style="color:#7fe6cf">●</b> ${wEsc(ACCT.id)} 님` : '로그인 · 회원가입';
+  b.innerHTML = acctOn() ? `<b style="color:#7fe6cf">●</b> ${wEsc(ACCT.nick || ACCT.id)} 님` : '로그인 · 회원가입';
+  if (acctOn() && !ACCT.nick) nickCheck();
 }
 /* 로그인 창 — 설정 속 계정 칸을 그대로 띄운다 */
 function showAcct() {
@@ -23824,6 +24083,7 @@ addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const o = $('#overlay'), top = o.lastElementChild;
     if (top) {
+      if (top.dataset.lock === '1') return;      /* 꼭 정해야 하는 창(닉네임) — Esc 로 못 닫는다 */
       if (top.dataset.modal) { closeTop(); return; }
       /* 화면 패널(사건·상점 따위)은 Esc 로 지우지 않는다 — 지우면 갈 곳이 없어진다.
          대신 메뉴를 위에 얹어, 어디서든 빠져나갈 길을 하나 남긴다. */

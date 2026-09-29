@@ -40,6 +40,7 @@ function expire(now) {
   if (live.rain && live.rain.until && now > live.rain.until) { live.rain = null; changed = true; }
   if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
   if (live.music && live.music.until && now > live.music.until) { live.music = null; changed = true; }
+  if (live.cut && now - live.cut.at > 120000) { live.cut = null; changed = true; }
   /* 숨은 부적 — 때가 지나고 한 분 뒤 걷는다 */
   if (live.hunt && now > live.hunt.until + 60000) { live.hunt = null; changed = true; }
   /* 투표 — 때가 되면 마감하고, 열 분 뒤 걷는다(결과를 볼 틈) */
@@ -157,6 +158,54 @@ const scrypt = (pw, salt) => new Promise((ok, no) =>
 /* 이름은 짧고 눈에 보이는 글자만 — 헷갈리는 이름을 막는다 */
 function nameOk(s) { return typeof s === 'string' && /^[a-zA-Z0-9가-힣_.-]{2,20}$/.test(s); }
 
+/* ── 닉네임 ─────────────────────────────────────────────────
+   아이디(로그인용)와 따로, 남에게 보이는 이름. 채팅·멀티·랭킹에 이것이 뜬다.
+   겹치지 않는다(대소문자 무시). 「백야」는 관리자(퍼뜨리기 열쇠를 쥔 사람)만 쓴다 —
+   그 밖에 백야·관리자·운영 따위가 섞인 이름과 거친 말은 못 쓴다.
+     nick:<아이디> → 닉네임      nk:<닉네임 소문자> → 아이디
+   ────────────────────────────────────────────────────────── */
+const NICK_RE = /^[a-zA-Z0-9가-힣_]{2,12}$/;
+const NICK_BAN = /백야|baekya|백\s*야|관리자|운영|개발자|admin|^gm$|씨발|시발|병신|좆|존나|개새|fuck|shit|bitch/i;
+const nickMem = new Map();
+async function nickOf(id) {
+  if (!id) return '';
+  if (nickMem.has(id)) return nickMem.get(id);
+  const n = (await get('nick:' + id)) || '';
+  if (nickMem.size > 50000) nickMem.clear();
+  nickMem.set(id, n);
+  return n;
+}
+async function nickFree(nick, id) { const o = await get('nk:' + nick.toLowerCase()); return !o || o === id; }
+function nickWhy(nick, dev) {
+  if (!NICK_RE.test(nick)) return '닉네임은 2~12 글자, 한글·영문·숫자·_ 만';
+  if (NICK_BAN.test(nick) && !(dev && nick === '백야')) return '쓸 수 없는 닉네임이다 (백야·관리자·운영 따위, 거친 말)';
+  return '';
+}
+async function nickSet(id, nick, dev) {
+  const why = nickWhy(nick, dev); if (why) return why;
+  if (!(await nickFree(nick, id))) return '이미 누가 쓰는 닉네임이다';
+  const old = await nickOf(id);
+  if (old && old.toLowerCase() !== nick.toLowerCase()) await put('nk:' + old.toLowerCase(), null);
+  await put('nk:' + nick.toLowerCase(), id);
+  await put('nick:' + id, nick);
+  nickMem.set(id, nick);
+  return '';
+}
+/* 로그인을 거듭 틀리면 그 아이디는 잠시 잠근다 — 비밀번호를 하나씩 대 보는 것을 막는다 */
+const loginFail = new Map();
+const LOGIN_TRIES = 8, LOGIN_LOCK = 10 * 60 * 1000;
+function loginLocked(id, now) { const f = loginFail.get(id); return f && f.n >= LOGIN_TRIES && now - f.at < LOGIN_LOCK ? Math.ceil((LOGIN_LOCK - (now - f.at)) / 60000) : 0; }
+function loginMiss(id, now) { const f = loginFail.get(id) || { n: 0, at: now }; if (now - f.at > LOGIN_LOCK) { f.n = 0; } f.n++; f.at = now; loginFail.set(id, f); if (loginFail.size > 20000) loginFail.clear(); }
+/* 너무 흔한 비밀번호는 새로 만들 때 받지 않는다 */
+const PW_WEAK = /^(1234567?8?9?0?|12345678|123456789|1234567890|password\d*|qwerty\w*|asdf\w*|111111+|000000+|abc123\w*|iloveyou|a123456)$/i;
+function pwWhy(pw, id) {
+  if (pw.length < 8) return '비밀번호는 8자 이상';
+  if (pw.length > 60) return '비밀번호가 너무 길다';
+  if (PW_WEAK.test(pw) || /^(.)\1+$/.test(pw)) return '너무 쉬운 비밀번호다 — 남이 맞히기 쉽다';
+  if (id && pw.toLowerCase().includes(id.toLowerCase())) return '비밀번호에 아이디를 넣지 마시오';
+  return '';
+}
+
 async function soulGet(id) {
   const p = await db();
   if (p) { const r = await p.query('select * from souls where id=$1', [id]);
@@ -216,13 +265,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp):|^mptop$/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk):|^mptop$/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -368,7 +417,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -408,6 +457,11 @@ async function applyCast(q) {
     if (!q.music || !q.music.k) live.music = null;
     else { const min = Math.max(1, Math.min(120, parseInt(q.music.min, 10) || 10));
            live.music = { k: str(q.music.k, 12), at: Date.now(), until: Date.now() + min * 60000 }; }
+  }
+  /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
+  if ('cut' in q) {
+    const k = q.cut && str(q.cut.k, 24);
+    live.cut = k && /^[a-z0-9]+$/.test(k) ? { k, id: Date.now(), at: Date.now() } : null;
   }
   /* 숨은 부적 찾기 — 모든 앱의 지도 어딘가에 희미한 부적이 숨는다. 먼저 찾은 max 명만 받는다 */
   if ('hunt' in q) {
@@ -600,8 +654,12 @@ async function chatLoad() {
 const chatSave = () => put(CHAT_KEY, chat).catch(() => {});
 /* 거친 말은 가린다 — 가볍게만 */
 const CHAT_BAD = /(씨\s*발|시\s*발|ㅅ\s*ㅂ|ㅆ\s*ㅂ|병\s*신|ㅂ\s*ㅅ|좆|존\s*나|개\s*새|지\s*랄|fuck|shit|bitch)/gi;
-const chatClean = s => String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, ' ')
-  .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length));
+/* 열쇠처럼 생긴 것은 채팅에 못 올린다 — 관리자·퍼뜨리기·선물 코드, 들어와 있는 표 */
+const CHAT_SECRET = /baekya-[a-z]+-[a-z0-9]{6,}|\b[0-9a-f]{32,}\b/gi;
+const chatClean = s => { let t = String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, ' ')
+  .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length)).replace(CHAT_SECRET, '[가림]');
+  if (CODE && t.includes(CODE)) t = t.split(CODE).join('[가림]');
+  return t; };
 const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '' });
 const chatLastId = () => (chat && chat.log.length ? chat.log[chat.log.length - 1].id : 0);
 /* 채팅은 셋 분만 남는다 — 한 마디는 말한 지 셋 분이 지나면 사라진다 */
@@ -640,7 +698,7 @@ async function mpPut(id, p) { await put('mp:' + id, p); }
 async function mpTopSet(id, p) {
   const top = (await get('mptop')) || [];
   const i = top.findIndex(x => x.id === id);
-  const row = { id, rp: p.rp, w: p.w, l: p.l, tier: mpTier(p.rp) };
+  const row = { id, nick: await nickOf(id), rp: p.rp, w: p.w, l: p.l, tier: mpTier(p.rp) };
   if (i >= 0) top[i] = row; else top.push(row);
   top.sort((a, b) => b.rp - a.rp);
   await put('mptop', top.slice(0, 100));
@@ -797,7 +855,9 @@ const CORS = {
 const send = (res, code, body) => {
   res.writeHead(code, Object.assign({
     'content-type': 'application/json; charset=utf-8',
-    'cache-control': 'no-store'
+    'cache-control': 'no-store',
+    'x-content-type-options': 'nosniff',
+    'referrer-policy': 'no-referrer'
   }, CORS));
   res.end(JSON.stringify(body));
 };
@@ -1034,7 +1094,7 @@ const server = http.createServer(async (req, res) => {
     if (now - (chatLast.get(id) || 0) < CHAT_GAP || tooMany(ip)) return send(res, 429, { ok: false, why: '너무 빠르다 — 잠시 뒤에' });
     const t = chatClean(q.text);
     if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
-    let n = id, k = '';
+    let n = (await nickOf(id)) || id, k = '';
     if (isDev) { n = '백야'; k = 'dev'; }
     else if (/^[0-9a-f]{32}$/.test(String(q.gsec || ''))) {
       const me = (await guestsGet())[sha(q.gsec)];
@@ -1064,7 +1124,7 @@ const server = http.createServer(async (req, res) => {
     const now = Date.now(), act = url.pathname.slice(4);
     const prof = await mpProf(acct);
     /* 인게임 멀티 — 지금 모험의 덱·최대 체력·막을 들고 온다 */
-    const me = { acct, name: acct, rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
+    const me = { acct, name: (await nickOf(acct)) || acct, rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
                  hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)) };
     const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct });
 
@@ -1151,11 +1211,13 @@ const server = http.createServer(async (req, res) => {
       return send(res, 400, { ok: false, why: '모르는 일' });
     }
     if (act === 'invite') {
-      const to = str(q.to, 20).trim(), code = mpRoomOf.get(acct);
+      let to = str(q.to, 20).trim(); const code = mpRoomOf.get(acct);
       if (!code) return send(res, 409, { ok: false, why: '먼저 방을 만드시오' });
-      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 아이디가 없다' });
+      /* 아이디든 닉네임이든 — 닉네임이면 아이디로 바꾼다 */
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 아이디·닉네임이 없다' });
       const l = (mpInv.get(to) || []).filter(x => x.from !== acct);
-      l.push({ from: acct, code, mode: mpRooms.get(code).mode, at: now }); mpInv.set(to, l.slice(-5));
+      l.push({ from: acct, fromN: me.name, code, mode: mpRooms.get(code).mode, at: now }); mpInv.set(to, l.slice(-5));
       return send(res, 200, { ok: true });
     }
     if (act === 'inbox') {
@@ -1399,7 +1461,7 @@ const server = http.createServer(async (req, res) => {
                req.socket.remoteAddress || '?';
     if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 두드린다 — 잠시 뒤에' });
 
-    /* 걸어 둔 것을 찾아 온다 */
+    /* 걸어 둔 것을 찾아 온다 — 표는 주소에 싣지 않는다(기록에 남는다). 옛 앱을 위해 GET 도 한동안 받는다 */
     if (url.pathname === '/pull' && req.method === 'GET') {
       const id = await tokWho(url.searchParams.get('t'));
       if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
@@ -1417,30 +1479,63 @@ const server = http.createServer(async (req, res) => {
     let q;
     try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
 
-    /* 이름을 새로 건다 */
+    /* 걸어 둔 것을 찾아 온다 (POST) */
+    if (url.pathname === '/pull') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      const s = await soulGet(id);
+      return send(res, 200, { ok: true, id, nick: await nickOf(id),
+        save: s && s.save ? JSON.parse(s.save) : null, at: (s && +s.saved) || 0 });
+    }
+
+    /* 이름을 새로 건다 — 닉네임도 함께 */
     if (url.pathname === '/auth/signup') {
-      const id = str(q.id, 20).trim(), pw = String(q.pw || '');
+      const id = str(q.id, 20).trim(), pw = String(q.pw || ''), nick = str(q.nick, 12).trim();
+      const dev = !!(CODE && q.code && same(String(q.code), CODE));
       if (!nameOk(id)) return send(res, 400, { ok: false, why: '아이디는 2~20 글자, 한글·영문·숫자·_.- 만' });
-      if (pw.length < 6) return send(res, 400, { ok: false, why: '비밀번호는 6자 이상' });
+      if (/백야|baekya|관리자|운영|admin/i.test(id) && !dev) return send(res, 400, { ok: false, why: '그 아이디는 쓸 수 없다' });
+      const pwBad = pwWhy(pw, id); if (pwBad) return send(res, 400, { ok: false, why: pwBad });
+      const nBad = nickWhy(nick, dev); if (nBad) return send(res, 400, { ok: false, why: nBad });
       if (await soulGet(id)) return send(res, 409, { ok: false, why: '이미 있는 아이디' });
+      if (!(await nickFree(nick, id))) return send(res, 409, { ok: false, why: '이미 누가 쓰는 닉네임이다' });
       const salt = crypto.randomBytes(16).toString('hex');
       const hash = await scrypt(pw, salt);
       await soulPut({ id, salt, hash, made: Date.now(), save: null, saved: 0 });
+      await nickSet(id, nick, dev);
       const tok = await tokMake(id);
       console.log('이름을 걸었다:', id);
-      return send(res, 200, { ok: true, id, token: tok, save: null, at: 0 });
+      return send(res, 200, { ok: true, id, nick, token: tok, save: null, at: 0 });
+    }
+
+    /* 닉네임을 정한다 · 바꾼다 */
+    if (url.pathname === '/auth/nick') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      const nick = str(q.nick, 12).trim(), dev = !!(CODE && q.code && same(String(q.code), CODE));
+      const why = await nickSet(id, nick, dev);
+      if (why) return send(res, 400, { ok: false, why });
+      return send(res, 200, { ok: true, id, nick });
+    }
+    /* 나는 누구인가 — 닉네임을 아직 안 정한 옛 계정을 알아본다 */
+    if (url.pathname === '/auth/me') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      return send(res, 200, { ok: true, id, nick: await nickOf(id) });
     }
 
     /* 걸어 둔 이름으로 들어온다 */
     if (url.pathname === '/auth/login') {
-      const id = str(q.id, 20).trim(), pw = String(q.pw || '');
+      const id = str(q.id, 20).trim(), pw = String(q.pw || '').slice(0, 200), now = Date.now();
+      const lk = id + '|' + ip, lock = loginLocked(lk, now);   /* 아이디와 두드린 곳을 함께 — 남의 계정을 일부러 잠그지 못하게 */
+      if (lock) return send(res, 429, { ok: false, why: `비밀번호를 여러 번 틀려 잠시 잠갔다 — ${lock}분 뒤에` });
       const s = await soulGet(id);
       /* 이름이 없을 때도 한 번 갈아 본다 — 빠르기로 있는 이름을 알아내지 못하게 */
       const salt = (s && s.salt) || '0000';
       const hash = await scrypt(pw, salt);
-      if (!s || !same(hash, s.hash)) return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' });
+      if (!s || !same(hash, s.hash)) { loginMiss(lk, now); return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' }); }
+      loginFail.delete(lk);
       const tok = await tokMake(id);
-      return send(res, 200, { ok: true, id, token: tok,
+      return send(res, 200, { ok: true, id, nick: await nickOf(id), token: tok,
         save: s.save ? JSON.parse(s.save) : null, at: +s.saved || 0 });
     }
 
