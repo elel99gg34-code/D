@@ -3740,7 +3740,17 @@ button.evpill{font:inherit;cursor:pointer}
 .pollrow b{font-weight:400;color:#7fe6cf;font-size:11px;border:1px solid;border-radius:3px;padding:0 4px;margin-left:4px}
 .pollrow em{font-style:normal;color:#e8c86a;font-size:11px;margin-left:4px}
 /* ══ 멀티플레이 ══════════════════════════════════════════ */
-body.pvp #topbar{display:none}
+body.pvp #topbar .topbtn,body.pvp #topbar #deckbtn,body.pvp #topbar .grp:not(:first-child),body.pvp #healcall{display:none!important}
+body.pvp .mphud{top:calc(var(--tbh,44px) + 6px)}
+body.pvp .mpwait{top:calc(var(--tbh,44px) + 48px)}
+body.pvp .mpally{top:calc(var(--tbh,44px) + 8px)}
+.topbtn.mpgo{color:#e6d8ff;background:rgba(90,60,160,.28);border-color:#8a6ad0}
+.topbtn.mpgo:hover{background:rgba(110,80,190,.5)}
+.topbtn.mpgo.live{box-shadow:0 0 10px rgba(180,140,255,.8);animation:pillBeat 1.2s ease-in-out infinite}
+.mprun{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:8px 0 2px;padding:8px 12px;border-radius:6px;background:rgba(20,14,34,.72);border:1px solid #5a4a8a;font-size:12.5px;color:#e9dfc9}
+.mprun b{color:#c8a8ff;margin-right:4px}
+.mprun span{padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.07)}
+.mprun small{flex-basis:100%;color:#9a8d74;font-size:11.5px}
 body.pvp #field .unit .body .glyph{color:#f2e6cc;text-shadow:0 0 10px rgba(180,160,255,.55),0 2px 4px #000}
 body.pvp #field .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
 .brush-btn.mpbtn{border-color:#b98cff;color:#e6d4ff;background:linear-gradient(160deg,rgba(60,30,110,.55),rgba(20,10,40,.4))}
@@ -3905,7 +3915,7 @@ body.pvp #field .unit .nm{color:#e9dfc9;text-shadow:0 1px 3px #000}
   .mpintro{grid-template-columns:1fr;gap:10px;padding:20vh 8vw}
   .mpside.a,.mpside.b{align-items:center}
   .mpvsbig{font-size:44px;text-align:center}
-  .mpally{top:auto;bottom:calc(var(--handh,190px) + 8px);width:150px}
+  .mpally,body.pvp .mpally{top:auto;bottom:calc(var(--handh,190px) + 8px);width:150px}
   .mphud{font-size:12px;gap:7px}
 }
 /* 관리자 — 지금 접속 */
@@ -10622,6 +10632,7 @@ function renderTop() {
       <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리"><b>場</b><i>터</i><em></em></button>
       <button class="topbtn forge" id="forgetop" title="대장간 — 부적을 두들겨 힘을 올린다"><b>冶</b><i>대장간</i><em></em></button>
       <button class="topbtn colo" id="colotop" title="콜로세움 — 부적으로 겨룬다"><b>鬪</b><i>콜로세움</i><em></em></button>
+      <button class="topbtn mpgo" id="mptopbtn" title="대전 — 다른 퇴마사와 겨룬다"><b>對</b><i>대전</i><em></em></button>
       <button class="topbtn illub" id="illutop" title="환상 — 무한 부적을 두들긴다"><b>幻</b><i>환상</i><em></em></button>
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
       <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를"><b>神</b><i>신전</i><em></em></button>
@@ -10681,6 +10692,9 @@ function renderTop() {
     /* 터에서 꺼내 온 셋 — 자주 가는 자리라 윗줄에 둔다 */
     t.querySelector('#forgetop').onclick = () => { markUsed('forge'); openForge(); };
     t.querySelector('#colotop').onclick = () => { markUsed('colo'); openColosseum(); };
+    t.querySelector('#mptopbtn').onclick = () => { if (G.b) return; SND.ui(); showMulti(); };
+    bindTip(t.querySelector('#mptopbtn'), () => `<b style="color:#c8a8ff">대전</b> — 지금 모험 그대로 다른 퇴마사와 겨룬다<br>
+      1대1 · 2대2 랭크 매치, 방 코드로 친구와 팀전<br><span style="color:#9a8d74">모험에는 아무것도 남지 않는다 · 이기면 멀티 토큰</span>`);
     t.querySelector('#illutop').onclick = () => { markUsed('illu'); showIllusion(); };
     bindTip(t.querySelector('#forgetop'), () => `<b>대장간</b> — 부적을 두들겨 힘을 올린다<br>
       <span style="color:#9a8d74">최대 ${FORGE_MAX}단 · 실패하면 단이 내려갈 수 있다</span>`);
@@ -10743,6 +10757,8 @@ function renderTop() {
   if (ft2) { ft2.classList.toggle('busy', !!G.b); ft2.classList.toggle('fresh', !usedPlace('forge')); }
   const ct2 = t.querySelector('#colotop');
   if (ct2) { ct2.classList.toggle('busy', !!G.b); ct2.classList.toggle('fresh', !usedPlace('colo')); }
+  const mt2 = t.querySelector('#mptopbtn');
+  if (mt2) { mt2.classList.toggle('busy', !!G.b); mt2.classList.toggle('live', !!(MP.queue || MP.room)); }
   const it2 = t.querySelector('#illutop');
   if (it2) {
     const on = illuOk() && illuLeft() && !G.b;
@@ -18250,7 +18266,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 7;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 8;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -20717,7 +20733,8 @@ function mpEmblem(rp, size) {
   const k = mpTierOf(rp || 0), t = MP_TIER_INFO[k];
   return `<span class="mpemb t-${k}${size ? ' ' + size : ''}" title="${t.n}"><i>${t.g}</i></span>`;
 }
-const mpAsk = (path, body) => acctAsk('/mp/' + path, Object.assign({ token: ACCT.token, ver: APP_VERSION }, body || {}), 15000);
+const mpAsk = (path, body) => acctAsk('/mp/' + path, Object.assign({ token: ACCT.token, ver: APP_VERSION },
+  body && body.deck ? { hp: mpHpOf(), lv: mpLvOf() } : {}, body || {}), 15000);
 /* ── 덱 ─────────────────────────────────────────────────── */
 function mpOwned() {
   const ids = Object.keys((META.dex && META.dex.cards) || {}).filter(id => CARDS[id] && CARDS[id].rar !== 'curse' && MP_POINTS[CARDS[id].rar] != null);
@@ -20726,16 +20743,7 @@ function mpOwned() {
 }
 const mpCost = ids => ids.reduce((a, id) => a + (MP_POINTS[(CARDS[id] || {}).rar] || 0), 0);
 const mpCap = id => (CARDS[id] && CARDS[id].rar === 'basic') ? 5 : 2;
-function mpDeckOk(ids) {
-  if (!Array.isArray(ids)) return '덱이 없다';
-  if (ids.length < MP_DECK_MIN) return `덱이 ${MP_DECK_MIN}장보다 적다`;
-  if (ids.length > MP_DECK_MAX) return `덱이 ${MP_DECK_MAX}장보다 많다`;
-  if (mpCost(ids) > MP_BUDGET) return `점수가 ${MP_BUDGET}을 넘는다`;
-  const own = new Set(mpOwned());
-  for (const id of ids) { if (!own.has(id)) return '가져 본 적 없는 부적이 있다'; if (ids.filter(x => x === id).length > mpCap(id)) return `${CARDS[id].n}은(는) ${mpCap(id)}장까지`; }
-  return '';
-}
-/* 추천 덱 — 기본 여섯에, 가진 것 가운데 좋은 것부터 점수 안에서 */
+/* 모험이 없을 때만 쓰는 덱 — 기본 여섯에, 가진 것 가운데 좋은 것부터 점수 안에서 */
 function mpAutoDeck() {
   const ids = ['strike', 'strike', 'strike', 'defend', 'defend', 'defend', 'ward'];
   const pool = mpOwned().filter(id => CARDS[id].rar !== 'basic')
@@ -20752,10 +20760,12 @@ function mpAutoDeck() {
   }
   return ids;
 }
-function mpDeck() {
-  if (!META.mpDeck || mpDeckOk(META.mpDeck)) { META.mpDeck = mpAutoDeck(); saveMeta(); }
-  return META.mpDeck;
-}
+/* 인게임 멀티 — 따로 짜는 덱은 없다. 지금 오르는 모험의 덱·강화·유물·물약·비기·기·최대 체력을 그대로 들고 나선다.
+   싸움은 모험의 복사본으로 치르니, 이기든 지든 물약을 쓰든 모험에는 아무것도 남지 않는다. */
+const mpHome = () => (MP.saved && MP.saved.run) || (G.run && !G.run._pvp ? G.run : null);
+function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id) : mpAutoDeck(); }
+const mpHpOf = () => { const r = mpHome(); return r ? r.maxHp : 90; };
+const mpLvOf = () => { const r = mpHome(); return r ? (r.act || 1) : 1; };
 /* ── 묻는 박자 — 로비·줄·방·판에 있는 동안만 ────────────── */
 function mpStartLoop() { if (MP.t) return; MP.on = true; MP.t = setInterval(mpPoll, 1000); mpPoll(); }
 function mpStopLoop() { clearInterval(MP.t); MP.t = 0; MP.on = false; }
@@ -20782,6 +20792,7 @@ async function mpPoll() {
 function showMulti() {
   if (!acctOn()) { toast('로그인해야 멀티플레이를 할 수 있다'); SND.err(); return; }
   if (G.b) { toast('싸우는 중에는 갈 수 없다'); SND.err(); return; }
+  if (!G.run || G.run._pvp) { toast('멀티플레이는 모험 안에서 — 오르는 중에 지도 윗줄의 「對 대전」으로'); SND.err(); return; }
   closeOverlay();
   MP.lobby = true; MP.prevScene = G.scene;
   const p = overlay(`<div class="school mplobby">
@@ -20789,6 +20800,7 @@ function showMulti() {
     <div class="schead"><button class="gback" id="mp_back">←</button><h2>멀티플레이</h2><div class="scnote">對 戰</div></div>
     <div class="mpbody">
       <div class="mpme" id="mp_me"><div class="casthint">서버에 묻는 중… (잠든 서버는 깨는 데 조금 걸린다)</div></div>
+      <div class="mprun" id="mp_run"></div>
       <div class="mpmodes">
         <button class="mpmode" data-q="1v1"><b>1 대 1</b><span>랭크 매치</span><em>점수가 비슷한 상대와</em></button>
         <button class="mpmode two" data-q="2v2"><b>2 대 2</b><span>랭크 매치</span><em>모르는 이와 한 편이 된다</em></button>
@@ -20801,7 +20813,7 @@ function showMulti() {
         </div>
         <div class="mpbox"><b>준비</b>
           <div class="mpbtns col">
-            <button class="val" id="mp_deck">덱 편성</button>
+            <button class="val" id="mp_deck">들고 가는 덱</button>
             <button class="val gold" id="mp_shop">교환소</button>
             <button class="val" id="mp_top">랭킹</button>
           </div>
@@ -20814,7 +20826,6 @@ function showMulti() {
   setMpBg(p.querySelector('#mp_bg'));
   p.querySelector('#mp_back').onclick = mpCloseLobby;
   p.querySelectorAll('.mpmode').forEach(b => b.onclick = async () => {
-    const err = mpDeckOk(mpDeck()); if (err) { toast(err); SND.err(); return; }
     SND.ui(); const r = await mpAsk('queue', { mode: b.dataset.q, deck: mpDeck() });
     if (!r.ok) { toast(r.why); SND.err(); } else { MP.queueAt = Date.now(); mpPoll(); }
   });
@@ -20826,11 +20837,21 @@ function showMulti() {
     const r = await mpAsk('room', { act: 'join', code: c, deck: mpDeck() }); if (!r.ok) { toast(r.why); SND.err(); } else { SND.unlock(); MP.room = r.room; mpPaintLobby(); } };
   p.querySelector('#mp_join').onclick = join;
   p.querySelector('#mp_code').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') join(); };
-  p.querySelector('#mp_deck').onclick = () => { SND.ui(); showMpDeck(); };
+  p.querySelector('#mp_deck').onclick = () => { SND.ui(); const r = mpHome(); if (r) showCardList(r.deck, '대전에 들고 가는 덱 — 모험 덱 그대로'); };
+  mpRunPaint();
   p.querySelector('#mp_shop').onclick = () => { SND.ui(); showMpShop(); };
   p.querySelector('#mp_top').onclick = () => { SND.ui(); showMpTop(); };
   mpStartLoop();
   songSync();
+}
+/* 무엇을 들고 나서나 — 모험 그대로 */
+function mpRunPaint() {
+  const box = document.querySelector('#mp_run'), r = mpHome(); if (!box || !r) return;
+  const up = r.deck.filter(c => c.up).length;
+  box.innerHTML = `<b>지금 모험 그대로 나선다</b>
+    <span>제${r.act}막</span><span>체력 ${r.maxHp}</span><span>덱 ${r.deck.length}장${up ? ` (강화 ${up})` : ''}</span>
+    <span>유물 ${r.relics.length}</span><span>물약 ${r.potions.filter(Boolean).length}</span><span>기 ${r.maxEnergy}</span>
+    <small>대전은 모험의 그림자로 치른다 — 이기든 지든, 물약을 쓰든 모험은 그대로다. 비슷한 막을 오르는 상대와 붙는다.</small>`;
 }
 function mpCloseLobby() {
   SND.ui();
@@ -20920,55 +20941,11 @@ async function mpInboxCheck() {
   p.querySelector('#mi_go').onclick = async () => {
     closeTop();
     if (G.b) { toast('싸움을 마친 뒤 멀티플레이에서 코드로 들어가시오 — ' + x.code); return; }
+    if (!G.run || G.run._pvp) { toast('모험을 이어 오른 뒤 지도 윗줄 「對 대전」에서 코드로 — ' + x.code); return; }
     const j = await mpAsk('room', { act: 'join', code: x.code, deck: mpDeck() }); await mpAsk('inbox', { drop: x.code });
     if (!j.ok) { toast(j.why); SND.err(); return; }
     MP.room = j.room; showMulti();
   };
-}
-/* ══ 덱 편성 ══════════════════════════════════════════════ */
-function showMpDeck() {
-  let ids = mpDeck().slice();
-  const own = mpOwned().sort((a, z) => GRADE_ORDER.indexOf(CARDS[a].rar) - GRADE_ORDER.indexOf(CARDS[z].rar) || CARDS[a].n.localeCompare(CARDS[z].n, 'ko'));
-  const p = modal(`<h2>덱 편성 — 멀티플레이</h2>
-    <div class="hint">가져 본 적 있는(도감에 오른) 부적으로 짠다 · ${MP_DECK_MIN}~${MP_DECK_MAX}장 · 등급 점수 합 ${MP_BUDGET} 안 · 같은 부적은 두 장(기본은 다섯 장)까지</div>
-    <div class="mpdeckbar" id="md_bar"></div>
-    <div class="mpdecksel" id="md_sel"></div>
-    <div class="cpgrid mpdeckpool" id="md_pool"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap">
-      <button class="brush-btn" id="md_auto">추천 덱</button><button class="brush-btn gold" id="md_save">저장</button>
-      <button class="brush-btn ghost" id="md_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'mpdeckm');
-  p.dataset.noauto = '1';
-  const draw = () => {
-    const cost = mpCost(ids), err = mpDeckOk(ids);
-    p.querySelector('#md_bar').innerHTML = `<span>${ids.length}장</span><div class="mprp"><i style="width:${Math.min(100, cost / MP_BUDGET * 100)}%;background:${cost > MP_BUDGET ? '#ff6a5a' : '#7fe6cf'}"></i></div>
-      <span>점수 <b>${cost}</b> / ${MP_BUDGET}</span><em style="color:${err ? '#ff9a8a' : '#8affd0'}">${err || '쓸 수 있는 덱'}</em>`;
-    const cnt = {}; ids.forEach(i => cnt[i] = (cnt[i] || 0) + 1);
-    p.querySelector('#md_sel').innerHTML = Object.keys(cnt).sort((a, z) => GRADE_ORDER.indexOf(CARDS[z].rar) - GRADE_ORDER.indexOf(CARDS[a].rar))
-      .map(i => `<span class="cpchip" data-id="${i}" style="--gc:${GRADE[CARDS[i].rar].c}"><i>${CARDS[i].g}</i>${CARDS[i].n}${cnt[i] > 1 ? ' ×' + cnt[i] : ''}<b>−</b></span>`).join('');
-    p.querySelectorAll('#md_sel .cpchip').forEach(c => c.onclick = () => { const k = ids.indexOf(c.dataset.id); if (k >= 0) ids.splice(k, 1); SND.ui(); draw(); });
-    const pool = p.querySelector('#md_pool'); pool.innerHTML = '';
-    for (const id of own) {
-      const c = CARDS[id], n = cnt[id] || 0;
-      const b = el('button', 'cpc' + (n ? ' on' : ''), `<i>${c.g}</i><b>${c.n}</b><em>${GRADE[c.rar].n} · ${MP_POINTS[c.rar]}점${n ? ' · ' + n + '장' : ''}</em>`);
-      b.style.setProperty('--gc', GRADE[c.rar].c);
-      try { b.title = c.n + ' — ' + String(c.txt(c.v ? c.v(false) : {})).replace(/<[^>]+>/g, ''); } catch (e) {}
-      b.onclick = () => {
-        if (n >= mpCap(id)) { toast(`${c.n}은(는) ${mpCap(id)}장까지`); SND.err(); return; }
-        if (ids.length >= MP_DECK_MAX) { toast(`${MP_DECK_MAX}장까지`); SND.err(); return; }
-        ids.push(id); SND.ui(); draw();
-      };
-      pool.appendChild(b);
-    }
-  };
-  draw();
-  p.querySelector('#md_auto').onclick = () => { ids = mpAutoDeck(); SND.ui(); draw(); };
-  p.querySelector('#md_save').onclick = async () => {
-    const err = mpDeckOk(ids); if (err) { toast(err); SND.err(); return; }
-    META.mpDeck = ids.slice(); saveMeta(); SND.unlock(); toast('덱을 저장했다');
-    if (MP.room) await mpAsk('room', { act: 'deck', deck: ids });
-    closeTop();
-  };
-  p.querySelector('#md_x').onclick = closeTop;
 }
 /* ══ 교환소 ═══════════════════════════════════════════════ */
 function showMpShop() {
@@ -20997,7 +20974,7 @@ function showMpShop() {
         if (c) {
           dexAdd('cards', it.card);
           if (G.run) { G.run.deck.push(mkCard(it.card, false)); saveRun(); } else { META.giftBag = (META.giftBag || []).concat(it.card).slice(0, 40); }
-          saveMeta(); toast(`${c.n} — 도감에 올랐다 · 멀티 덱에도 넣을 수 있다`);
+          saveMeta(); toast(`${c.n} — ${G.run ? '모험 덱에 들어갔다' : '다음 모험 선물 주머니에 넣었다'}`);
         } else { const what = await it.give(); toast(`${it.n} — 받았다${typeof what === 'string' && it.k === 'bigbox' ? ' · ' + what : ''}`); }
         draw(); mpPaintLobby();
       };
@@ -21025,6 +21002,13 @@ async function showMpTop() {
     : '<div class="casthint">아직 랭크 매치를 한 사람이 없다 — 첫 이름을 올리시오</div>';
 }
 /* ══ 싸움 ═════════════════════════════════════════════════ */
+/* 모험을 그대로 본뜬다 — 덱·강화·유물·물약·비기·기. 체력만 판의 것으로 채운다 */
+function mpCloneRun(hp) {
+  const home = MP.saved && MP.saved.run;
+  if (!home) return mpMakeRun(mpAutoDeck(), hp);
+  const r = JSON.parse(JSON.stringify(home));
+  return Object.assign(r, { _pvp: true, hp, maxHp: hp, map: null, mapCur: -1, bossPick: null });
+}
 function mpMakeRun(deckIds, hp) {
   return { _pvp: true, asc: 0, maxHp: hp, hp, gold: 0, dia: 0, summons: 0, banner: 3, maxEnergy: MP_ENERGY, potSlots: 0, potBase: POT_BASE,
     deck: deckIds.map(id => mkCard(id, false)), relics: [], potions: [], act: 8, floor: 0, rewardCut: 0,
@@ -21059,7 +21043,7 @@ function mpBegin(mv) {
   mpSave();
   const me = mv.players.find(p => p.acct === mv.me), myTeam = me.team;
   const foes = mv.players.filter(p => p.team !== myTeam), ally = mv.players.find(p => p.team === myTeam && p.acct !== mv.me);
-  G.run = mpMakeRun(mpDeck(), mv.units[mv.me].maxHp);
+  G.run = mpCloneRun(mv.units[mv.me].maxHp);
   document.body.classList.add('pvp');
   const ids = foes.map((f, i) => {
     const id = 'mpf_' + i;
@@ -21108,7 +21092,7 @@ async function mpApplyUnits(units, fx) {
 /* 서버에서 온 일들 — 차례로 풀어 보인다 */
 function mpUpdate(mv) {
   if (!MP.match || mv.id !== MP.match.id) return;
-  MP.turn = mv.turn; MP.turnAt = Date.now();
+  MP.turn = mv.turn; MP.turnAt = Date.now(); MP.mvNow = mv;
   for (const e of mv.ev) if (e.seq > MP.since) { MP.evq.push(e); MP.since = e.seq; }
   mpDrain(mv);
   mpHudPaint();
@@ -21143,7 +21127,9 @@ async function mpMyTurn(mv) {
   const b = G.b; if (!b || b.over) return;
   if (MP.myNo === mv.turn.no && b.mpMine) return;
   MP.myNo = mv.turn.no;
-  await mpApplyUnits(mv.units, false);
+  /* 풀어 보이는 동안 새 소식이 왔을 수 있다 — 들고 있던 옛 모양이 아니라 가장 새 모양으로 (옛것을 쓰면 맞은 체력이 되살아났다) */
+  const cur = MP.mvNow && MP.mvNow.id === mv.id ? MP.mvNow : mv;
+  await mpApplyUnits(cur.units, false);
   const w = $('#mpwait'); if (w) w.remove();
   const p = P();
   if (!p || p.hp <= 0) return;
@@ -21258,13 +21244,19 @@ function mpResult(mv) {
         ${up ? `<div class="mptierup">랭크가 올랐다 — ${MP_TIER_INFO[r.tier].n}!</div>` : down ? `<div class="mptierdn">랭크가 내려갔다</div>` : ''}
       </div></div>
       ${r.tok ? `<div class="mptokgain"><i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>(모두 ${r.tokAll})</small></div>` : ''}` : '<div class="hint">셈을 기다리는 중…</div>'}
-    <div style="margin-top:14px"><button class="brush-btn gold" id="mr_ok">로비로</button></div>`);
+    <div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button class="brush-btn gold" id="mr_ok">한 판 더</button><button class="brush-btn" id="mr_map">지도로</button></div>`);
   p.dataset.noauto = '1';
   if (up) { try { stampWord(MP_TIER_INFO[r.tier].n.split('').join(' '), MP_TIER_INFO[r.tier].c); SND.unlock(); } catch (e) {} }
   p.querySelector('#mr_ok').onclick = () => {
     closeTop(); const id = MP.match && MP.match.id; MP.match = null; MP.turn = null;
     mpAsk('leave', { id }).catch(() => {});
     mpRestore(); showMulti();
+  };
+  p.querySelector('#mr_map').onclick = () => {
+    closeTop(); const id = MP.match && MP.match.id; MP.match = null; MP.turn = null;
+    mpAsk('leave', { id }).catch(() => {});
+    if (!MP.queue && !MP.room) mpStopLoop();
+    mpRestore(); songSync();
   };
 }
 /* ══ 그림자 연습 — 사람이 없을 때 ═════════════════════════════ */
@@ -21274,13 +21266,16 @@ defEnemy({ id: 'mp_bot', n: '그림자 퇴마사', g: '影', hp: [90, 90], col: 
   moves: { wait: { t: 'defend', label: '부적을 고른다', blk: 8 } }, next: () => 'wait' });
 function mpBotStart() {
   if (G.b) return;
-  const rp = (MP.prof && MP.prof.rp) || 0, ti = Object.keys(MP_TIER_INFO).indexOf(mpTierOf(rp));
+  const ti = Math.max(0, Math.min(4, Math.floor((mpLvOf() - 1) / 4)));
   const f = MP_BOT_FOES[0];
-  f.pow = 0.85 + ti * 0.08; f.draw = ti >= 2 ? 2 : 1;
+  /* 막이 깊을수록 덱도 굵다 — 그림자도 그만큼 세게 친다 */
+  f.pow = 0.85 + (mpLvOf() - 1) * 0.07; f.draw = ti >= 2 ? 2 : 1;
   f.pools = [['common', 'uncommon'], ['uncommon', 'rare'], ['rare', 'rare', 'special'], ['rare', 'special', 'special'], ['special', 'special', 'ssc']][ti];
   MP.lobby = false; closeOverlay();
   mpSave();
-  G.run = mpMakeRun(mpDeck(), 90);
+  const bh = Math.max(90, mpHpOf());
+  G.run = mpCloneRun(bh);
+  f.hp = bh; ENEMIES.mp_bot.hp = [bh, bh];
   document.body.classList.add('pvp');
   startBattle(['mp_bot'], 'mpbot');
   mpStartLoop(); songSync();
@@ -21294,10 +21289,11 @@ async function mpBotEnd(win) {
   const p = modal(`<h2 style="color:${win ? '#e8c86a' : '#ff8a7a'}">${win ? '이 겼 다' : '졌 다'}</h2>
     <div class="hint">그림자 퇴마사와의 연습 · 점수에는 들지 않는다</div>
     <div class="mptokgain">${r.ok && r.tok ? `<i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>오늘 ${r.left}번 더</small>` : r.ok ? '<small>오늘 연습 토큰은 다 받았다</small>' : '<small>' + wEsc(r.why) + '</small>'}</div>
-    <div style="margin-top:14px"><button class="brush-btn gold" id="mb_ok">로비로</button></div>`);
+    <div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button class="brush-btn gold" id="mb_ok">한 판 더</button><button class="brush-btn" id="mb_map">지도로</button></div>`);
   p.dataset.noauto = '1';
   if (r.ok) MP.prof = r.prof;
   p.querySelector('#mb_ok').onclick = () => { closeTop(); mpRestore(); showMulti(); };
+  p.querySelector('#mb_map').onclick = () => { closeTop(); if (!MP.queue && !MP.room) mpStopLoop(); mpRestore(); songSync(); };
 }
 
 /* 관리자 창 — 개발용. 제출 전에 CODES 와 함께 지운다 */
@@ -23742,7 +23738,6 @@ function showTitle() {
       </div>` : `<div class="menu">
         ${hasSave() ? '<button class="brush-btn red" id="t_cont">이어서 오르기</button>'
                     : '<button class="brush-btn red" id="t_new">모험 시작</button>'}
-        <button class="brush-btn mpbtn" id="t_mp">對 멀티플레이</button>
         <button class="brush-btn ghost" id="t_acct"></button>
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
@@ -23768,7 +23763,6 @@ function showTitle() {
   const tn = s.querySelector('#t_new');
   if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; } newRun(0); };
   s.querySelector('#t_acct').onclick = () => { SND.init(); SND.ui(); showAcct(); };
-  s.querySelector('#t_mp').onclick = () => { SND.init(); SND.ui(); showMulti(); };
   chatBadge();
   titleAcctPaint();
   /* 처음 오는 사람에게는 안내서를 권한다 */

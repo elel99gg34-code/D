@@ -624,6 +624,7 @@ function chatPrune(now) { if (chat && chat.log.length && now - chat.log[0].at > 
 const MP_TURN_MS = 60 * 1000;               /* 한 차례 — 넘기면 저절로 넘어간다 */
 const MP_GONE_MS = 90 * 1000;               /* 이만큼 묻지 않으면 나간 것으로 본다 */
 const MP_HP = { '1v1': 90, '2v2': 70 };
+const MP_DECK_MIN = 5;                     /* 모험 덱 그대로 — 너무 적지만 않으면 된다 */
 const MP_TIERS = [
   { k: 'bronze', n: '브론즈', min: 0 }, { k: 'silver', n: '실버', min: 300 }, { k: 'emerald', n: '에메랄드', min: 700 },
   { k: 'master', n: '마스터', min: 1200 }, { k: 'infinity', n: '인피니티 랭커', min: 1800 }
@@ -650,7 +651,7 @@ const mpRooms = new Map(), mpRoomOf = new Map(); /* 방 · 누가 어느 방에 
 const mpInv = new Map();                    /* 초대 — 받는 이 → [{ from, code, mode, at }] */
 const CODE_CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const mpCode = () => { let c = ''; for (let i = 0; i < 6; i++) c += CODE_CH[crypto.randomInt(CODE_CH.length)]; return mpRooms.has(c) ? mpCode() : c; };
-const mpDeck = d => Array.isArray(d) ? d.slice(0, 25).map(x => str(x, 40)).filter(x => /^[a-z0-9_]{1,40}$/i.test(x)) : [];
+const mpDeck = d => Array.isArray(d) ? d.slice(0, 80).map(x => str(x, 40)).filter(x => /^[a-z0-9_]{1,40}$/i.test(x)) : [];
 const MP_S_OK = /^[a-zA-Z]{2,12}$/;
 function mpS(s) { const o = {}; if (s && typeof s === 'object') for (const k in s) { if (!MP_S_OK.test(k)) continue;
   const v = parseInt(s[k], 10); if (v && v >= -99 && v <= 999) o[k] = v; } return o; }
@@ -667,8 +668,10 @@ function mpStart(mode, teams, ranked) {
   for (let i = 0; i < Math.max(A.length, B.length); i++) { if (A[i]) order.push(A[i].acct); if (B[i]) order.push(B[i].acct); }
   const players = [], units = {};
   teams.forEach((t, ti) => t.forEach(p => {
-    players.push({ acct: p.acct, name: p.name, team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck });
-    units[p.acct] = { hp, maxHp: hp, block: 0, s: {} };
+    /* 인게임 — 저마다 모험의 최대 체력으로 선다 (모르면 모드 기본값) */
+    const h = p.hp >= 30 ? p.hp : hp;
+    players.push({ acct: p.acct, name: p.name, team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck, lv: p.lv || 1 });
+    units[p.acct] = { hp: h, maxHp: h, block: 0, s: {} };
   }));
   const m = { id, mode, ranked: !!ranked, players, units, order, turn: { i: 0, no: 1, acct: order[0], deadline: now + MP_TURN_MS + 4000 },
               seq: 0, ev: [], over: false, win: null, res: null, seen: {}, to: {}, at: now };
@@ -741,14 +744,17 @@ function mpTick(now) {
   for (const [to, list] of mpInv) { const l = list.filter(x => now - x.at < 5 * 60 * 1000); if (l.length) mpInv.set(to, l); else mpInv.delete(to); }
 }
 setInterval(() => { try { mpTick(Date.now()); } catch (e) { console.error('멀티 박자', e.message); } }, 1000);
-/* 짝 짓기 — 기다린 만큼 점수 폭을 넓힌다 (1초에 10점, 150점부터) */
+/* 짝 짓기 — 기다린 만큼 점수 폭을 넓힌다 (1초에 10점, 150점부터).
+   모험 그대로 싸우니 막 차이도 본다 — 두 막에서 시작해 15초마다 한 막씩 넓힌다 */
+const mpPick = p => ({ acct: p.acct, name: p.name, rp: p.rp, deck: p.deck, hp: p.hp, lv: p.lv });
 function mpMatchmake(now) {
   const win = e => 150 + 10 * Math.floor((now - e.at) / 1000);
+  const lvWin = e => 2 + Math.floor((now - e.at) / 15000);
   const q1 = mpQueue.filter(e => e.mode === '1v1');
   for (let i = 0; i < q1.length; i++) for (let j = i + 1; j < q1.length; j++) {
     const a = q1[i], b = q1[j];
     if (!mpQueue.includes(a) || !mpQueue.includes(b) || a.ver !== b.ver) continue;
-    if (Math.abs(a.rp - b.rp) <= Math.max(win(a), win(b))) { mpStart('1v1', [[a], [b]], true); break; }
+    if (Math.abs(a.rp - b.rp) <= Math.max(win(a), win(b)) && Math.abs((a.lv || 1) - (b.lv || 1)) <= Math.max(lvWin(a), lvWin(b))) { mpStart('1v1', [[a], [b]], true); break; }
   }
   /* 2대2 — 파티는 한 편으로, 혼자 온 이는 둘씩 묶는다 */
   const q2 = mpQueue.filter(e => e.mode === '2v2');
@@ -756,16 +762,17 @@ function mpMatchmake(now) {
   for (const v of vers) {
     const qs = q2.filter(e => e.ver === v && mpQueue.includes(e));
     const teams = [];
-    for (const e of qs.filter(e => e.party)) teams.push({ ps: e.party, rp: e.party.reduce((a, p) => a + p.rp, 0) / 2, at: e.at });
-    const solos = qs.filter(e => !e.party);
-    for (let i = 0; i + 1 < solos.length; i += 2) teams.push({ ps: [solos[i], solos[i + 1]], rp: (solos[i].rp + solos[i + 1].rp) / 2, at: Math.min(solos[i].at, solos[i + 1].at) });
+    const avgLv = ps => ps.reduce((a, p) => a + (p.lv || 1), 0) / ps.length;
+    for (const e of qs.filter(e => e.party)) teams.push({ ps: e.party, rp: e.party.reduce((a, p) => a + p.rp, 0) / 2, lv: avgLv(e.party), at: e.at });
+    const solos = qs.filter(e => !e.party).sort((x, y) => (x.lv || 1) - (y.lv || 1));
+    for (let i = 0; i + 1 < solos.length; i += 2) teams.push({ ps: [solos[i], solos[i + 1]], rp: (solos[i].rp + solos[i + 1].rp) / 2, lv: avgLv([solos[i], solos[i + 1]]), at: Math.min(solos[i].at, solos[i + 1].at) });
     teams.sort((x, y) => x.at - y.at);
     const used = new Set();
     for (let i = 0; i < teams.length; i++) for (let j = i + 1; j < teams.length; j++) {
       if (used.has(i) || used.has(j)) continue;
-      if (Math.abs(teams[i].rp - teams[j].rp) <= Math.max(win(teams[i]), win(teams[j]))) {
+      if (Math.abs(teams[i].rp - teams[j].rp) <= Math.max(win(teams[i]), win(teams[j])) && Math.abs(teams[i].lv - teams[j].lv) <= Math.max(lvWin(teams[i]), lvWin(teams[j]))) {
         used.add(i); used.add(j);
-        mpStart('2v2', [teams[i].ps.map(p => ({ acct: p.acct, name: p.name, rp: p.rp, deck: p.deck })), teams[j].ps.map(p => ({ acct: p.acct, name: p.name, rp: p.rp, deck: p.deck }))], true);
+        mpStart('2v2', [teams[i].ps.map(mpPick), teams[j].ps.map(mpPick)], true);
       }
     }
   }
@@ -773,12 +780,12 @@ function mpMatchmake(now) {
 /* 판을 그 사람에게 보여 줄 모양 — since 뒤의 일만 */
 function mpView(m, acct, since) {
   return { id: m.id, mode: m.mode, ranked: m.ranked, me: acct, order: m.order,
-    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, deck: p.acct === acct ? undefined : p.deck.length })),
+    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, deck: p.acct === acct ? undefined : p.deck.length })),
     units: Object.fromEntries(Object.entries(m.units).map(([k, u]) => [k, mpUnitView(u)])),
     turn: { acct: m.turn.acct, no: m.turn.no, left: Math.max(0, m.turn.deadline - Date.now()) },
     seq: m.seq, ev: m.ev.filter(e => e.seq > (since || 0)), over: m.over, win: m.win, res: m.res ? m.res[acct] || null : null };
 }
-function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp) })), queued: !!r.queued }; }
+function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp), lv: x.lv, hp: x.hp })), queued: !!r.queued }; }
 
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
@@ -1056,7 +1063,9 @@ const server = http.createServer(async (req, res) => {
     if (!acct) return send(res, 401, { ok: false, why: '로그인해야 한다' });
     const now = Date.now(), act = url.pathname.slice(4);
     const prof = await mpProf(acct);
-    const me = { acct, name: acct, rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0 };
+    /* 인게임 멀티 — 지금 모험의 덱·최대 체력·막을 들고 온다 */
+    const me = { acct, name: acct, rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
+                 hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)) };
     const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct });
 
     if (act === 'me') return send(res, 200, { ok: true, prof: profView(), tiers: MP_TIERS, shop: MP_SHOP });
@@ -1074,7 +1083,7 @@ const server = http.createServer(async (req, res) => {
     if (act === 'queue') {
       if (mpOf.get(acct) && !mpMatches.get(mpOf.get(acct)).over) return send(res, 409, { ok: false, why: '이미 판에 있다' });
       if (!['1v1', '2v2'].includes(q.mode)) return send(res, 400, { ok: false, why: '모드가 이상하다' });
-      if (me.deck.length < 12) return send(res, 400, { ok: false, why: '덱이 열두 장보다 적다' });
+      if (me.deck.length < MP_DECK_MIN) return send(res, 400, { ok: false, why: '모험 덱이 너무 적다' });
       mpQueueRemove(acct); mpOf.delete(acct);
       mpQueue.push(Object.assign(me, { mode: q.mode, at: now }));
       mpMatchmake(now);
@@ -1104,7 +1113,7 @@ const server = http.createServer(async (req, res) => {
       }
       if (!cur) return send(res, 404, { ok: false, why: '방에 있지 않다' });
       const mine = cur.members.find(x => x.acct === acct);
-      if (q.deck) mine.deck = me.deck;
+      if (q.deck) { mine.deck = me.deck; mine.hp = me.hp; mine.lv = me.lv; }
       if (q.act === 'deck') return send(res, 200, { ok: true, room: mpRoomView(cur) });
       if (q.act === 'leave') {
         cur.members = cur.members.filter(x => x.acct !== acct); mpRoomOf.delete(acct);
@@ -1121,7 +1130,7 @@ const server = http.createServer(async (req, res) => {
         const A = cur.members.filter(x => x.team === 'A'), B = cur.members.filter(x => x.team === 'B');
         const need = cur.mode === '2v2' ? 2 : 1;
         if (A.length !== need || B.length !== need) return send(res, 409, { ok: false, why: cur.mode === '2v2' ? '두 편에 둘씩 있어야 한다' : '둘이 있어야 한다' });
-        if (cur.members.some(x => x.deck.length < 12)) return send(res, 409, { ok: false, why: '덱이 열두 장보다 적은 사람이 있다' });
+        if (cur.members.some(x => x.deck.length < MP_DECK_MIN)) return send(res, 409, { ok: false, why: '모험 덱이 너무 적은 사람이 있다' });
         if (new Set(cur.members.map(x => x.ver)).size > 1) return send(res, 409, { ok: false, why: '판 번호가 다른 사람이 있다 — 모두 새 판으로 받으시오' });
         const m = mpStart(cur.mode, [A, B], false);
         for (const x of cur.members) mpRoomOf.delete(x.acct); mpRooms.delete(cur.code);
@@ -1131,10 +1140,10 @@ const server = http.createServer(async (req, res) => {
       if (q.act === 'queue') {
         if (cur.owner !== acct || cur.mode !== '2v2') return send(res, 403, { ok: false, why: '2대2 방의 방장만' });
         if (cur.members.length !== 2) return send(res, 409, { ok: false, why: '둘이서만 파티로 나설 수 있다' });
-        if (cur.members.some(x => x.deck.length < 12)) return send(res, 409, { ok: false, why: '덱이 열두 장보다 적은 사람이 있다' });
+        if (cur.members.some(x => x.deck.length < MP_DECK_MIN)) return send(res, 409, { ok: false, why: '모험 덱이 너무 적은 사람이 있다' });
         for (const x of cur.members) mpQueueRemove(x.acct);
         mpQueue.push({ acct, mode: '2v2', rp: cur.members.reduce((a, x) => a + x.rp, 0) / 2, ver: me.ver, at: now,
-                       party: cur.members.map(x => ({ acct: x.acct, name: x.name, rp: x.rp, deck: x.deck })) });
+                       party: cur.members.map(mpPick) });
         for (const x of cur.members) mpRoomOf.delete(x.acct); mpRooms.delete(cur.code);
         mpMatchmake(now);
         return send(res, 200, { ok: true });
