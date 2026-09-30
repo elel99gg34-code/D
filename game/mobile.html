@@ -3240,7 +3240,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 @keyframes cAlarmF{0%,100%{opacity:0;background:#ff2a3a}50%{opacity:.18;background:#ff2a3a}}
 .cut.glitch .cutview{animation:cGlitch .12s steps(2) infinite}
 @keyframes cGlitch{0%{transform:translate(0) ;filter:none}25%{transform:translate(-8px,3px);filter:hue-rotate(90deg) saturate(2)}50%{transform:translate(6px,-4px);filter:invert(.15)}75%{transform:translate(-3px,-2px);filter:hue-rotate(-60deg)}}
-.hkstamp{position:relative;font:700 clamp(54px,11vw,150px)/1 monospace;color:#e8fff0;letter-spacing:.08em;text-shadow:0 0 20px #2cff7a,0 0 60px rgba(44,255,122,.6);animation:cStamp .5s cubic-bezier(.2,1.4,.3,1) both}
+.hkstamp{position:relative;font:700 clamp(54px,11vw,150px)/1 monospace;color:#e8fff0;letter-spacing:.08em;text-shadow:0 1px 0 #9fe0b8,0 2px 0 #7cc89a,0 3px 0 #5aa87a,0 4px 0 #3c885c,0 5px 0 #226a42,0 6px 2px rgba(0,0,0,.6),0 0 20px #2cff7a,0 0 60px rgba(44,255,122,.6);animation:cStamp .5s cubic-bezier(.2,1.4,.3,1) both}
 .hkstamp:before,.hkstamp:after{content:attr(data-t);position:absolute;inset:0;overflow:hidden}
 .hkstamp:before{color:#ff2a5a;transform:translate(-4px,0);clip-path:inset(0 0 55% 0);animation:hkTear .6s steps(3) infinite;mix-blend-mode:screen}
 .hkstamp:after{color:#2ac8ff;transform:translate(4px,0);clip-path:inset(50% 0 0 0);animation:hkTear .5s steps(3) infinite reverse;mix-blend-mode:screen}
@@ -3378,7 +3378,26 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 @keyframes cutIn{from{opacity:0}}
 @keyframes cutOut{to{opacity:0}}
 .cutview{position:absolute;left:50%;top:50%;width:1600px;height:900px;margin:-450px 0 0 -800px;perspective:1500px;perspective-origin:50% 50%}
-.cutshake,.cutworld,.cutstage{position:absolute;inset:0;transform-style:preserve-3d}
+.cutshake,.cutsway,.cutworld,.cutstage{position:absolute;inset:0;transform-style:preserve-3d}
+/* 손에 든 카메라 — 늘 아주 조금 흔들린다. 층이 앞뒤로 달리 흘러 깊이가 보인다 */
+.cutsway{transform-origin:800px 450px;animation:cSway 9s ease-in-out infinite alternate}
+@keyframes cSway{0%{transform:rotateY(-1.6deg) rotateX(.8deg) translate3d(-6px,2px,0)}
+  33%{transform:rotateY(.9deg) rotateX(-1deg) translate3d(4px,-3px,0)}
+  66%{transform:rotateY(1.8deg) rotateX(.5deg) translate3d(7px,2px,0)}100%{transform:rotateY(-.6deg) rotateX(-.7deg) translate3d(-3px,-2px,0)}}
+/* 입체 — 바닥 · 안개 층 · 떠도는 빛 · 앞을 스치는 것 */
+.cfloor{position:absolute;transform-style:preserve-3d;pointer-events:none}
+.cfog{position:absolute;left:-1200px;width:4000px;pointer-events:none;animation:cFogDrift 18s ease-in-out infinite alternate}
+@keyframes cFogDrift{to{margin-left:-260px}}
+.cmote{position:absolute;border-radius:50%;pointer-events:none;animation:cMote var(--d,7s) ease-in-out infinite alternate}
+@keyframes cMote{from{margin-top:0;opacity:.35}to{margin-top:-40px;opacity:1}}
+.cfore{position:absolute;pointer-events:none}
+.cmanw:after,.cdocw:after,.cyk:after{content:'';position:absolute;left:12%;right:12%;bottom:-10px;height:22px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.6),rgba(0,0,0,0) 70%);z-index:-1}
+.cmanw.small:after{bottom:-4px}
+/* 두께 있는 글자 — 층을 뒤로 겹쳐 쌓는다 */
+.c3d{position:relative;display:inline-block;transform-style:preserve-3d}
+.c3d>i{position:absolute;left:0;top:0;font-style:normal}
+.c3d>b{position:relative;font-weight:inherit}
 .cutworld{transform-origin:800px 450px}
 .cutstage .cl{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:800px 450px}
 .cutstage svg{display:block;overflow:visible}
@@ -3436,9 +3455,13 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 /* 百 鬼 夜 行 */
 .cstamp{display:flex;gap:clamp(6px,2vw,28px)}
 .cstamp span{display:inline-block;font-size:clamp(60px,12vw,180px);color:#efe6d0;opacity:0;font-weight:700;
-  text-shadow:0 0 30px rgba(168,39,44,.8),0 0 80px rgba(168,39,44,.45),0 6px 20px #000}
+  text-shadow:0 1px 0 #cfc4ac,0 2px 0 #bfb39a,0 3px 0 #ada088,0 4px 0 #9a8d76,0 5px 0 #877a64,0 6px 0 #736752,0 7px 0 #5f5442,0 8px 2px rgba(0,0,0,.5),
+    0 0 30px rgba(168,39,44,.8),0 0 80px rgba(168,39,44,.45),0 14px 24px #000}
+.cuttitle{perspective:900px}
+.cstamp{transform-style:preserve-3d;animation:cTilt 6s ease-in-out infinite alternate}
+@keyframes cTilt{from{transform:rotateX(10deg) rotateY(-8deg)}to{transform:rotateX(4deg) rotateY(8deg)}}
 .cstamp span.in{animation:cStamp .55s cubic-bezier(.2,1.4,.3,1) forwards}
-@keyframes cStamp{0%{opacity:0;transform:scale(2.8);filter:blur(12px)}55%{opacity:1;transform:scale(.93);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
+@keyframes cStamp{0%{opacity:0;transform:scale(2.8) translateZ(300px) rotateX(-40deg);filter:blur(12px)}55%{opacity:1;transform:scale(.93) rotateX(6deg);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
 .cstampsub{margin-top:18px;color:#b8ad96;letter-spacing:1.4em;margin-left:1.4em;font-size:clamp(13px,1.6vw,20px);opacity:0;transition:opacity 1.2s}
 .cstampsub.in{opacity:1}
 .cstampsub.long{letter-spacing:.25em;margin-left:.25em;text-align:center;padding:0 16px;color:#d8ccb0}
@@ -3451,8 +3474,10 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 .cbaura{position:absolute;inset:40px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--bc) 85%,#fff) 0%,var(--bc) 30%,transparent 70%);
   filter:blur(8px);animation:cAura 1.4s ease-in-out infinite alternate}
 @keyframes cAura{from{transform:scale(.92);opacity:.75}to{transform:scale(1.08);opacity:1}}
-.cbglyph{position:absolute;inset:0;display:grid;place-items:center;font-size:250px;font-weight:700;color:#f4ecd8;
-  text-shadow:0 0 30px var(--bc),0 0 90px var(--bc),0 10px 30px #000}
+.cbglyph{position:absolute;inset:0;display:grid;place-items:center;font-size:250px;font-weight:700;color:#f4ecd8;transform-style:preserve-3d}
+.cbglyph .c3d>b{text-shadow:0 0 30px var(--bc),0 0 90px var(--bc)}
+.cbglyph .c3d{animation:cGlyphTurn 7s ease-in-out infinite alternate}
+@keyframes cGlyphTurn{from{transform:rotateY(-16deg) rotateX(4deg)}to{transform:rotateY(16deg) rotateX(-3deg)}}
 .cextra{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
 .ctails path{animation:cTail 1.2s ease-in-out infinite alternate;transform-origin:300px 380px}
 @keyframes cTail{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
@@ -3468,7 +3493,7 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 .cboss.in.ent-mirror .cbwrap{animation:eMirror 1.2s cubic-bezier(.2,.9,.3,1) forwards}
 .cboss.in.ent-crowd .cbwrap{animation:eRise 1.2s cubic-bezier(.2,.9,.3,1) forwards}
 .cboss.in.ent-scroll .cbwrap{animation:eFog 1.2s .4s ease forwards}
-@keyframes eFog{0%{opacity:0;filter:blur(30px);transform:scale(1.3)}100%{opacity:1;filter:blur(0);transform:none}}
+@keyframes eFog{0%{opacity:0;filter:blur(30px);transform:scale(1.3)}99%{filter:blur(0)}100%{opacity:1;filter:none;transform:none}}
 @keyframes eRise{0%{opacity:0;transform:translateY(420px) scale(.8)}100%{opacity:1;transform:none}}
 @keyframes eDesc{0%{opacity:0;transform:translateY(-700px) scale(1.2)}100%{opacity:1;transform:none}}
 @keyframes eSplit{0%{opacity:1;clip-path:inset(49% 0 49% 0);transform:scaleX(1.3)}100%{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
@@ -3484,7 +3509,7 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
   background:linear-gradient(to left,rgba(0,0,0,.62),rgba(0,0,0,.35) 60%,transparent);animation:cName .6s cubic-bezier(.2,1.3,.3,1) both}
 .cbname i{font-style:normal;font-size:clamp(40px,6vw,76px);color:#fff;text-shadow:0 0 24px var(--bc),0 0 60px var(--bc)}
 .cbname b{font-size:clamp(34px,5.6vw,72px);letter-spacing:.3em;margin-left:.3em;color:#f4ecd8;font-weight:700;
-  text-shadow:0 0 20px var(--bc),0 4px 14px #000;padding:0 0 0 .6em;margin-left:0;margin-right:-.3em;border-bottom:3px solid color-mix(in srgb,var(--bc) 70%,#fff)}
+  text-shadow:0 1px 0 #c8bca4,0 2px 0 #b0a48c,0 3px 0 #978b74,0 4px 0 #7e735e,0 5px 0 #655b4a,0 6px 2px rgba(0,0,0,.5),0 0 20px var(--bc),0 10px 18px #000;padding:0 0 0 .6em;margin-left:0;margin-right:-.3em;border-bottom:3px solid color-mix(in srgb,var(--bc) 70%,#fff)}
 .cbname em{font-style:normal;color:#c8bda3;letter-spacing:.3em;font-size:clamp(12px,1.4vw,17px);text-shadow:0 2px 8px #000}
 .cbname.out{animation:cNameOut .5s ease forwards}
 @keyframes cName{0%{opacity:0;transform:translateX(60px) scale(1.3);filter:blur(8px)}100%{opacity:1;transform:none;filter:none}}
@@ -17967,7 +17992,7 @@ function cutPlay(def) {
   let done;
   const p = new Promise(r => { done = r; });
   const root = el('div', 'cut');
-  root.innerHTML = `<div class="cutview"><div class="cutshake"><div class="cutworld"><div class="cutstage"></div></div></div></div>
+  root.innerHTML = `<div class="cutview"><div class="cutshake"><div class="cutsway"><div class="cutworld"><div class="cutstage"></div></div></div></div></div>
     <canvas class="cutfx"></canvas><div class="cutflash"></div><div class="cutdark"></div>
     <div class="cutbars"><i></i><i></i></div>
     <div class="cutsub"></div><div class="cuttitle"></div>
@@ -18072,14 +18097,71 @@ function cutPut(S, html, o = {}) {
   (o.into || S.stage).appendChild(n);
   return n;
 }
+const CUT_DEPTH = 1.6;                  /* 층 사이를 벌린다 — 카메라가 돌 때 앞뒤가 더 다르게 흐른다 */
 function cutLayer(S, svg, z = 0, zi = 0, cls = '') {
-  /* 뒤로 갈수록 작게 보이니 그만큼 키워 화면을 채운다 */
-  const k = 1 - z / 1600;
+  /* 뒤로 갈수록 작게 보이니 그만큼 키워 화면을 채운다 (원근 1500) */
+  /* 1.5 배 더 키운다 — 카메라가 돌고 흔들려도 층의 가장자리가 드러나지 않게 */
+  const zz = z * CUT_DEPTH, k = (1 - zz / 1500) * (zz < 0 ? 1.5 : 1.25);
   const n = el('div', 'cl' + (cls ? ' ' + cls : ''), svg);
-  n.style.transform = `translateZ(${z}px) scale(${k.toFixed(3)})`;
+  n.style.transform = `translateZ(${zz}px) scale(${k.toFixed(3)})`;
+  /* 먼 것은 흐리게 — 깊이가 보인다 (작은 폰은 무거워 건너뛴다) */
+  if (innerWidth > 700 && zz < -500) n.style.filter = `blur(${zz < -1000 ? 1.8 : .9}px)`;
   n.style.zIndex = zi;
   S.stage.appendChild(n);
   return n;
+}
+/* ── 입체 도구 ──────────────────────────────────────────── */
+/* 바닥 — 눕힌 판. 앞뒤로 길게 뻗어 원근이 보인다(멀수록 안개로 사라진다) */
+function cutFloor(S, y = 760, col = '#0a080c', line = 'rgba(255,255,255,.05)', step = 140) {
+  const n = el('div', 'cfloor');
+  const W = 5200, D = 4200;
+  n.style.cssText += `left:${800 - W / 2}px;top:${y - D / 2}px;width:${W}px;height:${D}px;transform:rotateX(90deg);z-index:0;
+    background:repeating-linear-gradient(90deg,${line} 0 2px,transparent 2px ${step}px),repeating-linear-gradient(0deg,${line} 0 2px,transparent 2px ${step}px),${col};
+    -webkit-mask-image:radial-gradient(ellipse 48% 46% at 50% 50%,#000 30%,transparent 100%);mask-image:radial-gradient(ellipse 48% 46% at 50% 50%,#000 30%,transparent 100%)`;
+  S.stage.appendChild(n);
+  return n;
+}
+/* 안개 층 — 앞뒤 여러 깊이에 한 장씩 */
+function cutFog(S, rgb = '200,200,220', y = 560) {
+  for (const [z, a, h] of [[-900, .22, 360], [-420, .16, 260], [180, .12, 200]]) {
+    const n = el('div', 'cfog');
+    n.style.cssText += `top:${y - h / 2}px;height:${h}px;transform:translateZ(${z}px);background:linear-gradient(to bottom,rgba(${rgb},0),rgba(${rgb},${a}) 50%,rgba(${rgb},0));animation-delay:${z / 100}s`;
+    S.stage.appendChild(n);
+  }
+}
+/* 떠도는 빛 알갱이 — 공간 여기저기(앞·뒤)에 흩어 둔다 */
+function cutMotes(S, n = 36, rgb = '255,220,160') {
+  for (let i = 0; i < n; i++) {
+    const d = el('div', 'cmote'), r = 2 + Math.random() * 5, z = -800 + Math.random() * 1250;
+    d.style.cssText += `left:${-200 + Math.random() * 2000}px;top:${80 + Math.random() * 720}px;width:${r}px;height:${r}px;
+      transform:translateZ(${z.toFixed(0)}px);background:rgba(${rgb},.9);box-shadow:0 0 ${r * 3}px rgba(${rgb},.8);--d:${(5 + Math.random() * 6).toFixed(1)}s;animation-delay:${(-Math.random() * 6).toFixed(1)}s;
+      ${z > 250 && innerWidth > 700 ? 'filter:blur(2px);' : ''}`;
+    S.stage.appendChild(d);
+  }
+}
+/* 앞을 스치는 것 — 카메라 바로 앞, 흐릿하게 (풀·바위·기둥·배관·창살) */
+function cutFore(S, kind, col = '#050306') {
+  if (!kind || kind === 'none') return;
+  const shapes = {
+    grass: s => `<path d="M0 300 ${Array.from({ length: 22 }, (_, i) => `Q${i * 30 + 12} ${120 + (i * 53) % 110} ${i * 30 + 26} 300`).join(' ')} L700 300 L700 420 L0 420Z" fill="${col}"/>`,
+    rock:  s => `<path d="M0 420 L0 250 Q60 160 180 190 Q260 120 360 210 Q470 180 520 280 L560 420Z" fill="${col}"/>`,
+    lab:   s => `<rect x="0" y="120" width="700" height="46" rx="20" fill="${col}"/><rect x="80" y="160" width="40" height="260" fill="${col}"/><circle cx="100" cy="143" r="36" fill="${col}"/>`,
+    room:  s => `<rect x="0" y="0" width="60" height="420" fill="${col}"/><rect x="0" y="0" width="700" height="40" fill="${col}"/><rect x="40" y="40" width="10" height="380" fill="${col}"/>`,
+    cloud: s => `<ellipse cx="260" cy="330" rx="330" ry="120" fill="${col}"/><ellipse cx="520" cy="360" rx="260" ry="100" fill="${col}"/>`
+  };
+  const f = shapes[kind]; if (!f) return;
+  const blur = innerWidth > 700 ? 'filter:blur(4px);' : '';
+  for (const side of [-1, 1]) {
+    const n = el('div', 'cfore', `<svg viewBox="0 0 700 420" width="700" height="420" style="overflow:visible">${f()}</svg>`);
+    n.style.cssText += `left:${side < 0 ? -480 : 1380}px;top:${kind === 'room' || kind === 'lab' ? 40 : 640}px;transform:translateZ(520px) scaleX(${side});${blur}opacity:.95;z-index:9`;
+    S.stage.appendChild(n);
+  }
+}
+/* 두께 있는 글자 — 같은 글자를 뒤로 n 겹 쌓는다(뒤로 갈수록 어둡게) */
+function cut3D(txt, depth = 14, side = '#3a2a2a', step = 2) {
+  let h = '';
+  for (let i = depth; i >= 1; i--) h += `<i style="transform:translateZ(${-i * step}px);color:${side};filter:brightness(${(.55 + .45 * (1 - i / depth)).toFixed(2)})">${txt}</i>`;
+  return `<span class="c3d">${h}<b>${txt}</b></span>`;
 }
 /* 무대 위 무엇의 화면 자리 */
 function cutAt(n) { const r = n.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height }; }
@@ -18330,6 +18412,7 @@ function cutMusou() {
       S.refs.man = cutPut(S, cutManSvg(), { x: MAN.x, y: MAN.y, ax: .5, ay: 1, cls: 'cmanw', zi: 5 });
       S.refs.cnt = el('div', 'cutcount', ''); S.root.appendChild(S.refs.cnt);
       cutAmbient(S, 'mist', .02, '170,150,200');
+      cutFloor(S, 762, '#0a080c', 'rgba(170,140,210,.06)'); cutFog(S, '120,100,150', 640); cutMotes(S, 34, '255,210,150'); cutFore(S, 'grass', '#040306');
       cutAmbient(S, 'ash', .25, '#6a5a70');
       cutCam(S, { x: 800, y: 330, s: .92, rz: -4, rx: 6 }, 0);
       S.dark.style.opacity = 1; cutFade(S, 0, 1400);
@@ -18528,9 +18611,17 @@ function cutBoss(act, bossId) {
       cutLayer(S, cutMotif(T.motif, col), -220, 2, 'cmotif');
       cutLayer(S, cutRidge(T.ridge[1], 780, 50, act * 1.3), 0, 3);
       for (const a of T.amb) cutAmbient(S, a[0], a[1], a[2]);
+      /* 입체 — 바닥·안개·빛·앞을 스치는 것 (막의 모양에 따라) */
+      const light = /^#(e|f|d|c)/i.test(T.sky[2]);
+      cutFloor(S, 790, T.ridge[1], light ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.04)');
+      cutFog(S, light ? '255,250,235' : '160,150,180', 620);
+      cutMotes(S, 30, light ? '255,240,190' : (T.amb[0] && T.amb[0][0] === 'ember' ? '255,150,80' : '220,210,255'));
+      cutFore(S, { forest: 'grass', peaks: 'rock', cliff: 'rock', mountain: 'rock', dawn: 'grass', village: 'grass', century: 'grass', path: 'grass',
+        war: 'rock', invasion: 'rock', parade: 'grass', memory: 'rock', master: 'rock', gate: 'room', throne: 'room', heavengate: 'room',
+        clouds: 'cloud', heaven: 'cloud' }[T.motif] || 'none', light ? '#8a7a5a' : '#040306');
       /* 보스 — 먹의 기운 속에 큰 글자, 그 뒤로 제 곁모양 */
       const extra = cutBossExtra(T.sp, col);
-      const boss = cutPut(S, `<div class="cbwrap"><div class="cbaura" style="--bc:${col}"></div>${extra}<div class="cbglyph" style="--bc:${col}">${E.g}</div></div>`, { x: BX, y: BY, z: 60, cls: 'cboss ent-' + T.ent, zi: 4 });
+      const boss = cutPut(S, `<div class="cbwrap"><div class="cbaura" style="--bc:${col}"></div>${extra}<div class="cbglyph" style="--bc:${col}">${cut3D(E.g, 16, col, 3)}</div></div>`, { x: BX, y: BY, z: 60, cls: 'cboss ent-' + T.ent, zi: 4 });
       S.refs.boss = boss;
       S.refs.man = cutPut(S, cutManSvg(), { x: 470, y: 800, ax: .5, ay: 1, z: 140, cls: 'cmanw small', zi: 5 });
       S.refs.act = el('div', 'cutact', `<small>第 ${act} 幕</small><b>${wEsc(ACT_NAME[act] || '')}</b>`);
@@ -18560,7 +18651,7 @@ function cutBoss(act, bossId) {
       [4200, S => {
         cutHitstop(S, 110); cutSfx('gong');
         /* 이름패가 오른쪽에 서니 보스를 왼쪽으로 비킨다 */
-        S.timers.push(setTimeout(() => S.alive && cutCam(S, { x: BX + Math.min(250, S.W / S.k * .22), y: BY + 40, s: 1.3, rz: 0, rx: 0, ry: 0 }, 900, 'cubic-bezier(.3,0,.2,1)'), 130));
+        S.timers.push(setTimeout(() => S.alive && cutCam(S, { x: BX + (S.W / S.k < 1100 ? 0 : Math.min(250, S.W / S.k * .22)), y: BY + (S.W / S.k < 1100 ? -60 : 40), s: S.W / S.k < 1100 ? .95 : 1.3, rz: 0, rx: 0, ry: 0 }, 900, 'cubic-bezier(.3,0,.2,1)'), 130));
         S.title.innerHTML = `<div class="cbname" style="--bc:${col}"><i>${E.g}</i><b>${wEsc(E.n)}</b><em>제${act}막 · ${wEsc(ACT_NAME[act] || '')}</em></div>`;
       }],
       [6400, S => {
@@ -18642,6 +18733,7 @@ function cutTea(nick) {
       S.refs.c1 = cutPut(S, cup('#e8e0d0'), { x: 700, y: 752, z: 72, ay: 1, zi: 6 });
       S.refs.c2 = cutPut(S, cup('#e8e0d0'), { x: 900, y: 752, z: 72, ay: 1, zi: 6 });
       cutAmbient(S, 'ember', .08, '255,190,110');
+      cutFloor(S, 822, '#1c120a', 'rgba(255,200,140,.06)', 90); cutFog(S, '255,200,150', 520); cutMotes(S, 26, '255,210,150'); cutFore(S, 'room', '#0c0704');
       cutAmbient(S, 'mist', .01, '255,220,180');
       cutCam(S, { x: 800, y: 520, s: .95 * zs(S), ry: -14, rx: 4 }, 0);
       S.dark.style.opacity = 1; cutFade(S, 0, 1200);
@@ -18961,6 +19053,7 @@ function cutHack() {
       /* 스캐너 위의 부적들 */
       S.refs.scan = cutPut(S, `<div class="cscanner">${['破', '封', '滅', '鎭', '退'].map(g => `<div class="ctal"><b>${g}</b></div>`).join('')}<i class="cscanbeam"></i></div>`, { x: 800, y: 760, z: 120, zi: 6 });
       cutAmbient(S, 'mist', .02, '80,255,160');
+      cutFloor(S, 642, '#030a06', 'rgba(44,255,122,.14)', 110); cutFog(S, '44,255,122', 520); cutMotes(S, 40, '90,255,170'); cutFore(S, 'lab', '#020604');
       S.dark.style.opacity = 1; cutFade(S, 0, 1400);
       cutCam(S, { x: 800, y: 380, s: .85, rx: 10, ry: -10 }, 0);
       S.root.classList.add('hackcut');
@@ -19821,7 +19914,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 15;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 16;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
