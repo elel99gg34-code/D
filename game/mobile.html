@@ -3306,6 +3306,11 @@ body.hackmode #app:after{content:'';position:fixed;inset:0;pointer-events:none;z
   background:rgba(0,20,8,.9);border:1px solid #2cff7a;color:#caffdc;font-size:12.5px;box-shadow:0 0 12px rgba(44,255,122,.45)}
 .hackpill i{font-style:normal;color:#5cff9a}.hackpill b{font-family:monospace;color:#5cff9a;font-weight:400}
 .hackpill em{font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:8px;background:#ffe04a;color:#201a00}
+.afpill{position:fixed;left:10px;top:calc(var(--tbh,44px) + 40px + env(safe-area-inset-top,0px));z-index:120;display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:16px;cursor:pointer;
+  background:rgba(10,40,34,.9);border:1px solid #4fd3a0;color:#d8fff0;font-size:12.5px;box-shadow:0 0 12px rgba(79,211,160,.45)}
+.afpill i{font-style:normal;color:#4fd3a0}.afpill b{font-weight:400}.afpill em{font-style:normal;font-variant-numeric:tabular-nums;color:#ffe7a0}
+.afpill.last em{color:#ff8a7a;animation:pillBeat 1s ease-in-out infinite}
+body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area-inset-top,0px))}
 .hkchip{font-size:15px;margin:6px 0 10px;color:#caffdc}.hkchip b{color:#ffe04a}.hkchip i{font-style:normal;color:#5cff9a}
 .hkshop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;width:min(640px,86vw)}
 .hkitem{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:8px;background:rgba(0,26,12,.9);border:1px solid #1f7a4a;color:#caffdc}
@@ -5857,7 +5862,10 @@ let META = { best: 0, wins: 0, runs: 0, arenaBest: 0, speed: 1, sound: true, aut
 /* VIP · 자동 플레이 개방 여부 */
 const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
 function vipOn() { return !!(META.vip && META.vip.owned); }
-function autoOk() { return !!META.autoUnlocked || vipOn(); }
+/* 자동 플레이 — VIP 패키지, 또는 백야가 이벤트로 뿌린 맛보기(정한 분 동안)만.
+   예전의 「제8막을 넘기면 열림」은 없앴다 (그걸로 열렸던 것도 이제는 VIP 가 아니면 닫힌다) */
+function autoOk() { return vipOn() || autoFreeOn(); }
+function autoFreeOn() { return !!(typeof LIVE === 'object' && LIVE.autofree && srvNow() < (LIVE.autofree.until || 0)); }
 function vipFreeBoxLeft() { return Math.max(0, VIP_FREEBOX_MS - (Date.now() - (META.vip.freeBoxAt || 0))); }
 /* --- 설정 (기본값) --- */
 const OPT_DEF = {
@@ -11078,7 +11086,7 @@ async function autoLoop() {
 function autoStart() {
   if (AUTO.on) return;
   if (!G.run) { toast('모험 중에만 쓸 수 있다'); return; }
-  if (!autoOk()) { SND.err(); toast('자동 플레이는 아직 잠겨 있다 — VIP 패키지로 곧바로 열린다'); return; }
+  if (!autoOk()) { SND.err(); toast('자동 플레이는 아직 잠겨 있다 — VIP 패키지로 열린다 (이벤트 때 맛보기도 뿌려진다)'); return; }
   if (!G.b && OPT.autoScope !== 'run') { SND.err(); toast('싸울 때만 대신해 준다 — 지도까지 맡기려면 설정에서 범위를 바꾸시오'); return; }
   AUTO.on = true; SND.ui();
   toast(OPT.autoScope === 'run' ? '자동 플레이 — 지도까지 스스로 나아간다' : '자동 플레이 — 전투를 대신한다');
@@ -11538,7 +11546,7 @@ const GUIDES = [
     go: () => openFuse(), goN: '조합을 본다' },
   { id: 'auto', soft: true, g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
     when: () => autoOk(),
-    say: () => `제${AUTO_ACT}막을 넘어서서 <em>자동 플레이</em>가 열렸다.
+    say: () => `${vipOn() ? 'VIP 패키지로' : '이벤트 맛보기로'} <em>자동 플레이</em>가 열렸다.
       전투 화면 오른쪽 아래 「자동」 단추, 또는 메뉴에서 켠다.<br>
       설정에서 <i>지도까지</i>로 바꾸면 지도도 스스로 걷는다.`,
     warn: () => '빠르기도 설정에서 고른다 — 느긋 · 보통 · 빠름.',
@@ -11985,7 +11993,8 @@ function renderBattle() {
        좋은 등급의 부적을 먼저 쓰는 방식으로 대신 싸운다.<br>
        지금 범위: <b>${OPT.autoScope === 'run' ? '지도까지' : '전투만'}</b> · 설정에서 바꿀 수 있다.`
     : `<b>자동 플레이 — 아직 잠겨 있다</b><br>
-       <span style="color:#e0bcff">VIP 패키지를 얻으면 곧바로 쓸 수 있다.</span>`);
+       <span style="color:#e0bcff">VIP 패키지를 얻으면 곧바로 쓸 수 있다.</span><br>
+       <span style="color:#9a8d74">백야가 이벤트로 「맛보기」를 뿌리면 그동안만 쓸 수 있다.</span>`);
   syncAuto();
   if (G.b && G.b.kind === 'world') worldHud();   /* 모두의 체력 띠 — 판이 서자마자 */
   $('#drawpile').onclick = () => showCardList(G.b.drawPile, '뽑을 더미 (무작위 순서)', true);
@@ -14002,7 +14011,6 @@ function showMap() {
   const run = G.run;
   migrateMap(run);
   const m = run.map;
-  if (run.act > AUTO_ACT && !META.autoUnlocked) { META.autoUnlocked = true; saveMeta(); syncAuto(); }
   /* 갈 곳이 하나도 없다 — 보스 칸에서 끊긴 저장이다 */
   if (!availableNodes().length) {
     const last = m.nodes[m.nodes.length - 1];
@@ -14506,10 +14514,6 @@ function showRewards(kind) {
       s: '제9막을 넘어선 값 · 가장 높은 자리의 유물이다',
       act: async () => { await grantFusedRelics(2); return true; } });
   }
-  if (kind === 'boss' && run.act === AUTO_ACT && !autoOk()) {
-    items.push({ ic: '自', t: '자동 플레이 개방', s: `제${AUTO_ACT}막을 넘어선 값 · 앞으로 모든 모험에서 쓸 수 있다`,
-      cls: 'gift', act: () => { unlockAuto(); } });
-  }
   if (kind === 'boss') {
     items.push({ ic: '寶', t: '보스의 유물', s: '셋 중 하나를 고른다', act: async () => { await pickBossRelic(); } });
     if (randomSkill()) items.push({ ic: '祕', t: '비기 전수', s: '1등급 이상 셋 중 하나를 익힌다', act: async () => { await pickSkill(); } });
@@ -14577,7 +14581,6 @@ function showRewards(kind) {
      잦다는 말을 들어 제2막까지로 줄였다. */
   const doLeave = () => {
     /* 그냥 지나쳤더라도 그 막을 넘었으면 자동 플레이는 준다 */
-    if (kind === 'boss' && run.act === AUTO_ACT) unlockAuto(true);
     closeOverlay(); saveRun();
     if (kind === 'boss') {
       const act = G.run.act;
@@ -19230,6 +19233,33 @@ function showHackShop() {
   p.querySelector('#hs_open').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#hs_x').onclick = closeTop;
 }
+/* ── 자동 플레이 맛보기 — 백야가 뿌린 동안만 ─────────────── */
+let _afWas = false, _afId = 0;
+function autoFreeTick() {
+  const on = autoFreeOn() && !vipOn();
+  let pill = $('#afpill');
+  if (on) {
+    if (!pill) { pill = el('div', 'afpill'); pill.id = 'afpill'; document.body.appendChild(pill);
+      pill.onclick = () => { if (G.run) autoToggle(); }; }
+    const s = Math.max(0, Math.ceil((LIVE.autofree.until - srvNow()) / 1000));
+    pill.innerHTML = `<i>自</i><b>자동 맛보기</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em>`;
+    pill.classList.toggle('last', s <= 60);
+    if (LIVE.autofree.at !== _afId) {                 /* 막 뿌려졌다 */
+      _afId = LIVE.autofree.at;
+      if (srvNow() - LIVE.autofree.at < 60000) {
+        try { SND.unlock(); flash('自 動 맛 보 기'); } catch (e) {}
+        toast(`백야가 자동 플레이 맛보기를 뿌렸다 — ${Math.round((LIVE.autofree.until - LIVE.autofree.at) / 60000)}분 동안 누구나 쓸 수 있다 (A 키 · 자동 단추)`);
+      }
+    }
+  } else if (pill) pill.remove();
+  /* 맛보기가 끝났다 — 돌던 자동은 멈추고 단추는 다시 잠근다 */
+  if (_afWas && !autoOk()) {
+    if (AUTO.on) autoStop('자동 플레이 맛보기가 끝났다');
+    toast('자동 플레이 맛보기가 끝났다');
+  }
+  if (_afWas !== on) { try { syncAuto(); } catch (e) {} }
+  _afWas = on;
+}
 /* 띠 — 이벤트가 켜진 동안 */
 function hackTick() {
   let pill = $('#hackpill');
@@ -19552,7 +19582,7 @@ function showMenu() {
   if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) { mpMenu(); return; }
   const p = modal(`<h2>잠시 멈춤</h2>
     <div style="display:flex;flex-direction:column;gap:12px;width:260px">
-      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}` : '자동 플레이 (VIP)'}</button>
+      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}${!vipOn() ? ' · 맛보기' : ''}` : '자동 플레이 (VIP)'}</button>
       <button class="brush-btn" id="m_box">부적 뽑기</button>
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
@@ -19773,7 +19803,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 13;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 14;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -19888,6 +19918,7 @@ async function liveFetch() {
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
     LIVE.cut = d.cut && typeof d.cut === 'object' ? d.cut : null;          /* 관리자가 뿌린 컷씬 */
     LIVE.hack = d.hack && typeof d.hack === 'object' ? d.hack : null;       /* [해킹] 이벤트 */
+    LIVE.autofree = d.autofree && typeof d.autofree === 'object' ? d.autofree : null;   /* 자동 플레이 맛보기 */
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
     try { chatBadge(); } catch (e) {}
@@ -20971,6 +21002,7 @@ function liveTick() {
   try { huntTick(); pollTick(); } catch (e) { console.error('찾기·투표', e); }
   try { cutLiveCheck(); } catch (e) { console.error('컷씬', e); }
   try { hackTick(); } catch (e) { console.error('해킹', e); }
+  try { autoFreeTick(); } catch (e) { console.error('맛보기', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -21315,6 +21347,15 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec"><b style="color:#4fd3a0">自 자동 플레이 맛보기 뿌리기</b>
+      <div class="casthint">정한 분 동안만 모든 사람이 자동 플레이를 쓸 수 있다(VIP 가 아니어도). 끝나면 돌던 자동은 멈추고 다시 잠긴다.
+        <span id="ct_afnow"></span></div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_afmin" type="number" min="1" max="240" value="30" style="width:70px"> 분 동안</label>
+        <button class="brush-btn gold" id="ct_afgo">맛보기 뿌리기</button>
+        <button class="brush-btn ghost" id="ct_afoff" style="color:#e9dfc9;border-color:#8a7f68">거두기</button></div>
+    </div>
+
     <div class="castsec"><b style="color:#5cff9a">⌬ [해킹] 특수 이벤트 — 박사의 비밀연구</b>
       <div class="casthint">켜면 모든 앱에 [해킹] 띠가 선다. 해킹상점은 백야가 열고 닫는다(≡ 메뉴). 「해킹맵 이동」을 누르면 모험 중인 앱마다
         「맵이 해킹당했습니다!」와 함께 해킹맵이 열린다(지도에 있는 사람부터, 3분 안). 박사를 쓰러뜨리면 해킹 상자(이벤트 전용 부적 · ?급 1%).
@@ -21540,6 +21581,15 @@ function drawCast(grid) {
   /* 컷씬 — 모두에게 한 번 */
   grid.querySelectorAll('#ct_cuts button').forEach(b => b.onclick = () => send({ cut: { k: b.dataset.k } }, `컷씬 「${CUT_LIST[b.dataset.k].n}」`));
   grid.querySelector('#ct_cuttry').onclick = () => cutByName('musou');
+  /* 자동 플레이 맛보기 */
+  const afNow = () => { const n = grid.querySelector('#ct_afnow'); if (n) n.innerHTML = autoFreeOn()
+    ? `<b style="color:#4fd3a0">지금 뿌려져 있다</b> · 남은 때 ${wTime(LIVE.autofree.until - srvNow())}` : '지금 없음'; };
+  afNow();
+  grid.querySelector('#ct_afgo').onclick = () => {
+    const min = Math.max(1, Math.min(240, Math.floor(+grid.querySelector('#ct_afmin').value || 30)));
+    send(hype(`자동 플레이 맛보기 ${min}분`, { autofree: { min } }), `자동 맛보기 ${min}분`).then(() => liveFetch().then(afNow).catch(() => {}));
+  };
+  grid.querySelector('#ct_afoff').onclick = () => send({ autofree: null }, '자동 맛보기 거두기').then(() => liveFetch().then(afNow).catch(() => {}));
   /* [해킹] 이벤트 */
   const hkNow = () => { const n = grid.querySelector('#ct_hknow'); if (n) n.innerHTML = LIVE.hack && LIVE.hack.on
     ? `<b style="color:#5cff9a">지금 켜짐</b> · 상점 ${LIVE.hack.shop ? '<b style="color:#ffe04a">열림</b>' : '닫힘'}${LIVE.hack.go ? ' · 해킹맵 열림' : ''}` : '지금 꺼짐'; };

@@ -41,6 +41,7 @@ function expire(now) {
   if (live.gift && live.gift.until && now > live.gift.until) { live.gift = null; changed = true; }
   if (live.music && live.music.until && now > live.music.until) { live.music = null; changed = true; }
   if (live.cut && now - live.cut.at > 120000) { live.cut = null; changed = true; }
+  if (live.autofree && now > live.autofree.until) { live.autofree = null; changed = true; }
   /* 숨은 부적 — 때가 지나고 한 분 뒤 걷는다 */
   if (live.hunt && now > live.hunt.until + 60000) { live.hunt = null; changed = true; }
   /* 투표 — 때가 되면 마감하고, 열 분 뒤 걷는다(결과를 볼 틈) */
@@ -417,7 +418,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -457,6 +458,12 @@ async function applyCast(q) {
     if (!q.music || !q.music.k) live.music = null;
     else { const min = Math.max(1, Math.min(120, parseInt(q.music.min, 10) || 10));
            live.music = { k: str(q.music.k, 12), at: Date.now(), until: Date.now() + min * 60000 }; }
+  }
+  /* 자동 플레이 맛보기 — 정한 분 동안 모든 사람이 자동 플레이를 쓴다 */
+  if ('autofree' in q) {
+    if (!q.autofree) live.autofree = null;
+    else { const min = Math.max(1, Math.min(240, parseInt(q.autofree.min, 10) || 30));
+           live.autofree = { at: Date.now(), until: Date.now() + min * 60000 }; }
   }
   /* [해킹] 특수 이벤트 — 켜기·끄기, 해킹상점 여닫기, 해킹맵으로 끌고 가기(go).
      백야만 누른다. 켜 두는 동안 모든 앱에 띠가 서고 ≡ 메뉴에 해킹상점이 선다 */
