@@ -2750,6 +2750,32 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .fganvil{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);width:170px;height:74px;
   pointer-events:none;opacity:.92;filter:drop-shadow(0 -4px 18px rgba(255,150,60,.34))}
 /* 단수표 — 한눈에 */
+.fghp{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(60,14,14,.55);border:1px solid #a8474a;display:flex;flex-direction:column;gap:6px}
+.fghp b{color:#ffb0a0;font-weight:400;letter-spacing:.08em}
+.fghp small{color:#b8ab92;font-size:11.5px;line-height:1.5}
+.fghpnow{font-size:12.5px;color:#e9dfc9}.fghpnow b{color:#ff9a8a}
+.fghp .brush-btn{padding:8px 10px;font-size:13.5px}
+.pltabs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:8px 0}
+.pltab{font:inherit;font-size:12.5px;padding:5px 9px;border-radius:6px;cursor:pointer;background:rgba(30,26,20,.8);color:#c8bda3;border:1px solid #5a5040;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.pltab small{font-size:10.5px;color:#8f846c}
+.pltab.has{border-color:#c8a94e;color:#f0dca0}.pltab.has small{color:#e8c86a}
+.pltab.on{background:#c8a94e;color:#1a1408;border-color:#f0dca0}.pltab.on small{color:#3a2a08}
+.plslots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin:4px 0 8px}
+.plslots>b{flex-basis:100%;text-align:center;color:#e8c86a;font-weight:400;letter-spacing:.1em;font-size:13.5px}
+.plslot{width:112px;height:54px;border-radius:7px;border:1.5px dashed #5a5040;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#6f6553;font-size:12px;position:relative}
+.plslot.on{border-style:solid;border-color:#c8a94e;background:rgba(200,169,78,.12);color:#f0e6d0;cursor:pointer}
+.plslot i{font-style:normal;font-size:19px;color:var(--gc)}
+.plslot em{position:absolute;right:4px;top:2px;font-style:normal;font-size:9.5px;color:#e08a7a;opacity:0}
+.plslot.on:hover em{opacity:1}
+.plbtns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.plbtns button{font:inherit;font-size:12.5px;padding:6px 12px;border-radius:6px;cursor:pointer;background:rgba(40,34,26,.9);color:#e9dfc9;border:1px solid #8a7f68}
+.plbtns button:hover{background:rgba(90,76,50,.9)}
+.forge .scside{overflow-y:auto;overflow-x:hidden}
+.plpool{max-height:42vh;overflow:auto}
+.plhold{position:relative;display:inline-block}
+.plhold .card.pltaken{opacity:.35;filter:grayscale(.7)}
+.pltag{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);font-size:10.5px;padding:1px 7px;border-radius:8px;background:#3a3226;color:#c8bda3;white-space:nowrap}
+.pltag.me{background:#c8a94e;color:#1a1408}
 .fgtable{margin-top:10px;border-radius:10px;overflow:hidden;
   background:linear-gradient(160deg,rgba(40,22,10,.8),rgba(16,9,4,.8));
   border:1px solid rgba(255,150,60,.24)}
@@ -5494,7 +5520,7 @@ const INF = Infinity;
 const trC = (base, mul, step) => l => Math.round(base * Math.pow(mul, l) + (step || 0) * l);
 const TRAIN = {
   hp:      { n: '뿌리',     g: '根', max: INF, cost: trC(30, 1.16, 10),
-             d: l => `최대 체력 <b>+${l * 4}</b>`, one: '최대 체력 +4' },
+             d: l => `최대 체력 <b>+${l * 6}</b>`, one: '최대 체력 +6' },
   atk:     { n: '무쇠손',   g: '拳', max: INF, cost: trC(45, 1.24, 18),
              d: l => `주는 피해 <b>+${l * 3}%</b>`, one: '주는 피해 +3%' },
   def:     { n: '굳은살',   g: '皮', max: INF, cost: trC(45, 1.30, 20),
@@ -9654,7 +9680,16 @@ function drawCards(n) {
       if (!b.discardPile.length) break;
       b.drawPile = shuffle(b.discardPile.slice()); b.discardPile = [];
     }
-    b.hand.push(b.drawPile.pop());
+    /* 덱 설정 — 뒤 차례에 정해 둔 부적은 아껴 두고 다른 것부터 뽑는다.
+       남은 것이 다 정해 둔 것뿐이면 버린 더미를 먼저 섞어 넣는다 */
+    let at = b.drawPile.length - 1;
+    if (b.reserved && b.reserved.size) {
+      const free = () => { for (let j = b.drawPile.length - 1; j >= 0; j--) if (!b.reserved.has(b.drawPile[j].uid)) return j; return -1; };
+      let j = free();
+      if (j < 0 && b.discardPile.length) { b.drawPile = shuffle(b.discardPile.slice()).concat(b.drawPile); b.discardPile = []; j = free(); }
+      if (j >= 0) at = j; else at = b.drawPile.length - 1;
+    }
+    b.hand.push(b.drawPile.splice(at, 1)[0]);
   }
   SND.draw(n); if (n >= 3) SND.swoosh(); syncAll();
 }
@@ -9721,6 +9756,8 @@ function startBattle(enemyIds, kind, opts) {
     b.enemies.push(e);
   }
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
+  b.plan = planClean(run).map(h => h.slice());          /* 덱 설정 — 차례마다 뽑을 부적 */
+  b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
   if (kind !== 'arena' && kind !== 'world' && !mpK) { run.inBattle = true; saveRun(); }
@@ -9834,7 +9871,9 @@ async function _startPlayerTurn(b) {
   const n = 5 + (p.s.flow || 0) + b.drawMod + (hasBoon('draw1') ? 1 : 0);
   b.drawMod = 0;
   b.fortuneRolled = false;
-  drawCards(Math.max(0, n));
+  const pulled = planPull(b, Math.max(0, n));          /* 덱 설정 — 이번 차례에 정해 둔 부적 */
+  drawCards(Math.max(0, n - pulled));
+  if (pulled && b.turn === 1 && !AUTO.on) toast(`덱 설정대로 — ${b.plan.filter(h => h.length).length}번째 차례까지 정해 둔 부적이 나온다`);
   await tryFortune();
   SND.drum();
   showTurnLabel('당신의 차례');
@@ -10346,6 +10385,11 @@ function _winBattle() {
   const kind = b.kind;
   if (kind === 'arena') { arenaWin(); return; }
   if (kind === 'colo') { coloWin(); return; }
+  /* 보스를 꺾을 때마다 기(氣)가 하나 는다 — 이번 모험 동안 */
+  if (kind === 'boss') {
+    run.maxEnergy = (run.maxEnergy || 3) + 1; run.bossQi = (run.bossQi || 0) + 1;
+    setTimeout(() => { try { flash('氣 +1'); toast(`보스를 꺾었다 — 최대 기 ${run.maxEnergy}`); SND.unlock(); } catch (e) {} }, 400);
+  }
   G.b = null;
   showRewards(kind);
 }
@@ -11284,6 +11328,10 @@ function showForge() {
             <em>×${FORGE_MUL[i + 1].toFixed(2)}</em><i>${fgCost(i)}</i></div>`).join('')}
           <div class="fgwarn">${FORGE_BACK_FROM}단부터는 실패하면 한 단이 도로 내려간다</div>
         </div>
+        <div class="fghp"><b>身 퇴마사 단련 — 체력</b>
+          <small>부적 말고 몸을 두들긴다. 실패가 없다. 최대 체력이 늘고 그만큼 곧바로 찬다 (이번 모험 동안).</small>
+          <div class="fghpnow" id="fg_hpnow"></div>
+          <button class="brush-btn gold" id="fg_hp"></button></div>
       </div>
       <div class="scmain">
         <div class="lbhead">덱의 부적 <b>${run.deck.length}</b>장 · 두들길 것을 고르시오</div>
@@ -11376,10 +11424,32 @@ function showForge() {
     }
     saveRun(); renderTop(); draw();
   };
+  /* 퇴마사 단련 — 골드로 최대 체력 */
+  const hpPaint = () => {
+    const b2 = p.querySelector('#fg_hp'), now = p.querySelector('#fg_hpnow'); if (!b2) return;
+    const g = hpForgeGain(run), c = hpForgeCost(run);
+    now.innerHTML = `지금 최대 체력 <b>${run.maxHp}</b> · 단련 <b>${run.hpForge || 0}</b>번`;
+    b2.textContent = run.gold >= c ? `최대 체력 +${g} (${c}골드)` : `골드가 ${c - run.gold} 모자라다 (+${g} · ${c}골드)`;
+    b2.disabled = run.gold < c;
+  };
+  p.querySelector('#fg_hp').onclick = () => {
+    const g = hpForgeGain(run), c = hpForgeCost(run);
+    if (run.gold < c) { SND.err(); return; }
+    run.gold -= c; run.maxHp += g; run.hp = Math.min(run.maxHp, run.hp + g); run.hpForge = (run.hpForge || 0) + 1;
+    SND.gong(); SND.heal && SND.heal(); screenFlash('rgba(255,120,110,.35)', 520);
+    FX.burst(innerWidth / 2, innerHeight / 2, 30, '255,130,120', 6, 60, 4.6);
+    say(`"몸도 쇠와 같네. <b style="color:#ff9a8a">최대 체력 +${g}</b>."`);
+    toast(`퇴마사 단련 — 최대 체력 ${run.maxHp}`);
+    saveRun(); renderTop(); draw(); hpPaint();
+  };
+  hpPaint();
   const back = () => { closePanel(p); G.scene = prev; if (prev === 'map' && G.run) showMap(); };
   p._esc = back;
   p.querySelector('#fg_back').onclick = () => { p._esc = null; back(); };
 }
+/* 퇴마사 단련 — 늘어나는 몫은 지금 최대 체력의 8%(적어도 8), 값은 막 물가를 따라 한 번마다 1.3배 */
+const hpForgeGain = run => Math.max(8, Math.round(run.maxHp * .08));
+const hpForgeCost = run => Math.round(140 * shopMul(run.act || 1) * Math.pow(1.3, run.hpForge || 0));
 
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -12299,6 +12369,10 @@ function friendAdvise(force) {
 function friendBreak() {
   const r = G.run; if (!r || r.friendLost) return;
   r.friendLost = true; saveRun();
+  /* 한 번 본 사람에게는 다시 띄우지 않는다 — 모험마다, 쓰러져 되돌아올 때마다 떠서 성가셨다.
+     벗은 여전히 조용해진다(훈수 없음). 창과 소리만 건너뛴다 */
+  if (META.friendCut) return;
+  META.friendCut = true; saveMeta();
   const old = $('#friendsay'); if (old) old.remove();
   SND.err(); SND.hiss({ dur: .9, vol: .12, freq: 1800, to: 200, filter: 'bandpass', q: 1.4, rev: .6 });
   screenFlash('rgba(60,90,120,.4)', 800);
@@ -13414,7 +13488,7 @@ function newRun(asc, keepDeck) {
 /* 수행 나무가 모험 첫머리에 하는 일 */
 function applyTrainRun() {
   const run = G.run; if (!run) return;
-  const hp = trLv('hp') * 4;
+  const hp = trLv('hp') * 6;                 /* 체력이 모자란다는 말에 4 → 6 */
   if (hp) { run.maxHp += hp; run.hp += hp; }
   run.gold += trLv('gold') * 45;
   run.potSlots += trLv('potion');
@@ -13750,13 +13824,116 @@ function closeOverlay() {
 
 /* --- 카드 목록 보기 --- */
 function showCardList(list, title, shuffled) {
+  const mine = G.run && list === G.run.deck && !G.run._pvp;
+  const pn = mine ? planClean(G.run).filter(h => h.length).length : 0;
   const p = modal(`<h2>${title}</h2>${shuffled ? '<div class="hint">순서는 실제와 다르게 표시된다</div>' : ''}
+    ${mine ? `<div style="margin:4px 0 8px"><button class="brush-btn gold" id="cl_plan">덱 설정${pn ? ` · ${pn}개 정해 둠` : ''}</button></div>` : ''}
     <div class="cardgrid"></div><button class="brush-btn" id="cl_close">닫기</button>`);
+  const pb = p.querySelector('#cl_plan'); if (pb) pb.onclick = () => { closeTop(); showPlan(); };
   const g = p.querySelector('.cardgrid');
   const arr = shuffled ? shuffle(list.slice()) : list.slice();
   if (!arr.length) g.innerHTML = '<div style="color:#c8bda3">비어 있다</div>';
   for (const c of arr) g.appendChild(cardNode(c));
   p.querySelector('#cl_close').onclick = closeTop;
+}
+/* ══════════════════════════════════════════════════════════
+   덱 설정(陣) — 차례마다 뽑힐 부적을 미리 정한다 (안 해도 된다)
+   ──────────────────────────────────────────────────────────
+   「덱 1」은 첫 차례, 「덱 2」는 둘째 차례에 손에 들어올 부적이다.
+   한 덱에 다섯 장, 열다섯 덱(열다섯 차례)까지. 한 장은 한 덱에만 넣는다.
+   정해 둔 덱이 다 지나도 싸움이 안 끝나면, 그다음 차례부터는 예전처럼 무작위다.
+   이미 쓴 부적(버린 더미·소멸)은 다시 나오지 않는다 — 그 자리는 무작위로 채운다.
+   덱 1~5 만 정하면 여섯째 차례부터 무작위. 모든 싸움에 똑같이 쓰인다.
+   ══════════════════════════════════════════════════════════ */
+const PLAN_MAX = 15, PLAN_HAND = 5;
+function planClean(run) {
+  if (!run || !Array.isArray(run.plan)) return [];
+  const have = new Set(run.deck.map(c => c.uid)), used = new Set();
+  run.plan = run.plan.slice(0, PLAN_MAX).map(h => (Array.isArray(h) ? h : [])
+    .filter(u => have.has(u) && !used.has(u) && used.add(u)).slice(0, PLAN_HAND));
+  while (run.plan.length && !run.plan[run.plan.length - 1].length) run.plan.pop();
+  return run.plan;
+}
+/* 이번 차례에 정해 둔 부적을 뽑을 더미에서 꺼내 손에 쥔다 — 몇 장 꺼냈는지 돌려준다 */
+function planPull(b, n) {
+  const pl = b.plan || [];
+  const now = pl[b.turn - 1];
+  const later = new Set(); for (let i = b.turn; i < pl.length; i++) for (const u of pl[i]) later.add(u);
+  b.reserved = later.size ? later : null;
+  if (!now || !now.length) return 0;
+  let k = 0;
+  for (const u of now) {
+    if (k >= n || b.hand.length >= 10) break;
+    const i = b.drawPile.findIndex(c => c.uid === u);
+    if (i < 0) continue;                                   /* 이미 쓴 부적 — 다시 나오지 않는다 */
+    b.hand.push(b.drawPile.splice(i, 1)[0]); k++;
+  }
+  return k;
+}
+function showPlan() {
+  const run = G.run; if (!run) return;
+  planClean(run);
+  let cur = 0;
+  const p = modal(`<h2>덱 설정</h2>
+    <div class="hint" style="max-width:640px;line-height:1.75">차례마다 손에 들어올 부적을 미리 정한다 — <b>안 해도 된다.</b>
+      「덱 1」은 첫 차례, 「덱 2」는 둘째 차례. 한 덱에 <b>${PLAN_HAND}장</b>, <b>${PLAN_MAX}덱</b>까지.<br>
+      한 장은 한 덱에만 넣는다. 정해 둔 덱을 다 써도 싸움이 안 끝나면 그다음 차례부터는 <b>무작위</b>다.
+      이미 쓴 부적은 다시 나오지 않는다 (그 자리는 무작위로 채운다).${G.b ? '<br><span style="color:#e8c86a">지금 싸움에는 이미 들어갔다 — 다음 싸움부터 적용된다.</span>' : ''}</div>
+    <div class="pltabs" id="pl_tabs"></div>
+    <div class="plslots" id="pl_slots"></div>
+    <div class="plbtns"><button class="val" id="pl_clr">이 덱 비우기</button><button class="val" id="pl_all">모두 비우기</button>
+      <button class="val" id="pl_auto">남은 부적으로 이 덱 채우기</button></div>
+    <div class="cardgrid plpool" id="pl_pool"></div>
+    <button class="brush-btn" id="pl_x">닫기</button>`, 'planm');
+  p.dataset.noauto = '1';
+  const byUid = u => run.deck.find(c => c.uid === u);
+  const where = u => run.plan.findIndex(h => h.includes(u));
+  const save = () => { planClean(run); try { saveRun(); } catch (e) {} };
+  const hand = () => (run.plan[cur] = run.plan[cur] || []);
+  const draw = () => {
+    const tabs = p.querySelector('#pl_tabs'); tabs.innerHTML = '';
+    for (let i = 0; i < PLAN_MAX; i++) {
+      const h = run.plan[i] || [];
+      const t = el('button', 'pltab' + (i === cur ? ' on' : '') + (h.length ? ' has' : ''), `덱 ${i + 1}<small>${h.length}/${PLAN_HAND}</small>`);
+      t.onclick = () => { cur = i; SND.ui(); draw(); };
+      tabs.appendChild(t);
+    }
+    const sl = p.querySelector('#pl_slots'); sl.innerHTML = `<b>덱 ${cur + 1} — ${cur + 1}번째 차례</b>`;
+    const h = run.plan[cur] || [];
+    for (let i = 0; i < PLAN_HAND; i++) {
+      const c = h[i] != null && byUid(h[i]);
+      const n = el('div', 'plslot' + (c ? ' on' : ''), c ? `<i style="--gc:${(GRADE[CARDS[c.id].rar] || {}).c || '#888'}">${CARDS[c.id].g}</i><span>${CARDS[c.id].n}${c.up ? '+' : ''}</span><em>빼기 ✕</em>` : '<span>비었다</span>');
+      if (c) n.onclick = () => { hand().splice(i, 1); SND.ui(); save(); draw(); };
+      sl.appendChild(n);
+    }
+    const pool = p.querySelector('#pl_pool'); pool.innerHTML = '';
+    for (const c of run.deck) {
+      const w = where(c.uid);
+      const n = cardNode(c, { tip: true });
+      n.classList.add('pick');
+      if (w === cur) n.classList.add('on');
+      else if (w >= 0) n.classList.add('pltaken');
+      const holder = el('div', 'plhold'); holder.appendChild(n);
+      if (w >= 0) holder.appendChild(el('div', 'pltag' + (w === cur ? ' me' : ''), `덱 ${w + 1}`));
+      n.onclick = () => {
+        if (w === cur) { hand().splice(hand().indexOf(c.uid), 1); }
+        else if (w >= 0) { toast(`이미 덱 ${w + 1}에 넣은 부적이다 — 한 장은 한 덱에만`); SND.err(); return; }
+        else if (hand().length >= PLAN_HAND) { toast(`한 덱에는 ${PLAN_HAND}장까지`); SND.err(); return; }
+        else hand().push(c.uid);
+        SND.ui(); save(); draw();
+      };
+      pool.appendChild(holder);
+    }
+  };
+  p.querySelector('#pl_clr').onclick = () => { run.plan[cur] = []; SND.ui(); save(); draw(); };
+  p.querySelector('#pl_all').onclick = () => { run.plan = []; SND.ui(); save(); draw(); };
+  p.querySelector('#pl_auto').onclick = () => {
+    const free = run.deck.filter(c => where(c.uid) < 0);
+    while (hand().length < PLAN_HAND && free.length) hand().push(free.splice(Math.floor(rnd() * free.length), 1)[0].uid);
+    SND.ui(); save(); draw();
+  };
+  p.querySelector('#pl_x').onclick = () => { save(); closeTop(); };
+  draw();
 }
 /* --- 덱에서 카드 고르기 (Promise) --- */
 function pickFromList(list, title, opts) {
@@ -18277,6 +18454,7 @@ function showMenu() {
       ${guestOn() ? '<button class="brush-btn" id="m_guest" style="color:#f0b8e8;border-color:#e08ad8">客 게스트 창</button>' : ''}
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
+      ${G.run && !G.run._pvp ? `<button class="brush-btn gold" id="m_plan">덱 설정${planClean(G.run).length ? ` · ${planClean(G.run).filter(h => h.length).length}개` : ''}</button>` : ''}
       <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
       <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
       ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
@@ -18295,6 +18473,7 @@ function showMenu() {
   p.querySelector('#m_set').onclick = () => showSettings();
   const mg = p.querySelector('#m_guest'); if (mg) mg.onclick = () => { closeTop(); showGuest(); };
   const mm2 = p.querySelector('#m_mp'); if (mm2) mm2.onclick = () => { closeTop(); showMulti(); };
+  const mpl = p.querySelector('#m_plan'); if (mpl) mpl.onclick = () => { closeTop(); showPlan(); };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_news').onclick = () => { closeTop(); showNews(); };
   p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
@@ -18484,7 +18663,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 9;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 10;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22945,6 +23124,12 @@ const TUTOR = [
     s: ['턴을 넘기면 <b>손패는 전부 버려진다.</b> 아끼지 말고 쓰자.',
         '다음 내 턴에 다시 <b>다섯 장</b>을 뽑는다.',
         '뽑을 더미가 비면 버린 더미를 섞어 다시 쓴다.'] },
+  { g: '陣', t: '덱 설정 — 뽑을 부적을 미리 정한다', c: '#c8a94e',
+    b: '부적은 원래 <b>무작위로</b> 뽑힌다. <b>덱 설정</b>을 해 두면 차례마다 <b>정해 둔 부적</b>이 손에 들어온다. <b>안 해도 된다.</b>',
+    s: ['상단바 <b>덱</b> 단추 → <b>덱 설정</b>. (≡ 메뉴에도 있다)',
+        '「덱 1」은 첫 차례, 「덱 2」는 둘째 차례 — 한 덱에 <b>다섯 장</b>, <b>열다섯 덱</b>까지. 부적을 누르면 넣고, 다시 누르면 뺀다.',
+        '한 장은 한 덱에만. <b>이미 쓴 부적은 다시 나오지 않는다</b> — 그 자리는 무작위로 채운다.',
+        '덱 1~5 만 정했는데 싸움이 안 끝나면 <b>여섯째 차례부터는 무작위</b>다.'] },
   { g: '祕', t: '비기는 기를 쓰지 않는다', c: '#a879e8',
     b: '왼쪽 아래 단추가 <b>비기</b>다. <b>기를 하나도 쓰지 않고</b>, 요괴 한 마리와의 싸움에서 <b>한 번</b> 쓴다.',
     s: ['위급할 때를 위해 아껴 두는 한 수다.',
