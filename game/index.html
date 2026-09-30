@@ -3199,6 +3199,55 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .icoline b{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;font-size:17px;flex:none;
   background:#efe6d0;border:1.5px solid #6b6053;color:#22190f}
 
+/* ══ 백야와의 면담 ══════════════════════════════════════════ */
+.meet{position:fixed;inset:0;z-index:450;display:flex;flex-direction:column;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 12px;color:#f0e6d0;overflow:hidden}
+.meetbg{position:absolute;inset:0;z-index:-1}
+.meetbg:after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent 20%,rgba(0,0,0,.7))}
+.meethead{display:flex;align-items:center;gap:12px;width:min(820px,100%);padding:8px 12px;border-radius:10px;background:rgba(20,12,6,.75);border:1px solid #6a4a24}
+.meethead b{color:#e8c86a;letter-spacing:.3em;font-weight:400;font-size:18px}
+.meethead span{flex:1;color:#c8bda3;font-size:13px}
+.meetleave{font:inherit;font-size:12.5px;padding:6px 12px;border-radius:14px;cursor:pointer;background:rgba(90,20,20,.85);border:1px solid #e08a7a;color:#ffd0c8}
+.meetpeople{display:flex;align-items:center;gap:22px;margin:12px 0 6px}
+.mtp{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mtp i{font-style:normal;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:28px;border:2px solid;box-shadow:0 0 18px rgba(0,0,0,.6)}
+.mtp.dev i{background:radial-gradient(circle at 35% 30%,#3a4a8a,#10142a);border-color:#e8c86a;color:#f4e2a0;text-shadow:0 0 10px #e8c86a}
+.mtp.you i{background:radial-gradient(circle at 35% 30%,#4a3a2a,#140c06);border-color:#9fd4ff;color:#dff0ff}
+.mtp.big i{width:74px;height:74px;font-size:36px}
+.mtp b{font-weight:400;font-size:13px}
+.mtcups{font-size:26px;filter:drop-shadow(0 0 8px rgba(255,210,150,.6));animation:cLamp 1.6s ease-in-out infinite alternate}
+.meetstate{min-height:20px;font-size:13px;color:#e8c86a;display:flex;align-items:center;gap:8px}
+.meetstate.warn{color:#ffb0a0}
+.meetstate button{font:inherit;font-size:12px;padding:3px 10px;border-radius:10px;background:#3a2a1a;color:#e9dfc9;border:1px solid #8a7f68;cursor:pointer}
+.meetlog{flex:1;min-height:0;width:min(820px,100%);overflow-y:auto;padding:10px 12px;border-radius:10px;background:rgba(10,6,3,.72);border:1px solid #4a3218;display:flex;flex-direction:column;gap:6px}
+.mtl{font-size:14px;line-height:1.55;display:flex;gap:8px;align-items:baseline}
+.mtl b{font-weight:400;flex:none}.mtl b.dev{color:#e8c86a}.mtl b.user{color:#9fd4ff}
+.mtl span{flex:1;word-break:break-all}.mtl em{font-style:normal;font-size:10.5px;color:#7a6f58}
+.mtl.dev span{color:#fff4d8}
+.mtl.sys{justify-content:center;color:#b8ab92;font-size:12.5px}
+.mtl.gift{color:#ffd98a}.mtl.gift b{color:#ffb45a}
+.meetin{display:flex;gap:6px;width:min(820px,100%);margin-top:8px}
+.meetin input{flex:1;font:inherit;font-size:14px;padding:9px 12px;border-radius:8px;background:rgba(12,8,4,.9);border:1px solid #6a4a24;color:#f0e6d0}
+.meetin input:focus{outline:none;border-color:#e8c86a}
+.meetin button,.meetadm button{font:inherit;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;background:#5a3a14;color:#ffe8b0;border:1px solid #c8a94e}
+.meetin button:hover,.meetadm button:hover{background:#7a5020}
+.meetadm{width:min(820px,100%);margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(30,20,50,.8);border:1px solid #8a6ad0;display:flex;flex-direction:column;gap:6px}
+.mtrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mtrow>b{color:#c8a8ff;font-weight:400;font-size:13px;min-width:64px}
+.mtrow input{width:88px;font:inherit;font-size:12.5px;padding:6px 8px;border-radius:6px;background:rgba(10,8,20,.9);border:1px solid #6a5a9a;color:#f0e6d0}
+.mtrow input#mg_cards{width:150px}
+.meetadm [data-b]{background:#6a1a2a;border-color:#ff8aa0;color:#ffe0e8}
+.meetadm [data-b] em{font-style:normal;color:#ffd0a0}
+.meetinv{display:flex;gap:16px;align-items:center;justify-content:center;max-width:460px;margin:10px auto 0}
+.meetban{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:470;text-align:center;pointer-events:none;animation:cName .5s cubic-bezier(.2,1.3,.3,1) both,meetBanOut .5s 2.9s forwards}
+.meetban b{display:block;font-size:clamp(28px,5vw,58px);color:#ffe7a0;font-weight:700;text-shadow:0 0 20px #ff9a4a,0 0 50px rgba(255,120,80,.7),0 4px 10px #000}
+.meetban span{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:14px;background:rgba(0,0,0,.6);color:#fff4d8;font-size:14px}
+@keyframes meetBanOut{to{opacity:0;transform:translateX(-50%) scale(.9)}}
+.mgbox{position:fixed;z-index:465;width:46px;height:46px;margin-left:-23px;margin-top:-23px;border-radius:8px;display:grid;place-items:center;font-size:24px;pointer-events:none;
+  background:linear-gradient(#d8402a,#8a1a14);color:#ffe7a0;border:2px solid #ffd76a;box-shadow:0 0 16px rgba(255,200,100,.8)}
+.mgpop{position:fixed;z-index:466;transform:translate(-50%,-50%);pointer-events:none;font-size:15px;color:#fff4c8;text-shadow:0 0 8px #ff9a4a,0 2px 4px #000;animation:mgPop 1.1s ease-out forwards;white-space:nowrap}
+@keyframes mgPop{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-80%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-180%) scale(1)}}
+.cstamp.small span{font-size:clamp(44px,8vw,120px)}
+@media (max-width:640px){.meetpeople{gap:12px}.mtp i{width:46px;height:46px;font-size:22px}.mtrow input{width:70px}.meethead b{font-size:15px}}
 /* ══ 컷씬 ══════════════════════════════════════════════════ */
 .cut{position:fixed;inset:0;z-index:500;background:#000;overflow:hidden;animation:cutIn .45s ease;user-select:none;-webkit-user-select:none}
 .cut.out{animation:cutOut .5s ease forwards}
@@ -18134,6 +18183,297 @@ function cutLiveCheck() {
   CUT.seen[c.id] = 1;
   cutByName(c.k).then(() => { if (G.b) try { syncAll(); } catch (e) {} });
 }
+/* ══ 찻잔 컷씬 — 백야와 마주 앉아 잔을 겨눈다 ═══════════════
+   낮은 찻상을 사이에 두고 백야(왼쪽)와 손님(오른쪽)이 앉는다.
+   백야가 차를 따르고 → 카메라가 둘을 번갈아 비추며 돈다 → 두 잔이 가운데서 맞닿는다 →
+   「百 夜 面 談」. 면담 방이 열릴 때 양쪽에서 흐른다.
+   ═════════════════════════════════════════════════════════ */
+function cutTea(nick) {
+  const who = nick || '손님';
+  /* 세로 폰에서는 한 발 물러선다 — 둘 다 화면에 들게 */
+  const zs = S => (S.W / S.k < 1100 ? .62 : 1);
+  const cup = col => `<svg viewBox="0 0 60 50" width="60" height="50"><path d="M6 10 Q30 16 54 10 L48 40 Q30 48 12 40Z" fill="${col}" stroke="#e8d8b0" stroke-width="2"/>
+    <ellipse cx="30" cy="11" rx="24" ry="5" fill="#7a5a2a"/><ellipse cx="30" cy="11" rx="20" ry="3.4" fill="#c89a4a" opacity=".8"/></svg>`;
+  return {
+    len: 11200,
+    build(S) {
+      cutLayer(S, cutSkySvg('#120c08', '#2a1a10', '#3a2414', null), -900, 0);
+      /* 다실 — 창살 너머 달, 등불, 병풍 */
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible">
+        <rect x="-400" y="-300" width="2400" height="1500" fill="#2a1a10"/>
+        <rect x="560" y="120" width="480" height="340" fill="#0c1020"/><circle cx="880" cy="230" r="70" fill="#f4ead0"/><circle cx="880" cy="230" r="150" fill="#f4ead0" opacity=".12"/>
+        <g stroke="#5a3a1e" stroke-width="10">${Array.from({ length: 7 }, (_, i) => `<line x1="${560 + i * 80}" y1="120" x2="${560 + i * 80}" y2="460"/>`).join('')}
+          ${Array.from({ length: 5 }, (_, i) => `<line x1="560" y1="${120 + i * 85}" x2="1040" y2="${120 + i * 85}"/>`).join('')}</g>
+        <rect x="548" y="108" width="504" height="364" fill="none" stroke="#3a2412" stroke-width="18"/>
+        <g opacity=".85">${[180, 1420].map(x => `<line x1="${x}" y1="60" x2="${x}" y2="170" stroke="#3a2412" stroke-width="3"/>
+          <ellipse cx="${x}" cy="210" rx="44" ry="58" fill="#ffb45a" class="clamp"/><ellipse cx="${x}" cy="210" rx="120" ry="140" fill="#ffb45a" opacity=".12"/>`).join('')}</g>
+        <rect x="-400" y="600" width="2400" height="600" fill="#1c120a"/>
+        <path d="M-400 600 L2000 600" stroke="#4a3018" stroke-width="4"/></svg>`, -300, 1);
+      /* 두 사람 — 백야는 쪽빛 도포, 손님은 먹빛 */
+      S.refs.dev = cutPut(S, cutManSvg('#1c2440', '#c8a94e'), { x: 560, y: 820, ax: .5, ay: 1, z: 20, cls: 'cmanw', zi: 3 });
+      S.refs.you = cutPut(S, `<div style="transform:scaleX(-1)">${cutManSvg()}</div>`, { x: 1040, y: 820, ax: .5, ay: 1, z: 20, cls: 'cmanw', zi: 3 });
+      /* 찻상 · 주전자 · 잔 */
+      cutPut(S, `<svg viewBox="0 0 700 200" width="700" height="200"><rect x="20" y="40" width="660" height="34" rx="6" fill="#4a2c14"/>
+        <rect x="20" y="40" width="660" height="8" fill="#6a4020"/><rect x="60" y="74" width="30" height="120" fill="#3a2210"/><rect x="610" y="74" width="30" height="120" fill="#3a2210"/></svg>`,
+        { x: 800, y: 760, z: 60, zi: 5 });
+      S.refs.pot = cutPut(S, `<svg viewBox="0 0 120 100" width="120" height="100"><path d="M20 40 Q60 10 100 40 L96 84 Q60 98 24 84Z" fill="#3a4a5a" stroke="#c8d8e0" stroke-width="2"/>
+        <path d="M100 50 Q120 44 116 30" stroke="#3a4a5a" stroke-width="8" fill="none"/><ellipse cx="60" cy="28" rx="16" ry="6" fill="#2a3a4a"/></svg>`,
+        { x: 800, y: 740, z: 70, ay: 1, zi: 6 });
+      S.refs.c1 = cutPut(S, cup('#e8e0d0'), { x: 700, y: 752, z: 72, ay: 1, zi: 6 });
+      S.refs.c2 = cutPut(S, cup('#e8e0d0'), { x: 900, y: 752, z: 72, ay: 1, zi: 6 });
+      cutAmbient(S, 'ember', .08, '255,190,110');
+      cutAmbient(S, 'mist', .01, '255,220,180');
+      cutCam(S, { x: 800, y: 520, s: .95 * zs(S), ry: -14, rx: 4 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1200);
+    },
+    tl: [
+      [200, S => { cutSfx('bell'); cutCam(S, { x: 800, y: 560, s: 1.1 * zs(S), ry: 12, rx: 0 }, 3600, 'ease-in-out'); }],
+      [700, S => cutSay(S, '달이 창살에 걸린 밤 — 백야가 찻물을 따른다.', 2400)],
+      [1300, S => {
+        S.refs.pot.animate([{ transform: S.refs.pot.style.transform }, { transform: S.refs.pot.style.transform + ' rotate(-24deg)' }, { transform: S.refs.pot.style.transform }],
+          { duration: 1800, easing: 'ease-in-out' });
+        const t = setInterval(() => { if (!S.alive) return clearInterval(t); for (const c of [S.refs.c1, S.refs.c2]) { const a = cutAt(c); cutEmit(S, 'smoke', a.x, a.y - a.h * .5, 1, { sp: .6, ang: -Math.PI / 2, spread: .6, life: 90, sz: 14, g: -.015 }); } }, 180);
+        S.timers.push(setTimeout(() => clearInterval(t), 9000));
+      }],
+      [3400, S => { cutCam(S, { x: 600, y: 520, s: 1.9 * zs(S), rz: -3, ry: 16 }, 1100); cutSay(S, '<b style="color:#e8c86a">백야</b> — "왔는가. 앉게."', 2000); }],
+      [5200, S => { cutCam(S, { x: 1000, y: 520, s: 1.9 * zs(S), rz: 3, ry: -16 }, 1100); cutSay(S, `<b style="color:#9fd4ff">${wEsc(who)}</b> — 잔을 든다.`, 1800); }],
+      [6800, S => {
+        cutCam(S, { x: 800, y: 600, s: 1.7 * zs(S), rz: 0, ry: 0, rx: -6 }, 900);
+        S.refs.dev.classList.add('armup'); S.refs.you.classList.add('armup');
+        S.refs.c1.animate([{ left: '700px', top: '752px' }, { left: '778px', top: '640px' }], { duration: 900, easing: 'cubic-bezier(.3,.8,.3,1)', fill: 'forwards' });
+        S.refs.c2.animate([{ left: '900px', top: '752px' }, { left: '822px', top: '640px' }], { duration: 900, easing: 'cubic-bezier(.3,.8,.3,1)', fill: 'forwards' });
+        cutSay(S, '두 잔이 서로를 겨눈다.', 1600);
+      }],
+      [7800, S => {
+        cutSfx('bell'); cutSfx('unlock'); cutHitstop(S, 90); cutFlash(S, 'rgba(255,225,160,.7)', 500);
+        const a = cutAt(S.refs.c1), b = cutAt(S.refs.c2);
+        cutEmit(S, 'gold', (a.x + b.x) / 2, a.y, 50, { sp: 7, life: 50, g: .03 });
+        cutEmit(S, 'ring', (a.x + b.x) / 2, a.y, 1, { sp: 0, life: 24, sz: 40, g: 0 });
+        cutSay(S, '<b style="color:#e8c86a">백야</b> — "한잔 하지. 이야기는 길 걸세."', 1900);
+      }],
+      [9300, S => {
+        cutFade(S, .75, 600);
+        S.title.innerHTML = `<div class="cstamp small">${'百夜面談'.split('').map(c => `<span>${c}</span>`).join('')}</div><div class="cstampsub in">백야와 ${wEsc(who)}의 1대1 면담</div>`;
+        S.title.querySelectorAll('.cstamp span').forEach((sp, i) => setTimeout(() => { sp.classList.add('in'); if (i === 3) cutSfx('gong'); }, i * 160));
+      }],
+      [10700, S => S.title.classList.add('fade')]
+    ]
+  };
+}
+CUT_LIST.tea = { n: '찻잔 — 백야와의 면담', make: () => cutTea('그대') };
+
+/* ══════════════════════════════════════════════════════════
+   백야와의 1대1 면담(面談)
+   ──────────────────────────────────────────────────────────
+   백야(관리자)가 운영 창에서 아이디·닉네임으로 청한다 → 받은 이에게 창이 뜬다 → 수락하면
+   양쪽에서 찻잔 컷씬이 흐르고 방이 열린다. 방에서는 둘만의 말, 백야의 선물(폭탄처럼 쏟아지는
+   「선물 세례」와 골라 주는 선물), 게스트로 바로 초대, 방 나가기.
+   선물은 받은 이가 서버에 한 번만 챙긴다 — 기계를 여러 대 써도 두 번 받지 않는다.
+   ══════════════════════════════════════════════════════════ */
+var MEET = { cur: null, role: '', since: 0, t: 0, busy: false, inboxAt: 0, asked: {}, cutDone: {}, first: true };
+const meetDev = () => caster();
+/* 백야 쪽은 퍼뜨리기 열쇠로, 받은 이는 로그인 표로 묻는다 */
+const meetAsk = (path, body) => acctAsk('/meet/' + path, Object.assign(MEET.role === 'dev' ? { code: castKey() } : { token: ACCT.token }, body || {}), 15000);
+/* 받은 이 — 청이 왔는지 소식을 물을 때마다 본다 */
+async function meetInboxCheck() {
+  if (!acctOn() || MEET.cur || Date.now() - MEET.inboxAt < 8000) return;
+  MEET.inboxAt = Date.now();
+  const r = await acctAsk('/meet/inbox', { token: ACCT.token }, 12000);
+  if (!r.ok || !r.room) return;
+  const rm = r.room;
+  if (rm.state === 'open') { meetOpen(rm, 'user'); return; }           /* 앱을 다시 켰다 — 방으로 돌아간다 */
+  if (rm.state !== 'invited' || MEET.asked[rm.id] || $('#meetask')) return;
+  MEET.asked[rm.id] = 1;
+  try { SND.bell(); SND.unlock(); } catch (e) {}
+  const p = modal(`<h2 style="color:#e8c86a">夜 백야의 면담 청</h2>
+    <div class="meetinv"><div class="mtp dev big"><i>夜</i></div>
+      <div class="hint" style="line-height:1.9"><b style="color:#e8c86a">백야</b>가 그대 — <b style="color:#9fd4ff">${wEsc(rm.nick)}</b> — 에게<br>
+        <b>1대1 면담</b>을 청한다. 찻상에 마주 앉아 이야기를 나눈다.<br><small style="color:#9a8d74">방에서는 둘만 말을 나눈다. 언제든 나올 수 있다.</small></div></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+      <button class="brush-btn gold" id="mi_yes">자리에 앉는다</button>
+      <button class="brush-btn ghost" id="mi_no" style="color:#e9dfc9;border-color:#8a7f68">사양한다</button></div>`);
+  p.id = 'meetask'; p.dataset.noauto = '1';
+  p.querySelector('#mi_no').onclick = async () => { closePanel(p); await acctAsk('/meet/answer', { token: ACCT.token, id: rm.id, yes: false }, 12000); toast('면담을 사양했다'); };
+  p.querySelector('#mi_yes').onclick = async () => {
+    const x = await acctAsk('/meet/answer', { token: ACCT.token, id: rm.id, yes: true }, 12000);
+    closePanel(p);
+    if (!x.ok) { toast(x.why); SND.err(); return; }
+    meetOpen(x.room, 'user');
+  };
+}
+/* 백야 — 운영 창에서 청한다 */
+async function meetInvite(to) {
+  MEET.role = 'dev';
+  const r = await acctAsk('/meet/invite', { code: castKey(), to }, 15000);
+  if (!r.ok) { MEET.role = ''; return r; }
+  meetOpen(r.room, 'dev');
+  return r;
+}
+/* 방을 연다 */
+function meetOpen(room, role) {
+  if (MEET.cur && MEET.cur.id === room.id) return;
+  meetClose(true);
+  MEET.cur = room; MEET.role = role; MEET.since = 0; MEET.first = true;
+  const you = room.nick || room.user;
+  const n = el('div', 'meet');
+  n.id = 'meetroom';
+  n.innerHTML = `<div class="meetbg">${meetBgSvg()}</div>
+    <div class="meethead"><b>百夜 面談</b><span>백야 · ${wEsc(you)}</span><button class="meetleave" id="mt_leave">방 나가기</button></div>
+    <div class="meetpeople"><div class="mtp dev"><i>夜</i><b>백야</b></div><div class="mtcups">🍵</div><div class="mtp you"><i>${wEsc((you || '?').slice(0, 1))}</i><b>${wEsc(you)}</b></div></div>
+    <div class="meetstate" id="mt_state"></div>
+    <div class="meetlog" id="mt_log"></div>
+    <div class="meetin"><input id="mt_in" maxlength="120" placeholder="할 말 — 엔터로 보낸다" spellcheck="false" autocomplete="off"><button id="mt_send">보내기</button></div>
+    ${role === 'dev' ? `<div class="meetadm">
+      <div class="mtrow"><b>선물 세례</b>
+        <button data-b="s">小 — 골드 1천 · 다이아 100 <em>×12</em></button>
+        <button data-b="m">中 — 골드 5천 · 다이아 500 · 정진 200 <em>×20</em></button>
+        <button data-b="l">大 — 골드 2만 · 다이아 2천 · 정진 1천 <em>×32</em></button></div>
+      <div class="mtrow"><b>재화 선물</b><input id="mg_gold" type="number" min="0" placeholder="골드"><input id="mg_dia" type="number" min="0" placeholder="다이아">
+        <input id="mg_jp" type="number" min="0" placeholder="정진"><input id="mg_cards" placeholder="부적 id (쉼표)"><button id="mg_go">보낸다</button></div>
+      <div class="mtrow"><button id="mt_guest">客 게스트로 바로 초대</button><button id="mt_cut">찻잔 컷씬 다시</button></div>
+    </div>` : ''}`;
+  document.body.appendChild(n);
+  const q = s => n.querySelector(s);
+  const inp = q('#mt_in');
+  const send = async () => {
+    const t = inp.value.trim(); if (!t) return;
+    inp.value = '';
+    const r = await meetAsk('say', { id: room.id, text: t });
+    if (!r.ok) { toast(r.why); SND.err(); } else meetPoll();
+  };
+  q('#mt_send').onclick = send;
+  inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); send(); } };
+  q('#mt_leave').onclick = async () => { SND.ui(); await meetAsk('leave', { id: room.id }).catch(() => {}); meetClose(); toast('면담 방을 나왔다'); };
+  if (role === 'dev') {
+    const BOMB = { s: [{ gold: 1000, dia: 100 }, 12], m: [{ gold: 5000, dia: 500, jp: 200 }, 20], l: [{ gold: 20000, dia: 2000, jp: 1000 }, 32] };
+    n.querySelectorAll('.meetadm [data-b]').forEach(b => b.onclick = async () => {
+      const [pay, cnt] = BOMB[b.dataset.b];
+      const r = await meetAsk('gift', { id: room.id, pay, bomb: true, n: cnt });
+      if (!r.ok) { toast(r.why); SND.err(); } else meetPoll();
+    });
+    q('#mg_go').onclick = async () => {
+      const pay = { gold: +q('#mg_gold').value || 0, dia: +q('#mg_dia').value || 0, jp: +q('#mg_jp').value || 0,
+        cards: q('#mg_cards').value.split(',').map(x => x.trim()).filter(Boolean) };
+      const bad = pay.cards.filter(id => !CARDS[id]);
+      if (bad.length) { toast('없는 부적: ' + bad.join(', ')); SND.err(); return; }
+      const r = await meetAsk('gift', { id: room.id, pay });
+      if (!r.ok) { toast(r.why); SND.err(); return; }
+      ['#mg_gold', '#mg_dia', '#mg_jp', '#mg_cards'].forEach(s => q(s).value = '');
+      meetPoll();
+    };
+    q('#mt_guest').onclick = async () => { const r = await meetAsk('guest', { id: room.id }); if (!r.ok) { toast(r.why); SND.err(); } else { toast('게스트로 초대했다'); meetPoll(); } };
+    q('#mt_cut').onclick = () => cutPlay(cutTea(you));
+  }
+  meetState();
+  /* 이미 열린 방에 들어왔다(방금 수락했다) — 찻잔 컷씬부터 */
+  if (room.state === 'open' && !MEET.cutDone[room.id]) { MEET.cutDone[room.id] = 1; cutPlay(cutTea(you)); }
+  MEET.t = setInterval(meetPoll, 1200);
+  meetPoll();
+}
+function meetClose(quiet) {
+  clearInterval(MEET.t); MEET.t = 0;
+  const n = $('#meetroom'); if (n) n.remove();
+  if (!quiet) { MEET.cur = null; MEET.role = ''; }
+  else MEET.cur = null;
+}
+function meetState() {
+  const s = $('#mt_state'), r = MEET.cur; if (!s || !r) return;
+  const dev = MEET.role === 'dev';
+  s.className = 'meetstate' + (r.state === 'open' ? '' : ' warn');
+  s.innerHTML = r.state === 'invited' ? (dev ? `<span class="mpspin"></span> ${wEsc(r.nick)}에게 청하는 중 — 수락을 기다린다` : '수락을 기다린다')
+    : r.state === 'closed' ? `방이 닫혔다 <button id="mt_x">닫기</button>` : '';
+  const x = $('#mt_x'); if (x) x.onclick = () => meetClose();
+  const inp = $('#mt_in'); if (inp) inp.disabled = r.state !== 'open';
+}
+function meetLine(html, cls) {
+  const log = $('#mt_log'); if (!log) return;
+  const d = el('div', 'mtl ' + (cls || ''), html);
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+}
+async function meetPoll() {
+  const r = MEET.cur; if (!r || MEET.busy) return;
+  MEET.busy = true;
+  try {
+    const x = await meetAsk('poll', { id: r.id, since: MEET.since });
+    if (!x.ok) { if (/없다/.test(x.why || '')) { r.state = 'closed'; meetState(); clearInterval(MEET.t); } return; }
+    const rm = x.room, first = MEET.first; MEET.first = false;
+    const wasState = r.state;
+    Object.assign(r, { state: rm.state, nick: rm.nick });
+    for (const e of rm.ev) {
+      if (e.seq <= MEET.since) continue;
+      MEET.since = e.seq;
+      await meetEvent(e, first);
+    }
+    if (wasState !== 'open' && rm.state === 'open' && !MEET.cutDone[r.id]) {
+      MEET.cutDone[r.id] = 1;
+      await cutPlay(cutTea(r.nick));
+    }
+    meetState();
+    if (rm.state === 'closed') clearInterval(MEET.t);
+  } catch (e) { console.error('면담', e); }
+  finally { MEET.busy = false; }
+}
+async function meetEvent(e, quiet) {
+  const dev = MEET.role === 'dev', r = MEET.cur;
+  const when = new Date(e.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (e.kind === 'say') {
+    meetLine(`<b class="${e.who}">${wEsc(e.n)}</b><span>${wEsc(e.text)}</span><em>${when}</em>`, e.who);
+    if (!quiet && (e.who === 'dev') !== dev) try { SND.blip(720, { dur: .05, type: 'sine', vol: .05, to: 900 }); } catch (x) {}
+  } else if (e.kind === 'open') meetLine(`${wEsc(r.nick)}이(가) 자리에 앉았다`, 'sys');
+  else if (e.kind === 'decline') meetLine(`${wEsc(r.nick)}이(가) 면담을 사양했다`, 'sys');
+  else if (e.kind === 'leave') meetLine(`${e.who === 'dev' ? '백야' : wEsc(r.nick)}이(가) 방을 나갔다`, 'sys');
+  else if (e.kind === 'guest') {
+    meetLine(`백야가 ${wEsc(r.nick)}을(를) <b style="color:#f0b8e8">게스트</b>로 초대했다`, 'sys gift');
+    if (!dev && !quiet) setTimeout(() => guestInbox(true).catch(() => {}), 400);
+  } else if (e.kind === 'gift') {
+    meetLine(`<b>백야의 ${e.bomb ? '선물 세례' : '선물'}</b> — ${wEsc(payText(e.pay))}${e.claimed && !dev ? ' <i>(받았다)</i>' : ''}`, 'sys gift');
+    if (quiet && (e.claimed || dev)) return;
+    let got = true;
+    if (!dev) {
+      if (e.claimed) return;
+      const c = await meetAsk('claim', { id: r.id, gid: e.gid });
+      if (!c.ok) { got = false; if (!/이미/.test(c.why || '')) toast(c.why); return; }
+      payOut(c.pay);
+    }
+    meetGiftFx(e, dev, got);
+  }
+}
+/* 선물이 쏟아진다 — 상자가 하늘에서 떨어져 터진다 */
+function meetGiftFx(e, dev) {
+  const n = Math.max(1, e.n || 1), pay = e.pay || {};
+  const ban = el('div', 'meetban', `<b>${e.bomb ? '百 夜 의 &nbsp;선 물 &nbsp;세 례' : '백야의 선물'}</b><span>${wEsc(payText(pay))}${dev ? ' — 보냈다' : ''}</span>`);
+  document.body.appendChild(ban);
+  setTimeout(() => ban.remove(), 3400);
+  try { SND.unlock(); SND.coinRain && SND.coinRain(); } catch (x) {}
+  const per = k => pay[k] ? Math.max(1, Math.round(pay[k] / n)) : 0;
+  for (let i = 0; i < n; i++) setTimeout(() => {
+    const x = innerWidth * (.1 + Math.random() * .8), y = innerHeight * (.28 + Math.random() * .45);
+    const b = el('div', 'mgbox', ['匣', '寶', '福', '玉'][i % 4]);
+    b.style.left = x + 'px'; b.style.top = '-60px';
+    document.body.appendChild(b);
+    b.animate([{ top: '-60px', transform: `rotate(${(Math.random() - .5) * 60}deg) scale(.8)` }, { top: y + 'px', transform: `rotate(${(Math.random() - .5) * 30}deg) scale(1)` }],
+      { duration: 520 + Math.random() * 380, easing: 'cubic-bezier(.5,0,.7,1)', fill: 'forwards' }).onfinish = () => {
+      b.remove();
+      try { FX.burst(x, y, 22, ['255,215,120', '255,140,180', '140,220,255', '180,255,160'][i % 4], 6, 50, 4); FX.gold(x, y, 10); SND.coin(); } catch (z) {}
+      const t = [per('gold') ? `골드 +${per('gold')}` : '', per('dia') ? `다이아 +${per('dia')}` : '', per('jp') ? `정진 +${per('jp')}` : ''].filter(Boolean)[i % 3] || '선물!';
+      const f = el('div', 'mgpop', t); f.style.left = x + 'px'; f.style.top = y + 'px';
+      document.body.appendChild(f); setTimeout(() => f.remove(), 1100);
+      if (e.bomb && i % 5 === 4) screenFlash('rgba(255,215,140,.22)', 260);
+    };
+  }, i * (e.bomb ? 90 : 0));
+  if (!dev) setTimeout(() => toast(`백야의 선물 — ${payText(pay)}`), n * 90 + 900);
+}
+/* 다실 배경 */
+function meetBgSvg() {
+  return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+    <rect width="1600" height="900" fill="#1e140c"/>
+    <rect x="560" y="80" width="480" height="340" fill="#0c1020"/><circle cx="880" cy="190" r="64" fill="#f4ead0"/><circle cx="880" cy="190" r="150" fill="#f4ead0" opacity=".1"/>
+    <g stroke="#4a2e16" stroke-width="10">${Array.from({ length: 7 }, (_, i) => `<line x1="${560 + i * 80}" y1="80" x2="${560 + i * 80}" y2="420"/>`).join('')}
+      ${Array.from({ length: 5 }, (_, i) => `<line x1="560" y1="${80 + i * 85}" x2="1040" y2="${80 + i * 85}"/>`).join('')}</g>
+    <rect x="548" y="68" width="504" height="364" fill="none" stroke="#2e1c0c" stroke-width="18"/>
+    ${[160, 1440].map(x => `<ellipse cx="${x}" cy="200" rx="40" ry="54" fill="#ffb45a" class="clamp"/><ellipse cx="${x}" cy="200" rx="130" ry="150" fill="#ffb45a" opacity=".1"/>`).join('')}
+    <rect y="600" width="1600" height="300" fill="#140c06"/></svg>`;
+}
 
 
 /* ══════════════════════════════════════════════════════════
@@ -18663,7 +19003,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 10;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 11;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -18789,6 +19129,7 @@ async function liveFetch() {
     try { giftCheck(); } catch (e) { console.error('선물', e); }
     guestInbox().catch(() => {});
     mpInboxCheck().catch(() => {});
+    meetInboxCheck().catch(() => {});
     try { bossWatch(); }  catch (e) { console.error('모두의 적', e); }
     try { liveTick(); }   catch (e) {}
     updateCheck();
@@ -20202,6 +20543,14 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec"><b>夜 백야와 1대1 면담</b>
+      <div class="casthint">아이디나 닉네임으로 청한다 → 받은 사람이 수락하면 찻잔 컷씬이 흐르고 둘만의 방이 열린다.
+        방에서 말 · 선물 세례 · 재화 선물 · 게스트 바로 초대 · 나가기.</div>
+      <div class="castrow"><input id="ct_meetto" maxlength="20" placeholder="청할 사람의 아이디 또는 닉네임"><button class="brush-btn gold" id="ct_meetgo">면담을 청한다</button>
+        <button class="brush-btn ghost" id="ct_meetls" style="color:#e9dfc9;border-color:#8a7f68">열린 방</button></div>
+      <div class="castlog" id="ct_meetlog"></div>
+    </div>
+
     <div class="castsec"><b>컷씬 뿌리기</b>
       <div class="casthint">지금 켜 둔 모든 앱에서 같은 컷씬이 한 번 흐른다 (뿌린 뒤 1분 안에 접속한 사람까지). 멀티 대전·모두의 적 한가운데에서는 틀지 않는다. 누구나 건너뛸 수 있다.</div>
       <div class="cutgrid2" id="ct_cuts">${Object.keys(CUT_LIST).map(k => `<button data-k="${k}">${CUT_LIST[k].n}<small>${k}</small></button>`).join('')}</div>
@@ -20406,6 +20755,24 @@ function drawCast(grid) {
   /* 컷씬 — 모두에게 한 번 */
   grid.querySelectorAll('#ct_cuts button').forEach(b => b.onclick = () => send({ cut: { k: b.dataset.k } }, `컷씬 「${CUT_LIST[b.dataset.k].n}」`));
   grid.querySelector('#ct_cuttry').onclick = () => cutByName('musou');
+  /* 백야와의 면담 */
+  const mlog = grid.querySelector('#ct_meetlog');
+  grid.querySelector('#ct_meetgo').onclick = async () => {
+    const to = grid.querySelector('#ct_meetto').value.trim(); if (!to) return;
+    mlog.textContent = '청하는 중…'; mlog.className = 'castlog ok';
+    const r = await meetInvite(to);
+    if (!r.ok) { mlog.textContent = '못 했다: ' + r.why; mlog.className = 'castlog no'; SND.err(); return; }
+    mlog.textContent = `${r.room.nick}에게 면담을 청했다 — 수락을 기다린다`;
+  };
+  grid.querySelector('#ct_meetto').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') grid.querySelector('#ct_meetgo').click(); };
+  grid.querySelector('#ct_meetls').onclick = async () => {
+    const r = await acctAsk('/meet/list', { code: castKey() }, 15000);
+    if (!r.ok) { mlog.textContent = r.why; mlog.className = 'castlog no'; return; }
+    mlog.className = 'castlog ok';
+    mlog.innerHTML = r.rooms.length ? r.rooms.map(x => `<div>${wEsc(x.nick)} (${wEsc(x.user)}) · ${{ invited: '기다림', open: '열림', closed: '닫힘' }[x.state] || x.state}
+      ${x.state !== 'closed' ? `<button class="val" data-m="${x.id}">열기</button>` : ''}</div>`).join('') : '열린 방이 없다';
+    mlog.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { const x = r.rooms.find(v => v.id === b.dataset.m); MEET.role = 'dev'; meetOpen(Object.assign({}, x), 'dev'); });
+  };
 
   /* 선물 — 적은 이름이 실제로 있는 부적인지 먼저 보여 준다 */
   const gcards = grid.querySelector('#ct_gcards');

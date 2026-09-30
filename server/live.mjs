@@ -703,6 +703,18 @@ async function mpTopSet(id, p) {
   top.sort((a, b) => b.rp - a.rp);
   await put('mptop', top.slice(0, 100));
 }
+/* 백야와의 면담 — 방 · 누가 어느 방에 */
+const meetRooms = new Map(), meetOf = new Map();
+const MEET_INV_MS = 10 * 60 * 1000, MEET_IDLE_MS = 30 * 60 * 1000;
+function meetEv(r, e) { r.seq++; e.seq = r.seq; e.t = Date.now(); r.ev.push(e); if (r.ev.length > 300) r.ev.splice(0, r.ev.length - 300); }
+const meetView = (r, since) => ({ id: r.id, user: r.user, nick: r.nick, state: r.state, seq: r.seq, at: r.at,
+  seenU: r.seenU || 0, seenD: r.seenD || 0, ev: r.ev.filter(e => e.seq > since) });
+function meetTick(now) {
+  for (const [id, r] of meetRooms)
+    if ((r.state === 'invited' && now - r.at > MEET_INV_MS) || now - r.last > MEET_IDLE_MS || (r.state === 'closed' && now - r.last > 120000)) {
+      meetRooms.delete(id); if (meetOf.get(r.user) === id) meetOf.delete(r.user);
+    }
+}
 const mpQueue = [];                         /* { acct, name, mode, rp, deck, ver, at, party:[{acct,name,rp,deck}] } */
 const mpMatches = new Map(), mpOf = new Map();   /* 판 · 누가 어느 판에 */
 const mpRooms = new Map(), mpRoomOf = new Map(); /* 방 · 누가 어느 방에 */
@@ -1107,6 +1119,85 @@ const server = http.createServer(async (req, res) => {
     if (chat.log.length > CHAT_KEEP) chat.log = chat.log.slice(-CHAT_KEEP);
     await chatSave();
     return send(res, 200, { ok: true, msg: chatView(x) });
+  }
+
+  /* ── 백야와의 1대1 면담 ──────────────────────────────────
+     관리자(퍼뜨리기 열쇠)가 아이디·닉네임으로 청한다 → 받은 이가 수락하면 방이 열린다.
+     방에서는 둘만의 말, 백야의 선물(한 번에 · 폭탄처럼 쏟아지게), 게스트 초대, 나가기.
+     선물은 받은 이가 한 번만 챙긴다(claim). 방은 서버 기억에만 — 서른 분 조용하면 걷힌다. */
+  if (url.pathname.startsWith('/meet/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(), act = url.pathname.slice(6);
+    meetTick(now);
+    const dev = !!(CODE && q.code && same(String(q.code), CODE));
+    const acct = dev ? null : await tokWho(q.token);
+    if (!dev && !acct) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    if (act === 'invite' || act === 'list' || act === 'gift' || act === 'guest') { if (!dev) return send(res, 403, { ok: false, why: '백야만 할 수 있다' }); }
+    if (act === 'invite') {
+      let to = str(q.to, 20).trim();
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 아이디·닉네임이 없다' });
+      const old = meetRooms.get(meetOf.get(to));
+      if (old && old.state !== 'closed') return send(res, 200, { ok: true, room: meetView(old, 0) });
+      const r = { id: crypto.randomBytes(6).toString('hex'), user: to, nick: (await nickOf(to)) || to, state: 'invited', ev: [], seq: 0, at: now, last: now };
+      meetRooms.set(r.id, r); meetOf.set(to, r.id);
+      meetEv(r, { kind: 'invite' });
+      console.log('백야가 면담을 청했다:', to);
+      return send(res, 200, { ok: true, room: meetView(r, 0) });
+    }
+    if (act === 'list') return send(res, 200, { ok: true, rooms: [...meetRooms.values()].map(r => ({ id: r.id, user: r.user, nick: r.nick, state: r.state, at: r.at })) });
+    if (act === 'inbox') {
+      const r = meetRooms.get(meetOf.get(acct));
+      return send(res, 200, { ok: true, room: r && r.state !== 'closed' ? meetView(r, r.seq) : null });
+    }
+    const r = meetRooms.get(str(q.id, 20));
+    if (!r || (!dev && r.user !== acct)) return send(res, 404, { ok: false, why: '그 면담 방이 없다' });
+    r.last = now; if (dev) r.seenD = now; else r.seenU = now;
+    if (act === 'poll') return send(res, 200, { ok: true, room: meetView(r, +q.since || 0) });
+    if (r.state === 'closed') return send(res, 409, { ok: false, why: '이미 닫힌 방이다' });
+    if (act === 'answer') {
+      if (dev || r.state !== 'invited') return send(res, 409, { ok: false, why: '대답할 것이 없다' });
+      if (q.yes) { r.state = 'open'; meetEv(r, { kind: 'open' }); }
+      else { r.state = 'closed'; meetEv(r, { kind: 'decline' }); meetOf.delete(r.user); }
+      return send(res, 200, { ok: true, room: meetView(r, 0) });
+    }
+    if (r.state !== 'open' && act !== 'leave') return send(res, 409, { ok: false, why: '아직 수락하지 않았다' });
+    if (act === 'say') {
+      const t = chatClean(q.text); if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+      meetEv(r, { kind: 'say', who: dev ? 'dev' : 'user', n: dev ? '백야' : r.nick, text: t });
+      return send(res, 200, { ok: true, seq: r.seq });
+    }
+    if (act === 'gift') {
+      const g = q.pay || {};
+      const pay = { gold: num(g.gold, 10000000), dia: num(g.dia, 1000000), jp: num(g.jp, 1000000),
+                    cards: Array.isArray(g.cards) ? g.cards.slice(0, 8).map(c => str(c, 40)).filter(c => /^[a-z0-9_]+$/i.test(c)) : [] };
+      if (!pay.gold && !pay.dia && !pay.jp && !pay.cards.length) return send(res, 400, { ok: false, why: '줄 것이 없다' });
+      const bomb = !!q.bomb, n = bomb ? Math.max(5, Math.min(40, parseInt(q.n, 10) || 16)) : 1;
+      meetEv(r, { kind: 'gift', gid: crypto.randomBytes(5).toString('hex'), pay, bomb, n, say: str(q.say, 80), claimed: false });
+      return send(res, 200, { ok: true, seq: r.seq });
+    }
+    if (act === 'claim') {
+      const e = r.ev.find(x => x.kind === 'gift' && x.gid === str(q.gid, 20));
+      if (!e) return send(res, 404, { ok: false, why: '그런 선물이 없다' });
+      if (e.claimed) return send(res, 409, { ok: false, why: '이미 받았다' });
+      e.claimed = true;
+      return send(res, 200, { ok: true, pay: e.pay });
+    }
+    if (act === 'guest') {
+      const g = await guestsGet();
+      if (Object.values(g).some(v => v.acct === r.user && v.state === 'ok')) return send(res, 409, { ok: false, why: '이미 게스트다' });
+      const inv = await invGet(); inv[r.user] = { at: now }; await put(INV_KEY, inv);
+      meetEv(r, { kind: 'guest' });
+      return send(res, 200, { ok: true });
+    }
+    if (act === 'leave') {
+      r.state = 'closed'; meetEv(r, { kind: 'leave', who: dev ? 'dev' : 'user' }); meetOf.delete(r.user);
+      return send(res, 200, { ok: true });
+    }
+    return send(res, 400, { ok: false, why: '모르는 일' });
   }
 
   /* ── 멀티플레이 ── */
