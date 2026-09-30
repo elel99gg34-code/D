@@ -2975,7 +2975,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   padding:1px 6px;border-radius:6px;background:rgba(16,26,36,.72);white-space:nowrap}
 .friendmark:hover span{box-shadow:0 0 0 5px rgba(58,106,138,.24),0 0 20px rgba(120,180,220,.62)}
 /* 조용한 안내 쪽지 — 오른쪽 아래 구석. 화면을 막지 않는다 */
-.gdnote{position:absolute;right:18px;bottom:20px;z-index:42;display:flex;align-items:center;gap:11px;
+.gdnote{position:absolute;right:18px;bottom:20px;z-index:19;display:flex;align-items:center;gap:11px;
   padding:10px 12px;border-radius:11px;max-width:min(430px,90vw);
   background:linear-gradient(150deg,rgba(34,28,19,.96),rgba(18,14,10,.96));
   border:1px solid rgba(210,180,120,.32);animation:hcIn .32s ease}
@@ -4440,7 +4440,8 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .pile b { font-size: 15px; }
 
   /* 창들 — 손전화에서는 화면을 거의 다 쓴다 */
-  #overlay > * { max-width: 96vw; max-height: 92vh; padding: 16px 14px; }
+  /* 창은 화면을 덮는 판이다(inset 0) — 폭을 96vw 로 묶으면 왼쪽에 붙고 오른쪽에 틈이 생겼다 */
+  #overlay > * { padding: 16px 14px; }
   #overlay h2 { font-size: 20px; margin-bottom: 6px; }
   #overlay .hint { font-size: 11.5px; }
   .shopgrid { flex-direction: column; gap: 10px; }
@@ -4547,6 +4548,35 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
              padding: 13px 18px; text-align: center; font-size: 14px;
              transform: none; }
   #endturn:hover, #endturn:disabled, #endturn:active { transform: none; }
+
+  /* 싸움판 — 요괴와 나를 판 한가운데에 모으고, 세로로 넉넉하면 크게 그린다
+     (위에 몰려 있고 가운데가 텅 비어 좁아 보였다) */
+  #field { justify-content: center; gap: 22px; }
+  /* 두 칸으로 나뉜 창(대장간·신전·서당·팻 우리…) — 세로 폰에서는 위아래로 쌓는다 */
+  .school .scbody { flex-direction: column; overflow-y: auto; padding: 10px; gap: 12px; }
+  .school .scside, .school .scmain { width: auto; flex: none; overflow: visible; }
+  .school .scmain .cardgrid { max-height: none !important; }
+  .forge .fgstage { min-height: 0; }
+  .forge .fganvil { display: none; }
+  /* 뽑기 — 상자 목록은 위에 가로로, 고른 상자는 그 아래 넓게 (두 칸이 눌려 탭이 잘렸다) */
+  .gbody { flex-direction: column; }
+  .gnav { width: auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 8px 10px; gap: 8px; }
+  .gnav > * { flex: 0 0 auto; min-width: 150px; }
+  .gmain { min-height: 0; overflow-y: auto; }
+  .gtabs { flex-wrap: wrap; }
+  /* 첫 화면 — 「백귀야행」이 두 줄로 꺾여 왼쪽으로 쏠렸다 */
+  #title-scene .big { font-size: clamp(44px, 16vw, 104px); margin-left: .16em; }
+  #title-scene h1 { font-size: 12px; letter-spacing: .5em; margin-left: .5em; }
+  /* 도감 — 줄이 왼쪽에 붙어 오른쪽이 비었다 */
+  .dexgrid { justify-content: center; }
+}
+@media (orientation: portrait) and (max-width: 620px) and (min-height: 700px) {
+  .unit .body { width: 88px; height: 88px; }
+  .unit.big .body { width: 116px; height: 116px; }
+  .unit .body .glyph { font-size: 33px; }
+  .unit.big .body .glyph { font-size: 44px; }
+  .unit .ebar { width: 90px; height: 12px; }
+  .unit .nm { font-size: 12px; }
 }
 
 /* ── 세로로 들었을 때 — 돌리라고 한 번 일러 준다 ───────── */
@@ -10169,6 +10199,7 @@ function startBattle(enemyIds, kind, opts) {
   }
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
   b.plan = planClean(run).map(h => h.slice());          /* 덱 설정 — 차례마다 뽑을 부적 */
+  { const gn = $('#gdnote'); if (gn) gn.remove(); }     /* 지도의 길잡이 쪽지가 손패를 가렸다 */
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
@@ -14263,7 +14294,8 @@ function showCardList(list, title, shuffled) {
    ══════════════════════════════════════════════════════════ */
 const PLAN_MAX = 15, PLAN_HAND = 5;
 function planClean(run) {
-  if (!run || !Array.isArray(run.plan)) return [];
+  if (!run) return [];
+  if (!Array.isArray(run.plan)) run.plan = [];            /* 한 번도 정한 적 없는 모험 */
   const have = new Set(run.deck.map(c => c.uid)), used = new Set();
   run.plan = run.plan.slice(0, PLAN_MAX).map(h => (Array.isArray(h) ? h : [])
     .filter(u => have.has(u) && !used.has(u) && used.add(u)).slice(0, PLAN_HAND));
@@ -19741,7 +19773,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 12;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 13;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';

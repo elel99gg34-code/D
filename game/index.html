@@ -2975,7 +2975,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   padding:1px 6px;border-radius:6px;background:rgba(16,26,36,.72);white-space:nowrap}
 .friendmark:hover span{box-shadow:0 0 0 5px rgba(58,106,138,.24),0 0 20px rgba(120,180,220,.62)}
 /* 조용한 안내 쪽지 — 오른쪽 아래 구석. 화면을 막지 않는다 */
-.gdnote{position:absolute;right:18px;bottom:20px;z-index:42;display:flex;align-items:center;gap:11px;
+.gdnote{position:absolute;right:18px;bottom:20px;z-index:19;display:flex;align-items:center;gap:11px;
   padding:10px 12px;border-radius:11px;max-width:min(430px,90vw);
   background:linear-gradient(150deg,rgba(34,28,19,.96),rgba(18,14,10,.96));
   border:1px solid rgba(210,180,120,.32);animation:hcIn .32s ease}
@@ -9955,6 +9955,7 @@ function startBattle(enemyIds, kind, opts) {
   }
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
   b.plan = planClean(run).map(h => h.slice());          /* 덱 설정 — 차례마다 뽑을 부적 */
+  { const gn = $('#gdnote'); if (gn) gn.remove(); }     /* 지도의 길잡이 쪽지가 손패를 가렸다 */
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
@@ -14049,7 +14050,8 @@ function showCardList(list, title, shuffled) {
    ══════════════════════════════════════════════════════════ */
 const PLAN_MAX = 15, PLAN_HAND = 5;
 function planClean(run) {
-  if (!run || !Array.isArray(run.plan)) return [];
+  if (!run) return [];
+  if (!Array.isArray(run.plan)) run.plan = [];            /* 한 번도 정한 적 없는 모험 */
   const have = new Set(run.deck.map(c => c.uid)), used = new Set();
   run.plan = run.plan.slice(0, PLAN_MAX).map(h => (Array.isArray(h) ? h : [])
     .filter(u => have.has(u) && !used.has(u) && used.add(u)).slice(0, PLAN_HAND));
@@ -19527,7 +19529,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 12;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 13;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';

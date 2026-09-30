@@ -109,7 +109,8 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .pile b { font-size: 15px; }
 
   /* 창들 — 손전화에서는 화면을 거의 다 쓴다 */
-  #overlay > * { max-width: 96vw; max-height: 92vh; padding: 16px 14px; }
+  /* 창은 화면을 덮는 판이다(inset 0) — 폭을 96vw 로 묶으면 왼쪽에 붙고 오른쪽에 틈이 생겼다 */
+  #overlay > * { padding: 16px 14px; }
   #overlay h2 { font-size: 20px; margin-bottom: 6px; }
   #overlay .hint { font-size: 11.5px; }
   .shopgrid { flex-direction: column; gap: 10px; }
@@ -216,6 +217,35 @@ body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
              padding: 13px 18px; text-align: center; font-size: 14px;
              transform: none; }
   #endturn:hover, #endturn:disabled, #endturn:active { transform: none; }
+
+  /* 싸움판 — 요괴와 나를 판 한가운데에 모으고, 세로로 넉넉하면 크게 그린다
+     (위에 몰려 있고 가운데가 텅 비어 좁아 보였다) */
+  #field { justify-content: center; gap: 22px; }
+  /* 두 칸으로 나뉜 창(대장간·신전·서당·팻 우리…) — 세로 폰에서는 위아래로 쌓는다 */
+  .school .scbody { flex-direction: column; overflow-y: auto; padding: 10px; gap: 12px; }
+  .school .scside, .school .scmain { width: auto; flex: none; overflow: visible; }
+  .school .scmain .cardgrid { max-height: none !important; }
+  .forge .fgstage { min-height: 0; }
+  .forge .fganvil { display: none; }
+  /* 뽑기 — 상자 목록은 위에 가로로, 고른 상자는 그 아래 넓게 (두 칸이 눌려 탭이 잘렸다) */
+  .gbody { flex-direction: column; }
+  .gnav { width: auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 8px 10px; gap: 8px; }
+  .gnav > * { flex: 0 0 auto; min-width: 150px; }
+  .gmain { min-height: 0; overflow-y: auto; }
+  .gtabs { flex-wrap: wrap; }
+  /* 첫 화면 — 「백귀야행」이 두 줄로 꺾여 왼쪽으로 쏠렸다 */
+  #title-scene .big { font-size: clamp(44px, 16vw, 104px); margin-left: .16em; }
+  #title-scene h1 { font-size: 12px; letter-spacing: .5em; margin-left: .5em; }
+  /* 도감 — 줄이 왼쪽에 붙어 오른쪽이 비었다 */
+  .dexgrid { justify-content: center; }
+}
+@media (orientation: portrait) and (max-width: 620px) and (min-height: 700px) {
+  .unit .body { width: 88px; height: 88px; }
+  .unit.big .body { width: 116px; height: 116px; }
+  .unit .body .glyph { font-size: 33px; }
+  .unit.big .body .glyph { font-size: 44px; }
+  .unit .ebar { width: 90px; height: 12px; }
+  .unit .nm { font-size: 12px; }
 }
 
 /* ── 세로로 들었을 때 — 돌리라고 한 번 일러 준다 ───────── */
