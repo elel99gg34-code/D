@@ -417,7 +417,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -457,6 +457,15 @@ async function applyCast(q) {
     if (!q.music || !q.music.k) live.music = null;
     else { const min = Math.max(1, Math.min(120, parseInt(q.music.min, 10) || 10));
            live.music = { k: str(q.music.k, 12), at: Date.now(), until: Date.now() + min * 60000 }; }
+  }
+  /* [해킹] 특수 이벤트 — 켜기·끄기, 해킹상점 여닫기, 해킹맵으로 끌고 가기(go).
+     백야만 누른다. 켜 두는 동안 모든 앱에 띠가 서고 ≡ 메뉴에 해킹상점이 선다 */
+  if ('hack' in q) {
+    const h = q.hack || {}, cur = live.hack || { on: false, shop: false, go: null };
+    if ('on' in h) { cur.on = !!h.on; if (!cur.on) { cur.shop = false; cur.go = null; } else cur.at = Date.now(); }
+    if ('shop' in h) cur.shop = !!h.shop && cur.on;
+    if (h.go && cur.on) cur.go = { id: Date.now(), at: Date.now() };
+    live.hack = cur.on ? cur : null;
   }
   /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
   if ('cut' in q) {

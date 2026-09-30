@@ -3199,6 +3199,125 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .icoline b{width:34px;height:34px;border-radius:6px;display:grid;place-items:center;font-size:17px;flex:none;
   background:#efe6d0;border:1.5px solid #6b6053;color:#22190f}
 
+/* ══ [해킹] 이벤트 ══════════════════════════════════════════ */
+/* 컷씬 — 연구실 */
+.cmon{width:220px;height:150px;border-radius:6px;background:#010805;border:6px solid #1a2a24;box-shadow:0 0 30px rgba(44,255,122,.35),inset 0 0 20px rgba(44,255,122,.2);overflow:hidden;position:relative}
+.cmonc{font:10px/1.35 monospace;color:#2cff7a;padding:4px 6px;white-space:nowrap;animation:cCode 6s linear infinite;text-shadow:0 0 4px #2cff7a}
+.cmon.fast .cmonc{animation-duration:1.4s}
+@keyframes cCode{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.cmonx{position:absolute;inset:0;display:grid;place-items:center;font:700 22px monospace;color:#ff3a4a;background:rgba(40,0,6,.85);opacity:0;letter-spacing:.05em;text-shadow:0 0 12px #ff3a4a}
+.cmon.red{border-color:#5a1018;box-shadow:0 0 40px rgba(255,40,60,.6)}
+.cmon.red .cmonx{opacity:1;animation:cBlinkR .4s steps(1) infinite}
+@keyframes cBlinkR{50%{opacity:.35}}
+.cdocw .cdocarm{transform-box:fill-box;transform-origin:50% 0}
+.cdocw.typing .cdocarm.l{animation:cType .16s ease-in-out infinite alternate}
+.cdocw.typing .cdocarm.r{animation:cType .16s .08s ease-in-out infinite alternate}
+.cdocw.fast .cdocarm{animation-duration:.07s!important}
+@keyframes cType{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-9px) rotate(3deg)}}
+.cdocw .cglint{opacity:0}
+.cdocw.turn svg{animation:cDocTurn .5s ease forwards}
+.cdocw.turn .cglint{animation:cGlint .9s .3s ease forwards}
+.cdocw.turn .cdocglass circle{fill:#fff;fill-opacity:.8;filter:drop-shadow(0 0 8px #9ff4c8)}
+@keyframes cDocTurn{to{transform:scale(1.06) rotate(-3deg)}}
+@keyframes cGlint{0%,100%{opacity:0}40%{opacity:1}}
+.cflask{filter:drop-shadow(0 0 10px rgba(120,255,190,.35))}
+.cbub{animation:cBub 1.2s ease-in infinite}
+@keyframes cBub{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-60px);opacity:0}}
+.cliq{animation:cLiq 1.4s ease-in-out infinite alternate}
+@keyframes cLiq{to{transform:translateY(-3px)}}
+.calarm{animation:cLamp .8s ease-in-out infinite alternate}
+.cscanner{display:flex;gap:10px;padding:14px 18px;border-radius:8px;background:#0a1812;border:2px solid #1f5a3c;position:relative;overflow:hidden}
+.cscanner .ctal{transition:filter .3s,background .3s}
+.cscanbeam{position:absolute;top:0;bottom:0;width:8px;left:-10px;background:linear-gradient(90deg,transparent,#5cff9a,transparent);box-shadow:0 0 20px #5cff9a;opacity:0}
+.cscanner.on .cscanbeam{opacity:1;animation:cScan .45s linear infinite alternate}
+@keyframes cScan{from{left:-10px}to{left:calc(100% + 2px)}}
+.cscanner.rot .ctal{background:linear-gradient(#7a3aa8,#3a1a5a);border-color:#c080ff;box-shadow:0 0 16px #b060ff;animation:cRot .12s steps(2) infinite}
+.cscanner.rot .ctal b{color:#e8c8ff}
+@keyframes cRot{50%{transform:translate(1px,-1px) skewX(4deg)}}
+.cut.hackcut .cutsub{font-family:inherit}
+.hkmono{font-family:monospace;color:#5cff9a;text-shadow:0 0 8px #2cff7a}
+.cut.alarm .cutflash{animation:cAlarmF .7s ease-in-out infinite}
+@keyframes cAlarmF{0%,100%{opacity:0;background:#ff2a3a}50%{opacity:.18;background:#ff2a3a}}
+.cut.glitch .cutview{animation:cGlitch .12s steps(2) infinite}
+@keyframes cGlitch{0%{transform:translate(0) ;filter:none}25%{transform:translate(-8px,3px);filter:hue-rotate(90deg) saturate(2)}50%{transform:translate(6px,-4px);filter:invert(.15)}75%{transform:translate(-3px,-2px);filter:hue-rotate(-60deg)}}
+.hkstamp{position:relative;font:700 clamp(54px,11vw,150px)/1 monospace;color:#e8fff0;letter-spacing:.08em;text-shadow:0 0 20px #2cff7a,0 0 60px rgba(44,255,122,.6);animation:cStamp .5s cubic-bezier(.2,1.4,.3,1) both}
+.hkstamp:before,.hkstamp:after{content:attr(data-t);position:absolute;inset:0;overflow:hidden}
+.hkstamp:before{color:#ff2a5a;transform:translate(-4px,0);clip-path:inset(0 0 55% 0);animation:hkTear .6s steps(3) infinite;mix-blend-mode:screen}
+.hkstamp:after{color:#2ac8ff;transform:translate(4px,0);clip-path:inset(50% 0 0 0);animation:hkTear .5s steps(3) infinite reverse;mix-blend-mode:screen}
+@keyframes hkTear{0%{clip-path:inset(0 0 60% 0);transform:translate(-5px,0)}33%{clip-path:inset(40% 0 20% 0);transform:translate(5px,-2px)}66%{clip-path:inset(70% 0 0 0);transform:translate(-3px,2px)}100%{clip-path:inset(10% 0 70% 0);transform:translate(4px,0)}}
+/* 「맵이 해킹당했습니다!」 */
+.hackfx{position:fixed;inset:0;z-index:490;background:#000;overflow:hidden;animation:cutIn .3s ease}
+.hackfx.out{animation:cutOut .6s ease forwards}
+.hackfx canvas{position:absolute;inset:0;width:100%;height:100%}
+.hkscan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px);animation:hkFlick .15s steps(2) infinite}
+@keyframes hkFlick{50%{opacity:.7}}
+.hkbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,92vw);padding:22px 24px;border:2px solid #2cff7a;background:rgba(0,12,4,.82);
+  box-shadow:0 0 40px rgba(44,255,122,.5),inset 0 0 30px rgba(44,255,122,.15);font-family:monospace;color:#9fffc4;animation:hkIn .5s cubic-bezier(.2,1.3,.3,1) both}
+@keyframes hkIn{0%{transform:translate(-50%,-50%) scaleY(.02);opacity:0}60%{transform:translate(-50%,-50%) scaleY(1.05);opacity:1}100%{transform:translate(-50%,-50%) scaleY(1)}}
+.hkwarn{color:#ffe04a;letter-spacing:.3em;font-size:14px;text-align:center;animation:cBlinkR .5s steps(1) infinite}
+.hktitle{position:relative;text-align:center;font:700 clamp(30px,6vw,64px)/1.2 monospace;color:#eafff0;margin:10px 0 14px;text-shadow:0 0 16px #2cff7a}
+.hktitle:before,.hktitle:after{content:attr(data-t);position:absolute;left:0;right:0;top:0;overflow:hidden}
+.hktitle:before{color:#ff2a5a;animation:hkTear .4s steps(3) infinite;mix-blend-mode:screen}
+.hktitle:after{color:#2ac8ff;animation:hkTear .35s steps(3) infinite reverse;mix-blend-mode:screen}
+.hkterm{min-height:140px;font-size:clamp(12px,1.7vw,15px);line-height:1.7}
+.hkterm div{animation:hkLine .2s steps(4) both;white-space:nowrap;overflow:hidden}
+@keyframes hkLine{from{width:0}to{width:100%}}
+.hkbar{height:8px;margin-top:10px;border:1px solid #2cff7a;background:#001a08}
+.hkbar i{display:block;height:100%;width:0;background:#2cff7a;box-shadow:0 0 10px #2cff7a;transition:width .5s}
+.hackfx.red .hkbox{border-color:#ff3a4a;box-shadow:0 0 50px rgba(255,40,60,.6)}
+.hackfx.red .hkbar i{background:#ff3a4a;box-shadow:0 0 10px #ff3a4a}
+/* 해킹맵 */
+.hackmap{position:absolute;left:0;right:0;bottom:0;top:var(--tbh,44px);z-index:15;display:flex;flex-direction:column;align-items:center;gap:14px;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 16px;color:#caffdc;font-family:inherit;overflow-y:auto}
+.hkmbg{position:absolute;inset:0;z-index:-1;background:
+  repeating-linear-gradient(0deg,rgba(44,255,122,.06) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,rgba(44,255,122,.06) 0 1px,transparent 1px 40px),
+  radial-gradient(ellipse at 50% 40%,#06301a,#010a05 70%)}
+.hkmbg:after{content:'01001011 01000001 01000011 01001011 00100001 01000100 01010010';position:absolute;left:0;right:0;top:0;font:12px monospace;color:rgba(44,255,122,.25);white-space:nowrap;animation:hkDrift 14s linear infinite}
+@keyframes hkDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.hkmhead{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:min(980px,100%);padding:10px 14px;border:1px solid #2cff7a;border-radius:8px;background:rgba(0,20,8,.85);box-shadow:0 0 20px rgba(44,255,122,.25)}
+.hkmhead b{font-family:monospace;font-size:18px;color:#5cff9a;letter-spacing:.06em}
+.hkmhead span{flex:1;font-size:13px;color:#9fdcb4}.hkmhead em{font-style:normal;color:#ffe04a}
+.hkmhead button,.hkitem{font:inherit;cursor:pointer}
+.hkmhead button{font-size:13px;padding:6px 12px;border-radius:6px;background:#0a3a1c;color:#caffdc;border:1px solid #2cff7a}
+.hkmhead button:hover{background:#12602e}
+.hkmsay{font-size:14px;color:#ffe9a0;text-align:center;text-shadow:0 0 8px rgba(255,220,100,.4)}
+.hkmpath{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;width:min(980px,100%);margin-top:10px}
+.hkmline{display:block;width:40px;height:3px;background:#1a4a2a}
+.hkmline.on{background:#2cff7a;box-shadow:0 0 8px #2cff7a}
+.hkmnode{width:128px;height:128px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:inherit;
+  background:rgba(0,24,10,.9);border:2px solid #1f5a3c;color:#7fbf96;cursor:default}
+.hkmnode b{font-size:40px;font-weight:400}
+.hkmnode span{font-size:13.5px}.hkmnode em{font-style:normal;font-size:11px;color:#5f8f70}
+.hkmnode.cur{border-color:#2cff7a;color:#eafff0;cursor:pointer;box-shadow:0 0 22px rgba(44,255,122,.6);animation:pillBeat 1.2s ease-in-out infinite}
+.hkmnode.cur em{color:#ffe04a}
+.hkmnode.done{border-color:#2a6a44;color:#5f9f78;opacity:.7}.hkmnode.done b{text-decoration:line-through}
+.hkmnode.lock{opacity:.45;filter:grayscale(.6)}
+.hkmnode.boss{border-color:#ff3a5a;background:rgba(40,0,10,.9)}
+.hkmnode.boss.cur{box-shadow:0 0 30px rgba(255,40,80,.8)}
+.hkmnode.boss b{color:#ff8a9a}
+.hkmlore{display:flex;gap:16px;align-items:flex-start;width:min(820px,100%);margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(0,20,8,.72);border:1px solid #1f5a3c;line-height:1.75;font-size:14px;color:#b8e8c8}
+.hkmlore>i{font-style:normal;font-size:74px;line-height:1;color:#1fb66a;text-shadow:0 0 20px rgba(44,255,122,.6);flex:none}
+.hkmlore b{color:#5cff9a;font-weight:400;letter-spacing:.1em}
+.hkmlore p{margin:6px 0}.hkmhint{color:#ffe9a0!important;font-size:13px}.hkmhint b{color:#ffe04a!important}
+@media (max-width:640px){.hkmlore>i{font-size:44px}.hkmlore{font-size:13px}}
+body.hackmode #bg{filter:hue-rotate(95deg) saturate(1.6) brightness(.8) contrast(1.15)}
+body.hackmode #app:after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:repeating-linear-gradient(0deg,rgba(0,255,120,.05) 0 1px,transparent 1px 3px)}
+/* 해킹 띠 · 상점 */
+.hackpill{position:fixed;left:10px;top:calc(var(--tbh,44px) + 6px + env(safe-area-inset-top,0px));z-index:120;display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:16px;cursor:pointer;
+  background:rgba(0,20,8,.9);border:1px solid #2cff7a;color:#caffdc;font-size:12.5px;box-shadow:0 0 12px rgba(44,255,122,.45)}
+.hackpill i{font-style:normal;color:#5cff9a}.hackpill b{font-family:monospace;color:#5cff9a;font-weight:400}
+.hackpill em{font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:8px;background:#ffe04a;color:#201a00}
+.hkchip{font-size:15px;margin:6px 0 10px;color:#caffdc}.hkchip b{color:#ffe04a}.hkchip i{font-style:normal;color:#5cff9a}
+.hkshop{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;width:min(640px,86vw)}
+.hkitem{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:8px;background:rgba(0,26,12,.9);border:1px solid #1f7a4a;color:#caffdc}
+.hkitem:hover{border-color:#2cff7a;box-shadow:0 0 12px rgba(44,255,122,.4)}
+.hkitem i{font-style:normal;font-size:26px;color:#5cff9a}.hkitem b{font-weight:400}.hkitem small{font-size:11px;color:#8fbf9f;text-align:center}
+.hkitem u{text-decoration:none;color:#ffe04a;font-size:13px}
+.hkrew{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.hkrew div{padding:8px 14px;border-radius:8px;background:rgba(0,26,12,.9);border:1px solid #2cff7a;color:#caffdc}
+.hkrew div b{color:#5cff9a;margin-right:6px}
+.hkrew .box{border-color:#ffe04a;color:#ffe9a0;box-shadow:0 0 14px rgba(255,220,80,.5)}
+@media (max-width:640px){.hkmnode{width:92px;height:96px}.hkmnode b{font-size:28px}.hkmline{width:14px}.hkmhead b{font-size:15px}}
+
 /* ══ 백야와의 면담 ══════════════════════════════════════════ */
 .meet{position:fixed;inset:0;z-index:450;display:flex;flex-direction:column;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 12px;color:#f0e6d0;overflow:hidden}
 .meetbg{position:absolute;inset:0;z-index:-1}
@@ -3317,6 +3436,7 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 @keyframes cStamp{0%{opacity:0;transform:scale(2.8);filter:blur(12px)}55%{opacity:1;transform:scale(.93);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
 .cstampsub{margin-top:18px;color:#b8ad96;letter-spacing:1.4em;margin-left:1.4em;font-size:clamp(13px,1.6vw,20px);opacity:0;transition:opacity 1.2s}
 .cstampsub.in{opacity:1}
+.cstampsub.long{letter-spacing:.25em;margin-left:.25em;text-align:center;padding:0 16px;color:#d8ccb0}
 .cstampseal{margin-top:22px;width:clamp(54px,6vw,84px);height:clamp(54px,6vw,84px);display:grid;place-items:center;background:#a8272c;color:#f4e2c8;
   font-size:clamp(16px,2vw,26px);border-radius:6px;opacity:0;box-shadow:0 0 30px rgba(168,39,44,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
 .cstampseal.in{animation:cSeal .45s cubic-bezier(.2,1.5,.3,1) forwards}
@@ -5673,7 +5793,8 @@ function adoptRun(obj) {
 }
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
-  if (kind === 'enemies' && /^mp[f_]/.test(id)) return false;      /* 멀티플레이의 상대는 도감에 적지 않는다 */
+  if (kind === 'enemies' && /^(mp[f_]|hk_)/.test(id)) return false;
+  if (kind === 'cards' && CARDS[id] && CARDS[id].hackOnly) return false;  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
   if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
   return false;
 }
@@ -6941,6 +7062,34 @@ defCard({ id: 'cloudstep', n: '운룡보', g: '雲', type: 'skill', rar: 'specia
   play: c => { blk(c.v.b); energy(1); drawCards(2); } });
 
 /* 보상 풀 */
+/* ── [해킹] 이벤트 부적 — 박사를 쓰러뜨려 얻는 해킹 상자에서만 나온다 (보상·상자·상점·도감에는 없다) ── */
+defCard({ id: 'hk_overflow', n: '오버플로', g: '溢', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy', hackOnly: true,
+  v: u => ({ d: u ? 7 : 5 }),
+  txt: v => `손에 든 부적 수 × <em>${v.d}</em>의 피해를 준다.`,
+  play: c => atk(c.t, c.v.d * Math.max(1, (G.b ? G.b.hand.length : 1)), { fx: 'bolt' }) });
+defCard({ id: 'hk_ddos', n: '디도스', g: '亂', type: 'attack', rar: 'special', cost: 2, tgt: 'all', hackOnly: true,
+  v: u => ({ d: u ? 5 : 4, n: u ? 9 : 7 }),
+  txt: v => `무작위 적에게 <em>${v.d}</em>의 피해를 ${v.n}번 준다.`,
+  play: async c => { for (let i = 0; i < c.v.n; i++) { const l = alive(); if (!l.length) break; atk(pick(l), c.v.d, { fx: 'bolt' }); await wait(70); } } });
+defCard({ id: 'hk_patch', n: '긴급 패치', g: '補', type: 'skill', rar: 'special', cost: 1, hackOnly: true,
+  v: u => ({ b: u ? 20 : 15 }),
+  txt: v => `<i>${v.b}</i>의 방어도를 얻고 약화·취약·중독을 지운다. 카드를 1장 뽑는다.`,
+  play: c => { blk(c.v.b); const p = P(); for (const k of ['weak', 'vuln', 'poison']) delete p.s[k]; drawCards(1); syncAll(); } });
+defCard({ id: 'hk_root', n: '루트 권한', g: '權', type: 'skill', rar: 'ssc', cost: 0, exhaust: true, hackOnly: true,
+  v: u => ({ e: u ? 4 : 3 }),
+  txt: v => `기를 ${v.e} 얻고 카드를 2장 뽑는다. 소멸.`,
+  play: c => { energy(c.v.e); drawCards(2); } });
+defCard({ id: 'hk_zero', n: '제로데이', g: '零', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true, hackOnly: true,
+  v: u => ({ d: u ? 70 : 50 }),
+  txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 소멸.`,
+  play: c => atk(c.t, c.v.d, { pierce: true, fx: 'void' }) });
+defCard({ id: 'hk_kernel', n: '커널 패닉', g: '崩', type: 'skill', rar: 'unknown', cost: 3, tgt: 'all', exhaust: true, hackOnly: true,
+  v: u => ({}), costOf: u => u ? 2 : 3,
+  txt: () => `모든 적이 <b>남은 체력의 절반</b>을 잃고 <b>무력</b> 1에 걸린다. 소멸.`,
+  play: c => { skillBanner('KERNEL PANIC', true); for (const e of alive()) { pure(e, Math.floor(e.hp / 2)); st(e, 'stun', 1); } } });
+defCard({ id: 'hk_error', n: '오류', g: '誤', type: 'curse', rar: 'curse', cost: -2, hackOnly: true,
+  v: () => ({}), txt: () => `박사가 심은 오류. 사용할 수 없다. 싸움이 끝나면 사라진다.`, play: () => {} });
+
 /* ── 멀티 교환소 부적 — 토큰으로만 얻는다 (보상·상자·상점에는 나오지 않는다) ── */
 defCard({ id: 'mp_duel', n: '결투의 맹세', g: '誓', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy', mpOnly: true,
   v: u => ({ d: u ? 14 : 10, x: u ? 10 : 8 }),
@@ -6964,7 +7113,7 @@ const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전�
 const GRADE_POOL = { zero: [], special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in CARDS) {
   const c = CARDS[k];
-  if (c.mpOnly) continue;                    /* 멀티 교환소에서만 — 보상·상자·상점에는 나오지 않는다 */
+  if (c.mpOnly || c.hackOnly) continue;      /* 해킹 부적은 해킹 상자에서만 */                    /* 멀티 교환소에서만 — 보상·상자·상점에는 나오지 않는다 */
   if (POOL[c.rar]) POOL[c.rar].push(k);
   else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k);
     if (c.rar !== 'unknown' && c.rar !== 'zero') SPECIAL_CARDS.push(k); }
@@ -9809,7 +9958,7 @@ function startBattle(enemyIds, kind, opts) {
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world' && !mpK) { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && !mpK && !/^hack/.test(kind)) { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
@@ -10391,6 +10540,7 @@ async function checkOver() {
     else if (b.kind === 'world') worldEnd(false);   /* 끌려간 싸움 — 등반은 끝나지 않는다 */
     else if (b.kind === 'pvp') mpDied();            /* 멀티플레이 — 결과를 적어 보내고 관전 */
     else if (b.kind === 'mpbot') mpBotEnd(false);
+    else if (/^hack/.test(b.kind)) hackLose();      /* 해킹맵 — 밀려날 뿐 모험은 그대로 */
     else gameOver();
     return true;
   }
@@ -10416,6 +10566,7 @@ function _winBattle() {
   if (b.kind === 'world') { run.inBattle = false; SND.victory(); worldEnd(true); return; }
   if (b.kind === 'pvp') { mpCommitTurn(); return; }          /* 상대가 모두 쓰러졌다 — 서버가 끝을 선언한다 */
   if (b.kind === 'mpbot') { mpBotEnd(true); return; }
+  if (/^hack/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = P().hp; SND.victory(); hackWin(b.kind); return; }
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
@@ -13741,9 +13892,11 @@ function showMap() {
   /* 크기가 바뀌면(주소창이 오르내릴 때도) 배율만 고친다 — 보던 자리는 놔둔다 */
   _mapFit = () => fit(false);
   saveRun();
+  /* 해킹맵에 들어가 있던 참이면 그리로 돌아간다 */
+  if (G.run.inHack && hackMapOk()) setTimeout(() => { if (G.scene === 'map' && !G.b && !$('#hackmap')) showHackMap(); }, 80);
   /* 길잡이 — 막에 갓 들어섰을 때만 하나. 그다음에 상자 권유 */
   setTimeout(() => {
-    if (G.scene !== 'map') return;
+    if (G.scene !== 'map' || G.b || $('#hackmap')) return;
     const before = $('#overlay') ? $('#overlay').children.length : 0;
     const noteBefore = !!$('#gdnote');
     guideTick();
@@ -15420,7 +15573,7 @@ function cardPower(c) { return (AUTO_RANK[CARDS[c.id].rar] || 0) * 12 + (c.up ? 
 /* 상인의 패 — 자네가 지닌 것과 비슷한 것을 꺼낸다 (등급 분포를 따른다) */
 function betFoeCard(mine) {
   const rar = CARDS[pick(mine).id].rar;
-  const pool = Object.keys(CARDS).filter(i => CARDS[i].rar === rar);
+  const pool = Object.keys(CARDS).filter(i => CARDS[i].rar === rar && !CARDS[i].hackOnly && !CARDS[i].mpOnly);
   return { uid: -77, id: pool.length ? pick(pool) : 'strike', up: rnd() < .2 };
 }
 function showBet(after) {
@@ -18253,7 +18406,7 @@ function cutTea(nick) {
       }],
       [9300, S => {
         cutFade(S, .75, 600);
-        S.title.innerHTML = `<div class="cstamp small">${'百夜面談'.split('').map(c => `<span>${c}</span>`).join('')}</div><div class="cstampsub in">백야와 ${wEsc(who)}의 1대1 면담</div>`;
+        S.title.innerHTML = `<div class="cstamp small">${'百夜面談'.split('').map(c => `<span>${c}</span>`).join('')}</div><div class="cstampsub long in">백야와 ${wEsc(who)}의 1대1 면담</div>`;
         S.title.querySelectorAll('.cstamp span').forEach((sp, i) => setTimeout(() => { sp.classList.add('in'); if (i === 3) cutSfx('gong'); }, i * 160));
       }],
       [10700, S => S.title.classList.add('fade')]
@@ -18473,6 +18626,373 @@ function meetBgSvg() {
     <rect x="548" y="68" width="504" height="364" fill="none" stroke="#2e1c0c" stroke-width="18"/>
     ${[160, 1440].map(x => `<ellipse cx="${x}" cy="200" rx="40" ry="54" fill="#ffb45a" class="clamp"/><ellipse cx="${x}" cy="200" rx="130" ry="150" fill="#ffb45a" opacity=".1"/>`).join('')}
     <rect y="600" width="1600" height="300" fill="#140c06"/></svg>`;
+}
+
+/* ══ 컷씬 — [해킹] 박사의 비밀연구 ═══════════════════════════
+   불이 꺼지지 않는 지하 연구실. 플라스크가 부글거리고, 세 모니터에 코드가 흘러내린다.
+   박사가 미친 듯이 자판을 두들기고, 광선이 부적을 훑자 부적이 보랏빛으로 오염된다.
+   모니터가 붉게 「ACCESS GRANTED」 — 박사가 돌아보며 웃는다 → 화면이 찢어지며 [해 킹].
+   ═════════════════════════════════════════════════════════ */
+function cutHackCode(n, seed) {
+  const words = ['if(seal.break())', '符.decode(0x3F)', 'while(yokai) hack();', 'talisman[i] ^= KEY', 'rewrite(seal, "邪")', 'inject(bug, 0xDEAD)',
+    'for(p of paper) corrupt(p)', 'return ACCESS', 'sudo ./dr.exe', 'SEAL=0', 'glitch(白, 夜)', '// 백 년 봉인 = 코드', 'await breach()', 'rm -rf /seal/*'];
+  let s = '';
+  for (let i = 0; i < n; i++) s += `<div>${String(i + seed).padStart(3, '0')}  ${words[(i * 7 + seed) % words.length]}</div>`;
+  return s;
+}
+function cutDoctorSvg() {
+  return `<svg viewBox="0 0 260 300" width="260" height="300" class="cdoc">
+    <defs><linearGradient id="dcoat" x1="0" x2="1"><stop offset="0" stop-color="#b8c8c0"/><stop offset=".5" stop-color="#e8f0ea"/><stop offset="1" stop-color="#98a8a0"/></linearGradient></defs>
+    <rect x="60" y="232" width="150" height="16" rx="3" fill="#1a2a24"/>
+    <path d="M80 120 Q130 96 180 120 L196 260 Q130 272 64 260Z" fill="url(#dcoat)"/>
+    <path d="M130 110 L126 262" stroke="#8a9a92" stroke-width="2"/>
+    <g class="cdocarm l"><path d="M86 140 Q60 190 74 226 L92 228 Q84 196 100 150Z" fill="#dfe8e2"/><ellipse cx="84" cy="228" rx="11" ry="7" fill="#e6d4bc"/></g>
+    <g class="cdocarm r"><path d="M176 140 Q200 190 186 226 L168 228 Q176 196 160 150Z" fill="#dfe8e2"/><ellipse cx="176" cy="228" rx="11" ry="7" fill="#e6d4bc"/></g>
+    <ellipse cx="130" cy="78" rx="30" ry="34" fill="#e6d4bc"/>
+    <path d="M96 70 Q88 30 112 34 Q118 14 138 26 Q160 12 166 36 Q184 36 170 70 Q160 46 130 50 Q104 46 96 70Z" fill="#dcdcdc"/>
+    <path d="M96 60 L84 44 M166 58 L180 40 M110 36 L104 18 M150 30 L160 14" stroke="#dcdcdc" stroke-width="5" stroke-linecap="round"/>
+    <g class="cdocglass"><circle cx="116" cy="80" r="11" fill="#9ff4c8" fill-opacity=".35" stroke="#222" stroke-width="3"/><circle cx="144" cy="80" r="11" fill="#9ff4c8" fill-opacity=".35" stroke="#222" stroke-width="3"/>
+      <line x1="127" y1="80" x2="133" y2="80" stroke="#222" stroke-width="3"/><path d="M110 74 l6 -4 M138 74 l6 -4" stroke="#fff" stroke-width="2.5" class="cglint"/></g>
+    <path d="M118 100 Q130 108 142 100" stroke="#6a3a2a" stroke-width="3" fill="none" class="cdocgrin"/>
+  </svg>`;
+}
+function cutFlaskSvg(col, h) {
+  return `<svg viewBox="0 0 90 ${h + 60}" width="90" height="${h + 60}" class="cflask">
+    <path d="M34 4 L56 4 L56 ${h * .35} L84 ${h + 50} Q86 ${h + 58} 76 ${h + 58} L14 ${h + 58} Q4 ${h + 58} 6 ${h + 50} L34 ${h * .35}Z" fill="rgba(200,255,240,.12)" stroke="#bfe8dc" stroke-width="2.5"/>
+    <path d="M20 ${h + 20} Q45 ${h + 12} 70 ${h + 20} L80 ${h + 50} Q82 ${h + 55} 74 ${h + 55} L16 ${h + 55} Q8 ${h + 55} 10 ${h + 50}Z" fill="${col}" opacity=".85" class="cliq"/>
+    ${Array.from({ length: 7 }, (_, i) => `<circle cx="${22 + (i * 11) % 48}" cy="${h + 48}" r="${2 + (i % 3)}" fill="#fff" opacity=".7" class="cbub" style="animation-delay:${(i * .23).toFixed(2)}s;animation-duration:${(1 + (i % 3) * .35).toFixed(2)}s"/>`).join('')}
+    <ellipse cx="45" cy="4" rx="12" ry="3" fill="#bfe8dc"/></svg>`;
+}
+function cutHack() {
+  const MON = [[560, 300], [800, 270], [1040, 300]];
+  return {
+    len: 16600,
+    build(S) {
+      cutLayer(S, cutSkySvg('#020806', '#06140e', '#0a1c14', null), -900, 0);
+      /* 연구실 벽 — 배관, 격자, 비상등 */
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible">
+        <rect x="-400" y="-300" width="2400" height="1500" fill="#07120d"/>
+        <g stroke="#0f2a1e" stroke-width="2">${Array.from({ length: 30 }, (_, i) => `<line x1="${-400 + i * 100}" y1="-300" x2="${-400 + i * 100}" y2="1200"/>`).join('')}
+          ${Array.from({ length: 16 }, (_, i) => `<line x1="-400" y1="${-300 + i * 100}" x2="2000" y2="${-300 + i * 100}"/>`).join('')}</g>
+        <path d="M-400 90 H2000 M-400 120 H2000" stroke="#1c3a2c" stroke-width="16"/>
+        <path d="M200 90 V600 M1400 120 V640" stroke="#1c3a2c" stroke-width="14"/>
+        ${[260, 1340].map(x => `<circle cx="${x}" cy="150" r="14" fill="#ff2a3a" class="calarm"/><circle cx="${x}" cy="150" r="60" fill="#ff2a3a" opacity=".12" class="calarm"/>`).join('')}
+        <rect x="-400" y="640" width="2400" height="600" fill="#040a07"/>
+        <path d="M-400 640 H2000" stroke="#1f5a3c" stroke-width="3"/></svg>`, -400, 1);
+      /* 모니터 셋 — 코드가 흘러내린다 */
+      S.refs.mon = MON.map(([x, y], i) => cutPut(S, `<div class="cmon"><div class="cmonc">${cutHackCode(40, i * 13)}</div><div class="cmonx">ACCESS GRANTED</div></div>`, { x, y, z: -120, zi: 2 }));
+      /* 책상 · 자판 · 박사 */
+      cutPut(S, `<svg viewBox="0 0 700 120" width="700" height="120"><rect x="0" y="0" width="700" height="26" rx="4" fill="#1a2a24"/><rect x="0" y="0" width="700" height="6" fill="#2a4a3c"/>
+        <rect x="40" y="26" width="24" height="94" fill="#10201a"/><rect x="636" y="26" width="24" height="94" fill="#10201a"/>
+        <rect x="250" y="-14" width="200" height="16" rx="3" fill="#0a1410" stroke="#2cff7a" stroke-opacity=".5"/></svg>`, { x: 800, y: 560, z: -40, zi: 3 });
+      S.refs.doc = cutPut(S, cutDoctorSvg(), { x: 800, y: 560, ay: 1, z: -20, cls: 'cdocw', zi: 4 });
+      /* 플라스크 — 부글부글 */
+      S.refs.fl = [[330, 620, '#3cff8a', 90], [410, 620, '#b060ff', 130], [1200, 620, '#ff5a8a', 110], [1290, 620, '#3cc8ff', 80]]
+        .map(([x, y, col, h]) => cutPut(S, cutFlaskSvg(col, h), { x, y, ay: 1, z: 40, zi: 5 }));
+      cutPut(S, `<svg viewBox="0 0 400 40" width="400" height="40"><rect width="400" height="40" rx="4" fill="#12241c"/></svg>`, { x: 370, y: 630, z: 40, zi: 4 });
+      cutPut(S, `<svg viewBox="0 0 400 40" width="400" height="40"><rect width="400" height="40" rx="4" fill="#12241c"/></svg>`, { x: 1245, y: 630, z: 40, zi: 4 });
+      /* 스캐너 위의 부적들 */
+      S.refs.scan = cutPut(S, `<div class="cscanner">${['破', '封', '滅', '鎭', '退'].map(g => `<div class="ctal"><b>${g}</b></div>`).join('')}<i class="cscanbeam"></i></div>`, { x: 800, y: 760, z: 120, zi: 6 });
+      cutAmbient(S, 'mist', .02, '80,255,160');
+      S.dark.style.opacity = 1; cutFade(S, 0, 1400);
+      cutCam(S, { x: 800, y: 380, s: .85, rx: 10, ry: -10 }, 0);
+      S.root.classList.add('hackcut');
+    },
+    tl: [
+      [200, S => { cutCam(S, { x: 800, y: 480, s: 1, rx: 0, ry: 8 }, 2400, 'ease-in-out'); cutSfx('hiss', { dur: 1.6, vol: .05, freq: 400, to: 200, filter: 'lowpass' }); }],
+      [600, S => cutSay(S, '산 아래 어딘가 — 불이 꺼지지 않는 연구실.', 2200)],
+      /* 플라스크 */
+      [2600, S => {
+        cutCam(S, { x: 380, y: 560, s: 2.3, rz: -4, ry: 18 }, 1000);
+        const t = setInterval(() => { if (!S.alive) return clearInterval(t); for (const f of S.refs.fl) { const a = cutAt(f); cutEmit(S, 'soul', a.x + (Math.random() - .5) * 20, a.y - a.h * .45, 1, { sp: .8, ang: -Math.PI / 2, spread: .5, life: 70, sz: 4, g: -.02, col: '120,255,170' }); } cutSfx('blip', 90 + Math.random() * 80, { dur: .06, type: 'sine', vol: .03 }); }, 130);
+        S.timers.push(setTimeout(() => clearInterval(t), 12000));
+      }],
+      [3400, S => cutSay(S, '보글, 보글 — 부적을 녹인 물이 끓는다.', 1800)],
+      /* 모니터 */
+      [4400, S => { cutCam(S, { x: 800, y: 300, s: 2.1, rz: 3, ry: -6, rx: -8 }, 1000); for (const m of S.refs.mon) m.classList.add('fast'); }],
+      [5100, S => cutSay(S, '<span class="hkmono">PROJECT 符-HACK : 부적의 코드를 다시 쓴다</span>', 2000)],
+      /* 박사가 두들긴다 */
+      [6400, S => {
+        cutCam(S, { x: 800, y: 470, s: 2.4, rz: -2, ry: 26, rx: 4 }, 1100);
+        S.refs.doc.classList.add('typing');
+        const t = setInterval(() => { if (!S.alive) return clearInterval(t); cutSfx('blip', 900 + Math.random() * 600, { dur: .02, type: 'square', vol: .03 }); }, 70);
+        S.timers.push(setTimeout(() => clearInterval(t), 3800));
+      }],
+      [7200, S => { cutSay(S, '<b style="color:#5cff9a">박사</b> — "조금만… 조금만 더…"', 1800); S.refs.doc.classList.add('fast'); cutShake(S, 3, 1400); }],
+      /* 광선이 부적을 훑는다 */
+      [8600, S => { cutCam(S, { x: 800, y: 740, s: 2.6, rz: 0, ry: 0, rx: -16 }, 900); S.refs.scan.querySelector('.cscanner').classList.add('on'); cutSfx('charge'); }],
+      [9500, S => { S.refs.scan.querySelector('.cscanner').classList.add('rot'); cutSfx('err'); cutFlash(S, 'rgba(170,80,255,.45)', 300); const a = cutAt(S.refs.scan); cutEmit(S, 'spark', a.x, a.y, 40, { sp: 9, life: 26, sz: 2, g: .1 }); }],
+      [9700, S => cutSay(S, '<span class="hkmono">스캔 완료 — 봉인 해제 · 부적 오염 100%</span>', 1600)],
+      /* ACCESS GRANTED — 박사가 돌아본다 */
+      [11200, S => {
+        cutCam(S, { x: 800, y: 420, s: 1.6, rz: 0, ry: 0, rx: 0 }, 700);
+        for (const m of S.refs.mon) m.classList.add('red');
+        S.root.classList.add('alarm'); cutSfx('boss'); cutShake(S, 8, 700);
+        S.refs.doc.classList.remove('typing'); S.refs.doc.classList.add('turn');
+      }],
+      [12000, S => { cutSay(S, '<b style="color:#5cff9a">박사</b> — "크크크… 백 년짜리 봉인도 결국 코드일 뿐이지."', 2300); cutFlash(S, 'rgba(255,255,255,.5)', 200); }],
+      /* 찢어진다 */
+      [14000, S => {
+        S.root.classList.add('glitch'); cutSfx('thunder'); cutSfx('crit'); cutHitstop(S, 120); cutFade(S, .8, 500);
+        S.title.innerHTML = `<div class="hkstamp" data-t="[해 킹]">[해 킹]</div><div class="cstampsub long in">박사의 비밀연구 — 부적들을 해킹하는 박사를 처치하라!</div>`;
+      }],
+      [16000, S => S.title.classList.add('fade')]
+    ]
+  };
+}
+CUT_LIST.hack = { n: '[해킹] 박사의 비밀연구', make: () => cutHack() };
+
+/* ══════════════════════════════════════════════════════════
+   [해킹] 특수 이벤트 — 박사의 비밀연구
+   ──────────────────────────────────────────────────────────
+   부적의 봉인을 코드로 다시 쓰는 박사가 나타났다. 백야(운영 창)가 모든 것을 쥔다.
+     · 이벤트 켜기/끄기 — 켜 두면 모든 앱에 띠가 선다
+     · 해킹상점 열기/닫기 — ≡ 메뉴에 「해킹상점」
+     · 해킹맵 이동 — 모험 중인 모든 앱에서 「맵이 해킹당했습니다!」와 함께 01010… 해킹맵이 열린다
+     · 컷씬 「박사의 비밀연구」 — 컷씬 뿌리기로
+   해킹맵: 버그 무리 → 웜 → 복구 지점 → 트로이 요괴 → 박사. 여기서 쓰러져도 모험은 끝나지 않는다.
+   박사를 쓰러뜨리면 「해킹 상자」 — 이벤트에서만 나오는 부적(?급 1%). 이 부적들은 도감에 적지 않는다.
+   이벤트 재화는 「해킹 칩」(계정에 남는다).
+   ══════════════════════════════════════════════════════════ */
+/* 요괴 — 오염된 코드들과 박사 */
+function hackInject(n) {
+  const b = G.b; if (!b) return;
+  for (let i = 0; i < n; i++) b.drawPile.splice(Math.floor(rnd() * (b.drawPile.length + 1)), 0, mkCard('hk_error', false));
+  toast(`부적이 해킹당했다 — 오류 ${n}장이 더미에 섞였다`);
+  try { screenFlash('rgba(60,255,140,.25)', 300); SND.err(); } catch (e) {}
+  syncAll();
+}
+defEnemy({ id: 'hk_bug', n: '버그', g: '蟲', hp: [34, 40], col: '#2a8a4a',
+  moves: { bite: { t: 'attack', label: '갉아먹기', d: 6 }, swarm: { t: 'attack', label: '떼 지어 물기', d: 3, n: 3 } },
+  next: e => rnd() < .55 ? 'bite' : 'swarm' });
+defEnemy({ id: 'hk_worm', n: '웜', g: '蠕', hp: [70, 78], col: '#3a6a2a',
+  moves: { spread: { t: 'debuff', label: '번식', deb: { poison: 3 }, self: { str: 1 } }, gnaw: { t: 'attack', label: '파고들기', d: 10 } },
+  next: e => lastIs(e, 'spread') ? 'gnaw' : rnd() < .5 ? 'spread' : 'gnaw' });
+defEnemy({ id: 'hk_trojan', n: '트로이 요괴', g: '馬', hp: [96, 106], col: '#6a4a8a',
+  moves: { gift: { t: 'debuff', label: '선물인 척', deb: { weak: 1 }, extra: () => hackInject(1) },
+           burst: { t: 'attack', label: '속이 터진다', d: 15 }, guard: { t: 'defend', label: '위장', blk: 14 } },
+  next: e => e.hist.length === 0 ? 'gift' : lastIs(e, 'gift') ? 'burst' : rnd() < .5 ? 'guard' : 'gift' });
+defEnemy({ id: 'hk_doctor', n: '박사', g: '博', hp: [250, 250], col: '#1fb66a', big: true,
+  init: e => { e.phase = 1; },
+  moves: {
+    type:     { t: 'attack', label: '과부하 타격', d: 9, n: 2, fx: 'bolt' },
+    hack:     { t: 'debuff', label: '부적 해킹', deb: { weak: 1, vuln: 1 }, extra: () => hackInject(2) },
+    firewall: { t: 'defend', label: '방화벽', blk: 22, self: { str: 1 } },
+    ddos:     { t: 'attack', label: '디도스', d: 4, n: 5, fx: 'bolt' }
+  },
+  onHalf: e => { e.phase = 2; st(e, 'str', 2); flash('박사가 본 서버를 열었다'); hackInject(3); },
+  next: e => {
+    if (e.hist.length === 0) return 'hack';
+    if (lastIs(e, 'hack')) return rnd() < .5 ? 'type' : 'ddos';
+    const r = rnd();
+    return e.phase === 2 && r < .3 ? 'hack' : r < .45 ? 'type' : r < .7 ? 'ddos' : r < .85 ? 'firewall' : 'hack';
+  } });
+
+var HACK = { busy: false, seen: {} };
+try { HACK.seen = JSON.parse(localStorage.getItem('baekgwi_hackseen') || '{}'); } catch (e) {}
+const hackOn = () => !!(LIVE.hack && LIVE.hack.on);
+const hackShopOn = () => hackOn() && !!LIVE.hack.shop;
+const HACK_NODES = [
+  { k: 'bug',    g: '蟲', n: '버그 무리',   foes: ['hk_bug', 'hk_bug'], chip: 4 },
+  { k: 'worm',   g: '蠕', n: '웜',          foes: ['hk_worm'], chip: 5 },
+  { k: 'patch',  g: '補', n: '복구 지점',   rest: true, chip: 3 },
+  { k: 'trojan', g: '馬', n: '트로이 요괴', foes: ['hk_trojan', 'hk_bug'], chip: 6 },
+  { k: 'doctor', g: '博', n: '박사',        foes: ['hk_doctor'], boss: true, chip: 20 }
+];
+function hackMapOk() { const r = G.run; return !!(r && !r._pvp && r.hack && hackOn() && r.hack.id === (LIVE.hack.go && LIVE.hack.go.id)); }
+/* 백야가 「해킹맵 이동」을 눌렀다 — 모험 중이고 싸우는 중이 아니면 끌려간다 */
+function hackGoCheck() {
+  const h = LIVE.hack; if (!h || !h.on || !h.go || HACK.busy) return;
+  const id = h.go.id;
+  if (HACK.seen[id] || srvNow() - (h.go.at || 0) > 3 * 60 * 1000) return;
+  const r = G.run; if (!r || r._pvp || G.b || cutPlaying() || !acctOn()) return;
+  if (G.scene !== 'map') return;
+  HACK.seen[id] = 1; try { localStorage.setItem('baekgwi_hackseen', JSON.stringify(HACK.seen)); } catch (e) {}
+  if (!r.hack || r.hack.id !== id) r.hack = { id, step: 0, done: false };
+  saveRun();
+  hackIntrusion().then(() => showHackMap());
+}
+/* 「맵이 해킹당했습니다!」 — 01010 비가 쏟아지고 글자가 찢어진다 */
+function hackIntrusion() {
+  return new Promise(done => {
+    HACK.busy = true;
+    const n = el('div', 'hackfx');
+    n.innerHTML = `<canvas></canvas><div class="hkscan"></div>
+      <div class="hkbox"><div class="hkwarn">⚠ SYSTEM BREACH ⚠</div>
+        <div class="hktitle" data-t="맵이 해킹당했습니다!">맵이 해킹당했습니다!</div>
+        <div class="hkterm" id="hk_term"></div>
+        <div class="hkbar"><i id="hk_bar"></i></div></div>`;
+    document.body.appendChild(n);
+    const cv = n.querySelector('canvas'), c = cv.getContext('2d');
+    const W = cv.width = innerWidth, H = cv.height = innerHeight, fs = Math.max(12, Math.round(W / 70));
+    const cols = Math.ceil(W / fs), drops = Array.from({ length: cols }, () => Math.random() * -40);
+    let alive = true, t0 = performance.now();
+    const rain = () => {
+      if (!alive) return;
+      c.fillStyle = 'rgba(0,6,2,.16)'; c.fillRect(0, 0, W, H);
+      c.font = `${fs}px monospace`;
+      for (let i = 0; i < cols; i++) {
+        const red = performance.now() - t0 > 2600 && Math.random() < .12;
+        c.fillStyle = red ? '#ff3a4a' : Math.random() < .08 ? '#dfffe8' : '#2cff7a';
+        c.fillText(Math.random() < .5 ? '0' : '1', i * fs, drops[i] * fs);
+        if (drops[i] * fs > H && Math.random() > .96) drops[i] = 0;
+        drops[i] += .9;
+      }
+      requestAnimationFrame(rain);
+    };
+    rain();
+    try { SND.err(); SND.hiss({ dur: 1.4, vol: .12, freq: 2400, to: 300, filter: 'bandpass', q: 1.2, rev: .5 }); } catch (e) {}
+    const lines = ['> 연결 가로채는 중 ... 0x7F3A', '> 부적 봉인 코드 읽는 중 ... 符.dat', '> 지도 좌표 변조 중 ...', '> 박사.exe 실행', '> 오염된 길 생성 완료 — 5 구역', '> 들어오시오, 퇴마사.'];
+    const term = n.querySelector('#hk_term'), bar = n.querySelector('#hk_bar');
+    lines.forEach((l, i) => setTimeout(() => {
+      if (!alive) return;
+      const d = el('div', '', l); term.appendChild(d); bar.style.width = Math.round((i + 1) / lines.length * 100) + '%';
+      try { SND.blip(300 + i * 90, { dur: .05, type: 'square', vol: .04 }); } catch (e) {}
+      if (i === 3) { n.classList.add('red'); try { SND.thunder(); } catch (e) {} }
+    }, 900 + i * 620));
+    const end = () => { if (!alive) return; alive = false; n.classList.add('out'); setTimeout(() => { n.remove(); HACK.busy = false; done(); }, 600); };
+    setTimeout(() => { n.onclick = end; }, 2200);
+    setTimeout(end, 900 + lines.length * 620 + 1400);
+  });
+}
+/* 해킹맵 — 오염된 다섯 구역을 차례로 푼다 */
+function showHackMap() {
+  const run = G.run; if (!run || !run.hack) return;
+  if (!hackMapOk()) { toast('해킹맵이 닫혔다 — 백야가 이벤트를 거두었다'); run.inHack = false; return; }
+  run.inHack = true; saveRun();
+  document.body.classList.remove('hackmode');
+  const old = $('#hackmap'); if (old) old.remove();
+  const h = run.hack;
+  const p = el('div', 'hackmap');
+  p.id = 'hackmap';
+  p.innerHTML = `<div class="hkmbg"></div>
+    <div class="hkmhead"><b>[해킹] 박사의 비밀연구</b><span>오염된 지도 · 해킹 칩 <em>${META.hackChip || 0}</em> · 해킹 상자 <em>${META.hackBox || 0}</em></span>
+      ${hackShopOn() ? '<button id="hkm_shop">해킹상점</button>' : ''}<button id="hkm_out">원래 지도로</button></div>
+    <div class="hkmsay">${h.done ? '박사를 쓰러뜨렸다. 오염은 가라앉았다.' : '부적들을 해킹하는 박사를 처치하라! — 여기서는 쓰러져도 모험이 끝나지 않는다.'}</div>
+    <div class="hkmpath">${HACK_NODES.map((x, i) => `${i ? '<i class="hkmline' + (i <= h.step ? ' on' : '') + '"></i>' : ''}
+      <button class="hkmnode${i < h.step || h.done ? ' done' : i === h.step ? ' cur' : ' lock'}${x.boss ? ' boss' : ''}" data-i="${i}">
+        <b>${x.g}</b><span>${x.n}</span><em>${i < h.step || h.done ? '해제됨' : i === h.step ? (x.rest ? '쉬어 간다' : '들어간다') : '잠김'}</em></button>`).join('')}</div>
+    <div class="hkmlore"><i>博</i><div><b>박사의 비밀연구</b>
+      <p>산 아래, 불이 꺼지지 않는 연구실이 있다. 박사는 백 년 묵은 봉인을 「코드」라 불렀다.
+        부적 한 장 한 장을 광선으로 훑어 봉인을 풀고, 그 자리에 제 글자를 새겨 넣었다.</p>
+      <p>오염된 부적은 퇴마사의 손을 물고, 지도는 01로 뒤틀렸다. 버그가 들끓고, 웜이 파고들고, 트로이 요괴는 선물인 척 다가온다.</p>
+      <p class="hkmhint">⌬ 해킹 칩은 이기면 쌓인다 — 해킹상점(백야가 연 동안)에서 쓴다. 박사를 쓰러뜨리면 <b>해킹 상자</b> — 이벤트에서만 나오는 부적, <b>?급 1%</b>.</p></div></div>`;
+  ($('#app') || document.body).appendChild(p);
+  p.querySelector('#hkm_out').onclick = () => { SND.ui(); run.inHack = false; saveRun(); p.remove(); };
+  const sb = p.querySelector('#hkm_shop'); if (sb) sb.onclick = () => showHackShop();
+  p.querySelectorAll('.hkmnode.cur').forEach(b => b.onclick = () => hackEnter(+b.dataset.i));
+}
+function hackEnter(i) {
+  const run = G.run, x = HACK_NODES[i]; if (!run || !run.hack || run.hack.step !== i || run.hack.done) return;
+  if (x.rest) {
+    const heal = Math.round(run.maxHp * .3);
+    run.hp = Math.min(run.maxHp, run.hp + heal);
+    META.hackChip = (META.hackChip || 0) + x.chip; saveMeta();
+    run.hack.step++; saveRun(); renderTop();
+    toast(`복구 지점 — 체력 +${heal} · 해킹 칩 +${x.chip}`); SND.heal && SND.heal();
+    showHackMap(); return;
+  }
+  const m = $('#hackmap'); if (m) m.remove();
+  document.body.classList.add('hackmode');
+  HACK.node = i;
+  startBattle(x.foes, x.boss ? 'hackboss' : 'hack');
+  if (x.boss) setTimeout(() => { try { flash('博 士'); SND.boss(); } catch (e) {} }, 300);
+}
+function hackWin(kind) {
+  const run = G.run, x = HACK_NODES[HACK.node || 0];
+  battleWatch(false); G.b = null; document.body.classList.remove('hackmode');
+  const chip = x.chip + (run.act || 1);
+  const gold = Math.round(40 * lootGold(run.act || 1));
+  META.hackChip = (META.hackChip || 0) + chip;
+  run.gold += gold;
+  let box = 0;
+  if (kind === 'hackboss') { box = 1; META.hackBox = (META.hackBox || 0) + 1; run.hack.done = true; }
+  else run.hack.step++;
+  saveMeta(); saveRun();
+  const p = modal(`<h2 style="color:#5cff9a">${kind === 'hackboss' ? '박 사 처 치' : '오 염 해 제'}</h2>
+    <div class="hint">${kind === 'hackboss' ? '박사의 연구가 멈췄다. 떨어뜨린 상자에서 이상한 부적 냄새가 난다.' : x.n + ' — 코드를 걷어 냈다.'}</div>
+    <div class="hkrew"><div><b>칩</b>해킹 칩 +${chip}</div><div><b>金</b>골드 +${gold}</div>${box ? '<div class="box"><b>匣</b>해킹 상자 +1</div>' : ''}</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+      ${box ? '<button class="brush-btn gold" id="hw_open">상자를 연다</button>' : ''}
+      <button class="brush-btn" id="hw_ok">해킹맵으로</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#hw_ok').onclick = () => { closeTop(); showMap(); };
+  const ob = p.querySelector('#hw_open'); if (ob) ob.onclick = () => { closeTop(); showMap(); setTimeout(() => hackBoxOpen(), 300); };
+}
+function hackLose() {
+  const run = G.run, b = G.b;
+  battleWatch(false);
+  if (b && b.startHp) run.hp = Math.max(1, b.startHp);
+  G.b = null; document.body.classList.remove('hackmode');
+  saveRun();
+  const p = modal(`<h2 style="color:#ff6a7a">접속이 끊겼다</h2>
+    <div class="hint">해킹맵에서 밀려났다 — 모험은 그대로다. 체력은 들어가기 전으로 돌아온다.<br>다시 도전할 수 있다.</div>
+    <button class="brush-btn" id="hl_ok">해킹맵으로</button>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#hl_ok').onclick = () => { closeTop(); showMap(); };
+}
+/* 해킹 상자 — 이벤트에서만 나오는 부적. ?급 1% · SSX 4% · SSC 15% · 나머지 S급. 도감에는 적지 않는다 */
+function hackRoll() {
+  const r = rnd();
+  if (r < .01) return 'hk_kernel';
+  if (r < .05) return 'hk_zero';
+  if (r < .20) return 'hk_root';
+  return pick(['hk_overflow', 'hk_ddos', 'hk_patch']);
+}
+async function hackBoxOpen() {
+  if ((META.hackBox || 0) < 1) { toast('해킹 상자가 없다'); SND.err(); return; }
+  META.hackBox--; saveMeta();
+  const id = hackRoll(), c = CARDS[id];
+  if (G.run && !G.run._pvp) { G.run.deck.push(mkCard(id, false)); saveRun(); }
+  else { META.giftBag = (META.giftBag || []).concat(id).slice(0, 40); saveMeta(); }
+  try { await boxOpenScene('匣', c.rar); } catch (e) {}
+  try { showPullResult([{ g: c.g, n: c.n, d: '해킹 상자 — 이벤트 전용 부적', grade: c.rar, card: id }], () => {}); }
+  catch (e) { toast(`해킹 상자 — ${c.n} (${GRADE[c.rar].n})`); }
+}
+/* 해킹상점 — 백야가 열어 둔 동안만. 해킹 칩으로 산다 */
+const HACK_SHOP = [
+  { k: 'box',   g: '匣', n: '해킹 상자',    d: '이벤트 전용 부적 한 장 (?급 1%)', p: 40, go: () => { META.hackBox = (META.hackBox || 0) + 1; } },
+  { k: 'hp',    g: '補', n: '오류 패치',    d: '최대 체력 +12 (이번 모험)', p: 10, run: true, go: () => { G.run.maxHp += 12; G.run.hp += 12; } },
+  { k: 'qi',    g: '氣', n: '과부하 코드',  d: '최대 기 +1 (이번 모험)', p: 45, run: true, go: () => { G.run.maxEnergy += 1; } },
+  { k: 'dia',   g: '玉', n: '다이아 패킷',  d: '다이아 300', p: 15, go: () => payOut({ dia: 300 }) },
+  { k: 'gold',  g: '金', n: '골드 패킷',    d: '골드 800', p: 8, go: () => payOut({ gold: 800 }) }
+];
+function showHackShop() {
+  if (!hackShopOn()) { toast('해킹상점은 닫혀 있다 — 백야가 열어야 한다'); SND.err(); return; }
+  const p = modal(`<h2 style="color:#5cff9a">해 킹 상 점</h2>
+    <div class="hint">박사의 서버에서 빼돌린 것들 · 해킹 칩으로 산다 · 백야가 열어 둔 동안만</div>
+    <div class="hkchip" id="hs_chip"></div>
+    <div class="hkshop" id="hs_grid"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center"><button class="brush-btn gold" id="hs_open">해킹 상자 열기</button><button class="brush-btn" id="hs_x">닫기</button></div>`, 'hackshopm');
+  p.dataset.noauto = '1';
+  const draw = () => {
+    p.querySelector('#hs_chip').innerHTML = `<i>⌬</i> 해킹 칩 <b>${META.hackChip || 0}</b> · 해킹 상자 <b>${META.hackBox || 0}</b>`;
+    const g = p.querySelector('#hs_grid'); g.innerHTML = '';
+    for (const it of HACK_SHOP) {
+      const b = el('button', 'hkitem', `<i>${it.g}</i><b>${it.n}</b><small>${it.d}</small><u>⌬ ${it.p}</u>`);
+      b.onclick = () => {
+        if (!hackShopOn()) { toast('방금 닫혔다'); SND.err(); closeTop(); return; }
+        if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
+        if ((META.hackChip || 0) < it.p) { toast(`해킹 칩이 ${it.p - (META.hackChip || 0)} 모자라다`); SND.err(); return; }
+        META.hackChip -= it.p; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
+        SND.unlock(); toast(`${it.n} — 샀다`); draw();
+      };
+      g.appendChild(b);
+    }
+  };
+  draw();
+  p.querySelector('#hs_open').onclick = () => { closeTop(); hackBoxOpen(); };
+  p.querySelector('#hs_x').onclick = closeTop;
+}
+/* 띠 — 이벤트가 켜진 동안 */
+function hackTick() {
+  let pill = $('#hackpill');
+  if (!hackOn()) { if (pill) pill.remove(); document.body.classList.remove('hackmode'); return; }
+  if (!pill) { pill = el('div', 'hackpill'); pill.id = 'hackpill'; document.body.appendChild(pill);
+    pill.onclick = () => { if (hackMapOk()) showHackMap(); else if (hackShopOn()) showHackShop(); else toast('백야가 해킹맵을 열면 끌려간다 — 박사를 처치하라!'); }; }
+  pill.innerHTML = `<i>⌬</i><b>[해킹]</b><span>박사를 처치하라</span>${hackShopOn() ? '<em>상점</em>' : ''}`;
+  pill.style.display = $('#hackmap') || G.b ? 'none' : '';
+  try { hackGoCheck(); } catch (e) { console.error('해킹', e); }
 }
 
 
@@ -18791,6 +19311,8 @@ function showMenu() {
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
       ${!G.b ? '<button class="brush-btn mpbtn" id="m_mp">對 멀티플레이</button>' : ''}
+      ${hackShopOn() ? '<button class="brush-btn" id="m_hshop" style="color:#5cff9a;border-color:#2cff7a">⌬ 해킹상점</button>' : ''}
+      ${!G.b && hackMapOk() ? '<button class="brush-btn" id="m_hmap" style="color:#5cff9a;border-color:#2cff7a">[해킹] 해킹맵으로</button>' : ''}
       ${guestOn() ? '<button class="brush-btn" id="m_guest" style="color:#f0b8e8;border-color:#e08ad8">客 게스트 창</button>' : ''}
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
       <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
@@ -18814,6 +19336,8 @@ function showMenu() {
   const mg = p.querySelector('#m_guest'); if (mg) mg.onclick = () => { closeTop(); showGuest(); };
   const mm2 = p.querySelector('#m_mp'); if (mm2) mm2.onclick = () => { closeTop(); showMulti(); };
   const mpl = p.querySelector('#m_plan'); if (mpl) mpl.onclick = () => { closeTop(); showPlan(); };
+  const mhs = p.querySelector('#m_hshop'); if (mhs) mhs.onclick = () => { closeTop(); showHackShop(); };
+  const mhm = p.querySelector('#m_hmap'); if (mhm) mhm.onclick = () => { closeTop(); showHackMap(); };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_news').onclick = () => { closeTop(); showNews(); };
   p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
@@ -19003,7 +19527,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 11;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 12;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -19117,6 +19641,7 @@ async function liveFetch() {
     LIVE.poll = d.poll && typeof d.poll === 'object' ? d.poll : null;       /* 투표 · 퀴즈 */
     bossMerge(d.boss && typeof d.boss === 'object' ? d.boss : null);
     LIVE.cut = d.cut && typeof d.cut === 'object' ? d.cut : null;          /* 관리자가 뿌린 컷씬 */
+    LIVE.hack = d.hack && typeof d.hack === 'object' ? d.hack : null;       /* [해킹] 이벤트 */
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
     try { chatBadge(); } catch (e) {}
@@ -20199,6 +20724,7 @@ function liveTick() {
   try { evSky(k || (rn ? 'rain' : '')); } catch (e) { console.error('이벤트 하늘', e); }
   try { huntTick(); pollTick(); } catch (e) { console.error('찾기·투표', e); }
   try { cutLiveCheck(); } catch (e) { console.error('컷씬', e); }
+  try { hackTick(); } catch (e) { console.error('해킹', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -20543,6 +21069,19 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec"><b style="color:#5cff9a">⌬ [해킹] 특수 이벤트 — 박사의 비밀연구</b>
+      <div class="casthint">켜면 모든 앱에 [해킹] 띠가 선다. 해킹상점은 백야가 열고 닫는다(≡ 메뉴). 「해킹맵 이동」을 누르면 모험 중인 앱마다
+        「맵이 해킹당했습니다!」와 함께 해킹맵이 열린다(지도에 있는 사람부터, 3분 안). 박사를 쓰러뜨리면 해킹 상자(이벤트 전용 부적 · ?급 1%).
+        <span id="ct_hknow"></span></div>
+      <div class="castbtnrow">
+        <button class="brush-btn gold" id="ct_hkon">이벤트 켜기</button><button class="brush-btn ghost" id="ct_hkoff" style="color:#e9dfc9;border-color:#8a7f68">이벤트 끄기</button>
+        <button class="brush-btn" id="ct_hkshop">해킹상점 열기</button><button class="brush-btn ghost" id="ct_hkshopx" style="color:#e9dfc9;border-color:#8a7f68">해킹상점 닫기</button></div>
+      <div class="castbtnrow">
+        <button class="brush-btn red" id="ct_hkgo">해킹맵 이동!</button>
+        <button class="brush-btn" id="ct_hkcut">컷씬 「박사의 비밀연구」 뿌리기</button>
+        <button class="brush-btn ghost" id="ct_hktry" style="color:#e9dfc9;border-color:#8a7f68">내 기계에서만 — 컷씬 · 해킹 연출</button></div>
+    </div>
+
     <div class="castsec"><b>夜 백야와 1대1 면담</b>
       <div class="casthint">아이디나 닉네임으로 청한다 → 받은 사람이 수락하면 찻잔 컷씬이 흐르고 둘만의 방이 열린다.
         방에서 말 · 선물 세례 · 재화 선물 · 게스트 바로 초대 · 나가기.</div>
@@ -20755,6 +21294,18 @@ function drawCast(grid) {
   /* 컷씬 — 모두에게 한 번 */
   grid.querySelectorAll('#ct_cuts button').forEach(b => b.onclick = () => send({ cut: { k: b.dataset.k } }, `컷씬 「${CUT_LIST[b.dataset.k].n}」`));
   grid.querySelector('#ct_cuttry').onclick = () => cutByName('musou');
+  /* [해킹] 이벤트 */
+  const hkNow = () => { const n = grid.querySelector('#ct_hknow'); if (n) n.innerHTML = LIVE.hack && LIVE.hack.on
+    ? `<b style="color:#5cff9a">지금 켜짐</b> · 상점 ${LIVE.hack.shop ? '<b style="color:#ffe04a">열림</b>' : '닫힘'}${LIVE.hack.go ? ' · 해킹맵 열림' : ''}` : '지금 꺼짐'; };
+  hkNow();
+  const hk = (patch, what) => send({ hack: patch }, what).then(() => { liveFetch().then(hkNow).catch(() => {}); });
+  grid.querySelector('#ct_hkon').onclick = () => hk({ on: true }, '[해킹] 이벤트 켜기');
+  grid.querySelector('#ct_hkoff').onclick = () => hk({ on: false }, '[해킹] 이벤트 끄기');
+  grid.querySelector('#ct_hkshop').onclick = () => hk({ on: true, shop: true }, '해킹상점 열기');
+  grid.querySelector('#ct_hkshopx').onclick = () => hk({ shop: false }, '해킹상점 닫기');
+  grid.querySelector('#ct_hkgo').onclick = () => hk({ on: true, go: true }, '해킹맵 이동');
+  grid.querySelector('#ct_hkcut').onclick = () => send({ cut: { k: 'hack' } }, '컷씬 「박사의 비밀연구」');
+  grid.querySelector('#ct_hktry').onclick = () => cutByName('hack').then(() => hackIntrusion());
   /* 백야와의 면담 */
   const mlog = grid.querySelector('#ct_meetlog');
   grid.querySelector('#ct_meetgo').onclick = async () => {
@@ -23010,9 +23561,9 @@ function showCardDetail(id) {
 function showDex() {
   const byGrade = {};
   for (const k of GRADE_ORDER.concat(['curse'])) byGrade[k] = [];
-  for (const id in CARDS) byGrade[CARDS[id].rar].push(id);
-  const relicIds = Object.keys(RELICS), enemyIds = Object.keys(ENEMIES);
-  const totalCards = Object.keys(CARDS).length;
+  for (const id in CARDS) if (!CARDS[id].hackOnly) byGrade[CARDS[id].rar].push(id);
+  const relicIds = Object.keys(RELICS), enemyIds = Object.keys(ENEMIES).filter(id => !/^hk_/.test(id));
+  const totalCards = Object.keys(CARDS).filter(id => !CARDS[id].hackOnly).length;
 
   let secs = '';
   for (const gk of GRADE_ORDER.concat(['curse'])) {
