@@ -16,7 +16,7 @@
    알맹이(index.html)는 건드리지 않는다. 무엇이 다른지는 게임
    안의 DEMO · PLAT 두 낱말이 알아서 가른다.
    ══════════════════════════════════════════════════════════ */
-import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, copyFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
@@ -62,6 +62,9 @@ for (const p of PLANS) {
   const out = stamp(p.html, p.edition, p.plat);
   mkdirSync(dirname(p.to), { recursive: true });
   writeFileSync(p.to, out);
+  /* three.js 따위 — 알맹이 옆 vendor/ 에 함께 둔다 (컷씬을 틀 때 부른다) */
+  const vd = join(dirname(p.to), 'vendor'); mkdirSync(vd, { recursive: true });
+  for (const f of readdirSync(join(here, 'vendor'))) copyFileSync(join(here, 'vendor', f), join(vd, f));
   console.log(`${relative(join(here, '..'), p.to)} · ${p.edition} · ${p.plat} · ${(out.length / 1024).toFixed(0)}KB`);
 }
 
