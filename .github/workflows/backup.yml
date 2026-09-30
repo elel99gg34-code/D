@@ -1,0 +1,50 @@
+# 뒷받침(백업) — 서버 장부를 잠근 채로 받아 릴리스 「backup」에 걸어 둔다
+#
+# 무료 Key Value 는 디스크에 적지 않아 다시 서면 비고, 무료 Postgres 는
+# 한 달 뒤 사라진다. 서버는 빈 채로 서면 여기 걸린 latest.bin 에서 스스로
+# 되살린다(BACKUP_FROM). 파일은 서버의 BACKUP_PASS 로만 풀린다.
+#
+# 주의 — GitHub 은 「정해진 때(schedule)」를 기본 브랜치에 있는 워크플로만 돌린다.
+name: 뒷받침
+
+on:
+  schedule:
+    - cron: '17 */3 * * *'      # 세 시간마다
+  workflow_dispatch:
+  push:
+    branches: [claude/game-development-syhzcd]
+    paths: ['server/**', '.github/workflows/backup.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 서버에서 잠긴 장부를 받는다 (잠들어 있으면 깨운다)
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 90 -o latest.bin https://baekgwi-live.onrender.com/backup; then break; fi
+            echo "아직 깨는 중 — 다시 ($i)"; sleep 20
+          done
+          test -s latest.bin
+          head -c 4 latest.bin | grep -q 'QkdC' || { echo '잠긴 뒷받침 모양이 아니다'; head -c 200 latest.bin; exit 1; }
+          cp latest.bin "$(date -u +%Y-%m-%d).bin"
+      - name: 릴리스에 건다 — latest 와 날마다 한 벌
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          R="$GITHUB_REPOSITORY"
+          gh release view backup --repo "$R" >/dev/null 2>&1 || \
+            gh release create backup --repo "$R" --target "$GITHUB_SHA" --title "백귀야행 — 장부 뒷받침" \
+              --notes "서버 장부를 잠근 것(AES-256-GCM). 서버의 BACKUP_PASS 없이는 풀 수 없다. 서버가 빈 채로 서면 latest.bin 에서 되살린다."
+          gh release upload backup latest.bin ./*-*-*.bin --repo "$R" --clobber
+          # 날마다 한 벌 — 열나흘이 지난 것은 치운다
+          old=$(date -u -d '14 days ago' +%Y-%m-%d)
+          gh release view backup --repo "$R" --json assets --jq '.assets[].name' | while read -r a; do
+            case "$a" in
+              ????-??-??.bin) [ "${a%.bin}" \< "$old" ] && gh release delete-asset backup "$a" --repo "$R" --yes || true ;;
+            esac
+          done
+          echo "### 뒷받침 $(date -u +%FT%TZ) · $(wc -c < latest.bin) 바이트" >> $GITHUB_STEP_SUMMARY
