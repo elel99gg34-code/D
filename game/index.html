@@ -3323,6 +3323,50 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .hkrew .box{border-color:#ffe04a;color:#ffe9a0;box-shadow:0 0 14px rgba(255,220,80,.5)}
 @media (max-width:640px){.hkmnode{width:92px;height:96px}.hkmnode b{font-size:28px}.hkmline{width:14px}.hkmhead b{font-size:15px}}
 
+/* ══ 개발자의 권력 ══ */
+.adtab.power{color:#e8d0ff;border-color:#9a6ad8;background:rgba(90,50,150,.35)}
+.dpow{grid-column:1/-1;display:flex;flex-direction:column;gap:10px;padding:4px}
+.dpowhead{display:flex;gap:12px;align-items:center}
+.dpowhead i{font-style:normal;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:28px;color:#fff;background:radial-gradient(circle at 35% 30%,#b080ff,#2a0a4a);box-shadow:0 0 20px #8a50ff}
+.dpowhead b{display:block;color:#e0c8ff;font-size:18px;font-weight:400;letter-spacing:.1em}.dpowhead small{color:#a898c0;font-size:12px}
+.dpowbig,.dpowbtn,.dpowclone button{font:inherit;cursor:pointer;border-radius:10px;color:#f4ecff;display:flex;flex-direction:column;align-items:center;gap:3px}
+.dpowbig{padding:16px;background:linear-gradient(135deg,#3a0a6a,#7b4bd8,#3a0a6a);border:2px solid #e0c8ff;box-shadow:0 0 24px rgba(160,100,255,.6)}
+.dpowbig b{font-size:20px;font-weight:400;letter-spacing:.12em}.dpowbig small,.dpowbtn small{color:#d8c8f0;font-size:12px}
+.dpowbig:hover{filter:brightness(1.2)}
+.dpowrow{display:flex;gap:10px}.dpowbtn{flex:1;padding:12px;background:rgba(40,20,70,.85);border:1px solid #7a5aa8}
+.dpowbtn.on{background:linear-gradient(135deg,#5a2aa8,#8a5ae0);border-color:#fff;box-shadow:0 0 18px #b080ff}
+.dpowbtn b{font-weight:400;font-size:15px}
+.dpowsub{color:#c8b0f0;font-size:13px;margin-top:4px}
+.dpowclone{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.dpowclone button{padding:10px 6px;background:rgba(30,14,54,.9);border:1px solid #6a4a98}
+.dpowclone button:hover{border-color:#e0c8ff;box-shadow:0 0 12px #8a50ff}
+.dpowclone i{font-style:normal;font-size:28px;color:#e0c8ff;text-shadow:0 0 10px #b080ff}.dpowclone b{font-weight:400;font-size:13px}.dpowclone small{color:#a898c0;font-size:11px}
+/* ══ ?급 — 빙빙 돌다 쾅! ══ */
+.ubl{position:fixed;inset:0;z-index:60;pointer-events:none;display:grid;place-items:center;perspective:900px}
+.ubl-tal{width:120px;height:210px;transform-style:preserve-3d;animation:ublSpin .72s cubic-bezier(.3,0,.5,1) forwards}
+.ubl-face{position:absolute;inset:0;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:linear-gradient(160deg,#2a0a4a,#7b4bd8 55%,#1a0630);border:3px solid #e0c8ff;color:#fff;box-shadow:0 0 30px #b080ff,0 0 80px rgba(160,100,255,.8),inset 0 0 20px rgba(255,255,255,.3)}
+.ubl-face em{font-style:normal;font-size:22px;color:#ffe7ff;letter-spacing:.1em}
+.ubl-face span{font-size:78px;line-height:1;text-shadow:0 0 18px #fff,0 0 40px #b080ff}
+.ubl-face small{font-size:12px;letter-spacing:.2em;color:#e8d8ff}
+@keyframes ublSpin{0%{transform:scale(.2) rotateY(0) rotateZ(-30deg);opacity:0}25%{opacity:1}100%{transform:scale(1.15) rotateY(1440deg) rotateZ(0)}}
+.ubl.go .ubl-tal{animation:ublDive .26s cubic-bezier(.6,0,.9,.6) forwards}
+@keyframes ublDive{from{transform:scale(1.15) rotateY(0)}to{transform:translate(var(--tx),var(--ty)) scale(.35) rotateY(360deg) rotateX(40deg);opacity:.9}}
+.ubl.boom .ubl-tal{opacity:0}
+.ubl-orbit{position:absolute;width:0;height:0;animation:ublOrb .98s linear forwards}
+.ubl-orbit b{position:absolute;left:-18px;top:-18px;width:36px;height:36px;display:grid;place-items:center;font-size:24px;color:#f0e0ff;text-shadow:0 0 10px #b080ff,0 0 20px #b080ff;
+  transform:rotate(calc(var(--i) * 60deg)) translateY(-170px) rotate(calc(var(--i) * -60deg))}
+@keyframes ublOrb{0%{transform:rotate(0) scale(.3);opacity:0}30%{opacity:1}85%{transform:rotate(720deg) scale(1);opacity:1}100%{transform:rotate(900deg) scale(.1);opacity:0}}
+.ubl-rings{position:absolute;width:0;height:0}
+.ubl-rings i{position:absolute;left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;border:3px solid rgba(200,160,255,.85);box-shadow:0 0 20px #b080ff;animation:ublRing .9s ease-in infinite}
+.ubl-rings i:nth-child(2){animation-delay:.3s}.ubl-rings i:nth-child(3){animation-delay:.6s}
+@keyframes ublRing{from{transform:scale(3.2);opacity:0}40%{opacity:.9}to{transform:scale(.2);opacity:0}}
+.ubl.boom .ubl-rings{display:none}
+.ubl-boom{position:absolute;transform:translate(var(--tx),var(--ty)) scale(0);font-size:clamp(70px,14vw,170px);font-weight:900;color:#fff;letter-spacing:.05em;opacity:0;
+  text-shadow:0 0 20px #d0a0ff,0 0 50px #8a50ff,0 6px 0 #5a2aa8,0 10px 20px #000;-webkit-text-stroke:3px #3a0a6a}
+.ubl.boom .ubl-boom{animation:ublBoom .9s cubic-bezier(.2,1.6,.3,1) forwards}
+@keyframes ublBoom{0%{transform:translate(var(--tx),var(--ty)) scale(3.4) rotate(-12deg);opacity:0}25%{transform:translate(var(--tx),var(--ty)) scale(.9) rotate(4deg);opacity:1}
+  45%{transform:translate(var(--tx),var(--ty)) scale(1.08) rotate(-3deg)}80%{opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}}
 /* ══ 3D 컷씬 ══ */
 .cut.c3{background:#000}
 .c3cv{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -3865,6 +3909,24 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 @keyframes evEyes{0%,40%,100%{opacity:0}48%,70%{opacity:.9}52%{opacity:0}56%{opacity:.9}}
 .evt-night .wash{inset:0;background:linear-gradient(rgba(120,10,30,.22),rgba(40,0,10,.45));mix-blend-mode:multiply}
 /* 박에 맞춘 이펙트 */
+/* 은은하게 숨 쉬는 배경 (제2막부터) — 겹마다 다른 빠르기 */
+#bg .bgl{transform-origin:50% 100%;will-change:transform}
+#bg .bgl-skyc{animation:bglSky 26s ease-in-out infinite alternate}
+#bg .bgl-glow{animation:bglGlow 9s ease-in-out infinite alternate;transform-origin:50% 25%}
+#bg .bgl-art{animation:bglArt 44s ease-in-out infinite alternate}
+#bg .bgl-far{animation:bglSway 40s ease-in-out infinite alternate;--sx:5px;--sy:-2px}
+#bg .bgl-mid{animation:bglSway 31s ease-in-out -8s infinite alternate;--sx:-8px;--sy:-3px}
+#bg .bgl-near{animation:bglSway 23s ease-in-out -4s infinite alternate;--sx:11px;--sy:-2px}
+#bg .bgl-motes{animation:bglMote 17s ease-in-out infinite alternate}
+#bg .bgl-motes.m2{animation:bglMote2 11s ease-in-out -3s infinite alternate}
+#bg .bgl-floor{will-change:auto}
+@keyframes bglSky{from{filter:brightness(1)}to{filter:brightness(1.05) saturate(1.06)}}
+@keyframes bglGlow{from{opacity:.8;transform:scale(1)}to{opacity:1;transform:scale(1.08)}}
+@keyframes bglArt{from{transform:translate(-10px,0) scale(1.03)}to{transform:translate(10px,-4px) scale(1.03)}}
+@keyframes bglSway{from{transform:translate(0,0) scale(1.03)}to{transform:translate(var(--sx),var(--sy)) scale(1.035)}}
+@keyframes bglMote{from{transform:translate(0,6px);opacity:.55}to{transform:translate(14px,-22px);opacity:1}}
+@keyframes bglMote2{0%{transform:translate(0,0);opacity:0}50%{opacity:1}100%{transform:translate(-12px,-30px);opacity:.2}}
+@media (prefers-reduced-motion:reduce){#bg .bgl,#bg .bgl-skyc{animation:none!important}}
 #bg .beatglow{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .38s ease-out;
   background:radial-gradient(ellipse at 50% 35%,rgba(var(--bc),.28),rgba(var(--bc),0) 65%)}
 #bg .beatglow.small{opacity:.45;transition:none}
@@ -7033,6 +7095,7 @@ function ccost(c) {
 }
 /* 실제로 치르는 값 — 무념무상 같은 효과를 반영한다 */
 function ecost(c) {
+  if (G.b && devInfOn() && cdef(c).rar === 'unknown') return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
   const k = ccost(c);
   if (!G.b || k <= 0) return k;
   if (G.b.freeTurn) return 0;
@@ -10144,6 +10207,80 @@ async function _startPlayerTurn(b) {
     setTimeout(() => startTour(), 760);
 }
 
+/* ?급 부적 — 한가운데서 빙빙 돌며 기운을 모으다가 대상에게 내리꽂혀 쾅! */
+function unknownBlast(card, target) {
+  return new Promise(done => {
+    const d = CARDS[card.id];
+    const n = el('div', 'ubl');
+    n.innerHTML = `<div class="ubl-rings"><i></i><i></i><i></i></div><div class="ubl-orbit">${'?無極玄虛靈'.split('').map((g, i) => `<b style="--i:${i}">${g}</b>`).join('')}</div>
+      <div class="ubl-tal"><div class="ubl-face"><em>?</em><span>${d.g}</span><small>${d.n}</small></div></div><div class="ubl-boom">쾅!</div>`;
+    ($('#app') || document.body).appendChild(n);
+    try { SND.charge(); SND.blip(220, { dur: .9, type: 'sawtooth', vol: .05, to: 1760 }); } catch (e) {}
+    const tg = target && target.el ? target.el.getBoundingClientRect() : null;
+    const tx = tg ? tg.left + tg.width / 2 - innerWidth / 2 : 0, ty = tg ? tg.top + tg.height / 2 - innerHeight / 2 : -innerHeight * .12;
+    n.style.setProperty('--tx', tx + 'px'); n.style.setProperty('--ty', ty + 'px');
+    setTimeout(() => n.classList.add('go'), 720);                 /* 내리꽂힌다 */
+    setTimeout(() => {                                            /* 쾅! */
+      n.classList.add('boom');
+      try { SND.thunder(); SND.crit(); SND.gong(); screenFlash('rgba(200,150,255,.7)', 520); shake(true); } catch (e) {}
+      try { const x = innerWidth / 2 + tx, y = innerHeight / 2 + ty; FX.burst(x, y, 60, '190,140,255', 9, 60, 6); FX.burst(x, y, 40, '255,240,200', 6, 50, 4); } catch (e) {}
+      done();
+    }, 980);
+    setTimeout(() => n.remove(), 1900);
+  });
+}
+/* ══════════════════════════════════════════════════════════
+   개발자의 권력(權) — 백야 한 사람의 것 (남에게 뿌리지 않는다)
+   ──────────────────────────────────────────────────────────
+   관리자 창 「개발자의 권력」 탭. 이 기계에서 관리자 코드를 적은 백야에게만 듣는다.
+     · 덱을 모두 ?급으로 — 지금 모험의 덱을 ?급 부적(강화)으로 가득 채운다. 원래 덱은 적어 두었다가 돌려놓는다
+     · ?급 무한 — ?급은 값이 0, 내도 버려지거나 소멸하지 않고 손으로 돌아온다
+     · ?급 복제 — 고른 ?급을 한 장 더 (싸우는 중이면 손에도 바로)
+   ══════════════════════════════════════════════════════════ */
+const devInfOn = () => adminOn() && !!META.devInf;
+const UNKNOWN_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'unknown');
+function devPowerDeck() {
+  const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
+  if (!run._devOld) run._devOld = run.deck.map(c => ({ id: c.id, up: c.up, fg: c.fg || 0 }));
+  const ids = UNKNOWN_IDS(), n = Math.max(15, run.deck.length);
+  run.deck = Array.from({ length: n }, (_, i) => mkCard(ids[i % ids.length], true));
+  if (run.plan) run.plan = [];
+  saveRun(); renderTop();
+  try { SND.unlock(); SND.gong(); screenFlash('rgba(190,140,255,.6)', 800); stampWord('權 力', '#b080ff'); } catch (e) {}
+  toast(`백야의 권력 — 덱 ${n}장이 모두 ?급이 되었다`);
+}
+function devPowerUndo() {
+  const run = G.run; if (!run || !run._devOld) { toast('돌려놓을 덱이 없다'); return; }
+  run.deck = run._devOld.map(o => Object.assign(mkCard(o.id, o.up), o.fg ? { fg: o.fg } : {}));
+  delete run._devOld; saveRun(); renderTop(); toast('원래 덱으로 돌아왔다');
+}
+function devClone(id) {
+  const run = G.run; if (!run) { toast('모험 중에만'); return; }
+  const c = mkCard(id, true);
+  run.deck.push(c);
+  if (G.b && !G.b.over) { const cc = Object.assign({}, c, { bonus: 0 }); if (G.b.hand.length < 10) G.b.hand.push(cc); else G.b.drawPile.push(cc); syncAll(); }
+  saveRun(); renderTop();
+  try { SND.unlock(); FX.burst(innerWidth / 2, innerHeight / 2, 30, '190,140,255', 6, 50, 4); } catch (e) {}
+  toast(`${CARDS[id].n} — 복제했다${G.b ? ' (손에도)' : ''}`);
+}
+function drawPower(grid) {
+  const run = G.run, inf = devInfOn();
+  const ids = UNKNOWN_IDS();
+  grid.innerHTML = `<div class="dpow">
+    <div class="dpowhead"><i>權</i><div><b>개발자의 권력</b><small>백야 한 사람의 힘 — 퍼뜨리지 않는다. 이 기계, 이 모험에만.</small></div></div>
+    <button class="dpowbig" id="dp_deck"><b>덱을 모두 ?급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → ?급 ${Math.max(15, run.deck.length)}장 (모두 강화)` : '모험 중에만'}</small></button>
+    <div class="dpowrow">
+      <button class="dpowbtn${inf ? ' on' : ''}" id="dp_inf"><b>∞ ?급 무한</b><small>${inf ? '켜짐 — 값 0 · 내도 손으로 돌아온다' : '꺼짐'}</small></button>
+      <button class="dpowbtn" id="dp_undo"><b>원래 덱으로</b><small>${run && run._devOld ? `적어 둔 덱 ${run._devOld.length}장` : '적어 둔 덱 없음'}</small></button>
+    </div>
+    <div class="dpowsub">?급 복제 — 누르면 한 장 더 (싸우는 중이면 손에도)</div>
+    <div class="dpowclone">${ids.map(id => `<button data-id="${id}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
+  </div>`;
+  grid.querySelector('#dp_deck').onclick = () => { devPowerDeck(); drawPower(grid); };
+  grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
+  grid.querySelector('#dp_inf').onclick = () => { META.devInf = !META.devInf; saveMeta(); try { SND.unlock(); } catch (e) {} if (G.b) syncAll(); toast(META.devInf ? '?급 무한 — 켜짐' : '?급 무한 — 꺼짐'); drawPower(grid); };
+  grid.querySelectorAll('.dpowclone button').forEach(b => b.onclick = () => { devClone(b.dataset.id); drawPower(grid); });
+}
 /* --- 카드 사용 --- */
 async function playCard(card, target) {
   const b = G.b, p = P();
@@ -10172,6 +10309,7 @@ async function playCard(card, target) {
   b.curCard = card;
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
+  if (d.rar === 'unknown') await unknownBlast(card, target);   /* ?급 — 부적이 빙빙 돌다 쾅! */
   if (d.rar === 'ssx' || d.rar === 'unknown') {
     blink(1.3); zoomPunch(); rgbSplit();
     sparkles(innerWidth / 2, innerHeight * .5, 22, tint(GRADE[d.rar].c), 220);
@@ -10200,7 +10338,8 @@ async function playCard(card, target) {
     chainBig(b.played);                      /* 셋째 장부터 큰 글씨로 */
     fire('cardPlay', card);
     if (!b.over) {
-      if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
+      if (devInfOn() && d.rar === 'unknown' && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
+      else if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
     } else {
       b.discardPile.push(card);
     }
@@ -12036,6 +12175,8 @@ function syncHand() {
     const cost = ecost(c);
     const playable = cost !== -2 && (cost === -1 ? b.energy >= 1 : b.energy >= cost);
     node.classList.toggle('unplayable', !playable);
+    const cb = node.querySelector('.cost');       /* 개발자의 권력 — ?급 값 0 을 부적에도 보인다 */
+    if (cb && cdef(c).rar === 'unknown') { const inf = devInfOn(); cb.classList.toggle('free', inf || cost === 0); if (inf) cb.textContent = '0'; else if (cb.textContent === '0' && ccost(c) > 0) cb.textContent = ccost(c); }
     node.onmouseenter = () => {
       if (!b.sel) node.style.transform = `translate(${x}px,${y - 46}px) rotate(0deg) scale(1.1)`;
       showPreview(c);
@@ -20697,7 +20838,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 17;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 18;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21316,7 +21457,7 @@ function giftCheck() {
   if (META.gotGifts[g.id]) return;
   /* 게스트가 뿌린 것은 남에게 주는 것 — 뿌린 이 자신은 받지 않는다 */
   if (g.by && guestOn() && g.by === guestGet().name) { META.gotGifts[g.id] = 1; saveMeta(); return; }
-  const real = cards0.filter(id => CARDS[id]);
+  const real = cards0.filter(id => CARDS[id] && !(g.by && (CARDS[id].rar === 'unknown' || CARDS[id].hackOnly || CARDS[id].mpOnly)));   /* 게스트 선물의 ?급은 받지 않는다 */
   if (!real.length && !cur.gold && !cur.dia && !cur.jp) { META.gotGifts[g.id] = 1; saveMeta(); return; }
   if ($('#giftm')) return;              /* 이미 떠 있다 — 물을 때마다 겹쳐 쌓이던 것 */
   try { SND.bell(); } catch (e) {}
@@ -22754,13 +22895,13 @@ function drawSched(grid, send) {
 /* ── 부적 고르개 — 쉼표로 id 를 적던 칸을 눌러서 고르는 것으로 ──────
    이름으로 찾고, 등급으로 거르고, 부적을 눌러 담고 뺀다(여덟 장까지).
    고른 것은 원래 칸(input)에 id 로 적어 두므로 선물·보상·예약이 그대로 쓴다. */
-function cardPicker(input, max) {
+function cardPicker(input, max, deny) {
   max = max || 8;
   input.style.display = 'none';
   const ids = () => input.value.split(',').map(x => x.trim()).filter(id => CARDS[id]);
   const put = list => { input.value = list.join(', '); input.dispatchEvent(new Event('input')); draw(); };
   const plain = h => String(h || '').replace(/<[^>]+>/g, '');
-  const all = Object.keys(CARDS).filter(id => CARDS[id].rar !== 'curse' && GRADE[CARDS[id].rar])
+  const all = Object.keys(CARDS).filter(id => CARDS[id].rar !== 'curse' && GRADE[CARDS[id].rar] && !(deny && deny(id)))
     .sort((a, b) => GRADE_ORDER.indexOf(CARDS[a].rar) - GRADE_ORDER.indexOf(CARDS[b].rar) || CARDS[a].n.localeCompare(CARDS[b].n, 'ko'));
   const box = el('div', 'cpick');
   box.innerHTML = `<div class="cpsel"></div>
@@ -22977,9 +23118,11 @@ function drawGuestBox(box, me) {
   $b('#gs_chaos').onclick = () => cast({ chaos: true }, '혼돈');
   const gc = $b('#gs_cards');
   if (gc) {
-    cardPicker(gc, 3);
+    /* 게스트는 ?급을 뿌리지 못한다 — 고르는 목록에도 없다 */
+    const guestDeny = id => CARDS[id].rar === 'unknown' || CARDS[id].hackOnly || CARDS[id].mpOnly;
+    cardPicker(gc, 3, guestDeny);
     $b('#gs_gift').onclick = () => {
-      const cards = gc.value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 3);
+      const cards = gc.value.split(',').map(x => x.trim()).filter(id => CARDS[id] && !guestDeny(id)).slice(0, 3);
       if (!cards.length) { say('뿌릴 부적을 고르시오', false); SND.err(); return; }
       cast({ gift: { cards, say: $b('#gs_gsay').value.trim() } }, `부적 ${cards.length}장`);
     };
@@ -23911,6 +24054,7 @@ function showAdmin() {
           <button class="adtab" data-t="relic">유물</button>
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
+          <button class="adtab power" data-t="power">權 개발자의 권력</button>
           ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
@@ -23926,6 +24070,7 @@ function showAdmin() {
     grid.innerHTML = '';
     if (tab === 'cast') { find.style.display = 'none'; drawCast(grid); return; }
     if (tab === 'guest') { find.style.display = 'none'; drawGuests(grid); return; }
+    if (tab === 'power') { find.style.display = 'none'; drawPower(grid); return; }
     find.style.display = '';
     const add = (g, n, sub, col, fn) => {
       const t = el('div', 'trtile adtile',
@@ -25509,6 +25654,7 @@ function setBg(act) {
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
                 25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
   const A = bgAtmos(a, PAL);
+  if (a !== 1) { $('#bg').innerHTML = bgLayers(a, A, SKY); return; }
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      ${A.defs}
@@ -25530,6 +25676,22 @@ function setBg(act) {
      ${A.motes}
      ${A.floor}
    </svg>`;
+}
+/* 은은하게 숨 쉬는 배경 — 제2막부터.
+   한 장이던 그림을 겹(하늘·먼 산·가운데 산·앞산·티끌)으로 나눠
+   겹마다 다른 빠르기로 아주 조금 흔들린다. 겹 하나하나가 통째로
+   움직이므로(transform·opacity 만) 그림을 새로 그리지 않는다 — 폰도 가볍다.
+   제1막은 여전히 한 장 그대로다. */
+function bgLayers(a, A, SKY) {
+  const L = (cls, inner) => `<svg class="bgl ${cls}" viewBox="0 0 1000 600" preserveAspectRatio="none">${inner}</svg>`;
+  return `<div class="sky bgl-skyc"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>` +
+    L('bgl-glow', A.defs + A.glow) +
+    L('bgl-art', bgSkyArt(a)) +
+    L('bgl-far', `${A.ridge}<g opacity="${A.op('far')}"><path fill="${A.g('far')}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/></g>${bgFarArt(a)}`) +
+    L('bgl-mid', `<g opacity="${A.op('mid')}"><path fill="${A.g('mid')}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600 Z"/></g>${bgMidArt(a)}`) +
+    L('bgl-near', `<g opacity="${A.op('near')}"><path fill="${A.g('near')}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/></g>${bgNearArt(a)}`) +
+    L('bgl-motes', A.motes) + L('bgl-motes m2', A.motes2 || '') +
+    L('bgl-floor', A.floor);
 }
 /* ══════════════════════════════════════════════════════════
    배경의 공기(氣) — 어느 막에나 같은 방식으로 깔린다
@@ -25585,6 +25747,11 @@ function bgAtmos(a, PAL) {
     const r = (i % 4) * .5 + .7;
     motes += `<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${gc}" opacity="${(.1 + (i % 5) * .05).toFixed(2)}"/>`;
   }
+  let motes2 = '';                                /* 한 벌 더 — 엇박으로 깜빡이며 떠오른다 */
+  for (let i = 0; i < 14; i++) {
+    const x = (i * 311 + a * 71) % 1000, y = 160 + (i * 137 + a * 29) % 360;
+    motes2 += `<circle cx="${x}" cy="${y}" r="${((i % 3) * .5 + .9).toFixed(1)}" fill="${gc}" opacity="${(.12 + (i % 4) * .05).toFixed(2)}"/>`;
+  }
   return {
     defs: `<defs>
       <radialGradient id="gl${a}"><stop offset="0" stop-color="${gc}" stop-opacity="${go}"/>
@@ -25606,7 +25773,7 @@ function bgAtmos(a, PAL) {
         <stop offset="100%" stop-color="${near}" stop-opacity=".55"/></linearGradient>
     </defs>`,
     glow: `<ellipse cx="${gx}" cy="${gy}" rx="420" ry="300" fill="url(#gl${a})"/>`,
-    ridge, motes: `<g>${motes}</g>`, g: grad,
+    ridge, motes: `<g>${motes}</g>`, motes2: `<g>${motes2}</g>`, g: grad,
     op: k => ({ far: '.62', mid: '.68', near: '.82' }[k]),
     floor: `<rect x="0" y="470" width="1000" height="130" fill="url(#fl${a})"/>`
   };
