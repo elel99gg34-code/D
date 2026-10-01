@@ -2149,8 +2149,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .adrow .val{padding:5px 10px;border-radius:6px;font-size:12px;white-space:nowrap;
   background:rgba(79,224,176,.16);border:1px solid rgba(79,224,176,.4);color:#8affd0;cursor:pointer}
 .adrow .val:hover{background:rgba(79,224,176,.34);color:#eafff6}
-.adtabs{display:flex;gap:8px;margin-bottom:4px}
-.adtab{padding:6px 14px;border-radius:7px;font-size:12.5px;
+.adtabs{display:flex;flex-wrap:wrap;gap:6px 8px;margin-bottom:4px}
+.adtab{padding:6px 14px;white-space:nowrap;flex:0 0 auto;border-radius:7px;font-size:12.5px;
   background:rgba(8,20,16,.6);border:1px solid rgba(79,224,176,.24);color:#a8ccc0;cursor:pointer}
 .adtab.on{background:rgba(79,224,176,.22);border-color:#4fe0b0;color:#eafff6}
 .adfind{width:100%;padding:7px 11px;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:6px;
@@ -3362,11 +3362,31 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .ubl-rings i:nth-child(2){animation-delay:.3s}.ubl-rings i:nth-child(3){animation-delay:.6s}
 @keyframes ublRing{from{transform:scale(3.2);opacity:0}40%{opacity:.9}to{transform:scale(.2);opacity:0}}
 .ubl.boom .ubl-rings{display:none}
-.ubl-boom{position:absolute;transform:translate(var(--tx),var(--ty)) scale(0);font-size:clamp(70px,14vw,170px);font-weight:900;color:#fff;letter-spacing:.05em;opacity:0;
-  text-shadow:0 0 20px #d0a0ff,0 0 50px #8a50ff,0 6px 0 #5a2aa8,0 10px 20px #000;-webkit-text-stroke:3px #3a0a6a}
-.ubl.boom .ubl-boom{animation:ublBoom .9s cubic-bezier(.2,1.6,.3,1) forwards}
-@keyframes ublBoom{0%{transform:translate(var(--tx),var(--ty)) scale(3.4) rotate(-12deg);opacity:0}25%{transform:translate(var(--tx),var(--ty)) scale(.9) rotate(4deg);opacity:1}
-  45%{transform:translate(var(--tx),var(--ty)) scale(1.08) rotate(-3deg)}80%{opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}}
+.ubl-boom{position:absolute;width:0;height:0;transform:translate(var(--tx),var(--ty))}
+.ubl-boom>*{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+/* 쾅 — 눈부신 핵 · 빛살 · 충격파 두 겹 · 흩어지는 파편 · 연기 */
+.ubl-boom .bcore{width:380px;height:380px;margin:-190px 0 0 -190px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0%,#fff 16%,#f4e0ff 24%,#b070ff 40%,rgba(110,30,230,.75) 55%,rgba(60,10,140,.35) 66%,rgba(40,0,100,0) 75%)}
+.ubl.boom .bcore{animation:bCore 1s cubic-bezier(.1,.9,.3,1) forwards}
+@keyframes bCore{0%{transform:scale(.1);opacity:1}15%{transform:scale(1.15);opacity:1}45%{transform:scale(1.3);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+.ubl-boom .brays{width:720px;height:720px;margin:-360px 0 0 -360px;border-radius:50%;
+  background:repeating-conic-gradient(from 7deg,rgba(150,80,255,.95) 0 2deg,rgba(255,245,255,.95) 2deg 4deg,rgba(190,130,255,0) 4deg 20deg);
+  -webkit-mask:radial-gradient(circle,#000 8%,rgba(0,0,0,.8) 35%,transparent 70%);mask:radial-gradient(circle,#000 8%,rgba(0,0,0,.8) 35%,transparent 70%)}
+.ubl.boom .brays{animation:bRays .85s ease-out forwards}
+@keyframes bRays{0%{transform:scale(.2) rotate(0);opacity:1}100%{transform:scale(1.5) rotate(40deg);opacity:0}}
+.ubl-boom .bwave{width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:12px solid rgba(240,220,255,.98);
+  box-shadow:0 0 0 3px rgba(70,20,150,.7),0 0 34px #9a60ff,inset 0 0 0 3px rgba(70,20,150,.7),inset 0 0 30px #b080ff}
+.ubl.boom .bwave{animation:bWave 1s cubic-bezier(.15,.8,.3,1) forwards}
+.ubl.boom .bwave.w2{animation-delay:.12s;border-width:5px;border-color:rgba(160,110,255,.9)}
+@keyframes bWave{0%{transform:scale(.1);opacity:1}100%{transform:scale(3.6);opacity:0;border-width:1px}}
+.ubl-boom .bshard{width:14px;height:48px;margin:-24px 0 0 -7px;border-radius:2px 2px 8px 8px;
+  background:linear-gradient(#fff,#c8a0ff 35%,#4a10b0);box-shadow:0 0 0 2px rgba(50,10,110,.6),0 0 14px #9a60ff}
+.ubl.boom .bshard{animation:bShard 1s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes bShard{0%{transform:rotate(var(--a)) translateY(0) scale(1);opacity:1}100%{transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(.3);opacity:0}}
+.ubl-boom .bsmoke{width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;
+  background:radial-gradient(circle,rgba(40,10,70,.5) 20%,rgba(50,20,90,.7) 45%,rgba(30,10,50,0) 70%);filter:blur(8px)}
+.ubl.boom .bsmoke{animation:bSmoke 1.3s ease-out .05s forwards}
+@keyframes bSmoke{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(2.2);opacity:0}}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -4428,6 +4448,36 @@ body.nochrome .chatfab{display:none}
 .castlog.ok{color:#8affd0}
 .castlog.no{color:#ff9a9a}
 .adtab.cast{color:#8affd0;border-color:rgba(138,255,208,.4)}
+.adtab.memtab{color:#ffb0a0;border-color:rgba(255,120,110,.45)}
+/* 회원 · 밴 */
+.mem{display:flex;flex-direction:column;gap:10px;grid-column:1/-1;width:100%}
+.memban{display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid #7a2a2a;border-radius:10px;background:rgba(60,10,12,.35)}
+.memban>b{color:#ff9a8a;letter-spacing:.2em}
+.memban input,.memhead input{padding:8px 10px;border-radius:6px;border:1px solid #5a4a3a;background:rgba(10,8,6,.7);color:#f2e6cc;font-size:13px}
+.membtns{display:flex;gap:8px;flex-wrap:wrap}
+.memsay{font-size:12.5px;min-height:1em}
+.memhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#c9bc9c;font-size:12.5px}
+.memhead input{flex:1;min-width:140px}
+.memlist{display:flex;flex-direction:column;gap:5px;max-height:46vh;overflow:auto}
+.memrow{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:2px 10px;padding:7px 10px;border-radius:7px;
+  background:rgba(20,16,12,.55);border:1px solid #3a3226}
+.memrow.ban{border-color:#8a2a2a;background:rgba(70,12,14,.45)}
+.memrow .mwho{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.memrow .mwho b{color:#f2e6cc;font-size:13.5px}
+.memrow code{color:#8affd0;font-size:12px;user-select:all;word-break:break-all}
+.memrow .mmeta{grid-row:2;font-size:11px;color:#8a7f68}
+.memrow .mmeta em{color:#ff8a7a;font-style:normal}
+.memrow .mact{grid-row:1/3;grid-column:2;display:flex;gap:5px;align-items:center}
+.memrow .mact button{padding:5px 9px;border-radius:5px;border:1px solid #5a4a3a;background:rgba(40,32,24,.8);color:#e9dfc9;font-size:11.5px;cursor:pointer}
+.memrow .mact button:hover{border-color:#c9a86a}
+/* 이용 정지 — 화면 전체를 덮는다 */
+.banlock{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:radial-gradient(ellipse at center,#2a0608 0%,#080203 75%);
+  pointer-events:all;user-select:none}
+.banbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 26px;max-width:min(420px,90vw);text-align:center}
+.banbox i{font-style:normal;font-size:clamp(70px,16vmin,120px);color:#ff2a2a;text-shadow:0 0 30px rgba(255,0,0,.6);line-height:1}
+.banbox b{font-size:clamp(22px,4.5vmin,32px);color:#ffd8d0;letter-spacing:.3em}
+.banbox p{color:#e9c8c0;font-size:14px;line-height:1.6;margin:0}
+.banbox small{color:#7a5a58;font-size:11px;line-height:1.6;word-break:break-all}
 
 /* ── 개발자가 하는 말 — 위에서 내려와 셋 셈 뒤 사라진다 ───
    화면을 밀어내리지 않고 위에 겹쳐 뜬다. 밀었다가 셋 셈 뒤에
@@ -10238,13 +10288,14 @@ async function _startPlayerTurn(b) {
     setTimeout(() => startTour(), 760);
 }
 
-/* ?급 부적 — 한가운데서 빙빙 돌며 기운을 모으다가 대상에게 내리꽂혀 쾅! */
+/* ?급 부적 — 한가운데서 빙빙 돌며 기운을 모으다가 대상에게 내리꽂혀 쾅! (글자 없이 폭발로) */
 function unknownBlast(card, target) {
   return new Promise(done => {
     const d = CARDS[card.id];
     const n = el('div', 'ubl');
     n.innerHTML = `<div class="ubl-rings"><i></i><i></i><i></i></div><div class="ubl-orbit">${'?無極玄虛靈'.split('').map((g, i) => `<b style="--i:${i}">${g}</b>`).join('')}</div>
-      <div class="ubl-tal"><div class="ubl-face"><em>?</em><span>${d.g}</span><small>${d.n}</small></div></div><div class="ubl-boom">쾅!</div>`;
+      <div class="ubl-tal"><div class="ubl-face"><em>?</em><span>${d.g}</span><small>${d.n}</small></div></div><div class="ubl-boom"><div class="bsmoke"></div><div class="brays"></div><div class="bwave"></div><div class="bwave w2"></div>${
+      Array.from({ length: 14 }, (_, i) => `<div class="bshard" style="--a:${(i * 360 / 14 + Math.random() * 14).toFixed(0)}deg;--d:${(160 + Math.random() * 160).toFixed(0)}px"></div>`).join('')}<div class="bcore"></div></div>`;
     ($('#app') || document.body).appendChild(n);
     try { SND.charge(); SND.blip(220, { dur: .9, type: 'sawtooth', vol: .05, to: 1760 }); } catch (e) {}
     const tg = target && target.el ? target.el.getBoundingClientRect() : null;
@@ -10257,7 +10308,7 @@ function unknownBlast(card, target) {
       try { const x = innerWidth / 2 + tx, y = innerHeight / 2 + ty; FX.burst(x, y, 60, '190,140,255', 9, 60, 6); FX.burst(x, y, 40, '255,240,200', 6, 50, 4); } catch (e) {}
       done();
     }, 980);
-    setTimeout(() => n.remove(), 1900);
+    setTimeout(() => n.remove(), 2400);
   });
 }
 /* ══════════════════════════════════════════════════════════
@@ -20870,7 +20921,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 19;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 20;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -20960,13 +21011,15 @@ async function liveFetch() {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 6000);
     /* 누구(w)·어디(s)를 함께 적는다 — 관리자 창의 「지금 접속」이 이것으로 센다 */
-    const r = await fetch(LIVE_URL + '?t=' + Date.now() + '&w=' + encodeURIComponent(meId()) +
+    const r = await fetch(LIVE_URL + '?t=' + Date.now() + '&w=' + encodeURIComponent(meId()) + (ACCT.id ? '&u=' + encodeURIComponent(ACCT.id) : '') +
                           '&s=' + (G.b && G.b.kind === 'world' ? 'world' : G.b ? 'battle' : G.scene || 'title'),
                           { signal: c.signal, cache: 'no-store' });
     clearTimeout(t);
     if (!r.ok) return;
     const d = await r.json();
     if (!d || typeof d !== 'object') return;
+    if (d.banned) { banLock(d.why); return; }           /* 이 기기는 막혔다 */
+    if (_banned || banFlag()) banLift();                  /* 풀렸다 */
     const was = { n: LIVE.notice, e: LIVE.event, b: LIVE.boss && LIVE.boss.id, r: LIVE.rain && LIVE.rain.at };
     LIVE.notice = String(d.notice || '').slice(0, 300);
     LIVE.noticeAt = +d.noticeAt || 0;
@@ -21070,6 +21123,152 @@ function countRun(c) {
 }
 
 /* ══════════════════════════════════════════════════════════
+   이용 정지 — 백야가 이 기기(또는 이 아이디)를 막았다
+   ──────────────────────────────────────────────────────────
+   서버가 「banned」라 답하면 화면 전체를 덮고 아무것도 누를 수 없다.
+   막혔다는 것은 이 기계에 세 군데(localStorage · IndexedDB · 쿠키) 적어 두어
+   인터넷을 끄고 켜도 그대로다. 기기 번호도 IndexedDB 에 한 벌 더 두어
+   localStorage 만 지워서는 새 기기가 되지 않는다. 서버가 풀었다고 하면 걷힌다.
+   백야(퍼뜨리기 열쇠)는 막히지 않는다 — 스스로를 막아 풀 길을 잃지 않게.
+   ══════════════════════════════════════════════════════════ */
+const BAN_KEY = 'baekgwi_ban';
+let _banned = false;
+function banFlag() {
+  try { if (localStorage.getItem(BAN_KEY)) return true; } catch (e) {}
+  return /(?:^|;\s*)bgban=1/.test(document.cookie || '');
+}
+function idbKV(op, k, v) {
+  return new Promise(ok => {
+    try {
+      const rq = indexedDB.open('baekgwi', 1);
+      rq.onupgradeneeded = () => rq.result.createObjectStore('kv');
+      rq.onerror = () => ok(null);
+      rq.onsuccess = () => {
+        try {
+          const tx = rq.result.transaction('kv', op === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+          const q = op === 'get' ? st.get(k) : op === 'del' ? st.delete(k) : st.put(v, k);
+          q.onsuccess = () => ok(op === 'get' ? q.result : true); q.onerror = () => ok(null);
+        } catch (e) { ok(null); }
+      };
+    } catch (e) { ok(null); }
+  });
+}
+/* 켤 때 — 기기 번호를 되찾고, 막혔던 기기면 바로 덮는다 */
+async function banBoot() {
+  const keep = await idbKV('get', 'me');
+  try {
+    const cur = localStorage.getItem(MEID_KEY);
+    if (keep && (!cur || _meNew)) localStorage.setItem(MEID_KEY, keep);
+    else if (!keep && cur) idbKV('put', 'me', cur);
+  } catch (e) {}
+  if (banFlag() || await idbKV('get', 'ban')) banLock();
+}
+function banLock(why) {
+  if (caster()) return;
+  why = why || '이 기기는 이용이 정지되었습니다';
+  _banned = true;
+  try { localStorage.setItem(BAN_KEY, '1'); } catch (e) {}
+  try { document.cookie = 'bgban=1; max-age=31536000; path=/'; } catch (e) {}
+  idbKV('put', 'ban', 1);
+  try { SND.bgm(false); SND.ambience(false); } catch (e) {}
+  let n = $('#banlock');
+  if (!n) {
+    n = el('div', 'banlock'); n.id = 'banlock';
+    document.body.appendChild(n);
+    /* 아무 글쇠도 판에 닿지 않게 */
+    window.addEventListener('keydown', banKey, true);
+  }
+  n.innerHTML = `<div class="banbox"><i>禁</i><b>이용 정지</b><p>${wEsc(why)}</p>
+    <small>기기 번호 · ${wEsc(meId())}${ACCT.id ? '<br>아이디 · ' + wEsc(ACCT.id) : ''}</small></div>`;
+}
+function banKey(e) { if (_banned) { e.stopPropagation(); e.preventDefault(); } }
+function banLift() {
+  _banned = false;
+  try { localStorage.removeItem(BAN_KEY); } catch (e) {}
+  try { document.cookie = 'bgban=; max-age=0; path=/'; } catch (e) {}
+  idbKV('del', 'ban');
+  const n = $('#banlock'); if (n) n.remove();
+  window.removeEventListener('keydown', banKey, true);
+}
+
+/* ── 관리자 창 「회원」 — 목록을 보고, 아이디를 복사해 밴 칸에 붙여 넣는다 ── */
+async function adminAsk(path, body) {
+  try {
+    const r = await fetch(acctBase() + path, { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(Object.assign({ code: castKey() }, body || {})) });
+    const d = await r.json().catch(() => ({}));
+    return r.ok && d.ok ? d : { ok: false, why: d.why || ('서버가 ' + r.status) };
+  } catch (e) { return { ok: false, why: '서버에 닿지 못했다' }; }
+}
+function copyText(t) {
+  const done = () => { toast(`복사했다 — ${t}`); try { SND.unlock(); SND.blip(880, { dur: .08, vol: .04 }); } catch (e) {} };
+  try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(done, () => copyOld(t, done)); } catch (e) {}
+  copyOld(t, done);
+}
+function copyOld(t, done) {
+  const a = document.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;left:-999px;top:0';
+  document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('복사하지 못했다 — 길게 눌러 고르시오'); } a.remove();
+}
+function drawMembers(grid) {
+  const ago = t => { if (!t) return '—'; const m = Math.floor((Date.now() - t) / 60000);
+    return m < 1 ? '방금' : m < 60 ? m + '분 전' : m < 1440 ? Math.floor(m / 60) + '시간 전' : Math.floor(m / 1440) + '일 전'; };
+  grid.innerHTML = `<div class="mem">
+    <div class="memban">
+      <b>밴</b>
+      <input id="mb_id" placeholder="아이디를 붙여 넣으시오 (기기 번호도 된다)" maxlength="64" autocomplete="off">
+      <input id="mb_why" placeholder="사유 (보이는 말, 비워도 된다)" maxlength="80">
+      <div class="membtns"><button class="brush-btn" id="mb_ban" style="background:#7a1a20;color:#fff">밴 — 기기째 막기</button>
+        <button class="brush-btn ghost" id="mb_un" style="color:#cfe;border-color:#4a6a60">밴 풀기</button></div>
+      <div class="casthint">아이디로 밴하면 그 아이디가 로그인했던 <b>기기 모두</b>가 막힌다 — 새 아이디를 만들어도 그 기기로는 못 들어온다.
+        밴한 뒤 그 아이디로 다른 기기에서 들어오려 하면 그 기기도 막힌다.</div>
+      <div class="memsay" id="mb_say"></div>
+    </div>
+    <div class="memhead"><input id="mb_find" placeholder="아이디·닉네임으로 찾기"><button class="brush-btn ghost" id="mb_re" style="color:#e9dfc9;border-color:#8a7f68">새로 받기</button><span id="mb_n"></span></div>
+    <div class="memlist" id="mb_list"><div class="casthint">불러오는 중…</div></div>
+    <div class="memhead"><b>막힌 아이디</b></div>
+    <div class="memlist" id="mb_bans"></div>
+  </div>`;
+  const $q = s => grid.querySelector(s), say = (t, ok) => { const e = $q('#mb_say'); e.textContent = t; e.style.color = ok ? '#8affd0' : '#ff9a8a'; };
+  const load = async () => {
+    const d = await adminAsk('/admin/users', { find: $q('#mb_find').value.trim() });
+    const L = $q('#mb_list');
+    if (!d.ok) { L.innerHTML = `<div class="casthint">못 불렀다: ${wEsc(d.why)}</div>`; return; }
+    $q('#mb_n').textContent = `회원 ${d.total}명${d.rows.length < d.total ? ` · 보이는 것 ${d.rows.length}` : ''}`;
+    L.innerHTML = d.rows.length ? d.rows.map(r => `<div class="memrow${r.ban ? ' ban' : ''}">
+        <div class="mwho"><b>${wEsc(r.nick || '(닉네임 없음)')}</b><code>${wEsc(r.id)}</code></div>
+        <div class="mmeta">가입 ${r.made ? new Date(r.made).toLocaleDateString() : '—'} · 최근 ${ago(r.last)} · 기기 ${r.devs}${r.ban ? ' · <em>밴</em>' : ''}</div>
+        <div class="mact"><button data-copy="${wEsc(r.id)}">복사</button><button data-put="${wEsc(r.id)}">밴 칸에</button></div>
+      </div>`).join('') : '<div class="casthint">없다</div>';
+    $q('#mb_bans').innerHTML = d.bans.length || d.loose.length
+      ? d.bans.map(b => `<div class="memrow ban"><div class="mwho"><code>${wEsc(b.id)}</code></div>
+          <div class="mmeta">${new Date(b.at).toLocaleString()} · 기기 ${b.devs}${b.why ? ' · ' + wEsc(b.why) : ''}</div>
+          <div class="mact"><button data-un="${wEsc(b.id)}">풀기</button></div></div>`).join('') +
+        d.loose.map(b => `<div class="memrow ban"><div class="mwho"><code>기기 ${wEsc(b.dev)}</code></div>
+          <div class="mmeta">${new Date(b.at).toLocaleString()}</div><div class="mact"><button data-un="${wEsc(b.dev)}">풀기</button></div></div>`).join('')
+      : '<div class="casthint">막힌 아이디가 없다</div>';
+    grid.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy));
+    grid.querySelectorAll('[data-put]').forEach(b => b.onclick = () => { $q('#mb_id').value = b.dataset.put; $q('#mb_id').focus(); });
+    grid.querySelectorAll('[data-un]').forEach(b => b.onclick = () => act(b.dataset.un, true));
+  };
+  const act = async (id, un) => {
+    id = (id || '').trim();
+    if (!id) { say('아이디를 붙여 넣으시오', false); return; }
+    if (!un && !confirm(`「${id}」 을(를) 밴할까? 그 아이디가 쓴 기기가 모두 막힌다.`)) return;
+    say('보내는 중…', true);
+    const d = await adminAsk('/admin/ban', { id, why: un ? '' : $q('#mb_why').value.trim(), un });
+    if (!d.ok) { say('못 했다: ' + d.why, false); return; }
+    say(un ? `「${id}」 밴을 풀었다` : `「${id}」 밴 — ${d.kind === 'acct' ? `기기 ${d.devs}대도 함께 막았다` : '기기 하나를 막았다'}`, true);
+    try { SND.unlock(); un ? SND.blip(660, { dur: .1, vol: .05 }) : SND.gong(); } catch (e) {}
+    load();
+  };
+  $q('#mb_ban').onclick = () => act($q('#mb_id').value, false);
+  $q('#mb_un').onclick = () => act($q('#mb_id').value, true);
+  $q('#mb_re').onclick = load;
+  let ft = null; $q('#mb_find').oninput = () => { clearTimeout(ft); ft = setTimeout(load, 350); };
+  load();
+}
+
+/* ══════════════════════════════════════════════════════════
    계정 — 걸어 두고, 다른 기계에서 찾아 온다
    ──────────────────────────────────────────────────────────
    게임은 늘 제 기계에 먼저 저장한다. 계정은 그것을 옮겨 주는
@@ -21099,10 +21298,11 @@ async function acctAsk(path, body, ms) {
     const r = await fetch(acctBase() + path, {
       method: body ? 'POST' : 'GET', signal: c.signal,
       headers: body ? { 'content-type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : undefined
+      body: body ? JSON.stringify(Object.assign({ dev: meId() }, body)) : undefined
     });
     clearTimeout(t);
     const d = await r.json().catch(() => ({}));
+    if (d && d.banned) { banLock(d.why); return { ok: false, banned: true, why: d.why || '이용이 정지되었습니다' }; }
     if (!r.ok || !d.ok) return { ok: false, why: d.why || ('서버가 ' + r.status) };
     return d;
   } catch (e) {
@@ -21604,12 +21804,12 @@ function giftCheck() {
    막아 두므로 혼자서는 끝내지 못한다.
    ══════════════════════════════════════════════════════════ */
 const MEID_KEY = 'baekgwi_me';
-let _meTmp = '';
+let _meTmp = '', _meNew = false;
 function meId() {
   try {
     let v = localStorage.getItem(MEID_KEY);
     if (!v) { v = Math.random().toString(36).slice(2) + Date.now().toString(36);
-              localStorage.setItem(MEID_KEY, v); }
+              localStorage.setItem(MEID_KEY, v); _meNew = true; }
     return v;
   } catch (e) {
     /* 적어 둘 곳이 없는 기계 — 켜 있는 동안만 쓰는 이름. 모두가 한 이름을
@@ -24168,7 +24368,7 @@ function showAdmin() {
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
           <button class="adtab power" data-t="power">權 개발자의 권력</button>
-          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button>' : ''}
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -24184,6 +24384,7 @@ function showAdmin() {
     if (tab === 'cast') { find.style.display = 'none'; drawCast(grid); return; }
     if (tab === 'guest') { find.style.display = 'none'; drawGuests(grid); return; }
     if (tab === 'power') { find.style.display = 'none'; drawPower(grid); return; }
+    if (tab === 'mem') { find.style.display = 'none'; drawMembers(grid); return; }
     find.style.display = '';
     const add = (g, n, sub, col, fn) => {
       const t = el('div', 'trtile adtile',
@@ -26713,6 +26914,7 @@ function boot() {
   FX.init();
   creemReturn();                             /* 값을 치르고 돌아왔는가 */
   showTitle();                               /* 판을 먼저 띄운다 */
+  banBoot().catch(() => {});                 /* 막힌 기기면 바로 덮는다 */
   syncAuto();
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */

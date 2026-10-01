@@ -240,6 +240,67 @@ async function tokWho(tok) {
 
 
 /* ══════════════════════════════════════════════════════════
+   밴 · 회원 관리 — 백야만
+   ──────────────────────────────────────────────────────────
+   앱마다 제 기계의 표(meId — 「기기 번호」)를 지닌다. 로그인·저장 때
+   그 번호를 아이디와 함께 적어 두었다가(ud:<아이디>), 백야가 아이디를
+   밴하면 그 아이디가 쓰던 기기를 모두 함께 막는다. 막힌 기기는
+   소식(/live)부터 「이용 정지」만 받고, 로그인·가입·저장·채팅이 모두 막힌다.
+   밴한 뒤에 그 아이디로 다른 기기에서 들어오려 하면 그 기기도 막는다.
+     bans        { acct: {아이디: {at, why}}, dev: {기기: {at, id}} }
+     ud:<아이디>  그 아이디가 쓴 기기들 (최근 20)
+     um:<아이디>  { made, last } — 회원 목록에 보이는 때
+   ══════════════════════════════════════════════════════════ */
+let bans = null;
+async function banLoad() {
+  if (!bans) { bans = (await get('bans')) || {}; bans.acct = bans.acct || {}; bans.dev = bans.dev || {}; }
+  return bans;
+}
+async function banKeep() { await put('bans', bans); }
+const DEV_RE = /^[\w-]{4,64}$/;
+const BAN_SAY = '이 기기는 이용이 정지되었습니다';
+async function banWhy(id, d) {
+  const b = await banLoad();
+  if (id && b.acct[id]) return b.acct[id].why || BAN_SAY;
+  if (d && b.dev[d]) return (b.dev[d].id && b.acct[b.dev[d].id] && b.acct[b.dev[d].id].why) || BAN_SAY;
+  return '';
+}
+const udMem = new Map();
+async function devsOf(id) {
+  let s = udMem.get(id);
+  if (!s) { s = new Set((await get('ud:' + id)) || []); if (udMem.size > 20000) udMem.clear(); udMem.set(id, s); }
+  return s;
+}
+/* 이 아이디가 이 기기에서 들어왔다 — 이미 밴된 아이디면 이 기기도 막는다 */
+async function devLink(id, d) {
+  if (!id || !DEV_RE.test(d || '')) return;
+  const s = await devsOf(id);
+  if (!s.has(d)) { s.add(d); const arr = [...s].slice(-20); udMem.set(id, new Set(arr)); await put('ud:' + id, arr); }
+  const b = await banLoad();
+  if (b.acct[id] && !b.dev[d]) { b.dev[d] = { at: Date.now(), id }; await banKeep(); }
+}
+const umTouched = new Map();
+async function umTouch(id, made) {
+  const now = Date.now();
+  if (!made && now - (umTouched.get(id) || 0) < 10 * 60 * 1000) return;   /* 열 분에 한 번만 적는다 */
+  umTouched.set(id, now); if (umTouched.size > 50000) umTouched.clear();
+  const m = (await get('um:' + id)) || {};
+  if (made) m.made = made;
+  m.last = now;
+  await put('um:' + id, m);
+}
+/* 모든 아이디 — 장부가 어디 있든 */
+async function soulIds() {
+  const ids = new Set(), made = {};
+  const p = await db();
+  if (p) for (const r of (await p.query('select id, made from souls')).rows) { ids.add(r.id); made[r.id] = +r.made; }
+  const c = await store();
+  if (c) { for await (const k of c.scanIterator({ MATCH: 'u:*', COUNT: 500 })) for (const kk of (Array.isArray(k) ? k : [k])) ids.add(kk.slice(2)); }
+  else for (const k of mem.keys()) if (k.startsWith('u:')) ids.add(k.slice(2));
+  return { ids: [...ids], made };
+}
+
+/* ══════════════════════════════════════════════════════════
    뒷받침(백업) — 무료 서버가 지워져도 장부는 살아남게
    ──────────────────────────────────────────────────────────
    Key Value(무료)는 디스크에 적지 않는다 — 다시 서면 비어 버린다.
@@ -267,13 +328,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk):|^mptop$/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um):|^(mptop|bans)$/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -931,6 +992,9 @@ const server = http.createServer(async (req, res) => {
     await store();
     const now = Date.now();
     seenMark(url.searchParams.get('w'), url.searchParams.get('s'), now);
+    /* 막힌 기기·아이디 — 소식 대신 「이용 정지」만 */
+    const banned = await banWhy(str(url.searchParams.get('u'), 20), url.searchParams.get('w'));
+    if (banned) return send(res, 200, { banned: true, why: banned, now });
     await chatLoad(); chatPrune(now); await pollLoad();
     await runSchedule(now);
     if (expire(now)) await keep();
@@ -1018,6 +1082,54 @@ const server = http.createServer(async (req, res) => {
     if (kstDay(now) !== seenDay) { seenDay = kstDay(now); seenToday = new Set(); }
     return send(res, 200, { ok: true, n: c.n, by: c.by, peak: seenPeak, peakAt: seenPeakAt,
                             today: seenToday.size, since: bootAt, now });
+  }
+
+  /* ── 회원 목록 · 밴 — 백야만 (퍼뜨리기 열쇠) ── */
+  if ((url.pathname === '/admin/users' || url.pathname === '/admin/ban') && req.method === 'POST') {
+    if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+    await store();
+    const b = await banLoad(), now = Date.now();
+    if (url.pathname === '/admin/users') {
+      const { ids, made } = await soulIds();
+      const find = str(q.find, 20).trim().toLowerCase();
+      const rows = [];
+      for (const id of ids) {
+        const nick = await nickOf(id);
+        if (find && !id.toLowerCase().includes(find) && !String(nick).toLowerCase().includes(find)) continue;
+        const m = (await get('um:' + id)) || {};
+        rows.push({ id, nick, made: m.made || made[id] || 0, last: m.last || 0, devs: (await devsOf(id)).size, ban: !!b.acct[id] });
+        if (rows.length >= 1000) break;
+      }
+      rows.sort((x, y) => (y.last || y.made) - (x.last || x.made));
+      const banList = Object.entries(b.acct).map(([id, v]) => ({ id, at: v.at, why: v.why || '', devs: Object.values(b.dev).filter(x => x.id === id).length }));
+      const loose = Object.entries(b.dev).filter(([, v]) => !v.id).map(([d, v]) => ({ dev: d, at: v.at }));
+      return send(res, 200, { ok: true, total: ids.length, rows, bans: banList, loose, now });
+    }
+    /* 밴 · 풀기 — 붙여넣은 것이 아이디면 그 아이디와 그것이 쓴 기기 모두, 아니면 기기 번호 하나 */
+    const key = str(q.id, 64).trim(), un = !!q.un;
+    if (!key) return send(res, 400, { ok: false, why: '아이디를 붙여 넣으시오' });
+    const isAcct = !!(await soulGet(key)) || !!b.acct[key];
+    if (isAcct) {
+      const devs = [...(await devsOf(key))];
+      if (un) {
+        delete b.acct[key];
+        for (const [d, v] of Object.entries(b.dev)) if (v.id === key) delete b.dev[d];
+      } else {
+        b.acct[key] = { at: now, why: str(q.why, 80) };
+        for (const d of devs) b.dev[d] = { at: now, id: key };
+      }
+      await banKeep();
+      console.log(un ? '밴을 풀었다:' : '밴했다:', key, '· 기기', devs.length);
+      return send(res, 200, { ok: true, kind: 'acct', id: key, devs: devs.length, un });
+    }
+    if (!DEV_RE.test(key)) return send(res, 404, { ok: false, why: '그런 아이디(기기 번호)가 없다' });
+    if (un) delete b.dev[key]; else b.dev[key] = { at: now, id: '' };
+    await banKeep();
+    return send(res, 200, { ok: true, kind: 'dev', id: key, devs: 1, un });
   }
 
   if (url.pathname === '/cast' && req.method === 'POST') {
@@ -1141,6 +1253,7 @@ const server = http.createServer(async (req, res) => {
     /* 말하기 — 로그인한 사람만. 이름은 서버가 표로 알아본다 */
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 말할 수 있다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
     if (chat.mute[id] && chat.mute[id] > now) return send(res, 403, { ok: false, why: `관리자가 입을 막았다 — ${Math.ceil((chat.mute[id] - now) / 60000)}분 뒤에` });
     if (now - (chatLast.get(id) || 0) < CHAT_GAP || tooMany(ip)) return send(res, 429, { ok: false, why: '너무 빠르다 — 잠시 뒤에' });
     const t = chatClean(q.text);
@@ -1609,6 +1722,18 @@ const server = http.createServer(async (req, res) => {
     let q;
     try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
 
+    /* 막힌 기기 · 막힌 아이디는 들어오지도, 걸지도 못한다 */
+    {
+      const dv = DEV_RE.test(q.dev || '') ? q.dev : '';
+      const who = url.pathname === '/auth/login' || url.pathname === '/auth/signup' ? '' : await tokWho(q.token);
+      const bw = await banWhy(who || (url.pathname === '/auth/login' ? str(q.id, 20).trim() : ''), dv);
+      if (bw) {
+        if (url.pathname === '/auth/login' && dv) { const lid = str(q.id, 20).trim(); if ((await banLoad()).acct[lid]) await devLink(lid, dv); }
+        return send(res, 403, { ok: false, banned: true, why: bw });
+      }
+      if (who && dv) { await devLink(who, dv); await umTouch(who); }
+    }
+
     /* 걸어 둔 것을 찾아 온다 (POST) */
     if (url.pathname === '/pull') {
       const id = await tokWho(q.token);
@@ -1632,6 +1757,7 @@ const server = http.createServer(async (req, res) => {
       const hash = await scrypt(pw, salt);
       await soulPut({ id, salt, hash, made: Date.now(), save: null, saved: 0 });
       await nickSet(id, nick, dev);
+      await umTouch(id, Date.now()); if (q.dev) await devLink(id, q.dev);
       const tok = await tokMake(id);
       console.log('이름을 걸었다:', id);
       return send(res, 200, { ok: true, id, nick, token: tok, save: null, at: 0 });
@@ -1664,6 +1790,8 @@ const server = http.createServer(async (req, res) => {
       const hash = await scrypt(pw, salt);
       if (!s || !same(hash, s.hash)) { loginMiss(lk, now); return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' }); }
       loginFail.delete(lk);
+      if (q.dev) await devLink(id, q.dev);
+      await umTouch(id);
       const tok = await tokMake(id);
       return send(res, 200, { ok: true, id, nick: await nickOf(id), token: tok,
         save: s.save ? JSON.parse(s.save) : null, at: +s.saved || 0 });
