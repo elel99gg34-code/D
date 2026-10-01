@@ -3427,6 +3427,13 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .dpowsub.qx{color:#ffd23a}
 .dpowclone.qx button{border-color:#c8a020;background:linear-gradient(160deg,rgba(60,40,0,.85),rgba(20,14,4,.9))}
 .dpowclone.qx button i{color:#ffd23a;text-shadow:0 0 10px #ffb000}
+.unit .nm.mpnm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;letter-spacing:.02em;
+  padding:3px 10px;border-radius:14px;background:rgba(16,11,8,.78);border:1px solid rgba(232,200,106,.45);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.unit .nm.mpnm b{font-weight:700;color:#fff3d8;font-size:14px;text-shadow:0 1px 3px #000}
+.unit .nm.mpnm .mprk{font-style:normal;font-size:11px;padding:1px 7px;border-radius:9px;background:rgba(30,22,14,.78);color:#ffd98a;letter-spacing:.06em}
+.mpdeckbtn{font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #8a6a3a;background:rgba(255,248,230,.85);color:#3a2a14;cursor:pointer}
+.mpdeckbtn:hover{background:#ffe7b0}
+.mpal-h .mpdeckbtn{margin-left:6px}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -20841,7 +20848,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 21;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 22;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -23710,7 +23717,7 @@ function mpAutoDeck() {
 /* 인게임 멀티 — 따로 짜는 덱은 없다. 지금 오르는 모험의 덱·강화·유물·물약·비기·기·최대 체력을 그대로 들고 나선다.
    싸움은 모험의 복사본으로 치르니, 이기든 지든 물약을 쓰든 모험에는 아무것도 남지 않는다. */
 const mpHome = () => (MP.saved && MP.saved.run) || (G.run && !G.run._pvp ? G.run : null);
-function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id) : mpAutoDeck(); }
+function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id + (c.up ? '+' : '')) : mpAutoDeck(); }
 const mpHpOf = () => { const r = mpHome(); return r ? r.maxHp : 90; };
 const mpLvOf = () => { const r = mpHome(); return r ? (r.act || 1) : 1; };
 /* ── 묻는 박자 — 로비·줄·방·판에 있는 동안만 ────────────── */
@@ -23817,7 +23824,7 @@ function mpPaintLobby() {
     const k = mpTierOf(pr.rp), t = MP_TIER_INFO[k];
     const pct = t.next ? Math.round((pr.rp - t.min) / (t.next - t.min) * 100) : 100;
     me.innerHTML = `${mpEmblem(pr.rp, 'big')}
-      <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.id)}</span>
+      <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.nick || ACCT.nick || pr.id)}</span>
         <div class="mprp"><i style="width:${pct}%;background:${t.c}"></i></div>
         <small>${pr.rp} 점${t.next ? ` · 다음 랭크까지 ${t.next - pr.rp}` : ' · 꼭대기'} · 랭크 ${pr.w}승 ${pr.l}패${pr.streak > 1 ? ` · <b style="color:#ff9a5a">${pr.streak}연승</b>` : ''} · 친선 ${pr.fw}승 ${pr.fl}패</small></div>
       <div class="mptok"><i>幣</i><b>${pr.tok}</b><small>멀티 토큰</small></div>`;
@@ -24000,7 +24007,8 @@ function mpBegin(mv) {
     return id;
   });
   startBattle(ids, 'pvp');
-  G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; });
+  G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; mpNameTag(e.el, foes[i]); });
+  if (P() && P().el) mpNameTag(P().el, me, true);
   G.b.mpMine = false; G.b.busy = true;
   /* 두 번째로 두는 쪽은 첫 차례에 한 장 더 */
   if (mv.order[0] !== mv.me) G.b.drawMod = (G.b.drawMod || 0) + 1;
@@ -24144,12 +24152,30 @@ function mpHudPaint() {
 }
 setInterval(() => { try { if (MP.match) mpHudPaint(); } catch (e) {} }, 500);
 /* 2대2 — 한 편의 모습 */
+/* 이름표 — 닉네임 · 랭크(문장과 등급) · 덱 보기 */
+function mpNameTag(u, pl, mine) {
+  const nm = u && u.querySelector('.nm'); if (!nm || !pl) return;
+  nm.classList.add('mpnm');
+  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}<b>${wEsc(pl.name || '?')}</b><em class="mprk">${mpTierName(pl.rp || 0)}</em>` +
+    (mine ? '' : `<button class="mpdeckbtn" title="상대의 덱">덱 ${Array.isArray(pl.deck) ? pl.deck.length : ''}</button>`);
+  const db = nm.querySelector('.mpdeckbtn');
+  if (db) db.onclick = ev => { ev.stopPropagation(); mpShowDeck(pl); };
+}
+/* 상대의 덱 — 무엇을 들고 왔는지 (강화한 것은 +) */
+function mpShowDeck(pl) {
+  try { SND.ui(); } catch (e) {}
+  if (!Array.isArray(pl.deck) || !pl.deck.length) { toast('상대의 덱을 받아 오지 못했다'); return; }
+  const cards = pl.deck.map(x => { const up = /\+$/.test(x), id = x.replace(/\+$/, ''); return CARDS[id] ? mkCard(id, up) : null; }).filter(Boolean);
+  cards.sort((a, b) => GRADE_ORDER.indexOf(CARDS[b.id].rar) - GRADE_ORDER.indexOf(CARDS[a.id].rar) || CARDS[a.id].n.localeCompare(CARDS[b.id].n, 'ko'));
+  showCardList(cards, `${wEsc(pl.name || '상대')} <small style="color:#c9a86a">${mpTierName(pl.rp || 0)}</small>의 덱 · ${cards.length}장`);
+}
 function mpAllyPanel(ally) {
   let a = $('#mpally'); if (a) a.remove();
   a = el('div', 'mpally'); a.id = 'mpally'; a.dataset.acct = ally.acct;
-  a.innerHTML = `<div class="mpal-h">${mpEmblem(ally.rp, 'sm')}<b>${wEsc(ally.name)}</b><em>한 편</em></div>
+  a.innerHTML = `<div class="mpal-h">${mpEmblem(ally.rp, 'sm')}<b>${wEsc(ally.name)}</b><em>${mpTierName(ally.rp || 0)} · 한 편</em>${Array.isArray(ally.deck) ? '<button class="mpdeckbtn">덱</button>' : ''}</div>
     <div class="mpal-bar"><i></i><span></span></div><div class="mpal-s"></div>`;
   ($('#battle') || document.body).appendChild(a);
+  const adb = a.querySelector('.mpdeckbtn'); if (adb) adb.onclick = () => mpShowDeck(ally);
   if (MP.lastUnits && MP.lastUnits[ally.acct]) mpAllyPaint(ally.acct, MP.lastUnits[ally.acct]);
 }
 function mpAllyPaint(acct, u) {
@@ -24225,6 +24251,7 @@ function mpBotStart() {
   f.hp = bh; ENEMIES.mp_bot.hp = [bh, bh];
   document.body.classList.add('pvp');
   startBattle(['mp_bot'], 'mpbot');
+  if (P() && P().el) mpNameTag(P().el, { name: ACCT.nick || ACCT.id || '퇴마사', rp: MP.prof ? MP.prof.rp || 0 : 0 }, true);
   mpStartLoop(); songSync();
   setTimeout(() => { const n = el('div', 'aroundbig', '그림자 퇴마사'); $('#app').appendChild(n); setTimeout(() => n.remove(), 1600); SND.gong(); }, 260);
 }

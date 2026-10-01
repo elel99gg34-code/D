@@ -172,13 +172,6 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .topbtn.forge:hover{background:rgba(190,100,36,.5)}
 .topbtn.colo{color:#ffd6d6;background:rgba(150,40,40,.24);border-color:#c85050}
 .topbtn.colo:hover{background:rgba(180,55,55,.48)}
-.topbtn.illub{color:#e6d4ff;background:rgba(110,70,180,.26);border-color:#b98cff}
-.topbtn.illub:hover{background:rgba(130,85,210,.5)}
-.topbtn.illub.ready{animation:flameGlow 1.8s ease-in-out infinite;
-  box-shadow:0 0 0 2px rgba(185,140,255,.3),0 0 18px rgba(185,140,255,.55)}
-.topbtn.illub.ready em{background:#b98cff;color:#1c0f2e}
-.topbtn.illub.locked{opacity:.4;border-style:dashed}
-.topbtn.illub.spent{opacity:.5}
 .topbtn.box:hover{background:rgba(47,127,153,.5)}
 /* 응급 회복 — 체력이 바닥나면 나타난다 */
 .topbtn.heal{color:#dcffef;background:rgba(30,120,90,.34);border-color:#4fd3a0;
@@ -2309,53 +2302,6 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .placetile.hot{border-color:#ff8aa4;box-shadow:0 0 18px rgba(220,60,100,.28)}
 .placetile.lock{opacity:.45}
 
-/* ══ 환상(幻想) ══════════════════════════════════════════
-   무한(無限) 부적을 두들기는 자리. 상자가 쏟아진다. */
-.illu{position:fixed;inset:0;z-index:90;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 40%,#2a1c3e 0%,#150e22 45%,#07050c 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;user-select:none}
-.illu:before{content:'';position:absolute;inset:-40%;pointer-events:none;
-  background:conic-gradient(from 0deg,transparent 0 6%,rgba(190,140,255,.08) 7%,transparent 8% 14%,
-    rgba(120,210,255,.07) 15%,transparent 16%);animation:skSpin 26s linear infinite}
-/* 쏟아지는 상자들 */
-.illurain{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.illurain i{position:absolute;top:-60px;display:grid;place-items:center;
-  width:34px;height:34px;border-radius:5px;font-style:normal;font-size:19px;
-  background:linear-gradient(150deg,#4a3a1e,#241a0c);border:1.5px solid rgba(226,189,99,.6);
-  color:#ffdf9a;animation:illuFall linear infinite;opacity:.75}
-@keyframes illuFall{0%{transform:translateY(-60px) rotate(0)}
-  100%{transform:translateY(112vh) rotate(320deg)}}
-/* 가운데 무한 부적 */
-.illucard{position:relative;z-index:3;width:190px;height:266px;border-radius:10px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  background:linear-gradient(155deg,#f6efdd,#e0d2b0 58%,#cbb992);
-  border:2.5px solid #b98cff;box-shadow:0 0 34px rgba(150,90,255,.6),0 12px 30px rgba(0,0,0,.6);
-  transition:transform .06s}
-.illucard:active{transform:scale(.94)}
-.illucard.hit{animation:illuHit .13s}
-@keyframes illuHit{0%{transform:scale(1)}40%{transform:scale(1.07) rotate(-1.5deg)}100%{transform:scale(1)}}
-.illucard .ig{font-size:74px;color:#3a1c6b;line-height:1;text-shadow:0 0 22px rgba(150,90,255,.7)}
-.illucard .in{font-size:15px;letter-spacing:.3em;color:#4a3a20;margin-left:.3em}
-.illucard .ih{font-size:11.5px;color:#7a6a4a;letter-spacing:.1em}
-/* 튀어오르는 전리품 */
-.illupop{position:absolute;z-index:6;pointer-events:none;font-size:17px;white-space:nowrap;
-  text-shadow:0 2px 8px rgba(0,0,0,.9);animation:illuPop .85s ease-out forwards}
-@keyframes illuPop{0%{transform:translate(-50%,0) scale(.7);opacity:0}
-  18%{opacity:1;transform:translate(-50%,-14px) scale(1.12)}
-  100%{transform:translate(-50%,-92px) scale(1);opacity:0}}
-/* 남은 시간 */
-.illubar{position:relative;z-index:3;width:min(460px,72vw);height:9px;border-radius:5px;
-  background:rgba(255,255,255,.12);overflow:hidden}
-.illubar i{position:absolute;inset:0;border-radius:5px;transform-origin:left;
-  background:linear-gradient(90deg,#b98cff,#7fd4f0)}
-.illutop{position:relative;z-index:3;text-align:center;color:#e9dfc9;letter-spacing:.2em;font-size:15px}
-.illutop b{color:#d8b4ff;font-weight:400}
-.illutally{position:relative;z-index:3;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
-  color:#c9bda2;font-size:13px;letter-spacing:.06em}
-.illutally span b{color:#ffd76a;font-weight:400;margin-left:4px}
-.illuskip{position:absolute;top:20px;right:24px;z-index:6;padding:8px 16px;border-radius:5px;font-size:13px;
-  color:#c9bda2;background:rgba(255,255,255,.07);border:1px solid rgba(200,180,140,.3)}
-
 /* ══ 대전투장 ════════════════════════════════════════════ */
 .arena{position:absolute;inset:0;display:flex;flex-direction:column;
   background:linear-gradient(165deg,#1a0f10 0%,#2a1418 45%,#120a0c 100%)}
@@ -3466,6 +3412,28 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
   opacity:0;animation:sfWisp 1.4s ease-out .1s forwards}
 @keyframes sfWisp{0%{transform:translateY(0) scaleY(.5);opacity:0}25%{opacity:1}100%{transform:translateY(-160px) scaleY(1.6);opacity:0}}
 .soulfx.big .sink{width:240px;height:240px;margin:-120px 0 0 -120px}.soulfx.big em{font-size:64px}
+/* ══ ?X급 — 실험 등급: 금과 먹, 도는 금빛 테 ══ */
+.card.g-qx .face{border:2px solid #1a1208;background:linear-gradient(155deg,#fffbe6,#f7e3a0 48%,#e2b84a);
+  box-shadow:inset 0 0 0 2px #e8b820,inset 0 0 22px rgba(255,210,60,.55)}
+.card.g-qx .grade{color:#1a1208;font-weight:700;text-shadow:0 0 8px #ffd23a}
+.card.g-qx .art .g{color:#1a1208;text-shadow:0 0 10px #ffd23a,0 0 22px rgba(255,190,40,.8)}
+.card.g-qx .cname{color:#3a2600;font-weight:700}
+.card.g-qx::before{content:'';position:absolute;inset:-9px;border-radius:13px;z-index:0;
+  background:conic-gradient(from 0deg,#ffd23a,#1a1208,#fff6c0,#b07a00,#1a1208,#ffd23a);filter:blur(7px);opacity:.9;
+  animation:qxSpin 2.6s linear infinite}
+@keyframes qxSpin{to{transform:rotate(360deg)}}
+.card.g-qx .cfx{--sc:#ffe066}
+.ubl.x{filter:hue-rotate(140deg) saturate(1.5) brightness(1.1)}
+.dpowsub.qx{color:#ffd23a}
+.dpowclone.qx button{border-color:#c8a020;background:linear-gradient(160deg,rgba(60,40,0,.85),rgba(20,14,4,.9))}
+.dpowclone.qx button i{color:#ffd23a;text-shadow:0 0 10px #ffb000}
+.unit .nm.mpnm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;letter-spacing:.02em;
+  padding:3px 10px;border-radius:14px;background:rgba(16,11,8,.78);border:1px solid rgba(232,200,106,.45);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.unit .nm.mpnm b{font-weight:700;color:#fff3d8;font-size:14px;text-shadow:0 1px 3px #000}
+.unit .nm.mpnm .mprk{font-style:normal;font-size:11px;padding:1px 7px;border-radius:9px;background:rgba(30,22,14,.78);color:#ffd98a;letter-spacing:.06em}
+.mpdeckbtn{font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #8a6a3a;background:rgba(255,248,230,.85);color:#3a2a14;cursor:pointer}
+.mpdeckbtn:hover{background:#ffe7b0}
+.mpal-h .mpdeckbtn{margin-left:6px}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -6301,7 +6269,7 @@ function adoptRun(obj) {
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
   if (kind === 'enemies' && /^(mp[f_]|hk_)/.test(id)) return false;
-  if (kind === 'cards' && CARDS[id] && CARDS[id].hackOnly) return false;  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
+  if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly)) return false;  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
   if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
   return false;
 }
@@ -7499,7 +7467,7 @@ function ccost(c) {
 }
 /* 실제로 치르는 값 — 무념무상 같은 효과를 반영한다 */
 function ecost(c) {
-  if (G.b && devInfOn() && cdef(c).rar === 'unknown') return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
+  if (G.b && devInfOn() && (cdef(c).rar === 'unknown' || cdef(c).rar === 'qx')) return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
   const k = ccost(c);
   if (!G.b || k <= 0) return k;
   if (G.b.freeTurn) return 0;
@@ -7517,6 +7485,7 @@ const GRADE = {
   ssc:      { n: 'SSC급', s: 'SSC', c: '#1fb6c9', desc: 'S급을 넘어선 청람빛 부적. SSX에는 못 미치나, 그 아래는 전부 아래다.' },
   ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.05% 확률로만 모습을 드러낸다.' },
+  qx:       { n: '?X급',  s: '?X', c: '#e8b820', desc: '실험 중인 등급. 아직 세상에 없다 — 개발자만 쥘 수 있다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
 const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'zero', 'special', 'ssc', 'ssx', 'unknown'];
@@ -7524,7 +7493,7 @@ const RARITY_NAME = {};
 for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
 const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
   : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown'
-  : rar === 'zero' ? ' g-zero' : '';
+  : rar === 'zero' ? ' g-zero' : rar === 'qx' ? ' g-qx' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* ── 새 부적 (판 7) — 3등급부터 S급까지, 비어 있던 자리를 메운다 ── */
 defCard({ id: 'palmstrike', n: '쌍장타', g: '拍', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
@@ -7598,6 +7567,24 @@ defCard({ id: 'hk_kernel', n: '커널 패닉', g: '崩', type: 'skill', rar: 'un
 defCard({ id: 'hk_error', n: '오류', g: '誤', type: 'curse', rar: 'curse', cost: -2, hackOnly: true,
   v: () => ({}), txt: () => `박사가 심은 오류. 사용할 수 없다. 싸움이 끝나면 사라진다.`, play: () => {} });
 
+/* ── ?X급 — 실험 등급. 개발자의 권력 탭에서만 얻는다 (도감·보상·상자·상점·선물·맛보기 어디에도 없다) ── */
+defCard({ id: 'qx_void', n: '태허', g: '虛', type: 'attack', rar: 'qx', cost: 3, tgt: 'all', devOnly: true,
+  v: u => ({ p: u ? 70 : 60, s: u ? 4 : 3 }), costOf: u => u ? 2 : 3,
+  txt: v => `모든 적이 <b>남은 체력의 ${v.p}%</b>를 잃는다(방어 무시). <b>힘</b> ${v.s}을 얻는다.`,
+  play: c => { skillBanner('太 虛', true); for (const e of alive()) pure(e, Math.max(1, Math.floor(e.hp * c.v.p / 100))); st(P(), 'str', c.v.s); } });
+defCard({ id: 'qx_genesis', n: '천지창조', g: '創', type: 'skill', rar: 'qx', cost: 1, exhaust: true, devOnly: true,
+  v: u => ({ n: u ? 3 : 2 }), costOf: u => u ? 0 : 1,
+  txt: v => `기를 가득 채우고 <b>?급</b> 부적 ${v.n}장을 손에 만든다(강화 · 이번 싸움만). 소멸.`,
+  play: c => { const b = G.b; b.energy = Math.max(b.energy, (G.run && G.run.maxEnergy) || 3); energy(0);
+    const ids = UNKNOWN_IDS().filter(id => !CARDS[id].hackOnly);
+    for (let i = 0; i < c.v.n && b.hand.length < 10; i++) b.hand.push(Object.assign(mkCard(pick(ids), true), { temp: true }));
+    syncAll(); } });
+defCard({ id: 'qx_omega', n: '종언', g: '終', type: 'attack', rar: 'qx', cost: 4, tgt: 'enemy', exhaust: true, devOnly: true,
+  v: u => ({ h: u ? 5 : 10 }), costOf: u => u ? 3 : 4,
+  txt: v => `대상을 <b>즉시 처치</b>한다(크고 강한 것은 남은 체력의 절반). 체력을 ${v.h} 잃는다. 소멸.`,
+  play: c => { const t = c.t; if (!t) return; skillBanner('終 焉', true);
+    pure(t, t.def && t.def.big ? Math.ceil(t.hp / 2) : t.hp + (t.block || 0)); pure(P(), c.v.h); } });
+
 /* ── 멀티 교환소 부적 — 토큰으로만 얻는다 (보상·상자·상점에는 나오지 않는다) ── */
 defCard({ id: 'mp_duel', n: '결투의 맹세', g: '誓', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy', mpOnly: true,
   v: u => ({ d: u ? 14 : 10, x: u ? 10 : 8 }),
@@ -7621,7 +7608,7 @@ const SPECIAL_CARDS = [];                    /* 상자에서 나오는 것 전�
 const GRADE_POOL = { zero: [], special: [], ssc: [], ssx: [], unknown: [] };
 for (const k in CARDS) {
   const c = CARDS[k];
-  if (c.mpOnly || c.hackOnly) continue;      /* 해킹 부적은 해킹 상자에서만 */                    /* 멀티 교환소에서만 — 보상·상자·상점에는 나오지 않는다 */
+  if (c.mpOnly || c.hackOnly || c.devOnly) continue;      /* 해킹 부적은 해킹 상자에서만 */                    /* 멀티 교환소에서만 — 보상·상자·상점에는 나오지 않는다 */
   if (POOL[c.rar]) POOL[c.rar].push(k);
   else if (GRADE_POOL[c.rar]) { GRADE_POOL[c.rar].push(k);
     if (c.rar !== 'unknown' && c.rar !== 'zero') SPECIAL_CARDS.push(k); }
@@ -10612,10 +10599,10 @@ async function _startPlayerTurn(b) {
 }
 
 /* ?급 부적 — 한가운데서 빙빙 돌며 기운을 모으다가 대상에게 내리꽂혀 쾅! (글자 없이 폭발로) */
-function unknownBlast(card, target) {
+function unknownBlast(card, target, qx) {
   return new Promise(done => {
     const d = CARDS[card.id];
-    const n = el('div', 'ubl');
+    const n = el('div', 'ubl' + (qx ? ' x' : ''));
     n.innerHTML = `<div class="ubl-rings"><i></i><i></i><i></i></div><div class="ubl-orbit">${'?無極玄虛靈'.split('').map((g, i) => `<b style="--i:${i}">${g}</b>`).join('')}</div>
       <div class="ubl-tal"><div class="ubl-face"><em>?</em><span>${d.g}</span><small>${d.n}</small></div></div><div class="ubl-boom"><div class="bsmoke"></div><div class="brays"></div><div class="bwave"></div><div class="bwave w2"></div>${
       Array.from({ length: 14 }, (_, i) => `<div class="bshard" style="--a:${(i * 360 / 14 + Math.random() * 14).toFixed(0)}deg;--d:${(160 + Math.random() * 160).toFixed(0)}px"></div>`).join('')}<div class="bcore"></div></div>`;
@@ -10644,6 +10631,7 @@ function unknownBlast(card, target) {
    ══════════════════════════════════════════════════════════ */
 const devInfOn = () => adminOn() && !!META.devInf;
 const UNKNOWN_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'unknown');
+const QX_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'qx');
 function devPowerDeck() {
   const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
   if (!run._devOld) run._devOld = run.deck.map(c => ({ id: c.id, up: c.up, fg: c.fg || 0 }));
@@ -10680,6 +10668,8 @@ function drawPower(grid) {
     </div>
     <div class="dpowsub">?급 복제 — 누르면 한 장 더 (싸우는 중이면 손에도)</div>
     <div class="dpowclone">${ids.map(id => `<button data-id="${id}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
+    <div class="dpowsub qx">?X급 — 실험 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
+    <div class="dpowclone qx">${QX_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
   grid.querySelector('#dp_deck').onclick = () => { devPowerDeck(); drawPower(grid); };
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
@@ -10714,8 +10704,8 @@ async function playCard(card, target) {
   b.curCard = card;
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
-  if (d.rar === 'unknown') await unknownBlast(card, target);   /* ?급 — 부적이 빙빙 돌다 쾅! */
-  if (d.rar === 'ssx' || d.rar === 'unknown') {
+  if (d.rar === 'unknown' || d.rar === 'qx') await unknownBlast(card, target, d.rar === 'qx');   /* ?급 — 부적이 빙빙 돌다 쾅! */
+  if (d.rar === 'ssx' || d.rar === 'unknown' || d.rar === 'qx') {
     blink(1.3); zoomPunch(); rgbSplit();
     sparkles(innerWidth / 2, innerHeight * .5, 22, tint(GRADE[d.rar].c), 220);
     lightBeam(innerWidth / 2, FX_TINT ? rgba(shade(FX_TINT, .3), .55)
@@ -10743,7 +10733,7 @@ async function playCard(card, target) {
     chainBig(b.played);                      /* 셋째 장부터 큰 글씨로 */
     fire('cardPlay', card);
     if (!b.over) {
-      if (devInfOn() && d.rar === 'unknown' && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
+      if (devInfOn() && (d.rar === 'unknown' || d.rar === 'qx') && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
       else if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
     } else {
       b.discardPile.push(card);
@@ -11574,7 +11564,6 @@ function renderTop() {
       <button class="topbtn place" id="placebtn" title="터 — 갈 만한 자리"><b>場</b><i>터</i><em></em></button>
       <button class="topbtn forge" id="forgetop" title="대장간 — 부적을 두들겨 힘을 올린다"><b>冶</b><i>대장간</i><em></em></button>
       <button class="topbtn mpgo" id="mptopbtn" title="대전 — 다른 퇴마사와 겨룬다"><b>對</b><i>대전</i><em></em></button>
-      <button class="topbtn illub" id="illutop" title="환상 — 무한 부적을 두들긴다"><b>幻</b><i>환상</i><em></em></button>
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
       <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를"><b>神</b><i>신전</i><em></em></button>
       <button class="topbtn box" id="boxbtn" title="부적 뽑기"><b>匣</b><i>뽑기</i><em></em></button>
@@ -11635,15 +11624,8 @@ function renderTop() {
     t.querySelector('#mptopbtn').onclick = () => { if (G.b) return; SND.ui(); showMulti(); };
     bindTip(t.querySelector('#mptopbtn'), () => `<b style="color:#c8a8ff">대전</b> — 지금 모험 그대로 다른 퇴마사와 겨룬다<br>
       1대1 · 2대2 랭크 매치, 방 코드로 친구와 팀전<br><span style="color:#9a8d74">모험에는 아무것도 남지 않는다 · 이기면 멀티 토큰</span>`);
-    t.querySelector('#illutop').onclick = () => { markUsed('illu'); showIllusion(); };
     bindTip(t.querySelector('#forgetop'), () => `<b>대장간</b> — 부적을 두들겨 힘을 올린다<br>
       <span style="color:#9a8d74">최대 ${FORGE_MAX}단 · 실패하면 단이 내려갈 수 있다</span>`);
-    bindTip(t.querySelector('#illutop'), () => illuOk()
-      ? `<b style="color:#d8b4ff">환상</b> — 무한 부적을 ${ILLU_TIME / 1000}판 두들긴다<br>
-         두들길 때마다 골드·다이아·상자가 떨어진다<br>
-         <span style="color:#9a8d74">${illuLeft() ? '이 막에서 아직 안 다녀왔다' : '이 막에서는 이미 다녀왔다 — 다음 막에 또'}</span>`
-      : `<b>환상</b> — 아직 잠겨 있다<br>
-         <span style="color:#9a8d74">제${ILLU_ACT}막을 넘어서면 열린다 (지금 제${META.cleared || 0}막까지)</span>`);
     const ab2 = t.querySelector('#adminbtn'); if (ab2) ab2.onclick = () => { SND.ui(); showAdmin(); };
     const gb2 = t.querySelector('#guestbtn'); if (gb2) gb2.onclick = () => { SND.ui(); showGuest(); };
     bindTip(t.querySelector('#trainbtn'), () => `<b>수행터</b> — 져도 남는 길<br>
@@ -11690,22 +11672,13 @@ function renderTop() {
   pb2.querySelector('em').textContent = marks || '';
   pb2.classList.toggle('busy', !!G.b);
   pb2.classList.toggle('ready', marks > 0);
-  /* 꺼내 온 셋 — 싸우는 중에는 못 가고, 환상은 막마다 한 번 */
+  /* 꺼내 온 것 — 싸우는 중에는 못 간다 */
   const ft2 = t.querySelector('#forgetop');
   if (ft2) { ft2.classList.toggle('busy', !!G.b); ft2.classList.toggle('fresh', !usedPlace('forge')); }
   const ct2 = t.querySelector('#colotop');
   if (ct2) { ct2.classList.toggle('busy', !!G.b); ct2.classList.toggle('fresh', !usedPlace('colo')); }
   const mt2 = t.querySelector('#mptopbtn');
   if (mt2) { mt2.classList.toggle('busy', !!G.b); mt2.classList.toggle('live', !!(MP.queue || MP.room)); }
-  const it2 = t.querySelector('#illutop');
-  if (it2) {
-    const on = illuOk() && illuLeft() && !G.b;
-    it2.classList.toggle('busy', !!G.b);
-    it2.classList.toggle('locked', !illuOk());
-    it2.classList.toggle('ready', on);
-    it2.classList.toggle('spent', illuOk() && !illuLeft());
-    it2.querySelector('em').textContent = on ? '!' : '';
-  }
   const bb = t.querySelector('#boxbtn'), cur = (run.summons || 0) % 100;
   const next = MILESTONES.find(m => m.at > cur);
   bb.querySelector('em').textContent = next ? (next.at - cur) : '';
@@ -11829,7 +11802,7 @@ function showPlaces() {
   add('school', '呪', '저주의 서당', run.curse ? `견디는 중 · ${run.curse.left}판 남음`
     : school ? '이레에 한 번 · 스무 판의 값' : `이레에 한 번 — ${curseWaitDays()}일 남음`,
     school ? 'hot' : run.curse ? '' : 'lock', () => openSchool());
-  /* 대장간 · 환상은 윗줄로 꺼냈다 — 자주 가는 자리라. 콜로세움은 멀티 대전이 생겨 뺐다 */
+  /* 대장간은 윗줄로 꺼냈다 — 자주 가는 자리라. 콜로세움은 멀티 대전이 생겨 뺐다 */
   add('pet', '獸', '팻 우리', petsOk()
       ? `데려온 팻 ${petOwned().length} · 남은 뽑기 ${petPullsLeft()}`
       : `제${PET_ACT}막을 넘어야 열린다`,
@@ -12530,7 +12503,7 @@ function skinBits(id) {
   return '';
 }
 /* 부적의 오라 — 1등급·0등급은 빛줄기가 훑고, S급부터는 불티가 피어오른다 (손에 든 것만 움직인다) */
-const CFX_RAR = { uncommon: 'edge', rare: 'sweep', zero: 'sweep', special: 'spark', ssc: 'spark', ssx: 'spark', unknown: 'spark' };
+const CFX_RAR = { uncommon: 'edge', rare: 'sweep', zero: 'sweep', special: 'spark', ssc: 'spark', ssx: 'spark', unknown: 'spark', qx: 'spark' };
 /* --- 카드 DOM --- */
 function cardNode(c, opts) {
   opts = opts || {};
@@ -12609,7 +12582,7 @@ function syncHand() {
     const playable = cost !== -2 && (cost === -1 ? b.energy >= 1 : b.energy >= cost);
     node.classList.toggle('unplayable', !playable);
     const cb = node.querySelector('.cost');       /* 개발자의 권력 — ?급 값 0 을 부적에도 보인다 */
-    if (cb && cdef(c).rar === 'unknown') { const inf = devInfOn(); cb.classList.toggle('free', inf || cost === 0); if (inf) cb.textContent = '0'; else if (cb.textContent === '0' && ccost(c) > 0) cb.textContent = ccost(c); }
+    if (cb && (cdef(c).rar === 'unknown' || cdef(c).rar === 'qx')) { const inf = devInfOn(); cb.classList.toggle('free', inf || cost === 0); if (inf) cb.textContent = '0'; else if (cb.textContent === '0' && ccost(c) > 0) cb.textContent = ccost(c); }
     node.onmouseenter = () => {
       if (!b.sel) node.style.transform = `translate(${x}px,${y - 46}px) rotate(0deg) scale(1.1)`;
       showPreview(c);
@@ -16204,7 +16177,7 @@ function cardPower(c) { return (AUTO_RANK[CARDS[c.id].rar] || 0) * 12 + (c.up ? 
 /* 상인의 패 — 자네가 지닌 것과 비슷한 것을 꺼낸다 (등급 분포를 따른다) */
 function betFoeCard(mine) {
   const rar = CARDS[pick(mine).id].rar;
-  const pool = Object.keys(CARDS).filter(i => CARDS[i].rar === rar && !CARDS[i].hackOnly && !CARDS[i].mpOnly);
+  const pool = Object.keys(CARDS).filter(i => CARDS[i].rar === rar && !CARDS[i].hackOnly && !CARDS[i].mpOnly && !CARDS[i].devOnly);
   return { uid: -77, id: pool.length ? pick(pool) : 'strike', up: rnd() < .2 };
 }
 function showBet(after) {
@@ -17397,173 +17370,7 @@ async function grantFusedRelics(n) {
   saveRun(); renderTop();
 }
 
-/* ══════════════════════════════════════════════════════════
-   환상(幻想) — 무한(無限) 부적을 두들기는 자리
-   ──────────────────────────────────────────────────────────
-   제10막을 넘어선 사람에게 열린다. 한 막에 한 번 들어갈 수 있고,
-   들어가면 서른 판(초) 동안 화면 한가운데의 무한 부적을 두들긴다.
-   한 번 두들길 때마다 아래 표에서 하나가 나온다.
-     골드 50% · 다이아 30% · 정진 8% · 작은 상자 6% ·
-     큰 상자 2.5% · 스킨 상자 1.49% · 비기 상자 1% ·
-     특대급 상자 1% · VIP 0.01%
-   상자는 그 자리에서 열지 않고 쌓아 두었다가 끝나고 한꺼번에 준다 —
-   서른 판 동안 상자 여는 연출이 끼면 두들길 수가 없다.
-   ══════════════════════════════════════════════════════════ */
-const ILLU_ACT = 10;                            /* 이 막을 넘으면 열린다 */
-const ILLU_TIME = 30000;                        /* 서른 판 */
-const ILLU_DROPS = [
-  { w: 50,    k: 'gold' },
-  { w: 30,    k: 'dia' },
-  { w: 8,     k: 'jp' },
-  { w: 6,     k: 'box0',  tier: 0, n: '작은 상자' },
-  { w: 2.5,   k: 'box2',  tier: 2, n: '큰 상자' },
-  { w: 1.49,  k: 'box6',  tier: 6, n: '스킨 상자' },
-  { w: 1,     k: 'box5',  tier: 5, n: '비기 상자' },
-  { w: 1,     k: 'box3',  tier: 3, n: '특대급 상자' },
-  { w: 0.01,  k: 'vip' }
-];
-const ILLU_TOTAL = ILLU_DROPS.reduce((a, d) => a + d.w, 0);
-function illuOk() { return (META.cleared || 0) >= ILLU_ACT; }
-function illuLeft() {                           /* 이 막에서 아직 안 들어갔는가 */
-  const r = G.run; return !!r && r.illuAct !== r.act;
-}
-function illuRoll() {
-  let r = rnd() * ILLU_TOTAL;
-  for (const d of ILLU_DROPS) { r -= d.w; if (r <= 0) return d; }
-  return ILLU_DROPS[0];
-}
-/* 환상에서 나오는 골드·다이아는 막을 타되 완만하게 — 한 번에 수백 번 두들긴다 */
-function illuGold(act) { return Math.max(6, Math.round(ri(10, 30) * Math.sqrt(lootGold(act)))); }
-function illuDia(act) { return ri(3, 9) + Math.floor((act || 1) / 3); }
-
-function showIllusion() {
-  const run = G.run; if (!run) return;
-  if (!illuOk()) { SND.err(); toast(`제${ILLU_ACT}막을 넘어서야 열린다`); return; }
-  if (!illuLeft()) { SND.err(); toast('이 막에서는 이미 다녀왔다'); return; }
-  run.illuAct = run.act; saveRun();
-  G.scene = 'illusion';
-  SND.gong(); SND.bgm(true, 'boss');
-
-  const sc = el('div', 'illu');
-  sc.innerHTML = `
-    <div class="illurain">${[...Array(18)].map((_, i) =>
-      `<i style="left:${(i * 5.7 + (i % 4) * 3) % 98}%;animation-duration:${(3.4 + (i % 5) * .9).toFixed(1)}s;` +
-      `animation-delay:${(i * .37).toFixed(2)}s">${['匣', '匱', '櫃', '祕', '皮'][i % 5]}</i>`).join('')}</div>
-    <div class="illutop">환 상 <b id="il_t">30.0</b> 판 남음</div>
-    <div class="illubar"><i id="il_bar"></i></div>
-    <div class="illucard" id="il_card">
-      <div class="ig">無</div><div class="in">무 한</div>
-      <div class="ih">두들겨라</div>
-    </div>
-    <div class="illutally" id="il_tally"></div>
-    <button class="illuskip" id="il_stop">그만둔다</button>`;
-  $('#app').appendChild(sc);
-
-  const got = { taps: 0, gold: 0, dia: 0, jp: 0, vip: 0, boxes: [] };
-  const card = sc.querySelector('#il_card'), bar = sc.querySelector('#il_bar');
-  const tSpan = sc.querySelector('#il_t'), tally = sc.querySelector('#il_tally');
-  const drawTally = () => {
-    tally.innerHTML =
-      `<span>두들김<b>${got.taps}</b></span><span>金<b>${got.gold}</b></span>` +
-      `<span>玉<b>${got.dia}</b></span><span>精<b>${got.jp}</b></span>` +
-      `<span>상자<b>${got.boxes.length}</b></span>` + (got.vip ? `<span style="color:#e0bcff">VIP!</span>` : '');
-  };
-  drawTally();
-
-  /* 튀어오르는 글은 한꺼번에 몇 장까지만 — 손이 빠르면 카드가 안 보인다 */
-  const POP_MAX = 14;
-  let popRing = 0;
-  const pop = (text, col) => {
-    const live = sc.querySelectorAll('.illupop');
-    if (live.length >= POP_MAX) live[0].remove();
-    const n = el('div', 'illupop', text);
-    n.style.color = col;
-    const r = card.getBoundingClientRect();
-    /* 카드 둘레를 돌아가며 띄운다 — 글씨를 가리지 않게 */
-    const a = (popRing++ * 0.7) % (Math.PI * 2);
-    n.style.left = (r.left + r.width / 2 + Math.cos(a) * (r.width * .78 + 40)) + 'px';
-    n.style.top = (r.top + r.height / 2 + Math.sin(a) * (r.height * .38)) + 'px';
-    sc.appendChild(n);
-    setTimeout(() => n.remove(), 880);
-  };
-
-  let over = false;
-  const tap = () => {
-    if (over) return;
-    got.taps++;
-    card.classList.remove('hit'); void card.offsetWidth; card.classList.add('hit');
-    const d = illuRoll();
-    if (d.k === 'gold') { const g = illuGold(run.act); got.gold += g; run.gold += g;
-      run.stats.gold += g; SND.coin(); pop('金 +' + g, '#ffd76a'); }
-    else if (d.k === 'dia') { const v = illuDia(run.act); got.dia += v; run.dia = (run.dia || 0) + v;
-      SND.blip(1200, { dur: .05, type: 'sine', vol: .05, to: 1700 }); pop('玉 +' + v, '#6fd0e8'); }
-    else if (d.k === 'jp') { const v = ri(5, 15); got.jp += v; META.jp = (META.jp || 0) + v;
-      META.jpTotal = (META.jpTotal || 0) + v; SND.ui(); pop('精 +' + v, '#9fe6c8'); }
-    else if (d.k === 'vip') {
-      if (META.vip.owned) { const g = illuGold(run.act) * 8; got.gold += g; run.gold += g;
-        SND.unlock(); pop('金 +' + g + ' (이미 VIP)', '#ffd76a'); }
-      else { got.vip++; META.vip.owned = true; META.vip.at = Date.now(); META.vip.freeBoxAt = 0;
-        saveMeta(); SND.victory(); screenFlash('rgba(224,188,255,.6)', 900);
-        stampWord('V I P', '#e0bcff'); blink(2); zoomPunch();
-        pop('VIP 패키지!', '#e0bcff'); }
-    }
-    else { got.boxes.push(d); SND.gong();
-      screenFlash(d.tier === 3 ? 'rgba(255,180,80,.3)' : 'rgba(180,140,255,.18)', 420);
-      pop(d.n + '!', d.tier === 3 ? '#ffb648' : '#d8b4ff'); }
-    if (got.taps % 12 === 0) { renderTop(); saveRun(); saveMeta(); }
-    drawTally();
-  };
-  card.onpointerdown = e => { e.preventDefault(); tap(); };
-
-  const t0 = Date.now();
-  const tick = setInterval(() => {
-    const left = Math.max(0, ILLU_TIME - (Date.now() - t0));
-    tSpan.textContent = (left / 1000).toFixed(1);
-    bar.style.transform = `scaleX(${left / ILLU_TIME})`;
-    if (left <= 0) finish();
-  }, 60);
-
-  async function finish() {
-    if (over) return; over = true;
-    clearInterval(tick);
-    card.onpointerdown = null;
-    renderTop(); saveRun(); saveMeta();
-    sc.classList.add('fadeout');
-    await wait(260);
-    sc.remove();
-    SND.bgm(true, 'lobby');
-    await illuSettle(got);
-  }
-  sc.querySelector('#il_stop').onclick = finish;
-}
-
-/* 쌓아 둔 상자를 한꺼번에 연다 — 연출은 짧게, 결과만 늘어놓는다 */
-async function illuSettle(got) {
-  const items = [];
-  for (const d of got.boxes) {
-    try { const loot = boxLoot(d.tier); loot.take();
-      items.push({ g: loot.g, n: loot.n, d: loot.d, grade: loot.grade || null,
-        skin: loot.skin, card: loot.card }); }
-    catch (e) { console.error('환상 상자 오류', d.tier, e); }
-  }
-  saveRun(); saveMeta(); renderTop();
-  const p = modal(`<h2>환 상 이 걷혔다</h2>
-    <div class="hint">무한 부적을 <b style="color:#d8b4ff">${got.taps}</b>번 두들겼다</div>
-    <div class="rewardrow" style="max-width:min(680px,92vw);flex-wrap:wrap;justify-content:center">
-      <div class="rewitem taken"><div class="ic">金</div><div class="t"><b>골드 ${got.gold}</b><small>주머니가 무거워졌다</small></div></div>
-      <div class="rewitem taken"><div class="ic">玉</div><div class="t"><b>다이아 ${got.dia}</b><small>상자를 여는 값</small></div></div>
-      <div class="rewitem taken"><div class="ic">精</div><div class="t"><b>정진 ${got.jp}</b><small>수행터에서 쓴다</small></div></div>
-      ${got.vip ? `<div class="rewitem taken"><div class="ic">貴</div><div class="t"><b>VIP 패키지</b><small>만 번에 한 번을 뚫었다</small></div></div>` : ''}
-    </div>
-    <div class="hint" style="margin-top:10px">상자 <b style="color:#ffd76a">${got.boxes.length}</b>개에서 나온 것</div>
-    <button class="brush-btn red" id="il_ok" style="margin-top:12px">${items.length ? '열어 본다' : '돌아간다'}</button>`);
-  p.dataset.noauto = '1';
-  p.querySelector('#il_ok').onclick = () => {
-    closeTop();
-    if (items.length) showPullResult(items, () => showMap());
-    else showMap();
-  };
-}
+/* 환상(幻想)은 판 22 에서 뺐다 — 너무 후했다 */
 
 /* ══ 부적 뽑기 상점 ════════════════════════════════════════
    배너를 고르고, 1회 / 10+1회 뽑는다. 누적이 쌓이면
@@ -21255,7 +21062,7 @@ const CODES = {
       /* 모든 부적을 도감에 올리고, 모험 중이면 덱에도 넣는다 */
       let cards = 0;
       for (const id in CARDS) {
-        if (CARDS[id].rar === 'curse') continue;
+        if (CARDS[id].rar === 'curse' || CARDS[id].devOnly) continue;      /* ?X급(실험)은 개발자만 */
         dexAdd('cards', id); cards++;
         if (G.run) { G.run.deck.push(mkCard(id, false)); G.run.stats.cards++; }
       }
@@ -21285,7 +21092,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 21;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 22;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22117,7 +21924,7 @@ function giftCheck() {
   if (META.gotGifts[g.id]) return;
   /* 게스트가 뿌린 것은 남에게 주는 것 — 뿌린 이 자신은 받지 않는다 */
   if (g.by && guestOn() && g.by === guestGet().name) { META.gotGifts[g.id] = 1; saveMeta(); return; }
-  const real = cards0.filter(id => CARDS[id] && !(g.by && (CARDS[id].rar === 'unknown' || CARDS[id].hackOnly || CARDS[id].mpOnly)));   /* 게스트 선물의 ?급은 받지 않는다 */
+  const real = cards0.filter(id => CARDS[id] && !CARDS[id].devOnly && !(g.by && (CARDS[id].rar === 'unknown' || CARDS[id].hackOnly || CARDS[id].mpOnly)));   /* 게스트 선물의 ?급은 받지 않는다 */
   if (!real.length && !cur.gold && !cur.dia && !cur.jp) { META.gotGifts[g.id] = 1; saveMeta(); return; }
   if ($('#giftm')) return;              /* 이미 떠 있다 — 물을 때마다 겹쳐 쌓이던 것 */
   try { SND.bell(); } catch (e) {}
@@ -22968,7 +22775,7 @@ function updateCheck() {
 /* 지금 접속 — 어디에 있는지 (소식을 물을 때 적은 자리) */
 const PRES_NAME = { title: '첫 화면', map: '지도', battle: '싸움', world: '모두의 적', shop: '상점', reward: '보상',
   rest: '쉼터', event: '사건', treasure: '보물', train: '수행터', shrine: '신전', forge: '대장간', colosseum: '콜로세움',
-  arena: '대전투장', illusion: '환상', school: '공지', pets: '팻', over: '끝', win: '등정', special: '특별', janggi: '장기', demo: '체험' };
+  arena: '대전투장', school: '공지', pets: '팻', over: '끝', win: '등정', special: '특별', janggi: '장기', demo: '체험' };
 /* ── 퍼뜨리는 자리 ────────────────────────────────────────
    여기서 누르면 남의 기계에서도 일이 일어난다. 그러니 누르기
    전에 무엇이 지금 걸려 있는지부터 보여 준다. */
@@ -23577,7 +23384,7 @@ function cardPicker(input, max, deny) {
   const ids = () => input.value.split(',').map(x => x.trim()).filter(id => CARDS[id]);
   const put = list => { input.value = list.join(', '); input.dispatchEvent(new Event('input')); draw(); };
   const plain = h => String(h || '').replace(/<[^>]+>/g, '');
-  const all = Object.keys(CARDS).filter(id => CARDS[id].rar !== 'curse' && GRADE[CARDS[id].rar] && !(deny && deny(id)))
+  const all = Object.keys(CARDS).filter(id => CARDS[id].rar !== 'curse' && GRADE[CARDS[id].rar] && !CARDS[id].devOnly && !(deny && deny(id)))
     .sort((a, b) => GRADE_ORDER.indexOf(CARDS[a].rar) - GRADE_ORDER.indexOf(CARDS[b].rar) || CARDS[a].n.localeCompare(CARDS[b].n, 'ko'));
   const box = el('div', 'cpick');
   box.innerHTML = `<div class="cpsel"></div>
@@ -24154,7 +23961,7 @@ function mpAutoDeck() {
 /* 인게임 멀티 — 따로 짜는 덱은 없다. 지금 오르는 모험의 덱·강화·유물·물약·비기·기·최대 체력을 그대로 들고 나선다.
    싸움은 모험의 복사본으로 치르니, 이기든 지든 물약을 쓰든 모험에는 아무것도 남지 않는다. */
 const mpHome = () => (MP.saved && MP.saved.run) || (G.run && !G.run._pvp ? G.run : null);
-function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id) : mpAutoDeck(); }
+function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id + (c.up ? '+' : '')) : mpAutoDeck(); }
 const mpHpOf = () => { const r = mpHome(); return r ? r.maxHp : 90; };
 const mpLvOf = () => { const r = mpHome(); return r ? (r.act || 1) : 1; };
 /* ── 묻는 박자 — 로비·줄·방·판에 있는 동안만 ────────────── */
@@ -24261,7 +24068,7 @@ function mpPaintLobby() {
     const k = mpTierOf(pr.rp), t = MP_TIER_INFO[k];
     const pct = t.next ? Math.round((pr.rp - t.min) / (t.next - t.min) * 100) : 100;
     me.innerHTML = `${mpEmblem(pr.rp, 'big')}
-      <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.id)}</span>
+      <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.nick || ACCT.nick || pr.id)}</span>
         <div class="mprp"><i style="width:${pct}%;background:${t.c}"></i></div>
         <small>${pr.rp} 점${t.next ? ` · 다음 랭크까지 ${t.next - pr.rp}` : ' · 꼭대기'} · 랭크 ${pr.w}승 ${pr.l}패${pr.streak > 1 ? ` · <b style="color:#ff9a5a">${pr.streak}연승</b>` : ''} · 친선 ${pr.fw}승 ${pr.fl}패</small></div>
       <div class="mptok"><i>幣</i><b>${pr.tok}</b><small>멀티 토큰</small></div>`;
@@ -24444,7 +24251,8 @@ function mpBegin(mv) {
     return id;
   });
   startBattle(ids, 'pvp');
-  G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; });
+  G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; mpNameTag(e.el, foes[i]); });
+  if (P() && P().el) mpNameTag(P().el, me, true);
   G.b.mpMine = false; G.b.busy = true;
   /* 두 번째로 두는 쪽은 첫 차례에 한 장 더 */
   if (mv.order[0] !== mv.me) G.b.drawMod = (G.b.drawMod || 0) + 1;
@@ -24588,12 +24396,30 @@ function mpHudPaint() {
 }
 setInterval(() => { try { if (MP.match) mpHudPaint(); } catch (e) {} }, 500);
 /* 2대2 — 한 편의 모습 */
+/* 이름표 — 닉네임 · 랭크(문장과 등급) · 덱 보기 */
+function mpNameTag(u, pl, mine) {
+  const nm = u && u.querySelector('.nm'); if (!nm || !pl) return;
+  nm.classList.add('mpnm');
+  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}<b>${wEsc(pl.name || '?')}</b><em class="mprk">${mpTierName(pl.rp || 0)}</em>` +
+    (mine ? '' : `<button class="mpdeckbtn" title="상대의 덱">덱 ${Array.isArray(pl.deck) ? pl.deck.length : ''}</button>`);
+  const db = nm.querySelector('.mpdeckbtn');
+  if (db) db.onclick = ev => { ev.stopPropagation(); mpShowDeck(pl); };
+}
+/* 상대의 덱 — 무엇을 들고 왔는지 (강화한 것은 +) */
+function mpShowDeck(pl) {
+  try { SND.ui(); } catch (e) {}
+  if (!Array.isArray(pl.deck) || !pl.deck.length) { toast('상대의 덱을 받아 오지 못했다'); return; }
+  const cards = pl.deck.map(x => { const up = /\+$/.test(x), id = x.replace(/\+$/, ''); return CARDS[id] ? mkCard(id, up) : null; }).filter(Boolean);
+  cards.sort((a, b) => GRADE_ORDER.indexOf(CARDS[b.id].rar) - GRADE_ORDER.indexOf(CARDS[a.id].rar) || CARDS[a.id].n.localeCompare(CARDS[b.id].n, 'ko'));
+  showCardList(cards, `${wEsc(pl.name || '상대')} <small style="color:#c9a86a">${mpTierName(pl.rp || 0)}</small>의 덱 · ${cards.length}장`);
+}
 function mpAllyPanel(ally) {
   let a = $('#mpally'); if (a) a.remove();
   a = el('div', 'mpally'); a.id = 'mpally'; a.dataset.acct = ally.acct;
-  a.innerHTML = `<div class="mpal-h">${mpEmblem(ally.rp, 'sm')}<b>${wEsc(ally.name)}</b><em>한 편</em></div>
+  a.innerHTML = `<div class="mpal-h">${mpEmblem(ally.rp, 'sm')}<b>${wEsc(ally.name)}</b><em>${mpTierName(ally.rp || 0)} · 한 편</em>${Array.isArray(ally.deck) ? '<button class="mpdeckbtn">덱</button>' : ''}</div>
     <div class="mpal-bar"><i></i><span></span></div><div class="mpal-s"></div>`;
   ($('#battle') || document.body).appendChild(a);
+  const adb = a.querySelector('.mpdeckbtn'); if (adb) adb.onclick = () => mpShowDeck(ally);
   if (MP.lastUnits && MP.lastUnits[ally.acct]) mpAllyPaint(ally.acct, MP.lastUnits[ally.acct]);
 }
 function mpAllyPaint(acct, u) {
@@ -24669,6 +24495,7 @@ function mpBotStart() {
   f.hp = bh; ENEMIES.mp_bot.hp = [bh, bh];
   document.body.classList.add('pvp');
   startBattle(['mp_bot'], 'mpbot');
+  if (P() && P().el) mpNameTag(P().el, { name: ACCT.nick || ACCT.id || '퇴마사', rp: MP.prof ? MP.prof.rp || 0 : 0 }, true);
   mpStartLoop(); songSync();
   setTimeout(() => { const n = el('div', 'aroundbig', '그림자 퇴마사'); $('#app').appendChild(n); setTimeout(() => n.remove(), 1600); SND.gong(); }, 260);
 }
@@ -25101,7 +24928,6 @@ function showDemoEnd() {
     <div class="stats">${runStatsHtml()}</div>
     <div class="demolist">
       <div><b>제${DEMO_ACTS + 1}막 ~ 제${LAST_ACT}막</b><span>${LAST_ACT - DEMO_ACTS}막이 더 있다</span></div>
-      <div><b>환상</b><span>제10막을 넘으면 열리는 자리</span></div>
       <div><b>환생</b><span>넘은 것을 지니고 다시 처음부터</span></div>
       <div><b>0등급 · S급 · ?급</b><span>체험판에는 없는 부적들</span></div>
       <div><b>스킨 ${ALL_SKINS.length}벌</b><span>부적에 입히는 옷</span></div>
@@ -25575,9 +25401,9 @@ function showCardDetail(id) {
 function showDex() {
   const byGrade = {};
   for (const k of GRADE_ORDER.concat(['curse'])) byGrade[k] = [];
-  for (const id in CARDS) if (!CARDS[id].hackOnly) byGrade[CARDS[id].rar].push(id);
+  for (const id in CARDS) if (!CARDS[id].hackOnly && !CARDS[id].devOnly) byGrade[CARDS[id].rar].push(id);
   const relicIds = Object.keys(RELICS), enemyIds = Object.keys(ENEMIES).filter(id => !/^hk_/.test(id));
-  const totalCards = Object.keys(CARDS).filter(id => !CARDS[id].hackOnly).length;
+  const totalCards = Object.keys(CARDS).filter(id => !CARDS[id].hackOnly && !CARDS[id].devOnly).length;
 
   let secs = '';
   for (const gk of GRADE_ORDER.concat(['curse'])) {

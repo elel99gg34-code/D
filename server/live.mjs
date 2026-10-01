@@ -821,7 +821,8 @@ const mpRooms = new Map(), mpRoomOf = new Map(); /* 방 · 누가 어느 방에 
 const mpInv = new Map();                    /* 초대 — 받는 이 → [{ from, code, mode, at }] */
 const CODE_CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const mpCode = () => { let c = ''; for (let i = 0; i < 6; i++) c += CODE_CH[crypto.randomInt(CODE_CH.length)]; return mpRooms.has(c) ? mpCode() : c; };
-const mpDeck = d => Array.isArray(d) ? d.slice(0, 80).map(x => str(x, 40)).filter(x => /^[a-z0-9_]{1,40}$/i.test(x)) : [];
+/* 덱 — 부적 이름, 강화한 것은 뒤에 「+」. 상대에게 그대로 보여 준다 */
+const mpDeck = d => Array.isArray(d) ? d.slice(0, 80).map(x => str(x, 41)).filter(x => /^[a-z0-9_]{1,40}\+?$/i.test(x)) : [];
 const MP_S_OK = /^[a-zA-Z]{2,12}$/;
 function mpS(s) { const o = {}; if (s && typeof s === 'object') for (const k in s) { if (!MP_S_OK.test(k)) continue;
   const v = parseInt(s[k], 10); if (v && v >= -99 && v <= 999) o[k] = v; } return o; }
@@ -950,7 +951,7 @@ function mpMatchmake(now) {
 /* 판을 그 사람에게 보여 줄 모양 — since 뒤의 일만 */
 function mpView(m, acct, since) {
   return { id: m.id, mode: m.mode, ranked: m.ranked, me: acct, order: m.order,
-    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, deck: p.acct === acct ? undefined : p.deck.length })),
+    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, deck: p.acct === acct ? undefined : p.deck.slice() })),
     units: Object.fromEntries(Object.entries(m.units).map(([k, u]) => [k, mpUnitView(u)])),
     turn: { acct: m.turn.acct, no: m.turn.no, left: Math.max(0, m.turn.deadline - Date.now()) },
     seq: m.seq, ev: m.ev.filter(e => e.seq > (since || 0)), over: m.over, win: m.win, res: m.res ? m.res[acct] || null : null };
