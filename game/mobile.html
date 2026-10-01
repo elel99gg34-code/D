@@ -3226,7 +3226,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .hkmhead button{font-size:13px;padding:6px 12px;border-radius:6px;background:#0a3a1c;color:#caffdc;border:1px solid #2cff7a}
 .hkmhead button:hover{background:#12602e}
 .hkmsay{font-size:14px;color:#ffe9a0;text-align:center;text-shadow:0 0 8px rgba(255,220,100,.4)}
-.hkmpath{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;width:min(980px,100%);margin-top:10px}
+.hkmpath{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 0;width:min(1200px,100%);margin-top:10px}
 .hkmline{display:block;width:40px;height:3px;background:#1a4a2a}
 .hkmline.on{background:#2cff7a;box-shadow:0 0 8px #2cff7a}
 .hkmnode{width:128px;height:128px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:inherit;
@@ -3238,6 +3238,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .hkmnode.done{border-color:#2a6a44;color:#5f9f78;opacity:.7}.hkmnode.done b{text-decoration:line-through}
 .hkmnode.lock{opacity:.45;filter:grayscale(.6)}
 .hkmnode.boss{border-color:#ff3a5a;background:rgba(40,0,10,.9)}
+.hkmpath .hkmnode{width:112px;height:112px}.hkmpath .hkmline{width:26px}
+.hkmnode.exit{width:96px!important;height:96px!important;border-color:#7fe6cf;background:rgba(6,30,26,.9);color:#bff6e8;cursor:pointer;opacity:1;filter:none}
+.hkmnode.exit b{color:#7fe6cf;text-decoration:none}
+.hkmnode.exit:hover{box-shadow:0 0 18px rgba(127,230,207,.6)}
+.hkmnode.exit.cur{box-shadow:0 0 26px rgba(127,230,207,.85);animation:pillBeat 1.2s ease-in-out infinite}
+.hkmline.exitline{background:#2a6a5a;box-shadow:none}
 .hkmnode.boss.cur{box-shadow:0 0 30px rgba(255,40,80,.8)}
 .hkmnode.boss b{color:#ff8a9a}
 .hkmlore{display:flex;gap:16px;align-items:flex-start;width:min(820px,100%);margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(0,20,8,.72);border:1px solid #1f5a3c;line-height:1.75;font-size:14px;color:#b8e8c8}
@@ -13889,14 +13895,14 @@ function flash(msg) {
 /* ══════════════════════════════════════════════════════════
    9. 지도 생성 — 갈라지는 등산로 (간선이 교차하지 않는다)
    ══════════════════════════════════════════════════════════ */
-const MAP_W = 5, MAP_H = 12, MAP_PATHS = 6;
+const MAP_W = 5, MAP_H = 17, MAP_PATHS = 6;          /* 막이 빨리 끝난다는 말에 12 → 17층 */
 /* ══════════════════════════════════════════════════════════
    지도 — 왼쪽에서 오른쪽으로 걸어 오르는 산길
    ──────────────────────────────────────────────────────────
    여섯 갈래가 얽혔다 풀리며 보스까지 간다. 세로로 세우면
    열두 층이 화면 높이에 눌리므로, 눕혀서 넓은 쪽을 쓴다.
    ══════════════════════════════════════════════════════════ */
-const TREASURE_ROW = 5;                     /* 이 층은 반드시 보물 */
+const TREASURE_ROW = 5, TREASURE_ROW2 = 11;  /* 이 두 층은 반드시 보물 */
 const REST_ROW = MAP_H - 1;                 /* 보스 직전은 반드시 야영지 */
 function genMap(act) {
   const nodes = [], grid = {};
@@ -13930,14 +13936,14 @@ function genMap(act) {
      한 막에 놓을 수 있는 수 자체에 뚜껑을 씌운다.
      게다가 바로 앞뒤 층에 야영지가 있으면 다시 놓지 않는다.
      ────────────────────────────────────────────────────── */
-  const REST_CAP = 2;                        /* 보스 앞 야영지를 빼고 이만큼만 */
+  const REST_CAP = 3;                        /* 보스 앞 야영지를 빼고 이만큼만 (길이 길어져 하나 더) */
   let rests = 0;
   const restNear = n => nodes.some(o => o.type === 'rest' && Math.abs(o.r - n.r) <= 1);
   const ordered = nodes.slice().sort((a, b) => a.r - b.r || a.c - b.c);
   for (const n of ordered) {
     if (n.type) continue;
     if (n.r === 0) { n.type = 'battle'; continue; }
-    if (n.r === TREASURE_ROW) { n.type = 'treasure'; continue; }
+    if (n.r === TREASURE_ROW || n.r === TREASURE_ROW2) { n.type = 'treasure'; continue; }
     if (n.r === REST_ROW) {
       /* 보스 직전에는 반드시 쉴 자리가 있어야 한다. 다만 줄 전체를
          야영지로 채우면 야영지가 흔해 보인다 — 절반만 야영지로 둔다. */
@@ -13949,7 +13955,7 @@ function genMap(act) {
     const w = [{ w: 64, t: 'battle' }, { w: 12, t: 'event' }, { w: 5, t: 'shop' }];
     if (n.r >= 4 && rests < REST_CAP && !restNear(n)) w.push({ w: 6, t: 'rest' });
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
-    if (n.r >= 7) w.push({ w: 4, t: 'treasure' });
+    if (n.r >= 7) w.push({ w: 2, t: 'treasure' });
     n.type = pickWeighted(w).t;
     if (n.type === 'rest') rests++;
   }
@@ -14459,7 +14465,7 @@ function showMap() {
   const rule = el('div', 'mapruler'); rule.style.top = (m.h - 30) + 'px';
   inner.appendChild(rule);
   for (const r in byCol) {
-    const isBoss = +r === MAP_H;
+    const isBoss = m.nodes.some(n => n.r === +r && n.type === 'boss');   /* 예전 12층 지도도 맞게 */
     const lab = el('div', 'mapcol' + (+r + 1 === run.floor ? ' now' : '') + (isBoss ? ' bossmark' : ''),
       isBoss ? '보 스' : (+r + 1) + '층');
     lab.style.left = byCol[r] + 'px'; lab.style.top = (m.h - 24) + 'px';
@@ -19213,7 +19219,6 @@ function cutHack() {
         const t = setInterval(() => { if (!S.alive) return clearInterval(t); for (const f of S.refs.fl) { const a = cutAt(f); cutEmit(S, 'soul', a.x + (Math.random() - .5) * 20, a.y - a.h * .45, 1, { sp: .8, ang: -Math.PI / 2, spread: .5, life: 70, sz: 4, g: -.02, col: '120,255,170' }); } cutSfx('blip', 90 + Math.random() * 80, { dur: .06, type: 'sine', vol: .03 }); }, 130);
         S.timers.push(setTimeout(() => clearInterval(t), 12000));
       }],
-      [3400, S => cutSay(S, '보글, 보글 — 부적을 녹인 물이 끓는다.', 1800)],
       /* 모니터 */
       [4400, S => { cutCam(S, { x: 800, y: 300, s: 2.1, rz: 3, ry: -6, rx: -8 }, 1000); for (const m of S.refs.mon) m.classList.add('fast'); }],
       [5100, S => cutSay(S, '<span class="hkmono">PROJECT 符-HACK : 부적의 코드를 다시 쓴다</span>', 2000)],
@@ -20225,7 +20230,6 @@ function c3Hack() {
         const t = setInterval(() => { if (!S.alive) return clearInterval(t); cutSfx('blip', 90 + Math.random() * 80, { dur: .06, type: 'sine', vol: .03 }); }, 150);
         S.timers.push(setTimeout(() => clearInterval(t), 11000));
       }],
-      [3400, S => cutSay(S, '보글, 보글 — 부적을 녹인 물이 끓는다.', 1800)],
       [4400, S => { c3Cam(S, { p: [.6, 3, .6], l: [0, 3.1, -4.1], fov: 42, roll: .03 }, 1000); for (const m of S.refs.mons) m.sp = 4; }],
       [5100, S => cutSay(S, '<span class="hkmono">PROJECT 符-HACK : 부적의 코드를 다시 쓴다</span>', 2000)],
       [6400, S => {
@@ -20400,18 +20404,32 @@ function showHackMap() {
       ${hackShopOn() ? '<button id="hkm_shop">해킹상점</button>' : ''}<button id="hkm_out">원래 지도로</button></div>
     <div class="hkmsay">${h.done ? '박사를 쓰러뜨렸다. 오염은 가라앉았다.' : '부적들을 해킹하는 박사를 처치하라! — 여기서는 쓰러져도 모험이 끝나지 않는다.'}</div>
     ${stageLock() && !h.done ? `<div class="hkmwait">⏸ ${wEsc(stageLock())} — 그동안 해킹맵 싸움도 멈춘다. 쏟아지는 부적부터 주워라!</div>` : ''}
-    <div class="hkmpath">${HACK_NODES.map((x, i) => `${i ? '<i class="hkmline' + (i <= h.step ? ' on' : '') + '"></i>' : ''}
+    <div class="hkmpath"><button class="hkmnode exit" data-exit="1" title="해킹맵에서 나가 원래 지도로 — [해킹] 띠를 누르면 다시 들어온다">
+        <b>出</b><span>원래 지도</span><em>돌아간다</em></button><i class="hkmline exitline"></i>${HACK_NODES.map((x, i) => `${i ? '<i class="hkmline' + (i <= h.step ? ' on' : '') + '"></i>' : ''}
       <button class="hkmnode${i < h.step || h.done ? ' done' : i === h.step ? ' cur' : ' lock'}${x.boss ? ' boss' : ''}" data-i="${i}">
-        <b>${x.g}</b><span>${x.n}</span><em>${i < h.step || h.done ? '해제됨' : i === h.step ? (x.rest ? '쉬어 간다' : '들어간다') : '잠김'}</em></button>`).join('')}</div>
+        <b>${x.g}</b><span>${x.n}</span><em>${i < h.step || h.done ? '해제됨' : i === h.step ? (x.rest ? '쉬어 간다' : '들어간다') : '잠김'}</em></button>`).join('')}<i class="hkmline${h.done ? ' on' : ''}"></i><button class="hkmnode exit home${h.done ? ' cur' : ''}" data-exit="1" title="원래 지도로 귀환">
+        <b>歸</b><span>귀환</span><em>${h.done ? '원래 지도로' : '언제든'}</em></button></div>
     <div class="hkmlore"><i>博</i><div><b>박사의 비밀연구</b>
       <p>산 아래, 불이 꺼지지 않는 연구실이 있다. 박사는 백 년 묵은 봉인을 「코드」라 불렀다.
         부적 한 장 한 장을 광선으로 훑어 봉인을 풀고, 그 자리에 제 글자를 새겨 넣었다.</p>
       <p>오염된 부적은 퇴마사의 손을 물고, 지도는 01로 뒤틀렸다. 버그가 들끓고, 웜이 파고들고, 트로이 요괴는 선물인 척 다가온다.</p>
       <p class="hkmhint">⌬ 해킹 칩은 이기면 쌓인다 — 해킹상점(백야가 연 동안)에서 쓴다. 박사를 쓰러뜨리면 <b>해킹 상자</b> — 이벤트에서만 나오는 부적, <b>?급 1%</b>.</p></div></div>`;
   ($('#app') || document.body).appendChild(p);
-  p.querySelector('#hkm_out').onclick = () => { SND.ui(); run.inHack = false; saveRun(); p.remove(); };
+  p.querySelector('#hkm_out').onclick = hackExit;
+  p.querySelectorAll('[data-exit]').forEach(b => b.onclick = hackExit);
   const sb = p.querySelector('#hkm_shop'); if (sb) sb.onclick = () => showHackShop();
   p.querySelectorAll('.hkmnode.cur').forEach(b => b.onclick = () => hackEnter(+b.dataset.i));
+}
+/* 해킹맵에서 원래 지도로 — 지도를 다시 그려 제자리에 세운다. [해킹] 띠를 누르면 다시 들어온다 */
+function hackExit() {
+  const run = G.run; if (!run) return;
+  try { SND.ui(); } catch (e) {}
+  run.inHack = false; saveRun();
+  document.body.classList.remove('hackmode');
+  const m = $('#hackmap'); if (m) m.remove();
+  try { screenFlash('rgba(44,255,122,.25)', 300); } catch (e) {}
+  showMap();
+  toast(run.hack && run.hack.done ? '원래 지도로 귀환했다' : '원래 지도로 돌아왔다 — 왼쪽 위 [해킹] 띠를 누르면 다시 들어간다');
 }
 function hackEnter(i) {
   const run = G.run, x = HACK_NODES[i]; if (!run || !run.hack || run.hack.step !== i || run.hack.done) return;
@@ -21092,7 +21110,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 22;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 23;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21532,11 +21550,11 @@ function drawAcct(n) {
        <div class="acctsay" id="ac_say"></div>`
     : `<div class="lb"><b>로그인 · 회원가입</b><small>로그인해 두면 기록과 이어 가던 모험이 서버에 저장된다 — 폰을 바꾸거나 앱을 지워도 되찾는다.</small></div>
        <div class="acctform">
-         <input id="ac_id" placeholder="아이디" autocomplete="username" spellcheck="false" maxlength="20">
+         <input id="ac_id" placeholder="아이디 (영어·숫자)" autocomplete="username" spellcheck="false" maxlength="20" autocapitalize="off" inputmode="latin">
          <input id="ac_pw" type="password" placeholder="비밀번호" autocomplete="current-password" maxlength="60">
          <input id="ac_nk" placeholder="닉네임 (회원가입 때 · 남에게 보이는 이름)" spellcheck="false" maxlength="12" autocomplete="off">
        </div>
-       <div class="acctpwnote">새 비밀번호는 8자 이상 · 너무 쉬운 것·아이디가 든 것은 안 된다. 비밀번호는 서버에도 그대로 남지 않는다(되돌릴 수 없게 갈아 둔다).</div>
+       <div class="acctpwnote">새 아이디는 영어·숫자만. 새 비밀번호는 8자 이상 · 너무 쉬운 것·아이디가 든 것은 안 된다. 비밀번호는 서버에도 그대로 남지 않는다(되돌릴 수 없게 갈아 둔다).</div>
        <div class="acctbtns">
          <button class="val" id="ac_in">로그인</button>
          <button class="val" id="ac_new">회원가입</button>
@@ -21577,6 +21595,7 @@ function drawAcct(n) {
       const signup = path === '/auth/signup';
       if (!id || !pw) { tell('아이디와 비밀번호를 적으시오', false); return; }
       if (signup && !nick) { tell('회원가입에는 닉네임이 있어야 한다', false); n.querySelector('#ac_nk').focus(); return; }
+      if (signup && !/^[a-zA-Z0-9]{2,20}$/.test(id)) { tell('아이디는 영어·숫자만, 2~20 글자 (한글·기호는 닉네임에)', false); n.querySelector('#ac_id').focus(); return; }
       busy(true); tell(what + ' 중… (서버가 잠들어 있으면 깨는 데 1분쯤 걸린다)', true);
       const body = signup ? { id, pw, nick } : { id, pw };
       if (signup && castKey()) body.code = castKey();
@@ -25640,7 +25659,7 @@ const GUIDE = {
       <tr><td>2. 전투</td><td>손에 든 부적을 내서 요괴를 쓰러뜨린다.</td></tr>
       <tr><td>3. 보상</td><td>골드와 부적을 얻는다. <b>부적은 3장 중 1장만</b> 고를 수 있다.
         나오는 등급은 오를수록 좋아진다 (지도 탭 참고).</td></tr>
-      <tr><td>4. 반복</td><td>12층을 올라 보스를 잡으면 다음 막으로. <b>6막</b>까지 있다.</td></tr>
+      <tr><td>4. 반복</td><td>17층을 올라 보스를 잡으면 다음 막으로. <b>6막</b>까지 있다.</td></tr>
     </table>
     <div class="tip"><b>쓰러져도 처음부터가 아니다.</b> 갈림길에 들어설 때마다 그 순간이 저장된다.
     패배 화면에서 <b>그 갈림길로 돌아간다</b>를 누르면 그 길에 들어서기 직전으로 되돌아간다.</div>

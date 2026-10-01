@@ -1748,7 +1748,8 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/auth/signup') {
       const id = str(q.id, 20).trim(), pw = String(q.pw || ''), nick = str(q.nick, 12).trim();
       const dev = !!(CODE && q.code && same(String(q.code), CODE));
-      if (!nameOk(id)) return send(res, 400, { ok: false, why: '아이디는 2~20 글자, 한글·영문·숫자·_.- 만' });
+      /* 새 아이디는 영어·숫자만 (예전에 만든 한글 아이디는 그대로 들어올 수 있다) */
+      if (!/^[a-zA-Z0-9]{2,20}$/.test(id)) return send(res, 400, { ok: false, why: '아이디는 영어·숫자만, 2~20 글자' });
       if (/백야|baekya|관리자|운영|admin/i.test(id) && !dev) return send(res, 400, { ok: false, why: '그 아이디는 쓸 수 없다' });
       const pwBad = pwWhy(pw, id); if (pwBad) return send(res, 400, { ok: false, why: pwBad });
       const nBad = nickWhy(nick, dev); if (nBad) return send(res, 400, { ok: false, why: nBad });
