@@ -42,6 +42,7 @@ function expire(now) {
   if (live.music && live.music.until && now > live.music.until) { live.music = null; changed = true; }
   if (live.cut && now - live.cut.at > 120000) { live.cut = null; changed = true; }
   if (live.autofree && now > live.autofree.until) { live.autofree = null; changed = true; }
+  if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
   /* 숨은 부적 — 때가 지나고 한 분 뒤 걷는다 */
   if (live.hunt && now > live.hunt.until + 60000) { live.hunt = null; changed = true; }
   /* 투표 — 때가 되면 마감하고, 열 분 뒤 걷는다(결과를 볼 틈) */
@@ -418,8 +419,9 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree'];
-const BOSS_EXT_MAX = 30 * 60 * 1000;      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count'];
+const BOSS_EXT_MAX = 30 * 60 * 1000;
+const COUNT_LEAD = 13000;                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
 async function applyCast(q) {
@@ -473,6 +475,27 @@ async function applyCast(q) {
     if ('shop' in h) cur.shop = !!h.shop && cur.on;
     if (h.go && cur.on) cur.go = { id: Date.now(), at: Date.now() };
     live.hack = cur.on ? cur : null;
+  }
+  /* 카운트다운 — 모든 앱에 5·4·3·2·1·0 이 뜨고, 0 이 되는 때에 then(이벤트)을 건다.
+     앱은 열두 셈마다 소식을 물으니, 숫자가 짧으면 모두에게 닿도록 앞에 틈(COUNT_LEAD)을 둔다 */
+  if ('count' in q) {
+    live.sched = (live.sched || []).filter(x => !x.cd || x.done);
+    if (!q.count) live.count = null;
+    else {
+      const now = Date.now(), sec = Math.max(3, Math.min(60, parseInt(q.count.sec, 10) || 5));
+      const at = now + Math.max(0, COUNT_LEAD - sec * 1000), until = at + sec * 1000;
+      const label = str(q.count.label, 40);
+      const then = pickCast(q.count.then && typeof q.count.then === 'object' ? q.count.then : {});
+      delete then.count;                                  /* 카운트다운 안에 카운트다운은 없다 */
+      live.count = { id: now, at, sec, until, label };
+      if (Object.keys(then).length) {
+        live.sched.push({ id: now + Math.floor(Math.random() * 1000), at: until, cd: true,
+                          label: '카운트다운' + (label ? ' — ' + label : ''), steps: [{ after: 0, label: '', patch: then }] });
+        live.sched.sort((x, y) => x.at - y.at);
+        /* 두 셈마다 도는 예약 바퀴를 기다리지 않고 0 에 맞춰 건다 */
+        setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
+      }
+    }
   }
   /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
   if ('cut' in q) {

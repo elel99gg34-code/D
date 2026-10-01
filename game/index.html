@@ -3367,6 +3367,37 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .ubl.boom .ubl-boom{animation:ublBoom .9s cubic-bezier(.2,1.6,.3,1) forwards}
 @keyframes ublBoom{0%{transform:translate(var(--tx),var(--ty)) scale(3.4) rotate(-12deg);opacity:0}25%{transform:translate(var(--tx),var(--ty)) scale(.9) rotate(4deg);opacity:1}
   45%{transform:translate(var(--tx),var(--ty)) scale(1.08) rotate(-3deg)}80%{opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}}
+/* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
+.cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
+.cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
+  background:radial-gradient(ellipse at center,rgba(255,0,0,0) 35%,rgba(160,0,0,calc(var(--t)*.5)) 100%)}
+.cdown.run .cdv,.cdown.zero .cdv{opacity:1}
+.cdown .cdring{position:absolute;width:min(46vmin,360px);height:min(46vmin,360px);border-radius:50%;opacity:0;
+  border:3px solid rgba(255,calc(255 - var(--t)*220),calc(255 - var(--t)*220),.7);box-shadow:0 0 calc(10px + var(--t)*50px) rgba(255,40,40,calc(var(--t)*.8))}
+.cdown.run .cdring{opacity:1;animation:cdRing 1s ease-out infinite}
+@keyframes cdRing{from{transform:scale(.8);opacity:.9}to{transform:scale(1.25);opacity:0}}
+.cdown .cdnum{position:relative;font-size:clamp(120px,34vmin,320px);font-weight:900;line-height:1;color:#fff;font-variant-numeric:tabular-nums;
+  -webkit-text-stroke:3px rgba(40,0,0,calc(.3 + var(--t)*.5));
+  text-shadow:0 0 calc(12px + var(--t)*60px) rgba(255,30,30,calc(.25 + var(--t)*.75)),0 6px 0 rgba(0,0,0,.35)}
+.cdown .cdnum.pop{animation:cdPop .9s cubic-bezier(.2,1.5,.35,1) forwards}
+@keyframes cdPop{0%{transform:scale(1.9);opacity:0;filter:blur(6px)}25%{transform:scale(1);opacity:1;filter:none}80%{transform:scale(.94);opacity:1}100%{transform:scale(.86);opacity:.75}}
+.cdown .cdlab{position:absolute;top:calc(50% + min(22vmin,180px));font-size:clamp(14px,2.6vmin,22px);letter-spacing:.3em;color:#ffd0c8;
+  text-shadow:0 0 12px rgba(255,40,40,.8),0 2px 4px #000;opacity:0}
+.cdown.run .cdlab,.cdown.zero .cdlab{opacity:1}
+.cdown .cdpre{position:absolute;top:14%;padding:8px 18px;border-radius:20px;background:rgba(30,6,6,.78);border:1px solid #a33;color:#ffb0a0;
+  font-size:14px;letter-spacing:.12em;opacity:0;transition:opacity .3s}
+.cdown.pre .cdpre{opacity:1;animation:cdBlink 1s ease-in-out infinite alternate}
+@keyframes cdBlink{to{border-color:#ff4a4a;box-shadow:0 0 18px rgba(255,40,40,.6)}}
+.cdown.zero .cdnum{color:#ff0a0a;-webkit-text-stroke:4px #3a0000;animation:cdZero 1.6s cubic-bezier(.2,1.6,.3,1) forwards;
+  text-shadow:0 0 30px #ff0000,0 0 80px #ff0000,0 0 160px rgba(255,0,0,.9),0 8px 0 #2a0000}
+@keyframes cdZero{0%{transform:scale(3);opacity:0;filter:blur(10px) brightness(2)}18%{transform:scale(1.25);opacity:1;filter:none}
+  30%{transform:scale(1.05)}45%{transform:scale(1.18)}100%{transform:scale(1.12)}}
+.cdown.zero .cdv{background:radial-gradient(ellipse at center,rgba(255,0,0,.25) 0%,rgba(190,0,0,.75) 100%);animation:cdRed 1.6s ease-out forwards}
+@keyframes cdRed{0%{opacity:1;filter:brightness(1.8)}100%{opacity:.85}}
+.cdown.out{opacity:0;transition:opacity .6s}
+.cdset{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border:1px dashed #8a3a3a;border-radius:8px}
+.cdset label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#ffb0a0}
+.cdset input[type=number]{width:60px}
 /* ══ 3D 컷씬 ══ */
 .cut.c3{background:#000}
 .c3cv{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -20955,6 +20986,8 @@ async function liveFetch() {
     LIVE.cut = d.cut && typeof d.cut === 'object' ? d.cut : null;          /* 관리자가 뿌린 컷씬 */
     LIVE.hack = d.hack && typeof d.hack === 'object' ? d.hack : null;       /* [해킹] 이벤트 */
     LIVE.autofree = d.autofree && typeof d.autofree === 'object' ? d.autofree : null;   /* 자동 플레이 맛보기 */
+    LIVE.count = d.count && typeof d.count === 'object' ? d.count : null;    /* 카운트다운 */
+    try { countWatch(); } catch (e) { console.error('카운트다운', e); }
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
     try { chatBadge(); } catch (e) {}
@@ -20972,6 +21005,68 @@ async function liveFetch() {
     try { liveTick(); }   catch (e) {}
     updateCheck();
   } catch (e) { /* 인터넷이 없을 뿐이다 */ }
+}
+
+/* ══════════════════════════════════════════════════════════
+   카운트다운 — 백야가 걸면 모든 화면 한가운데에 5·4·3·2·1 …
+   ──────────────────────────────────────────────────────────
+   숫자는 내려갈수록 하얀빛에서 붉은빛으로 물들고, 0 이 되면
+   새빨갛게 터지며 걸어 둔 이벤트가 시작된다(서버가 그 때에 건다).
+   때는 서버 시각(srvNow)을 따르니 모든 앱이 같은 숫자를 본다.
+   LIVE.count — { id, at(숫자 시작), sec, until(0 의 때), label }
+   ══════════════════════════════════════════════════════════ */
+let _cdId = 0, _cdTimer = null;
+function countWatch() {
+  const c = LIVE.count;
+  if (!c || !c.until || c.id === _cdId) return;
+  if (srvNow() > c.until + 1500) return;                /* 이미 지나갔다 */
+  _cdId = c.id; countRun(c);
+}
+function countStop() {
+  clearInterval(_cdTimer); _cdTimer = null;
+  const n = $('#cdown'); if (n) n.remove();
+}
+function countRun(c) {
+  countStop();
+  const n = el('div', 'cdown'); n.id = 'cdown';
+  n.innerHTML = `<div class="cdv"></div><div class="cdring"></div><div class="cdnum"></div>
+    <div class="cdlab">${c.label ? wEsc(c.label) : ''}</div><div class="cdpre">⏱ 곧 카운트다운${c.label ? ' — ' + wEsc(c.label) : ''}</div>`;
+  document.body.appendChild(n);
+  const num = n.querySelector('.cdnum'), R = Math.max(2, Math.min(c.sec || 5, 10));
+  let shown = null;
+  const tick = () => {
+    if (!LIVE.count || LIVE.count.id !== c.id) { countStop(); return; }   /* 백야가 멈췄다 */
+    const now = srvNow();
+    if (now < c.at) { n.className = 'cdown pre'; return; }
+    if (now < c.until) {
+      const left = Math.ceil((c.until - now) / 1000);
+      if (left === shown) return;
+      shown = left;
+      /* 마지막 R 초에 걸쳐 하얀빛 → 붉은빛 */
+      const t = Math.max(0, Math.min(1, 1 - (left - 1) / (R - 1)));
+      n.className = 'cdown run';
+      n.style.setProperty('--t', t.toFixed(3));
+      const gb = Math.round(255 - 225 * t);
+      num.style.color = `rgb(255,${gb},${gb})`;
+      num.textContent = left;
+      num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
+      try { SND.unlock(); SND.blip(330 + t * 550, { dur: .14, type: 'square', vol: .045 + t * .03 }); if (t > .5) SND.blip(80, { dur: .18, type: 'sine', vol: .08 }); } catch (e) {}
+      return;
+    }
+    /* 0 — 새빨갛게 터진다 */
+    clearInterval(_cdTimer); _cdTimer = null;
+    n.className = 'cdown zero'; n.style.setProperty('--t', 1);
+    num.style.color = ''; num.textContent = '0';
+    num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
+    try { SND.unlock(); SND.thunder(); SND.gong(); SND.crit(); screenFlash('rgba(255,0,0,.55)', 800); shake(true); } catch (e) {}
+    try { FX.burst(innerWidth / 2, innerHeight / 2, 70, '255,30,30', 10, 70, 7); FX.burst(innerWidth / 2, innerHeight / 2, 40, '255,200,160', 7, 50, 4); } catch (e) {}
+    /* 서버가 0 에 건 이벤트를 곧바로 받아 온다 */
+    setTimeout(() => liveFetch(), 700); setTimeout(() => liveFetch(), 2600);
+    setTimeout(() => { n.classList.add('out'); setTimeout(() => { if ($('#cdown') === n) n.remove(); }, 600); }, 1800);
+  };
+  tick();
+  if (n.classList.contains('zero')) return;
+  _cdTimer = setInterval(tick, 80);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -22366,6 +22461,14 @@ function drawCast(grid) {
       </div>
       <button class="brush-btn ghost" id="ct_off"
         style="color:#e9dfc9;border-color:#8a7f68">모두 끈다</button>
+      <div class="cdset">
+        <label><input type="checkbox" id="ct_cd"> ⏱ 카운트다운 뒤에 시작</label>
+        <label><input id="ct_cds" type="number" min="3" max="60" value="5"> 초</label>
+        <button class="brush-btn ghost" id="ct_cdonly" style="color:#ff8a8a;border-color:#8a3a3a">카운트다운만</button>
+        <button class="brush-btn ghost" id="ct_cdoff" style="color:#e9dfc9;border-color:#8a7f68">멈춤</button>
+      </div>
+      <div class="casthint">켜 두고 위의 일을 누르면 모든 화면에 숫자가 내려가며(점점 붉게) 0 이 되는 순간 그 일이 시작된다.
+        앱이 소식을 열두 초마다 물으니, 짧게 걸면 숫자가 13초쯤 뒤에 시작되도록 앞에 틈을 둔다.</div>
     </div>
 
     <div class="castsec"><b>노래 틀기</b>
@@ -22597,8 +22700,16 @@ function drawCast(grid) {
   grid.querySelector('#ct_hype').onclick = () => send({ notice: HYPE_SAY, noticeAt: Date.now() }, '이벤트 알림');
   drawSched(grid, send);
   grid.querySelectorAll('.castev:not(.song)').forEach(b => {
-    b.onclick = () => send(hype(WORLD[b.dataset.k].n, { event: b.dataset.k, eventAt: Date.now() }), WORLD[b.dataset.k].n);
+    b.onclick = () => {
+      const k = b.dataset.k, patch = hype(WORLD[k].n, { event: k, eventAt: Date.now() });
+      if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: WORLD[k].n, then: patch } }, `카운트다운 ${cds()}초 → ${WORLD[k].n}`);
+      send(patch, WORLD[k].n);
+    };
   });
+  /* 카운트다운 */
+  const cds = () => Math.max(3, Math.min(60, Math.floor(+grid.querySelector('#ct_cds').value || 5)));
+  grid.querySelector('#ct_cdonly').onclick = () => send({ count: { sec: cds(), label: '' } }, `카운트다운 ${cds()}초`);
+  grid.querySelector('#ct_cdoff').onclick = () => send({ count: null }, '카운트다운 멈춤');
   /* 노래 */
   const mmin = () => Math.max(1, Math.min(120, Math.floor(+grid.querySelector('#ct_mmin').value || 10)));
   let pick = 'fest';
@@ -22964,8 +23075,9 @@ async function castSend(patch) {
     const d = await r.json().catch(() => ({}));
     if (!r.ok || !d.ok) return { ok: false, why: (d && d.why) || ('서버가 ' + r.status) };
     Object.assign(LIVE, d.live || {}, { at: Date.now() });
+    if (d.live && +d.live.now) SRV_SKEW = +d.live.now - Date.now();
     liveSave(); noticeShow();
-    try { bossWatch(); liveTick(); } catch (e) {}
+    try { bossWatch(); liveTick(); countWatch(); } catch (e) {}
     return { ok: true };
   } catch (e) {
     return { ok: false, why: e.name === 'AbortError' ? '서버가 답이 없다' : String(e.message || e) };
