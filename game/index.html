@@ -3440,6 +3440,46 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .mpdeckbtn{font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #8a6a3a;background:rgba(255,248,230,.85);color:#3a2a14;cursor:pointer}
 .mpdeckbtn:hover{background:#ffe7b0}
 .mpal-h .mpdeckbtn{margin-left:6px}
+/* ══ 백귀야행 ══ */
+.marchpill{position:fixed;right:10px;top:calc(var(--tbh,44px) + 82px + env(safe-area-inset-top,0px));z-index:120;display:flex;align-items:center;gap:7px;
+  padding:5px 12px;border-radius:16px;cursor:pointer;background:rgba(24,12,6,.86);border:1px solid #c8782a;color:#ffe0b0;font-size:12.5px;
+  box-shadow:0 0 14px rgba(255,140,40,.35)}
+.marchpill i{font-style:normal;color:#ffb45a;font-size:15px;text-shadow:0 0 8px #ff8a2a}
+.marchpill b{font-weight:400;letter-spacing:.06em}
+.marchpill .mpg{position:relative;width:90px;height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+.marchpill .mpg u{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#c8501a,#ffb45a);box-shadow:0 0 8px #ff8a2a;transition:width .6s}
+.marchpill .mpg em{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,240,210,.55)}
+.marchpill strong{font-weight:700;font-variant-numeric:tabular-nums;color:#fff0d0}
+.marchpill small{font-variant-numeric:tabular-nums;color:#ffcf8a}
+.marchpill.paused{border-color:#7fe6cf;box-shadow:none}.marchpill.paused small{color:#7fe6cf}
+.marchpill.done{opacity:.8}
+.unit.au-march .uaura{opacity:1;background:radial-gradient(circle at 50% 40%,rgba(255,170,60,.35),rgba(255,120,30,0) 62%)}
+.unit.au-march .body{filter:drop-shadow(0 0 10px rgba(255,150,50,.7))}
+.mklan{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;margin-right:4px;border-radius:50% 50% 45% 45%;
+  background:radial-gradient(circle at 50% 40%,#fff2c0,#ffb45a 55%,#c8501a);color:#5a1a00;font-size:12px;box-shadow:0 0 10px #ff9a3a;
+  animation:mkLan 1.6s ease-in-out infinite}
+@keyframes mkLan{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.marchfly{position:fixed;z-index:60;transform:translate(-50%,-50%);font-size:24px;font-weight:700;pointer-events:none;
+  text-shadow:0 0 10px rgba(255,140,40,.9),0 2px 4px #000;animation:mfUp 1.3s ease-out forwards}
+@keyframes mfUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.8)}20%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-200%) scale(1)}}
+#bg .marchsky{position:absolute;left:0;right:0;top:56%;height:120px;z-index:1;pointer-events:none;overflow:hidden}
+#bg .marchsky i{position:absolute;left:-80px;top:calc(40px + var(--y));display:flex;flex-direction:column;align-items:center;transform:scale(var(--s));
+  animation:msWalk 60s linear infinite;animation-delay:var(--d);opacity:.42}
+#bg .marchsky.paused i{animation-play-state:paused}
+#bg .marchsky i b{font-weight:400;font-size:30px;color:#1a0e08;text-shadow:0 0 1px #000;animation:msBob .9s ease-in-out infinite alternate}
+#bg .marchsky i u{position:absolute;right:-10px;top:2px;width:10px;height:13px;border-radius:50% 50% 40% 40%;background:#ffb45a;
+  box-shadow:0 0 10px #ff9a3a,0 0 22px rgba(255,140,40,.7);animation:mkLan 1.4s ease-in-out infinite}
+@keyframes msWalk{from{left:-80px}to{left:calc(100% + 80px)}}
+@keyframes msBob{to{transform:translateY(-4px)}}
+.marchend{position:fixed;inset:0;z-index:470;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(60,20,4,.78),rgba(10,4,2,.4) 70%,transparent);animation:cutIn .4s ease}
+.marchend.out{opacity:0;transition:opacity .7s}
+.marchend .mehead{font-size:clamp(46px,9vmin,96px);letter-spacing:.3em;color:#ffcf8a;text-shadow:0 0 24px #ff8a2a,0 0 60px rgba(255,120,30,.7),0 4px 0 #3a1400}
+.marchend .mesub{color:#ffe7c8;letter-spacing:.12em;font-size:clamp(14px,2.4vmin,20px)}
+.marchend .melast{color:#fff;font-size:clamp(16px,3vmin,26px)}.marchend .melast b{color:#ffb45a;text-shadow:0 0 12px #ff8a2a}
+.marchend .memine{color:#d8c4a0;font-size:13px}
+.castsec.march{border-color:rgba(255,160,70,.45)}.castsec.march>b{color:#ffb45a}
+@media (prefers-reduced-motion:reduce){#bg .marchsky i,#bg .marchsky i b,.mklan{animation:none!important}}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -5658,7 +5698,9 @@ function songWant() {
   if (m && m.k && SONGS[m.k] && (!m.until || srvNow() < m.until)) return m.k;
   if (G.b && G.b.kind === 'world' && !G.b.over) return 'boss';
   if ((G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) || (typeof MP === 'object' && MP.lobby)) return 'duel';
-  return liveRain() ? 'rain' : EV_SONG[liveEvent()] || '';
+  if (liveRain()) return 'rain';
+  if (EV_SONG[liveEvent()]) return EV_SONG[liveEvent()];
+  return marchOn() && SONGS.night ? 'night' : '';      /* 백귀야행 — 붉은 달의 노래로 행렬이 지난다 */
 }
 function songSync() { try { SONG.want(songWant()); } catch (e) { console.error('노래', e); } }
 /* ══════════════════════════════════════════════════════════
@@ -6031,7 +6073,8 @@ function adoptRun(obj) {
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
   if (kind === 'enemies' && /^(mp[f_]|hk_)/.test(id)) return false;
-  if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly)) return false;  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
+  if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly)) return false;
+  if (kind === 'relics' && RELICS[id] && RELICS[id].eventOnly) return false;   /* 이벤트 유물은 도감에 적지 않는다 */  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
   if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
   return false;
 }
@@ -7623,6 +7666,10 @@ defRelic({ id: 'ninthseal', n: '구천의 인장', g: '九', rar: 'fused',
 
 const RELIC_POOL = { common: [], uncommon: [], rare: [], boss: [], special: [], ssc: [], fused: [] };
 for (const k in RELICS) RELIC_POOL[RELICS[k].rar].push(k);
+/* 백귀야행에서만 — 행렬을 끝까지 함께 쓰러뜨리면 받는다 (무작위로 나오지 않고 도감에도 없다) */
+defRelic({ id: 'march_lamp', n: '행렬의 등불', g: '燈', rar: 'boss', eventOnly: true,
+  d: '전투 시작 시 모든 적에게 <b>약화</b> 1을 걸고 <i>5</i>의 방어도를 얻는다.',
+  h: { battleStart: () => { for (const e of alive()) st(e, 'weak', 1); blk(5, true); } } });
 /* 합성 결과물은 무작위로 나오지 않는다 */
 function fusionFor(ids) {
   const set = new Set(ids);
@@ -10226,6 +10273,7 @@ function startBattle(enemyIds, kind, opts) {
     dexAdd('enemies', id);
     b.enemies.push(e);
   }
+  marchMark(b, kind, run);                              /* 백귀야행 — 한 마리가 등불을 든다 */
   b.drawPile = shuffle(run.deck.map(c => Object.assign({}, c, { bonus: 0 })));
   b.plan = planClean(run).map(h => h.slice());          /* 덱 설정 — 차례마다 뽑을 부적 */
   if (!run._pvp) dajimBattleStart(run);                 /* 다짐은 한 라운드짜리 */
@@ -10782,6 +10830,7 @@ async function checkDeaths() {
       if (e.el) { const c0 = centerOf(e.el); killCrack(c0.x, c0.y, tint('#fff2c8')); }
       killFx(e);
       dropOnKill(e);
+      if (e.march) marchKill(e);                          /* 백귀야행 — 행렬의 요괴 */
     }
   }
   if (killed >= 2) {                                  /* 한 번에 여럿을 눕히면 더 요란하게 */
@@ -12103,11 +12152,11 @@ function buildEnemies() {
   const side = $('#eside'); side.innerHTML = '';
   G.b.enemies.forEach((e, i) => {
     const u = el('div', 'unit' + (e.def.big ? ' big' : '') +
-      (G.b.kind === 'boss' || G.b.kind === 'hackboss' || e.def.big ? ' au-boss' : G.b.kind === 'elite' ? ' au-elite' : ''));
+      (G.b.kind === 'boss' || G.b.kind === 'hackboss' || e.def.big ? ' au-boss' : G.b.kind === 'elite' ? ' au-elite' : '') + (e.march ? ' au-march' : ''));
     u.innerHTML = `<div class="intent"></div>
       <div class="prev"></div>
       <div class="body"><div class="uaura"><i></i><i></i><i></i></div>${enso(e.def.col, i * 3 + 5)}<span class="glyph">${e.g}</span><div class="blockbadge hide"></div></div>
-      <div class="nm">${elemBadge(e.id)}${e.n}</div>
+      <div class="nm">${e.march ? '<i class="mklan" title="행렬의 요괴 — 쓰러뜨리면 백귀야행 +1">燈</i>' : ''}${elemBadge(e.id)}${e.n}</div>
       <div class="ebar"><i></i><b></b></div>
       <div class="stats"></div>`;
     u.style.animationDelay = (i * .4) + 's';
@@ -20866,7 +20915,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 23;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 24;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -20985,6 +21034,7 @@ async function liveFetch() {
     LIVE.hack = d.hack && typeof d.hack === 'object' ? d.hack : null;       /* [해킹] 이벤트 */
     LIVE.autofree = d.autofree && typeof d.autofree === 'object' ? d.autofree : null;   /* 자동 플레이 맛보기 */
     LIVE.count = d.count && typeof d.count === 'object' ? d.count : null;    /* 카운트다운 */
+    LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
     try { countWatch(); } catch (e) { console.error('카운트다운', e); }
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
@@ -21003,6 +21053,122 @@ async function liveFetch() {
     try { liveTick(); }   catch (e) {}
     updateCheck();
   } catch (e) { /* 인터넷이 없을 뿐이다 */ }
+}
+
+/* ══════════════════════════════════════════════════════════
+   백귀야행(百鬼夜行) — 요괴 행렬
+   ──────────────────────────────────────────────────────────
+   백야가 부르면 밤 동안 요괴의 행렬이 산을 지난다. 접속한 모두가 힘을 합쳐
+   정한 수(goal)를 쓰러뜨린다. 싸움(일반·엘리트)마다 한 마리가 등불(燈)을 들고,
+   그것을 쓰러뜨리면 서버의 수가 하나 오른다(로그인한 사람만, 6초에 한 마리).
+   30% · 60% · 100% 에 닿으면 한 마리라도 잡은 사람 모두가 보상을 받는다.
+   100번째(마지막)를 벤 사람의 닉네임은 모든 화면에 뜬다.
+   카드 대전 동안은 시간도 수도 멈춘다(서버가 센다). 모두의 적과는 함께 걸리지 않는다.
+   LIVE.march — { id, at, until, goal, n, ppl, done, win, last, pauseAt }
+   ══════════════════════════════════════════════════════════ */
+const MARCH_STEPS = [[.3, '삼할'], [.6, '육할'], [1, '끝']];
+const marchOn = () => { const m = LIVE.march; return !!(m && !m.done && (m.pauseAt || srvNow() < (+m.until || 0))); };
+const marchPaused = () => !!(LIVE.march && LIVE.march.pauseAt) || liveRain();
+function marchMe() {
+  const m = LIVE.march; if (!m) return null;
+  META.march = META.march && META.march.id === m.id ? META.march : { id: m.id, mine: 0, got: {}, fin: false };
+  return META.march;
+}
+/* 싸움을 열 때 — 일반·엘리트에서 한 마리가 등불을 든다 (조금 더 질기다) */
+function marchMark(b, kind, run) {
+  if (!marchOn() || marchPaused() || !run || run._pvp) return;
+  if (kind !== 'normal' && kind !== 'elite') return;
+  const e = pick(b.enemies); if (!e) return;
+  e.march = true; e.hp = e.maxHp = Math.round(e.maxHp * 1.15);
+}
+/* 등불 든 요괴를 쓰러뜨렸다 */
+async function marchKill(e) {
+  const m = LIVE.march; if (!m) return;
+  const c = e.el ? centerOf(e.el) : { x: innerWidth / 2, y: innerHeight * .4 };
+  marchFly(c.x, c.y, '百 +1', '#ffb45a');
+  if (!acctOn()) { toast('로그인해야 행렬의 수에 들어간다'); return; }
+  const r = await acctAsk('/march/hit', { token: ACCT.token, id: m.id }, 12000);
+  if (!r.ok) { if (!r.banned) toast('백귀야행 — ' + r.why); return; }
+  Object.assign(m, { n: r.n, done: r.done, win: r.win, last: r.last });
+  const me = marchMe(); if (me) { me.mine = Math.max(me.mine, r.mine || me.mine + 1); saveMeta(); }
+  marchFly(c.x, c.y - 40, `${r.n} / ${r.goal}`, '#ffe0a0');
+  try { SND.gong(); } catch (x) {}
+  marchTick();
+}
+function marchFly(x, y, t, col) {
+  const f = el('div', 'marchfly', t); f.style.left = x + 'px'; f.style.top = y + 'px'; f.style.color = col;
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1300);
+}
+/* 한 박자마다 — 띠 · 지도 위의 행렬 · 보상 · 끝 */
+function marchTick() {
+  const m = LIVE.march, on = marchOn();
+  let pill = $('#marchpill');
+  if (!m) { if (pill) pill.remove(); marchSky(false); return; }
+  if (!pill) { pill = el('div', 'marchpill'); pill.id = 'marchpill'; document.body.appendChild(pill); pill.onclick = marchInfo; }
+  const pct = Math.min(100, m.n / m.goal * 100), paused = on && marchPaused();
+  const left = Math.max(0, (m.pauseAt ? m.until - m.pauseAt : m.until - srvNow())), s = Math.ceil(left / 1000);
+  pill.innerHTML = `<i>百</i><b>백귀야행</b><span class="mpg"><u style="width:${pct.toFixed(1)}%"></u>${MARCH_STEPS.map(([f]) => `<em style="left:${f * 100}%"></em>`).join('')}</span>
+    <strong>${m.n} / ${m.goal}</strong><small>${m.done ? (m.win ? '끝' : '지나갔다') : paused ? '멈춤' : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`}</small>`;
+  pill.classList.toggle('paused', paused); pill.classList.toggle('done', !!m.done);
+  marchSky(on && (G.scene === 'map' || G.scene === 'title'), paused);
+  /* 보상 — 한 마리라도 잡은 사람만, 단계마다 한 번 */
+  const me = marchMe();
+  if (me && me.mine > 0) for (const [f, k] of MARCH_STEPS) if (m.n >= Math.ceil(m.goal * f) && !me.got[k]) { me.got[k] = 1; saveMeta(); marchPay(f, m); }
+  /* 끝 */
+  if (m.done && me && !me.fin) { me.fin = true; saveMeta(); marchEnd(m, me); }
+}
+function marchPay(f, m) {
+  const run = G.run, act = (run && run.act) || 1, parts = [];
+  if (f < .5) {
+    if (run) { const g = Math.round(100 * Math.sqrt(lootGold(act))); run.gold += g; run.stats.gold += g; parts.push('골드 ' + g); }
+    else { META.jp += 30; META.jpTotal = (META.jpTotal || 0) + 30; parts.push('정진 30'); }
+  } else if (f < 1) {
+    if (run) { const d = 30 + act * 2; run.dia = (run.dia || 0) + d; parts.push('다이아 ' + d); }
+    else { META.jp += 50; META.jpTotal = (META.jpTotal || 0) + 50; parts.push('정진 50'); }
+  } else {
+    META.jp += 120; META.jpTotal = (META.jpTotal || 0) + 120; parts.push('정진 120');
+    if (run) { run.dia = (run.dia || 0) + 60; parts.push('다이아 60');
+      if (!hasRelic('march_lamp')) { gainRelic('march_lamp'); parts.push('유물 「행렬의 등불」'); } }
+  }
+  saveMeta(); if (run) { saveRun(); renderTop(); }
+  try { SND.coin && SND.coin(); SND.unlock(); } catch (e) {}
+  toast(`百 백귀야행 ${Math.round(f * 100)}% — ${parts.join(' · ')}`);
+}
+function marchEnd(m, me) {
+  if (!m.win) { toast(`행렬이 지나갔다 — ${m.n} / ${m.goal}${me.mine ? ` · 내가 벤 것 ${me.mine}` : ''}`); return; }
+  const n = el('div', 'marchend');
+  n.innerHTML = `<div class="mehead">百 鬼 夜 行</div><div class="mesub">행렬의 끝 — ${m.goal}마리를 모두 함께 쓰러뜨렸다</div>
+    <div class="melast"><b>${wEsc(m.last || '누군가')}</b> 이(가) 마지막 한 마리를 베었다</div>
+    <div class="memine">${me.mine ? `내가 벤 것 <b>${me.mine}</b>마리` : '이번에는 구경만 했다'}${m.ppl ? ` · 함께한 퇴마사 ${m.ppl}명` : ''}</div>`;
+  document.body.appendChild(n);
+  try { SND.gong(); SND.victory(); screenFlash('rgba(255,180,90,.5)', 900); shake(true); } catch (e) {}
+  setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 700); }, 4200);
+}
+function marchInfo() {
+  const m = LIVE.march; if (!m) return;
+  const me = marchMe() || { mine: 0, got: {} };
+  const p = modal(`<h2 style="color:#ffb45a">百 백귀야행 — 요괴 행렬</h2>
+    <div class="hint" style="max-width:440px;line-height:1.85;margin-top:6px">
+      산을 지나는 요괴 행렬을 모두가 함께 쓰러뜨린다. 싸움마다 등불(<b style="color:#ffb45a">燈</b>)을 든 요괴가 한 마리 섞여 있다 — 그것을 쓰러뜨리면 하나가 오른다.<br>
+      <b>${m.n} / ${m.goal}</b> · 함께한 퇴마사 ${m.ppl || 0}명 · 내가 벤 것 <b>${me.mine}</b><br>
+      <span style="color:#c9bc9c">30% 골드 · 60% 다이아 · 100% 정진·다이아·유물 「행렬의 등불」 — 한 마리라도 벤 사람 모두</span><br>
+      <span style="color:#8a7f68">카드 대전 동안은 행렬이 멈춘다 · 로그인해야 센다</span></div>
+    <div style="margin-top:12px"><button class="brush-btn" id="mi_ok">알겠다</button></div>`);
+  p.dataset.noauto = '1'; p.querySelector('#mi_ok').onclick = closeTop;
+}
+/* 지도 뒤로 지나는 행렬 — 등불을 든 요괴 그림자 */
+function marchSky(on, paused) {
+  const bg = $('#bg'); if (!bg) return;
+  let a = bg.querySelector('.marchsky');
+  if (!on) { if (a) a.remove(); return; }
+  if (!a) {
+    a = el('div', 'marchsky');
+    const G2 = ['鬼', '狐', '蛇', '貉', '猫', '狸', '傘', '燈', '骨', '蜘', '天', '河'];
+    a.innerHTML = Array.from({ length: 14 }, (_, i) => `<i style="--d:${(-i * 4.3).toFixed(1)}s;--y:${(i % 3) * 14 - 14}px;--s:${(.8 + (i % 4) * .12).toFixed(2)}">
+      <b>${G2[i % G2.length]}</b><u></u></i>`).join('');
+    bg.appendChild(a);
+  }
+  a.classList.toggle('paused', !!paused);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -22280,6 +22446,7 @@ function liveTick() {
   try { cutLiveCheck(); } catch (e) { console.error('컷씬', e); }
   try { hackTick(); } catch (e) { console.error('해킹', e); }
   try { autoFreeTick(); } catch (e) { console.error('맛보기', e); }
+  try { marchTick(); } catch (e) { console.error('백귀야행', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -22597,6 +22764,19 @@ function drawCast(grid) {
       <button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
     </div>
 
+    <div class="castsec march"><b>百 백귀야행 — 요괴 행렬</b>
+      <div class="casthint">모두가 함께 정한 수의 요괴를 쓰러뜨린다. 싸움마다 한 마리가 등불(燈)을 들고, 쓰러뜨리면 서버의 수가 오른다.
+        30% · 60% · 100%에 닿으면 한 마리라도 잡은 사람 모두가 보상을 받는다(100%는 「행렬의 등불」 유물). 카드 대전 동안은 멈추고, 모두의 적과는 함께 못 건다.
+        위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 행렬이 나타난다.</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">목표 <input id="ct_mgoal" type="number" min="20" max="300" value="100" style="width:70px"> 마리</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtime" type="number" min="3" max="30" value="10" style="width:60px"> 분</label>
+        <button class="brush-btn red" id="ct_march">행렬을 부른다</button>
+        <button class="brush-btn ghost" id="ct_marchoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+      <div class="casthint" id="ct_mnow"></div>
+    </div>
+
     <div class="castsec"><b>일 퍼뜨리기</b>
       <div class="casthint">슈팅 스타·혼돈·풍년은 한 번에 하나만 걸린다(새로 걸면 앞의 것이 내려간다).
         카드 대전은 따로 — 그 셋 가운데 하나와 함께 걸 수 있다. 「모두 끈다」는 둘 다 내린다.</div>
@@ -22856,6 +23036,18 @@ function drawCast(grid) {
   const cds = () => Math.max(3, Math.min(60, Math.floor(+grid.querySelector('#ct_cds').value || 5)));
   grid.querySelector('#ct_cdonly').onclick = () => send({ count: { sec: cds(), label: '' } }, `카운트다운 ${cds()}초`);
   grid.querySelector('#ct_cdoff').onclick = () => send({ count: null }, '카운트다운 멈춤');
+  /* 백귀야행 */
+  const mNow = () => { const m = LIVE.march, e = grid.querySelector('#ct_mnow'); if (!e) return;
+    e.innerHTML = m ? `지금 — <b>${m.n} / ${m.goal}</b> · 참가 ${m.ppl || 0}명 · ${m.done ? (m.win ? `끝(${wEsc(m.last || '')}이 마지막)` : '지나갔다(못 채움)') : m.pauseAt ? '멈춤(카드 대전)' : '남은 때 ' + wTime(Math.max(0, m.until - srvNow()))}` : '지나는 행렬이 없다'; };
+  mNow();
+  grid.querySelector('#ct_march').onclick = () => {
+    const goal = Math.max(20, Math.min(300, Math.floor(+grid.querySelector('#ct_mgoal').value || 100)));
+    const min = Math.max(3, Math.min(30, Math.floor(+grid.querySelector('#ct_mtime').value || 10)));
+    const patch = hype('백귀야행', { march: { goal, min } });
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: '백귀야행', then: patch } }, `카운트다운 ${cds()}초 → 백귀야행 ${goal}마리`).then(mNow);
+    send(patch, `백귀야행 ${goal}마리 · ${min}분`).then(mNow);
+  };
+  grid.querySelector('#ct_marchoff').onclick = () => send({ march: null }, '백귀야행 거두기').then(mNow);
   /* 노래 */
   const mmin = () => Math.max(1, Math.min(120, Math.floor(+grid.querySelector('#ct_mmin').value || 10)));
   let pick = 'fest';
@@ -25177,7 +25369,7 @@ function showDex() {
   const byGrade = {};
   for (const k of GRADE_ORDER.concat(['curse'])) byGrade[k] = [];
   for (const id in CARDS) if (!CARDS[id].hackOnly && !CARDS[id].devOnly) byGrade[CARDS[id].rar].push(id);
-  const relicIds = Object.keys(RELICS), enemyIds = Object.keys(ENEMIES).filter(id => !/^hk_/.test(id));
+  const relicIds = Object.keys(RELICS).filter(id => !RELICS[id].eventOnly), enemyIds = Object.keys(ENEMIES).filter(id => !/^hk_/.test(id));
   const totalCards = Object.keys(CARDS).filter(id => !CARDS[id].hackOnly && !CARDS[id].devOnly).length;
 
   let secs = '';

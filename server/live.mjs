@@ -43,6 +43,15 @@ function expire(now) {
   if (live.cut && now - live.cut.at > 120000) { live.cut = null; changed = true; }
   if (live.autofree && now > live.autofree.until) { live.autofree = null; changed = true; }
   if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
+  /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
+  const mc = live.march;
+  if (mc) {
+    const rainOn = !!(live.rain && now < (+live.rain.until || 0));
+    if (!mc.done && rainOn) { if (!mc.pauseAt) { mc.pauseAt = now; changed = true; } }
+    else if (mc.pauseAt) { mc.until += now - mc.pauseAt; mc.pauseAt = 0; changed = true; }
+    if (!mc.done && !mc.pauseAt && now > mc.until) { mc.done = true; mc.win = false; mc.end = now; changed = true; }
+    if (mc.done && now - (mc.end || now) > 2 * 60 * 1000) { live.march = null; changed = true; }
+  }
   /* 숨은 부적 — 때가 지나고 한 분 뒤 걷는다 */
   if (live.hunt && now > live.hunt.until + 60000) { live.hunt = null; changed = true; }
   /* 투표 — 때가 되면 마감하고, 열 분 뒤 걷는다(결과를 볼 틈) */
@@ -480,9 +489,12 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
-const COUNT_LEAD = 13000;                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
+const COUNT_LEAD = 13000;
+let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에서 아이디마다 잡은 수 · 마지막으로 친 때 */
+const bossLive = () => !!(live.boss && !live.boss.done && !live.boss.fled);
+const marchLive = () => !!(live.march && !live.march.done);                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
 async function applyCast(q) {
@@ -556,6 +568,16 @@ async function applyCast(q) {
         /* 두 셈마다 도는 예약 바퀴를 기다리지 않고 0 에 맞춰 건다 */
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
+    }
+  }
+  /* 백귀야행 — 요괴 행렬. 모두가 함께 goal 마리를 쓰러뜨린다 */
+  if ('march' in q) {
+    if (!q.march) { if (live.march && !live.march.done) { live.march.done = true; live.march.win = false; live.march.end = Date.now(); } }
+    else {
+      const now = Date.now(), goal = Math.max(20, Math.min(300, parseInt(q.march.goal, 10) || 100));
+      const min = Math.max(3, Math.min(30, parseInt(q.march.min, 10) || 10));
+      live.march = { id: now, at: now, until: now + min * 60000, goal, n: 0, ppl: 0, done: false, win: false, last: '', pauseAt: 0 };
+      marchWho = new Map();
     }
   }
   /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
@@ -1161,6 +1183,9 @@ const server = http.createServer(async (req, res) => {
       live.sched.sort((x, y) => x.at - y.at);
     }
     if ('unschedule' in q) live.sched = (live.sched || []).filter(x => String(x.id) !== String(q.unschedule));
+    /* 모두의 적과 백귀야행은 둘 다 함께 치는 일 — 한 번에 하나만 */
+    if ((q.march || (q.count && q.count.then && q.count.then.march)) && bossLive()) return send(res, 409, { ok: false, why: '모두의 적이 서 있다 — 거둔 뒤에 행렬을 부르시오' });
+    if (q.boss && marchLive()) return send(res, 409, { ok: false, why: '백귀야행이 지나는 중이다 — 끝난 뒤에 적을 세우시오' });
     await pollLoad();
     await applyCast(pickCast(q));
     live.at = Date.now();
@@ -1172,6 +1197,34 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 백귀야행 — 행렬의 요괴를 쓰러뜨렸다 (로그인한 사람만, 한 사람은 6초에 한 마리) ── */
+  if (url.pathname === '/march/hit' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    const m = live.march;
+    if (!m || String(q.id || '') !== String(m.id)) return send(res, 409, { ok: false, why: '지나는 행렬이 없다' });
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 센다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const me = marchWho.get(id) || { n: 0, at: 0 };
+    if (m.done) return send(res, 200, { ok: true, n: m.n, goal: m.goal, mine: me.n, done: true, win: m.win, last: m.last });
+    if (m.pauseAt) return send(res, 409, { ok: false, why: '카드 대전 중 — 행렬이 멈춰 있다' });
+    if (now - me.at < 6000) return send(res, 429, { ok: false, why: '너무 빠르다' });
+    if (!me.n) m.ppl = (m.ppl || 0) + 1;
+    me.n++; me.at = now; marchWho.set(id, me);
+    if (marchWho.size > 50000) marchWho.clear();
+    m.n++;
+    if (m.n >= m.goal) { m.n = m.goal; m.done = true; m.win = true; m.end = now; m.last = (await nickOf(id)) || id;
+      console.log('백귀야행 — 행렬의 끝:', m.last, '· 참가', m.ppl); }
+    live.at = now;
+    await keep();
+    return send(res, 200, { ok: true, n: m.n, goal: m.goal, mine: me.n, done: m.done, win: m.win, last: m.last });
+  }
+
   if (url.pathname === '/hit' && req.method === 'POST') {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
                req.socket.remoteAddress || '?';
