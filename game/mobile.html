@@ -3572,26 +3572,26 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .cut.cdevgold .cutview{filter:sepia(.5) saturate(1.6) brightness(1.1)}
 /* ══ 비밀의 계란 ══ */
 .egglayer{position:fixed;left:0;right:0;top:var(--tbh,44px);bottom:0;z-index:14;pointer-events:none}
-.egg{position:absolute;width:44px;height:56px;margin:-28px 0 0 -22px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
+.mapegg{position:absolute;width:44px;height:56px;margin:-28px 0 0 -22px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
   transform:rotate(var(--r));animation:eggIdle 2.6s ease-in-out infinite;--k:0;touch-action:manipulation}
-.egg .eshell{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;
+.mapegg .eshell{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;
   background:radial-gradient(circle at 35% 30%,#ffffff,#f4ead6 45%,#d8c8a8 85%);box-shadow:inset -4px -6px 10px rgba(120,90,50,.35),0 4px 8px rgba(0,0,0,.35)}
-.egg .ecrack{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;opacity:var(--k);pointer-events:none;
+.mapegg .ecrack{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;opacity:var(--k);pointer-events:none;
   background:linear-gradient(115deg,transparent 42%,#5a4028 43%,transparent 45%),linear-gradient(65deg,transparent 52%,#5a4028 53%,transparent 55%),
     linear-gradient(160deg,transparent 30%,#5a4028 31%,transparent 33%),linear-gradient(20deg,transparent 62%,#5a4028 63%,transparent 65%)}
-.egg.secret{width:52px;height:66px;margin:-33px 0 0 -26px;filter:drop-shadow(0 0 10px #ffd76a) drop-shadow(0 0 22px rgba(255,190,60,.8));animation:eggIdle 2s ease-in-out infinite,eggGlow 1.2s ease-in-out infinite alternate}
-.egg.secret .eshell{background:radial-gradient(circle at 35% 30%,#fffbe6,#ffe08a 45%,#e0a830 90%)}
-.egg.secret .ering{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;pointer-events:none;
+.mapegg.secret{width:52px;height:66px;margin:-33px 0 0 -26px;filter:drop-shadow(0 0 10px #ffd76a) drop-shadow(0 0 22px rgba(255,190,60,.8));animation:eggIdle 2s ease-in-out infinite,eggGlow 1.2s ease-in-out infinite alternate}
+.mapegg.secret .eshell{background:radial-gradient(circle at 35% 30%,#fffbe6,#ffe08a 45%,#e0a830 90%)}
+.mapegg.secret .ering{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;pointer-events:none;
   background:conic-gradient(#ffd76a calc(var(--k) * 360deg),rgba(255,255,255,.15) 0);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%,#000 68%,transparent 70%);mask:radial-gradient(circle,transparent 58%,#000 60%,#000 68%,transparent 70%)}
-.egg.secret em{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);font-style:normal;font-size:12px;font-weight:700;color:#ffe7a0;text-shadow:0 0 6px #000,0 1px 2px #000}
-.egg.hit{animation:eggHit .18s ease-out}
-.egg.broke{animation:eggBreak .5s ease-out forwards;pointer-events:none}
+.mapegg.secret em{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);font-style:normal;font-size:12px;font-weight:700;color:#ffe7a0;text-shadow:0 0 6px #000,0 1px 2px #000}
+.mapegg.hit{animation:eggHit .18s ease-out}
+.mapegg.broke{animation:eggBreak .5s ease-out forwards;pointer-events:none}
 @keyframes eggIdle{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + 4deg)) translateY(-3px)}}
 @keyframes eggGlow{to{filter:drop-shadow(0 0 16px #fff2b0) drop-shadow(0 0 34px rgba(255,200,80,1))}}
 @keyframes eggHit{0%{transform:rotate(var(--r)) scale(1)}40%{transform:rotate(calc(var(--r) - 12deg)) scale(.86,1.08)}100%{transform:rotate(var(--r)) scale(1)}}
 @keyframes eggBreak{0%{transform:rotate(var(--r)) scale(1);opacity:1}40%{transform:rotate(var(--r)) scale(1.35);opacity:1;filter:brightness(2)}100%{transform:rotate(var(--r)) scale(.2);opacity:0}}
-.castsec.egg{border-color:rgba(255,215,106,.45)}.castsec.egg>b{color:#ffd76a}
-@media (prefers-reduced-motion:reduce){.egg{animation:none!important}}
+.castsec.eggsec{border-color:rgba(255,215,106,.45)}.castsec.eggsec>b{color:#ffd76a}
+@media (prefers-reduced-motion:reduce){.mapegg{animation:none!important}}
 /* ══ 어드민급 — 검은 판에 무지갯빛 테, 초록 단말기 글씨 ══ */
 .card.g-adm .face{border:2px solid #00ffb0;background:radial-gradient(circle at 50% 35%,#0e2a22,#04100c 70%),#04100c;
   box-shadow:inset 0 0 0 1px #003a28,inset 0 0 26px rgba(0,255,176,.35)}
@@ -21666,7 +21666,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 31;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 32;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21850,7 +21850,7 @@ function eggTick() {
   for (const sp of eggSpots(g)) {
     if (me.open[sp.i]) continue;
     const need = sp.secret ? EGG_TAP_S : EGG_TAP, done = me.taps[sp.i] || 0;
-    const e = el('button', 'egg' + (sp.secret ? ' secret' : ''));
+    const e = el('button', 'mapegg' + (sp.secret ? ' secret' : ''));
     e.style.left = sp.x + '%'; e.style.top = sp.y + '%'; e.style.setProperty('--r', sp.rot + 'deg');
     e.innerHTML = `<i class="eshell"></i><i class="ecrack"></i>${sp.secret ? `<b class="ering"></b><em>${need - done}</em>` : ''}`;
     e.style.setProperty('--k', (done / need).toFixed(2));
@@ -23783,7 +23783,7 @@ function drawCast(grid) {
       <button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
     </div>
 
-    <div class="castsec egg"><b>卵 비밀의 계란 뿌리기</b>
+    <div class="castsec eggsec"><b>卵 비밀의 계란 뿌리기</b>
       <div class="casthint">모든 앱의 지도에 계란이 흩어진다. 보통 계란은 3번, <b>빛나는 비밀 계란</b>은 12번 두드려야 깨진다 —
         깨면 골드·다이아·물약·정진, 비밀 계란은 다이아 듬뿍에 유물·S급 부적(아주 드물게 ?급). 사람마다 제 지도에 제 계란.
         위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 뿌려진다.</div>
