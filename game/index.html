@@ -3556,6 +3556,20 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .gachadone b{display:block;font-size:17px;letter-spacing:.15em;color:#fff}
 .gachadone span{display:block;font-size:12.5px;color:#ffe7b0}
 .gachadone #gd_x{background:none;border:none;color:#c9a86a;font-size:18px;cursor:pointer;align-self:flex-start}
+.cdevpilw{pointer-events:none}.cdevpil{width:180px;height:900px;margin-left:-90px;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);filter:blur(6px);transition:opacity .5s}
+.cdevpilw.on .cdevpil{opacity:1}
+.cdevman svg{filter:drop-shadow(0 0 18px rgba(255,255,255,.9))}
+.cdevgrid{width:3000px;height:1400px;margin:-700px 0 0 -1500px;opacity:0;transition:opacity .4s;
+  background-image:linear-gradient(rgba(44,255,122,.55) 2px,transparent 2px),linear-gradient(90deg,rgba(44,255,122,.55) 2px,transparent 2px);background-size:80px 80px}
+.cdevgridw.on .cdevgrid{opacity:1}.cdevgridw.gold .cdevgrid{filter:hue-rotate(-90deg) saturate(2) brightness(1.4);opacity:.6}
+.cdevcode{position:relative;width:1600px;height:900px;margin:-450px 0 0 -800px;opacity:0;transition:opacity .4s;pointer-events:none;overflow:hidden}
+.cdevcodew.on .cdevcode{opacity:.75}.cdevcodew.gold .cdevcode{filter:hue-rotate(-90deg) saturate(2)}
+.cdevcode i{position:absolute;top:-60%;font:700 26px/1.25 monospace;font-style:normal;color:#2cff7a;text-shadow:0 0 8px #2cff7a;animation:cdevRain 2.4s linear infinite}
+@keyframes cdevRain{to{transform:translateY(160%)}}
+.cdevglyph{font-size:360px;line-height:1;font-weight:700;color:#ffd76a;opacity:0;transform:translateY(30%) scale(.4);transition:opacity .8s,transform 1.4s cubic-bezier(.2,1.2,.3,1);
+  text-shadow:0 2px 0 #c8a020,0 4px 0 #a07a10,0 8px 0 #7a5a08,0 14px 20px rgba(0,0,0,.6),0 0 60px rgba(255,200,90,.8)}
+.cdevglyphw.on .cdevglyph{opacity:.95;transform:none}
+.cut.cdevgold .cutview{filter:sepia(.5) saturate(1.6) brightness(1.1)}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -18837,8 +18851,89 @@ function cutBossPlay(run, bossId) {
   const prev = G.scene; G.scene = 'cutscene';
   return cutRun('boss' + run.act, bossId).then(() => { if (G.scene === 'cutscene') G.scene = prev; });
 }
+/* ══ 개발자 컷씬 (평면) — WebGL 이 없는 기계에서 ═══════════════ */
+function cutDevStamp(S, t0, word, sub, seal) {
+  return [
+    [t0, S => { S.title.innerHTML = `<div class="cstamp">${word.split('').map(c => `<span>${c}</span>`).join('')}</div><div class="cstampsub">${sub}</div><div class="cstampseal"><span>${seal[0]}</span><span>${seal[1]}</span></div>`; }],
+    ...[0, 1, 2, 3].map(i => [t0 + 100 + i * 520, S => { const sp = S.title.querySelectorAll('.cstamp span')[i]; if (!sp) return; sp.classList.add('in'); cutSfx('gong'); cutShake(S, 5 + i * 2, 300);
+      const at = cutAt(sp); cutEmit(S, 'gold', at.x, at.y, 14, { sp: 4, life: 50, g: -.02 }); }]),
+    [t0 + 2300, S => { S.title.querySelector('.cstampseal').classList.add('in'); S.title.querySelector('.cstampsub').classList.add('in'); cutSfx('relic'); cutShake(S, 4, 200); }],
+    [t0 + 3700, S => S.title.classList.add('fade')]
+  ];
+}
+function cutDevDescend() {
+  return {
+    len: 15200,
+    build(S) {
+      cutLayer(S, cutSkySvg('#04030a', '#0e0c1c', '#1a1428', [1200, 160, 0]), -900, 0);
+      cutLayer(S, cutRidge('#141020', 600, 150, 1.7, .95), -500, 1);
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible"><path d="M-500 760 Q800 720 2100 760 L2100 1400 L-500 1400Z" fill="#08060c"/></svg>`, 0, 2);
+      S.refs.yk = [];
+      for (let i = 0; i < 10; i++) { const x = 260 + i * 120 + (i > 4 ? 120 : 0), sc = .6 + (i % 3) * .1;
+        const n = cutPut(S, `<div class="cykb">${cutYokaiSvg(i % 4, '#1c1024')}</div>`, { x, y: 760, ax: .5, ay: 1, cls: 'cyk', zi: 3 });
+        n.querySelector('svg').style.transform = `scale(${(x < 800 ? 1 : -1) * sc},${sc})`; S.refs.yk.push(n); }
+      S.refs.pil = cutPut(S, '<div class="cdevpil"></div>', { x: 800, y: 380, z: -20, cls: 'cdevpilw', zi: 2 });
+      S.refs.man = cutPut(S, cutManSvg('#ece6da', '#d8b04a'), { x: 800, y: 120, ax: .5, ay: 1, cls: 'cmanw cdevman', zi: 5 });
+      cutFloor(S, 760, '#08060c', 'rgba(255,255,255,.05)'); cutMotes(S, 30, '255,250,230'); cutFore(S, 'grass', '#030205');
+      cutCam(S, { x: 800, y: 560, s: 1, rx: 4 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1200);
+    },
+    tl: [
+      [300, S => cutSay(S, '달도 뜨지 않은 밤 —', 1800)],
+      [2000, S => { cutSay(S, '하늘이 하얗게 갈라진다.', 1800); cutSfx('charge'); cutCam(S, { x: 800, y: 300, s: .9, rx: -10 }, 1600); }],
+      [3000, S => { S.refs.pil.classList.add('on'); cutFlash(S, '#fff', 500); cutSfx('thunder'); cutShake(S, 14, 600); }],
+      [3500, S => { S.refs.man.animate([{ top: '120px', opacity: 0 }, { top: '160px', opacity: 1, offset: .1 }, { top: '760px', opacity: 1 }], { duration: 2600, easing: 'cubic-bezier(.3,.6,.3,1)', fill: 'forwards' });
+        cutCam(S, { x: 800, y: 560, s: 1.25, rx: 4 }, 2600); }],
+      [6100, S => { cutFlash(S, 'rgba(255,240,200,.9)', 500); cutSfx('gong'); cutShake(S, 18, 500);
+        const seal = cutPut(S, cutSealSvg('#ffffff', '白夜降臨權限開放'), { x: 800, y: 752, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' });
+        const at = cutAt(S.refs.man); cutEmit(S, 'gold', at.x, at.y + at.h * .4, 50, { sp: 8, life: 50, g: .02 });
+        for (const n of S.refs.yk) n.animate([{ transform: n.style.transform }, { transform: n.style.transform + ' translateY(30px) scaleY(.7)' }], { duration: 600, fill: 'forwards' });
+        cutSay(S, '요괴들이 고개를 숙인다.', 1800); }],
+      [8200, S => { cutCam(S, { x: 800, y: 520, s: 1.6, rz: 4, ry: -20 }, 1500); cutSay(S, '이 세계를 만든 이 — 백야.', 2000); }],
+      [9900, S => { cutFlash(S, '#fff', 700); cutSfx('holyhit'); cutSfx('crit'); cutShake(S, 20, 700);
+        S.refs.yk.forEach((n, i) => setTimeout(() => { if (!S.alive) return; const at = cutAt(n); cutBurst(S, at.x, at.y, '255,250,230', 1.2); n.remove(); }, i * 60)); }],
+      [10800, S => cutFade(S, 1, 600)],
+      ...cutDevStamp(null, 11000, '白夜降臨', '개발자가 이 세계에 내려왔다', '開發')
+    ]
+  };
+}
+function cutDevAuth() {
+  return {
+    len: 15600,
+    build(S) {
+      cutLayer(S, cutSkySvg('#0a0612', '#1a1030', '#2a1830', [400, 200, 0]), -900, 0);
+      cutLayer(S, cutRidge('#18122a', 600, 160, 2.3, .95), -500, 1);
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible"><path d="M-500 760 Q800 730 2100 760 L2100 1400 L-500 1400Z" fill="#0a0810"/></svg>`, 0, 2);
+      S.refs.grid = cutPut(S, '<div class="cdevgrid"></div>', { x: 800, y: 760, z: 0, cls: 'cdevgridw', zi: 1, tf: 'rotateX(78deg)' });
+      S.refs.code = cutPut(S, '<div class="cdevcode">' + Array.from({ length: 18 }, (_, i) => `<i style="left:${i * 5.6}%;animation-delay:${(-i * .37).toFixed(2)}s">${'權限解放規則再編01白夜'.split('').sort(() => Math.random() - .5).join('<br>')}</i>`).join('') + '</div>', { x: 800, y: 450, z: -100, cls: 'cdevcodew', zi: 2 });
+      S.refs.man = cutPut(S, cutManSvg('#ece6da', '#d8b04a'), { x: 800, y: 760, ax: .5, ay: 1, cls: 'cmanw', zi: 5 });
+      S.refs.gl = cutPut(S, '<div class="cdevglyph">權</div>', { x: 800, y: 420, z: -60, cls: 'cdevglyphw', zi: 3 });
+      cutFloor(S, 760, '#0a0810', 'rgba(255,255,255,.04)'); cutMotes(S, 26, '255,220,160');
+      cutCam(S, { x: 800, y: 560, s: 1.1 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1000);
+    },
+    tl: [
+      [300, S => cutSay(S, '이 세계에는 규칙이 있다.', 1800)],
+      [2100, S => { cutSay(S, '그 규칙을 쓴 사람이 있다.', 1800); cutCam(S, { x: 800, y: 600, s: 1.4, ry: 14 }, 1600); }],
+      [3700, S => { S.root.classList.add('glitch'); cutSfx('thunder'); cutSfx('err'); cutFlash(S, 'rgba(44,255,122,.5)', 300); S.refs.grid.classList.add('on'); S.refs.code.classList.add('on'); }],
+      [4300, S => S.root.classList.remove('glitch')],
+      [4600, S => { cutSay(S, '권한 확인 — 백야.', 1600); cutSfx('unlock'); }],
+      [6000, S => { S.refs.man.classList.add('armup'); S.refs.gl.classList.add('on'); cutSfx('power'); cutSfx('gong'); cutShake(S, 12, 700); cutCam(S, { x: 800, y: 440, s: 1.2, rx: -12 }, 900); }],
+      [7600, S => { const ring = cutPut(S, '<div class="cringr">' + Array.from({ length: 6 }, (_, i) => `<div class="cringi" style="transform:rotateY(${i * 60}deg) translateZ(210px)">${cutTalis('虛創終響空逆'[i])}</div>`).join('') + '</div>', { x: 800, y: 560, z: 0, cls: 'cring', zi: 6 });
+        cutSfx('talismanS'); cutCam(S, { x: 800, y: 540, s: 1.5, ry: -30, rx: 8 }, 1500); const at = cutAt(ring); cutEmit(S, 'gold', at.x, at.y, 50, { sp: 8, life: 50 }); }],
+      [9400, S => { cutFlash(S, 'rgba(255,215,120,.95)', 700); cutSfx('crit'); cutSfx('holyhit'); cutShake(S, 22, 800);
+        S.refs.grid.classList.add('gold'); S.refs.code.classList.add('gold'); S.root.classList.add('cdevgold');
+        cutPut(S, cutSealSvg('#ffd76a', '權限解放規則再編'), { x: 800, y: 752, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' });
+        cutSay(S, '규칙을 다시 쓴다.', 1600); }],
+      [11200, S => cutFade(S, 1, 500)],
+      ...cutDevStamp(null, 11400, '權限解放', '이 세계의 규칙은 내가 쓴다', '白夜')
+    ]
+  };
+}
 /* 이름으로 부른다 — 관리자가 뿌리는 것도 이 이름을 쓴다 */
-const CUT_LIST = { musou: { n: '무쌍 — 백귀야행', make: () => cutMusou() } };
+const CUT_LIST = { musou: { n: '무쌍 — 백귀야행', make: () => cutMusou() },
+  dev_descend: { n: '백야 강림 — 白夜降臨 (개발자)', make: () => cutDevDescend() },
+  dev_auth: { n: '권한 해방 — 權限解放 (개발자)', make: () => cutDevAuth() } };
 for (let a = 1; a <= 25; a++) CUT_LIST['boss' + a] = { n: `제${a}막 보스 — ${ACT_NAME[a]}`, make: () => cutBoss(a, (ENCOUNTERS[a] && ENCOUNTERS[a].boss[0]) || 'gumiho') };
 function cutByName(k) {
   const c = CUT_LIST[k]; if (!c) return Promise.resolve();
@@ -19295,7 +19390,8 @@ const c3Low = () => innerWidth < 700 || (navigator.deviceMemory && navigator.dev
 async function cutRun(k, arg) {
   const m = /^boss(\d+)$/.exec(k);
   const make3 = m ? () => c3Boss(+m[1], arg || (ENCOUNTERS[+m[1]] && ENCOUNTERS[+m[1]].boss[0]))
-    : k === 'musou' ? () => c3Musou() : k === 'tea' ? () => c3Tea(arg) : k === 'hack' ? () => c3Hack() : null;
+    : k === 'musou' ? () => c3Musou() : k === 'tea' ? () => c3Tea(arg) : k === 'hack' ? () => c3Hack()
+    : k === 'dev_descend' ? () => c3DevDescend() : k === 'dev_auth' ? () => c3DevAuth() : null;
   if (make3 && cut3On()) {
     const ok = await Promise.race([threeLoad(), wait(3000).then(() => false)]);
     if (ok) { try { return await cutPlay3(make3()); } catch (e) { console.error('3D 컷씬 — CSS 컷씬으로', e); const r = document.querySelector('.cut.c3'); if (r) r.remove(); CUT.on = null; document.body.classList.remove('cutting'); } }
@@ -19871,6 +19967,130 @@ function c3Musou() {
       }]),
       [23000, S => { S.title.querySelector('.cstampseal').classList.add('in'); S.title.querySelector('.cstampsub').classList.add('in'); cutSfx('relic'); cutShake(S, 4, 200); }],
       [24600, S => S.title.classList.add('fade')]
+    ]
+  };
+}
+
+/* ══ 3D 개발자 컷씬 ① 白夜降臨 — 백야 강림 ═══════════════════════
+   달 없는 밤, 요괴들이 둥글게 모여 있다 → 하늘이 하얗게 갈라지고 빛기둥이 내리꽂힌다 →
+   흰 도포·금빛 띠의 백야가 빛기둥을 타고 내려온다 → 땅에 흰 진이 펴지고 요괴들이 엎드린다 →
+   뒤로 거대한 「白」「夜」가 솟는다 → 손을 들자 요괴들이 빛으로 흩어진다 → 「白 夜 降 臨」
+   ═════════════════════════════════════════════════════════ */
+function c3DevDescend() {
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  let yk = [];
+  return {
+    len: 17600,
+    build(S) {
+      c3Env(S, { sky: ['#020208', '#0a0a1c', '#1c1630'], fog: ['#0e0c1c', .02], stars: 1100,
+        ridges: [[260, 80, '#1a1630', 1.7], [150, 36, '#120f22', 2.6], [90, 14, '#0c0a16', 3.9]], ground: '#1a1624', grass: '#2a2438', rocks: '#1a1820',
+        hemi: ['#6a6aa0', '#1a1020'], hemiI: 1.3, key: '#c8c8ff', keyI: 2.2, keyPos: [20, 30, 30], rim: '#ffffff', rimI: 1.2 });
+      for (let i = 0; i < 16; i++) {
+        const y = c3Yokai(S, i % 4), a = i / 16 * Math.PI * 2, r = 6.5 + (i % 2) * 1.6;
+        y.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); y.lookAt(0, 0, 0); y.scale.setScalar(.8 + (i % 3) * .15); S.scene.add(y); yk.push(y);
+      }
+      const dev = c3Man(S, '#ece6da', '#d8b04a'); dev.g.position.set(0, 34, 0); dev.g.scale.setScalar(1.08); S.scene.add(dev.g); S.refs.dev = dev;
+      const halo = c3Glow(S, '#ffffff', 4.5, 0); halo.position.y = 1.2; dev.g.add(halo); S.refs.halo = halo;
+      const sky = c3Glow(S, '#ffffff', 2, 0); sky.position.set(0, 60, 0); S.scene.add(sky); S.refs.sky = sky;
+      c3Amb(S, 'ash', 160, '#8a86a8');
+      S.upd.push((dt, t) => { for (const y of yk) if (!y.userData.dead && !y.userData.bow) y.userData.bob(t); if (S.refs.seal) S.refs.seal.rotation.z += dt * .5;
+        if (S.refs.gl) for (const g of S.refs.gl) g.userData.aura.material.opacity = .7 + Math.sin(t * 3) * .2; });
+      c3Cam(S, { p: [0, 1.4, 16], l: [0, 1.2, 0], fov: 40, roll: 0 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1300);
+    },
+    tl: [
+      [200, S => { cutSfx('bell'); c3Cam(S, { p: [4, 2.2, 11], l: [0, 1, 0], fov: 42, roll: -.04 }, 2600); }],
+      [500, S => cutSay(S, '달도 뜨지 않은 밤 —', 1800)],
+      [2200, S => { cutSay(S, '하늘이 하얗게 갈라진다.', 1800); c3Cam(S, { p: [0, 1, 12], l: [0, 30, 0], fov: 52, roll: 0 }, 1400); cutSfx('charge');
+        c3Tw(S, 1400, k => { S.refs.sky.scale.setScalar(2 + k * 90); S.refs.sky.material.opacity = k; }, 'in'); }],
+      [3600, S => { cutFlash(S, '#fff', 600); cutSfx('thunder'); cutSfx('power'); c3Shake(S, .7, 700);
+        S.refs.pil = c3Pillar(S, V(0, 0, 0), '#ffffff', 1.1, 70); c3Tw(S, 500, k => S.refs.pil.material.opacity = k * .32);
+        c3Amb(S, 'gold', 120, '#fff4d0'); }],
+      [4200, S => { const g = S.refs.dev.g; c3Tw(S, 2700, k => { g.position.y = 34 * (1 - k); g.rotation.y = (1 - k) * 6.28; }, 'out');
+        c3Tw(S, 600, k => S.refs.halo.material.opacity = k * .9);
+        c3Cam(S, { p: [0, 3, 9], l: [0, 1.5, 0], fov: 40, roll: 0 }, 2700); }],
+      [6900, S => { cutFlash(S, 'rgba(255,245,215,.95)', 500); cutSfx('gong'); cutSfx('crit'); c3Shake(S, .9, 600); cutHitstop(S, 100);
+        c3Burst(S, V(0, .3, 0), '#ffffff', 1.6); c3Burst(S, V(0, .3, 0), '#ffd76a', 1);
+        const seal = c3Seal(S, '#ffffff', '白夜降臨權限開放'); seal.position.y = .05; S.refs.seal = seal;
+        c3Tw(S, 900, k => { seal.scale.setScalar(.1 + k * 15); seal.material.opacity = k * .9; }, 'out');
+        c3Tw(S, 800, k => S.refs.pil.material.opacity = .32 * (1 - k) + .08);
+        for (const y of yk) { y.userData.bow = true; const r0 = y.rotation.x; c3Tw(S, 700, k => { y.rotation.x = r0 + k * .7; y.position.y = -k * .25; }, 'out'); }
+        cutSay(S, '요괴들이 고개를 숙인다.', 1800); }],
+      [8400, S => { c3Orbit(S, [0, 1.6, 0], 5.4, .6, 0, Math.PI * 1.2, 3200, 'io', 44); cutSay(S, '이 세계를 만든 이 — 백야.', 2200);
+        S.refs.gl = ['白', '夜'].map((g, i) => { const m = c3Glyph(S, g, i ? '#9fb8ff' : '#ffd76a', 5); m.position.set(i ? 5 : -5, -6, -9); m.lookAt(0, 3, 6); S.scene.add(m);
+          c3Tw(S, 1400, k => m.position.y = -6 + k * 10, 'out'); return m; });
+        cutSfx('boss'); }],
+      [11700, S => { const d = S.refs.dev; c3Tw(S, 400, k => d.rArm.rotation.x = -2.9 * k, 'snap'); c3Cam(S, { p: [0, .9, 7.5], l: [0, 2.6, 0], fov: 46, roll: .05 }, 500, 'snap'); }],
+      [12200, S => { cutFlash(S, '#fff', 800); cutSfx('holyhit'); cutSfx('thunder'); c3Shake(S, 1, 800); cutHitstop(S, 120);
+        yk.forEach((y, i) => S.timers.push(setTimeout(() => { if (!S.alive) return; const p = y.position.clone().add(V(0, 1, 0)); c3Burst(S, p, i % 2 ? '#ffffff' : '#ffe7a0', .9); y.userData.dead = true; S.scene.remove(y); }, i * 45)));
+        c3Tw(S, 700, k => { S.refs.pil.scale.set(1 + k * 3, 1, 1 + k * 3); S.refs.pil.material.opacity = .08 + k * .22; }); }],
+      [13300, S => cutFade(S, 1, 700)],
+      ...cutDevStamp(null, 13400, '白夜降臨', '개발자가 이 세계에 내려왔다', '開發')
+    ]
+  };
+}
+/* ══ 3D 개발자 컷씬 ② 權限解放 — 권한 해방 ═════════════════════
+   고요한 산 → 「이 세계에는 규칙이 있다」 → 세계가 멈추고 격자(와이어프레임)로 벗겨진다, 초록 코드 비 →
+   코드 판들이 백야 둘레를 돈다 → 백야가 손을 들자 땅에서 거대한 「權」이 솟는다 →
+   ?X·??급 부적 여섯 장이 돈다 → 금빛 번쩍 — 세계가 금으로 다시 칠해지고 진이 펴진다 → 「權 限 解 放」
+   ═════════════════════════════════════════════════════════ */
+function c3DevAuth() {
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  let yk = [], frozen = false, panels = [], ring = null;
+  return {
+    len: 18000,
+    build(S) {
+      c3Env(S, { sky: ['#06040e', '#160e2a', '#30203a'], fog: ['#1c1428', .016], stars: 700, moon: { pos: [-80, 60, -300], r: 14, col: '#e8e0ff' },
+        ridges: [[260, 90, '#221a38', 1.3], [150, 40, '#18122a', 2.4], [90, 16, '#100c1c', 4.1]], ground: '#221c2e', grass: '#3a2e4a', rocks: '#221e2a',
+        hemi: ['#8a80c0', '#1a1020'], hemiI: 1.6, key: '#d8d0ff', keyI: 2.8, keyPos: [26, 24, -30], rim: '#ffb07a', rimI: 1.3 });
+      S.refs.env = []; S.scene.traverse(o => { if ((o.isMesh || o.isInstancedMesh) && o.material && o.material.isMeshStandardMaterial) S.refs.env.push(o); });
+      for (let i = 0; i < 7; i++) { const y = c3Yokai(S, i % 4), a = -1.2 + i * .4, r = 9 + (i % 2) * 2;
+        y.position.set(Math.sin(a) * r, 0, -Math.cos(a) * r); y.lookAt(0, 0, 0); S.scene.add(y); yk.push(y); }
+      const dev = c3Man(S, '#ece6da', '#d8b04a'); S.scene.add(dev.g); S.refs.dev = dev;
+      const grid = new THREE.GridHelper(120, 80, '#2cff7a', '#1a8a4a'); grid.material.transparent = true; grid.material.opacity = 0; grid.position.y = .03; S.scene.add(grid); S.refs.grid = grid;
+      for (let i = 0; i < 6; i++) { const tex = c3CodeTex(false), m = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.6), c3Basic(S, '#ffffff', { map: tex, transparent: true, opacity: 0, side: THREE.DoubleSide }));
+        m.userData.tex = tex; m.userData.a = i / 6 * Math.PI * 2; S.scene.add(m); panels.push(m); }
+      c3Amb(S, 'mote', 120, '#ffd49a');
+      S.upd.push((dt, t) => {
+        for (const y of yk) if (!y.userData.dead && !frozen) y.userData.bob(t);
+        for (const m of panels) { m.userData.a += dt * .5; const a = m.userData.a; m.position.set(Math.sin(a) * 5.5, 2.2 + Math.sin(t * 1.5 + a) * .3, Math.cos(a) * 5.5); m.lookAt(0, 2.2, 0); if (m.material.opacity > 0) m.userData.tex.userData.draw(2.4); }
+        if (ring) ring.rotation.y += dt * 1.8;
+        if (S.refs.seal) S.refs.seal.rotation.z -= dt * .6;
+      });
+      c3Cam(S, { p: [0, 2.2, -4.5], l: [0, 2, -40], fov: 46, roll: 0 }, 0);
+      S.dark.style.opacity = 1; cutFade(S, 0, 1100);
+    },
+    tl: [
+      [200, S => { cutSfx('bell'); c3Cam(S, { p: [1.2, 1.9, -3.2], l: [0, 2.6, -30], fov: 42, roll: .03 }, 2400); }],
+      [500, S => cutSay(S, '이 세계에는 규칙이 있다.', 1800)],
+      [2300, S => { cutSay(S, '그 규칙을 쓴 사람이 있다.', 1800); c3Cam(S, { p: [2.2, 1.6, 4.2], l: [0, 1.5, 0], fov: 38, roll: -.04 }, 1600); }],
+      [4000, S => { frozen = true; S.root.classList.add('glitch'); cutSfx('thunder'); cutSfx('err'); cutFlash(S, 'rgba(44,255,122,.55)', 300); c3Shake(S, .5, 400);
+        for (const o of S.refs.env) { o.material.wireframe = true; o.userData.col = o.material.color.clone(); o.material.color.set('#1fa85a'); o.material.emissive && o.material.emissive.set('#0a4a24'); }
+        S.scene.fog.color.set('#020a05'); S.refs.grid.material.opacity = .8;
+        c3Amb(S, 'rain', 260, '#2cff7a');
+        for (const m of panels) c3Tw(S, 600, k => m.material.opacity = k * .9); }],
+      [4500, S => S.root.classList.remove('glitch')],
+      [4700, S => { cutSay(S, '권한 확인 — 백야.', 1600); cutSfx('unlock'); c3Orbit(S, [0, 1.8, 0], 7, 1.5, .4, 2.4, 2600, 'io', 48); }],
+      [7400, S => { const d = S.refs.dev; c3Tw(S, 500, k => d.rArm.rotation.x = -2.9 * k, 'snap');
+        const gl = c3Glyph(S, '權', '#ffd76a', 7); gl.position.set(0, -8, -7); S.scene.add(gl); S.refs.gl = gl;
+        c3Tw(S, 1500, k => gl.position.y = -8 + k * 12.5, 'out'); cutSfx('power'); cutSfx('gong'); c3Shake(S, .6, 900);
+        c3Cam(S, { p: [0, .6, 6.5], l: [0, 4, -5], fov: 52, roll: 0 }, 900); }],
+      [9200, S => { ring = new THREE.Group(); ring.position.set(0, 1.6, 0); S.scene.add(ring);
+        '虛創終響空逆'.split('').forEach((g, i) => { const t = c3Tal(S, g, 1.6), a = i / 6 * Math.PI * 2; t.position.set(Math.sin(a) * 1.7, Math.sin(i) * .2, Math.cos(a) * 1.7); t.rotation.y = a; ring.add(t); });
+        c3Burst(S, V(0, 1.7, 0), '#ffd76a', 1); cutSfx('talismanS'); cutSay(S, '?X · ?? — 세상에 없는 부적.', 1800);
+        c3Orbit(S, [0, 1.6, 0], 4.2, .5, 2.4, 4.4, 1800, 'io', 46); }],
+      [11200, S => { cutFlash(S, 'rgba(255,215,120,.97)', 800); cutSfx('crit'); cutSfx('holyhit'); cutSfx('thunder'); c3Shake(S, 1, 900); cutHitstop(S, 120);
+        frozen = false;
+        for (const o of S.refs.env) { o.material.wireframe = false; o.material.color.set('#c8a050'); if (o.material.emissive) { o.material.emissive.set('#5a3a08'); o.material.emissiveIntensity = .6; } }
+        S.scene.fog.color.set('#3a2a10'); S.refs.grid.material.color && S.refs.grid.material.color.set('#ffd76a'); c3Tw(S, 1200, k => S.refs.grid.material.opacity = .8 * (1 - k));
+        for (const m of panels) { m.userData.tex.userData.red = true; }
+        const seal = c3Seal(S, '#ffd76a', '權限解放規則再編'); seal.position.y = .06; S.refs.seal = seal;
+        c3Tw(S, 900, k => { seal.scale.setScalar(.1 + k * 18); seal.material.opacity = k; }, 'out');
+        const pil = c3Pillar(S, V(0, 0, 0), '#ffd76a', 1.4, 50); c3Tw(S, 900, k => pil.material.opacity = k * .25);
+        yk.forEach((y, i) => S.timers.push(setTimeout(() => { if (!S.alive) return; c3Burst(S, y.position.clone().add(V(0, 1, 0)), '#ffd76a', .8); y.userData.dead = true; S.scene.remove(y); }, 200 + i * 70)));
+        cutSay(S, '규칙을 다시 쓴다.', 1600); c3Cam(S, { p: [0, 9, 13], l: [0, 2, 0], fov: 50, roll: 0 }, 1400); }],
+      [13700, S => cutFade(S, 1, 600)],
+      ...cutDevStamp(null, 13800, '權限解放', '이 세계의 규칙은 내가 쓴다', '白夜')
     ]
   };
 }
