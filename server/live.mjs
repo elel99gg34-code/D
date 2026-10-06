@@ -43,6 +43,7 @@ function expire(now) {
   if (live.cut && now - live.cut.at > 120000) { live.cut = null; changed = true; }
   if (live.autofree && now > live.autofree.until) { live.autofree = null; changed = true; }
   if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
+  if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
   if (mc) {
@@ -489,7 +490,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에서 아이디마다 잡은 수 · 마지막으로 친 때 */
@@ -569,6 +570,10 @@ async function applyCast(q) {
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
     }
+  }
+  /* 백야가 「하늘을 가르는 것」에 들어갔다 — 모든 앱에 알린다 */
+  if ('devjoin' in q) {
+    live.devjoin = q.devjoin && live.boss ? { id: Date.now(), at: Date.now(), boss: str(q.devjoin.boss, 24), n: str(live.boss.n, 40) } : null;
   }
   /* 백귀야행 — 요괴 행렬. 모두가 함께 goal 마리를 쓰러뜨린다 */
   if ('march' in q) {

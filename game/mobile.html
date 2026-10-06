@@ -3497,6 +3497,17 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .dpowsub.qq{color:#cfd4e6;text-shadow:1px 0 #ff1f4b,-1px 0 #19e6ff}
 .dpowclone.qq button{border-color:#8a90a8;background:linear-gradient(160deg,rgba(30,32,40,.92),rgba(6,6,10,.95))}
 .dpowclone.qq button i{color:#fff;text-shadow:2px 0 #ff1f4b,-2px 0 #19e6ff}
+.devjoin{position:fixed;left:50%;top:calc(var(--tbh,44px) + 10px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:460;
+  display:flex;align-items:center;gap:12px;padding:10px 14px 10px 12px;border-radius:12px;max-width:calc(100vw - 24px);
+  background:linear-gradient(120deg,rgba(60,6,10,.95),rgba(24,4,8,.95));border:1px solid #ff6a5a;color:#ffe2da;
+  box-shadow:0 0 0 2px rgba(255,90,80,.25),0 8px 30px rgba(0,0,0,.5),0 0 30px rgba(255,70,60,.45);animation:djIn .5s cubic-bezier(.2,1.4,.4,1)}
+.devjoin.out{opacity:0;transform:translate(-50%,-20px);transition:.5s}
+@keyframes djIn{from{opacity:0;transform:translate(-50%,-40px) scale(.9)}to{opacity:1;transform:translateX(-50%)}}
+.devjoin i{font-style:normal;font-size:30px;color:#ff8a7a;text-shadow:0 0 14px #ff3a2a;animation:pillBeat 1.2s ease-in-out infinite}
+.devjoin b{display:block;font-size:16px;letter-spacing:.1em;color:#fff}
+.devjoin span{font-size:12px;color:#ffc8bc}
+.devjoin #dj_go{padding:7px 14px;border-radius:8px;border:1px solid #ffb08a;background:linear-gradient(#c8322a,#8a1a18);color:#fff;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.devjoin #dj_x{background:none;border:none;color:#c89a90;font-size:18px;cursor:pointer;padding:0 2px}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -21203,7 +21214,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 25;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 26;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21323,6 +21334,8 @@ async function liveFetch() {
     LIVE.autofree = d.autofree && typeof d.autofree === 'object' ? d.autofree : null;   /* 자동 플레이 맛보기 */
     LIVE.count = d.count && typeof d.count === 'object' ? d.count : null;    /* 카운트다운 */
     LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
+    LIVE.devjoin = d.devjoin && typeof d.devjoin === 'object' ? d.devjoin : null;   /* 백야가 하늘을 가르는 것에 들었다 */
+    try { devJoinCheck(); } catch (e) {}
     try { countWatch(); } catch (e) { console.error('카운트다운', e); }
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
     LIVE.chatAt = +d.chatAt || 0;
@@ -22450,6 +22463,25 @@ function pullIn(b, then) {
   try { stampWord('다 시', '#ff6a5a'); } catch (e) {}
   setTimeout(then, 900);
 }
+/* ── 백야 참전 알림 — 백야가 「하늘을 가르는 것」에 들어가면 모든 앱 위에 띠가 내려온다 ── */
+let _devJoinSent = '';
+function devJoinCheck() {
+  const j = LIVE.devjoin; if (!j || !j.id) return;
+  let seen = ''; try { seen = localStorage.getItem('baekgwi_devjoin') || ''; } catch (e) {}
+  if (String(j.id) === seen || srvNow() - (j.at || 0) > 3 * 60 * 1000) return;
+  try { localStorage.setItem('baekgwi_devjoin', String(j.id)); } catch (e) {}
+  if (caster()) return;                                  /* 백야 자신에게는 띄우지 않는다 */
+  const old = $('#devjoin'); if (old) old.remove();
+  const n = el('div', 'devjoin'); n.id = 'devjoin';
+  const canGo = () => bossAlive() && G.run && !G.b;
+  n.innerHTML = `<i>天</i><div><b>백야가 참전했다!</b><span>「${wEsc(j.n || '하늘을 가르는 것')}」 — 개발자가 함께 싸우고 있다</span></div>
+    ${canGo() ? '<button id="dj_go">함께 친다</button>' : ''}<button id="dj_x" title="닫기">×</button>`;
+  document.body.appendChild(n);
+  try { SND.unlock(); SND.gong(); SND.bell && SND.bell(); screenFlash('rgba(255,90,80,.3)', 500); } catch (e) {}
+  const go = n.querySelector('#dj_go'); if (go) go.onclick = () => { n.remove(); if (canGo()) bossFight(); else toast('지금은 들어갈 수 없다'); };
+  n.querySelector('#dj_x').onclick = () => n.remove();
+  setTimeout(() => { if (n.isConnected) { n.classList.add('out'); setTimeout(() => n.remove(), 500); } }, 12000);
+}
 /* 싸우러 들어간다 — 여기서 낸 피해가 그대로 서버로 간다 */
 function bossFight() {
   const b = worldBoss();
@@ -22465,6 +22497,8 @@ function bossFight() {
   G.run.worldGold = G.run.gold;          /* 골드도 — 모두의 적에게 져도 잃지 않는다 */
   closeOverlay();
   const w = $('#wbar'); if (w) w.remove();
+  /* 백야가 들어간다 — 모두에게 알린다 (적 하나에 한 번) */
+  if (caster() && _devJoinSent !== b.id) { _devJoinSent = b.id; castSend({ devjoin: { boss: String(b.id) } }).catch(() => {}); }
   startBattle(['worldboss'], 'world');
   setTimeout(worldHud, 60);
 }
