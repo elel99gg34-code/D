@@ -338,13 +338,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um):|^(mptop|bans)$/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um):|^(mptop|bans|clears)$/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -1112,8 +1112,28 @@ const server = http.createServer(async (req, res) => {
                             today: seenToday.size, since: bootAt, now });
   }
 
+  /* ── 마지막 막(25막)을 깼다 — 로그인한 사람만 적는다. 백야의 앱이 clearAt 을 보고 명단을 받아 간다 ── */
+  if (url.pathname === '/clear/final' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 적힌다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const now = Date.now(), list = (await get('clears')) || [];
+    if (list.some(x => x.id === id && now - x.at < 10 * 60 * 1000)) return send(res, 200, { ok: true, dup: true });
+    list.unshift({ id, nick: (await nickOf(id)) || id, at: now, asc: num(q.asc, 999), mins: num(q.mins, 100000), deck: num(q.deck, 999),
+                   act: num(q.act, 999) });
+    await put('clears', list.slice(0, 300));
+    live.clearAt = now; live.clearN = (live.clearN || 0) + 1; live.at = now;
+    await keep();
+    console.log('마지막 막을 깼다:', id);
+    return send(res, 200, { ok: true });
+  }
+
   /* ── 회원 목록 · 밴 — 백야만 (퍼뜨리기 열쇠) ── */
-  if ((url.pathname === '/admin/users' || url.pathname === '/admin/ban') && req.method === 'POST') {
+  if ((url.pathname === '/admin/users' || url.pathname === '/admin/ban' || url.pathname === '/admin/clears') && req.method === 'POST') {
     if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
@@ -1121,6 +1141,7 @@ const server = http.createServer(async (req, res) => {
     if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
     await store();
     const b = await banLoad(), now = Date.now();
+    if (url.pathname === '/admin/clears') return send(res, 200, { ok: true, list: (await get('clears')) || [], now });
     if (url.pathname === '/admin/users') {
       const { ids, made } = await soulIds();
       const find = str(q.find, 20).trim().toLowerCase();

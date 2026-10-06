@@ -3508,6 +3508,15 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .devjoin span{font-size:12px;color:#ffc8bc}
 .devjoin #dj_go{padding:7px 14px;border-radius:8px;border:1px solid #ffb08a;background:linear-gradient(#c8322a,#8a1a18);color:#fff;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
 .devjoin #dj_x{background:none;border:none;color:#c89a90;font-size:18px;cursor:pointer;padding:0 2px}
+.clearalert{position:fixed;left:50%;top:calc(var(--tbh,44px) + 70px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:461;
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;max-width:calc(100vw - 24px);
+  background:linear-gradient(120deg,rgba(50,36,8,.96),rgba(20,14,4,.96));border:1px solid #e8c86a;color:#fff3d0;
+  box-shadow:0 0 0 2px rgba(232,200,106,.25),0 8px 30px rgba(0,0,0,.5),0 0 30px rgba(255,200,90,.4);animation:djIn .5s cubic-bezier(.2,1.4,.4,1)}
+.clearalert i{font-style:normal;font-size:34px;color:#ffd76a;text-shadow:0 0 14px #ffb000}
+.clearalert b{display:block;font-size:16px;letter-spacing:.12em;color:#fff}
+.clearalert span{display:block;font-size:12.5px;color:#ffe7b0}.clearalert em{font-style:normal;color:#ffd76a;font-weight:700}
+.clearalert small{display:block;font-size:11px;color:#c9a86a;margin-top:2px}
+.clearalert #ca_x{background:none;border:none;color:#c9a86a;font-size:18px;cursor:pointer;align-self:flex-start}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -10391,10 +10400,40 @@ function pickIntent(e) {
     return;
   }
   let key;
-  if (e.awake && rnd() < .38) key = pick(AWAKEN_KEYS);   /* 각성한 보스는 새 수를 섞어 쓴다 */
+  if (e.awake && !e.luckWoke && rnd() < .38) key = pick(AWAKEN_KEYS);   /* 각성한 보스는 새 수를 섞어 쓴다 (운으로 깬 요괴는 제 수 그대로) */
   else key = e.def.next(e);
   e.mvKey = key;
   e.mv = AWAKEN_MOVES[key] || e.def.moves[key];
+}
+
+/* ══ 운(運) — 매 차례 요괴마다 30% 로 각성한다 ═══════════════
+   깨어난 요괴는 치는 힘·막는 힘이 1.5배가 되고 이름 뒤에 覺 이 붙는다(한 번 깨면 끝까지).
+   보스는 제 각성(체력 40% 아래)이 따로 있어 운으로는 깨지 않는다.
+   멀티 대전·그림자 연습·하늘을 가르는 것은 서버·맞수와 맞춰야 해서 빼 둔다.
+   ═══════════════════════════════════════════════════════════ */
+const LUCK_AWAKE = 0.30, LUCK_MUL = 1.5;
+function luckAwaken(b) {
+  if (!b || b.kind === 'pvp' || b.kind === 'mpbot' || b.kind === 'world') return;
+  const woke = [];
+  for (const e of b.enemies) {
+    if (e.hp <= 0 || e.dead || e.awake || e.def.boss || e.def.duel) continue;
+    if (rnd() >= LUCK_AWAKE) continue;
+    e.awake = true; e.luckWoke = true;
+    e.dmgMul = (e.dmgMul || 1) * LUCK_MUL; e.blkMul = (e.blkMul || 1) * LUCK_MUL;
+    if (e.el) e.el.classList.add('awake');
+    woke.push(e);
+  }
+  if (!woke.length) return;
+  try {
+    stampWord('運 · 각 성', '#ff5a2a');
+    screenFlash('radial-gradient(circle,rgba(255,110,50,.4),rgba(60,0,0,.55))', 700);
+    shake(false); SND.charge(); SND.gong();
+    for (const e of woke) if (e.el) { const c = centerOf(e.el);
+      sparkles(c.x, c.y, 18, '#ff9a4a', 120); shockRing(c.x, c.y, 300, '#ff5a2a'); FX.burst(c.x, c.y, 24, '255,90,40', 6, 50, 5); }
+  } catch (err) {}
+  logAdd('hurt', `운 — ${woke.map(e => e.n).join(' · ')} 각성`, 0);
+  toast(`운이 기울었다 — ${woke.map(e => e.n).join(' · ')} 각성 (힘 ${LUCK_MUL}배)`);
+  syncAll();
 }
 
 /* --- 플레이어 턴 시작 --- */
@@ -10419,6 +10458,7 @@ async function _startPlayerTurn(b) {
   const p = P();
   if (!p.s.barricade) p.block = 0;
   b.energy = b.maxEnergy + (p.s.focus || 0);
+  luckAwaken(b);                                        /* 운(運) — 요괴가 깨어날 수도 있다 */
 
   if (b.turn === 1 && shLv('shield')) blk(shLv('shield') * 4, true);   /* 신전 — 방패의 가호 */
   if (shLv('hand')) b.drawMod = (b.drawMod || 0) + shLv('hand');       /* 신전 — 손의 가호 */
@@ -13762,7 +13802,7 @@ const MAP_W = 5, MAP_H = 17, MAP_PATHS = 6;          /* 막이 빨리 끝난다�
    여섯 갈래가 얽혔다 풀리며 보스까지 간다. 세로로 세우면
    열두 층이 화면 높이에 눌리므로, 눕혀서 넓은 쪽을 쓴다.
    ══════════════════════════════════════════════════════════ */
-const TREASURE_ROW = 5, TREASURE_ROW2 = 11;  /* 이 두 층은 반드시 보물 */
+const TREASURE_ROW = 5;                     /* 이 층은 반드시 보물 (11층 보물 줄은 판 27 에서 뺐다 — 지도에 보물이 너무 많았다) */
 const REST_ROW = MAP_H - 1;                 /* 보스 직전은 반드시 야영지 */
 function genMap(act) {
   const nodes = [], grid = {};
@@ -13803,19 +13843,19 @@ function genMap(act) {
   for (const n of ordered) {
     if (n.type) continue;
     if (n.r === 0) { n.type = 'battle'; continue; }
-    if (n.r === TREASURE_ROW || n.r === TREASURE_ROW2) { n.type = 'treasure'; continue; }
+    if (n.r === TREASURE_ROW) { n.type = 'treasure'; continue; }
     if (n.r === REST_ROW) {
       /* 보스 직전에는 반드시 쉴 자리가 있어야 한다. 다만 줄 전체를
          야영지로 채우면 야영지가 흔해 보인다 — 절반만 야영지로 둔다. */
       const already = nodes.filter(o => o.r === REST_ROW && o.type === 'rest').length;
       n.type = (already === 0 || (already < 2 && rnd() < .5)) ? 'rest'
-             : (rnd() < .3 ? 'shop' : 'treasure');
+             : (() => { const r = rnd(); return r < .15 ? 'shop' : r < .5 ? 'treasure' : 'battle'; })();   /* 상점·보물 절반으로 */
       continue;
     }
-    const w = [{ w: 64, t: 'battle' }, { w: 12, t: 'event' }, { w: 5, t: 'shop' }];
+    const w = [{ w: 64, t: 'battle' }, { w: 5, t: 'event' }, { w: 2.5, t: 'shop' }];   /* 수상한 일·상점 절반으로 (판 27) */
     if (n.r >= 4 && rests < REST_CAP && !restNear(n)) w.push({ w: 6, t: 'rest' });
     if (n.r >= 4 && n.r !== MAP_H - 2) w.push({ w: 15 + act * 3, t: 'elite' });
-    if (n.r >= 7) w.push({ w: 2, t: 'treasure' });
+    if (n.r >= 7) w.push({ w: 1, t: 'treasure' });
     n.type = pickWeighted(w).t;
     if (n.type === 'rest') rests++;
   }
@@ -20722,6 +20762,7 @@ function victory() {
   autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
   META.wins++; META.best = Math.max(META.best, 30 + (G.run.asc || 0) * 5); saveMeta();
   jpGain(G.run, true); noteClear(LAST_ACT);
+  clearReport(G.run);                         /* 마지막 막을 깼다 — 백야에게 알린다 */
   G.scene = 'win';
   const s = $('#scene');
   const d = el('div', 'endscreen win');
@@ -20970,7 +21011,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 26;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 27;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21091,6 +21132,8 @@ async function liveFetch() {
     LIVE.count = d.count && typeof d.count === 'object' ? d.count : null;    /* 카운트다운 */
     LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
     LIVE.devjoin = d.devjoin && typeof d.devjoin === 'object' ? d.devjoin : null;   /* 백야가 하늘을 가르는 것에 들었다 */
+    LIVE.clearAt = +d.clearAt || 0;                                                 /* 누가 마지막 막을 깼다 */
+    try { clearWatch(); } catch (e) {}
     try { devJoinCheck(); } catch (e) {}
     try { countWatch(); } catch (e) { console.error('카운트다운', e); }
     if (Array.isArray(d.sched)) LIVE.sched = d.sched;
@@ -21395,6 +21438,8 @@ function drawMembers(grid) {
     <div class="memlist" id="mb_list"><div class="casthint">불러오는 중…</div></div>
     <div class="memhead"><b>막힌 아이디</b></div>
     <div class="memlist" id="mb_bans"></div>
+    <div class="memhead"><b>제${LAST_ACT}막 완주</b><span id="mb_cn"></span></div>
+    <div class="memlist" id="mb_clears"><div class="casthint">불러오는 중…</div></div>
   </div>`;
   const $q = s => grid.querySelector(s), say = (t, ok) => { const e = $q('#mb_say'); e.textContent = t; e.style.color = ok ? '#8affd0' : '#ff9a8a'; };
   const load = async () => {
@@ -21431,7 +21476,19 @@ function drawMembers(grid) {
   };
   $q('#mb_ban').onclick = () => act($q('#mb_id').value, false);
   $q('#mb_un').onclick = () => act($q('#mb_id').value, true);
-  $q('#mb_re').onclick = load;
+  $q('#mb_re').onclick = () => { load(); loadClears(); };
+  const loadClears = async () => {
+    const d = await adminAsk('/admin/clears'), L = $q('#mb_clears');
+    if (!L || !L.isConnected) return;
+    if (!d.ok) { L.innerHTML = `<div class="casthint">못 불렀다: ${wEsc(d.why)}</div>`; return; }
+    $q('#mb_cn').textContent = ` · ${d.list.length}번`;
+    L.innerHTML = d.list.length ? d.list.map(x => `<div class="memrow"><div class="mwho"><b>${wEsc(x.nick)}</b><code>${wEsc(x.id)}</code></div>
+      <div class="mmeta">${new Date(x.at).toLocaleString()} · 환생 ${x.asc}회 · ${x.mins}분 · 덱 ${x.deck}장</div>
+      <div class="mact"><button data-copy="${wEsc(x.id)}">복사</button></div></div>`).join('')
+      : `<div class="casthint">아직 제${LAST_ACT}막을 깬 사람이 없다</div>`;
+    L.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy));
+  };
+  loadClears();
   let ft = null; $q('#mb_find').oninput = () => { clearTimeout(ft); ft = setTimeout(load, 350); };
   load();
 }
@@ -22219,6 +22276,41 @@ function pullIn(b, then) {
   try { stampWord('다 시', '#ff6a5a'); } catch (e) {}
   setTimeout(then, 900);
 }
+/* ══ 마지막 막 완주 → 백야에게 알림 ═══════════════════════════
+   누가 제 25 막(LAST_ACT)을 깨면 서버 명단(clears)에 적힌다(로그인한 사람만).
+   백야의 앱은 소식의 clearAt 이 바뀐 것을 보고 명단을 받아 와 「다음 막을 열 때」를 알린다.
+   그 알림이 다음 막(26막)을 만드는 신호다. 명단은 관리자 창 「회원 · 밴」에도 있다.
+   ═══════════════════════════════════════════════════════════ */
+function clearReport(run) {
+  if (!acctOn() || !run) return;
+  acctAsk('/clear/final', { token: ACCT.token, asc: run.asc || 0, act: run.act || LAST_ACT, deck: run.deck.length,
+    mins: Math.round((Date.now() - (run.startedAt || Date.now())) / 60000) }, 20000).catch(() => {});
+}
+let _clearBusy = false;
+async function clearWatch() {
+  if (!caster() || !LIVE.clearAt || _clearBusy) return;
+  if (LIVE.clearAt <= (META.clearSeen || 0)) return;
+  _clearBusy = true;
+  try {
+    const r = await adminAsk('/admin/clears');
+    if (!r.ok) return;
+    const fresh = (r.list || []).filter(x => x.at > (META.clearSeen || 0));
+    META.clearSeen = Math.max(META.clearSeen || 0, LIVE.clearAt, ...(r.list || []).map(x => x.at)); saveMeta();
+    if (fresh.length) clearAlert(fresh, (r.list || []).length);
+  } finally { _clearBusy = false; }
+}
+function clearAlert(fresh, total) {
+  const old = $('#clearalert'); if (old) old.remove();
+  const n = el('div', 'clearalert'); n.id = 'clearalert';
+  n.innerHTML = `<i>峯</i><div><b>제${LAST_ACT}막 완주!</b>
+      <span>${fresh.slice(0, 3).map(x => `<em>${wEsc(x.nick)}</em>`).join(' · ')}${fresh.length > 3 ? ` 외 ${fresh.length - 3}명` : ''} — 마지막 봉우리를 넘었다</span>
+      <small>제${LAST_ACT + 1}막을 열 때다 · 지금까지 완주 ${total}번</small></div>
+    <button id="ca_x" title="닫기">×</button>`;
+  document.body.appendChild(n);
+  try { SND.unlock(); SND.gong(); SND.victory(); screenFlash('rgba(255,215,120,.35)', 700); } catch (e) {}
+  n.querySelector('#ca_x').onclick = () => n.remove();
+}
+
 /* ── 백야 참전 알림 — 백야가 「하늘을 가르는 것」에 들어가면 모든 앱 위에 띠가 내려온다 ── */
 let _devJoinSent = '';
 function devJoinCheck() {
@@ -25686,6 +25778,7 @@ const GUIDE = {
       <tr><td>3. 보상</td><td>골드와 부적을 얻는다. <b>부적은 3장 중 1장만</b> 고를 수 있다.
         나오는 등급은 오를수록 좋아진다 (지도 탭 참고).</td></tr>
       <tr><td>4. 반복</td><td>17층을 올라 보스를 잡으면 다음 막으로. <b>6막</b>까지 있다.</td></tr>
+      <tr><td>운(運)</td><td>매 차례 요괴마다 <b>30%</b>로 <b>각성</b>한다 — 치는 힘·막는 힘 1.5배, 이름 뒤에 覺 (보스는 제 각성이 따로 있다).</td></tr>
     </table>
     <div class="tip"><b>쓰러져도 처음부터가 아니다.</b> 갈림길에 들어설 때마다 그 순간이 저장된다.
     패배 화면에서 <b>그 갈림길로 돌아간다</b>를 누르면 그 길에 들어서기 직전으로 되돌아간다.</div>
