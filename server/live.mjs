@@ -596,7 +596,7 @@ async function applyCast(q) {
   /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
   if ('cut' in q) {
     const k = q.cut && str(q.cut.k, 24);
-    live.cut = k && /^[a-z0-9]+$/.test(k) ? { k, id: Date.now(), at: Date.now() } : null;
+    live.cut = k && /^[a-z0-9_]+$/.test(k) ? { k, id: Date.now(), at: Date.now() } : null;
   }
   /* 숨은 부적 찾기 — 모든 앱의 지도 어딘가에 희미한 부적이 숨는다. 먼저 찾은 max 명만 받는다 */
   if ('hunt' in q) {

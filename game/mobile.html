@@ -19251,8 +19251,8 @@ function cutDevAuth() {
 }
 /* 이름으로 부른다 — 관리자가 뿌리는 것도 이 이름을 쓴다 */
 const CUT_LIST = { musou: { n: '무쌍 — 백귀야행', make: () => cutMusou() },
-  dev_descend: { n: '백야 강림 — 白夜降臨 (개발자)', make: () => cutDevDescend() },
-  dev_auth: { n: '권한 해방 — 權限解放 (개발자)', make: () => cutDevAuth() } };
+  devdescend: { n: '백야 강림 — 白夜降臨 (개발자)', make: () => cutDevDescend() },
+  devauth: { n: '권한 해방 — 權限解放 (개발자)', make: () => cutDevAuth() } };
 for (let a = 1; a <= 25; a++) CUT_LIST['boss' + a] = { n: `제${a}막 보스 — ${ACT_NAME[a]}`, make: () => cutBoss(a, (ENCOUNTERS[a] && ENCOUNTERS[a].boss[0]) || 'gumiho') };
 function cutByName(k) {
   const c = CUT_LIST[k]; if (!c) return Promise.resolve();
@@ -19710,7 +19710,7 @@ async function cutRun(k, arg) {
   const m = /^boss(\d+)$/.exec(k);
   const make3 = m ? () => c3Boss(+m[1], arg || (ENCOUNTERS[+m[1]] && ENCOUNTERS[+m[1]].boss[0]))
     : k === 'musou' ? () => c3Musou() : k === 'tea' ? () => c3Tea(arg) : k === 'hack' ? () => c3Hack()
-    : k === 'dev_descend' ? () => c3DevDescend() : k === 'dev_auth' ? () => c3DevAuth() : null;
+    : k === 'devdescend' ? () => c3DevDescend() : k === 'devauth' ? () => c3DevAuth() : null;
   if (make3 && cut3On()) {
     const ok = await Promise.race([threeLoad(), wait(3000).then(() => false)]);
     if (ok) { try { return await cutPlay3(make3()); } catch (e) { console.error('3D 컷씬 — CSS 컷씬으로', e); const r = document.querySelector('.cut.c3'); if (r) r.remove(); CUT.on = null; document.body.classList.remove('cutting'); } }
@@ -21666,7 +21666,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 32;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 33;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
