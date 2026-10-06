@@ -3570,6 +3570,28 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
   text-shadow:0 2px 0 #c8a020,0 4px 0 #a07a10,0 8px 0 #7a5a08,0 14px 20px rgba(0,0,0,.6),0 0 60px rgba(255,200,90,.8)}
 .cdevglyphw.on .cdevglyph{opacity:.95;transform:none}
 .cut.cdevgold .cutview{filter:sepia(.5) saturate(1.6) brightness(1.1)}
+/* ══ 비밀의 계란 ══ */
+.egglayer{position:fixed;left:0;right:0;top:var(--tbh,44px);bottom:0;z-index:14;pointer-events:none}
+.egg{position:absolute;width:44px;height:56px;margin:-28px 0 0 -22px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
+  transform:rotate(var(--r));animation:eggIdle 2.6s ease-in-out infinite;--k:0;touch-action:manipulation}
+.egg .eshell{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;
+  background:radial-gradient(circle at 35% 30%,#ffffff,#f4ead6 45%,#d8c8a8 85%);box-shadow:inset -4px -6px 10px rgba(120,90,50,.35),0 4px 8px rgba(0,0,0,.35)}
+.egg .ecrack{position:absolute;inset:0;border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;opacity:var(--k);pointer-events:none;
+  background:linear-gradient(115deg,transparent 42%,#5a4028 43%,transparent 45%),linear-gradient(65deg,transparent 52%,#5a4028 53%,transparent 55%),
+    linear-gradient(160deg,transparent 30%,#5a4028 31%,transparent 33%),linear-gradient(20deg,transparent 62%,#5a4028 63%,transparent 65%)}
+.egg.secret{width:52px;height:66px;margin:-33px 0 0 -26px;filter:drop-shadow(0 0 10px #ffd76a) drop-shadow(0 0 22px rgba(255,190,60,.8));animation:eggIdle 2s ease-in-out infinite,eggGlow 1.2s ease-in-out infinite alternate}
+.egg.secret .eshell{background:radial-gradient(circle at 35% 30%,#fffbe6,#ffe08a 45%,#e0a830 90%)}
+.egg.secret .ering{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(#ffd76a calc(var(--k) * 360deg),rgba(255,255,255,.15) 0);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%,#000 68%,transparent 70%);mask:radial-gradient(circle,transparent 58%,#000 60%,#000 68%,transparent 70%)}
+.egg.secret em{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);font-style:normal;font-size:12px;font-weight:700;color:#ffe7a0;text-shadow:0 0 6px #000,0 1px 2px #000}
+.egg.hit{animation:eggHit .18s ease-out}
+.egg.broke{animation:eggBreak .5s ease-out forwards;pointer-events:none}
+@keyframes eggIdle{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + 4deg)) translateY(-3px)}}
+@keyframes eggGlow{to{filter:drop-shadow(0 0 16px #fff2b0) drop-shadow(0 0 34px rgba(255,200,80,1))}}
+@keyframes eggHit{0%{transform:rotate(var(--r)) scale(1)}40%{transform:rotate(calc(var(--r) - 12deg)) scale(.86,1.08)}100%{transform:rotate(var(--r)) scale(1)}}
+@keyframes eggBreak{0%{transform:rotate(var(--r)) scale(1);opacity:1}40%{transform:rotate(var(--r)) scale(1.35);opacity:1;filter:brightness(2)}100%{transform:rotate(var(--r)) scale(.2);opacity:0}}
+.castsec.egg{border-color:rgba(255,215,106,.45)}.castsec.egg>b{color:#ffd76a}
+@media (prefers-reduced-motion:reduce){.egg{animation:none!important}}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -21347,7 +21369,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 29;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 30;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21467,6 +21489,7 @@ async function liveFetch() {
     LIVE.autofree = d.autofree && typeof d.autofree === 'object' ? d.autofree : null;   /* 자동 플레이 맛보기 */
     LIVE.count = d.count && typeof d.count === 'object' ? d.count : null;    /* 카운트다운 */
     LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
+    LIVE.egg = d.egg && typeof d.egg === 'object' ? d.egg : null;          /* 비밀의 계란 */
     LIVE.devjoin = d.devjoin && typeof d.devjoin === 'object' ? d.devjoin : null;   /* 백야가 하늘을 가르는 것에 들었다 */
     LIVE.clearAt = +d.clearAt || 0;                                                 /* 누가 마지막 막을 깼다 */
     try { clearWatch(); } catch (e) {}
@@ -21489,6 +21512,95 @@ async function liveFetch() {
     try { liveTick(); }   catch (e) {}
     updateCheck();
   } catch (e) { /* 인터넷이 없을 뿐이다 */ }
+}
+
+/* ══════════════════════════════════════════════════════════
+   비밀의 계란 — 백야가 뿌리면 지도 위에 계란이 널브러진다
+   ──────────────────────────────────────────────────────────
+   자리는 이벤트 번호와 이 기계의 번호로 정해져 다시 그려도 그대로다(사람마다 제 계란).
+   보통 계란은 3번, 빛나는 비밀 계란은 12번 두드리면 깨진다 — 두드릴수록 금이 간다.
+   보통: 골드·다이아·물약·정진 가운데 하나. 비밀: 다이아 듬뿍 + 유물 / S급 부적 / 정진 (0.5% ?급 부적).
+   깬 것은 META.egg 에 적어 두어 다시 나오지 않는다. 지도에서만 보인다.
+   LIVE.egg — { id, at, until, n(모두), s(그중 비밀) }
+   ══════════════════════════════════════════════════════════ */
+const EGG_TAP = 3, EGG_TAP_S = 12;
+function eggOn() { const g = LIVE.egg; return !!(g && g.id && srvNow() < (+g.until || 0)); }
+function eggRng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function eggSpots(g) {
+  let h = 0; const key = String(g.id) + meId(); for (let i = 0; i < key.length; i++) h = (Math.imul(h, 31) + key.charCodeAt(i)) | 0;
+  const r = eggRng(h), out = [];
+  for (let i = 0; i < g.n; i++) out.push({ i, x: 7 + r() * 86, y: 20 + r() * 64, rot: (r() - .5) * 40, secret: false });
+  for (let k = 0; k < Math.min(g.s || 0, g.n); k++) out[Math.floor(r() * g.n)].secret = true;
+  return out;
+}
+function eggMe() {
+  const g = LIVE.egg; if (!g) return null;
+  META.egg = META.egg && META.egg.id === g.id ? META.egg : { id: g.id, open: {}, taps: {}, got: 0 };
+  return META.egg;
+}
+let _eggAnnounced = 0;
+function eggTick() {
+  const on = eggOn() && G.scene === 'map' && !G.b && G.run;
+  let layer = $('#egglayer');
+  if (!on) { if (layer) layer.remove(); return; }
+  const g = LIVE.egg, me = eggMe();
+  if (_eggAnnounced !== g.id) { _eggAnnounced = g.id;
+    try { SND.unlock(); SND.bell && SND.bell(); } catch (e) {}
+    toast(`卵 백야가 계란을 뿌렸다! — 지도의 계란을 두드려라 (빛나는 것은 더 많이)`); }
+  if (layer && layer.dataset.id === String(g.id)) return;
+  if (layer) layer.remove();
+  layer = el('div', 'egglayer'); layer.id = 'egglayer'; layer.dataset.id = g.id;
+  for (const sp of eggSpots(g)) {
+    if (me.open[sp.i]) continue;
+    const need = sp.secret ? EGG_TAP_S : EGG_TAP, done = me.taps[sp.i] || 0;
+    const e = el('button', 'egg' + (sp.secret ? ' secret' : ''));
+    e.style.left = sp.x + '%'; e.style.top = sp.y + '%'; e.style.setProperty('--r', sp.rot + 'deg');
+    e.innerHTML = `<i class="eshell"></i><i class="ecrack"></i>${sp.secret ? `<b class="ering"></b><em>${need - done}</em>` : ''}`;
+    e.style.setProperty('--k', (done / need).toFixed(2));
+    e.title = sp.secret ? `비밀 계란 — ${need}번 두드려라` : `계란 — ${need}번 두드려라`;
+    e.onpointerdown = ev => { ev.preventDefault(); ev.stopPropagation(); eggTap(e, sp); };
+    layer.appendChild(e);
+  }
+  ($('#app') || document.body).appendChild(layer);
+}
+function eggTap(e, sp) {
+  const me = eggMe(); if (!me || me.open[sp.i]) return;
+  const need = sp.secret ? EGG_TAP_S : EGG_TAP;
+  const n = me.taps[sp.i] = (me.taps[sp.i] || 0) + 1;
+  e.style.setProperty('--k', Math.min(1, n / need).toFixed(2));
+  e.classList.remove('hit'); void e.offsetWidth; e.classList.add('hit');
+  const em = e.querySelector('em'); if (em) em.textContent = Math.max(0, need - n);
+  try { SND.unlock(); SND.blip(sp.secret ? 520 + n * 40 : 660 + n * 80, { dur: .07, type: 'triangle', vol: .06 }); } catch (x) {}
+  if (n < need) { saveMeta(); return; }
+  me.open[sp.i] = 1; me.got++; saveMeta();
+  const r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  e.classList.add('broke'); setTimeout(() => e.remove(), 520);
+  try { FX.burst(x, y, sp.secret ? 50 : 22, sp.secret ? '255,215,106' : '255,245,225', sp.secret ? 8 : 5, 50, sp.secret ? 6 : 4);
+    if (sp.secret) { SND.gong(); SND.victory(); screenFlash('rgba(255,215,120,.35)', 500); } else SND.coin && SND.coin(); } catch (x2) {}
+  const got = eggPay(sp.secret);
+  rainFly(x, y, got, sp.secret ? '#ffd76a' : '#fff0d0');
+  toast(`${sp.secret ? '비밀 계란' : '계란'} — ${got}`);
+}
+function eggPay(secret) {
+  const run = G.run, act = (run && run.act) || 1, r = rnd();
+  const gold = v => { run.gold += v; run.stats.gold += v; return '金 +' + v; };
+  const dia = v => { run.dia = (run.dia || 0) + v; return '玉 +' + v; };
+  const jp = v => { META.jp += v; META.jpTotal = (META.jpTotal || 0) + v; return '精 +' + v; };
+  let out;
+  if (!run) out = jp(secret ? 80 : 12);
+  else if (!secret) {
+    out = r < .4 ? gold(Math.round((30 + rnd() * 50) * Math.sqrt(lootGold(act)))) : r < .7 ? dia(8 + ((rnd() * 18) | 0) + Math.floor(act / 3))
+        : r < .85 && run.potions.length < run.potSlots ? (() => { const id = randomPotion(); run.potions.push(id); return POTIONS[id].g + ' ' + POTIONS[id].n; })() : jp(10 + ((rnd() * 15) | 0));
+  } else {
+    const parts = [dia(80 + ((rnd() * 70) | 0) + act * 2)];
+    if (r < .005 && GRADE_POOL.unknown.length) { const id = pick(GRADE_POOL.unknown); run.deck.push(mkCard(id, false)); run.stats.cards++; dexAdd('cards', id); parts.push('?급 「' + CARDS[id].n + '」!'); }
+    else if (r < .35) { const rid = randomRelic('rare') || randomRelic(); if (rid) { gainRelic(rid); parts.push('유물 「' + RELICS[rid].n + '」'); } else parts.push(jp(60)); }
+    else if (r < .65 && GRADE_POOL.special.length) { const id = pick(GRADE_POOL.special); run.deck.push(mkCard(id, false)); run.stats.cards++; dexAdd('cards', id); parts.push('S급 「' + CARDS[id].n + '」'); }
+    else parts.push(jp(60 + ((rnd() * 60) | 0)));
+    out = parts.join(' · ');
+  }
+  saveMeta(); if (run) { saveRun(); renderTop(); }
+  return out;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -23056,6 +23168,7 @@ function liveTick() {
   try { hackTick(); } catch (e) { console.error('해킹', e); }
   try { autoFreeTick(); } catch (e) { console.error('맛보기', e); }
   try { marchTick(); } catch (e) { console.error('백귀야행', e); }
+  try { eggTick(); } catch (e) { console.error('계란', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -23373,6 +23486,19 @@ function drawCast(grid) {
       <button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
     </div>
 
+    <div class="castsec egg"><b>卵 비밀의 계란 뿌리기</b>
+      <div class="casthint">모든 앱의 지도에 계란이 흩어진다. 보통 계란은 3번, <b>빛나는 비밀 계란</b>은 12번 두드려야 깨진다 —
+        깨면 골드·다이아·물약·정진, 비밀 계란은 다이아 듬뿍에 유물·S급 부적(아주 드물게 ?급). 사람마다 제 지도에 제 계란.
+        위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 뿌려진다.</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">계란 <input id="ct_egn" type="number" min="1" max="30" value="8" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">그중 비밀 <input id="ct_egs" type="number" min="0" max="10" value="2" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_egm" type="number" min="1" max="60" value="10" style="width:56px"> 분</label>
+        <button class="brush-btn gold" id="ct_egg">계란을 뿌린다</button>
+        <button class="brush-btn ghost" id="ct_eggoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+    </div>
+
     <div class="castsec march"><b>百 백귀야행 — 요괴 행렬</b>
       <div class="casthint">모두가 함께 정한 수의 요괴를 쓰러뜨린다. 싸움마다 한 마리가 등불(燈)을 들고, 쓰러뜨리면 서버의 수가 오른다.
         30% · 60% · 100%에 닿으면 한 마리라도 잡은 사람 모두가 보상을 받는다(100%는 「행렬의 등불」 유물). 카드 대전 동안은 멈추고, 모두의 적과는 함께 못 건다.
@@ -23657,6 +23783,16 @@ function drawCast(grid) {
     send(patch, `백귀야행 ${goal}마리 · ${min}분`).then(mNow);
   };
   grid.querySelector('#ct_marchoff').onclick = () => send({ march: null }, '백귀야행 거두기').then(mNow);
+  /* 비밀의 계란 */
+  grid.querySelector('#ct_egg').onclick = () => {
+    const n = Math.max(1, Math.min(30, Math.floor(+grid.querySelector('#ct_egn').value || 8)));
+    const sN = Math.max(0, Math.min(10, Math.floor(+grid.querySelector('#ct_egs').value || 0)));
+    const min = Math.max(1, Math.min(60, Math.floor(+grid.querySelector('#ct_egm').value || 10)));
+    const patch = hype('비밀의 계란', { egg: { n, s: sN, min } });
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: '비밀의 계란', then: patch } }, `카운트다운 ${cds()}초 → 계란 ${n}개`);
+    send(patch, `비밀의 계란 ${n}개(비밀 ${sN}) · ${min}분`);
+  };
+  grid.querySelector('#ct_eggoff').onclick = () => send({ egg: null }, '계란 거두기');
   /* 노래 */
   const mmin = () => Math.max(1, Math.min(120, Math.floor(+grid.querySelector('#ct_mmin').value || 10)));
   let pick = 'fest';

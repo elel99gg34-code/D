@@ -44,6 +44,7 @@ function expire(now) {
   if (live.autofree && now > live.autofree.until) { live.autofree = null; changed = true; }
   if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
   if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
+  if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
   if (mc) {
@@ -490,7 +491,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에서 아이디마다 잡은 수 · 마지막으로 친 때 */
@@ -570,6 +571,13 @@ async function applyCast(q) {
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
     }
+  }
+  /* 비밀의 계란 — 모든 앱의 지도에 계란이 흩어진다. 빛나는 것(비밀 계란)은 더 두드려야 깨진다 */
+  if ('egg' in q) {
+    if (!q.egg) live.egg = null;
+    else { const now = Date.now(), min = Math.max(1, Math.min(60, parseInt(q.egg.min, 10) || 10));
+      live.egg = { id: now, at: now, until: now + min * 60000, n: Math.max(1, Math.min(30, parseInt(q.egg.n, 10) || 8)),
+                   s: Math.max(0, Math.min(10, parseInt(q.egg.s, 10) || 2)) }; }
   }
   /* 백야가 「하늘을 가르는 것」에 들어갔다 — 모든 앱에 알린다 */
   if ('devjoin' in q) {
