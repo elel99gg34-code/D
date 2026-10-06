@@ -3537,6 +3537,14 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .admhack .ahsec>b{color:#9fffc4;font-size:12px}
 .admhack .ahrow{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .admhack select,.admhack input{flex:1;min-width:90px;padding:6px;border-radius:6px;border:1px solid #1f6a3a;background:#06140b;color:#dfffe8;font:inherit}
+/* ══ 특성(변이) ══ */
+.card .cmut{position:absolute;left:5px;bottom:24px;display:flex;gap:3px;z-index:5;pointer-events:none}
+.card .cmut i{font-style:normal;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-size:11px;font-weight:700}
+.card .cmut .ms{background:radial-gradient(circle,#ffffff,#9fd8ff 60%,#3a7ab8);color:#0a2a4a;box-shadow:0 0 8px #9fd8ff}
+.card .cmut .mc{background:radial-gradient(circle,#ffe0ff,#e08ad8 60%,#7a2a8a);color:#2a0a30;box-shadow:0 0 8px #e08ad8}
+.card.mutS .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 14px rgba(159,216,255,.45)}
+.card.mutC .face{box-shadow:inset 0 0 0 2px rgba(224,138,216,.8),inset 0 0 14px rgba(224,138,216,.45)}
+.card.mutS.mutC .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 0 4px rgba(224,138,216,.7),inset 0 0 16px rgba(200,170,255,.5)}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -7312,11 +7320,14 @@ function fgCost(lv) {
   return Math.round(base * shopMul(act));
 }
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
+/* 특성(변이) — 혼돈의 특성(mutC)은 강화하지 않아도 강화한 것처럼, 별의 특성(mutS)은 수치 1.25배 */
+const cup = c => !!(c.up || c.mutC);
+const MUT_STAR = 1.25;
 function cval(c) {
-  const v = cdef(c).v(c.up);
+  const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc);           /* 벼림 × 환생 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1);   /* 벼림 × 환생 × 별의 특성 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -7324,7 +7335,7 @@ function cval(c) {
 }
 function ccost(c) {
   const d = cdef(c);
-  const k = d.costOf ? d.costOf(c.up) : d.cost;
+  const k = d.costOf ? d.costOf(cup(c)) : d.cost;
   if (k > 0 && curseTag('costup')) return k + 1;               /* 저주 — 무겁다 */
   return k;
 }
@@ -10427,6 +10438,38 @@ function pickIntent(e) {
   e.mv = AWAKEN_MOVES[key] || e.def.moves[key];
 }
 
+/* ══ 특성(변이) — 슈팅 스타·혼돈이 걸린 동안 ═══════════════════
+   라운드에서 요괴를 쓰러뜨릴 때마다 35% 로, 이번 라운드에 쓴 부적 가운데 하나가 변이한다(영구 · 덱에 남는다).
+     슈팅 스타 → 별의 특성(星): 수치 1.25배
+     혼돈      → 혼돈의 특성(混): 강화하지 않아도 강화한 것처럼 (이미 강화한 것은 고르지 않는다)
+   한 부적에 같은 특성은 한 번만. 별·혼돈을 둘 다 지닐 수는 있다.
+   멀티 대전·그림자 연습·하늘을 가르는 것·해킹맵에서는 일어나지 않는다.
+   ═══════════════════════════════════════════════════════════ */
+const MUT_CHANCE = 0.35;
+function mutOnKill(e) {
+  const b = G.b, run = G.run;
+  if (!b || !run || run._pvp || /^(pvp|mpbot|world|hack)/.test(b.kind || '')) return;
+  const ev = liveEvent(); if (ev !== 'star' && ev !== 'chaos') return;
+  if (rnd() >= MUT_CHANCE) return;
+  const key = ev === 'star' ? 'mutS' : 'mutC';
+  const cand = (b.usedUids || []).map(u => run.deck.find(c => c.uid === u)).filter(c => c && !c[key] && !(key === 'mutC' && c.up) && cdef(c).type !== 'curse');
+  if (!cand.length) return;
+  const card = pick(cand);
+  card[key] = true;
+  /* 싸움 중의 같은 부적(손·더미)에도 곧바로 */
+  for (const pile of [b.hand, b.drawPile, b.discardPile, b.exhaustPile]) for (const x of pile || []) if (x.uid === card.uid) x[key] = true;
+  saveRun();
+  const star = key === 'mutS';
+  try {
+    stampWord(star ? '星 · 變 異' : '混 · 變 異', star ? '#9fd8ff' : '#e08ad8');
+    screenFlash(star ? 'rgba(160,210,255,.35)' : 'rgba(224,138,216,.35)', 500);
+    SND.unlock(); SND.blip(star ? 1568 : 330, { dur: .4, type: 'sine', vol: .06, to: star ? 2093 : 880, rev: .6 });
+    if (e.el) { const c0 = centerOf(e.el); sparkles(c0.x, c0.y, 18, star ? '#cfe8ff' : '#f0b0ff', 140); }
+  } catch (x) {}
+  toast(`변이 — 「${cname(card)}」에 ${star ? '별의 특성(星 · 수치 1.25배)' : '혼돈의 특성(混 · 강화한 것처럼)'}`);
+  syncAll();
+}
+
 /* ══ 운(運) — 매 차례 요괴마다 30% 로 각성한다 ═══════════════
    깨어난 요괴는 치는 힘·막는 힘이 1.5배가 되고 이름 뒤에 覺 이 붙는다(한 번 깨면 끝까지).
    보스는 제 각성(체력 40% 아래)이 따로 있어 운으로는 깨지 않는다.
@@ -10636,7 +10679,7 @@ async function playCard(card, target) {
     lightBeam(innerWidth / 2, FX_TINT ? rgba(shade(FX_TINT, .3), .55)
       : d.rar === 'unknown' ? 'rgba(190,140,255,.55)' : 'rgba(255,90,130,.55)', 190);
   } else if (d.rar === 'special') { blink(.7); sparkles(innerWidth / 2, innerHeight * .52, 10, tint('#ffb07a'), 150); }
-  const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
+  const ctx = { v: cval(card), u: cup(card), t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
   /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
@@ -10659,6 +10702,7 @@ async function playCard(card, target) {
     fire('cardPlay', card);
     if (!b.over) {
       if (d.id !== 'qq_echo') b.lastPlayed = card;        /* ??급 「메아리」가 되풀이할 것 */
+      (b.usedUids = b.usedUids || []).indexOf(card.uid) < 0 && b.usedUids.push(card.uid);   /* 특성(변이) — 이번 라운드에 쓴 부적 */
       if (devInfOn() && isQ(d.rar) && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
       else if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
     } else {
@@ -10947,6 +10991,7 @@ async function checkDeaths() {
       killFx(e);
       dropOnKill(e);
       if (e.march) marchKill(e);                          /* 백귀야행 — 행렬의 요괴 */
+      mutOnKill(e);                                       /* 특성(변이) — 슈팅 스타·혼돈 중에만 */
     }
   }
   if (killed >= 2) {                                  /* 한 번에 여럿을 눕히면 더 요란하게 */
@@ -12437,9 +12482,9 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
-  const TL = (d.txt(v, c.up) + '').replace(/<[^>]+>/g, '').length;
+  const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   n.innerHTML = `
     <div class="face">
       ${skin ? `<div class="sklayer">${skinBits(skin)}</div>` : ''}
@@ -12447,7 +12492,8 @@ function cardNode(c, opts) {
       <div class="cname${c.up ? ' up' : ''}">${cname(c)}</div>
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
-      <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, c.up)}</span></div>
+      <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
+      ${c.mutS || c.mutC ? `<div class="cmut">${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
     </div>
     <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>` +
@@ -12456,7 +12502,7 @@ function cardNode(c, opts) {
   n.dataset.cid = c.id; n.dataset.up = c.up ? '1' : '0';
   if (opts.tip !== false) {
     n.addEventListener('mouseenter', () => {
-      const kws = keywordsIn(d, v, c.up);
+      const kws = keywordsIn(d, v, cup(c));
       if (kws) { const r = n.getBoundingClientRect(); tipShow(kws, r.left + r.width / 2, r.top); }
     });
     n.addEventListener('mouseleave', tipHide);
