@@ -45,6 +45,7 @@ function expire(now) {
   if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
   if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
+  if (bombStep(now)) changed = true;
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
   if (mc) {
@@ -491,9 +492,32 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
+/* ── 폭탄 돌리기 ── */
+const BOMB_JOIN = 20000, BOMB_FUSE = [45000, 90000], BOMB_KEEP = 90000;
+let BOMB = { ppl: new Map(), fuseAt: 0, heldAt: 0, prev: '' };
+function bombGive(b, now, except) {
+  const ids = [...BOMB.ppl.keys()].filter(id => id !== except && (BOMB.ppl.size <= 3 || id !== BOMB.prev));
+  const id = ids[Math.floor(Math.random() * ids.length)] || [...BOMB.ppl.keys()][0];
+  BOMB.prev = except || ''; b.holder = id; b.holderNick = BOMB.ppl.get(id) || id; BOMB.heldAt = now;
+}
+function bombStep(now) {
+  const b = live.bomb; if (!b) return false;
+  if (b.phase === 'join' && now >= b.joinUntil) {
+    if (BOMB.ppl.size < 2) { Object.assign(b, { phase: 'done', end: now, cancel: true }); return true; }
+    b.phase = 'run'; b.n = BOMB.ppl.size; b.startAt = now;
+    BOMB.fuseAt = now + BOMB_FUSE[0] + Math.random() * (BOMB_FUSE[1] - BOMB_FUSE[0]);
+    bombGive(b, now, ''); return true;
+  }
+  if (b.phase === 'run' && now >= BOMB.fuseAt) {
+    Object.assign(b, { phase: 'done', end: now, loser: b.holder, loserNick: b.holderNick });
+    console.log('폭탄이 터졌다:', b.holder, '· 넘긴 횟수', b.passes); return true;
+  }
+  if (b.phase === 'done' && now - (b.end || now) > BOMB_KEEP) { live.bomb = null; return true; }
+  return false;
+}
 let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에서 아이디마다 잡은 수 · 마지막으로 친 때 */
 const bossLive = () => !!(live.boss && !live.boss.done && !live.boss.fled);
 const marchLive = () => !!(live.march && !live.march.done);                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
@@ -570,6 +594,16 @@ async function applyCast(q) {
         /* 두 셈마다 도는 예약 바퀴를 기다리지 않고 0 에 맞춰 건다 */
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
+    }
+  }
+  /* 폭탄 돌리기 — 20초 동안 참가를 받고, 무작위로 한 사람에게 폭탄. 터지는 때는 서버만 안다 */
+  if ('bomb' in q) {
+    const now = Date.now();
+    if (!q.bomb) { if (live.bomb && live.bomb.phase !== 'done') Object.assign(live.bomb, { phase: 'done', end: now, cancel: true }); }
+    else {
+      live.bomb = { id: now, phase: 'join', joinUntil: now + BOMB_JOIN, n: 0, pay: Math.max(0, Math.min(5000, parseInt(q.bomb.pay, 10) || 50)),
+                    holder: '', holderNick: '', passes: 0, loser: '', loserNick: '', end: 0, cancel: false };
+      BOMB = { ppl: new Map(), fuseAt: 0, heldAt: 0, prev: '' };
     }
   }
   /* 비밀의 계란 — 모든 앱의 지도에 계란이 흩어진다. 빛나는 것(비밀 계란)은 더 두드려야 깨진다 */
@@ -1258,6 +1292,36 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 폭탄 돌리기 — 상태(1초마다) · 참가 · 넘기기 ── */
+  if (url.pathname.startsWith('/bomb')) {
+    await store();
+    const now = Date.now();
+    if (bombStep(now)) { live.at = now; await keep(); }
+    const view = me => live.bomb ? Object.assign({}, live.bomb, { joined: !!(me && BOMB.ppl.has(me)), now }) : null;
+    if (req.method === 'GET') return send(res, 200, { ok: true, bomb: view(null), now });
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const b = live.bomb;
+    if (url.pathname === '/bomb/state') return send(res, 200, { ok: true, bomb: view(id), me: id, now });
+    if (!b) return send(res, 409, { ok: false, why: '폭탄 돌리기가 없다' });
+    if (url.pathname === '/bomb/join') {
+      if (b.phase !== 'join') return send(res, 409, { ok: false, why: '참가를 받는 때가 지났다' });
+      if (!BOMB.ppl.has(id)) { BOMB.ppl.set(id, (await nickOf(id)) || id); b.n = BOMB.ppl.size; live.at = now; await keep(); }
+      return send(res, 200, { ok: true, bomb: view(id), me: id, now });
+    }
+    if (url.pathname === '/bomb/pass') {
+      if (b.phase !== 'run' || b.holder !== id) return send(res, 409, { ok: false, why: '폭탄을 들고 있지 않다' });
+      if (now - BOMB.heldAt < 800) return send(res, 429, { ok: false, why: '받자마자는 못 넘긴다' });
+      bombGive(b, now, id); b.passes++; live.at = now; await keep();
+      return send(res, 200, { ok: true, bomb: view(id), me: id, now });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
   /* ── 백귀야행 — 행렬의 요괴를 쓰러뜨렸다 (로그인한 사람만, 한 사람은 6초에 한 마리) ── */
   if (url.pathname === '/march/hit' && req.method === 'POST') {
     let body = '';
