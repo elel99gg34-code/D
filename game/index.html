@@ -3592,6 +3592,24 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 @keyframes eggBreak{0%{transform:rotate(var(--r)) scale(1);opacity:1}40%{transform:rotate(var(--r)) scale(1.35);opacity:1;filter:brightness(2)}100%{transform:rotate(var(--r)) scale(.2);opacity:0}}
 .castsec.egg{border-color:rgba(255,215,106,.45)}.castsec.egg>b{color:#ffd76a}
 @media (prefers-reduced-motion:reduce){.egg{animation:none!important}}
+/* ══ 어드민급 — 검은 판에 무지갯빛 테, 초록 단말기 글씨 ══ */
+.card.g-adm .face{border:2px solid #00ffb0;background:radial-gradient(circle at 50% 35%,#0e2a22,#04100c 70%),#04100c;
+  box-shadow:inset 0 0 0 1px #003a28,inset 0 0 26px rgba(0,255,176,.35)}
+.card.g-adm .face *{color:#d8fff0}
+.card.g-adm .cname{color:#00ffb0!important;font-weight:700;text-shadow:0 0 8px #00ffb0;letter-spacing:.08em;font-family:monospace}
+.card.g-adm .grade{background:#00ffb0!important;color:#002018!important;font-weight:800;font-size:9px!important;letter-spacing:.05em}
+.card.g-adm .art .g{color:#ffffff!important;text-shadow:0 0 10px #00ffb0,0 0 26px #00ffb0,2px 0 #ff2a6a,-2px 0 #2ac8ff}
+.card.g-adm .art .ring{border-color:#00ffb0!important;box-shadow:0 0 14px rgba(0,255,176,.6)}
+.card.g-adm .txt b,.card.g-adm .txt em{color:#7affd4!important}
+.card.g-adm::before{content:'';position:absolute;inset:-10px;border-radius:14px;z-index:0;
+  background:conic-gradient(from 0deg,#ff2a6a,#ffb02a,#f8ff2a,#2aff8a,#2ac8ff,#8a2aff,#ff2a6a);filter:blur(8px);opacity:.95;animation:qxSpin 1.6s linear infinite}
+.card.g-adm .cfx{--sc:#00ffb0}
+.ubl.adm{filter:hue-rotate(-110deg) saturate(1.6) brightness(1.15)}
+.dpowbig.adm{background:linear-gradient(135deg,#00261c,#00ffb0 55%,#003a2a);border-color:#9fffe0;color:#001a12}
+.dpowbig.adm small{color:#003a28}
+.dpowsub.adm{color:#00ffb0;text-shadow:0 0 6px rgba(0,255,176,.6)}
+.dpowclone.adm button{border-color:#00ffb0;background:linear-gradient(160deg,rgba(0,40,28,.92),rgba(0,10,8,.96))}
+.dpowclone.adm button i{color:#fff;text-shadow:0 0 10px #00ffb0,0 0 20px #00ffb0}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -5954,6 +5972,7 @@ function toast(msg) {
    ══════════════════════════════════════════════════════════ */
 const STATUS = {
   str:      { n: '힘',     g: '力', kind: 'buff',   d: '공격 카드의 피해량이 수치만큼 증가한다.' },
+  godmode:  { n: '신권',   g: '神', kind: 'buff',   d: '어드민급 — 이 싸움 동안 받는 피해 0 · 모든 부적 값 0 · 차례마다 기 +10 · 부적 5장 더.' },
   dex:      { n: '민첩',   g: '敏', kind: 'buff',   d: '카드로 얻는 방어도가 수치만큼 증가한다.' },
   vuln:     { n: '취약',   g: '弱', kind: 'debuff', d: '받는 피해가 50% 증가한다. 턴 종료 시 1 감소.', decay: true },
   weak:     { n: '약화',   g: '衰', kind: 'debuff', d: '주는 피해가 25% 감소한다. 턴 종료 시 1 감소.', decay: true },
@@ -7390,6 +7409,7 @@ function ccost(c) {
 function ecost(c) {
   if (G.b && devInfOn() && isQ(cdef(c).rar)) return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
   const k = ccost(c);
+  if (G.b && k > 0 && G.b.p && G.b.p.s && G.b.p.s.godmode) return 0;   /* 어드민급 「신권」 — 모든 부적 값 0 */
   if (!G.b || k <= 0) return k;
   if (G.b.freeTurn) return 0;
   return Math.max(0, k - (G.b.cheap || 0));   /* 천수 같은 것이 값을 깎아 준다 */
@@ -7408,15 +7428,16 @@ const GRADE = {
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.05% 확률로만 모습을 드러낸다.' },
   qx:       { n: '?X급',  s: '?X', c: '#e8b820', desc: '실험 중인 등급. 아직 세상에 없다 — 개발자만 쥘 수 있다.' },
   qq:       { n: '??급',  s: '??', c: '#d0d4e0', desc: '이름조차 붙지 않은 등급. 신호가 깨져 읽히지 않는다 — 개발자만 쥘 수 있다.' },
+  adm:      { n: '어드민급', s: 'ADMIN', c: '#00ffb0', desc: '세계 최강. 세상의 규칙 위에 선 등급 — 백야만 쥘 수 있다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
 const GRADE_ORDER = ['basic', 'common', 'uncommon', 'rare', 'zero', 'special', 'ssc', 'ssx', 'unknown'];
 const RARITY_NAME = {};
 for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
-const isQ = r => r === 'unknown' || r === 'qx' || r === 'qq';   /* ?급 갈래 — ?급 · ?X급 · ??급 */
+const isQ = r => r === 'unknown' || r === 'qx' || r === 'qq' || r === 'adm';   /* ?급 갈래 — ?급 · ?X급 · ??급 */
 const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
   : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown'
-  : rar === 'zero' ? ' g-zero' : rar === 'qx' ? ' g-qx' : rar === 'qq' ? ' g-qq' : '';
+  : rar === 'zero' ? ' g-zero' : rar === 'qx' ? ' g-qx' : rar === 'qq' ? ' g-qq' : rar === 'adm' ? ' g-adm' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* ── 새 부적 (판 7) — 3등급부터 S급까지, 비어 있던 자리를 메운다 ── */
 defCard({ id: 'palmstrike', n: '쌍장타', g: '拍', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
@@ -7528,6 +7549,20 @@ defCard({ id: 'qq_rewind', n: '역행', g: '逆', type: 'skill', rar: 'qq', cost
   txt: v => `체력을 <b>모두</b> 되찾고, 버린 더미를 뽑을 더미에 섞은 뒤 부적 ${v.n}장을 뽑는다. 소멸.`,
   play: c => { const b = G.b, p = P(); skillBanner('逆 行', true); heal(p.maxHp);
     b.drawPile = shuffle(b.drawPile.concat(b.discardPile)); b.discardPile = []; drawCards(c.v.n); syncAll(); } });
+/* ── 어드민급 — 세계 최강. 백야만 (개발자의 권력 탭 · 도감·보상·상자·상점·선물·맛보기 어디에도 없다) ── */
+defCard({ id: 'adm_delete', n: 'DELETE', g: '刪', type: 'attack', rar: 'adm', cost: 0, tgt: 'all', devOnly: true,
+  v: u => ({}),
+  txt: () => `<b>모든 적을 지운다.</b> 보스·하늘을 가르는 것도. 방어도도 각성도 소용없다.`,
+  play: async c => { skillBanner('rm -rf /yokai/*', true);
+    try { SND.thunder(); screenFlash('rgba(0,255,176,.55)', 500); } catch (e) {}
+    for (const e of alive()) { if (e.el) { const q = centerOf(e.el); try { lightBeam(q.x, 'rgba(0,255,176,.85)', 140); sparkles(q.x, q.y, 24, '#9fffe0', 160); } catch (x) {} }
+      pure(e, e.hp + (e.block || 0)); await wait(90); } } });
+defCard({ id: 'adm_god', n: '신권', g: '神', type: 'power', rar: 'adm', cost: 0, devOnly: true,
+  v: u => ({ e: u ? 12 : 10 }),
+  txt: v => `이 싸움 동안 <b>신권</b> — 받는 피해 0 · 모든 부적 값 0 · 차례마다 기 +10 · 부적 5장 더. 지금 기 +${v.e}, 부적 5장, 체력 가득.`,
+  play: c => { const p = P(); skillBanner('ROOT ACCESS · 神權', true);
+    if (!p.s.godmode) st(p, 'godmode', 1); energy(c.v.e); drawCards(5); heal(p.maxHp);
+    try { SND.gong(); SND.power && SND.power(); screenFlash('rgba(0,255,176,.45)', 600); } catch (e) {} } });
 
 /* ── 멀티 교환소 부적 — 토큰으로만 얻는다 (보상·상자·상점에는 나오지 않는다) ── */
 defCard({ id: 'mp_duel', n: '결투의 맹세', g: '誓', type: 'attack', rar: 'special', cost: 1, tgt: 'enemy', mpOnly: true,
@@ -10199,6 +10234,7 @@ function applyDamage(ent, dmg, pierce) {
     if (tr && tr.def && dmg > 0) dmg = Math.max(1, dmg - tr.def);
     const sh = shrineDef();                             /* 신전 — 가죽의 가호 */
     if (sh && dmg > 0) dmg = Math.max(1, dmg - sh);
+    if (ent.s && ent.s.godmode) dmg = 0;                /* 어드민급 「신권」 — 받는 피해 0 */
   }
   let d = Math.max(0, dmg), blocked = 0;
   if (!pierce && ent.block > 0) { blocked = Math.min(ent.block, d); ent.block -= blocked; d -= blocked; }
@@ -10570,6 +10606,7 @@ async function _startPlayerTurn(b) {
   if (!p.s.barricade) p.block = 0;
   b.energy = b.maxEnergy + (p.s.focus || 0);
   luckAwaken(b);                                        /* 운(運) — 요괴가 깨어날 수도 있다 */
+  if (p.s.godmode) { b.energy += 10; b.drawMod = (b.drawMod || 0) + 5; }   /* 어드민급 「신권」 */
 
   if (b.turn === 1 && shLv('shield')) blk(shLv('shield') * 4, true);   /* 신전 — 방패의 가호 */
   if (shLv('hand')) b.drawMod = (b.drawMod || 0) + shLv('hand');       /* 신전 — 손의 가호 */
@@ -10614,7 +10651,7 @@ async function _startPlayerTurn(b) {
 function unknownBlast(card, target, kind) {
   return new Promise(done => {
     const d = CARDS[card.id];
-    const n = el('div', 'ubl' + (kind === true || kind === 'x' ? ' x' : kind === 'qq' ? ' qq' : ''));
+    const n = el('div', 'ubl' + (kind === true || kind === 'x' ? ' x' : kind === 'qq' ? ' qq' : kind === 'adm' ? ' adm' : ''));
     n.innerHTML = `<div class="ubl-rings"><i></i><i></i><i></i></div><div class="ubl-orbit">${'?無極玄虛靈'.split('').map((g, i) => `<b style="--i:${i}">${g}</b>`).join('')}</div>
       <div class="ubl-tal"><div class="ubl-face"><em>?</em><span>${d.g}</span><small>${d.n}</small></div></div><div class="ubl-boom"><div class="bsmoke"></div><div class="brays"></div><div class="bwave"></div><div class="bwave w2"></div>${
       Array.from({ length: 14 }, (_, i) => `<div class="bshard" style="--a:${(i * 360 / 14 + Math.random() * 14).toFixed(0)}deg;--d:${(160 + Math.random() * 160).toFixed(0)}px"></div>`).join('')}<div class="bcore"></div></div>`;
@@ -10645,6 +10682,18 @@ const devInfOn = () => adminOn() && !!META.devInf;
 const UNKNOWN_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'unknown');
 const QX_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'qx');
 const QQ_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'qq');
+const ADM_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'adm');
+/* 어드민급으로 도배 — 원래 덱은 ?급 도배와 같은 자리에 적어 둔다 */
+function devAdmDeck() {
+  const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
+  if (!run._devOld) run._devOld = run.deck.map(c => ({ id: c.id, up: c.up, fg: c.fg || 0 }));
+  const ids = ADM_IDS(), n = Math.max(15, run.deck.length);
+  run.deck = Array.from({ length: n }, (_, i) => mkCard(ids[i % ids.length], true));
+  if (run.plan) run.plan = [];
+  saveRun(); renderTop();
+  try { SND.unlock(); SND.gong(); SND.thunder(); screenFlash('rgba(0,255,176,.5)', 800); stampWord('A D M I N', '#00ffb0'); } catch (e) {}
+  toast(`어드민급 — 덱 ${n}장을 도배했다`);
+}
 function devPowerDeck() {
   const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
   if (!run._devOld) run._devOld = run.deck.map(c => ({ id: c.id, up: c.up, fg: c.fg || 0 }));
@@ -10683,10 +10732,14 @@ function drawPower(grid) {
     <div class="dpowclone">${ids.map(id => `<button data-id="${id}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
     <div class="dpowsub qx">?X급 — 실험 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone qx">${QX_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
+    <button class="dpowbig adm" id="dp_adm"><b>덱을 모두 어드민급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → 어드민급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
+    <div class="dpowsub adm">어드민급 — 세계 최강 · 백야만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
+    <div class="dpowclone adm">${ADM_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
     <div class="dpowsub qq">??급 — 이름 없는 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone qq">${QQ_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
   grid.querySelector('#dp_deck').onclick = () => { devPowerDeck(); drawPower(grid); };
+  grid.querySelector('#dp_adm').onclick = () => { devAdmDeck(); drawPower(grid); };
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
   grid.querySelector('#dp_inf').onclick = () => { META.devInf = !META.devInf; saveMeta(); try { SND.unlock(); } catch (e) {} if (G.b) syncAll(); toast(META.devInf ? '?급 무한 — 켜짐' : '?급 무한 — 꺼짐'); drawPower(grid); };
   grid.querySelectorAll('.dpowclone button').forEach(b => b.onclick = () => { devClone(b.dataset.id); drawPower(grid); });
@@ -10719,7 +10772,7 @@ async function playCard(card, target) {
   b.curCard = card;
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
-  if (isQ(d.rar)) await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
+  if (isQ(d.rar)) await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : d.rar === 'adm' ? 'adm' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
   if (d.rar === 'ssx' || isQ(d.rar)) {
     blink(1.3); zoomPunch(); rgbSplit();
     sparkles(innerWidth / 2, innerHeight * .5, 22, tint(GRADE[d.rar].c), 220);
@@ -12522,7 +12575,7 @@ function skinBits(id) {
   return '';
 }
 /* 부적의 오라 — 1등급·0등급은 빛줄기가 훑고, S급부터는 불티가 피어오른다 (손에 든 것만 움직인다) */
-const CFX_RAR = { uncommon: 'edge', rare: 'sweep', zero: 'sweep', special: 'spark', ssc: 'spark', ssx: 'spark', unknown: 'spark', qx: 'spark', qq: 'spark' };
+const CFX_RAR = { uncommon: 'edge', rare: 'sweep', zero: 'sweep', special: 'spark', ssc: 'spark', ssx: 'spark', unknown: 'spark', qx: 'spark', qq: 'spark', adm: 'spark' };
 /* --- 카드 DOM --- */
 function cardNode(c, opts) {
   opts = opts || {};
@@ -21369,7 +21422,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 30;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 31;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
