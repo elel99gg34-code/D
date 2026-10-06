@@ -1133,7 +1133,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   /* ── 회원 목록 · 밴 — 백야만 (퍼뜨리기 열쇠) ── */
-  if ((url.pathname === '/admin/users' || url.pathname === '/admin/ban' || url.pathname === '/admin/clears') && req.method === 'POST') {
+  if ((url.pathname === '/admin/users' || url.pathname === '/admin/ban' || url.pathname === '/admin/clears' || url.pathname === '/admin/mp') && req.method === 'POST') {
     if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
@@ -1142,6 +1142,29 @@ const server = http.createServer(async (req, res) => {
     await store();
     const b = await banLoad(), now = Date.now();
     if (url.pathname === '/admin/clears') return send(res, 200, { ok: true, list: (await get('clears')) || [], now });
+    /* 어드민 핵 — 대전 중 랭크 바꾸기 · 닉네임 개조. 판에 있는 이들에게도 곧바로 알린다 */
+    if (url.pathname === '/admin/mp') {
+      const who = str(q.acct, 20).trim();
+      if (!who || !(await soulGet(who))) return send(res, 404, { ok: false, why: '그런 아이디가 없다' });
+      const out = {};
+      if (q.rp != null) {
+        const prof = await mpProf(who); prof.rp = Math.max(0, Math.min(99999, parseInt(q.rp, 10) || 0));
+        await mpPut(who, prof); await mpTopSet(who, prof); out.rp = prof.rp;
+      }
+      if (q.nick != null) {
+        const why = await nickSet(who, str(q.nick, 12).trim(), true);
+        if (why) return send(res, 400, { ok: false, why });
+        out.nick = await nickOf(who);
+      }
+      const mid = mpOf.get(who), m = mid && mpMatches.get(mid);
+      if (m) for (const pl of m.players) if (pl.acct === who) {
+        if (out.rp != null) { pl.rp = out.rp; pl.tier = mpTier(out.rp); }
+        if (out.nick) pl.name = out.nick;
+        mpEv(m, { kind: 'tag', acct: who, name: pl.name, rp: pl.rp });
+      }
+      console.log('어드민 핵 —', who, JSON.stringify(out));
+      return send(res, 200, Object.assign({ ok: true }, out));
+    }
     if (url.pathname === '/admin/users') {
       const { ids, made } = await soulIds();
       const find = str(q.find, 20).trim().toLowerCase();
@@ -1170,6 +1193,10 @@ const server = http.createServer(async (req, res) => {
       } else {
         b.acct[key] = { at: now, why: str(q.why, 80) };
         for (const d of devs) b.dev[d] = { at: now, id: key };
+        /* 대전 중이면 그 자리에서 쓰러뜨린다 — 진 것으로 */
+        const mid = mpOf.get(key), m = mid && mpMatches.get(mid);
+        if (m && !m.over && m.units[key]) { m.units[key].hp = 0; mpEv(m, { kind: 'gone', acct: key });
+          if (m.turn.acct === key) mpNext(m, now); else mpCheckOver(m); }
       }
       await banKeep();
       console.log(un ? '밴을 풀었다:' : '밴했다:', key, '· 기기', devs.length);
