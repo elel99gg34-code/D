@@ -3545,6 +3545,17 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .card.mutS .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 14px rgba(159,216,255,.45)}
 .card.mutC .face{box-shadow:inset 0 0 0 2px rgba(224,138,216,.8),inset 0 0 14px rgba(224,138,216,.45)}
 .card.mutS.mutC .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 0 4px rgba(224,138,216,.7),inset 0 0 16px rgba(200,170,255,.5)}
+.gcol{font-size:12px;letter-spacing:.04em;padding:2px 8px;border-radius:10px;background:rgba(40,30,16,.6);color:#c9a86a;vertical-align:middle}
+.gcol.done{background:linear-gradient(#ffe7a0,#e8b84a);color:#3a2600;font-weight:700;box-shadow:0 0 10px rgba(255,200,90,.6)}
+.gachadone{position:fixed;left:50%;top:calc(var(--tbh,44px) + 14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:520;
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;max-width:calc(100vw - 24px);
+  background:linear-gradient(120deg,rgba(60,44,10,.97),rgba(24,16,4,.97));border:1px solid #ffd76a;color:#fff3d0;
+  box-shadow:0 0 0 2px rgba(255,215,106,.3),0 10px 30px rgba(0,0,0,.5),0 0 34px rgba(255,200,90,.5);animation:djIn .5s cubic-bezier(.2,1.4,.4,1)}
+.gachadone.out{opacity:0;transition:.5s}
+.gachadone i{font-style:normal;font-size:34px;color:#ffd76a;text-shadow:0 0 14px #ffb000}
+.gachadone b{display:block;font-size:17px;letter-spacing:.15em;color:#fff}
+.gachadone span{display:block;font-size:12.5px;color:#ffe7b0}
+.gachadone #gd_x{background:none;border:none;color:#c9a86a;font-size:18px;cursor:pointer;align-self:flex-start}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -17461,6 +17472,36 @@ function boxLoot(tier) {
     take: () => gainRelic(rid, true) };
 }
 
+/* ── 뽑기 모음 — 상자마다 나올 수 있는 것을 다 모았는가 (부적·유물·비기는 도감, 스킨은 부적×옷) ── */
+function gachaProgress(tier) {
+  try {
+    const dex = META.dex || {};
+    if (tier <= 3) { const ids = [...new Set(bannerPool(tier))]; return { have: ids.filter(id => dex.cards && dex.cards[id]).length, total: ids.length, kind: '부적' }; }
+    if (tier === 4) { const ids = ['common', 'uncommon', 'rare'].flatMap(r => RELIC_POOL[r] || []); return { have: ids.filter(id => dex.relics && dex.relics[id]).length, total: ids.length, kind: '유물' }; }
+    if (tier === 5) return { have: ALL_SKILLS.filter(id => dex.skills && dex.skills[id]).length, total: ALL_SKILLS.length, kind: '비기' };
+    if (tier === 6) return { have: Math.min(skinCount(), SKIN_PAIRS()), total: SKIN_PAIRS(), kind: '스킨' };
+  } catch (e) {}
+  return { have: 0, total: 0 };
+}
+/* 뽑기를 마칠 때마다 — 새로 다 모은 상자가 있으면 한 번 알린다 */
+function gachaCheckAll() {
+  META.gachaDone = META.gachaDone || {};
+  const fresh = [];
+  for (const B of BANNERS) {
+    if (B.vip) continue;
+    const gp = gachaProgress(B.tier);
+    if (gp.total && gp.have >= gp.total && !META.gachaDone[B.tier]) { META.gachaDone[B.tier] = Date.now(); fresh.push([B, gp]); }
+  }
+  if (!fresh.length) return;
+  saveMeta();
+  const old = $('#gachadone'); if (old) old.remove();
+  const n = el('div', 'gachadone'); n.id = 'gachadone';
+  n.innerHTML = `<i>完</i><div><b>다 얻었다!</b>${fresh.map(([B, gp]) => `<span>「${B.n.replace(/!$/, '')}」에서 나오는 ${gp.kind} ${gp.total}가지를 모두 모았다</span>`).join('')}</div><button id="gd_x">×</button>`;
+  document.body.appendChild(n);
+  try { SND.unlock(); SND.victory(); SND.gong(); screenFlash('rgba(255,220,130,.4)', 700); FX.gold(innerWidth / 2, innerHeight * .2, 40); } catch (e) {}
+  n.querySelector('#gd_x').onclick = () => n.remove();
+  setTimeout(() => { if (n.isConnected) { n.classList.add('out'); setTimeout(() => n.remove(), 500); } }, 9000);
+}
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
   if (tier === 4 || tier === 5 || tier === 6) return [];
@@ -17529,7 +17570,7 @@ function showSpecialShop(refill) {
       <div class="gbody">
         <div class="gnav"></div>
         <div class="gmain">
-          <div class="gtitle">${B.n}</div>
+          <div class="gtitle">${B.n}${(() => { const gp = gachaProgress(B.tier); return gp.total ? ` <span class="gcol${gp.have >= gp.total ? ' done' : ''}">${gp.have >= gp.total ? '完 · ' : ''}모음 ${gp.have} / ${gp.total}</span>` : ''; })()}</div>
           <div class="gsub">${B.desc}${rates ? ' &nbsp;확률 ' + rates.map(r =>
             `<b style="color:${GRADE[r.g].c}">${GRADE[r.g].n} ${r.p}</b>`).join(' · ') : ''}</div>
           <div class="gtabs"></div>
@@ -17827,6 +17868,7 @@ function showPullResult(items, after) {
   const bestGrade = GRADE_ORDER[best];
   SND.coin();
 
+  setTimeout(() => { try { gachaCheckAll(); } catch (e) {} }, 900);   /* 다 모았으면 알린다 */
   const p = modal(`<h2>뽑기 결과</h2>
     <div class="hint">${items.length}개를 얻었다${bestGrade === 'unknown' ? ' · <b style="color:#b98cff">?급 등장!</b>'
       : bestGrade === 'ssx' ? ' · <b style="color:#ff2d55">SSX급 등장!</b>' : ''}</div>
@@ -21085,7 +21127,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 28;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 29;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';

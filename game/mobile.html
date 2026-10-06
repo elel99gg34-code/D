@@ -3517,6 +3517,45 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .clearalert span{display:block;font-size:12.5px;color:#ffe7b0}.clearalert em{font-style:normal;color:#ffd76a;font-weight:700}
 .clearalert small{display:block;font-size:11px;color:#c9a86a;margin-top:2px}
 .clearalert #ca_x{background:none;border:none;color:#c9a86a;font-size:18px;cursor:pointer;align-self:flex-start}
+.admhack{position:fixed;left:12px;top:calc(var(--tbh,44px) + 12px + env(safe-area-inset-top,0px));z-index:480;width:min(520px,calc(100vw - 24px));
+  padding:10px;border-radius:10px;background:rgba(4,10,6,.94);border:1px solid #2cff7a;color:#caffdc;font-size:12.5px;
+  box-shadow:0 0 0 1px rgba(44,255,122,.2),0 10px 40px rgba(0,0,0,.6),0 0 24px rgba(44,255,122,.25);font-family:inherit}
+.admhack .ahhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.admhack .ahhead b{color:#2cff7a;letter-spacing:.15em;font-family:monospace}
+.admhack .ahhead span{color:#5f9f78;font-size:11px;flex:1}
+.admhack .ahhead button{background:none;border:none;color:#5f9f78;font-size:18px;cursor:pointer}
+.admhack .ahgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.admhack .ahb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:7px 9px;border-radius:7px;border:1px solid #1f6a3a;
+  background:rgba(10,30,18,.9);color:#dfffe8;font:inherit;cursor:pointer;text-align:left}
+.admhack .ahb:hover{border-color:#2cff7a;box-shadow:0 0 10px rgba(44,255,122,.4)}
+.admhack .ahb b{font-weight:700;font-size:13px}.admhack .ahb small{color:#6fa884;font-size:10.5px}
+.admhack .ahb.on{border-color:#2cff7a;background:rgba(20,70,36,.95)}
+.admhack .ahb.red{border-color:#a8323a;background:rgba(50,8,10,.92);color:#ffd0d0}.admhack .ahb.red small{color:#d08a8a}
+.admhack .ahb.gold{border-color:#c8a020;background:rgba(40,30,4,.92);color:#ffe9a8}.admhack .ahb.gold small{color:#c9a86a}
+.admhack .ahb.sm{flex-direction:row;padding:6px 10px;white-space:nowrap}
+.admhack .ahsec{margin-top:10px;padding-top:8px;border-top:1px dashed #1f6a3a}
+.admhack .ahsec>b{color:#9fffc4;font-size:12px}
+.admhack .ahrow{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.admhack select,.admhack input{flex:1;min-width:90px;padding:6px;border-radius:6px;border:1px solid #1f6a3a;background:#06140b;color:#dfffe8;font:inherit}
+/* ══ 특성(변이) ══ */
+.card .cmut{position:absolute;left:5px;bottom:24px;display:flex;gap:3px;z-index:5;pointer-events:none}
+.card .cmut i{font-style:normal;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-size:11px;font-weight:700}
+.card .cmut .ms{background:radial-gradient(circle,#ffffff,#9fd8ff 60%,#3a7ab8);color:#0a2a4a;box-shadow:0 0 8px #9fd8ff}
+.card .cmut .mc{background:radial-gradient(circle,#ffe0ff,#e08ad8 60%,#7a2a8a);color:#2a0a30;box-shadow:0 0 8px #e08ad8}
+.card.mutS .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 14px rgba(159,216,255,.45)}
+.card.mutC .face{box-shadow:inset 0 0 0 2px rgba(224,138,216,.8),inset 0 0 14px rgba(224,138,216,.45)}
+.card.mutS.mutC .face{box-shadow:inset 0 0 0 2px rgba(159,216,255,.8),inset 0 0 0 4px rgba(224,138,216,.7),inset 0 0 16px rgba(200,170,255,.5)}
+.gcol{font-size:12px;letter-spacing:.04em;padding:2px 8px;border-radius:10px;background:rgba(40,30,16,.6);color:#c9a86a;vertical-align:middle}
+.gcol.done{background:linear-gradient(#ffe7a0,#e8b84a);color:#3a2600;font-weight:700;box-shadow:0 0 10px rgba(255,200,90,.6)}
+.gachadone{position:fixed;left:50%;top:calc(var(--tbh,44px) + 14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:520;
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;max-width:calc(100vw - 24px);
+  background:linear-gradient(120deg,rgba(60,44,10,.97),rgba(24,16,4,.97));border:1px solid #ffd76a;color:#fff3d0;
+  box-shadow:0 0 0 2px rgba(255,215,106,.3),0 10px 30px rgba(0,0,0,.5),0 0 34px rgba(255,200,90,.5);animation:djIn .5s cubic-bezier(.2,1.4,.4,1)}
+.gachadone.out{opacity:0;transition:.5s}
+.gachadone i{font-style:normal;font-size:34px;color:#ffd76a;text-shadow:0 0 14px #ffb000}
+.gachadone b{display:block;font-size:17px;letter-spacing:.15em;color:#fff}
+.gachadone span{display:block;font-size:12.5px;color:#ffe7b0}
+.gachadone #gd_x{background:none;border:none;color:#c9a86a;font-size:18px;cursor:pointer;align-self:flex-start}
 /* ══ 카운트다운 — 숫자가 내려갈수록 붉게, 0 은 새빨갛게 ══ */
 .cdown{position:fixed;inset:0;z-index:100000;pointer-events:none;display:grid;place-items:center;--t:0}
 .cdown .cdv{position:absolute;inset:0;opacity:0;transition:opacity .4s;
@@ -6171,7 +6210,8 @@ const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
 function vipOn() { return !!(META.vip && META.vip.owned); }
 /* 자동 플레이 — VIP 패키지, 또는 백야가 이벤트로 뿌린 맛보기(정한 분 동안)만.
    예전의 「제8막을 넘기면 열림」은 없앴다 (그걸로 열렸던 것도 이제는 VIP 가 아니면 닫힌다) */
-function autoOk() { return vipOn() || autoFreeOn(); }
+/* 자동 플레이 — VIP · 맛보기 이벤트 · 관리자(개발자 창이 있으면 늘) · 어드민 핵의 자동받기 */
+function autoOk() { return vipOn() || autoFreeOn() || adminOn() || (typeof admHackOn === 'function' && admHackOn() && !!META.devAuto); }
 function autoFreeOn() { return !!(typeof LIVE === 'object' && LIVE.autofree && srvNow() < (LIVE.autofree.until || 0)); }
 function vipFreeBoxLeft() { return Math.max(0, VIP_FREEBOX_MS - (Date.now() - (META.vip.freeBoxAt || 0))); }
 /* --- 설정 (기본값) --- */
@@ -7535,11 +7575,14 @@ function fgCost(lv) {
   return Math.round(base * shopMul(act));
 }
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
+/* 특성(변이) — 혼돈의 특성(mutC)은 강화하지 않아도 강화한 것처럼, 별의 특성(mutS)은 수치 1.25배 */
+const cup = c => !!(c.up || c.mutC);
+const MUT_STAR = 1.25;
 function cval(c) {
-  const v = cdef(c).v(c.up);
+  const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc);           /* 벼림 × 환생 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1);   /* 벼림 × 환생 × 별의 특성 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -7547,7 +7590,7 @@ function cval(c) {
 }
 function ccost(c) {
   const d = cdef(c);
-  const k = d.costOf ? d.costOf(c.up) : d.cost;
+  const k = d.costOf ? d.costOf(cup(c)) : d.cost;
   if (k > 0 && curseTag('costup')) return k + 1;               /* 저주 — 무겁다 */
   return k;
 }
@@ -10650,6 +10693,38 @@ function pickIntent(e) {
   e.mv = AWAKEN_MOVES[key] || e.def.moves[key];
 }
 
+/* ══ 특성(변이) — 슈팅 스타·혼돈이 걸린 동안 ═══════════════════
+   라운드에서 요괴를 쓰러뜨릴 때마다 35% 로, 이번 라운드에 쓴 부적 가운데 하나가 변이한다(영구 · 덱에 남는다).
+     슈팅 스타 → 별의 특성(星): 수치 1.25배
+     혼돈      → 혼돈의 특성(混): 강화하지 않아도 강화한 것처럼 (이미 강화한 것은 고르지 않는다)
+   한 부적에 같은 특성은 한 번만. 별·혼돈을 둘 다 지닐 수는 있다.
+   멀티 대전·그림자 연습·하늘을 가르는 것·해킹맵에서는 일어나지 않는다.
+   ═══════════════════════════════════════════════════════════ */
+const MUT_CHANCE = 0.35;
+function mutOnKill(e) {
+  const b = G.b, run = G.run;
+  if (!b || !run || run._pvp || /^(pvp|mpbot|world|hack)/.test(b.kind || '')) return;
+  const ev = liveEvent(); if (ev !== 'star' && ev !== 'chaos') return;
+  if (rnd() >= MUT_CHANCE) return;
+  const key = ev === 'star' ? 'mutS' : 'mutC';
+  const cand = (b.usedUids || []).map(u => run.deck.find(c => c.uid === u)).filter(c => c && !c[key] && !(key === 'mutC' && c.up) && cdef(c).type !== 'curse');
+  if (!cand.length) return;
+  const card = pick(cand);
+  card[key] = true;
+  /* 싸움 중의 같은 부적(손·더미)에도 곧바로 */
+  for (const pile of [b.hand, b.drawPile, b.discardPile, b.exhaustPile]) for (const x of pile || []) if (x.uid === card.uid) x[key] = true;
+  saveRun();
+  const star = key === 'mutS';
+  try {
+    stampWord(star ? '星 · 變 異' : '混 · 變 異', star ? '#9fd8ff' : '#e08ad8');
+    screenFlash(star ? 'rgba(160,210,255,.35)' : 'rgba(224,138,216,.35)', 500);
+    SND.unlock(); SND.blip(star ? 1568 : 330, { dur: .4, type: 'sine', vol: .06, to: star ? 2093 : 880, rev: .6 });
+    if (e.el) { const c0 = centerOf(e.el); sparkles(c0.x, c0.y, 18, star ? '#cfe8ff' : '#f0b0ff', 140); }
+  } catch (x) {}
+  toast(`변이 — 「${cname(card)}」에 ${star ? '별의 특성(星 · 수치 1.25배)' : '혼돈의 특성(混 · 강화한 것처럼)'}`);
+  syncAll();
+}
+
 /* ══ 운(運) — 매 차례 요괴마다 30% 로 각성한다 ═══════════════
    깨어난 요괴는 치는 힘·막는 힘이 1.5배가 되고 이름 뒤에 覺 이 붙는다(한 번 깨면 끝까지).
    보스는 제 각성(체력 40% 아래)이 따로 있어 운으로는 깨지 않는다.
@@ -10859,7 +10934,7 @@ async function playCard(card, target) {
     lightBeam(innerWidth / 2, FX_TINT ? rgba(shade(FX_TINT, .3), .55)
       : d.rar === 'unknown' ? 'rgba(190,140,255,.55)' : 'rgba(255,90,130,.55)', 190);
   } else if (d.rar === 'special') { blink(.7); sparkles(innerWidth / 2, innerHeight * .52, 10, tint('#ffb07a'), 150); }
-  const ctx = { v: cval(card), u: card.up, t: target, card, x: spent };
+  const ctx = { v: cval(card), u: cup(card), t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
   /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
@@ -10882,6 +10957,7 @@ async function playCard(card, target) {
     fire('cardPlay', card);
     if (!b.over) {
       if (d.id !== 'qq_echo') b.lastPlayed = card;        /* ??급 「메아리」가 되풀이할 것 */
+      (b.usedUids = b.usedUids || []).indexOf(card.uid) < 0 && b.usedUids.push(card.uid);   /* 특성(변이) — 이번 라운드에 쓴 부적 */
       if (devInfOn() && isQ(d.rar) && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
       else if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
     } else {
@@ -11170,6 +11246,7 @@ async function checkDeaths() {
       killFx(e);
       dropOnKill(e);
       if (e.march) marchKill(e);                          /* 백귀야행 — 행렬의 요괴 */
+      mutOnKill(e);                                       /* 특성(변이) — 슈팅 스타·혼돈 중에만 */
     }
   }
   if (killed >= 2) {                                  /* 한 번에 여럿을 눕히면 더 요란하게 */
@@ -12660,9 +12737,9 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
-  const TL = (d.txt(v, c.up) + '').replace(/<[^>]+>/g, '').length;
+  const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   n.innerHTML = `
     <div class="face">
       ${skin ? `<div class="sklayer">${skinBits(skin)}</div>` : ''}
@@ -12670,7 +12747,8 @@ function cardNode(c, opts) {
       <div class="cname${c.up ? ' up' : ''}">${cname(c)}</div>
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
-      <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, c.up)}</span></div>
+      <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
+      ${c.mutS || c.mutC ? `<div class="cmut">${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
     </div>
     <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>` +
@@ -12679,7 +12757,7 @@ function cardNode(c, opts) {
   n.dataset.cid = c.id; n.dataset.up = c.up ? '1' : '0';
   if (opts.tip !== false) {
     n.addEventListener('mouseenter', () => {
-      const kws = keywordsIn(d, v, c.up);
+      const kws = keywordsIn(d, v, cup(c));
       if (kws) { const r = n.getBoundingClientRect(); tipShow(kws, r.left + r.width / 2, r.top); }
     });
     n.addEventListener('mouseleave', tipHide);
@@ -17638,6 +17716,36 @@ function boxLoot(tier) {
     take: () => gainRelic(rid, true) };
 }
 
+/* ── 뽑기 모음 — 상자마다 나올 수 있는 것을 다 모았는가 (부적·유물·비기는 도감, 스킨은 부적×옷) ── */
+function gachaProgress(tier) {
+  try {
+    const dex = META.dex || {};
+    if (tier <= 3) { const ids = [...new Set(bannerPool(tier))]; return { have: ids.filter(id => dex.cards && dex.cards[id]).length, total: ids.length, kind: '부적' }; }
+    if (tier === 4) { const ids = ['common', 'uncommon', 'rare'].flatMap(r => RELIC_POOL[r] || []); return { have: ids.filter(id => dex.relics && dex.relics[id]).length, total: ids.length, kind: '유물' }; }
+    if (tier === 5) return { have: ALL_SKILLS.filter(id => dex.skills && dex.skills[id]).length, total: ALL_SKILLS.length, kind: '비기' };
+    if (tier === 6) return { have: Math.min(skinCount(), SKIN_PAIRS()), total: SKIN_PAIRS(), kind: '스킨' };
+  } catch (e) {}
+  return { have: 0, total: 0 };
+}
+/* 뽑기를 마칠 때마다 — 새로 다 모은 상자가 있으면 한 번 알린다 */
+function gachaCheckAll() {
+  META.gachaDone = META.gachaDone || {};
+  const fresh = [];
+  for (const B of BANNERS) {
+    if (B.vip) continue;
+    const gp = gachaProgress(B.tier);
+    if (gp.total && gp.have >= gp.total && !META.gachaDone[B.tier]) { META.gachaDone[B.tier] = Date.now(); fresh.push([B, gp]); }
+  }
+  if (!fresh.length) return;
+  saveMeta();
+  const old = $('#gachadone'); if (old) old.remove();
+  const n = el('div', 'gachadone'); n.id = 'gachadone';
+  n.innerHTML = `<i>完</i><div><b>다 얻었다!</b>${fresh.map(([B, gp]) => `<span>「${B.n.replace(/!$/, '')}」에서 나오는 ${gp.kind} ${gp.total}가지를 모두 모았다</span>`).join('')}</div><button id="gd_x">×</button>`;
+  document.body.appendChild(n);
+  try { SND.unlock(); SND.victory(); SND.gong(); screenFlash('rgba(255,220,130,.4)', 700); FX.gold(innerWidth / 2, innerHeight * .2, 40); } catch (e) {}
+  n.querySelector('#gd_x').onclick = () => n.remove();
+  setTimeout(() => { if (n.isConnected) { n.classList.add('out'); setTimeout(() => n.remove(), 500); } }, 9000);
+}
 /* 배너에서 등장하는 부적 목록 */
 function bannerPool(tier) {
   if (tier === 4 || tier === 5 || tier === 6) return [];
@@ -17706,7 +17814,7 @@ function showSpecialShop(refill) {
       <div class="gbody">
         <div class="gnav"></div>
         <div class="gmain">
-          <div class="gtitle">${B.n}</div>
+          <div class="gtitle">${B.n}${(() => { const gp = gachaProgress(B.tier); return gp.total ? ` <span class="gcol${gp.have >= gp.total ? ' done' : ''}">${gp.have >= gp.total ? '完 · ' : ''}모음 ${gp.have} / ${gp.total}</span>` : ''; })()}</div>
           <div class="gsub">${B.desc}${rates ? ' &nbsp;확률 ' + rates.map(r =>
             `<b style="color:${GRADE[r.g].c}">${GRADE[r.g].n} ${r.p}</b>`).join(' · ') : ''}</div>
           <div class="gtabs"></div>
@@ -18004,6 +18112,7 @@ function showPullResult(items, after) {
   const bestGrade = GRADE_ORDER[best];
   SND.coin();
 
+  setTimeout(() => { try { gachaCheckAll(); } catch (e) {} }, 900);   /* 다 모았으면 알린다 */
   const p = modal(`<h2>뽑기 결과</h2>
     <div class="hint">${items.length}개를 얻었다${bestGrade === 'unknown' ? ' · <b style="color:#b98cff">?급 등장!</b>'
       : bestGrade === 'ssx' ? ' · <b style="color:#ff2d55">SSX급 등장!</b>' : ''}</div>
@@ -21122,6 +21231,7 @@ const CAST_H  = '6b9bfccda2c19aed37f9abae89b7d5a5bc51102835dd9dfe5bd3f27e3c6f949
 const TASTE_H = '08969be0aec9795c2512e2e22742dc356b62a9478ee43e0cf9999dacb9bedc78';
 const GUEST_H = 'cffe7c12f9320abde4796b97d3ff94ef9af325e1124ce5a234e688d1d2cbc402';
 const CASTKEY = 'baekgwi_castkey';     /* 퍼뜨리는 열쇠 — 그 열쇠를 적은 기계에만 남는다 */
+const ADMHACK_H = 'e134048790de6e02d19fa78603d5be908a985a9eccc963c5d347679844d5eb2d';   /* 어드민 핵 — 지문만 */
 
 /* ══════════════════════════════════════════════════════════
    코드 — 열쇠는 코드의 지문(codeKey)이다. 코드 자체는 적지 않는다.
@@ -21137,6 +21247,12 @@ const CODES = {
     n: '관리자 (퍼뜨리기)',
     d: '관리자 창을 열고, 모든 앱에 일을 퍼뜨릴 수 있게 한다',
     give() { setTimeout(() => { closeTop(); showAdmin(); }, 200); return '퍼뜨리는 권한'; }
+  },
+  /* 어드민 핵 — 퍼뜨리기 열쇠가 있는 백야만. 싸움·대전 중 왼쪽 Shift 두 번 */
+  [ADMHACK_H]: {
+    n: '어드민 핵',
+    d: '싸움·대전 중 왼쪽 Shift 를 두 번 누르면 어드민 핵 창이 뜬다',
+    give() { return caster() ? '싸움·대전 중 왼쪽 Shift 두 번 — 어드민 핵 창' : '퍼뜨리기 열쇠가 있는 백야만 쓸 수 있다'; }
   },
   /* 게스트 — 적으면 이름을 달아 청하고, 관리자가 허락해야 게스트가 된다 */
   [GUEST_H]: {
@@ -21255,7 +21371,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 27;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 29;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21513,6 +21629,109 @@ function marchSky(on, paused) {
     bg.appendChild(a);
   }
   a.classList.toggle('paused', !!paused);
+}
+
+/* ══════════════════════════════════════════════════════════
+   어드민 핵 — 퍼뜨리기 열쇠가 있는 백야가 어드민 핵 코드까지 적으면 열린다
+   ──────────────────────────────────────────────────────────
+   싸움(라운드)·대전 중 왼쪽 Shift 를 두 번 빠르게 누르면 창이 뜬다(다시 두 번이면 닫힌다).
+     둘 다 — ?X 바로 가져오기 · 한방 · 어드민 번개 · 쓸어버리기 · 바꿔치기 · 자동받기(나만)
+     대전만 — 핵이면 바로 밴 · 랭크 바꾸기 · 닉네임 개조
+   대전에서 상대를 건드리는 것은 내 차례에만 — 차례를 마칠 때 서버로 간다
+   (서버는 상대 체력을 「줄이는 것」만 받는다). 밴·랭크·닉네임은 서버가 열쇠를 맞춰 본다.
+   ══════════════════════════════════════════════════════════ */
+const admHackOn = () => caster() && !!(META.codes && META.codes[ADMHACK_H]);
+let _admShift = 0;
+window.addEventListener('keydown', e => {
+  if (e.code !== 'ShiftLeft' || e.repeat) return;
+  if (!admHackOn() || !G.b) { _admShift = 0; return; }
+  const now = performance.now();
+  if (now - _admShift < 420) { _admShift = 0; admHackToggle(); } else _admShift = now;
+});
+function admHackToggle() {
+  const old = $('#admhack'); if (old) { old.remove(); return; }
+  if (!G.b) return;
+  const pvp = G.b.kind === 'pvp';
+  const n = el('div', 'admhack'); n.id = 'admhack';
+  const foes = pvp && MP.match ? MP.match.players.filter(x => x.team !== (MP.match.players.find(y => y.acct === MP.match.me) || {}).team) : [];
+  const people = pvp && MP.match ? MP.match.players : [];
+  n.innerHTML = `<div class="ahhead"><b>⚠ ADMIN HACK</b><span>${pvp ? '대전' : '라운드'} · 왼쪽 Shift 두 번으로 닫는다</span><button id="ah_x">×</button></div>
+    <div class="ahgrid">
+      ${pvp ? '<button class="ahb red" data-a="ban"><b>핵이면 바로 밴</b><small>상대 아이디·기기 밴, 그 자리에서 패배</small></button>' : ''}
+      <button class="ahb gold" data-a="qx"><b>?X 바로 가져오기</b><small>?X급 셋을 손에 (강화)</small></button>
+      <button class="ahb${ADMIN.oneHit ? ' on' : ''}" data-a="one"><b>한방 ${ADMIN.oneHit ? '켜짐' : '꺼짐'}</b><small>내가 치면 한 대에 눕는다</small></button>
+      <button class="ahb" data-a="bolt"><b>어드민 번개</b><small>모든 적에게 최대 체력의 절반</small></button>
+      <button class="ahb" data-a="sweep"><b>쓸어버리기</b><small>모든 적을 지운다</small></button>
+      <button class="ahb" data-a="swap"><b>바꿔치기</b><small>나와 가장 성한 적의 체력을 맞바꾼다</small></button>
+      <button class="ahb${META.devAuto ? ' on' : ''}" data-a="auto"><b>자동받기(나만) ${META.devAuto ? '켜짐' : '꺼짐'}</b><small>내 앱에서만 자동 플레이</small></button>
+    </div>
+    ${pvp ? `<div class="ahsec"><b>랭크 바꾸기 · 닉네임 개조</b>
+      <div class="ahrow"><select id="ah_who">${people.map(x => `<option value="${wEsc(x.acct)}">${wEsc(x.name)}${x.acct === MP.match.me ? ' (나)' : ''}</option>`).join('')}</select>
+        <select id="ah_tier">${Object.keys(MP_TIER_INFO).map(k => `<option value="${MP_TIER_INFO[k].min}">${MP_TIER_INFO[k].n} (${MP_TIER_INFO[k].min}+)</option>`).join('')}</select>
+        <button class="ahb sm" data-a="rank">랭크 바꾸기</button></div>
+      <div class="ahrow"><input id="ah_nick" maxlength="12" placeholder="새 닉네임"><button class="ahb sm" data-a="nick">닉네임 개조</button></div></div>` : ''}`;
+  document.body.appendChild(n);
+  n.querySelector('#ah_x').onclick = () => n.remove();
+  n.querySelectorAll('[data-a]').forEach(b => b.onclick = () => admHackDo(b.dataset.a, n, foes));
+  try { SND.unlock(); SND.blip(1320, { dur: .08, type: 'square', vol: .05 }); } catch (e) {}
+}
+/* 대전에서 상대를 건드리는 것은 내 차례에만 */
+function admMyTurn() {
+  if (G.b && G.b.kind === 'pvp' && !G.b.mpMine) { toast('대전 — 내 차례에만 쓸 수 있다'); SND.err(); return false; }
+  if (!G.b || G.b.over || G.b.busy) { if (G.b && G.b.busy) toast('잠시 뒤에'); return false; }
+  return true;
+}
+async function admHackDo(a, panel, foes) {
+  const b = G.b; if (!b) return;
+  const p = P();
+  if (a === 'ban') {
+    if (!foes.length) return;
+    if (!confirm(`${foes.map(f => f.name).join(', ')} — 핵으로 보고 바로 밴할까? (아이디·기기 모두)`)) return;
+    for (const f of foes) {
+      const r = await adminAsk('/admin/ban', { id: f.acct, why: '핵 사용 — 대전 중 백야가 밴' });
+      toast(r.ok ? `${f.name} — 밴 (기기 ${r.devs}대)` : `${f.name} — 못 했다: ${r.why}`);
+    }
+    try { SND.gong(); stampWord('B A N', '#ff3a3a'); } catch (e) {}
+    setTimeout(() => { try { mpPoll(); } catch (e) {} }, 400);
+    return;
+  }
+  if (a === 'qx') {
+    let k = 0; for (const id of QX_IDS()) if (b.hand.length < 10) { b.hand.push(mkCard(id, true)); k++; }
+    syncAll(); toast(k ? `?X급 ${k}장 — 손에` : '손이 가득 찼다'); try { SND.unlock(); } catch (e) {}
+    return admHackToggle(), admHackToggle();
+  }
+  if (a === 'one') { ADMIN.oneHit = !ADMIN.oneHit; toast(ADMIN.oneHit ? '한방 — 켜짐' : '한방 — 꺼짐'); return admHackToggle(), admHackToggle(); }
+  if (a === 'auto') { META.devAuto = !META.devAuto; saveMeta(); try { syncAuto(); } catch (e) {} toast(META.devAuto ? '자동받기 — 켜짐 (나만)' : '자동받기 — 꺼짐'); return admHackToggle(), admHackToggle(); }
+  if (!admMyTurn()) return;
+  const foesAlive = alive();
+  if (a === 'bolt') {
+    try { SND.thunder(); screenFlash('rgba(230,240,255,.85)', 420); shake(true); } catch (e) {}
+    for (const e of foesAlive) { if (e.el) { const c = centerOf(e.el); try { lightBeam(c.x, 'rgba(200,220,255,.9)', 140); sparkles(c.x, c.y, 20, '#dfe8ff', 140); shockRing(c.x, c.y, 300, '#bcd4ff'); } catch (x) {} }
+      pure(e, Math.ceil(e.maxHp / 2)); await wait(120); }
+    await checkDeaths(); syncAll(); toast('어드민 번개'); return;
+  }
+  if (a === 'sweep') {
+    try { SND.gong(); screenFlash('rgba(20,10,30,.6)', 500); stampWord('一 掃', '#c8a0ff'); } catch (e) {}
+    for (const e of foesAlive) pure(e, e.hp + (e.block || 0));
+    await checkDeaths(); syncAll(); return;
+  }
+  if (a === 'swap') {
+    const t = foesAlive.slice().sort((x, y) => y.hp - x.hp)[0]; if (!t) return;
+    if (b.kind === 'pvp' && t.hp <= p.hp) { toast('대전 — 상대 체력이 나보다 많을 때만 바꿔칠 수 있다'); return; }
+    const mine = p.hp, theirs = t.hp;
+    p.hp = Math.min(p.maxHp, theirs); t.hp = Math.max(1, Math.min(t.maxHp, mine));
+    if (G.run) G.run.hp = p.hp;
+    try { SND.charge(); screenFlash('rgba(160,120,255,.4)', 400); stampWord('換', '#b080ff'); } catch (e) {}
+    syncAll(); toast(`바꿔치기 — 나 ${mine}→${p.hp} · ${t.n} ${theirs}→${t.hp}`); return;
+  }
+  if (a === 'rank' || a === 'nick') {
+    const who = panel.querySelector('#ah_who').value;
+    const body = a === 'rank' ? { acct: who, rp: +panel.querySelector('#ah_tier').value } : { acct: who, nick: panel.querySelector('#ah_nick').value.trim() };
+    if (a === 'nick' && !body.nick) { toast('새 닉네임을 적으시오'); return; }
+    const r = await adminAsk('/admin/mp', body);
+    toast(r.ok ? (a === 'rank' ? `랭크 — ${mpTierName(r.rp)}` : `닉네임 — ${r.nick}`) : '못 했다: ' + r.why);
+    if (r.ok) setTimeout(() => { try { mpPoll(); } catch (e) {} }, 300);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -24673,6 +24892,9 @@ async function mpApplyUnits(units, fx) {
 function mpUpdate(mv) {
   if (!MP.match || mv.id !== MP.match.id) return;
   MP.turn = mv.turn; MP.turnAt = Date.now(); MP.mvNow = mv;
+  /* 이름표를 소식과 맞춘다 — 어드민 핵이 바꾼 랭크·닉네임을 놓쳐도 다음 소식에 바로잡힌다 */
+  for (const np of mv.players || []) { const op = MP.match.players.find(x => x.acct === np.acct);
+    if (op && (op.name !== np.name || op.rp !== np.rp)) try { mpRetag({ acct: np.acct, name: np.name, rp: np.rp }); } catch (e) {} }
   for (const e of mv.ev) if (e.seq > MP.since) { MP.evq.push(e); MP.since = e.seq; }
   mpDrain(mv);
   mpHudPaint();
@@ -24691,6 +24913,7 @@ async function mpDrain(mv) {
         await wait(520);
       } else if (e.kind === 'end' && e.acct !== me) { await mpApplyUnits(e.units, true); await wait(260); }
       else if (e.kind === 'timeout') { toast(`${mpName(e.acct)} — 시간이 다해 차례가 넘어갔다`); }
+      else if (e.kind === 'tag') { try { mpRetag(e); } catch (x) {} }
       else if (e.kind === 'gone') { toast(`${mpName(e.acct)}이(가) ${e.acct === me ? '쓰러졌다' : '판을 떠났다'}`); }
       else if (e.kind === 'turn' || e.kind === 'start') {
         if (e.acct === me && !(e.kind === 'start' && MP.myNo)) await mpMyTurn(mv);
@@ -24777,6 +25000,15 @@ function mpHudPaint() {
 }
 setInterval(() => { try { if (MP.match) mpHudPaint(); } catch (e) {} }, 500);
 /* 2대2 — 한 편의 모습 */
+/* 어드민 핵이 랭크·닉네임을 바꿨다 — 판 위의 이름표를 고친다 */
+function mpRetag(e) {
+  if (!MP.match) return;
+  const pl = MP.match.players.find(x => x.acct === e.acct); if (!pl) return;
+  if (e.name) pl.name = e.name; if (e.rp != null) pl.rp = e.rp;
+  const ent = mpUnitEnt(e.acct);
+  if (ent && ent.el) mpNameTag(ent.el, pl, e.acct === MP.match.me);
+  if (ent && e.acct !== MP.match.me) ent.n = pl.name;
+}
 /* 이름표 — 닉네임 · 랭크(문장과 등급) · 덱 보기 */
 function mpNameTag(u, pl, mine) {
   const nm = u && u.querySelector('.nm'); if (!nm || !pl) return;
