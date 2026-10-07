@@ -47,6 +47,7 @@ function expire(now) {
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
+  if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
   if (live.shadow && live.shadow.done && now - (live.shadow.end || now) > 5 * 60000) { live.shadow = null; changed = true; }
   if (bombStep(now)) changed = true;
@@ -496,7 +497,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -511,6 +512,8 @@ function hbWin(now) {
   if (now - base < HB_OPEN) return { slot: 'h' + base, at: base, until: base + HB_OPEN, forced: false };
   return null;
 }
+/* ── 백야의 시험 — 누가 도전했고 누가 이겼는지 ── */
+let devbossWho = { tried: new Set(), won: new Set() };
 /* ── 그림자 침공 — 싸움마다 내 덱을 베낀 그림자가 끼어든다. 누가 많이 베었는지 순위 ── */
 let shadowWho = new Map();                /* 아이디 → { n, at, nick } */
 function shadowTop() {
@@ -615,6 +618,21 @@ async function applyCast(q) {
         /* 두 셈마다 도는 예약 바퀴를 기다리지 않고 0 에 맞춰 건다 */
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
+    }
+  }
+  /* 백야의 시험 — 백야가 보스가 된다. 체력·세기·보상은 백야가 정한다 */
+  if ('devboss' in q) {
+    const now = Date.now(), d = q.devboss;
+    if (!d) { if (live.devboss) live.devboss = null; }
+    else {
+      const num = (v, lo, hi, df) => Math.max(lo, Math.min(hi, Math.floor(+v) || df));
+      const py = d.pay && typeof d.pay === 'object' ? d.pay : {};
+      live.devboss = { id: now, at: now, until: now + num(d.min, 1, 120, 15) * 60000, hp: num(d.hp, 50, 9999999, 2000),
+        pow: Math.max(.25, Math.min(10, +d.pow || 1)), cut: !!d.cut,
+        pay: { dia: num(py.dia, 0, 1000000, 0), gold: num(py.gold, 0, 10000000, 0), jp: num(py.jp, 0, 100000, 0),
+               ssx: num(py.ssx, 0, 10, 0), unk: num(py.unk, 0, 5, 0), relic: num(py.relic, 0, 5, 0) },
+        tries: 0, n: 0, first: '', last: '' };
+      devbossWho = { tried: new Set(), won: new Set() };
     }
   }
   /* 그림자 침공 */
@@ -1335,6 +1353,32 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 백야의 시험 — 도전했다 · 이겼다 ── */
+  if ((url.pathname === '/devboss/try' || url.pathname === '/devboss/win') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    const db = live.devboss;
+    if (!db || String(q.id || '') !== String(db.id)) return send(res, 409, { ok: false, why: '백야의 시험이 없다' });
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    if (url.pathname === '/devboss/try') {
+      if (now > db.until) return send(res, 409, { ok: false, why: '시험이 끝났다' });
+      if (!devbossWho.tried.has(id)) { devbossWho.tried.add(id); db.tries = devbossWho.tried.size; live.at = now; await keep(); }
+      return send(res, 200, { ok: true, tries: db.tries, n: db.n, won: devbossWho.won.has(id) });
+    }
+    if (devbossWho.won.has(id)) return send(res, 200, { ok: true, again: true, n: db.n, first: db.first });
+    devbossWho.won.add(id); db.n = devbossWho.won.size;
+    const nick = (await nickOf(id)) || id; db.last = nick; if (!db.first) db.first = nick;
+    live.at = now; await keep();
+    console.log('백야의 시험 — 이겼다:', nick, '· 몇 번째', db.n);
+    return send(res, 200, { ok: true, n: db.n, first: db.first, rank: db.n });
+  }
+
   /* ── 그림자 침공 — 그림자를 베었다 (로그인한 사람만, 4초에 하나) ── */
   if (url.pathname === '/shadow/kill' && req.method === 'POST') {
     let body = '';
