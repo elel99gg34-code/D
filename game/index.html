@@ -3750,11 +3750,97 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 .buffinfo i{flex:0 0 26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;color:#1a1206;background:radial-gradient(circle at 35% 30%,#fff,var(--bc) 62%);box-shadow:0 0 8px var(--bc)}
 .buffinfo b{flex:0 0 74px}.buffinfo span{color:#c9bc9c}
 .castsec.buffsec{border-color:rgba(255,200,80,.5)}.castsec.buffsec>b{color:#ffd76a}
+.castsec.hbsec{border-color:rgba(44,255,122,.5)}.castsec.hbsec>b{color:#5cff9a}
 .bfpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
 .bfpick label{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,215,106,.25);background:rgba(0,0,0,.2);cursor:pointer;font-size:12.5px}
 .bfpick label i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#1a1206;background:radial-gradient(circle at 35% 30%,#fff,var(--bc) 62%)}
 .bfpick label:has(input:checked){border-color:#ffd76a;background:rgba(80,60,10,.45)}
 @media (prefers-reduced-motion:reduce){.bfa,.bfa::before,.bfa::after{animation:none!important}}
+/* ══ 해킹 보스 · 해킹상점(한정!) · 해킹 오염 ══ */
+.hbpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:125;display:flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:14px;cursor:pointer;background:rgba(0,20,10,.94);border:1px solid #2cff7a;color:#caffdc;font-size:13px;
+  box-shadow:0 0 0 2px rgba(44,255,122,.2),0 0 24px rgba(44,255,122,.55);animation:hbPill 1.2s ease-in-out infinite;white-space:nowrap}
+.hbpill i{font-style:normal;font-size:20px;color:#5cff9a;text-shadow:0 0 10px #2cff7a;animation:hbGlitch 1.6s steps(1) infinite}
+.hbpill b{font-family:monospace;color:#5cff9a}.hbpill em{font-style:normal;font-variant-numeric:tabular-nums;color:#ffe04a}
+.hbpill u{text-decoration:none;padding:3px 9px;border-radius:8px;background:#2cff7a;color:#002a10;font-weight:700}
+@keyframes hbPill{50%{box-shadow:0 0 0 3px rgba(44,255,122,.35),0 0 36px rgba(44,255,122,.85)}}
+@keyframes hbGlitch{0%,100%{transform:none}10%{transform:translate(2px,-1px) skewX(10deg);color:#ff3ad8}14%{transform:none}60%{transform:translate(-2px,1px);color:#3ad8ff}64%{transform:none}}
+.hbfight{position:fixed;inset:0;z-index:560;background:radial-gradient(circle at 50% 45%,rgba(0,40,18,.94),rgba(0,6,2,.98));color:#caffdc;overflow:hidden;
+  font-family:monospace;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.hbfight .hbscan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(44,255,122,.06) 0 1px,transparent 1px 3px);animation:hbScan 6s linear infinite}
+@keyframes hbScan{to{background-position:0 300px}}
+.hbfight .hbtop{position:absolute;left:0;right:0;top:calc(14px + env(safe-area-inset-top,0px));display:flex;justify-content:center;gap:18px;align-items:baseline}
+.hbfight .hbtop b{color:#5cff9a;font-size:16px;letter-spacing:.06em}
+.hbfight .hbtime{font-size:24px;font-weight:700;color:#ffe04a;font-variant-numeric:tabular-nums}.hbfight .hbtime.last{color:#ff5a5a;animation:hbPill .5s infinite}
+.hbfight .hbbar{position:absolute;left:50%;top:calc(52px + env(safe-area-inset-top,0px));transform:translateX(-50%);width:min(520px,86vw);height:16px;border-radius:8px;
+  background:rgba(44,255,122,.12);border:1px solid #1f7a4a;overflow:hidden}
+.hbfight .hbbar u{position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,#0a8a3a,#2cff7a);box-shadow:0 0 12px #2cff7a;transition:width .15s}
+.hbfight .hbbar em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:11px;color:#eafff0;text-shadow:0 0 3px #000}
+.hbfight .hbboss{position:absolute;width:min(34vw,170px);height:min(34vw,170px);margin:calc(min(34vw,170px) / -2);border-radius:50%;cursor:crosshair;
+  border:3px solid #2cff7a;background:radial-gradient(circle at 40% 35%,#0d3a1e,#021208 70%);box-shadow:0 0 30px rgba(44,255,122,.6),inset 0 0 30px rgba(44,255,122,.35);
+  transition:left .35s cubic-bezier(.3,1.4,.5,1),top .35s cubic-bezier(.3,1.4,.5,1);padding:0;color:#5cff9a;touch-action:none}
+.hbfight .hbboss span{font-size:min(17vw,86px);text-shadow:0 0 18px #2cff7a;font-family:serif;display:block;animation:hbGlitch 1.3s steps(1) infinite}
+.hbfight .hbboss.hit{animation:hbHit .12s}
+@keyframes hbHit{50%{transform:scale(.92);filter:brightness(1.8)}}
+.hbfight .hbboss .hbwall{position:absolute;inset:-14px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:15px;font-weight:700;color:#002a10;
+  background:radial-gradient(circle,rgba(44,255,122,.0) 45%,rgba(44,255,122,.75) 60%,rgba(44,255,122,.2) 72%);opacity:0;transition:opacity .12s;pointer-events:none}
+.hbfight .hbboss.walled .hbwall{opacity:1}
+.hbfight .hbboss.dead{animation:hbDead .7s forwards;pointer-events:none}
+@keyframes hbDead{to{transform:scale(2.2) rotate(30deg);opacity:0;filter:brightness(3)}}
+.hbfight .hbhint{position:absolute;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));text-align:center;font-size:12px;color:#8fbf9f}
+.hbfight .hbx{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));padding:7px 18px;border-radius:8px;border:1px solid #1f7a4a;background:rgba(0,26,12,.9);color:#caffdc;font:inherit;cursor:pointer}
+.hbfight .hbend{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:20px 26px;border-radius:14px;background:rgba(0,20,10,.95);border:1px solid #2cff7a;box-shadow:0 0 40px rgba(44,255,122,.5);transition:.35s cubic-bezier(.2,1.4,.4,1)}
+.hbfight .hbend.on{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
+.hbfight .hbend b{font-size:24px;color:#5cff9a;letter-spacing:.1em;text-shadow:0 0 12px #2cff7a}.hbfight .hbend span{font-size:13px;color:#ffe04a}
+.hbfight .hbend .hbgo{padding:8px 18px;border-radius:9px;border:1px solid #2cff7a;background:#0a5a2a;color:#eafff0;font:inherit;cursor:pointer}
+.hbdmg{position:fixed;z-index:570;pointer-events:none;transform:translate(-50%,-50%);font:700 18px monospace;color:#5cff9a;text-shadow:0 0 8px #2cff7a;animation:hbDmg .6s ease-out forwards}
+@keyframes hbDmg{to{transform:translate(-50%,-160%);opacity:0}}
+/* 메뉴의 해킹상점 — 빛난다 · 한정! */
+.brush-btn.hkmenubtn{position:relative;color:#5cff9a!important;border-color:#2cff7a!important;background:linear-gradient(120deg,rgba(0,40,18,.95),rgba(0,18,8,.95))!important;
+  box-shadow:0 0 14px rgba(44,255,122,.55),inset 0 0 12px rgba(44,255,122,.25);animation:hkMenu 1.6s ease-in-out infinite;overflow:visible}
+.brush-btn.hkmenubtn::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(110deg,transparent 30%,rgba(180,255,210,.45) 50%,transparent 70%);background-size:250% 100%;animation:hkShine 2.4s linear infinite}
+.brush-btn.hkmenubtn em{position:absolute;right:-8px;top:-10px;font-style:normal;font-size:11px;font-weight:800;padding:2px 7px;border-radius:8px;background:#ff2d55;color:#fff;
+  box-shadow:0 0 10px #ff2d55;transform:rotate(8deg);animation:hkLtd .9s ease-in-out infinite}
+.brush-btn.hkmenubtn b{color:#ffe04a}
+@keyframes hkMenu{50%{box-shadow:0 0 26px rgba(44,255,122,.9),inset 0 0 16px rgba(44,255,122,.4)}}
+@keyframes hkShine{from{background-position:150% 0}to{background-position:-100% 0}}
+@keyframes hkLtd{50%{transform:rotate(8deg) scale(1.12)}}
+.hktshop{position:relative}
+.hkltd{display:inline-block;margin:0 auto 4px;padding:4px 22px;border-radius:6px;font-size:20px;font-weight:800;letter-spacing:.3em;color:#fff;
+  background:linear-gradient(90deg,#ff2d55,#ff8a2a,#ff2d55);background-size:200% 100%;box-shadow:0 0 18px rgba(255,45,85,.8);animation:hkShine 2s linear infinite,hkLtdP 1s ease-in-out infinite}
+@keyframes hkLtdP{50%{box-shadow:0 0 30px rgba(255,45,85,1);transform:scale(1.05)}}
+.htboss{margin:0 0 10px;font-size:13px;color:#caffdc;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}.htboss b{color:#5cff9a}
+.hkitem.hot{border-color:#2cff7a;box-shadow:0 0 16px rgba(44,255,122,.55);animation:hkMenu 1.6s ease-in-out infinite}
+.hkitem.hot i{color:#b8ff5a;text-shadow:0 0 10px #2cff7a}
+/* 해킹 오염(汚) — 초록 글리치 테두리 */
+.card .cmut .mh{background:radial-gradient(circle,#eafff0,#2cff7a 60%,#0a5a2a);color:#002a10;box-shadow:0 0 8px #2cff7a;animation:hbGlitch 1.4s steps(1) infinite}
+.card.mutH .face{box-shadow:inset 0 0 0 2px rgba(44,255,122,.85),inset 0 0 14px rgba(44,255,122,.45)}
+.card.mutH .face::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:repeating-linear-gradient(0deg,rgba(44,255,122,.07) 0 1px,transparent 1px 4px);mix-blend-mode:screen;animation:hkCardG 2.2s steps(1) infinite}
+@keyframes hkCardG{0%,100%{transform:none}48%{transform:translateX(2px)}50%{transform:translateX(-2px)}52%{transform:none}}
+.hkinfect{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);z-index:560;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;animation:hkInf .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes hkInf{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
+.hkinfect b{font-size:30px;letter-spacing:.4em;color:#5cff9a;text-shadow:0 0 14px #2cff7a}.hkinfect span{color:#eafff0;text-shadow:0 1px 3px #000}
+.hkinfect.out{opacity:0;transition:.5s}
+.hkecho{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:300;pointer-events:none;font:800 22px monospace;color:#5cff9a;letter-spacing:.1em;
+  text-shadow:2px 0 #ff3ad8,-2px 0 #3ad8ff,0 0 14px #2cff7a;animation:bfCritUp .9s ease-out forwards}
+/* 박사 날려버리기 */
+.chborb{width:40px;height:40px;margin:-20px;border-radius:50%;background:radial-gradient(circle,#fff 0 20%,#9fffc8 35%,#2cff7a 55%,rgba(44,255,122,0) 72%);
+  opacity:0;transform:scale(.2);transition:transform 1.6s cubic-bezier(.3,0,.3,1),opacity .4s;filter:drop-shadow(0 0 20px #2cff7a)}
+.chborbw.on .chborb{opacity:1;transform:scale(3.2);animation:chbPulse .25s ease-in-out infinite alternate}
+.chborbw.shot .chborb{transition:transform .25s cubic-bezier(.6,0,.9,.4),opacity .25s;transform:translateX(380px) scale(1.4);opacity:0}
+@keyframes chbPulse{to{filter:drop-shadow(0 0 36px #2cff7a) brightness(1.3)}}
+.chbstar{width:120px;height:120px;margin:-60px;opacity:0;filter:drop-shadow(0 0 12px #fff8b0);background:
+  linear-gradient(0deg,transparent 46%,#fff 50%,transparent 54%),linear-gradient(90deg,transparent 46%,#fff 50%,transparent 54%),
+  radial-gradient(circle,#fff 0 10%,rgba(255,255,220,.8) 20%,rgba(255,255,200,0) 45%)}
+.chbstarw{position:absolute;z-index:7;width:0;height:0;pointer-events:none}
+.chbstarw.on .chbstar{animation:chbStar 1.1s ease-out forwards}
+@keyframes chbStar{0%{opacity:0;transform:scale(.2) rotate(0)}30%{opacity:1;transform:scale(1.6) rotate(45deg)}60%{opacity:1;transform:scale(1) rotate(90deg)}100%{opacity:0;transform:scale(.3) rotate(180deg)}}
+.cmon.broke{filter:brightness(.3) contrast(2);transform:rotate(-4deg) translateY(8px);transition:.3s}
+@media (prefers-reduced-motion:reduce){.hbpill,.hbpill i,.hkmenubtn,.hkmenubtn::after,.hkmenubtn em,.hkltd,.hkitem.hot{animation:none!important}}
+
 @media (prefers-reduced-motion:reduce){.bombhold .bmbig,.bombhold .bmvig,.bombhud .bhgo,.bombhud.mine{animation:none!important}}
 @media (prefers-reduced-motion:reduce){.mapegg{animation:none!important}}
 /* ══ 어드민급 — 검은 판에 무지갯빛 테, 초록 단말기 글씨 ══ */
@@ -7554,11 +7640,12 @@ function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
 /* 특성(변이) — 혼돈의 특성(mutC)은 강화하지 않아도 강화한 것처럼, 별의 특성(mutS)은 수치 1.25배 */
 const cup = c => !!(c.up || c.mutC);
 const MUT_STAR = 1.25;
+const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배, 25% 확률로 버그가 나 한 번 더 */
 function cval(c) {
   const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * buffPow();   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * buffPow();   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -10964,6 +11051,7 @@ async function playCard(card, target) {
   const ctx = { v: cval(card), u: cup(card), t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
+  if (card.mutH && times === 1 && rnd() < MUT_HACK_ECHO) { times = 2; hackEchoFx(); }   /* 해킹 오염 — 버그가 나 한 번 더 */
   /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
      아래 finally 를 건너뛰어 자물쇠가 걸린 채 남았다 */
   try {
@@ -12765,7 +12853,7 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   n.innerHTML = `
@@ -12776,7 +12864,7 @@ function cardNode(c, opts) {
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
-      ${c.mutS || c.mutC ? `<div class="cmut">${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH ? `<div class="cmut">${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
     </div>
     <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>` +
@@ -18714,9 +18802,7 @@ function cutManSvg(col = '#17120d', sash = '#a8272c') {
       <text x="130" y="265" font-size="13" fill="#e8c86a" text-anchor="middle">符</text></g>
     <g class="cm-rarm"><path d="M126 138 C150 168 158 214 150 256 L136 258 C140 218 132 180 114 150Z" fill="#1d1712"/>
       <circle cx="143" cy="258" r="7" fill="#e3d4b8"/></g>
-    <ellipse cx="100" cy="104" rx="15" ry="18" fill="#e6d8bd"/>
-    <path d="M88 100 q5 -3 9 0 M103 100 q5 -3 9 0" stroke="#2a2018" stroke-width="2" fill="none"/>
-    <path d="M86 118 L100 146 L114 118" fill="#1d1712"/>
+    <ellipse cx="100" cy="104" rx="15" ry="18" fill="#e6d8bd"/>   <!-- 얼굴은 비워 둔다 — 표정 없이 -->
     <ellipse cx="100" cy="88" rx="62" ry="11" fill="#0b0907" opacity=".88"/>
     <ellipse cx="100" cy="86" rx="62" ry="9" fill="none" stroke="#3a3024" stroke-width="1"/>
     <path d="M84 88 L86 54 Q100 47 114 54 L116 88Z" fill="#0b0907"/>
@@ -19614,6 +19700,75 @@ function cutHack() {
   };
 }
 CUT_LIST.hack = { n: '[해킹] 박사의 비밀연구', make: () => cutHack() };
+/* ══ 컷씬 — 박사 날려버리기 (백야가 강제로 연 해킹 보스를 잡으면, 옵션) ══
+   붉게 경보가 도는 연구실, 박사가 자판에 매달려 있다 → 하얀 빛기둥으로 백야가 내려선다 →
+   팔을 들어 초록 기운을 모은다 → 박사가 돌아보는 순간 일격 — 모니터와 플라스크가 터지고
+   박사는 하늘 끝으로 빙글빙글 날아가 별처럼 반짝 → 「博士擊退」. */
+function cutHbBlast() {
+  return {
+    len: 12600,
+    build(S) {
+      cutLayer(S, cutSkySvg('#020806', '#06140e', '#0a1c14', null), -900, 0);
+      cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible">
+        <rect x="-400" y="-300" width="2400" height="1500" fill="#07120d"/>
+        <g stroke="#0f2a1e" stroke-width="2">${Array.from({ length: 30 }, (_, i) => `<line x1="${-400 + i * 100}" y1="-300" x2="${-400 + i * 100}" y2="1200"/>`).join('')}</g>
+        <path d="M-400 90 H2000" stroke="#1c3a2c" stroke-width="16"/>
+        ${[260, 1340].map(x => `<circle cx="${x}" cy="150" r="14" fill="#ff2a3a" class="calarm"/><circle cx="${x}" cy="150" r="60" fill="#ff2a3a" opacity=".12" class="calarm"/>`).join('')}
+        <rect x="-400" y="640" width="2400" height="600" fill="#040a07"/><path d="M-400 640 H2000" stroke="#1f5a3c" stroke-width="3"/></svg>`, -400, 1);
+      S.refs.mon = [[560, 300], [800, 270], [1040, 300]].map(([x, y], i) => cutPut(S, `<div class="cmon red"><div class="cmonc">${cutHackCode(40, i * 11)}</div><div class="cmonx">INTRUDER</div></div>`, { x, y, z: -120, zi: 2 }));
+      S.refs.doc = cutPut(S, cutDoctorSvg(), { x: 900, y: 640, ay: 1, z: -20, cls: 'cdocw typing fast', zi: 4 });
+      S.refs.fl = [[330, '#3cff8a', 90], [1260, '#ff5a8a', 110]].map(([x, col, h]) => cutPut(S, cutFlaskSvg(col, h), { x, y: 640, ay: 1, z: 40, zi: 5 }));
+      S.refs.pil = cutPut(S, '<div class="cdevpil"></div>', { x: 480, y: 360, z: -10, cls: 'cdevpilw', zi: 3 });
+      S.refs.man = cutPut(S, cutManSvg('#ece6da', '#2cff7a'), { x: 480, y: 120, ax: .5, ay: 1, cls: 'cmanw', zi: 6 });
+      S.refs.man.style.opacity = 0;
+      S.refs.orb = cutPut(S, '<div class="chborb"></div>', { x: 520, y: 470, z: 10, cls: 'chborbw', zi: 7 });
+      cutFloor(S, 642, '#030a06', 'rgba(44,255,122,.14)', 110); cutMotes(S, 30, '90,255,170');
+      S.root.classList.add('hackcut');
+      S.dark.style.opacity = 1; cutFade(S, 0, 900);
+      cutCam(S, { x: 860, y: 480, s: 1.5, ry: -10 }, 0);
+    },
+    tl: [
+      [200, S => { cutCam(S, { x: 900, y: 480, s: 2, ry: 16, rz: -2 }, 1600); cutSfx('boss');
+        const t = setInterval(() => { if (!S.alive) return clearInterval(t); cutSfx('blip', 900 + Math.random() * 600, { dur: .02, type: 'square', vol: .03 }); }, 80);
+        S.timers.push(setTimeout(() => clearInterval(t), 2400)); }],
+      [700, S => cutSay(S, '<b style="color:#5cff9a">박사</b> — "방화벽을… 방화벽을 더…!"', 1700)],
+      [2400, S => { S.refs.pil.classList.add('on'); cutFlash(S, '#fff', 450); cutSfx('thunder'); cutShake(S, 14, 500);
+        S.refs.man.style.opacity = 1; S.refs.man.animate([{ top: '120px' }, { top: '640px' }], { duration: 700, easing: 'cubic-bezier(.5,0,.8,.4)', fill: 'forwards' });
+        cutCam(S, { x: 640, y: 470, s: 1.35, ry: -12, rz: 0 }, 900); }],
+      [3150, S => { cutSfx('gong'); cutShake(S, 16, 400); const at = cutAt(S.refs.man); cutEmit(S, 'gold', at.x, at.y + at.h * .45, 40, { sp: 7, life: 40 }); S.refs.pil.classList.remove('on'); }],
+      [3700, S => { S.refs.man.classList.add('armup'); S.refs.orb.classList.add('on'); cutSfx('charge'); cutSfx('power');
+        cutCam(S, { x: 560, y: 450, s: 1.9, ry: -24, rx: 6 }, 1100);
+        const t = setInterval(() => { if (!S.alive) return clearInterval(t); const a = cutAt(S.refs.orb);
+          const ang = Math.random() * Math.PI * 2, r = 160; cutEmit(S, 'soul', a.x + Math.cos(ang) * r, a.y + Math.sin(ang) * r, 1, { sp: 3, ang: ang + Math.PI, spread: .1, life: 30, sz: 4, g: 0, col: '120,255,170' }); }, 40);
+        S.timers.push(setTimeout(() => clearInterval(t), 1700)); }],
+      [4600, S => { S.refs.doc.classList.remove('typing'); S.refs.doc.classList.add('turn'); cutSay(S, '<b style="color:#5cff9a">박사</b> — "자, 잠깐—!"', 1100);
+        cutCam(S, { x: 860, y: 470, s: 1.9, ry: 18 }, 500); }],
+      [5500, S => { S.refs.orb.classList.add('shot');
+        cutCam(S, { x: 760, y: 450, s: 1.2, ry: 0, rx: 0 }, 260, 'cubic-bezier(.2,.9,.3,1)'); }],
+      [5750, S => { cutFlash(S, '#fff', 700, 1); cutHitstop(S, 160); cutSfx('crit'); cutSfx('holyhit'); cutSfx('thunder'); cutShake(S, 30, 900);
+        S.root.classList.add('glitch');
+        const a = cutAt(S.refs.doc); cutBurst(S, a.x, a.y, '44,255,122', 2); cutEmit(S, 'spark', a.x, a.y, 70, { sp: 14, life: 34, sz: 3, g: .12 });
+        for (const m of S.refs.mon) { m.classList.add('broke'); const q = cutAt(m); cutEmit(S, 'spark', q.x, q.y, 24, { sp: 8, life: 30, sz: 2, g: .15 }); }
+        for (const f of S.refs.fl) { const q = cutAt(f); cutBurst(S, q.x, q.y, '120,255,200', .8); f.style.opacity = 0; }
+        S.refs.doc.classList.add('fly');
+        const tf = S.refs.doc.style.transform;
+        S.refs.doc.animate([{ transform: tf },
+          { transform: tf + ' translate(150px,-160px) rotate(360deg) scale(1.1)', offset: .2 },
+          { transform: tf + ' translate(420px,-430px) rotate(1080deg) scale(.5)', offset: .6 },
+          { transform: tf + ' translate(560px,-560px) rotate(1800deg) scale(.04)' }],
+          { duration: 2300, easing: 'cubic-bezier(.25,.6,.4,1)', fill: 'forwards' });
+        cutCam(S, { x: 1120, y: 220, s: .78, ry: -6, rz: 3 }, 1100); }],
+      [6100, S => S.root.classList.remove('glitch')],
+      [6400, S => cutSay(S, '<b style="color:#5cff9a">박사</b> — "으아아아아—!"', 1500)],
+      [8000, S => { const d = cutAt(S.refs.doc); S.refs.doc.style.opacity = 0;      /* 박사가 사라진 그 자리에서 반짝 */
+        S.refs.star = el('div', 'chbstarw on', '<div class="chbstar"></div>'); S.refs.star.style.left = d.x + 'px'; S.refs.star.style.top = d.y + 'px'; S.root.appendChild(S.refs.star); cutSfx('blip', 1800, { dur: .25, type: 'sine', vol: .08, to: 2600 }); cutSfx('blip', 2400, { dur: .2, type: 'sine', vol: .06, delay: .15 });
+        const a = cutAt(S.refs.star); cutEmit(S, 'gold', a.x, a.y, 16, { sp: 3, life: 40, g: 0 }); }],
+      [9000, S => cutFade(S, .55, 500)],
+      ...cutDevStamp(null, 8900, '博士擊退', '박사.exe — 하늘 끝으로 날아갔다', '白夜')
+    ]
+  };
+}
+CUT_LIST.hbblast = { n: '[해킹] 박사 날려버리기', make: () => cutHbBlast() };
 /* ══════════════════════════════════════════════════════════
    3D 컷씬 — three.js(r158 · MIT)로 진짜 입체 무대를 세운다
    ──────────────────────────────────────────────────────────
@@ -20026,7 +20181,7 @@ function c3Man(S, robe = '#17120d', sash = '#a8272c') {
   const rArm = arm(1), lArm = arm(-1);
   /* 머리 · 갓 */
   const head = new T.Mesh(new T.SphereGeometry(.19, 20, 14), c3Std(S, '#e6d6ba', { roughness: .7 })); head.position.y = 1.84; head.castShadow = true; g.add(head);
-  const beard = new T.Mesh(new T.ConeGeometry(.07, .2, 8), c3Std(S, '#2a2018')); beard.position.set(0, 1.66, .13); beard.rotation.x = Math.PI; g.add(beard);
+  /* 얼굴에는 아무것도 그리지 않는다(눈썹·수염이 징그럽다는 말을 들었다) */
   const hatM = c3Std(S, '#0b0907', { roughness: .5, transparent: true, opacity: .93 });
   const brim = new T.Mesh(new T.CylinderGeometry(.66, .66, .014, 48), hatM); brim.position.y = 1.97; brim.castShadow = true; g.add(brim);
   const crown = new T.Mesh(new T.CylinderGeometry(.16, .19, .36, 24), hatM); crown.position.y = 2.16; g.add(crown);
@@ -21382,7 +21537,8 @@ function showMenu() {
       <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
       <button class="brush-btn" id="m_set">설정</button>
       ${!G.b ? '<button class="brush-btn mpbtn" id="m_mp">對 멀티플레이</button>' : ''}
-      ${hackShopOn() ? '<button class="brush-btn" id="m_hshop" style="color:#5cff9a;border-color:#2cff7a">⌬ 해킹상점</button>' : ''}
+      <button class="brush-btn hkmenubtn" id="m_htok"><em>한정!</em>⌬ 해킹상점${hbOpenNow() && !hbWonNow() ? ' · <b>보스 출현!</b>' : ''}</button>
+      ${hackShopOn() ? '<button class="brush-btn" id="m_hshop" style="color:#5cff9a;border-color:#2cff7a">⌬ 이벤트 해킹상점 (칩)</button>' : ''}
       ${!G.b && hackMapOk() ? '<button class="brush-btn" id="m_hmap" style="color:#5cff9a;border-color:#2cff7a">[해킹] 해킹맵으로</button>' : ''}
       ${guestOn() ? '<button class="brush-btn" id="m_guest" style="color:#f0b8e8;border-color:#e08ad8">客 게스트 창</button>' : ''}
       <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
@@ -21408,6 +21564,7 @@ function showMenu() {
   const mm2 = p.querySelector('#m_mp'); if (mm2) mm2.onclick = () => { closeTop(); showMulti(); };
   const mpl = p.querySelector('#m_plan'); if (mpl) mpl.onclick = () => { closeTop(); showPlan(); };
   const mhs = p.querySelector('#m_hshop'); if (mhs) mhs.onclick = () => { closeTop(); showHackShop(); };
+  p.querySelector('#m_htok').onclick = () => { closeTop(); showHackTokShop(); };
   const mhm = p.querySelector('#m_hmap'); if (mhm) mhm.onclick = () => { closeTop(); showHackMap(); };
   p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
   p.querySelector('#m_news').onclick = () => { closeTop(); showNews(); };
@@ -21605,7 +21762,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 35;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 36;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -21727,6 +21884,8 @@ async function liveFetch() {
     LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
     LIVE.egg = d.egg && typeof d.egg === 'object' ? d.egg : null;          /* 비밀의 계란 */
     LIVE.buff = d.buff && typeof d.buff === 'object' && d.buff.ks ? d.buff : null;   /* 백야의 버프 */
+    LIVE.hb = d.hb && typeof d.hb === 'object' && d.hb.slot ? d.hb : null;           /* 해킹 보스 (매시 정각 · 백야가 강제로) */
+    LIVE.hbNext = +d.hbNext || 0;
     /* 폭탄 돌리기 — 참가한 사람은 1초마다 따로 물으니, 그 사이 낡은 소식으로 덮지 않는다 */
     { const nb = d.bomb && typeof d.bomb === 'object' ? d.bomb : null;
       if (!nb || !LIVE.bomb || nb.id !== LIVE.bomb.id || Date.now() - _bomb.heard > 3000) LIVE.bomb = nb; }
@@ -22117,6 +22276,193 @@ function buffInfo() {
     <div class="hint" style="margin-top:8px">남은 때 ${wTime(Math.max(0, f.until - srvNow()))} · 대전(멀티플레이)에는 걸리지 않는다</div>
     <div style="margin-top:12px"><button class="brush-btn" id="bi_ok">알겠다</button></div>`);
   p.dataset.noauto = '1'; p.querySelector('#bi_ok').onclick = closeTop;
+}
+
+/* ══════════════════════════════════════════════════════════
+   해킹 보스 · 해킹 토큰 · 해킹상점(한정!)
+   ──────────────────────────────────────────────────────────
+   매시 정각부터 10분 동안 박사.exe 가 나온다(백야가 강제로 열 수도 있다). 사람마다 따로 잡는다 —
+   30초 안에 박사를 두드려 체력(160)을 다 깎으면 이긴다. 한 판(그 시각)에 한 번만 받는다.
+   박사는 2초 남짓마다 자리를 옮기고, 가끔 방화벽을 쳐 잠깐 안 먹힌다.
+   누른 수는 묶어서 서버로 보내고, 서버가 1초에 14번까지만 센다. 이기면 서버가 해킹 토큰 +10 을 적는다.
+   토큰은 서버에만 있다 — 메뉴의 「⌬ 해킹상점 · 한정!」에서 쓴다. 산 것은 서버가 토큰을 깎은 뒤에야 받는다.
+   오염 관석 — 모험 덱의 부적 하나에 「해킹 오염」 돌연변이(汚): 수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더.
+   LIVE.hb — { slot, at, until, forced } (열려 있을 때만) · LIVE.hbNext — 다음 정각
+   ══════════════════════════════════════════════════════════ */
+const HB_SHOP = [
+  { k: 'stone', g: '汚', n: '오염 관석',   d: '모험 덱의 부적 하나에 「해킹 오염」 돌연변이 — 수치 1.4배 · 25% 확률로 한 번 더', p: 30, hot: true,
+    go: () => { META.hkStone = (META.hkStone || 0) + 1; } },
+  { k: 'box',   g: '匣', n: '해킹 상자',   d: '이벤트 전용 부적 한 장 (?급 1%)', p: 20, go: () => { META.hackBox = (META.hackBox || 0) + 1; } },
+  { k: 'qi',    g: '氣', n: '과부하 코드', d: '최대 기 +1 (이번 모험)', p: 25, run: true, go: () => { G.run.maxEnergy += 1; } },
+  { k: 'dia',   g: '玉', n: '다이아 패킷', d: '다이아 300', p: 8, go: () => payOut({ dia: 300 }) },
+  { k: 'hp',    g: '補', n: '오류 패치',   d: '최대 체력 +12 (이번 모험)', p: 6, run: true, go: () => { G.run.maxHp += 12; G.run.hp += 12; } },
+  { k: 'gold',  g: '金', n: '골드 패킷',   d: '골드 800', p: 5, go: () => payOut({ gold: 800 }) }
+];
+const hbOpenNow = () => { const h = LIVE.hb; return !!(h && srvNow() < (+h.until || 0)); };
+const hbWonNow = () => !!(LIVE.hb && META.hbWon === LIVE.hb.slot);
+let _hbSeen = '', HB_TOK = null;
+async function hbMe() {
+  if (!acctOn()) return null;
+  const r = await acctAsk('/hb/me', { token: ACCT.token }, 8000);
+  if (!r.ok) return null;
+  HB_TOK = r.tok; if (r.won && r.hb) { META.hbWon = r.hb.slot; saveMeta(); }
+  return r;
+}
+/* 한 박자마다 — 띠와 처음 나올 때의 알림 */
+function hbTick() {
+  let pill = $('#hbpill');
+  const on = hbOpenNow() && !hbWonNow();
+  if (!on || G.b || $('#hbfight')) { if (pill) pill.remove(); return; }
+  const h = LIVE.hb;
+  if (_hbSeen !== h.slot) {
+    _hbSeen = h.slot;
+    try { SND.unlock(); SND.blip(220, { dur: .5, type: 'square', vol: .06, to: 880 }); screenFlash('rgba(44,255,122,.25)', 400); } catch (e) {}
+    toast(`⌬ 해킹 보스 박사.exe 출현! — ${h.forced ? '백야가 열었다' : '정각의 침입'} · 잡으면 해킹 토큰 +10`);
+  }
+  if (!pill) { pill = el('div', 'hbpill'); pill.id = 'hbpill'; document.body.appendChild(pill); pill.onclick = () => hbFight(); }
+  const s = Math.max(0, Math.ceil((h.until - srvNow()) / 1000));
+  pill.innerHTML = `<i>博</i><b>해킹 보스 출현!</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em><u>잡으러 간다</u>`;
+}
+/* 싸움 — 두드려라 */
+async function hbFight() {
+  if (!hbOpenNow()) { toast('해킹 보스가 아직 안 나왔다 — 매시 정각에 나온다'); return; }
+  if (!acctOn()) { toast('로그인해야 해킹 보스를 잡을 수 있다'); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  if (hbWonNow()) { toast('이번 해킹 보스는 이미 쓰러뜨렸다 — 다음 정각에'); return; }
+  if ($('#hbfight')) return;
+  const r = await acctAsk('/hb/start', { token: ACCT.token }, 10000);
+  if (!r.ok) { if (/이미/.test(r.why || '') && LIVE.hb) { META.hbWon = LIVE.hb.slot; saveMeta(); } toast('해킹 보스 — ' + r.why); return; }
+  const hp = r.hp, end = Date.now() + (r.deadline - r.now);
+  const n = el('div', 'hbfight'); n.id = 'hbfight';
+  n.innerHTML = `<div class="hbscan"></div><div class="hbtop"><b>⌬ 해킹 보스 — 박사.exe</b><span class="hbtime">30.0</span></div>
+    <div class="hbbar"><u></u><em>${hp} / ${hp}</em></div>
+    <button class="hbboss"><span>博</span><i class="hbwall">차단</i></button>
+    <div class="hbhint">박사를 두드려라! · 초록 방화벽이 쳐지면 잠깐 안 먹힌다</div>
+    <div class="hbend"></div><button class="hbx">그만두기</button>`;
+  document.body.appendChild(n);
+  try { SND.unlock(); SND.boss && SND.boss(); } catch (e) {}
+  const boss = n.querySelector('.hbboss'), bar = n.querySelector('.hbbar u'), num = n.querySelector('.hbbar em'), tm = n.querySelector('.hbtime');
+  let hits = 0, pend = 0, busy = false, over = false, wall = false;
+  const paint = () => { const left = Math.max(0, hp - hits - pend); bar.style.width = (left / hp * 100) + '%'; num.textContent = `${left} / ${hp}`; };
+  const move = () => { if (over) return; boss.style.left = (16 + Math.random() * 68) + '%'; boss.style.top = (30 + Math.random() * 42) + '%'; };
+  move();
+  const timers = [setInterval(move, 2200),
+    setInterval(() => { if (over || Math.random() > .45) return; wall = true; boss.classList.add('walled');
+      setTimeout(() => { wall = false; boss.classList.remove('walled'); }, 900); }, 3000)];
+  const finish = async (win, pay, tok) => {
+    if (over) return; over = true; timers.forEach(clearInterval); clearInterval(tick);
+    const e = n.querySelector('.hbend');
+    if (win) {
+      const cut = !!(LIVE.hb && LIVE.hb.forced && LIVE.hb.cut);       /* 백야가 연 판 — 「박사 날려버리기」 컷씬을 켜 두었다 */
+      META.hbWon = LIVE.hb ? LIVE.hb.slot : META.hbWon; saveMeta(); if (tok != null) HB_TOK = tok;
+      boss.classList.add('dead');
+      if (cut) { setTimeout(() => { n.remove(); cutByName('hbblast').then(() => toast(`⌬ 박사.exe 삭제 — ${pay ? `해킹 토큰 +${pay} · 지금 ${tok}` : '이미 받았다'} · 메뉴의 해킹상점에서 쓴다`)); }, 700); return; }
+      try { SND.thunder && SND.thunder(); SND.victory(); screenFlash('rgba(44,255,122,.55)', 600); shake(true);
+        const c = centerOf(boss); FX.burst(c.x, c.y, 70, '44,255,122', 9, 60, 6); } catch (x) {}
+      e.innerHTML = `<b>박사.exe 삭제됨</b><span>${pay ? `해킹 토큰 +${pay} · 지금 ${tok}` : '이미 받았다'}</span><button class="hbgo">⌬ 해킹상점으로</button>`;
+      e.querySelector('.hbgo').onclick = () => { n.remove(); showHackTokShop(); };
+    } else {
+      e.innerHTML = `<b>시간 초과</b><span>박사가 달아났다 — 열려 있는 동안 다시 할 수 있다</span><button class="hbgo">다시 한다</button>`;
+      e.querySelector('.hbgo').onclick = () => { n.remove(); hbFight(); };
+    }
+    e.classList.add('on'); n.querySelector('.hbx').textContent = '닫기';
+  };
+  const flush = async () => {
+    if (busy || !pend) return; busy = true;
+    const k = pend; pend = 0;
+    const x = await acctAsk('/hb/hit', { token: ACCT.token, n: k }, 6000);
+    busy = false;
+    if (!x.ok) { if (/싸우는 판이 없다/.test(x.why || '')) finish(false); return; }
+    if (x.win) return finish(true, x.pay, x.tok);
+    if (x.lose) return finish(false);
+    hits = x.hits; paint();
+  };
+  const tick = setInterval(() => {
+    if (over) return;
+    const left = end - Date.now();
+    tm.textContent = Math.max(0, left / 1000).toFixed(1); tm.classList.toggle('last', left < 8000);
+    flush();
+    if (left < -1200 && !busy && !pend) acctAsk('/hb/hit', { token: ACCT.token, n: 0 }, 6000).then(x => { if (x.win) finish(true, x.pay, x.tok); else finish(false); });
+  }, 300);
+  boss.onpointerdown = ev => {
+    ev.preventDefault(); if (over || Date.now() > end) return;
+    if (wall) { try { SND.blip(160, { dur: .06, type: 'square', vol: .05 }); } catch (e) {} return; }
+    pend++; paint();
+    boss.classList.remove('hit'); void boss.offsetWidth; boss.classList.add('hit');
+    const f = el('div', 'hbdmg', '-1'); f.style.left = ev.clientX + 'px'; f.style.top = ev.clientY + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 600);
+    try { SND.blip(520 + Math.random() * 400, { dur: .04, type: 'square', vol: .04 }); } catch (e) {}
+  };
+  n.querySelector('.hbx').onclick = () => { over = true; timers.forEach(clearInterval); clearInterval(tick); n.remove(); };
+}
+/* 해킹상점(한정!) — 메뉴에 늘 있다 */
+async function showHackTokShop() {
+  const p = modal(`<div class="hkltd">한정!</div><h2 style="color:#5cff9a">⌬ 해 킹 상 점</h2>
+    <div class="hint">해킹 보스를 잡으면 해킹 토큰 · 매시 정각부터 10분 · 사람마다 따로</div>
+    <div class="hkchip" id="ht_tok">해킹 토큰 — 불러오는 중…</div>
+    <div class="htboss" id="ht_boss"></div>
+    <div class="hkshop" id="ht_grid"></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="brush-btn gold" id="ht_stone">汚 관석 쓰기 (<b>${META.hkStone || 0}</b>)</button>
+      <button class="brush-btn gold" id="ht_box">해킹 상자 열기 (<b>${META.hackBox || 0}</b>)</button>
+      <button class="brush-btn" id="ht_x">닫기</button></div>`, 'hackshopm hktshop');
+  p.dataset.noauto = '1';
+  const bossLine = () => {
+    const b = p.querySelector('#ht_boss'); if (!b) return;
+    if (hbOpenNow() && !hbWonNow()) { b.innerHTML = `<b>博 해킹 보스 출현 중!</b> <button class="brush-btn" id="ht_fight">잡으러 간다</button>`;
+      b.querySelector('#ht_fight').onclick = () => { closeTop(); hbFight(); }; }
+    else if (hbOpenNow()) b.innerHTML = '이번 해킹 보스는 쓰러뜨렸다 — 다음 정각에';
+    else { const t = new Date((LIVE.hbNext || Date.now()) - SRV_SKEW);
+      b.innerHTML = `다음 해킹 보스 — <b>${String(t.getHours()).padStart(2, '0')}:00</b>`; }
+  };
+  const draw = () => {
+    p.querySelector('#ht_tok').innerHTML = acctOn() ? `<i>⌬</i> 해킹 토큰 <b>${HB_TOK == null ? '…' : HB_TOK}</b>` : '로그인해야 해킹 토큰을 쓸 수 있다';
+    p.querySelector('#ht_stone').innerHTML = `汚 관석 쓰기 (<b>${META.hkStone || 0}</b>)`;
+    p.querySelector('#ht_box').innerHTML = `해킹 상자 열기 (<b>${META.hackBox || 0}</b>)`;
+    bossLine();
+    const g = p.querySelector('#ht_grid'); g.innerHTML = '';
+    for (const it of HB_SHOP) {
+      const b = el('button', 'hkitem' + (it.hot ? ' hot' : ''), `<i>${it.g}</i><b>${it.n}</b><small>${it.d}</small><u>⌬ ${it.p}</u>`);
+      b.onclick = async () => {
+        if (!acctOn()) { toast('로그인해야 한다'); SND.err(); return; }
+        if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
+        if (HB_TOK != null && HB_TOK < it.p) { toast(`해킹 토큰이 ${it.p - HB_TOK} 모자라다 — 해킹 보스를 잡아라`); SND.err(); return; }
+        b.disabled = true;
+        const r = await acctAsk('/hb/buy', { token: ACCT.token, k: it.k }, 10000);
+        b.disabled = false;
+        if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; toast('해킹상점 — ' + r.why); SND.err(); draw(); return; }
+        HB_TOK = r.tok; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
+        try { SND.unlock(); SND.coin && SND.coin(); } catch (e) {}
+        toast(`${it.n} — 샀다`); draw();
+      };
+      g.appendChild(b);
+    }
+  };
+  draw();
+  hbMe().then(() => { if (p.isConnected) draw(); });
+  p.querySelector('#ht_stone').onclick = () => { closeTop(); hkStoneUse(); };
+  p.querySelector('#ht_box').onclick = () => { closeTop(); hackBoxOpen(); };
+  p.querySelector('#ht_x').onclick = closeTop;
+}
+/* 오염 관석 — 고른 부적에 해킹 오염 돌연변이 */
+async function hkStoneUse() {
+  if ((META.hkStone || 0) < 1) { toast('오염 관석이 없다 — 해킹상점에서 산다'); SND.err(); return; }
+  const run = G.run;
+  if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (관석은 그대로 남는다)'); SND.err(); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  const list = run.deck.filter(c => !c.mutH && CARDS[c.id] && CARDS[c.id].rar !== 'curse');
+  const c = await pickFromList(list, '汚 해킹 오염 — 부적을 고른다', { hint: '수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더 발동', cancel: true });
+  if (!c) return;
+  META.hkStone--; c.mutH = true; saveMeta(); saveRun();
+  try { SND.unlock(); SND.blip(180, { dur: .4, type: 'sawtooth', vol: .07, to: 1400 }); screenFlash('rgba(44,255,122,.4)', 500); } catch (e) {}
+  const n = el('div', 'hkinfect'); n.appendChild(cardNode(c)); n.insertAdjacentHTML('beforeend', '<b>汚 染</b><span>' + cname(c) + ' — 해킹 오염</span>');
+  document.body.appendChild(n); setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 500); }, 2200);
+}
+/* 오염된 부적이 버그를 일으켰다 */
+function hackEchoFx() {
+  try {
+    const n = el('div', 'hkecho', 'ERR · 한 번 더'); document.body.appendChild(n); setTimeout(() => n.remove(), 900);
+    SND.blip(900, { dur: .08, type: 'square', vol: .05, to: 300 }); rgbSplit();
+  } catch (e) {}
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -23687,6 +24033,7 @@ function liveTick() {
   try { eggTick(); } catch (e) { console.error('계란', e); }
   try { bombTick(); } catch (e) { console.error('폭탄', e); }
   try { buffTick(); } catch (e) { console.error('버프', e); }
+  try { hbTick(); } catch (e) { console.error('해킹 보스', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -24017,6 +24364,20 @@ function drawCast(grid) {
       </div>
     </div>
 
+    <div class="castsec hbsec"><b>⌬ 해킹 보스 — 강제로 연다</b>
+      <div class="casthint">해킹 보스는 매시 정각부터 10분 동안 저절로 나온다(사람마다 따로 · 30초 안에 박사를 두드려 잡으면 해킹 토큰 +10 · 그 판에 한 번).
+        여기서 열면 정각을 기다리지 않고 지금 모두에게 나온다 — 이미 잡은 사람도 다시 잡을 수 있다.
+        「박사 날려버리기 컷씬」을 켜 두면 잡는 순간 컷씬이 흐른다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 열린다.</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_hbmin" type="number" min="1" max="60" value="10" style="width:56px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_hbcut" type="checkbox" checked> 박사 날려버리기 컷씬</label>
+        <button class="brush-btn gold" id="ct_hb">해킹 보스를 연다</button>
+        <button class="brush-btn ghost" id="ct_hbtry" style="color:#e9dfc9;border-color:#8a7f68">컷씬 미리 보기</button>
+        <button class="brush-btn ghost" id="ct_hboff" style="color:#e9dfc9;border-color:#8a7f68">닫는다</button>
+      </div>
+      <div class="casthint" id="ct_hbnow"></div>
+    </div>
+
     <div class="castsec buffsec"><b>加 백야의 버프</b>
       <div class="casthint">고른 버프를 모두에게 건다(이벤트 동안). 걸린 동안 퇴마사 몸에 버프마다 제 기운(아우라)이 돌고, 화면 왼쪽 위에 띠가 뜬다.
         멀티플레이(대전·연습)에는 걸리지 않는다. 다시 걸면 새로 고른 것으로 바뀐다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 걸린다.</div>
@@ -24337,6 +24698,21 @@ function drawCast(grid) {
     send(patch, `비밀의 계란 ${n}개(비밀 ${sN}) · ${min}분`);
   };
   grid.querySelector('#ct_eggoff').onclick = () => send({ egg: null }, '계란 거두기');
+  /* 해킹 보스 — 강제로 연다 */
+  const hbNowLine = () => { const e = grid.querySelector('#ct_hbnow'); if (!e) return; const h = LIVE.hb;
+    const nx = new Date((LIVE.hbNext || Date.now()) - SRV_SKEW);
+    e.innerHTML = h && hbOpenNow() ? `지금 — <b>${h.forced ? '백야가 연 판' : '정각의 판'}</b>${h.forced && h.cut ? ' · 컷씬 켬' : ''} · 남은 때 ${wTime(Math.max(0, h.until - srvNow()))}`
+      : `닫혀 있다 · 다음 정각 ${String(nx.getHours()).padStart(2, '0')}:00`; };
+  hbNowLine();
+  grid.querySelector('#ct_hb').onclick = () => {
+    const min = Math.max(1, Math.min(60, Math.floor(+grid.querySelector('#ct_hbmin').value || 10))), cut = grid.querySelector('#ct_hbcut').checked;
+    const patch = hype('해킹 보스', { hb: { min, cut } });
+    const after = () => liveFetch().then(hbNowLine).catch(() => {});
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: '해킹 보스', then: patch } }, `카운트다운 ${cds()}초 → 해킹 보스`).then(after);
+    send(patch, `해킹 보스 ${min}분${cut ? ' · 컷씬' : ''}`).then(after);
+  };
+  grid.querySelector('#ct_hbtry').onclick = () => cutByName('hbblast');
+  grid.querySelector('#ct_hboff').onclick = () => send({ hb: null }, '해킹 보스 닫기').then(() => liveFetch().then(hbNowLine).catch(() => {}));
   /* 백야의 버프 */
   const bfNow = () => { const e = grid.querySelector('#ct_bfnow'); if (!e) return; const ks = buffKeys();
     e.innerHTML = ks.length ? `지금 — ${ks.map(k => `<b>${BUFF_DEF[k].n}${k === 'pow' ? ' ×' + LIVE.buff.ks.pow : ''}</b>`).join(' · ')} · 남은 때 ${wTime(Math.max(0, LIVE.buff.until - srvNow()))}` : '걸린 버프가 없다'; };

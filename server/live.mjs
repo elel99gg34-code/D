@@ -46,6 +46,7 @@ function expire(now) {
   if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
+  if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (bombStep(now)) changed = true;
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
@@ -341,7 +342,7 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
@@ -493,10 +494,21 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
+/* ── 해킹 보스 — 매시 정각부터 10분, 사람마다 따로 잡는다. 이기면 해킹 토큰(서버에 적는다) ── */
+const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_HP = 160, HB_TIME = 30000, HB_PAY = 10, HB_CPS = 14;
+const HB_SHOP = { stone: 30, box: 20, qi: 25, dia: 8, hp: 6, gold: 5 };      /* 해킹상점 값(토큰) — 앱과 같아야 한다 */
+const hbSess = new Map();                                                    /* 아이디 → 지금 싸우는 판 */
+function hbWin(now) {
+  const f = live.hbForce;
+  if (f && now < f.until) return { slot: 'f' + f.id, at: f.at, until: f.until, forced: true, cut: !!f.cut };
+  const base = Math.floor(now / HB_EVERY) * HB_EVERY;
+  if (now - base < HB_OPEN) return { slot: 'h' + base, at: base, until: base + HB_OPEN, forced: false };
+  return null;
+}
 /* ── 폭탄 돌리기 ── */
 const BOMB_JOIN = 20000, BOMB_FUSE = [45000, 90000], BOMB_KEEP = 90000;
 let BOMB = { ppl: new Map(), fuseAt: 0, heldAt: 0, prev: '' };
@@ -597,6 +609,11 @@ async function applyCast(q) {
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
     }
+  }
+  /* 해킹 보스 — 백야가 강제로 연다(정각을 기다리지 않고) */
+  if ('hb' in q) {
+    const now = Date.now();
+    live.hbForce = q.hb ? { id: now, at: now, until: now + Math.max(1, Math.min(60, parseInt(q.hb.min, 10) || 10)) * 60000, cut: !!q.hb.cut } : null;
   }
   /* 폭탄 돌리기 — 20초 동안 참가를 받고, 무작위로 한 사람에게 폭탄. 터지는 때는 서버만 안다 */
   if ('bomb' in q) {
@@ -1085,7 +1102,7 @@ const server = http.createServer(async (req, res) => {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -1304,6 +1321,55 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 해킹 보스 · 해킹 토큰 · 해킹상점 ─────────────────────
+     /hb/me 잔액 · /hb/start 판을 연다 · /hb/hit 누른 수(묶어서) · /hb/buy 산다.
+     누른 수는 1초에 HB_CPS 번까지만 센다(손이 아무리 빨라도). 토큰은 서버에만 적는다. */
+  if (url.pathname.startsWith('/hb/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const w = hbWin(now), bal = async () => +(await get('ht:' + id)) || 0;
+    const won = async () => !!(w && (await get('hbw:' + id)) === w.slot);
+    if (url.pathname === '/hb/me') return send(res, 200, { ok: true, tok: await bal(), won: await won(), hb: w, now });
+    if (url.pathname === '/hb/start') {
+      if (!w) return send(res, 409, { ok: false, why: '해킹 보스가 아직 안 나왔다 — 매시 정각에 나온다' });
+      if (await won()) return send(res, 409, { ok: false, why: '이번 해킹 보스는 이미 쓰러뜨렸다' });
+      const se = { slot: w.slot, hits: 0, start: now, last: now, deadline: now + HB_TIME };
+      hbSess.set(id, se); if (hbSess.size > 20000) hbSess.clear();
+      return send(res, 200, { ok: true, hp: HB_HP, time: HB_TIME, deadline: se.deadline, now });
+    }
+    if (url.pathname === '/hb/hit') {
+      const se = hbSess.get(id);
+      if (!se || !w || se.slot !== w.slot) return send(res, 409, { ok: false, why: '싸우는 판이 없다' });
+      if (now > se.deadline + 1500) { hbSess.delete(id); return send(res, 200, { ok: true, lose: true, hits: se.hits, hp: HB_HP }); }
+      const can = Math.floor((now - se.last) / 1000 * HB_CPS) + 3;
+      const add = Math.max(0, Math.min(parseInt(q.n, 10) || 0, can));
+      se.hits += add; if (add) se.last = now;
+      if (se.hits < HB_HP) return send(res, 200, { ok: true, hits: se.hits, hp: HB_HP });
+      hbSess.delete(id);
+      if (await won()) return send(res, 200, { ok: true, win: true, pay: 0, tok: await bal() });
+      await put('hbw:' + id, w.slot);
+      const tok = (await bal()) + HB_PAY; await put('ht:' + id, tok);
+      console.log('해킹 보스를 쓰러뜨렸다:', id, '· 토큰', tok);
+      return send(res, 200, { ok: true, win: true, pay: HB_PAY, tok });
+    }
+    if (url.pathname === '/hb/buy') {
+      const k = String(q.k || ''), price = HB_SHOP[k];
+      if (!price) return send(res, 400, { ok: false, why: '없는 물건' });
+      const have = await bal();
+      if (have < price) return send(res, 409, { ok: false, why: `해킹 토큰이 ${price - have} 모자라다`, tok: have });
+      await put('ht:' + id, have - price);
+      return send(res, 200, { ok: true, k, tok: have - price });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
   /* ── 폭탄 돌리기 — 상태(1초마다) · 참가 · 넘기기 ── */
   if (url.pathname.startsWith('/bomb')) {
     await store();
