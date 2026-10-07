@@ -47,6 +47,8 @@ function expire(now) {
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
+  if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
+  if (live.shadow && live.shadow.done && now - (live.shadow.end || now) > 5 * 60000) { live.shadow = null; changed = true; }
   if (bombStep(now)) changed = true;
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
@@ -494,7 +496,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -508,6 +510,11 @@ function hbWin(now) {
   const base = Math.floor(now / HB_EVERY) * HB_EVERY;
   if (now - base < HB_OPEN) return { slot: 'h' + base, at: base, until: base + HB_OPEN, forced: false };
   return null;
+}
+/* ── 그림자 침공 — 싸움마다 내 덱을 베낀 그림자가 끼어든다. 누가 많이 베었는지 순위 ── */
+let shadowWho = new Map();                /* 아이디 → { n, at, nick } */
+function shadowTop() {
+  return [...shadowWho.values()].sort((a, b) => b.n - a.n || a.first - b.first).slice(0, 10).map(x => ({ nick: x.nick, n: x.n }));
 }
 /* ── 폭탄 돌리기 ── */
 const BOMB_JOIN = 20000, BOMB_FUSE = [45000, 90000], BOMB_KEEP = 90000;
@@ -609,6 +616,13 @@ async function applyCast(q) {
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
     }
+  }
+  /* 그림자 침공 */
+  if ('shadow' in q) {
+    const now = Date.now();
+    if (!q.shadow) { if (live.shadow && !live.shadow.done) Object.assign(live.shadow, { done: true, end: now, until: now }); }
+    else { live.shadow = { id: now, at: now, until: now + Math.max(1, Math.min(60, parseInt(q.shadow.min, 10) || 10)) * 60000, n: 0, ppl: 0, top: [], done: false, end: 0 };
+      shadowWho = new Map(); }
   }
   /* 해킹 보스 — 백야가 강제로 연다(정각을 기다리지 않고) */
   if ('hb' in q) {
@@ -1321,6 +1335,28 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 그림자 침공 — 그림자를 베었다 (로그인한 사람만, 4초에 하나) ── */
+  if (url.pathname === '/shadow/kill' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    const sh = live.shadow;
+    if (!sh || sh.done || String(q.id || '') !== String(sh.id)) return send(res, 409, { ok: false, why: '그림자 침공이 없다' });
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 센다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const me = shadowWho.get(id) || { n: 0, at: 0, first: now, nick: (await nickOf(id)) || id };
+    if (now - me.at < 4000) return send(res, 429, { ok: false, why: '너무 빠르다' });
+    if (!me.n) sh.ppl = (sh.ppl || 0) + 1;
+    me.n++; me.at = now; shadowWho.set(id, me);
+    sh.n = (sh.n || 0) + 1; sh.top = shadowTop(); live.at = now;
+    await keep();
+    return send(res, 200, { ok: true, mine: me.n, n: sh.n, top: sh.top });
+  }
+
   /* ── 해킹 보스 · 해킹 토큰 · 해킹상점 ─────────────────────
      /hb/me 잔액 · /hb/start 판을 연다 · /hb/hit 누른 수(묶어서) · /hb/buy 산다.
      누른 수는 1초에 HB_CPS 번까지만 센다(손이 아무리 빨라도). 토큰은 서버에만 적는다. */
