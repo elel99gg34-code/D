@@ -3807,7 +3807,6 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 @keyframes hkMenu{50%{box-shadow:0 0 26px rgba(44,255,122,.9),inset 0 0 16px rgba(44,255,122,.4)}}
 @keyframes hkShine{from{background-position:150% 0}to{background-position:-100% 0}}
 @keyframes hkLtd{50%{transform:rotate(8deg) scale(1.12)}}
-.hktshop{position:relative}
 .hkltd{display:inline-block;margin:0 auto 4px;padding:4px 22px;border-radius:6px;font-size:20px;font-weight:800;letter-spacing:.3em;color:#fff;
   background:linear-gradient(90deg,#ff2d55,#ff8a2a,#ff2d55);background-size:200% 100%;box-shadow:0 0 18px rgba(255,45,85,.8);animation:hkShine 2s linear infinite,hkLtdP 1s ease-in-out infinite}
 @keyframes hkLtdP{50%{box-shadow:0 0 30px rgba(255,45,85,1);transform:scale(1.05)}}
@@ -3906,6 +3905,102 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 .dbgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:8px}
 .dbgrid label{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:8px;border:1px solid rgba(255,250,235,.2);background:rgba(0,0,0,.2);font-size:12.5px}
 .dbgrid input,.dbgrid select{width:84px}
+/* ══ 해킹상점 — 전체 화면 · 박사의 서버실 ══ */
+.topbtn.hack{color:#5cff9a;background:rgba(10,60,30,.5);border-color:#2cff7a;box-shadow:0 0 10px rgba(44,255,122,.45);animation:hkMenu 1.6s ease-in-out infinite}
+.topbtn.hack:hover{background:rgba(20,90,45,.75)}
+.topbtn.hack > b{text-shadow:0 0 8px #2cff7a}
+.topbtn.hack > s{position:absolute;right:-6px;top:-7px;text-decoration:none;font-size:8.5px;font-weight:800;padding:1px 4px;border-radius:5px;background:#ff2d55;color:#fff;box-shadow:0 0 8px #ff2d55;animation:hkLtd .9s ease-in-out infinite;line-height:1.2}
+.panel.hkfull{position:absolute;inset:0;padding:0;gap:0;justify-content:flex-start;background:#020a05;backdrop-filter:none;overflow-x:hidden;color:#caffdc;font-family:inherit}
+.hkfull .hkbg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;background:radial-gradient(ellipse at 30% 60%,#0a2a16,#020a05 70%)}
+.hkfull .hkrain i{position:absolute;top:-100%;font:13px/1.15 monospace;color:rgba(44,255,122,.28);text-shadow:0 0 6px rgba(44,255,122,.4);font-style:normal;animation:hkRain linear infinite}
+@keyframes hkRain{to{transform:translateY(200vh)}}
+.hkfull .hkfloor{position:absolute;left:-50%;right:-50%;bottom:-10%;height:55%;transform:perspective(500px) rotateX(70deg);transform-origin:bottom;
+  background:linear-gradient(rgba(44,255,122,.22) 1px,transparent 1px) 0 0/60px 60px,linear-gradient(90deg,rgba(44,255,122,.22) 1px,transparent 1px) 0 0/60px 60px;
+  -webkit-mask:linear-gradient(to top,#000 30%,transparent);mask:linear-gradient(to top,#000 30%,transparent);animation:hkFloor 3s linear infinite}
+@keyframes hkFloor{to{background-position:0 60px,0 0}}
+.hkfull .hkscan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+.hkfull>*{position:relative;z-index:1;flex-shrink:0}
+.hkfull .hkclose{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));z-index:5;width:40px;height:40px;border-radius:50%;
+  border:1px solid #2cff7a;background:rgba(0,30,14,.9);color:#5cff9a;font-size:18px;cursor:pointer;box-shadow:0 0 12px rgba(44,255,122,.4)}
+.hkfull .hkhead{display:flex;flex-direction:column;align-items:center;gap:4px;padding:calc(16px + env(safe-area-inset-top,0px)) 60px 6px;text-align:center}
+.hkfull .hkltd2{padding:4px 26px;border-radius:6px;font-size:18px;font-weight:900;letter-spacing:.3em;color:#fff;
+  background:linear-gradient(90deg,#ff2d55,#ff8a2a,#ff2d55);background-size:200% 100%;box-shadow:0 0 22px rgba(255,45,85,.9);animation:hkShine 2s linear infinite,hkLtdP 1s ease-in-out infinite}
+.hkfull .hktitle{position:relative;margin:4px 0 0;font:700 clamp(30px,5.5vw,54px)/1.1 monospace;letter-spacing:.12em;color:#5cff9a;text-shadow:0 0 18px #2cff7a,0 0 40px rgba(44,255,122,.5)}
+.hkfull .hktitle::before,.hkfull .hktitle::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none;opacity:.8}
+.hkfull .hktitle::before{color:#ff3ad8;animation:hkGlA 2.6s steps(1) infinite}.hkfull .hktitle::after{color:#3ad8ff;animation:hkGlB 2.6s steps(1) infinite}
+@keyframes hkGlA{0%,86%,100%{transform:none;clip-path:inset(0 0 100% 0)}88%{transform:translate(-4px,1px);clip-path:inset(20% 0 50% 0)}92%{transform:translate(3px,-1px);clip-path:inset(60% 0 10% 0)}}
+@keyframes hkGlB{0%,86%,100%{transform:none;clip-path:inset(0 0 100% 0)}89%{transform:translate(4px,-1px);clip-path:inset(40% 0 30% 0)}93%{transform:translate(-3px,1px);clip-path:inset(5% 0 75% 0)}}
+.hkfull .hksub{font-size:13px;color:#8fbf9f;letter-spacing:.05em}
+.hkfull .hkmain{display:flex;gap:18px;width:min(1180px,100%);padding:8px 22px 26px;align-items:stretch;flex:1;box-sizing:border-box}
+.hkfull .hkdocw{position:relative;flex:0 0 38%;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.hkfull .hkdoc{position:relative;width:min(300px,30vw);animation:hkDocIdle 3s ease-in-out infinite;filter:drop-shadow(0 0 22px rgba(44,255,122,.35))}
+.hkfull .hkdoc svg{width:100%;height:auto;display:block}
+.hkfull .hkdoc .cdocglass circle{fill:#9ff4c8;fill-opacity:.85;filter:drop-shadow(0 0 6px #5cff9a);animation:hkGlass 2.4s ease-in-out infinite}
+@keyframes hkGlass{50%{fill-opacity:.35}}
+@keyframes hkDocIdle{50%{transform:translateY(-6px)}}
+.hkfull .hkdoc.laugh{animation:hkLaugh .6s ease-in-out}
+@keyframes hkLaugh{20%,60%{transform:translateY(-4px) rotate(-2deg)}40%,80%{transform:translateY(-2px) rotate(2deg)}}
+.hkfull .hkdesk{width:min(380px,36vw);height:58px;margin-top:-34px;border-radius:6px 6px 0 0;background:linear-gradient(#1a3a2a,#0a1a12);border:1px solid #2cff7a;
+  box-shadow:0 0 18px rgba(44,255,122,.35),inset 0 2px 0 rgba(160,255,200,.25);display:flex;justify-content:center;gap:14px;align-items:center;position:relative;z-index:2}
+.hkfull .hkdesk i{width:60px;height:22px;border-radius:3px;background:#031a0c;border:1px solid #1f7a4a;box-shadow:inset 0 0 8px rgba(44,255,122,.5);animation:hkBlink 1.3s steps(2) infinite}
+.hkfull .hkdesk i:nth-child(2){animation-delay:.4s}.hkfull .hkdesk i:nth-child(3){animation-delay:.8s}
+@keyframes hkBlink{50%{box-shadow:inset 0 0 14px rgba(44,255,122,.9)}}
+.hkfull .hkbubble{position:absolute;top:6%;left:50%;transform:translateX(-50%);width:min(320px,34vw);padding:10px 14px;border-radius:12px;background:rgba(0,26,12,.95);
+  border:1px solid #2cff7a;color:#caffdc;font:13px/1.5 monospace;box-shadow:0 0 16px rgba(44,255,122,.35);z-index:3}
+.hkfull .hkbubble::after{content:'';position:absolute;left:50%;bottom:-8px;width:14px;height:14px;background:rgba(0,26,12,.95);border:1px solid #2cff7a;border-top:0;border-left:0;transform:translateX(-50%) rotate(45deg)}
+.hkfull .hkbubble.pop{animation:hkPop .3s cubic-bezier(.2,1.6,.4,1)}
+@keyframes hkPop{from{transform:translateX(-50%) scale(.85);opacity:.4}}
+/* 오염된 부적 — 누런 종이에 붉은 글씨, 초록·보라 잡음이 갉아먹는다 */
+.hkctal{position:absolute;left:var(--x);top:var(--y);width:46px;height:84px;border-radius:3px;transform:rotate(var(--r));z-index:1;
+  background:linear-gradient(180deg,#f3e2a8,#d8b866);box-shadow:0 0 0 2px rgba(120,30,30,.5),0 0 18px rgba(176,96,255,.45);animation:hkTalF var(--d) ease-in-out infinite}
+.hkctal b{position:absolute;inset:0;display:grid;place-items:center;font-size:26px;color:#a8202a;font-weight:700;animation:hkTalG 2.2s steps(1) infinite}
+.hkctal i{position:absolute;inset:0;border-radius:3px;background:repeating-linear-gradient(0deg,rgba(44,255,122,.55) 0 2px,transparent 2px 7px),linear-gradient(transparent 40%,rgba(176,96,255,.6) 40% 52%,transparent 52%);
+  mix-blend-mode:hard-light;opacity:.75;animation:hkTalN 1.1s steps(3) infinite}
+.hkctal em{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);font:700 9px monospace;font-style:normal;color:#5cff9a;text-shadow:0 0 6px #2cff7a;white-space:nowrap}
+@keyframes hkTalF{50%{transform:rotate(calc(var(--r) * -1)) translateY(-12px)}}
+@keyframes hkTalG{0%,100%{transform:none;color:#a8202a}30%{transform:translate(2px,-1px) skewX(14deg);color:#2cff7a}34%{transform:none;color:#a8202a}70%{transform:translate(-2px,0);color:#b060ff}73%{transform:none}}
+@keyframes hkTalN{0%{clip-path:inset(0 0 60% 0)}33%{clip-path:inset(40% 0 20% 0)}66%{clip-path:inset(70% 0 0 0)}}
+.hkfull .hkside{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.hkfull .hkwallet{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;background:rgba(0,26,12,.9);border:1px solid #2cff7a;box-shadow:0 0 16px rgba(44,255,122,.3)}
+.hkfull .hkwallet i{font-style:normal;font-size:26px;color:#5cff9a;text-shadow:0 0 10px #2cff7a}
+.hkfull .hkwallet span{color:#8fbf9f;letter-spacing:.1em}.hkfull .hkwallet b{margin-left:auto;font:700 30px monospace;color:#ffe04a;text-shadow:0 0 10px rgba(255,224,74,.6)}
+.hkfull .htboss{margin:0;padding:8px 14px;border-radius:10px;border:1px dashed #1f7a4a;background:rgba(0,20,10,.7);justify-content:space-between}
+.hkfull .hkgo{padding:5px 14px;border-radius:8px;border:1px solid #2cff7a;background:#0a5a2a;color:#eafff0;cursor:pointer;font:inherit;animation:hbPill 1.2s ease-in-out infinite}
+.hkfull .hkshop2{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.hkitem2{position:relative;display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;text-align:left;cursor:pointer;color:#caffdc;font:inherit;
+  background:linear-gradient(135deg,rgba(0,30,14,.95),rgba(0,14,6,.95));border:1px solid #1f7a4a;transition:transform .15s,box-shadow .15s,border-color .15s;overflow:hidden}
+.hkitem2::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(160,255,200,.18) 50%,transparent 65%);background-size:250% 100%;background-position:150% 0}
+.hkitem2:hover{transform:translateY(-3px);border-color:#2cff7a;box-shadow:0 0 18px rgba(44,255,122,.5)}
+.hkitem2:hover::after{animation:hkShine 1s linear}
+.hkitem2:not(.can){opacity:.72}
+.hkitem2 .hkglyph{flex:0 0 52px;height:52px;display:grid;place-items:center;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:linear-gradient(#0f4a26,#04200f);
+  box-shadow:inset 0 0 0 2px #2cff7a}
+.hkitem2 .hkglyph b{font-size:26px;color:#5cff9a;text-shadow:0 0 10px #2cff7a}
+.hkitem2 .hktxt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.hkitem2 .hktxt b{font-size:15px;color:#eafff0;font-weight:400}.hkitem2 .hktxt small{font-size:11.5px;color:#8fbf9f;line-height:1.35}
+.hkitem2 u{flex:0 0 auto;text-decoration:none;padding:4px 9px;border-radius:8px;background:rgba(255,224,74,.12);border:1px solid rgba(255,224,74,.5);color:#ffe04a;font:700 13px monospace}
+.hkitem2.hot{grid-column:1/-1;border-color:#2cff7a;box-shadow:0 0 22px rgba(44,255,122,.45),inset 0 0 30px rgba(176,96,255,.15);animation:hkMenu 1.8s ease-in-out infinite;padding:16px}
+.hkitem2.hot .hkglyph{flex-basis:70px;height:70px;background:linear-gradient(#3a1a5a,#10041e);box-shadow:inset 0 0 0 2px #b060ff}
+.hkitem2.hot .hkglyph b{font-size:36px;color:#b8ff5a;text-shadow:0 0 12px #b060ff,0 0 20px #2cff7a;animation:hkTalG 1.8s steps(1) infinite}
+.hkitem2.hot .hktxt b{font-size:18px;color:#d8ffe0}
+.hkitem2 > s{position:absolute;right:10px;top:-1px;text-decoration:none;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:0 0 6px 6px;background:#b060ff;color:#fff;box-shadow:0 0 10px #b060ff}
+.hkitem2.bought{animation:hkBought .7s ease-out}
+@keyframes hkBought{0%{box-shadow:0 0 0 0 rgba(44,255,122,.9);filter:brightness(2)}100%{box-shadow:0 0 0 24px rgba(44,255,122,0);filter:none}}
+.hkfull .hkacts{display:flex;gap:10px;flex-wrap:wrap}
+.hkfull .hkact{flex:1;min-width:160px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;border:1px solid #b060ff;
+  background:linear-gradient(135deg,rgba(40,10,60,.9),rgba(14,4,22,.9));color:#ead8ff;font:inherit;cursor:pointer;box-shadow:0 0 12px rgba(176,96,255,.35)}
+.hkfull .hkact i{font-style:normal;font-size:20px;color:#d8b8ff}.hkfull .hkact b{color:#ffe04a}
+.hkfull .hkact:hover{box-shadow:0 0 20px rgba(176,96,255,.7)}
+@media (max-width:820px){
+  .hkfull .hkmain{flex-direction:column;padding:6px 12px 20px}
+  .hkfull .hkdocw{flex:none;min-height:250px}
+  .hkfull .hkdoc{width:150px}.hkfull .hkdesk{width:240px;height:44px;margin-top:-24px}.hkfull .hkdesk i{width:40px;height:16px}
+  .hkfull .hkbubble{width:min(300px,80vw);top:0;font-size:12px}
+  .hkctal{width:34px;height:62px}.hkctal b{font-size:19px}
+  .hkfull .hkhead{padding-left:50px;padding-right:50px}
+  .hkfull .hkshop2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.hkfull *,.topbtn.hack,.topbtn.hack>s{animation:none!important}}
 @media (prefers-reduced-motion:reduce){.hbpill,.hbpill i,.hkmenubtn,.hkmenubtn::after,.hkmenubtn em,.hkltd,.hkitem.hot{animation:none!important}}
 
 @media (prefers-reduced-motion:reduce){.bombhold .bmbig,.bombhold .bmvig,.bombhud .bhgo,.bombhud.mine{animation:none!important}}
@@ -12247,6 +12342,7 @@ function renderTop() {
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
       <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를"><b>神</b><i>신전</i><em></em></button>
       <button class="topbtn box" id="boxbtn" title="부적 뽑기"><b>匣</b><i>뽑기</i><em></em></button>
+      <button class="topbtn hack" id="hktop" title="해킹상점 — 한정!"><b>⌬</b><i>해킹</i><s>한정</s><em></em></button>
       ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자"><b>管</b><i>관리자</i><em></em></button>' : ''}
       ${guestOn() ? '<button class="topbtn guest" id="guestbtn" title="게스트"><b>客</b><i>게스트</i><em></em></button>' : ''}
       <button class="topbtn skill" id="skilltop" title="비기"><b>祕</b><i>비기</i><em></em></button>
@@ -12299,6 +12395,9 @@ function renderTop() {
     t.querySelector('#trainbtn').onclick = () => { markUsed('train'); openTraining(); };
     t.querySelector('#shrinebtn').onclick = () => { markUsed('shrine'); openShrine(); };
     t.querySelector('#boxbtn').onclick = () => { markUsed('box'); openBoxes(); };
+    t.querySelector('#hktop').onclick = () => { SND.ui(); showHackTokShop(); };
+    bindTip(t.querySelector('#hktop'), () => `<b style="color:#5cff9a">⌬ 해킹상점</b> <b style="color:#ff2d55">한정!</b><br>
+      해킹 토큰으로 오염 관석 · 해킹 상자 · 과부하 코드…<br><span style="color:#9a8d74">매시 정각 해킹 보스를 잡으면 토큰 +${HB_PAY_C}</span>`);
     /* 터에서 꺼내 온 셋 — 자주 가는 자리라 윗줄에 둔다 */
     t.querySelector('#forgetop').onclick = () => { markUsed('forge'); openForge(); };
     t.querySelector('#mptopbtn').onclick = () => { if (G.b) return; SND.ui(); showMulti(); };
@@ -22102,7 +22201,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 38;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 39;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22736,44 +22835,65 @@ async function hbFight() {
   };
   n.querySelector('.hbx').onclick = () => { over = true; timers.forEach(clearInterval); clearInterval(tick); n.remove(); };
 }
-/* 해킹상점(한정!) — 메뉴에 늘 있다 */
+/* 해킹상점(한정!) — 윗줄 ⌬ 단추 · 메뉴. 화면을 통째로 박사의 서버실로 바꾼다 */
+const HB_PAY_C = 10;                    /* 해킹 보스 한 판에 주는 토큰 (서버 HB_PAY 와 같다) */
+const HK_DOC_SAY = ['크크… 토큰은 가져왔나?', '오염된 부적은 더 세다. 대신 조금… 불안정하지.', '정각마다 내 분신이 깨어난다. 잡을 수 있으면 잡아 봐라.',
+  '관석 하나면 네 부적도 내 것처럼 된다. 크크크.', '봉인? 그것도 결국 코드일 뿐이다.', '한정이다. 다음 판엔 없을지도 모르지.'];
 async function showHackTokShop() {
-  const p = modal(`<div class="hkltd">한정!</div><h2 style="color:#5cff9a">⌬ 해 킹 상 점</h2>
-    <div class="hint">해킹 보스를 잡으면 해킹 토큰 · 매시 정각부터 10분 · 사람마다 따로</div>
-    <div class="hkchip" id="ht_tok">해킹 토큰 — 불러오는 중…</div>
-    <div class="htboss" id="ht_boss"></div>
-    <div class="hkshop" id="ht_grid"></div>
-    <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="brush-btn gold" id="ht_stone">汚 관석 쓰기 (<b>${META.hkStone || 0}</b>)</button>
-      <button class="brush-btn gold" id="ht_box">해킹 상자 열기 (<b>${META.hackBox || 0}</b>)</button>
-      <button class="brush-btn" id="ht_x">닫기</button></div>`, 'hackshopm hktshop');
+  const rain = Array.from({ length: 22 }, (_, i) => `<i style="left:${(i * 4.6 + Math.random() * 2).toFixed(1)}%;animation-duration:${(5 + Math.random() * 7).toFixed(1)}s;animation-delay:${(-Math.random() * 8).toFixed(1)}s">${
+    Array.from({ length: 26 }, () => '01符邪封破⌬汚ERR'[Math.floor(Math.random() * 12)]).join('<br>')}</i>`).join('');
+  const tals = ['破', '封', '滅', '鎭', '退', '邪'].map((g, i) => `<div class="hkctal" style="--x:${[6, 70, 18, 82, 40, 58][i]}%;--y:${[12, 8, 64, 58, 82, 30][i]}%;--r:${[-14, 10, 8, -10, 16, -6][i]}deg;--d:${(3 + i * .7).toFixed(1)}s"><b>${g}</b><i></i><em>${['ERR', '0xDEAD', '汚', 'NULL', '???', 'HACK'][i]}</em></div>`).join('');
+  const p = modal(`<div class="hkbg"><div class="hkrain">${rain}</div><div class="hkfloor"></div><div class="hkscan"></div></div>
+    <button class="hkclose" id="ht_x" title="닫기">✕</button>
+    <div class="hkhead"><div class="hkltd2">한 정 !</div>
+      <h1 class="hktitle" data-t="⌬ 해 킹 상 점">⌬ 해 킹 상 점</h1>
+      <div class="hksub">박사의 서버에서 빼돌린 것들 · 정각마다 나오는 해킹 보스를 잡아 토큰을 모아라</div></div>
+    <div class="hkmain">
+      <div class="hkdocw">${tals}
+        <div class="hkbubble" id="ht_say">${HK_DOC_SAY[0]}</div>
+        <div class="hkdoc" id="ht_doc">${cutDoctorSvg()}</div>
+        <div class="hkdesk"><i></i><i></i><i></i></div></div>
+      <div class="hkside">
+        <div class="hkwallet"><i>⌬</i><span>해킹 토큰</span><b id="ht_tok">…</b></div>
+        <div class="htboss" id="ht_boss"></div>
+        <div class="hkshop2" id="ht_grid"></div>
+        <div class="hkacts"><button class="hkact" id="ht_stone"></button><button class="hkact" id="ht_box"></button></div>
+      </div>
+    </div>`, 'hackshopm hktshop hkfull');
   p.dataset.noauto = '1';
+  const say = (t, laugh) => { const b = p.querySelector('#ht_say'); if (!b) return; b.textContent = t; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+    if (laugh) { const d = p.querySelector('#ht_doc'); d.classList.remove('laugh'); void d.offsetWidth; d.classList.add('laugh'); } };
+  let k = 0; const sayT = setInterval(() => { if (!p.isConnected) return clearInterval(sayT); k = (k + 1) % HK_DOC_SAY.length; say(HK_DOC_SAY[k]); }, 5200);
   const bossLine = () => {
     const b = p.querySelector('#ht_boss'); if (!b) return;
-    if (hbOpenNow() && !hbWonNow()) { b.innerHTML = `<b>博 해킹 보스 출현 중!</b> <button class="brush-btn" id="ht_fight">잡으러 간다</button>`;
+    if (hbOpenNow() && !hbWonNow()) { b.innerHTML = `<b>博 해킹 보스 출현 중!</b><button class="hkgo" id="ht_fight">잡으러 간다</button>`;
       b.querySelector('#ht_fight').onclick = () => { closeTop(); hbFight(); }; }
     else if (hbOpenNow()) b.innerHTML = '이번 해킹 보스는 쓰러뜨렸다 — 다음 정각에';
     else { const t = new Date((LIVE.hbNext || Date.now()) - SRV_SKEW);
-      b.innerHTML = `다음 해킹 보스 — <b>${String(t.getHours()).padStart(2, '0')}:00</b>`; }
+      b.innerHTML = `다음 해킹 보스 <b>${String(t.getHours()).padStart(2, '0')}:00</b> · 잡으면 토큰 +${HB_PAY_C}`; }
   };
   const draw = () => {
-    p.querySelector('#ht_tok').innerHTML = acctOn() ? `<i>⌬</i> 해킹 토큰 <b>${HB_TOK == null ? '…' : HB_TOK}</b>` : '로그인해야 해킹 토큰을 쓸 수 있다';
-    p.querySelector('#ht_stone').innerHTML = `汚 관석 쓰기 (<b>${META.hkStone || 0}</b>)`;
-    p.querySelector('#ht_box').innerHTML = `해킹 상자 열기 (<b>${META.hackBox || 0}</b>)`;
+    p.querySelector('#ht_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : HB_TOK) : '로그인';
+    p.querySelector('#ht_stone').innerHTML = `<i>汚</i>관석 쓰기 <b>${META.hkStone || 0}</b>`;
+    p.querySelector('#ht_box').innerHTML = `<i>匣</i>해킹 상자 열기 <b>${META.hackBox || 0}</b>`;
     bossLine();
     const g = p.querySelector('#ht_grid'); g.innerHTML = '';
     for (const it of HB_SHOP) {
-      const b = el('button', 'hkitem' + (it.hot ? ' hot' : ''), `<i>${it.g}</i><b>${it.n}</b><small>${it.d}</small><u>⌬ ${it.p}</u>`);
+      const can = HB_TOK != null && HB_TOK >= it.p;
+      const b = el('button', 'hkitem2' + (it.hot ? ' hot' : '') + (can ? ' can' : ''),
+        `${it.hot ? '<s>추천</s>' : ''}<span class="hkglyph"><b>${it.g}</b></span><span class="hktxt"><b>${it.n}</b><small>${it.d}</small></span><u>⌬ ${it.p}</u>`);
       b.onclick = async () => {
         if (!acctOn()) { toast('로그인해야 한다'); SND.err(); return; }
         if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
-        if (HB_TOK != null && HB_TOK < it.p) { toast(`해킹 토큰이 ${it.p - HB_TOK} 모자라다 — 해킹 보스를 잡아라`); SND.err(); return; }
+        if (HB_TOK != null && HB_TOK < it.p) { say('토큰이 모자라군. 정각에 내 분신을 잡아 와라.'); SND.err(); return; }
         b.disabled = true;
         const r = await acctAsk('/hb/buy', { token: ACCT.token, k: it.k }, 10000);
         b.disabled = false;
-        if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; toast('해킹상점 — ' + r.why); SND.err(); draw(); return; }
+        if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; say('…거래가 끊겼다. ' + r.why); SND.err(); draw(); return; }
         HB_TOK = r.tok; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
-        try { SND.unlock(); SND.coin && SND.coin(); } catch (e) {}
+        try { SND.unlock(); SND.coin && SND.coin(); SND.blip(300, { dur: .2, type: 'square', vol: .05, to: 1200 }); } catch (e) {}
+        b.classList.add('bought'); setTimeout(() => b.classList.remove('bought'), 700);
+        say(it.hot ? '크크크… 이제 그 부적도 오염될 거다.' : '거래 성립. 크크.', true);
         toast(`${it.n} — 샀다`); draw();
       };
       g.appendChild(b);
@@ -22781,6 +22901,7 @@ async function showHackTokShop() {
   };
   draw();
   hbMe().then(() => { if (p.isConnected) draw(); });
+  try { SND.blip(180, { dur: .3, type: 'sawtooth', vol: .05, to: 900 }); } catch (e) {}
   p.querySelector('#ht_stone').onclick = () => { closeTop(); hkStoneUse(); };
   p.querySelector('#ht_box').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#ht_x').onclick = closeTop;
