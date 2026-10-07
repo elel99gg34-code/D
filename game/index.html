@@ -21957,7 +21957,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 39;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 40;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22481,7 +22481,7 @@ function buffInfo() {
    매시 정각부터 10분 동안 박사.exe 가 나온다(백야가 강제로 열 수도 있다). 사람마다 따로 잡는다 —
    30초 안에 박사를 두드려 체력(160)을 다 깎으면 이긴다. 한 판(그 시각)에 한 번만 받는다.
    박사는 2초 남짓마다 자리를 옮기고, 가끔 방화벽을 쳐 잠깐 안 먹힌다.
-   누른 수는 묶어서 서버로 보내고, 서버가 1초에 14번까지만 센다. 이기면 서버가 해킹 토큰 +10 을 적는다.
+   누른 수는 묶어서 서버로 보내고, 서버가 1초에 14번까지만 센다. 이기면 서버가 해킹 토큰 +5 를 적는다.
    토큰은 서버에만 있다 — 메뉴의 「⌬ 해킹상점 · 한정!」에서 쓴다. 산 것은 서버가 토큰을 깎은 뒤에야 받는다.
    오염 관석 — 모험 덱의 부적 하나에 「해킹 오염」 돌연변이(汚): 수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더.
    LIVE.hb — { slot, at, until, forced } (열려 있을 때만) · LIVE.hbNext — 다음 정각
@@ -22514,7 +22514,7 @@ function hbTick() {
   if (_hbSeen !== h.slot) {
     _hbSeen = h.slot;
     try { SND.unlock(); SND.blip(220, { dur: .5, type: 'square', vol: .06, to: 880 }); screenFlash('rgba(44,255,122,.25)', 400); } catch (e) {}
-    toast(`⌬ 해킹 보스 박사.exe 출현! — ${h.forced ? '백야가 열었다' : '정각의 침입'} · 잡으면 해킹 토큰 +10`);
+    toast(`⌬ 해킹 보스 박사.exe 출현! — ${h.forced ? '백야가 열었다' : '정각의 침입'} · 잡으면 해킹 토큰 +${HB_PAY_C}`);
   }
   if (!pill) { pill = el('div', 'hbpill'); pill.id = 'hbpill'; document.body.appendChild(pill); pill.onclick = () => hbFight(); }
   const s = Math.max(0, Math.ceil((h.until - srvNow()) / 1000));
@@ -22592,7 +22592,7 @@ async function hbFight() {
   n.querySelector('.hbx').onclick = () => { over = true; timers.forEach(clearInterval); clearInterval(tick); n.remove(); };
 }
 /* 해킹상점(한정!) — 윗줄 ⌬ 단추 · 메뉴. 화면을 통째로 박사의 서버실로 바꾼다 */
-const HB_PAY_C = 10;                    /* 해킹 보스 한 판에 주는 토큰 (서버 HB_PAY 와 같다) */
+const HB_PAY_C = 5;                     /* 해킹 보스 한 판에 주는 토큰 (서버 HB_PAY 와 같다) */
 const HK_DOC_SAY = ['크크… 토큰은 가져왔나?', '오염된 부적은 더 세다. 대신 조금… 불안정하지.', '정각마다 내 분신이 깨어난다. 잡을 수 있으면 잡아 봐라.',
   '관석 하나면 네 부적도 내 것처럼 된다. 크크크.', '봉인? 그것도 결국 코드일 뿐이다.', '한정이다. 다음 판엔 없을지도 모르지.'];
 async function showHackTokShop() {
@@ -24870,7 +24870,7 @@ function drawCast(grid) {
     </div>
 
     <div class="castsec hbsec"><b>⌬ 해킹 보스 — 강제로 연다</b>
-      <div class="casthint">해킹 보스는 매시 정각부터 10분 동안 저절로 나온다(사람마다 따로 · 30초 안에 박사를 두드려 잡으면 해킹 토큰 +10 · 그 판에 한 번).
+      <div class="casthint">해킹 보스는 매시 정각부터 10분 동안 저절로 나온다(사람마다 따로 · 30초 안에 박사를 두드려 잡으면 해킹 토큰 +5 · 그 판에 한 번).
         여기서 열면 정각을 기다리지 않고 지금 모두에게 나온다 — 이미 잡은 사람도 다시 잡을 수 있다.
         「박사 날려버리기 컷씬」을 켜 두면 잡는 순간 컷씬이 흐른다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 열린다.</div>
       <div class="castbtnrow">

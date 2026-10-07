@@ -502,7 +502,7 @@ const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
 /* ── 해킹 보스 — 매시 정각부터 10분, 사람마다 따로 잡는다. 이기면 해킹 토큰(서버에 적는다) ── */
-const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_HP = 160, HB_TIME = 30000, HB_PAY = 10, HB_CPS = 14;
+const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_HP = 160, HB_TIME = 30000, HB_PAY = 5, HB_CPS = 14;
 const HB_SHOP = { stone: 30, box: 20, qi: 25, dia: 8, hp: 6, gold: 5 };      /* 해킹상점 값(토큰) — 앱과 같아야 한다 */
 const hbSess = new Map();                                                    /* 아이디 → 지금 싸우는 판 */
 function hbWin(now) {
