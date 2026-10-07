@@ -45,6 +45,7 @@ function expire(now) {
   if (live.count && now > live.count.until + 15000) { live.count = null; changed = true; }
   if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
+  if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
   if (bombStep(now)) changed = true;
   /* 백귀야행 — 카드 대전 동안은 시간이 멈춘다. 때가 다하면 끝(못 채웠다), 끝난 뒤 두 분 지나 걷는다 */
   const mc = live.march;
@@ -492,9 +493,10 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
+const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
 /* ── 폭탄 돌리기 ── */
 const BOMB_JOIN = 20000, BOMB_FUSE = [45000, 90000], BOMB_KEEP = 90000;
 let BOMB = { ppl: new Map(), fuseAt: 0, heldAt: 0, prev: '' };
@@ -612,6 +614,16 @@ async function applyCast(q) {
     else { const now = Date.now(), min = Math.max(1, Math.min(60, parseInt(q.egg.min, 10) || 10));
       live.egg = { id: now, at: now, until: now + min * 60000, n: Math.max(1, Math.min(30, parseInt(q.egg.n, 10) || 8)),
                    s: Math.max(0, Math.min(10, parseInt(q.egg.s, 10) || 2)) }; }
+  }
+  /* 버프 — 백야가 모두에게 거는 힘. 부적의 힘은 배수(1.5~10), 나머지는 켜고 끔 */
+  if ('buff' in q) {
+    if (!q.buff) live.buff = null;
+    else {
+      const now = Date.now(), min = Math.max(1, Math.min(120, parseInt(q.buff.min, 10) || 10)), ks = {};
+      const src = q.buff.ks && typeof q.buff.ks === 'object' ? q.buff.ks : {};
+      for (const k of BUFF_KEYS) if (src[k]) ks[k] = k === 'pow' ? Math.max(1.5, Math.min(10, +src[k] || 2)) : 1;
+      live.buff = Object.keys(ks).length ? { id: now, at: now, until: now + min * 60000, ks } : null;
+    }
   }
   /* 백야가 「하늘을 가르는 것」에 들어갔다 — 모든 앱에 알린다 */
   if ('devjoin' in q) {
