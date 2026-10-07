@@ -3765,37 +3765,8 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 .hbpill u{text-decoration:none;padding:3px 9px;border-radius:8px;background:#2cff7a;color:#002a10;font-weight:700}
 @keyframes hbPill{50%{box-shadow:0 0 0 3px rgba(44,255,122,.35),0 0 36px rgba(44,255,122,.85)}}
 @keyframes hbGlitch{0%,100%{transform:none}10%{transform:translate(2px,-1px) skewX(10deg);color:#ff3ad8}14%{transform:none}60%{transform:translate(-2px,1px);color:#3ad8ff}64%{transform:none}}
-.hbfight{position:fixed;inset:0;z-index:560;background:radial-gradient(circle at 50% 45%,rgba(0,40,18,.94),rgba(0,6,2,.98));color:#caffdc;overflow:hidden;
-  font-family:monospace;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.hbfight .hbscan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(44,255,122,.06) 0 1px,transparent 1px 3px);animation:hbScan 6s linear infinite}
-@keyframes hbScan{to{background-position:0 300px}}
-.hbfight .hbtop{position:absolute;left:0;right:0;top:calc(14px + env(safe-area-inset-top,0px));display:flex;justify-content:center;gap:18px;align-items:baseline}
-.hbfight .hbtop b{color:#5cff9a;font-size:16px;letter-spacing:.06em}
-.hbfight .hbtime{font-size:24px;font-weight:700;color:#ffe04a;font-variant-numeric:tabular-nums}.hbfight .hbtime.last{color:#ff5a5a;animation:hbPill .5s infinite}
-.hbfight .hbbar{position:absolute;left:50%;top:calc(52px + env(safe-area-inset-top,0px));transform:translateX(-50%);width:min(520px,86vw);height:16px;border-radius:8px;
-  background:rgba(44,255,122,.12);border:1px solid #1f7a4a;overflow:hidden}
-.hbfight .hbbar u{position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,#0a8a3a,#2cff7a);box-shadow:0 0 12px #2cff7a;transition:width .15s}
-.hbfight .hbbar em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:11px;color:#eafff0;text-shadow:0 0 3px #000}
-.hbfight .hbboss{position:absolute;width:min(34vw,170px);height:min(34vw,170px);margin:calc(min(34vw,170px) / -2);border-radius:50%;cursor:crosshair;
-  border:3px solid #2cff7a;background:radial-gradient(circle at 40% 35%,#0d3a1e,#021208 70%);box-shadow:0 0 30px rgba(44,255,122,.6),inset 0 0 30px rgba(44,255,122,.35);
-  transition:left .35s cubic-bezier(.3,1.4,.5,1),top .35s cubic-bezier(.3,1.4,.5,1);padding:0;color:#5cff9a;touch-action:none}
-.hbfight .hbboss span{font-size:min(17vw,86px);text-shadow:0 0 18px #2cff7a;font-family:serif;display:block;animation:hbGlitch 1.3s steps(1) infinite}
-.hbfight .hbboss.hit{animation:hbHit .12s}
-@keyframes hbHit{50%{transform:scale(.92);filter:brightness(1.8)}}
-.hbfight .hbboss .hbwall{position:absolute;inset:-14px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:15px;font-weight:700;color:#002a10;
-  background:radial-gradient(circle,rgba(44,255,122,.0) 45%,rgba(44,255,122,.75) 60%,rgba(44,255,122,.2) 72%);opacity:0;transition:opacity .12s;pointer-events:none}
-.hbfight .hbboss.walled .hbwall{opacity:1}
-.hbfight .hbboss.dead{animation:hbDead .7s forwards;pointer-events:none}
-@keyframes hbDead{to{transform:scale(2.2) rotate(30deg);opacity:0;filter:brightness(3)}}
-.hbfight .hbhint{position:absolute;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));text-align:center;font-size:12px;color:#8fbf9f}
-.hbfight .hbx{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));padding:7px 18px;border-radius:8px;border:1px solid #1f7a4a;background:rgba(0,26,12,.9);color:#caffdc;font:inherit;cursor:pointer}
-.hbfight .hbend{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:20px 26px;border-radius:14px;background:rgba(0,20,10,.95);border:1px solid #2cff7a;box-shadow:0 0 40px rgba(44,255,122,.5);transition:.35s cubic-bezier(.2,1.4,.4,1)}
-.hbfight .hbend.on{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
-.hbfight .hbend b{font-size:24px;color:#5cff9a;letter-spacing:.1em;text-shadow:0 0 12px #2cff7a}.hbfight .hbend span{font-size:13px;color:#ffe04a}
-.hbfight .hbend .hbgo{padding:8px 18px;border-radius:9px;border:1px solid #2cff7a;background:#0a5a2a;color:#eafff0;font:inherit;cursor:pointer}
-.hbdmg{position:fixed;z-index:570;pointer-events:none;transform:translate(-50%,-50%);font:700 18px monospace;color:#5cff9a;text-shadow:0 0 8px #2cff7a;animation:hbDmg .6s ease-out forwards}
-@keyframes hbDmg{to{transform:translate(-50%,-160%);opacity:0}}
+.hbres .hbresh{font:700 clamp(28px,6vw,46px) monospace;letter-spacing:.1em;color:#5cff9a;text-shadow:0 0 16px #2cff7a,2px 0 #ff3ad8,-2px 0 #3ad8ff;animation:bcHead .6s cubic-bezier(.2,1.5,.4,1)}
+.panel.hbresm{background:radial-gradient(circle at 50% 40%,rgba(0,40,18,.96),rgba(0,8,3,.97))}
 /* 메뉴의 해킹상점 — 빛난다 · 한정! */
 .brush-btn.hkmenubtn{position:relative;color:#5cff9a!important;border-color:#2cff7a!important;background:linear-gradient(120deg,rgba(0,40,18,.95),rgba(0,18,8,.95))!important;
   box-shadow:0 0 14px rgba(44,255,122,.55),inset 0 0 12px rgba(44,255,122,.25);animation:hkMenu 1.6s ease-in-out infinite;overflow:visible}
@@ -11149,7 +11120,7 @@ function startBattle(enemyIds, kind, opts) {
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && !mpK && !/^hack/.test(kind)) { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind)) { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
@@ -11255,7 +11226,7 @@ function mutOnKill(e) {
    ═══════════════════════════════════════════════════════════ */
 const LUCK_AWAKE = 0.30, LUCK_MUL = 1.5;
 function luckAwaken(b) {
-  if (!b || b.kind === 'pvp' || b.kind === 'mpbot' || b.kind === 'world' || b.kind === 'devboss') return;
+  if (!b || b.kind === 'pvp' || b.kind === 'mpbot' || b.kind === 'world' || b.kind === 'devboss' || b.kind === 'hbboss') return;
   const woke = [];
   for (const e of b.enemies) {
     if (e.hp <= 0 || e.dead || e.awake || e.def.boss || e.def.duel) continue;
@@ -11908,6 +11879,7 @@ async function checkOver() {
     else if (b.kind === 'mpbot') mpBotEnd(false);
     else if (/^hack/.test(b.kind)) hackLose();      /* 해킹맵 — 밀려날 뿐 모험은 그대로 */
     else if (b.kind === 'devboss') devBossLose();   /* 백야의 시험 — 모험은 그대로, 다시 도전 */
+    else if (b.kind === 'hbboss') hbBattleLose();   /* 매시 해킹 보스 — 모험은 그대로, 다시 도전 */
     else gameOver();
     return true;
   }
@@ -11936,6 +11908,7 @@ function _winBattle() {
   if (b.kind === 'mpbot') { mpBotEnd(true); return; }
   if (/^hack/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = P().hp; SND.victory(); hackWin(b.kind); return; }
   if (b.kind === 'devboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); devBossWin(); return; }   /* 백야의 시험 */
+  if (b.kind === 'hbboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); hbBattleWin(); return; }   /* 매시 해킹 보스 */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
@@ -22201,7 +22174,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 40;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 41;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22723,9 +22696,9 @@ function buffInfo() {
    해킹 보스 · 해킹 토큰 · 해킹상점(한정!)
    ──────────────────────────────────────────────────────────
    매시 정각부터 10분 동안 박사.exe 가 나온다(백야가 강제로 열 수도 있다). 사람마다 따로 잡는다 —
-   30초 안에 박사를 두드려 체력(160)을 다 깎으면 이긴다. 한 판(그 시각)에 한 번만 받는다.
-   박사는 2초 남짓마다 자리를 옮기고, 가끔 방화벽을 쳐 잠깐 안 먹힌다.
-   누른 수는 묶어서 서버로 보내고, 서버가 1초에 14번까지만 센다. 이기면 서버가 해킹 토큰 +5 를 적는다.
+   모험의 지도에서 「잡으러 간다」 — 내 덱·체력 그대로 박사(博)와 카드로 싸운다(해킹맵의 박사, 막에 맞춰 굵어진다).
+   이기면 서버가 해킹 토큰 +5 를 적는다(그 시각에 한 번 · 너무 빨리 끝난 판은 받지 않는다).
+   지면 모험은 그대로 — 체력은 들어가기 전으로 돌아오고, 열려 있는 동안 다시 도전할 수 있다.
    토큰은 서버에만 있다 — 메뉴의 「⌬ 해킹상점 · 한정!」에서 쓴다. 산 것은 서버가 토큰을 깎은 뒤에야 받는다.
    오염 관석 — 모험 덱의 부적 하나에 「해킹 오염」 돌연변이(汚): 수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더.
    LIVE.hb — { slot, at, until, forced } (열려 있을 때만) · LIVE.hbNext — 다음 정각
@@ -22753,87 +22726,61 @@ async function hbMe() {
 function hbTick() {
   let pill = $('#hbpill');
   const on = hbOpenNow() && !hbWonNow();
-  if (!on || G.b || $('#hbfight')) { if (pill) pill.remove(); return; }
+  if (!on || G.b) { if (pill) pill.remove(); return; }
   const h = LIVE.hb;
   if (_hbSeen !== h.slot) {
     _hbSeen = h.slot;
     try { SND.unlock(); SND.blip(220, { dur: .5, type: 'square', vol: .06, to: 880 }); screenFlash('rgba(44,255,122,.25)', 400); } catch (e) {}
     toast(`⌬ 해킹 보스 박사.exe 출현! — ${h.forced ? '백야가 열었다' : '정각의 침입'} · 잡으면 해킹 토큰 +${HB_PAY_C}`);
   }
+  if (!G.run || G.run._pvp || G.scene !== 'map') { if (pill) pill.remove(); return; }    /* 모험의 지도에서만 도전한다 */
   if (!pill) { pill = el('div', 'hbpill'); pill.id = 'hbpill'; document.body.appendChild(pill); pill.onclick = () => hbFight(); }
   const s = Math.max(0, Math.ceil((h.until - srvNow()) / 1000));
   pill.innerHTML = `<i>博</i><b>해킹 보스 출현!</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em><u>잡으러 간다</u>`;
 }
-/* 싸움 — 두드려라 */
+/* 싸움 — 박사와 카드로 맞선다 (모험의 덱·체력 그대로 · 지면 모험은 그대로) */
 async function hbFight() {
   if (!hbOpenNow()) { toast('해킹 보스가 아직 안 나왔다 — 매시 정각에 나온다'); return; }
   if (!acctOn()) { toast('로그인해야 해킹 보스를 잡을 수 있다'); return; }
+  if (!G.run || G.run._pvp) { toast('모험의 지도에서 도전할 수 있다'); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
   if (hbWonNow()) { toast('이번 해킹 보스는 이미 쓰러뜨렸다 — 다음 정각에'); return; }
-  if ($('#hbfight')) return;
   const r = await acctAsk('/hb/start', { token: ACCT.token }, 10000);
   if (!r.ok) { if (/이미/.test(r.why || '') && LIVE.hb) { META.hbWon = LIVE.hb.slot; saveMeta(); } toast('해킹 보스 — ' + r.why); return; }
-  const hp = r.hp, end = Date.now() + (r.deadline - r.now);
-  const n = el('div', 'hbfight'); n.id = 'hbfight';
-  n.innerHTML = `<div class="hbscan"></div><div class="hbtop"><b>⌬ 해킹 보스 — 박사.exe</b><span class="hbtime">30.0</span></div>
-    <div class="hbbar"><u></u><em>${hp} / ${hp}</em></div>
-    <button class="hbboss"><span>博</span><i class="hbwall">차단</i></button>
-    <div class="hbhint">박사를 두드려라! · 초록 방화벽이 쳐지면 잠깐 안 먹힌다</div>
-    <div class="hbend"></div><button class="hbx">그만두기</button>`;
-  document.body.appendChild(n);
-  try { SND.unlock(); SND.boss && SND.boss(); } catch (e) {}
-  const boss = n.querySelector('.hbboss'), bar = n.querySelector('.hbbar u'), num = n.querySelector('.hbbar em'), tm = n.querySelector('.hbtime');
-  let hits = 0, pend = 0, busy = false, over = false, wall = false;
-  const paint = () => { const left = Math.max(0, hp - hits - pend); bar.style.width = (left / hp * 100) + '%'; num.textContent = `${left} / ${hp}`; };
-  const move = () => { if (over) return; boss.style.left = (16 + Math.random() * 68) + '%'; boss.style.top = (30 + Math.random() * 42) + '%'; };
-  move();
-  const timers = [setInterval(move, 2200),
-    setInterval(() => { if (over || Math.random() > .45) return; wall = true; boss.classList.add('walled');
-      setTimeout(() => { wall = false; boss.classList.remove('walled'); }, 900); }, 3000)];
-  const finish = async (win, pay, tok) => {
-    if (over) return; over = true; timers.forEach(clearInterval); clearInterval(tick);
-    const e = n.querySelector('.hbend');
-    if (win) {
-      const cut = !!(LIVE.hb && LIVE.hb.forced && LIVE.hb.cut);       /* 백야가 연 판 — 「박사 날려버리기」 컷씬을 켜 두었다 */
-      META.hbWon = LIVE.hb ? LIVE.hb.slot : META.hbWon; saveMeta(); if (tok != null) HB_TOK = tok;
-      boss.classList.add('dead');
-      if (cut) { setTimeout(() => { n.remove(); cutByName('hbblast').then(() => toast(`⌬ 박사.exe 삭제 — ${pay ? `해킹 토큰 +${pay} · 지금 ${tok}` : '이미 받았다'} · 메뉴의 해킹상점에서 쓴다`)); }, 700); return; }
-      try { SND.thunder && SND.thunder(); SND.victory(); screenFlash('rgba(44,255,122,.55)', 600); shake(true);
-        const c = centerOf(boss); FX.burst(c.x, c.y, 70, '44,255,122', 9, 60, 6); } catch (x) {}
-      e.innerHTML = `<b>박사.exe 삭제됨</b><span>${pay ? `해킹 토큰 +${pay} · 지금 ${tok}` : '이미 받았다'}</span><button class="hbgo">⌬ 해킹상점으로</button>`;
-      e.querySelector('.hbgo').onclick = () => { n.remove(); showHackTokShop(); };
-    } else {
-      e.innerHTML = `<b>시간 초과</b><span>박사가 달아났다 — 열려 있는 동안 다시 할 수 있다</span><button class="hbgo">다시 한다</button>`;
-      e.querySelector('.hbgo').onclick = () => { n.remove(); hbFight(); };
-    }
-    e.classList.add('on'); n.querySelector('.hbx').textContent = '닫기';
-  };
-  const flush = async () => {
-    if (busy || !pend) return; busy = true;
-    const k = pend; pend = 0;
-    const x = await acctAsk('/hb/hit', { token: ACCT.token, n: k }, 6000);
-    busy = false;
-    if (!x.ok) { if (/싸우는 판이 없다/.test(x.why || '')) finish(false); return; }
-    if (x.win) return finish(true, x.pay, x.tok);
-    if (x.lose) return finish(false);
-    hits = x.hits; paint();
-  };
-  const tick = setInterval(() => {
-    if (over) return;
-    const left = end - Date.now();
-    tm.textContent = Math.max(0, left / 1000).toFixed(1); tm.classList.toggle('last', left < 8000);
-    flush();
-    if (left < -1200 && !busy && !pend) acctAsk('/hb/hit', { token: ACCT.token, n: 0 }, 6000).then(x => { if (x.win) finish(true, x.pay, x.tok); else finish(false); });
-  }, 300);
-  boss.onpointerdown = ev => {
-    ev.preventDefault(); if (over || Date.now() > end) return;
-    if (wall) { try { SND.blip(160, { dur: .06, type: 'square', vol: .05 }); } catch (e) {} return; }
-    pend++; paint();
-    boss.classList.remove('hit'); void boss.offsetWidth; boss.classList.add('hit');
-    const f = el('div', 'hbdmg', '-1'); f.style.left = ev.clientX + 'px'; f.style.top = ev.clientY + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 600);
-    try { SND.blip(520 + Math.random() * 400, { dur: .04, type: 'square', vol: .04 }); } catch (e) {}
-  };
-  n.querySelector('.hbx').onclick = () => { over = true; timers.forEach(clearInterval); clearInterval(tick); n.remove(); };
+  if (G.b || !G.run) return;
+  G.run._hbSlot = r.slot;
+  try { SND.unlock(); screenFlash('rgba(44,255,122,.35)', 400); } catch (e) {}
+  startBattle(['hk_doctor'], 'hbboss');
+  try { stampWord('博 士 . e x e', '#5cff9a'); } catch (e) {}
+}
+/* 이겼다 — 서버가 토큰을 적는다 */
+async function hbBattleWin() {
+  const run = G.run, h = LIVE.hb;
+  battleWatch(false); G.b = null;
+  const cut = !!(h && h.forced && h.cut);
+  const x = await acctAsk('/hb/win', { token: ACCT.token }, 10000);
+  if (x.ok) { META.hbWon = x.slot || (h && h.slot) || META.hbWon; HB_TOK = x.tok; }
+  saveMeta(); if (run) saveRun();
+  try { SND.victory(); screenFlash('rgba(44,255,122,.5)', 600); } catch (e) {}
+  if (cut && x.ok) { try { await cutByName('hbblast'); } catch (e) {} }
+  const m = modal(`<div class="hbres"><div class="hbresh">${x.ok ? '박사.exe 삭제됨' : '접속 오류'}</div>
+    <div class="hint">${x.ok ? (x.pay ? `해킹 토큰 <b style="color:#ffe04a">+${x.pay}</b> · 지금 <b style="color:#ffe04a">${x.tok}</b>` : '이번 판의 토큰은 이미 받았다') : '토큰을 적지 못했다 — ' + wEsc(x.why || '')}</div></div>
+    <div style="display:flex;gap:10px;justify-content:center"><button class="brush-btn gold" id="hbr_shop">⌬ 해킹상점으로</button><button class="brush-btn" id="hbr_ok">지도로</button></div>`, 'hbresm');
+  m.dataset.noauto = '1';
+  m.querySelector('#hbr_ok').onclick = () => { closeTop(); showMap(); };
+  m.querySelector('#hbr_shop').onclick = () => { closeTop(); showMap(); setTimeout(showHackTokShop, 200); };
+}
+function hbBattleLose() {
+  const run = G.run, b = G.b;
+  battleWatch(false);
+  if (b && b.startHp) run.hp = Math.max(1, b.startHp);
+  G.b = null; saveRun();
+  const p = modal(`<h2 style="color:#ff6a7a">박사에게 밀려났다</h2>
+    <div class="hint">모험은 그대로다 — 체력은 들어가기 전으로 돌아온다.${hbOpenNow() ? '<br>열려 있는 동안 다시 도전할 수 있다.' : ''}</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">${hbOpenNow() ? '<button class="brush-btn gold" id="hbl_re">다시 도전</button>' : ''}<button class="brush-btn" id="hbl_ok">지도로</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#hbl_ok').onclick = () => { closeTop(); showMap(); };
+  const re = p.querySelector('#hbl_re'); if (re) re.onclick = () => { closeTop(); showMap(); setTimeout(hbFight, 200); };
 }
 /* 해킹상점(한정!) — 윗줄 ⌬ 단추 · 메뉴. 화면을 통째로 박사의 서버실로 바꾼다 */
 const HB_PAY_C = 5;                     /* 해킹 보스 한 판에 주는 토큰 (서버 HB_PAY 와 같다) */
@@ -22847,7 +22794,7 @@ async function showHackTokShop() {
     <button class="hkclose" id="ht_x" title="닫기">✕</button>
     <div class="hkhead"><div class="hkltd2">한 정 !</div>
       <h1 class="hktitle" data-t="⌬ 해 킹 상 점">⌬ 해 킹 상 점</h1>
-      <div class="hksub">박사의 서버에서 빼돌린 것들 · 정각마다 나오는 해킹 보스를 잡아 토큰을 모아라</div></div>
+      <div class="hksub">박사의 서버에서 빼돌린 것들 · 정각마다 나오는 해킹 보스를 카드로 쓰러뜨려 토큰을 모아라</div></div>
     <div class="hkmain">
       <div class="hkdocw">${tals}
         <div class="hkbubble" id="ht_say">${HK_DOC_SAY[0]}</div>
@@ -25114,7 +25061,7 @@ function drawCast(grid) {
     </div>
 
     <div class="castsec hbsec"><b>⌬ 해킹 보스 — 강제로 연다</b>
-      <div class="casthint">해킹 보스는 매시 정각부터 10분 동안 저절로 나온다(사람마다 따로 · 30초 안에 박사를 두드려 잡으면 해킹 토큰 +5 · 그 판에 한 번).
+      <div class="casthint">해킹 보스는 매시 정각부터 10분 동안 저절로 나온다(사람마다 따로 · 모험의 지도에서 박사와 카드로 싸워 이기면 해킹 토큰 +5 · 그 판에 한 번 · 지면 모험은 그대로).
         여기서 열면 정각을 기다리지 않고 지금 모두에게 나온다 — 이미 잡은 사람도 다시 잡을 수 있다.
         「박사 날려버리기 컷씬」을 켜 두면 잡는 순간 컷씬이 흐른다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 열린다.</div>
       <div class="castbtnrow">

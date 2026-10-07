@@ -501,8 +501,8 @@ const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', '
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
-/* ── 해킹 보스 — 매시 정각부터 10분, 사람마다 따로 잡는다. 이기면 해킹 토큰(서버에 적는다) ── */
-const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_HP = 160, HB_TIME = 30000, HB_PAY = 5, HB_CPS = 14;
+/* ── 해킹 보스 — 매시 정각부터 10분, 사람마다 따로 카드로 싸운다. 이기면 해킹 토큰(서버에 적는다) ── */
+const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_PAY = 5, HB_MIN_FIGHT = 3000, HB_SESS_MAX = 45 * 60000;
 const HB_SHOP = { stone: 30, box: 20, qi: 25, dia: 8, hp: 6, gold: 5 };      /* 해킹상점 값(토큰) — 앱과 같아야 한다 */
 const hbSess = new Map();                                                    /* 아이디 → 지금 싸우는 판 */
 function hbWin(now) {
@@ -1402,8 +1402,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   /* ── 해킹 보스 · 해킹 토큰 · 해킹상점 ─────────────────────
-     /hb/me 잔액 · /hb/start 판을 연다 · /hb/hit 누른 수(묶어서) · /hb/buy 산다.
-     누른 수는 1초에 HB_CPS 번까지만 센다(손이 아무리 빨라도). 토큰은 서버에만 적는다. */
+     /hb/me 잔액 · /hb/start 싸움을 연다 · /hb/win 이겼다 · /hb/buy 산다. 토큰은 서버에만 적는다. */
   if (url.pathname.startsWith('/hb/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
@@ -1420,24 +1419,20 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/hb/start') {
       if (!w) return send(res, 409, { ok: false, why: '해킹 보스가 아직 안 나왔다 — 매시 정각에 나온다' });
       if (await won()) return send(res, 409, { ok: false, why: '이번 해킹 보스는 이미 쓰러뜨렸다' });
-      const se = { slot: w.slot, hits: 0, start: now, last: now, deadline: now + HB_TIME };
-      hbSess.set(id, se); if (hbSess.size > 20000) hbSess.clear();
-      return send(res, 200, { ok: true, hp: HB_HP, time: HB_TIME, deadline: se.deadline, now });
+      hbSess.set(id, { slot: w.slot, start: now }); if (hbSess.size > 20000) hbSess.clear();
+      return send(res, 200, { ok: true, slot: w.slot, now });
     }
-    if (url.pathname === '/hb/hit') {
+    /* 이겼다 — 열려 있을 때 시작한 싸움이어야 하고, 너무 빨리 끝났으면 받지 않는다(싸움이 길어져 창이 닫혀도 그 판은 인정) */
+    if (url.pathname === '/hb/win') {
       const se = hbSess.get(id);
-      if (!se || !w || se.slot !== w.slot) return send(res, 409, { ok: false, why: '싸우는 판이 없다' });
-      if (now > se.deadline + 1500) { hbSess.delete(id); return send(res, 200, { ok: true, lose: true, hits: se.hits, hp: HB_HP }); }
-      const can = Math.floor((now - se.last) / 1000 * HB_CPS) + 3;
-      const add = Math.max(0, Math.min(parseInt(q.n, 10) || 0, can));
-      se.hits += add; if (add) se.last = now;
-      if (se.hits < HB_HP) return send(res, 200, { ok: true, hits: se.hits, hp: HB_HP });
+      if (!se || now - se.start > HB_SESS_MAX) return send(res, 409, { ok: false, why: '싸우는 판이 없다' });
+      if (now - se.start < HB_MIN_FIGHT) return send(res, 429, { ok: false, why: '너무 빨리 끝났다' });
       hbSess.delete(id);
-      if (await won()) return send(res, 200, { ok: true, win: true, pay: 0, tok: await bal() });
-      await put('hbw:' + id, w.slot);
+      if ((await get('hbw:' + id)) === se.slot) return send(res, 200, { ok: true, pay: 0, tok: await bal(), slot: se.slot });
+      await put('hbw:' + id, se.slot);
       const tok = (await bal()) + HB_PAY; await put('ht:' + id, tok);
       console.log('해킹 보스를 쓰러뜨렸다:', id, '· 토큰', tok);
-      return send(res, 200, { ok: true, win: true, pay: HB_PAY, tok });
+      return send(res, 200, { ok: true, pay: HB_PAY, tok, slot: se.slot });
     }
     if (url.pathname === '/hb/buy') {
       const k = String(q.k || ''), price = HB_SHOP[k];
