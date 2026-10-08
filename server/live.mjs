@@ -512,6 +512,17 @@ function hbWin(now) {
   if (now - base < HB_OPEN) return { slot: 'h' + base, at: base, until: base + HB_OPEN, forced: false };
   return null;
 }
+/* ── 합성소 — 둘이 돌연변이 재료를 하나씩 놓고 합친다 ──
+   방: invite(초대) → pick(재료를 고른다) → fuse(합성 — fuseAt 에 두 앱이 함께 연출) / gone(누가 나갔다)
+   재료는 앱에 있다 — 서버는 무엇을 놓았는지와 준비만 맞춘다. 결과는 두 재료를 이름순으로 묶은 것(star+chaos …) */
+const FUSE_MATS = ['star', 'chaos', 'gold'];
+const fuseRooms = new Map(), fuseInbox = new Map();
+function fusePrune(now) { for (const [k, r] of fuseRooms) if (now - r.at > 20 * 60000) { fuseRooms.delete(k); if (fuseInbox.get(r.b) === k) fuseInbox.delete(r.b); } }
+function fuseView(r, id, now) {
+  const me = r.a === id ? 'a' : 'b', ot = me === 'a' ? 'b' : 'a';
+  return { rid: r.id, state: r.state, me, my: { nick: r[me + 'Nick'], mat: r[me + 'Mat'], ready: r[me + 'Ready'] },
+    other: { nick: r[ot + 'Nick'], mat: r[ot + 'Mat'], ready: r[ot + 'Ready'] }, fuseAt: r.fuseAt || 0, result: r.result || '', now };
+}
 /* ── 백야의 시험 — 누가 도전했고 누가 이겼는지 ── */
 let devbossWho = { tried: new Set(), won: new Set() };
 /* ── 그림자 침공 — 싸움마다 내 덱을 베낀 그림자가 끼어든다. 누가 많이 베었는지 순위 ── */
@@ -1353,6 +1364,61 @@ const server = http.createServer(async (req, res) => {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 합성소 ── */
+  if (url.pathname.startsWith('/fuse/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(); fusePrune(now);
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    if (url.pathname === '/fuse/invite') {
+      let to = str(q.to, 20);
+      if (!to) return send(res, 400, { ok: false, why: '누구를 부를지 적어라' });
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 퇴마사는 없다' });
+      if (to === id) return send(res, 400, { ok: false, why: '자기 자신은 부를 수 없다' });
+      const rid = crypto.randomBytes(6).toString('hex');
+      const r = { id: rid, a: id, b: to, aNick: (await nickOf(id)) || id, bNick: (await nickOf(to)) || to, aMat: '', bMat: '', aReady: false, bReady: false, state: 'invite', at: now };
+      fuseRooms.set(rid, r); fuseInbox.set(to, rid);
+      return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    if (url.pathname === '/fuse/inbox') {
+      const rid = fuseInbox.get(id), r = rid && fuseRooms.get(rid);
+      if (!r || r.state !== 'invite' || now - r.at > 3 * 60000) return send(res, 200, { ok: true, room: null });
+      return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    const r = fuseRooms.get(String(q.rid || ''));
+    if (!r || (r.a !== id && r.b !== id)) return send(res, 404, { ok: false, why: '그런 합성소 방이 없다' });
+    const me = r.a === id ? 'a' : 'b';
+    if (url.pathname === '/fuse/answer') {
+      if (me !== 'b' || r.state !== 'invite') return send(res, 409, { ok: false, why: '이미 지난 초대다' });
+      fuseInbox.delete(id); r.state = q.yes ? 'pick' : 'gone'; r.at = now;
+      return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    if (url.pathname === '/fuse/state') return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    if (url.pathname === '/fuse/leave') { if (r.state !== 'fuse') r.state = 'gone'; return send(res, 200, { ok: true, room: fuseView(r, id, now) }); }
+    if (r.state !== 'pick') return send(res, 409, { ok: false, why: '지금은 고를 때가 아니다', room: fuseView(r, id, now) });
+    if (url.pathname === '/fuse/put') {
+      const m = String(q.mat || '');
+      if (m && FUSE_MATS.indexOf(m) < 0) return send(res, 400, { ok: false, why: '없는 재료' });
+      r[me + 'Mat'] = m; r.aReady = r.bReady = false; r.at = now;
+      return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    if (url.pathname === '/fuse/ready') {
+      if (!r[me + 'Mat']) return send(res, 409, { ok: false, why: '재료를 먼저 놓아라' });
+      r[me + 'Ready'] = !!q.yes; r.at = now;
+      if (r.aReady && r.bReady && r.aMat && r.bMat) {
+        r.state = 'fuse'; r.fuseAt = now + 1800; r.result = [r.aMat, r.bMat].sort((x, y) => FUSE_MATS.indexOf(x) - FUSE_MATS.indexOf(y)).join('+');
+        console.log('합성소 — 합성:', r.aNick, '+', r.bNick, '→', r.result);
+      }
+      return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
   /* ── 백야의 시험 — 도전했다 · 이겼다 ── */
   if ((url.pathname === '/devboss/try' || url.pathname === '/devboss/win') && req.method === 'POST') {
     let body = '';
