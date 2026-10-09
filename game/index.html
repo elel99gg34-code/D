@@ -4044,19 +4044,22 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 @media (prefers-reduced-motion:reduce){.mutfx *,.mgorb,.mgorb i,.matget .mgrays,.card .cmut .mx{animation:none!important}}
 /* ══ 융합 돌연변이 — 반반 아우라 ══ */
 .card .fuaura{position:absolute;inset:-9px;border-radius:12px;z-index:0;pointer-events:none;filter:blur(7px);opacity:.9;
-  background:linear-gradient(90deg,var(--fa) 0 48%,var(--fb) 52% 100%);animation:fuPulse 2s ease-in-out infinite}
+  background:var(--fg,linear-gradient(90deg,var(--fa) 0 48%,var(--fb) 52% 100%));animation:fuPulse 2s ease-in-out infinite}
 @keyframes fuPulse{50%{opacity:.55;transform:scale(1.03)}}
 .card.mutFu .face{box-shadow:inset 0 0 22px rgba(255,255,255,.25)}
 .mutfx .fuL,.mutfx .fuR{position:absolute;inset:0}
 .mutfx .fuL{clip-path:inset(0 50% 0 0)}.mutfx .fuR{clip-path:inset(0 0 0 50%)}
-.mutfx .fuB{position:absolute;inset:0;border-radius:inherit;padding:3px;background:linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%);
+.mutfx .fuM{position:absolute;inset:0}
+.mutfx.tri .fuL{clip-path:inset(0 66.6% 0 0)}.mutfx.tri .fuM{clip-path:inset(0 33.3% 0 33.3%)}.mutfx.tri .fuR{clip-path:inset(0 0 0 66.6%)}
+.mutfx.tri .fuB::after{left:33.3%}.mutfx.tri .fuB::before{content:'';position:absolute;left:66.6%;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 8px #fff;opacity:.8}
+.mutfx .fuB{position:absolute;inset:0;border-radius:inherit;padding:3px;background:var(--fg,linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .mutfx .fuB::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 8px #fff;opacity:.8}
 .card .cmut .mfu{width:auto;min-width:30px;padding:0 4px;border-radius:9px;color:#1a1020;font-size:10.5px;letter-spacing:-.02em;
-  background:linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%);box-shadow:0 0 8px var(--fa),0 0 8px var(--fb)}
+  background:var(--fg,linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%));box-shadow:0 0 8px var(--fa),0 0 8px var(--fb)}
 /* 융합 구슬 — 반반 */
 .fuorb{position:relative;width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;gap:2px;
-  background:radial-gradient(circle at 38% 30%,rgba(255,255,255,.95),rgba(255,255,255,0) 40%),linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%);
+  background:radial-gradient(circle at 38% 30%,rgba(255,255,255,.95),rgba(255,255,255,0) 40%),var(--fg,linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50% 100%));
   box-shadow:-14px 0 30px var(--fa),14px 0 30px var(--fb),0 0 60px rgba(255,255,255,.35);animation:mgFloat 2.4s ease-in-out infinite}
 .fuorb::before{content:'';position:absolute;inset:-14px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);animation:bfSpin 6s linear infinite}
 .fuorb b{position:relative;z-index:2;font-size:42px;color:#fff;text-shadow:0 0 10px #000,0 0 18px rgba(255,255,255,.8)}
@@ -4204,15 +4207,13 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 .mfx.hit .mfxcard::after{content:'';position:absolute;inset:-14px;border-radius:14px;pointer-events:none;
   background:linear-gradient(90deg,var(--fa) 0 50%,var(--fb) 50%);filter:blur(16px);opacity:.75;z-index:-1;animation:fuPulse 1.6s ease-in-out infinite}
 .mfx .mfxorb{position:absolute;left:50%;top:45%;width:84px;height:84px;margin:-42px;border-radius:50%;display:grid;place-items:center;
-  background:radial-gradient(circle at 38% 32%,#fff,var(--fa) 50%,color-mix(in srgb,var(--fa) 20%,transparent) 72%);box-shadow:0 0 30px var(--fa),0 0 70px var(--fa);
+  --oc:var(--fa);background:radial-gradient(circle at 38% 32%,#fff,var(--oc) 50%,color-mix(in srgb,var(--oc) 20%,transparent) 72%);box-shadow:0 0 30px var(--oc),0 0 70px var(--oc);
   transition:transform .65s cubic-bezier(.6,0,.85,.4),opacity .2s}
-.mfx .mfxorb b{font-size:40px;color:#fff;text-shadow:0 0 10px var(--fa)}
-.mfx .mfxorb.c{transform:translate(0,48vh) scale(1.1)}.mfx .mfxorb.l{transform:translate(-46vw,10vh)}.mfx .mfxorb.r{transform:translate(46vw,10vh);
-  background:radial-gradient(circle at 38% 32%,#fff,var(--fb) 50%,color-mix(in srgb,var(--fb) 20%,transparent) 72%);box-shadow:0 0 30px var(--fb),0 0 70px var(--fb)}
-.mfx .mfxorb.r b{text-shadow:0 0 10px var(--fb)}
+.mfx .mfxorb b{font-size:40px;color:#fff;text-shadow:0 0 10px var(--oc)}
+.mfx .mfxorb.c{transform:translate(0,48vh) scale(1.1)}.mfx .mfxorb.l{transform:translate(-46vw,10vh)}.mfx .mfxorb.r{transform:translate(46vw,10vh)}
 .mfx .mfxorb::after{content:'';position:absolute;left:50%;top:50%;width:10px;height:180px;margin-left:-5px;border-radius:5px;opacity:.7;transform-origin:top;
-  background:linear-gradient(var(--fa),transparent);filter:blur(3px)}
-.mfx .mfxorb.l::after{transform:rotate(-80deg)}.mfx .mfxorb.r::after{transform:rotate(80deg);background:linear-gradient(var(--fb),transparent)}
+  background:linear-gradient(var(--oc),transparent);filter:blur(3px)}
+.mfx .mfxorb.l::after{transform:rotate(-80deg)}.mfx .mfxorb.r::after{transform:rotate(80deg)}
 .mfx.fly .mfxorb{transform:translate(0,0) scale(.35)}
 .mfx.hit .mfxorb{opacity:0}
 .mfx .mfxrings{position:absolute;left:50%;top:45%;width:0;height:0}
@@ -4263,6 +4264,50 @@ body.labfight .unit .nm{color:#caffdc!important;text-shadow:0 1px 3px #000}
 .labsvg .labsweep{animation:labSweep 3.2s linear infinite}
 @keyframes labSweep{from{transform:translateY(0)}to{transform:translateY(130px)}}
 @media (prefers-reduced-motion:reduce){.labsvg *,#bg .labrain i{animation:none!important}}
+/* ══ 극광의 밤 ══ */
+.evs-aurora{background:linear-gradient(#020812 0%,#06182a 40%,#0a2a3a 70%,#061420 100%)}
+.evs-aurora .arib{left:-30%;width:160%;height:42%;filter:blur(3px) drop-shadow(0 0 18px rgba(90,255,180,.55));mix-blend-mode:screen;opacity:1;animation:arWave 14s ease-in-out infinite;animation-delay:var(--w)}
+.evs-aurora .arib i{position:absolute;inset:0;border-radius:50% 50% 40% 40%/70% 70% 30% 30%;
+  background:linear-gradient(180deg,rgba(130,110,255,0) 0%,rgba(130,110,255,.28) 30%,rgba(90,255,190,.6) 62%,rgba(170,255,220,.95) 84%,rgba(90,255,170,0) 100%);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 2px,rgba(0,0,0,.35) 2px 7px,rgba(0,0,0,.8) 7px 9px,rgba(0,0,0,.2) 9px 15px);mask:repeating-linear-gradient(90deg,#000 0 2px,rgba(0,0,0,.35) 2px 7px,rgba(0,0,0,.8) 7px 9px,rgba(0,0,0,.2) 9px 15px);
+  animation:arRipple 7s ease-in-out infinite alternate}
+.evs-aurora .arib.r1 i{background:linear-gradient(180deg,rgba(80,200,255,0),rgba(80,200,255,.3) 35%,rgba(120,255,230,.7) 70%,rgba(200,255,245,.9) 86%,rgba(80,200,255,0))}
+.evs-aurora .arib.r2{opacity:.8;animation-duration:19s}.evs-aurora .arib.r2 i{background:linear-gradient(180deg,rgba(255,120,200,0),rgba(255,120,200,.3) 35%,rgba(200,110,255,.65) 70%,rgba(240,170,255,.85) 86%,rgba(200,110,255,0))}
+.evs-aurora .arib.r3{opacity:.7;animation-duration:23s;animation-direction:reverse}
+@keyframes arWave{0%,100%{transform:translateX(0) skewX(-8deg) scaleY(1)}33%{transform:translateX(6%) skewX(10deg) scaleY(1.15)}66%{transform:translateX(-5%) skewX(-4deg) scaleY(.9)}}
+@keyframes arRipple{from{transform:scaleX(1) translateY(0)}to{transform:scaleX(1.08) translateY(-6%)}}
+.evs-aurora .arays{inset:0;background:repeating-linear-gradient(90deg,rgba(160,255,220,.1) 0 2px,transparent 2px 14px);-webkit-mask:linear-gradient(#000 0%,transparent 55%);mask:linear-gradient(#000 0%,transparent 55%);animation:arRays 9s linear infinite}
+@keyframes arRays{to{background-position:140px 0}}
+.evs-aurora .aglow{left:0;right:0;top:36%;height:34%;background:radial-gradient(ellipse at 50% 0%,rgba(80,255,170,.34),transparent 70%)}
+.evt-aurora .wash{inset:0;background:linear-gradient(rgba(60,255,180,.08),rgba(120,90,255,.12));mix-blend-mode:screen}
+.evt-aurora .aveil{left:-20%;width:140%;top:0;height:30%;mix-blend-mode:screen;filter:blur(6px);opacity:.55;
+  background:linear-gradient(90deg,transparent,rgba(90,255,180,.35) 20%,rgba(120,200,255,.3) 45%,rgba(190,120,255,.32) 70%,transparent);
+  -webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent);animation:arVeil 11s ease-in-out infinite alternate}
+@keyframes arVeil{from{transform:translateX(-6%) skewX(-10deg)}to{transform:translateX(6%) skewX(10deg)}}
+/* 발밑의 극광 고리 */
+.unit .body .aurring{position:absolute;left:50%;bottom:-16%;width:132%;height:132%;margin-left:-66%;transform:scaleY(.3);transform-origin:50% 100%;pointer-events:none;z-index:0}
+.unit .body .aurring i{position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,#6dffb0,#7fd8ff,#b07bff,#ff8ad8,#6dffb0);
+  -webkit-mask:radial-gradient(closest-side,transparent 68%,#000 72%,#000 86%,transparent 92%);mask:radial-gradient(closest-side,transparent 68%,#000 72%,#000 86%,transparent 92%);
+  filter:drop-shadow(0 0 8px #6dffb0);animation:bfSpin 4s linear infinite}
+.unit .body .aurring b{position:absolute;inset:18%;border-radius:50%;background:radial-gradient(circle,rgba(110,255,190,.35),rgba(150,110,255,.15) 50%,transparent 70%);animation:fuPulse 2.4s ease-in-out infinite}
+/* 극광에 물든 부적 — 이 차례 값 0 */
+.card.aurfree .face{box-shadow:inset 0 0 0 2px #7fffd4,inset 0 0 22px rgba(127,255,212,.55),0 0 18px rgba(127,255,212,.8),0 0 30px rgba(176,123,255,.6)}
+.card.aurfree .cost{background:linear-gradient(135deg,#6dffb0,#b07bff)!important;color:#06202a!important;box-shadow:0 0 12px #7fffd4}
+.card.aurfree::after{content:'極光';position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:10.5px;font-weight:800;letter-spacing:.2em;padding:1px 8px;border-radius:8px;
+  background:linear-gradient(90deg,#6dffb0,#b07bff);color:#06202a;box-shadow:0 0 10px #7fffd4;pointer-events:none;z-index:6}
+/* 극광 돌연변이 — 카드 위로 극광 띠가 너울거린다 */
+.card.mutA .face{box-shadow:inset 0 0 0 2px rgba(127,255,212,.95),inset 0 0 0 4px rgba(176,123,255,.5),inset 0 0 20px rgba(127,255,212,.4),0 0 14px rgba(127,255,212,.5)}
+.mfA i{position:absolute;left:-40%;width:180%;height:26%;filter:blur(5px);mix-blend-mode:screen;opacity:.65;border-radius:50%;
+  background:linear-gradient(180deg,transparent,rgba(110,255,190,.8) 45%,rgba(170,120,255,.7) 70%,transparent);animation:arWave 6s ease-in-out infinite}
+.mfA i:nth-child(1){top:6%}.mfA i:nth-child(2){top:34%;animation-delay:-2s;animation-duration:7.5s}.mfA i:nth-child(3){top:62%;animation-delay:-4s;animation-duration:9s}
+.card .cmut .ma{background:radial-gradient(circle,#fff,#7fffd4 50%,#6a4ad8);color:#06202a;box-shadow:0 0 10px #7fffd4,0 0 6px #b07bff}
+/* 세 갈래 융합 구슬 · 합성소의 융합 원료 */
+.fuorb.tri b{font-size:30px}.fuorb.small.tri b{font-size:17px}
+.fuorb.rdy{box-shadow:-14px 0 30px var(--fa),14px 0 30px var(--fb),0 0 0 4px #fff,0 0 60px #fff}
+.fuseshow .fsorb .fuorb.fsfu{width:110px;height:110px;animation:none}
+.flmat.fu{background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(10,6,20,.9));border:1px solid transparent;border-image:var(--fg) 1}
+.flmat.fu i{background:var(--fg);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 0 6px rgba(255,255,255,.6));font-size:24px}
 @media (prefers-reduced-motion:reduce){.hbpill,.hbpill i,.hkmenubtn,.hkmenubtn::after,.hkmenubtn em,.hkltd,.hkitem.hot{animation:none!important}}
 
 @media (prefers-reduced-motion:reduce){.bombhold .bmbig,.bombhold .bmvig,.bombhud .bhgo,.bombhud.mine{animation:none!important}}
@@ -6274,7 +6319,7 @@ var SONGS = {
     bass: 'x.......x.....x.', taiko: 'X.......x.....x.', hat: '......x.......x.', sparkle: 0 }
 };
 /* 이벤트마다 제 노래 */
-var EV_SONG = { star: 'star', chaos: 'chaos', gold: 'fest', rain: 'rain', joy: 'joy', night: 'night' };
+var EV_SONG = { star: 'star', chaos: 'chaos', gold: 'fest', rain: 'rain', joy: 'joy', night: 'night', aurora: 'star' };
 var SONG = {
   cur: '', timer: 0, step: 0, next: 0, bus: null,
   NOTE: { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 },
@@ -8063,8 +8108,10 @@ function fgCost(lv) {
 function fgMark(c) { return fgLv(c) ? '★'.repeat(fgLv(c)) : ''; }
 /* 특성(변이) — 혼돈의 특성(mutC)은 강화하지 않아도 강화한 것처럼, 별의 특성(mutS)은 수치 1.25배 */
 /* 이벤트 재료 돌연변이의 세기 — 홑 재료(유성·혼원·풍요)는 1, 합성소에서 합친 융합(mutFu: 'star+chaos' …)은 그 두 갈래 모두 2 */
-const MUT_KEY = { star: 'mutM', chaos: 'mutX', gold: 'mutF' }, MUT_COL = { star: '#9fd8ff', chaos: '#e08ad8', gold: '#ffd76a' }, MUT_GL = { star: '流', chaos: '沌', gold: '豐' };
-const MUT_FXH = { star: '<span class="mfM"><i></i><i></i><i></i><i></i></span>', chaos: '<span class="mfX"></span>', gold: '<span class="mfF"><i></i><i></i><i></i><i></i><i></i><i></i></span>' };
+const MUT_KEY = { star: 'mutM', chaos: 'mutX', gold: 'mutF', aurora: 'mutA' }, MUT_COL = { star: '#9fd8ff', chaos: '#e08ad8', gold: '#ffd76a', aurora: '#7fffd4' }, MUT_GL = { star: '流', chaos: '沌', gold: '豐', aurora: '光' };
+const MUT_FXH = { star: '<span class="mfM"><i></i><i></i><i></i><i></i></span>', chaos: '<span class="mfX"></span>', gold: '<span class="mfF"><i></i><i></i><i></i><i></i><i></i><i></i></span>', aurora: '<span class="mfA"><i></i><i></i><i></i></span>' };
+/* 융합 띠 — 두 갈래면 반반, 세 갈래면 셋으로 */
+const fuGrad = ks => ks.length === 3 ? `linear-gradient(90deg,${MUT_COL[ks[0]]} 0 33.3%,${MUT_COL[ks[1]]} 33.3% 66.6%,${MUT_COL[ks[2]]} 66.6% 100%)` : `linear-gradient(90deg,${MUT_COL[ks[0]]} 0 50%,${MUT_COL[ks[1]]} 50% 100%)`;
 function mutLv(c, k) { let L = c[MUT_KEY[k]] ? 1 : 0; if (c.mutFu && c.mutFu.split('+').indexOf(k) >= 0) L += 2; return L; }
 const cup = c => !!(c.up || c.mutC || mutLv(c, 'chaos') > 0);   /* 혼원(混元)도 강화한 것처럼 */
 const MUT_STAR = 1.25;
@@ -8073,7 +8120,7 @@ function cval(c) {
   const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -8087,6 +8134,7 @@ function ccost(c) {
 }
 /* 실제로 치르는 값 — 무념무상 같은 효과를 반영한다 */
 function ecost(c) {
+  if (G.b && c.aurT && c.aurT === G.b.turn && !G.b.over) return ccost(c) === -2 ? -2 : 0;   /* 극광에 물든 부적 — 이 차례 값 0 */
   if (G.b && devInfOn() && isQ(cdef(c).rar)) return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
   const k = ccost(c);
   if (G.b && k > 0 && G.b.p && G.b.p.s && G.b.p.s.godmode) return 0;   /* 어드민급 「신권」 — 모든 부적 값 0 */
@@ -11355,6 +11403,7 @@ async function _startPlayerTurn(b) {
     b.hand.push(Object.assign(mkCard('ev_morph', false), { temp: true })); }
   if (pulled && b.turn === 1 && !AUTO.on) toast(`덱 설정대로 — ${b.plan.filter(h => h.length).length}번째 차례까지 정해 둔 부적이 나온다`);
   await tryFortune();
+  try { auroraTurn(b); } catch (e) { console.error('극광', e); }   /* 극광의 밤 — 손의 부적 하나가 이 차례 값 0 */
   SND.drum();
   showTurnLabel('당신의 차례');
   inkBand();
@@ -11514,7 +11563,7 @@ async function playCard(card, target) {
     }
   } catch (err) { console.error('부적 처리 오류', d.id, err); }
   if (card.mutK && !b.over) { try { await shadowEcho(ctx, d); } catch (err) { console.error('그림자 메아리', err); } }   /* 影 — 그림자가 따라 친다 */
-  if ((card.mutM || card.mutX || card.mutF || card.mutFu) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
+  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutFu) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
   /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
   try {
     b.curCard = null;
@@ -13216,6 +13265,9 @@ function unitAura(u, o) {
   u.classList.toggle('au-psn', (s.poison || 0) > 0);
   u.classList.toggle('au-weak', (s.weak || 0) > 0 || (s.vuln || 0) > 0);
   u.classList.toggle('au-shadow', !!o.shadow);
+  { const on = evOn('aurora') && !(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')), body = u.querySelector('.body');   /* 극광의 밤 — 발밑의 극광 고리 */
+    let r = body && body.querySelector('.aurring');
+    if (on && body && !r) { r = el('div', 'aurring', '<i></i><b></b>'); body.appendChild(r); } else if (!on && r) r.remove(); }
   u.classList.toggle('au-devboss', !!(o.def && o.def.devboss)); u.classList.toggle('au-dbp2', !!o.p2);
 }
 function syncEnemies() {
@@ -13322,11 +13374,11 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   const fu = c.mutFu ? c.mutFu.split('+') : null;                        /* 융합 — 반반 아우라 */
-  if (fu) { n.style.setProperty('--fa', MUT_COL[fu[0]]); n.style.setProperty('--fb', MUT_COL[fu[1]]); }
+  if (fu) { n.style.setProperty('--fa', MUT_COL[fu[0]]); n.style.setProperty('--fb', MUT_COL[fu[fu.length - 1]]); n.style.setProperty('--fg', fuGrad(fu)); }
   n.innerHTML = `${fu ? '<div class="fuaura"></div>' : ''}
     <div class="face">
       ${skin ? `<div class="sklayer">${skinBits(skin)}</div>` : ''}
@@ -13335,8 +13387,10 @@ function cardNode(c, opts) {
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
-      ${c.mutM || c.mutX || c.mutF || c.mutFu ? `<div class="mutfx">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${fu ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span><span class="fuB"></span>` : ''}</div>` : ''}
-      ${c.mutS || c.mutC || c.mutH || c.mutK || c.mutM || c.mutX || c.mutF || c.mutFu ? `<div class="cmut">${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : MUT_GL[fu[0]] + MUT_GL[fu[1]]}</i>` : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
+      ${c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${fu ? (fu.length === 3
+        ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuM">${MUT_FXH[fu[1]]}</span><span class="fuR">${MUT_FXH[fu[2]]}</span>`
+        : `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span>`) + '<span class="fuB"></span>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="cmut">${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
     </div>
     <div class="cost${cost === 0 ? ' free' : ''}">${costTxt}</div>` +
@@ -13398,6 +13452,9 @@ function syncHand() {
     const playable = cost !== -2 && (cost === -1 ? b.energy >= 1 : b.energy >= cost);
     node.classList.toggle('unplayable', !playable);
     const cb = node.querySelector('.cost');       /* 개발자의 권력 — ?급 값 0 을 부적에도 보인다 */
+    { const af = !!(c.aurT && c.aurT === b.turn); node.classList.toggle('aurfree', af);   /* 극광에 물든 부적 */
+      if (cb && af && cb.textContent !== '0') { cb.dataset.af = cb.textContent; cb.textContent = '0'; cb.classList.add('free'); }
+      else if (cb && !af && cb.dataset.af != null) { cb.textContent = cb.dataset.af; delete cb.dataset.af; cb.classList.toggle('free', ccost(c) === 0); } }
     if (cb && isQ(cdef(c).rar)) { const inf = devInfOn(); cb.classList.toggle('free', inf || cost === 0); if (inf) cb.textContent = '0'; else if (cb.textContent === '0' && ccost(c) > 0) cb.textContent = ccost(c); }
     node.onmouseenter = () => {
       if (!b.sel) node.style.transform = `translate(${x}px,${y - 46}px) rotate(0deg) scale(1.1)`;
@@ -22158,7 +22215,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 44;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 45;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22206,6 +22263,12 @@ const WORLD = {
     say: '하늘이 무지개로 들끓는다'
   },
   /* 저주의 밤 — 요괴가 사나워지는 대신 거두는 것이 곱절 */
+  /* 극광의 밤 — 하늘에 극광이 너울거리고, 발밑에 극광 고리가 돈다 */
+  aurora: {
+    n: '극광의 밤', g: '極', c: '#7fffd4',
+    d: '하늘에 초록·보랏빛 극광이 너울거린다. 모두의 발밑에 극광 고리가 돌고, 차례마다 손의 부적 하나가 극광에 물들어 그 차례 값이 0이 된다. 극광 조각을 하나 받는다.',
+    say: '하늘에 극광이 흐른다'
+  },
   night: {
     n: '저주의 밤', g: '咒', c: '#e0566a',
     d: '붉은 달이 뜬다. 요괴가 사나워지지만(체력 1.3배 · 치는 힘 1.2배) 싸움에서 얻는 골드·다이아가 곱절이고, 보상 부적의 등급이 한 단 오른다.',
@@ -23124,10 +23187,23 @@ const MAT_DEF = {
   chaos: { n: '혼돈의 정수',   g: '混', mut: 'mutX', mn: '혼원(混元)', mg: '沌', c: '#e08ad8', rgb: '224,138,216',
            d: '강화한 것처럼 · 낼 때 무작위 기운 하나 — 힘 +1 · 기 +1 · 부적 1장 · 방어도 · 적 모두 약화' },
   gold:  { n: '풍년 금싸라기', g: '豊', mut: 'mutF', mn: '풍요(豐饒)', mg: '豐', c: '#ffd76a', rgb: '255,215,106',
-           d: '수치 1.15배 · 낼 때 골드 +(3 + 막) · 체력 +2' }
+           d: '수치 1.15배 · 낼 때 골드 +(3 + 막) · 체력 +2' },
+  aurora: { n: '극광 조각',    g: '極', mut: 'mutA', mn: '극광(極光)', mg: '光', c: '#7fffd4', rgb: '127,255,212',
+           d: '수치 1.2배 · 낼 때 35% 확률로 기 +1' }
 };
 const matHave = k => (META.mat && META.mat[k]) || 0;
 const matTotal = () => Object.keys(MAT_DEF).reduce((a, k) => a + matHave(k), 0);
+/* 극광의 밤 — 차례를 열 때 손의 부적 하나(값이 있는 것)가 극광에 물들어 이 차례 값 0 */
+function auroraTurn(b) {
+  if (!evOn('aurora') || !b || b.kind === 'pvp' || b.kind === 'mpbot') return;
+  const list = b.hand.filter(c => { const k = ccost(c); return k > 0; });
+  if (!list.length) return;
+  const c = pick(list); c.aurT = b.turn;
+  setTimeout(() => { const n = cardEls[c.uid]; if (!n) return;
+    const r = n.getBoundingClientRect();
+    try { FX.burst(r.left + r.width / 2, r.top + r.height / 2, 26, '127,255,212', 5, 50, 4); FX.burst(r.left + r.width / 2, r.top + r.height / 2, 16, '176,123,255', 5, 50, 4);
+      SND.blip(880, { dur: .4, type: 'sine', vol: .05, to: 1760, rev: .6 }); } catch (e) {} }, 500);
+}
 /* 한 박자마다 — 일이 새로 켜졌으면 재료 하나 */
 function matTick() {
   const k = liveEvent(); if (!k || !MAT_DEF[k]) return;
@@ -23175,7 +23251,7 @@ function mutApplyFx(c, o) {
   const [ca, cb] = o.cols, two = o.orbs.length > 1;
   const n = el('div', 'mfx' + (two ? ' two' : '')); n.style.setProperty('--fa', ca); n.style.setProperty('--fb', cb);
   n.innerHTML = `<div class="mfxrays"></div><div class="mfxcard"><div class="mfxspin"></div></div>
-    ${two ? `<div class="mfxorb l"><b>${o.orbs[0]}</b></div><div class="mfxorb r"><b>${o.orbs[1]}</b></div>` : `<div class="mfxorb c"><b>${o.orbs[0]}</b></div>`}
+    ${(o.orbs.length === 3 ? ['l', 'c', 'r'] : o.orbs.length === 2 ? ['l', 'r'] : ['c']).map((pos, i) => `<div class="mfxorb ${pos}" style="--oc:${(o.ocols || o.cols)[i] || o.cols[0]}"><b>${o.orbs[i]}</b></div>`).join('')}
     <div class="mfxrings"><i></i><i></i><i></i></div><div class="mfxsparks">${Array.from({ length: 28 }, (_, i) =>
       `<i style="--a:${(i * 360 / 28 + Math.random() * 10).toFixed(0)}deg;--d:${(120 + Math.random() * 180).toFixed(0)}px;--c:${i % 2 ? cb : ca}"></i>`).join('')}</div>
     <div class="mfxstamp">${o.glyph}</div><div class="mfxname"><b>${wEsc(cname(c))}</b><span>${o.name}</span></div>`;
@@ -23197,11 +23273,11 @@ function mutApplyFx(c, o) {
 const fuHave = k => (META.matFu && META.matFu[k]) || 0;
 const fuParts = k => k.split('+');
 const fuShort = k => MAT_DEF[k].mn.slice(0, 2);
-const fuName = k => { const [a, b] = fuParts(k); return a === b ? `${fuShort(a)} 극(極)` : `${fuShort(a)}×${fuShort(b)}`; };
-const FU_ONE = { star: '수치 +60% · 별똥별 2개', chaos: '강화한 것처럼 · 무작위 기운 2개', gold: '수치 +30% · 골드 (3+막)×2 · 체력 +4' };
+const fuName = k => { const ps = fuParts(k); return ps.length === 2 && ps[0] === ps[1] ? `${fuShort(ps[0])} 극(極)` : ps.map(fuShort).join('×'); };
+const FU_ONE = { star: '수치 +60% · 별똥별 2개', chaos: '강화한 것처럼 · 무작위 기운 2개', gold: '수치 +30% · 골드 (3+막)×2 · 체력 +4', aurora: '수치 +40% · 낼 때 70% 확률로 기 +1' };
 const fuDesc = k => [...new Set(fuParts(k))].map(x => `${MUT_GL[x]} ${FU_ONE[x]}`).join(' / ');
-const fuOrb = (k, cls = '') => { const [a, b] = fuParts(k);
-  return `<div class="fuorb ${cls}" style="--fa:${MUT_COL[a]};--fb:${MUT_COL[b]}"><b>${MAT_DEF[a].g}</b><b>${MAT_DEF[b].g}</b>${'<i></i>'.repeat(8)}</div>`; };
+const fuOrb = (k, cls = '') => { const ps = fuParts(k);
+  return `<div class="fuorb ${cls}${ps.length === 3 ? ' tri' : ''}" style="--fa:${MUT_COL[ps[0]]};--fb:${MUT_COL[ps[ps.length - 1]]};--fg:${fuGrad(ps)}">${ps.map(x => `<b>${MAT_DEF[x].g}</b>`).join('')}${'<i></i>'.repeat(8)}</div>`; };
 const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0);
 /* 원료 주머니 — 재료 · 융합 원료 · 그 밖의 것 */
 function showMutLab() { showPouch(); }
@@ -23215,7 +23291,7 @@ function showPouch() {
         <div class="pctxt"><b>${m.n} <em>×${n}</em></b><span>${m.mg} ${m.mn}</span><small>${m.d}</small></div>
         <button class="brush-btn${n ? ' gold' : ''}" data-use="${k}"${n ? '' : ' disabled'}>쓴다</button></div>`; }).join('')}</div>
     <div class="pcsec"><b>융합 원료</b><span>합성소에서 둘이 합친 것 — 두 갈래를 모두, 두 배로</span></div>
-    <div class="pcgrid">${fus.length ? fus.map(k => `<div class="pcitem fu" style="--fa:${MUT_COL[fuParts(k)[0]]};--fb:${MUT_COL[fuParts(k)[1]]}">${fuOrb(k, 'small')}
+    <div class="pcgrid">${fus.length ? fus.map(k => `<div class="pcitem fu" style="--fa:${MUT_COL[fuParts(k)[0]]};--fb:${MUT_COL[fuParts(k)[fuParts(k).length - 1]]}">${fuOrb(k, 'small')}
         <div class="pctxt"><b>${fuName(k)} <em>×${fuHave(k)}</em></b><small>${fuDesc(k)}</small></div>
         <button class="brush-btn gold" data-use="${k}">쓴다</button></div>`).join('')
       : '<div class="pcempty">아직 없다 — 합성소에서 다른 퇴마사와 재료를 합쳐라</div>'}</div>
@@ -23245,9 +23321,9 @@ async function fuUse(k) {
   const c = await pickFromList(list, `合 ${fuName(k)} — 융합을 입힐 부적`, { hint: fuDesc(k), cancel: true });
   if (!c) return;
   META.matFu[k] = fuHave(k) - 1; c.mutFu = k; saveMeta(); saveRun();
-  const [a, b] = fuParts(k);
-  mutApplyFx(c, { cols: [MUT_COL[a], MUT_COL[b]], orbs: a === b ? [MAT_DEF[a].g] : [MAT_DEF[a].g, MAT_DEF[b].g], glyph: a === b ? MUT_GL[a] + '²' : MUT_GL[a] + MUT_GL[b],
-    name: '융합 ' + fuName(k) + ' — ' + fuDesc(k), strip: ['mutFu'] });
+  const ps = fuParts(k), same = ps.length === 2 && ps[0] === ps[1];
+  mutApplyFx(c, { cols: [MUT_COL[ps[0]], MUT_COL[ps[ps.length - 1]]], orbs: same ? [MAT_DEF[ps[0]].g] : ps.map(x => MAT_DEF[x].g), ocols: (same ? [ps[0]] : ps).map(x => MUT_COL[x]),
+    glyph: same ? MUT_GL[ps[0]] + '²' : ps.map(x => MUT_GL[x]).join(''), name: '융합 ' + fuName(k) + ' — ' + fuDesc(k), strip: ['mutFu'] });
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -23258,6 +23334,9 @@ async function fuUse(k) {
    둘 다 각자 놓은 재료 하나를 쓰고, 둘 다 같은 융합 원료 하나를 받는다.
    ══════════════════════════════════════════════════════════ */
 const FUSE = { room: null, poll: 0, shown: {}, inboxAt: 0, asked: {} };
+const FUSE_ORDER = ['star', 'chaos', 'gold', 'aurora'];
+const fuseJoin = (a, b) => (a + '+' + b).split('+').sort((x, y) => FUSE_ORDER.indexOf(x) - FUSE_ORDER.indexOf(y)).join('+');
+const fuseBad = k => { const ps = k.split('+'); return ps.length > 3 ? '융합 원료끼리는 못 합친다 (세 갈래까지)' : ps.length === 3 && new Set(ps).size < 3 ? '세 갈래는 서로 다른 셋이어야 한다' : ''; };
 async function fuseInboxCheck() {
   if (!acctOn() || FUSE.room || Date.now() - FUSE.inboxAt < 8000) return;
   FUSE.inboxAt = Date.now();
@@ -23295,7 +23374,8 @@ function showFuseLab(room) {
     if (r && r.state !== 'fuse') acctAsk('/fuse/leave', { token: ACCT.token, rid: r.rid }, 6000); };
   p._esc = leave;
   p.querySelector('#fl_x').onclick = () => { leave(); closeTop(); };
-  const slot = (k, ready) => k ? `<div class="mgorb mg-${k}${ready ? ' rdy' : ''}" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"><b>${MAT_DEF[k].g}</b>${'<i></i>'.repeat(8)}</div>` : '<div class="flempty">?</div>';
+  const slot = (k, ready) => !k ? '<div class="flempty">?</div>' : k.indexOf('+') > 0 ? fuOrb(k, ready ? 'rdy' : '')
+    : `<div class="mgorb mg-${k}${ready ? ' rdy' : ''}" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"><b>${MAT_DEF[k].g}</b>${'<i></i>'.repeat(8)}</div>`;
   const draw = () => {
     if (!p.isConnected) return;
     const r = FUSE.room, panel = p.querySelector('#fl_panel');
@@ -23304,9 +23384,9 @@ function showFuseLab(room) {
     p.querySelector('#fl_otnick').textContent = r ? r.other.nick : '— 부를 사람을 정하라 —';
     p.querySelector('#fl_myready').textContent = r && r.my.ready ? '준비' : '';
     p.querySelector('#fl_otready').textContent = r && r.other.ready ? '준비' : r && r.state === 'invite' ? '부르는 중…' : '';
-    const both = r && r.my.mat && r.other.mat ? [r.my.mat, r.other.mat].sort((x, y) => ['star', 'chaos', 'gold'].indexOf(x) - ['star', 'chaos', 'gold'].indexOf(y)).join('+') : '';
-    p.querySelector('#fl_prev').innerHTML = both ? fuOrb(both) : '<div class="flempty big">合</div>';
-    p.querySelector('#fl_prevtxt').innerHTML = both ? `<b>${fuName(both)}</b><small>${fuDesc(both)}</small>` : '재료를 하나씩 놓아라';
+    const both = r && r.my.mat && r.other.mat ? fuseJoin(r.my.mat, r.other.mat) : '', bad = both ? fuseBad(both) : '';
+    p.querySelector('#fl_prev').innerHTML = both && !bad ? fuOrb(both) : '<div class="flempty big">合</div>';
+    p.querySelector('#fl_prevtxt').innerHTML = bad ? `<b style="color:#ff8a8a">${bad}</b>` : both ? `<b>${fuName(both)}</b><small>${fuDesc(both)}</small>` : '재료를 하나씩 놓아라 · 융합 원료에 다른 재료를 더하면 세 갈래';
     if (!r) {
       panel.innerHTML = `<div class="flinv"><input id="fl_to" maxlength="20" placeholder="함께할 퇴마사의 닉네임 (또는 아이디)"><button class="brush-btn gold" id="fl_call">부른다</button></div>
         <div class="hint">부르면 상대 화면에 청이 뜬다 · 상대가 받으면 둘이 재료를 고른다</div>`;
@@ -23321,7 +23401,8 @@ function showFuseLab(room) {
       panel.querySelector('#fl_cancel').onclick = async () => { await leave(); draw(); }; return; }
     if (r.state === 'pick') {
       panel.innerHTML = `<div class="flmats">${Object.keys(MAT_DEF).map(k => { const n = matHave(k);
-          return `<button class="flmat${r.my.mat === k ? ' on' : ''}" data-m="${k}" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"${n ? '' : ' disabled'}><i>${MAT_DEF[k].g}</i><b>${MAT_DEF[k].n}</b><em>×${n}</em></button>`; }).join('')}</div>
+          return `<button class="flmat${r.my.mat === k ? ' on' : ''}" data-m="${k}" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"${n ? '' : ' disabled'}><i>${MAT_DEF[k].g}</i><b>${MAT_DEF[k].n}</b><em>×${n}</em></button>`; }).join('')}
+        ${Object.keys(META.matFu || {}).filter(k => fuHave(k) > 0 && fuParts(k).length === 2).map(k => `<button class="flmat fu${r.my.mat === k ? ' on' : ''}" data-m="${k}" style="--fg:${fuGrad(fuParts(k))};--mc:#fff;--mr:255,255,255"><i>${fuParts(k).map(x => MAT_DEF[x].g).join('')}</i><b>${fuName(k)}</b><em>×${fuHave(k)}</em></button>`).join('')}</div>
         <button class="brush-btn gold flready${r.my.ready ? ' on' : ''}" id="fl_ready"${r.my.mat ? '' : ' disabled'}>${r.my.ready ? '준비 풀기' : '합성 준비'}</button>`;
       panel.querySelectorAll('[data-m]').forEach(b => b.onclick = async () => {
         const x = await acctAsk('/fuse/put', { token: ACCT.token, rid: r.rid, mat: b.dataset.m }, 8000);
@@ -23354,8 +23435,9 @@ function fuseShow(r, lab) {
   const wait0 = Math.max(0, Math.min(2500, (r.fuseAt || 0) - srvNow()));
   setTimeout(() => {
     const n = el('div', 'fuseshow');
-    n.style.setProperty('--fa', MUT_COL[fuParts(res)[0]]); n.style.setProperty('--fb', MUT_COL[fuParts(res)[1]]);
-    const orb = k => `<div class="fsorb" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"><div class="mgorb mg-${k}"><b>${MAT_DEF[k].g}</b>${'<i></i>'.repeat(8)}</div></div>`;
+    { const ps = fuParts(res); n.style.setProperty('--fa', MUT_COL[ps[0]]); n.style.setProperty('--fb', MUT_COL[ps[ps.length - 1]]); }
+    const orb = k => k.indexOf('+') > 0 ? `<div class="fsorb" style="--mc:#fff;--mr:255,255,255">${fuOrb(k, 'fsfu')}</div>`
+      : `<div class="fsorb" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"><div class="mgorb mg-${k}"><b>${MAT_DEF[k].g}</b>${'<i></i>'.repeat(8)}</div></div>`;
     n.innerHTML = `<div class="fsview"><div class="fsworld" id="fs_w">
         <div class="fsfloor">${cutSealSvg('#ffffff', '合成融化星混豊變')}</div>
         <div class="fsorbit" id="fs_o"><div class="fsarm a">${orb(a)}</div><div class="fsarm b">${orb(b)}</div></div>
@@ -23387,7 +23469,9 @@ function fuseShow(r, lab) {
       META.fuseDone = META.fuseDone || {};
       if (!META.fuseDone[r.rid]) {
         META.fuseDone[r.rid] = 1;
-        if (matHave(a) > 0) { META.mat[a] = matHave(a) - 1; META.matFu = META.matFu || {}; META.matFu[res] = fuHave(res) + 1; toast(`合 ${fuName(res)} — 원료 주머니에 들어갔다`); }
+        const pair = a.indexOf('+') > 0, have = pair ? fuHave(a) : matHave(a);   /* 내가 놓은 것 — 홑 재료 또는 융합 원료 */
+        if (have > 0) { if (pair) META.matFu[a] = have - 1; else META.mat[a] = have - 1;
+          META.matFu = META.matFu || {}; META.matFu[res] = fuHave(res) + 1; toast(`合 ${fuName(res)} — 원료 주머니에 들어갔다`); }
         else toast('놓은 재료가 주머니에 없어 융합 원료를 받지 못했다');
         saveMeta(); try { renderTop(); } catch (e) {}
       }
@@ -23412,6 +23496,8 @@ async function matMutPlay(card) {
     else if (r === 3) blk(5 + act * 2, true); else alive().forEach(e => st(e, 'weak', 1));
     matPop('沌 ' + say, '#e08ad8'); syncAll(); if (i < Lc - 1) await wait(260);
   }
+  const La = mutLv(card, 'aurora');                               /* 극광 — 세기만큼 35%씩 기 +1 */
+  if (La && !b.over && rnd() < Math.min(1, .35 * La)) { energy(1); matPop('光 기 +1', '#7fffd4'); try { SND.blip(1320, { dur: .2, type: 'sine', vol: .06, to: 1980 }); } catch (e) {} }
   if (Lg && !b.over && G.run) {                                    /* 풍요 — 세기만큼 골드·체력 */
     const g = (3 + act) * Lg; G.run.gold += g; G.run.stats.gold += g; heal(2 * Lg);
     matPop('豐 金 +' + g, '#ffd76a'); try { SND.coin && SND.coin(); } catch (e) {} renderTop();
@@ -25067,6 +25153,12 @@ const EV_SKY = {
       ${Array.from({ length: 5 }, (_, i) => `<u class="eyes" style="left:${(8 + i * 19 + Math.random() * 6).toFixed(0)}%;top:${(52 + Math.random() * 14).toFixed(0)}%;--w:${(-i * 1.3).toFixed(1)}s"></u>`).join('')}`,
     front: () => `<div class="wash"></div>`
   },
+  aurora: {
+    back: () => `<i class="dots d1" style="box-shadow:${evDots(80, 60, .8)}"></i><i class="dots d2" style="box-shadow:${evDots(50, 55, 1)}"></i>
+      ${[0, 1, 2, 3].map(i => `<div class="arib r${i}" style="--w:${(-i * 3.1).toFixed(1)}s;top:${[-6, 2, -10, 8][i]}%"><i></i></div>`).join('')}
+      <div class="arays"></div><div class="aglow"></div>`,
+    front: () => `<div class="wash"></div><div class="aveil"></div>`
+  },
   rain: {
     back: () => `<b class="cloud" style="top:4%;--w:0s"></b><b class="cloud c2" style="top:18%;--w:-15s"></b><b class="cloud c3" style="top:30%;--w:-30s"></b>
       ${['札', '符', '札', '籙', '符'].map((g, i) => `<u class="talis" style="left:${6 + i * 20}%;top:${10 + (i % 2) * 16}%;--w:${(-i * 2.1).toFixed(1)}s">${g}</u>`).join('')}
@@ -25079,7 +25171,7 @@ function evSky(k) {
   const own = G.b && (G.b.kind === 'world' || G.b.kind === 'colo' || G.b.kind === 'arena' || /^hack/.test(G.b.kind || ''));
   const want = k && EV_SKY[k] && !own ? k : '';
   /* 어두운 하늘에서는 먹 글씨가 묻힌다 — 싸움터 글씨를 밝힌다 */
-  document.body.classList.toggle('evdark', want === 'star' || want === 'chaos' || want === 'rain' || want === 'night');
+  document.body.classList.toggle('evdark', want === 'star' || want === 'chaos' || want === 'rain' || want === 'night' || want === 'aurora');
   let a = bg.querySelector('.evsky'), f = bg.querySelector('.evtint');
   if (!want) { if (a) a.remove(); if (f) f.remove(); return; }
   if (a && f && a.dataset.k === want) return;           /* 이미 그 하늘이다 (막이 바뀌면 배경이 새로 그려져 없어진다) */

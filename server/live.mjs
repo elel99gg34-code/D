@@ -515,7 +515,9 @@ function hbWin(now) {
 /* ── 합성소 — 둘이 돌연변이 재료를 하나씩 놓고 합친다 ──
    방: invite(초대) → pick(재료를 고른다) → fuse(합성 — fuseAt 에 두 앱이 함께 연출) / gone(누가 나갔다)
    재료는 앱에 있다 — 서버는 무엇을 놓았는지와 준비만 맞춘다. 결과는 두 재료를 이름순으로 묶은 것(star+chaos …) */
-const FUSE_MATS = ['star', 'chaos', 'gold'];
+const FUSE_MATS = ['star', 'chaos', 'gold', 'aurora'];
+/* 놓을 수 있는 것 — 홑 재료, 또는 이미 합친 융합 원료(두 갈래). 융합 원료 + 다른 재료 = 세 갈래(서로 다른 셋) */
+const fuseOk = m => m.split('+').length <= 2 && m.split('+').every(x => FUSE_MATS.indexOf(x) >= 0);
 const fuseRooms = new Map(), fuseInbox = new Map();
 function fusePrune(now) { for (const [k, r] of fuseRooms) if (now - r.at > 20 * 60000) { fuseRooms.delete(k); if (fuseInbox.get(r.b) === k) fuseInbox.delete(r.b); } }
 function fuseView(r, id, now) {
@@ -1403,15 +1405,20 @@ const server = http.createServer(async (req, res) => {
     if (r.state !== 'pick') return send(res, 409, { ok: false, why: '지금은 고를 때가 아니다', room: fuseView(r, id, now) });
     if (url.pathname === '/fuse/put') {
       const m = String(q.mat || '');
-      if (m && FUSE_MATS.indexOf(m) < 0) return send(res, 400, { ok: false, why: '없는 재료' });
+      if (m && !fuseOk(m)) return send(res, 400, { ok: false, why: '없는 재료' });
       r[me + 'Mat'] = m; r.aReady = r.bReady = false; r.at = now;
       return send(res, 200, { ok: true, room: fuseView(r, id, now) });
     }
     if (url.pathname === '/fuse/ready') {
       if (!r[me + 'Mat']) return send(res, 409, { ok: false, why: '재료를 먼저 놓아라' });
+      if (q.yes && r.aMat && r.bMat) {
+        const parts = (r.aMat + '+' + r.bMat).split('+');
+        if (parts.length > 3) return send(res, 409, { ok: false, why: '융합은 세 갈래까지다 — 융합 원료끼리는 못 합친다', room: fuseView(r, id, now) });
+        if (parts.length === 3 && new Set(parts).size < 3) return send(res, 409, { ok: false, why: '세 갈래 융합은 서로 다른 셋이어야 한다', room: fuseView(r, id, now) });
+      }
       r[me + 'Ready'] = !!q.yes; r.at = now;
       if (r.aReady && r.bReady && r.aMat && r.bMat) {
-        r.state = 'fuse'; r.fuseAt = now + 1800; r.result = [r.aMat, r.bMat].sort((x, y) => FUSE_MATS.indexOf(x) - FUSE_MATS.indexOf(y)).join('+');
+        r.state = 'fuse'; r.fuseAt = now + 1800; r.result = (r.aMat + '+' + r.bMat).split('+').sort((x, y) => FUSE_MATS.indexOf(x) - FUSE_MATS.indexOf(y)).join('+');
         console.log('합성소 — 합성:', r.aNick, '+', r.bNick, '→', r.result);
       }
       return send(res, 200, { ok: true, room: fuseView(r, id, now) });
