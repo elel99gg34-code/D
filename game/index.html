@@ -3558,6 +3558,32 @@ body:not(:has(#hackpill)) .afpill{top:calc(var(--tbh,44px) + 6px + env(safe-area
 .card.g-qx .cfx{--sc:#ffe066}
 .ubl.x{filter:hue-rotate(140deg) saturate(1.5) brightness(1.1)}
 .dpowsub.qx{color:#ffd23a}
+.dpowsub.pw10{color:#f4e6ff;text-shadow:0 0 10px #b080ff}
+.dpow10{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.dpow10 .dpw{display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer;
+  font:inherit;color:#efe6ff;background:linear-gradient(160deg,rgba(44,20,76,.92),rgba(16,8,30,.94));border:1px solid #6a4a98;transition:.15s}
+.dpow10 .dpw:hover{border-color:#e0c8ff;box-shadow:0 0 14px #8a50ff;transform:translateY(-1px)}
+.dpow10 .dpw i{grid-row:1/3;font-style:normal;font-size:24px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#f4e6ff;
+  background:radial-gradient(circle at 35% 30%,#7a4ac0,#2a1048);box-shadow:0 0 10px rgba(176,128,255,.6)}
+.dpow10 .dpw b{font-weight:400;font-size:13.5px}
+.dpow10 .dpw small{color:#a898c0;font-size:11px;line-height:1.35}
+.dpow10 .dpw.tog{border-style:dashed}
+.dpow10 .dpw.on{border-style:solid;border-color:#ffe08a;background:linear-gradient(160deg,rgba(90,60,10,.9),rgba(30,16,4,.94));box-shadow:0 0 16px rgba(255,210,100,.45)}
+.dpow10 .dpw.on i{background:radial-gradient(circle at 35% 30%,#ffe08a,#a8701a);color:#2a1606;box-shadow:0 0 14px #ffd76a}
+.dpow10 .dpw.on b{color:#ffe8a8}
+/* 백야의 후광 — 흰 날개 둘, 머리 위 고리, 발밑 빛 */
+.unit .body .devhalo{position:absolute;inset:-30%;pointer-events:none;z-index:0}
+.unit .body .devhalo i{position:absolute;top:18%;width:46%;height:64%;border-radius:100% 0 100% 0;opacity:.85;
+  background:repeating-linear-gradient(170deg,rgba(255,252,240,.98) 0 6px,rgba(232,200,120,.75) 6px 9px);filter:drop-shadow(0 0 1.5px rgba(140,100,30,.95)) drop-shadow(0 0 12px rgba(255,236,170,.9));
+  -webkit-mask:linear-gradient(90deg,transparent,#000 40%);mask:linear-gradient(90deg,transparent,#000 40%)}
+.unit .body .devhalo i.wl{left:-2%;transform-origin:100% 60%;animation:dhWingL 2.6s ease-in-out infinite}
+.unit .body .devhalo i.wr{right:-2%;transform:scaleX(-1);transform-origin:50% 60%;animation:dhWingR 2.6s ease-in-out infinite}
+@keyframes dhWingL{50%{transform:rotate(-9deg)}}
+@keyframes dhWingR{50%{transform:scaleX(-1) rotate(-9deg)}}
+.unit .body .devhalo b{position:absolute;left:30%;right:30%;top:4%;height:10%;border-radius:50%;border:3px solid #fff8dc;box-shadow:0 0 14px #fff,0 0 28px #ffe8a0;animation:dhRing 2s ease-in-out infinite}
+@keyframes dhRing{50%{transform:translateY(-5px)}}
+.unit .body .devhalo s{position:absolute;left:12%;right:12%;bottom:6%;height:16%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.7),rgba(200,220,255,.2) 50%,transparent 72%);animation:fuPulse 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.unit .body .devhalo *{animation:none!important}}
 .dpowclone.qx button{border-color:#c8a020;background:linear-gradient(160deg,rgba(60,40,0,.85),rgba(20,14,4,.9))}
 .dpowclone.qx button i{color:#ffd23a;text-shadow:0 0 10px #ffb000}
 .unit .nm.mpnm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;letter-spacing:.02em;
@@ -5279,6 +5305,35 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
 .castrow input[type=number]{flex:0 0 110px}
 .castrow input:not([type=number]){flex:1;min-width:190px}
 .castevs{display:flex;flex-direction:column;gap:7px}
+/* ══ 한바탕(fx) — 불꽃놀이 · 금화 소나기 · 치유의 비 · 현상금 · 부적비 ══ */
+.fxclayer{position:fixed;inset:0;z-index:110;pointer-events:none;overflow:hidden;transition:opacity .6s}
+.fxclayer.out{opacity:0}
+.fxclayer .fxrocket{position:absolute;bottom:-10px;width:3px;height:26px;border-radius:2px;background:linear-gradient(var(--c),transparent);
+  box-shadow:0 0 8px var(--c);animation:fxRocket .62s cubic-bezier(.2,.6,.4,1) forwards}
+@keyframes fxRocket{to{transform:translateY(calc(var(--y) - 100vh));opacity:.4}}
+.fxclayer .fxburst{position:absolute;width:0;height:0}
+.fxclayer .fxburst i{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c),0 0 16px var(--c);
+  animation:fxSpark 1.4s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes fxSpark{0%{transform:rotate(var(--a)) translateX(0) scale(1.2);opacity:1}
+  70%{opacity:1}100%{transform:rotate(var(--a)) translateX(var(--r)) translateY(26px) scale(.3);opacity:0}}
+.fxclayer .fxburst b{position:absolute;left:-40px;top:-40px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#fff,var(--c) 30%,transparent 70%);
+  animation:fxFlash .5s ease-out forwards}
+@keyframes fxFlash{from{transform:scale(.2);opacity:1}to{transform:scale(1.6);opacity:0}}
+.fxclayer .fxdrop{position:absolute;top:-60px;pointer-events:auto;cursor:pointer;padding:0;font:inherit;border:none;
+  animation:fxFall var(--d) linear forwards}
+@keyframes fxFall{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(var(--sw),55vh) rotate(calc(var(--rt) / 2))}100%{transform:translate(0,115vh) rotate(var(--rt))}}
+.fxclayer .fxdrop.coin{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#6a4a0a;
+  background:radial-gradient(circle at 35% 30%,#fff2b0,#ffd23a 45%,#b8860b);border:2px solid #fff0a0;box-shadow:0 0 14px rgba(255,210,60,.8)}
+.fxclayer .fxdrop.coin b{font-size:17px}
+.fxclayer .fxdrop.talis{width:34px;height:62px;border-radius:3px;display:grid;place-items:center;color:#a8272c;
+  background:linear-gradient(#fff6dc,#f0dca8);border:1.5px solid #c8a050;box-shadow:0 0 16px rgba(255,220,140,.75)}
+.fxclayer .fxdrop.talis b{font-size:20px;writing-mode:vertical-rl}
+.fxclayer .fxdrop.dew{pointer-events:none;width:3px;height:18px;border-radius:2px;background:linear-gradient(transparent,#9fffd0);box-shadow:0 0 6px #7fe0a8;opacity:.8}
+.fxclayer .fxdrop.got{animation:fxGot .4s ease-out forwards!important}
+@keyframes fxGot{to{transform:scale(2.2);opacity:0}}
+.fxclayer .fxdrop:hover{filter:brightness(1.25)}
+.evpill.fxcp{border-style:dashed}
+@media (prefers-reduced-motion:reduce){.fxclayer .fxburst i,.fxclayer .fxrocket{animation-duration:.01s!important}}
 .castev{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;gap:2px 10px;
   text-align:left;background:rgba(12,10,8,.6);border:1.5px solid #4e4738;border-radius:4px;
   padding:9px 11px;color:#e9dfc9;cursor:pointer;transition:.15s}
@@ -11261,6 +11316,7 @@ function applyDamage(ent, dmg, pierce) {
     const sh = shrineDef();                             /* 신전 — 가죽의 가호 */
     if (sh && dmg > 0) dmg = Math.max(1, dmg - sh);
     if (ent.s && ent.s.godmode) dmg = 0;                /* 어드민급 「신권」 — 받는 피해 0 */
+    if (devPw('god')) dmg = 0;                          /* 개발자의 권력 「천하무적」 */
   }
   let d = Math.max(0, dmg), blocked = 0;
   if (!pierce && ent.block > 0) { blocked = Math.min(ent.block, d); ent.block -= blocked; d -= blocked; }
@@ -11637,6 +11693,7 @@ async function _startPlayerTurn(b) {
   b.energy = b.maxEnergy + (p.s.focus || 0);
   luckAwaken(b);                                        /* 운(運) — 요괴가 깨어날 수도 있다 */
   if (p.s.godmode) { b.energy += 10; b.drawMod = (b.drawMod || 0) + 5; }   /* 어드민급 「신권」 */
+  if (devPw('qi')) b.energy = Math.max(b.energy, 10);                     /* 개발자의 권력 「기 무한」 */
   try { buffTurnStart(b); } catch (e) { console.error('버프', e); }  /* 백야의 버프 — 결계·감로·기운·천수 */
 
   if (b.turn === 1 && shLv('shield')) blk(shLv('shield') * 4, true);   /* 신전 — 방패의 가호 */
@@ -11752,6 +11809,82 @@ function devClone(id) {
   try { SND.unlock(); FX.burst(innerWidth / 2, innerHeight / 2, 30, '190,140,255', 6, 50, 4); } catch (e) {}
   toast(`${CARDS[id].n} — 복제했다${G.b ? ' (손에도)' : ''}`);
 }
+/* ── 개발자의 권력 · 열 가지 더 ────────────────────────────
+   켜고 끄는 것(셋) — 천하무적 · 기 무한 · 백야의 후광
+   누르면 한 번(일곱) — 손 가득 · 되살림 · 재화 폭포 · 유물 셋 · 다음 막 · 요괴 봉인 · 도감 채우기
+   백야 한 사람, 이 기계에서만. 대전·연습 판에는 듣지 않는다. */
+const devPw = k => { try { return adminOn() && !!(META.devPw && META.devPw[k]) && !(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')); } catch (e) { return false; } };
+const DEV_PW10 = [
+  { k: 'god',   g: '無', n: '천하무적',   d: '받는 피해 0', tog: 1 },
+  { k: 'qi',    g: '氣', n: '기 무한',    d: '차례마다 기가 10 밑으로 내려가지 않는다', tog: 1 },
+  { k: 'halo',  g: '光', n: '백야의 후광', d: '싸움터의 내 몸에 흰 날개 후광', tog: 1 },
+  { k: 'hand',  g: '手', n: '손 가득',    d: '싸우는 중 — 손을 열 장까지 채운다' },
+  { k: 'revive',g: '復', n: '되살림',     d: '체력 가득 · 나쁜 기운 모두 걷기' },
+  { k: 'money', g: '財', n: '재화 폭포',  d: '골드 +9,999 · 다이아 +999' },
+  { k: 'relic', g: '寶', n: '유물 셋',    d: '가지지 않은 유물 셋을 무작위로' },
+  { k: 'leap',  g: '躍', n: '다음 막으로', d: '지도에서 — 이 막을 건너뛴다 (25막에선 안 된다)' },
+  { k: 'seal',  g: '封', n: '요괴 봉인',  d: '싸우는 중 — 모든 요괴 약화·취약 99, 힘·방어도 걷기' },
+  { k: 'dex',   g: '典', n: '도감 채우기', d: '부적·요괴·유물 도감을 모두 채운다 (개발자·해킹·이벤트 것은 빼고)' }
+];
+function devPwFx(word, col) {
+  try { SND.unlock(); SND.gong(); screenFlash(rgba(col, .4), 600); stampWord(word, col);
+    FX.burst(innerWidth / 2, innerHeight / 2, 40, hexRgb(col), 6, 55, 4.4); } catch (e) {}
+}
+function devPwDo(k) {
+  const run = G.run, b = G.b, pvp = b && (b.kind === 'pvp' || b.kind === 'mpbot');
+  const def = DEV_PW10.find(x => x.k === k); if (!def) return;
+  if (def.tog) {
+    META.devPw = META.devPw || {}; META.devPw[k] = !META.devPw[k]; saveMeta();
+    if (k === 'qi' && META.devPw.qi && b && !b.over && !pvp) b.energy = Math.max(b.energy, 10);
+    if (b) try { syncAll(); } catch (e) {}
+    toast(`${def.n} — ${META.devPw[k] ? '켜짐' : '꺼짐'}`);
+    if (META.devPw[k]) devPwFx(def.g, k === 'god' ? '#ffd76a' : k === 'qi' ? '#5ae6e0' : '#f4f0ff');
+    return;
+  }
+  if (pvp) { toast('대전·연습 판에서는 듣지 않는다'); return; }
+  if (k === 'dex') {
+    let n = 0;
+    for (const id in CARDS) { const c = CARDS[id]; if (c.devOnly || c.hackOnly || c.mpOnly || c.evOnly || isQ(c.rar) && c.rar !== 'unknown') continue; if (dexAdd('cards', id)) n++; }
+    for (const id in ENEMIES) if (!ENEMIES[id].devboss && dexAdd('enemies', id)) n++;
+    for (const id in RELICS) if (dexAdd('relics', id)) n++;
+    devPwFx('典', '#e8c86a'); toast(`도감 — ${n}칸을 새로 채웠다`); return;
+  }
+  if (!run) { toast('모험 중에만'); return; }
+  if (k === 'hand') {
+    if (!b || b.over) { toast('싸우는 중에만'); return; }
+    drawCards(Math.max(0, 10 - b.hand.length)); syncAll(); devPwFx('手', '#f2f0e6'); return;
+  }
+  if (k === 'revive') {
+    run.hp = run.maxHp;
+    if (b && P()) { const p = P(); p.hp = p.maxHp; for (const s in p.s) if (STATUS[s] && STATUS[s].kind === 'debuff') delete p.s[s]; delete p.s.curse; syncAll(); }
+    saveRun(); renderTop(); devPwFx('復', '#7fe08a'); toast('되살림 — 체력 가득'); return;
+  }
+  if (k === 'money') {
+    run.gold += 9999; run.dia = (run.dia || 0) + 999; saveRun(); renderTop();
+    try { SND.coinRain(20); FX.gold(innerWidth / 2, innerHeight / 2, 40); } catch (e) {}
+    devPwFx('財', '#ffd76a'); toast('재화 폭포 — 골드 +9,999 · 다이아 +999'); return;
+  }
+  if (k === 'relic') {
+    const pool = Object.keys(RELICS).filter(id => !RELICS[id].eventOnly && !hasRelic(id));
+    const got = [];
+    for (let i = 0; i < 3 && pool.length; i++) { const id = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; if (gainRelic(id, true)) got.push(RELICS[id].n); }
+    saveRun(); renderTop(); devPwFx('寶', '#ffcf6a'); toast(got.length ? '유물 — ' + got.join(' · ') : '더 얻을 유물이 없다'); return;
+  }
+  if (k === 'leap') {
+    if (b || G.scene !== 'map') { toast('지도에서만'); return; }
+    if (run.act >= LAST_ACT) { toast('마지막 막이다 — 더 건너뛸 곳이 없다'); return; }
+    const m = run.map, last = m && m.nodes && m.nodes[m.nodes.length - 1]; if (!last) return;
+    closeOverlay(); run.mapCur = last.id; devPwFx('躍', '#9fd8ff'); nextAct(); return;
+  }
+  if (k === 'seal') {
+    if (!b || b.over) { toast('싸우는 중에만'); return; }
+    for (const e of alive()) {
+      st(e, 'weak', 99); st(e, 'vuln', 99); if ((e.s.str || 0) > 0) delete e.s.str; e.block = 0;
+      if (e.el) { const c = centerOf(e.el); try { sparkles(c.x, c.y, 16, '#ffd76a', 90); shockRing(c.x, c.y, 200, '#ffcf6a'); } catch (x) {} }
+    }
+    syncAll(); devPwFx('封', '#ffcf6a'); toast('요괴 봉인 — 모두 약화·취약 99'); return;
+  }
+}
 function drawPower(grid) {
   const run = G.run, inf = devInfOn();
   const ids = UNKNOWN_IDS();
@@ -11769,6 +11902,8 @@ function drawPower(grid) {
     <button class="dpowbig adm" id="dp_adm"><b>덱을 모두 어드민급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → 어드민급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
     <div class="dpowsub adm">어드민급 — 세계 최강 · 백야만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone adm">${ADM_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
+    <div class="dpowsub pw10">열 가지 권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
+    <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && META.devPw && META.devPw[x.k] ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (META.devPw && META.devPw[x.k] ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
     <div class="dpowsub qq">??급 — 이름 없는 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone qq">${QQ_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
@@ -11777,6 +11912,7 @@ function drawPower(grid) {
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
   grid.querySelector('#dp_inf').onclick = () => { META.devInf = !META.devInf; saveMeta(); try { SND.unlock(); } catch (e) {} if (G.b) syncAll(); toast(META.devInf ? '?급 무한 — 켜짐' : '?급 무한 — 꺼짐'); drawPower(grid); };
   grid.querySelectorAll('.dpowclone button').forEach(b => b.onclick = () => { devClone(b.dataset.id); drawPower(grid); });
+  grid.querySelectorAll('[data-pw]').forEach(b => b.onclick = () => { devPwDo(b.dataset.pw); if (grid.isConnected) drawPower(grid); });
 }
 /* --- 카드 사용 --- */
 async function playCard(card, target) {
@@ -12130,6 +12266,7 @@ async function checkDeaths() {
       if (e.march) marchKill(e);                          /* 백귀야행 — 행렬의 요괴 */
       if (e.shadow) shadowKill(e);                        /* 그림자 침공 — 그림자를 베었다 */
       mutOnKill(e);                                       /* 특성(변이) — 슈팅 스타·혼돈 중에만 */
+      try { fxcKill(e); } catch (x) {}                     /* 한바탕 「현상금」 */
     }
   }
   if (killed >= 2) {                                  /* 한 번에 여럿을 눕히면 더 요란하게 */
@@ -13534,6 +13671,9 @@ function unitAura(u, o) {
     let r = body && body.querySelector('.aurring');
     if (on && body && !r) { r = el('div', 'aurring', '<i></i><b></b>'); body.appendChild(r); } else if (!on && r) r.remove(); }
   u.classList.toggle('au-devboss', !!(o.def && o.def.devboss)); u.classList.toggle('au-dbp2', !!o.p2);
+  { const on = !!o.isPlayer && devPw('halo'), body = u.querySelector('.body');   /* 개발자의 권력 「백야의 후광」 */
+    let h = body && body.querySelector('.devhalo');
+    if (on && body && !h) { h = el('div', 'devhalo', '<i class="wl"></i><i class="wr"></i><b></b><s></s>'); body.appendChild(h); } else if (!on && h) h.remove(); }
 }
 function syncEnemies() {
   if (!G.b) return;
@@ -22736,7 +22876,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 47;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 48;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -22864,6 +23004,7 @@ async function liveFetch() {
     LIVE.march = d.march && typeof d.march === 'object' ? d.march : null;    /* 백귀야행 */
     LIVE.egg = d.egg && typeof d.egg === 'object' ? d.egg : null;          /* 비밀의 계란 */
     LIVE.buff = d.buff && typeof d.buff === 'object' && d.buff.ks ? d.buff : null;   /* 백야의 버프 */
+    LIVE.fx = d.fx && typeof d.fx === 'object' && d.fx.k ? d.fx : null;             /* 한바탕 */
     LIVE.hb = d.hb && typeof d.hb === 'object' && d.hb.slot ? d.hb : null;           /* 해킹 보스 (매시 정각 · 백야가 강제로) */
     LIVE.hbNext = +d.hbNext || 0;
     LIVE.shadow = d.shadow && typeof d.shadow === 'object' ? d.shadow : null;      /* 그림자 침공 */
@@ -25577,6 +25718,147 @@ function giftUnpack() {
    스테이지 잠금이 모두 이 한 박자를 따른다.
    ══════════════════════════════════════════════════════════ */
 let _evWas = '';
+/* ══════════════════════════════════════════════════════════
+   한바탕(fx) — 백야가 모두의 화면에 뿌리는 다섯 가지
+   ──────────────────────────────────────────────────────────
+     불꽃놀이   하늘에 불꽃이 쏘아 올려져 터진다(구경거리)
+     금화 소나기 떨어지는 금화를 눌러 줍는다 — 하나에 골드 20, 서른 개까지
+     치유의 비   모험 중인 사람의 체력이 가득 찬다(한 번)
+     현상금     요괴를 잡을 때마다 다이아 +2, 스무 마리까지
+     부적비     떨어지는 부적을 누르면 그 부적이 덱에 — 셋까지
+   LIVE.fx — { id, k, at, until }. 받은 몫은 META.fxGot[id] 에 센다(다시 켜도 두 번 받지 않는다).
+   대전·연습 판에서는 줍기·보상이 없다(구경만).
+   ══════════════════════════════════════════════════════════ */
+const FXC = {
+  fire:   { n: '불꽃놀이',    g: '花', c: '#ff8a5a', d: '모두의 하늘에 불꽃이 쏘아 올려져 터진다' },
+  coin:   { n: '금화 소나기', g: '錢', c: '#ffd76a', d: '떨어지는 금화를 눌러 줍는다 — 하나에 골드 20 (서른 개까지)' },
+  heal:   { n: '치유의 비',   g: '癒', c: '#7fe0a8', d: '모험 중인 사람의 체력이 가득 찬다 (한 번)' },
+  bounty: { n: '현상금',      g: '賞', c: '#ff6a5a', d: '요괴를 잡을 때마다 다이아 +2 (스무 마리까지)' },
+  talis:  { n: '부적비',      g: '符', c: '#e8c86a', d: '떨어지는 부적을 누르면 그 부적이 덱에 (셋까지)' }
+};
+const FXC_CAP = { coin: 30, bounty: 20, talis: 3 };
+let _fxcRun = 0, _fxcTimers = [];
+const fxcLive = () => { const f = LIVE.fx; return f && FXC[f.k] && srvNow() < (+f.until || 0) ? f : null; };
+const fxcOn = k => { const f = fxcLive(); return !!(f && f.k === k); };
+const fxcPvp = () => !!(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot'));
+function fxcGot(id) { return (META.fxGot && META.fxGot[id]) || 0; }
+function fxcAdd(id, n = 1) {
+  META.fxGot = META.fxGot || {};
+  const ks = Object.keys(META.fxGot); if (ks.length > 30) delete META.fxGot[ks[0]];
+  META.fxGot[id] = (META.fxGot[id] || 0) + n; saveMeta();
+}
+function fxcLayer() {
+  let n = $('#fxclayer');
+  if (!n) { n = el('div', 'fxclayer'); n.id = 'fxclayer'; document.body.appendChild(n); }
+  return n;
+}
+function fxcStop() {
+  for (const t of _fxcTimers) clearInterval(t), clearTimeout(t);
+  _fxcTimers = []; _fxcRun = 0;
+  const n = $('#fxclayer'); if (n) { n.classList.add('out'); setTimeout(() => n.remove(), 600); n.id = ''; }
+}
+function fxcPill(f) {
+  let pill = $('#fxcpill');
+  if (!f || f.k === 'heal') { if (pill) pill.remove(); return; }
+  const d = FXC[f.k];
+  if (!pill) { pill = el('div', 'evpill fxcp'); pill.id = 'fxcpill'; document.body.appendChild(pill); }
+  pill.style.setProperty('--ec', d.c);
+  const cap = FXC_CAP[f.k], got = fxcGot(f.id);
+  pill.innerHTML = `<i>${d.g}</i><b>${d.n}${cap ? ` · ${got}/${cap}` : ''}</b><em>${wTime(f.until - srvNow())}</em>`;
+  const n = document.querySelectorAll('.evpill:not(.fxcp)').length;
+  pill.style.top = `calc(var(--tbh,44px) + ${6 + 38 * n}px + env(safe-area-inset-top,0px))`;
+}
+function fxcTick() {
+  const f = fxcLive();
+  fxcPill(f);
+  if (!f) { if (_fxcRun) fxcStop(); return; }
+  if (_fxcRun === f.id || cutPlaying()) return;
+  if (_fxcRun) fxcStop();
+  _fxcRun = f.id;
+  fxcStart(f);
+}
+/* 내 기계에서만 — 관리자 창의 「내 기계에서만 보기」 */
+function fxcTry(k) { fxcStop(); _fxcRun = -1; fxcStart({ id: -Date.now(), k, at: Date.now(), until: Date.now() + 20000, local: true }); setTimeout(() => { if (_fxcRun === -1) fxcStop(); }, 20000); }
+function fxcStart(f) {
+  const d = FXC[f.k], left = Math.max(3000, f.until - (f.local ? Date.now() : srvNow()));
+  const ms = Math.min(left, f.k === 'fire' ? 60000 : 600000);
+  toast(`${d.g} ${d.n} — ${d.d}`);
+  try { SND.bell(); } catch (e) {}
+  const L = fxcLayer(); L.className = 'fxclayer k-' + f.k;
+  const every = (fn, gap) => { fn(); const t = setInterval(fn, gap); _fxcTimers.push(t); _fxcTimers.push(setTimeout(() => clearInterval(t), ms)); };
+  if (f.k === 'fire') every(() => fxcFirework(L), 520);
+  else if (f.k === 'coin') every(() => fxcDrop(L, f, 'coin'), 650);
+  else if (f.k === 'talis') every(() => fxcDrop(L, f, 'talis'), 1100);
+  else if (f.k === 'heal') { fxcHeal(f); const t = setInterval(() => fxcDrop(L, f, 'dew'), 140); _fxcTimers.push(t); _fxcTimers.push(setTimeout(() => clearInterval(t), 6000)); }
+  else if (f.k === 'bounty') { try { stampWord('懸 賞', '#ff6a5a'); SND.gong(); } catch (e) {} }
+}
+/* 불꽃 — 아래에서 쏘아 올려져 한 점에서 터진다 */
+function fxcFirework(L) {
+  const x = 10 + Math.random() * 80, y = 12 + Math.random() * 40;
+  const col = ['#ff6a5a', '#ffd76a', '#7fe0ff', '#c88aff', '#7fffb0', '#ff9ad8'][Math.floor(Math.random() * 6)];
+  const r = el('i', 'fxrocket'); r.style.cssText = `left:${x}%;--y:${y}vh;--c:${col}`; L.appendChild(r);
+  setTimeout(() => {
+    r.remove();
+    const b = el('div', 'fxburst'); b.style.cssText = `left:${x}%;top:${y}vh;--c:${col}`;
+    b.innerHTML = Array.from({ length: 18 }, (_, i) => `<i style="--a:${i * 20}deg;--r:${(70 + Math.random() * 50).toFixed(0)}px"></i>`).join('') + '<b></b>';
+    L.appendChild(b); setTimeout(() => b.remove(), 1500);
+    try { SND.blip(180 + Math.random() * 80, { dur: .25, type: 'triangle', vol: .05, to: 60 }); SND.hiss({ dur: .5, vol: .04, freq: 5000, to: 1500, filter: 'highpass' }); } catch (e) {}
+  }, 620);
+}
+/* 떨어지는 것 — 금화 · 부적 · 이슬 */
+function fxcDrop(L, f, kind) {
+  const n = el(kind === 'dew' ? 'i' : 'button', 'fxdrop ' + kind);
+  const x = 4 + Math.random() * 92, dur = kind === 'dew' ? 1.2 + Math.random() * .8 : kind === 'talis' ? 7 + Math.random() * 3 : 5 + Math.random() * 2.5;
+  n.style.cssText = `left:${x}%;--d:${dur.toFixed(2)}s;--sw:${(Math.random() * 60 - 30).toFixed(0)}px;--rt:${(Math.random() * 720 - 360).toFixed(0)}deg`;
+  if (kind === 'coin') n.innerHTML = '<b>金</b>';
+  if (kind === 'talis') n.innerHTML = `<b>${pick(['福', '祥', '吉', '壽', '寶'])}</b>`;
+  if (kind !== 'dew') n.onclick = e => { e.stopPropagation(); fxcPick(f, kind, n); };
+  n.addEventListener('animationend', () => n.remove());
+  L.appendChild(n);
+}
+function fxcPick(f, kind, n) {
+  if (n.classList.contains('got')) return;
+  const cap = FXC_CAP[kind === 'coin' ? 'coin' : 'talis'];
+  if (!G.run || fxcPvp()) { toast('모험 중에만 줍는다'); return; }
+  if (!f.local && fxcGot(f.id) >= cap) { toast(`이번 ${FXC[f.k].n}에서는 다 주웠다 (${cap})`); return; }
+  const r = n.getBoundingClientRect(), at = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  n.style.cssText = `left:${r.left}px;top:${r.top}px;animation:none;transform:none`;   /* 떨어지던 그 자리에 세운다 — 애니메이션을 바꾸면 처음 자리로 튀었다 */
+  void n.offsetWidth; n.classList.add('got');
+  if (!f.local) fxcAdd(f.id);
+  if (kind === 'coin') {
+    G.run.gold += 20; saveRun(); renderTop();
+    try { SND.coin(); FX.gold(at.x, at.y, 12); flyGet('金 +20', '#ffd76a', '#goldv'); } catch (e) {}
+  } else {
+    const w = { uncommon: 50, rare: 30, zero: 12, special: 8 };
+    const pool = Object.keys(CARDS).filter(id => { const c = CARDS[id]; return w[c.rar] && !c.devOnly && !c.hackOnly && !c.mpOnly && !c.evOnly; });
+    let t = Math.random() * pool.reduce((a, id) => a + w[CARDS[id].rar], 0), id = pool[0];
+    for (const x of pool) { t -= w[CARDS[x].rar]; if (t <= 0) { id = x; break; } }
+    G.run.deck.push(mkCard(id, false)); dexAdd('cards', id); saveRun(); renderTop();
+    const c = CARDS[id], gc = GRADE[c.rar].c;
+    try { SND.unlock(); FX.burst(at.x, at.y, 24, hexRgb(gc), 5, 50, 4); evtPop(`${c.g} ${c.n} · ${GRADE[c.rar].n}`, gc, at); } catch (e) {}
+    toast(`부적비 — 「${c.n}」(${GRADE[c.rar].n})이 덱에`);
+  }
+  setTimeout(() => n.remove(), 400);
+  fxcPill(fxcLive());
+}
+function fxcHeal(f) {
+  try { SND.heal(); screenFlash('rgba(110,230,160,.35)', 900); } catch (e) {}
+  if (!G.run || fxcPvp()) { toast('치유의 비 — 모험 중인 사람만 받는다'); return; }
+  if (!f.local && fxcGot(f.id)) return;
+  if (!f.local) fxcAdd(f.id);
+  const was = G.run.hp; G.run.hp = G.run.maxHp;
+  if (G.b && P()) { P().hp = P().maxHp; syncAll(); }
+  saveRun(); renderTop();
+  try { evtPop(`체력 +${G.run.maxHp - was}`, '#7fe6b0', { x: innerWidth / 2, y: innerHeight * .4 }); FX.burst(innerWidth / 2, innerHeight * .4, 30, '110,230,160', 5, 60, 4); } catch (e) {}
+}
+/* 현상금 — checkDeaths 에서 요괴가 쓰러질 때마다 */
+function fxcKill(e) {
+  const f = fxcLive(); if (!f || f.k !== 'bounty' || !G.run || fxcPvp() || (e && e.isPlayer)) return;
+  if (fxcGot(f.id) >= FXC_CAP.bounty) return;
+  fxcAdd(f.id); G.run.dia = (G.run.dia || 0) + 2; saveRun(); renderTop();
+  try { const c = e && e.el ? centerOf(e.el) : { x: innerWidth / 2, y: innerHeight * .4 }; evtPop('懸賞 · 玉 +2', '#6fd0e8', { x: c.x, y: c.y - 60 }); SND.coin(); } catch (x) {}
+  fxcPill(f);
+}
 function liveTick() {
   const k = liveEvent(), left = evLeft(), rn = liveRain();
   /* 몸에 이름표를 달아 둔다 — 그림은 CSS 가 맡는다 */
@@ -25608,6 +25890,7 @@ function liveTick() {
   try { eggTick(); } catch (e) { console.error('계란', e); }
   try { bombTick(); } catch (e) { console.error('폭탄', e); }
   try { buffTick(); } catch (e) { console.error('버프', e); }
+  try { fxcTick(); } catch (e) { console.error('한바탕', e); }
   try { hbTick(); } catch (e) { console.error('해킹 보스', e); }
   try { shadowTick(); } catch (e) { console.error('그림자 침공', e); }
   try { matTick(); } catch (e) { console.error('이벤트 재료', e); }
@@ -26011,6 +26294,19 @@ function drawCast(grid) {
       <div class="casthint" id="ct_bfnow"></div>
     </div>
 
+    <div class="castsec fxcsec"><b>✦ 한바탕 뿌리기</b>
+      <div class="casthint">모두의 화면에 한동안. 새로 뿌리면 앞의 것은 내려간다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 시작한다.
+        줍기·보상은 모험 중인 사람만(대전·연습 판은 구경만). 한 사람이 받는 몫에는 끝이 있다.</div>
+      <div class="castevs">${Object.keys(FXC).map(k => `<button class="castev fxc" data-fx="${k}" style="--ec:${FXC[k].c}"><i>${FXC[k].g}</i><span>${FXC[k].n}</span><em>${FXC[k].d}</em></button>`).join('')}</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">길이 <select id="ct_fxsec"><option value="0">기본</option><option value="30">30초</option><option value="60">1분</option><option value="180">3분</option><option value="600">10분</option><option value="1800">30분</option></select></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">시험 <select id="ct_fxk">${Object.keys(FXC).map(k => `<option value="${k}">${FXC[k].n}</option>`).join('')}</select></label>
+        <button class="brush-btn" id="ct_fxtry">내 기계에서만 보기</button>
+        <button class="brush-btn ghost" id="ct_fxoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+      <div class="casthint" id="ct_fxnow"></div>
+    </div>
+
     <div class="castsec bombsec"><b>💣 폭탄 돌리기</b>
       <div class="casthint">서버에 있는 사람들끼리 겨룬다. 20초 동안 참가를 받고(로그인한 사람, 둘 이상), 무작위 한 사람에게 폭탄이 간다 —
         받은 사람은 「넘긴다!」로 다른 참가자에게 던진다. 45~90초 사이 언젠가(서버만 안다) 터지면 <b>들고 있던 사람은 보상 없음</b>, 나머지 참가자는 다이아(모험 밖이면 정진).
@@ -26255,7 +26551,7 @@ function drawCast(grid) {
       `<div>투표 — ${LIVE.poll ? `<b>${wEsc(LIVE.poll.q)}</b> ${LIVE.poll.done ? '(마감)' : '· ' + (LIVE.poll.n || 0) + '명'}` : '<span class="none">없음</span>'}</div>` +
       `<div>판 — <b>${LIVE.version || 0}</b>${LIVE.apk ? '' : ' <span class="none">(받는 자리 없음)</span>'}</div>` +
       `<div>마지막으로 들은 때 — ${LIVE.at ? new Date(LIVE.at).toLocaleString() : '<span class="none">아직 없음</span>'}</div>`;
-    grid.querySelectorAll('.castev:not(.song)').forEach(b =>
+    grid.querySelectorAll('.castev:not(.song):not(.fxc)').forEach(b =>
       b.classList.toggle('on', b.dataset.k === 'rain' ? liveRain() : b.dataset.k === e));
     grid.querySelectorAll('.castev.song').forEach(b =>
       b.classList.toggle('on', !!(LIVE.music && LIVE.music.k === b.dataset.k && srvNow() < (LIVE.music.until || 0))));
@@ -26284,7 +26580,7 @@ function drawCast(grid) {
     ? Object.assign(patch, { notice: HYPE_SAY + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
   grid.querySelector('#ct_hype').onclick = () => send({ notice: HYPE_SAY, noticeAt: Date.now() }, '이벤트 알림');
   drawSched(grid, send);
-  grid.querySelectorAll('.castev:not(.song)').forEach(b => {
+  grid.querySelectorAll('.castev:not(.song):not(.fxc)').forEach(b => {
     b.onclick = () => {
       const k = b.dataset.k, patch = hype(WORLD[k].n, { event: k, eventAt: Date.now() });
       if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: WORLD[k].n, then: patch } }, `카운트다운 ${cds()}초 → ${WORLD[k].n}`);
@@ -26375,6 +26671,20 @@ function drawCast(grid) {
     send(patch, `버프 ${what} · ${min}분`).then(after);
   };
   grid.querySelector('#ct_buffoff').onclick = () => send({ buff: null }, '버프 거두기').then(() => liveFetch().then(bfNow).catch(() => {}));
+  /* 한바탕 */
+  const fxNow = () => { const e = grid.querySelector('#ct_fxnow'); if (!e) return; const f = fxcLive();
+    e.innerHTML = f ? `지금 — <b>${FXC[f.k].n}</b> · 남은 때 ${wTime(f.until - srvNow())}` : '뿌린 한바탕이 없다';
+    grid.querySelectorAll('.castev.fxc').forEach(b => b.classList.toggle('on', !!f && b.dataset.fx === f.k)); };
+  fxNow();
+  grid.querySelectorAll('.castev.fxc').forEach(b => b.onclick = () => {
+    const k = b.dataset.fx, sec = +grid.querySelector('#ct_fxsec').value || 0;
+    const patch = hype(FXC[k].n, { fx: sec ? { k, sec } : { k } });
+    const after = () => liveFetch().then(() => { fxNow(); fxcTick(); }).catch(() => {});
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: FXC[k].n, then: patch } }, `카운트다운 ${cds()}초 → ${FXC[k].n}`).then(after);
+    send(patch, `${FXC[k].n}${sec ? ' · ' + wTime(sec * 1000) : ''}`).then(after);
+  });
+  grid.querySelector('#ct_fxtry').onclick = () => fxcTry(grid.querySelector('#ct_fxk').value);
+  grid.querySelector('#ct_fxoff').onclick = () => send({ fx: null }, '한바탕 거두기').then(() => liveFetch().then(() => { fxNow(); fxcTick(); }).catch(() => {}));
   /* 폭탄 돌리기 */
   const bNow = () => { const b = LIVE.bomb, e = grid.querySelector('#ct_bnow'); if (!e) return;
     e.innerHTML = !b ? '돌고 있는 폭탄이 없다' : b.phase === 'join' ? `지금 — 참가 받는 중 · <b>${b.n || 0}</b>명`

@@ -46,6 +46,7 @@ function expire(now) {
   if (live.devjoin && now - live.devjoin.at > 3 * 60 * 1000) { live.devjoin = null; changed = true; }
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
+  if (live.fx && now > live.fx.until) { live.fx = null; changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
@@ -497,7 +498,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -559,6 +560,8 @@ let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에�
 const bossLive = () => !!(live.boss && !live.boss.done && !live.boss.fled);
 const marchLive = () => !!(live.march && !live.march.done);                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+/* 한바탕(fx) — 이름과 기본 길이(초) */
+const FX_KINDS = { fire: 40, coin: 45, heal: 180, bounty: 600, talis: 45 };
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
 async function applyCast(q) {
   /* 보내 온 것만 고친다 — 안 보낸 것은 그대로 둔다.
@@ -632,6 +635,13 @@ async function applyCast(q) {
         setTimeout(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, until - now + 30);
       }
     }
+  }
+  /* 한바탕 — 불꽃놀이 · 금화 소나기 · 치유의 비 · 현상금 · 부적비. 모두의 화면에 한동안 */
+  if ('fx' in q) {
+    const f = q.fx, now = Date.now();
+    if (!f || !FX_KINDS[f.k]) live.fx = null;
+    else { const sec = Math.max(10, Math.min(3600, parseInt(f.sec, 10) || FX_KINDS[f.k]));
+           live.fx = { id: now, k: f.k, at: now, until: now + sec * 1000 }; }
   }
   /* 백야의 시험 — 백야가 보스가 된다. 체력·세기·보상은 백야가 정한다 */
   if ('devboss' in q) {
