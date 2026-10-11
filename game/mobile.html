@@ -6196,6 +6196,467 @@ body.nochrome .chatfab{display:none}
   #field{padding:0 18px}#pside{width:190px}#eside{gap:22px}}
 @media(max-height:760px){:root{--ch:184px;--cw:134px}#hud{height:232px}#field{bottom:232px}
   .card .art{flex:0 0 44px}.card .art .g{font-size:30px}#energy{bottom:74px}#endturn{bottom:70px}}
+/* ══ 판 54 — 컷씬 공방 · 비밀 코드 · 운명의 바퀴 · Tab 퍼뜨리기 · 편의 열 가지 · 합성 연출 · 종결석 ══ */
+/* 공통 창 옷 (판 53 의 먹빛 종이 · 금빛 모서리를 새 창에도) */
+:is(.scbox,.tlbox,.keysbox,.whmk){position:relative;width:min(560px,94vw);display:flex;flex-direction:column;gap:12px;padding:18px 18px 16px;border-radius:16px;color:#e9dfc9;text-align:left;
+  background:radial-gradient(ellipse at 50% 0%,rgba(232,200,106,.12),transparent 55%),linear-gradient(180deg,rgba(38,30,21,.95),rgba(15,11,8,.97));
+  border:1px solid rgba(232,200,106,.3);box-shadow:0 24px 70px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,240,200,.08);animation:winIn .38s cubic-bezier(.2,.9,.3,1.15)}
+:is(.scbox,.tlbox,.keysbox,.whmk)::before,:is(.scbox,.tlbox,.keysbox,.whmk)::after{content:'';position:absolute;width:26px;height:26px;pointer-events:none;border:2px solid #e8c86a;opacity:.75}
+:is(.scbox,.tlbox,.keysbox,.whmk)::before{left:-1px;top:-1px;border-right:none;border-bottom:none;border-radius:16px 0 0 0}
+:is(.scbox,.tlbox,.keysbox,.whmk)::after{right:-1px;bottom:-1px;border-left:none;border-top:none;border-radius:0 0 16px 0}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead{display:flex;align-items:center;gap:12px}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead>i{position:relative;font-style:normal;width:50px;height:50px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff3d6;
+  background:radial-gradient(circle at 35% 30%,#8a6a2a,#3a2408);border:2px solid #e8c86a;box-shadow:0 0 18px rgba(232,200,106,.4)}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead>i::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px dashed rgba(255,230,160,.55);animation:auSpin 14s linear infinite}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead>div{flex:1}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead h2{margin:0;text-align:left;font-size:22px;position:relative;display:inline-block}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead h2::after{content:'';position:absolute;left:-4px;right:-10px;bottom:-3px;height:5px;border-radius:3px 50% 50% 3px;
+  background:linear-gradient(90deg,rgba(168,39,44,.85),rgba(232,140,60,.6) 60%,transparent);opacity:.8;animation:brushIn .7s ease .15s backwards;transform-origin:left}
+:is(.scbox,.tlbox,.keysbox,.whmk) .mhead span{display:block;margin-top:6px;font-size:12px;color:#b3a68c;letter-spacing:.04em}
+.qfoot{display:flex;gap:10px;justify-content:center;margin-top:4px}
+.scbox .mchips,.whmk .mchips{display:flex;flex-wrap:wrap;gap:5px}
+.scbox .mch{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 9px 3px 4px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);color:#efe4cb}
+.scbox .mch i{font-style:normal;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;font-size:10px;background:rgba(255,255,255,.1)}
+.scbox .mch.g i{color:#ffd76a}.scbox .mch.d i{color:#6fd0e8}.scbox .mch.j i{color:#c9a8ff}.scbox .mch.c{border-color:var(--gc)}.scbox .mch.c i{color:var(--gc)}
+
+/* ══ 映 컷씬 공방 ══ */
+.panel.cmkpanel{position:absolute;inset:0;padding:0;margin:0;max-width:none;width:auto;border-radius:0;background:none;border:none;box-shadow:none}
+.cmk{position:absolute;inset:0;display:flex;flex-direction:column;color:#e9dfc9;overflow:hidden;
+  background:radial-gradient(ellipse at 50% -10%,rgba(232,200,106,.14),transparent 50%),repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 2px,transparent 2px 6px),linear-gradient(165deg,#17110b,#0b0806 60%,#050403)}
+.cmk::before{content:'';position:absolute;left:0;right:0;top:0;height:14px;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(90deg,#000 0 10px,transparent 10px 22px),linear-gradient(#2a1f14,#2a1f14);-webkit-mask:linear-gradient(#000,#000)}
+.cmkhead{position:relative;display:flex;align-items:center;gap:12px;padding:22px 16px 10px;flex-wrap:wrap}
+.cmkico{font-style:normal;width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:26px;color:#1a120a;flex:none;
+  background:linear-gradient(135deg,#ffe9a8,#c8962e);box-shadow:0 0 22px rgba(232,200,106,.45),inset 0 -3px 0 rgba(0,0,0,.2);animation:cmkIco 3s ease-in-out infinite}
+@keyframes cmkIco{50%{box-shadow:0 0 34px rgba(255,214,120,.7),inset 0 -3px 0 rgba(0,0,0,.2)}}
+.cmkht h2{margin:0;font-size:22px;text-align:left;position:relative;display:inline-block}
+.cmkht h2::after{content:'';position:absolute;left:-2px;right:-12px;bottom:-3px;height:4px;border-radius:2px;background:linear-gradient(90deg,#a8272c,rgba(232,140,60,.6),transparent)}
+.cmkht span{display:block;margin-top:6px;font-size:11.5px;color:#9a8e74}
+.cmkht{flex:1;min-width:200px}
+#cmk_name{flex:1;min-width:200px;max-width:340px;font-size:15px;padding:9px 12px;border-radius:10px}
+.cmklen{min-width:170px;display:flex;flex-direction:column;gap:5px}
+.cmklen b{font-size:22px;color:#ffd76a;font-variant-numeric:tabular-nums}.cmklen small{font-size:11px;color:#9a8e74;margin-left:4px}.cmklen small em{font-style:normal;color:#e9dfc9}
+.cmklen i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.cmklen u{display:block;height:100%;background:linear-gradient(90deg,#7fe6cf,#ffd76a);transition:width .3s;text-decoration:none}
+.cmklen.full u{background:linear-gradient(90deg,#ffb04a,#ff5a5a)}
+.cmktime{position:relative;display:flex;height:34px;margin:0 16px 10px;border-radius:8px;background:rgba(0,0,0,.4);border:1px solid rgba(232,200,106,.2);overflow:hidden}
+.cmktime b{position:relative;height:100%;border-right:2px solid #0b0806;cursor:pointer;background:linear-gradient(180deg,var(--s0),var(--s2));transition:filter .15s,box-shadow .15s;min-width:14px}
+.cmktime b:hover{filter:brightness(1.3)}
+.cmktime b.on{box-shadow:inset 0 0 0 2px #ffd76a,0 0 14px rgba(255,214,120,.5);z-index:1}
+.cmktime b em{position:absolute;left:6px;top:50%;transform:translateY(-50%);font-style:normal;font-size:11px;color:#fff;text-shadow:0 1px 3px #000}
+.cmktime .cmkrest{background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 6px,transparent 6px 12px)}
+.cmktime u{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,.18);font-size:9px;color:rgba(255,255,255,.35);padding-left:3px;text-decoration:none;pointer-events:none}
+.cmkbody{flex:1;min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr) 230px;gap:12px;padding:0 16px 16px}
+.cmklist,.cmked,.cmkside{min-height:0;overflow-y:auto;border-radius:12px;padding:10px;background:linear-gradient(160deg,rgba(40,32,22,.7),rgba(14,11,8,.85));border:1px solid rgba(232,200,106,.2)}
+.cmklist{display:flex;flex-direction:column;gap:8px}
+.cmksc{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:#120d08;transition:transform .15s,border-color .15s,box-shadow .15s;animation:rowIn .35s cubic-bezier(.2,.8,.3,1) backwards}
+.cmksc:hover{transform:translateX(3px);border-color:rgba(232,200,106,.4)}
+.cmksc.on{border-color:#ffd76a;box-shadow:0 0 0 1px #ffd76a,0 0 18px rgba(255,214,120,.25)}
+.cmksc.drag{opacity:.4}.cmksc.over{box-shadow:0 -3px 0 #7fe6cf}
+.cmkth{position:relative;height:62px;display:flex;align-items:flex-end;gap:6px;padding:6px 8px;background:linear-gradient(180deg,var(--s0),var(--s1) 60%,var(--s2))}
+.cmkth::after{content:'';position:absolute;left:0;right:0;bottom:0;height:16px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+.cmkth>b{position:absolute;left:7px;top:5px;font-size:13px;color:#fff;text-shadow:0 1px 4px #000;font-weight:400}
+.cmkth>span{position:relative;z-index:1;display:flex;gap:3px}
+.cmkth>span i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35)}
+.cmkth>span i.none{opacity:.4}
+.cmkth>em{position:absolute;right:8px;top:6px;font-style:normal;font-size:16px;color:#fff;letter-spacing:.1em;text-shadow:0 0 10px rgba(255,214,120,.9),0 2px 4px #000}
+.cmkth .cmkfxn{position:absolute;right:8px;bottom:6px;z-index:1;font-size:10px;color:#ffe6a0}
+.cmkinfo{padding:6px 8px 8px}
+.cmkinfo small{font-size:10.5px;color:#9a8e74}.cmkinfo p{margin:2px 0;font-size:12.5px;color:#efe4cb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmkinfo u{font-size:10.5px;color:#c8a94e;text-decoration:none}
+.cmkscb{position:absolute;right:4px;top:30px;display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.cmksc:hover .cmkscb,.cmksc.on .cmkscb{opacity:1}
+.cmkscb button{width:22px;height:22px;border-radius:6px;font:inherit;font-size:11px;padding:0;color:#e9dfc9;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);cursor:pointer}
+.cmkscb button:hover{background:#a8272c}
+.cmkadd{font:inherit;padding:12px;border-radius:10px;cursor:pointer;color:#ffe6a0;background:rgba(232,200,106,.06);border:1px dashed rgba(232,200,106,.45);display:flex;flex-direction:column;gap:2px}
+.cmkadd small{font-size:10.5px;color:#8a7f68}.cmkadd:hover{background:rgba(232,200,106,.14)}.cmkadd[disabled]{opacity:.35;cursor:default}
+.cmked{display:flex;flex-direction:column;gap:12px}
+.cmkedh{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(232,200,106,.15)}
+.cmkedh b{font-size:17px;font-weight:400;color:#f2e2b4}.cmkedh>span{flex:1;font-size:11.5px;color:#9a8e74}
+.cmkmini{height:36px;min-width:90px;border-radius:8px;display:flex;align-items:flex-end;gap:2px;padding:3px 5px;background:linear-gradient(180deg,var(--s0),var(--s1),var(--s2));border:1px solid rgba(255,255,255,.2)}
+.cmkmini i{font-style:normal;font-size:11px;color:#fff;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.55)}
+.cmkf2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cmkf2.col{flex-direction:column;align-items:stretch}
+.cmkf2>label{width:72px;flex:none;font-size:12px;letter-spacing:.15em;color:#c8a94e}
+.cmkf2.col>label{width:auto}
+.cmkf2>label small{display:block;letter-spacing:0;font-size:10px;color:#8a7f68;margin-top:2px}
+.cmkf2.col>label small{display:inline;margin-left:6px}
+.cmkf2 select{flex:1;min-width:160px}
+.cmkf2 input[type=range]{flex:1;accent-color:#e8c86a}
+.cmkf2>b{width:52px;font-weight:400;color:#ffd76a;font-variant-numeric:tabular-nums}
+.cmkchips{flex:1;display:flex;flex-wrap:wrap;gap:5px}
+.cmkchips button{font:inherit;font-size:12px;padding:5px 10px;border-radius:14px;cursor:pointer;color:#d8ccb0;background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.18);transition:all .12s}
+.cmkchips button:hover{border-color:rgba(232,200,106,.6);color:#fff}
+.cmkchips button.on{color:#1a120a;background:linear-gradient(180deg,#ffe9a8,#e0b44a);border-color:#ffd76a;box-shadow:0 0 10px rgba(255,214,120,.35)}
+.cmkchips.multi button.on{background:linear-gradient(180deg,#bff6e8,#5fd0b4);border-color:#7fe6cf;box-shadow:0 0 10px rgba(127,230,207,.35)}
+.cmkchips.sm button{padding:4px 8px;font-size:11.5px}
+.cmkwho{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 8px;border-radius:9px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07)}
+.cmkwho.empty{opacity:.6}.cmkwho.empty .cmkchips,.cmkwho.empty select[data-w="m"]{display:none}
+.cmkwho>em{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;color:#1a120a;background:#c8a94e;flex:none}
+.cmkwho select{flex:none;min-width:0;width:auto}
+.cmkwho .cmkchips{flex:none}
+.cmkg{width:46px;text-align:center;font-size:18px}
+.cmkwho input[type=color]{width:34px;height:30px;padding:0;border:none;background:none}
+.cmkmini2{font:inherit;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;color:#e9dfc9;background:rgba(255,255,255,.06);border:1px solid rgba(233,223,201,.25)}
+.cmksay,.cmkttlin{display:flex;flex-direction:column;gap:6px}
+.cmksay textarea{min-height:66px;resize:vertical}
+.cmkside{display:flex;flex-direction:column;gap:8px}
+.cmkbtn{font:inherit;display:grid;grid-template-columns:28px 1fr;align-items:center;column-gap:8px;text-align:left;padding:10px 12px;border-radius:10px;cursor:pointer;color:#efe4cb;
+  background:rgba(255,255,255,.05);border:1px solid rgba(233,223,201,.22);transition:all .15s}
+.cmkbtn i{grid-row:span 2;font-style:normal;font-size:18px;color:#ffd76a;text-align:center}
+.cmkbtn b{font-weight:400;font-size:14px}.cmkbtn small{font-size:10.5px;color:#8a7f68}
+.cmkbtn:hover{border-color:#e8c86a;background:rgba(232,200,106,.1);transform:translateY(-1px)}
+.cmkbtn.play{background:linear-gradient(135deg,rgba(232,200,106,.28),rgba(168,39,44,.25));border-color:#e8c86a}
+.cmkbtn.cast{border-color:#7fe6cf;background:rgba(127,230,207,.08)}.cmkbtn.cast i{color:#7fe6cf}
+.cmkbtn.ghost{display:flex;flex-direction:column;align-items:flex-start;background:none}
+.cmkbtn.done{animation:cmkDone .7s ease}
+@keyframes cmkDone{30%{box-shadow:0 0 0 3px #7fe6cf,0 0 22px rgba(127,230,207,.6)}}
+.cmkbtn[disabled]{opacity:.5}
+.cmkundo{display:flex;gap:6px}
+.cmkundo button{flex:1;font:inherit;font-size:12px;padding:7px;border-radius:8px;cursor:pointer;color:#d8ccb0;background:rgba(0,0,0,.25);border:1px solid rgba(233,223,201,.18)}
+.cmkside .cmksub{font-size:11px;letter-spacing:.25em;color:#c8a94e;margin-top:6px}
+.cmksaves{display:flex;flex-direction:column;gap:6px}
+.cmksv{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:9px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+.cmksv>div{flex:1;min-width:0}.cmksv b{display:block;font-weight:400;font-size:13px;color:#f2e2b4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmksv small{font-size:10.5px;color:#8a7f68}
+.cmksv span{display:flex;gap:3px}
+.cmksv button{font:inherit;font-size:11px;padding:4px 7px;border-radius:6px;cursor:pointer;color:#e9dfc9;background:rgba(255,255,255,.06);border:1px solid rgba(233,223,201,.2)}
+.cmksv button:hover{border-color:#e8c86a}
+.cmknone{font-size:11.5px;color:#8a7f68;line-height:1.6;padding:6px 2px}
+.cmkex{display:flex;flex-wrap:wrap;gap:5px}
+.cmkex button{font:inherit;font-size:12px;padding:6px 9px;border-radius:9px;cursor:pointer;color:#efe4cb;background:rgba(168,39,44,.15);border:1px solid rgba(200,80,90,.4);display:flex;flex-direction:column;align-items:flex-start}
+.cmkex button small{font-size:10px;color:#a8987c}.cmkex button:hover{background:rgba(168,39,44,.3)}
+.cmkhelp{font-size:10.5px;color:#7a6f5a;line-height:1.6;margin-top:auto}.cmkhelp b{color:#c8a94e;font-weight:400}
+@media (max-width:900px){
+  .cmkbody{grid-template-columns:1fr;overflow-y:auto;display:flex;flex-direction:column}
+  .cmklist{flex-direction:row;overflow-x:auto;overflow-y:hidden;flex:none}
+  .cmksc{flex:none;width:170px}.cmkadd{flex:none;width:120px}
+  .cmked,.cmkside{overflow:visible;flex:none}
+  .cmkhead{padding-top:18px}#cmk_name{max-width:none}
+}
+/* 관리자 창 탭 */
+.cmktab2{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;color:#e9dfc9}
+.cmkopen{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:linear-gradient(135deg,rgba(232,200,106,.16),rgba(168,39,44,.14));border:1px solid rgba(232,200,106,.45)}
+.cmkopen>i{font-style:normal;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:30px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);flex:none;animation:cmkIco 3s ease-in-out infinite}
+.cmkopen>div{flex:1}.cmkopen b{display:block;font-weight:400;font-size:17px;color:#fff3d6}.cmkopen small{font-size:11.5px;color:#b3a68c}
+.adtab.cmktab{color:#ffe6a0;border-color:#c8962e}.adtab.sctab{color:#ffe6a0}
+/* 무대 위 — 공방 장면 */
+.cut.cmk .cutsub{white-space:normal;width:min(92vw,1100px)}
+.cmksp{font-style:normal;display:inline-block;margin-right:.7em;padding:1px 10px;border-radius:4px;font-size:.78em;letter-spacing:.1em;color:#1a120a;background:linear-gradient(180deg,#ffe9a8,#d8a84a);text-shadow:none;vertical-align:.12em}
+.cmkfig .cmkfi{position:relative;transform-origin:50% 100%}
+.cmkbaek{filter:drop-shadow(0 0 16px rgba(255,236,180,.85)) drop-shadow(0 0 40px rgba(255,214,120,.45))}
+.cmkdano{position:relative;filter:drop-shadow(0 0 18px rgba(120,180,255,.7))}
+.cmkemp .t26arm{transform:rotate(126deg)}
+.cmkring .cringr{animation-duration:4s}
+.cmkaur .cmka1{animation:cmkAur 7s ease-in-out infinite alternate;transform-origin:800px 320px}
+.cmkaur .cmka2{animation:cmkAur 9s ease-in-out infinite alternate-reverse;transform-origin:800px 220px}
+@keyframes cmkAur{from{transform:skewX(-6deg) scaleY(.9);opacity:.7}to{transform:skewX(6deg) scaleY(1.12);opacity:1}}
+.cmkink{position:absolute;inset:0;z-index:8;pointer-events:none;display:grid;place-items:center}
+.cmkink i{position:absolute;width:30vmax;height:30vmax;border-radius:47% 53% 42% 58%/52% 44% 56% 48%;background:radial-gradient(circle,#000 58%,rgba(0,0,0,.85) 66%,transparent 72%);
+  transform:scale(0);animation:cmkInk 1.15s cubic-bezier(.5,0,.3,1) forwards}
+.cmkink i:nth-child(2){left:20%;top:30%;animation-delay:.06s;width:22vmax;height:22vmax}.cmkink i:nth-child(3){right:16%;bottom:18%;animation-delay:.12s;width:20vmax;height:20vmax}
+@keyframes cmkInk{0%{transform:scale(0) rotate(0);opacity:1}40%{transform:scale(6) rotate(40deg);opacity:1}100%{transform:scale(7) rotate(60deg);opacity:0}}
+.cmkspeed{position:absolute;inset:-20%;z-index:4;pointer-events:none;opacity:.55;mix-blend-mode:screen;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.0) 0deg 4deg,rgba(255,255,255,.35) 4deg 4.6deg);
+  -webkit-mask:radial-gradient(circle at 50% 50%,transparent 22%,#000 62%);mask:radial-gradient(circle at 50% 50%,transparent 22%,#000 62%);animation:cmkSpeed .18s steps(2) infinite}
+@keyframes cmkSpeed{50%{transform:rotate(1.4deg) scale(1.02)}}
+.cmkttl{display:flex;flex-direction:column;align-items:center;gap:14px;transform-style:preserve-3d}
+.cmkbig{display:flex;gap:clamp(4px,1.4vw,22px);animation:cTilt 6s ease-in-out infinite alternate}
+.cmkbig span{display:inline-block;font-size:min(13vw,150px,calc(86vw / var(--n)));font-weight:700;color:#efe6d0;opacity:0;
+  text-shadow:0 1px 0 #cfc4ac,0 2px 0 #bfb39a,0 3px 0 #ada088,0 4px 0 #9a8d76,0 5px 0 #877a64,0 6px 2px rgba(0,0,0,.5),0 0 30px rgba(168,39,44,.8),0 0 80px rgba(168,39,44,.45),0 14px 24px #000}
+.cmkbig span.in{animation:cStamp .55s cubic-bezier(.2,1.4,.3,1) forwards}
+.cut.bright .cmkbig span{color:#1a1410;text-shadow:0 0 22px rgba(255,255,255,.9),0 0 50px rgba(232,200,106,.6)}
+.cmkrule{display:block;width:0;height:3px;border-radius:2px;background:linear-gradient(90deg,transparent,#e8c86a,transparent);transition:width .9s cubic-bezier(.2,.9,.3,1)}
+.cmkttl.on .cmkrule{width:min(60vw,520px)}
+.cmkts{color:#e8dcc0;letter-spacing:.5em;margin-left:.5em;font-size:clamp(13px,1.8vw,22px);opacity:0;transform:translateY(8px);transition:opacity .9s,transform .9s;text-shadow:0 2px 10px #000;text-align:center;padding:0 16px}
+.cmkttl.on .cmkts{opacity:1;transform:none}
+.cut.bright .cmkts{color:#2a2016;text-shadow:0 0 10px rgba(255,255,255,.8)}
+
+/* ══ 秘 비밀 코드 ══ */
+.scpill{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:24px;cursor:pointer;font:inherit;
+  color:#fff3d6;background:linear-gradient(135deg,rgba(60,40,10,.92),rgba(20,12,4,.94));border:1px solid #e8c86a;box-shadow:0 0 18px rgba(232,200,106,.35);animation:scBob 2.4s ease-in-out infinite}
+.scpill i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:16px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);box-shadow:0 0 12px rgba(255,214,120,.7)}
+.scpill b{font-weight:400;font-size:13px}.scpill em{font-style:normal;font-size:12px;color:#ffd76a;font-variant-numeric:tabular-nums}
+.scpill small{font-size:10.5px;color:#c8bba0;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.08)}
+.scpill.last em{color:#ff8a7a;animation:cdBlink .6s ease-in-out infinite alternate}
+.scpill.got{opacity:.65;animation:none;border-color:#6a6050;box-shadow:none}.scpill.got i{background:#8a7f68}
+.scpill.full{opacity:.6;animation:none}
+.scpill.ping{animation:scPing 1s cubic-bezier(.2,1.5,.4,1),scBob 2.4s ease-in-out 1s infinite}
+.scpill.pv{position:relative;left:auto;bottom:auto;animation:none;margin-bottom:10px}
+@keyframes scBob{50%{transform:translateY(-3px);box-shadow:0 0 26px rgba(232,200,106,.55)}}
+@keyframes scPing{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+body.cutting .scpill,body.cutting .whpill{visibility:hidden}
+.scpill.inb{display:none}
+.scbox .schint{padding:9px 12px;border-radius:10px;background:rgba(127,230,207,.07);border:1px dashed rgba(127,230,207,.4);font-size:13px;line-height:1.6}
+.scbox .schint b{font-weight:400;font-size:11px;letter-spacing:.2em;color:#7fe6cf;margin-right:8px}
+.scplain{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:linear-gradient(135deg,rgba(232,200,106,.18),rgba(232,200,106,.04));border:1px solid rgba(232,200,106,.55)}
+.scplain small{font-size:10.5px;letter-spacing:.2em;color:#c8a94e}
+.scplain code{flex:1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;letter-spacing:.12em;color:#fff3d6;text-shadow:0 0 12px rgba(255,214,120,.6)}
+.scin{display:flex;gap:8px}
+.scin input{flex:1;font-size:18px;letter-spacing:.1em;padding:10px 14px;text-align:center;border-radius:12px;border:1px solid rgba(232,200,106,.55);background:rgba(0,0,0,.45);color:#fff3d6}
+.scin input:focus{outline:none;box-shadow:0 0 0 2px rgba(232,200,106,.4),0 0 20px rgba(232,200,106,.3)}
+.scin input.shk{animation:scShk .4s}
+@keyframes scShk{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.scin.got input{opacity:.5}
+.scsay{font-size:12.5px;color:#a8987c;text-align:center;min-height:18px}.scsay.ok{color:#7fe6cf}.scsay.bad{color:#ff9a8a}
+.scbox.pv{width:auto;animation:none}
+.sccomp .scnow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(232,200,106,.08);border:1px solid rgba(232,200,106,.3)}
+.sccomp .scnow>i{font-style:normal;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);flex:none}
+.sccomp .scnow>div{flex:1}.sccomp .scnow b{display:block;font-weight:400;color:#fff3d6}.sccomp .scnow small{font-size:11.5px;color:#b3a68c}
+.sccomp code{font-family:ui-monospace,Menlo,Consolas,monospace;color:#ffd76a;letter-spacing:.08em}
+.sccode{display:flex;gap:8px}.sccode input{flex:1;font-size:16px;letter-spacing:.08em}
+.sccode input.bad{border-color:#e2777a;box-shadow:0 0 0 2px rgba(226,119,122,.3)}
+.scmins{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.scmins button{font:inherit;font-size:12px;padding:5px 10px;border-radius:14px;cursor:pointer;color:#d8ccb0;background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.18)}
+.scmins button.on{color:#1a120a;background:linear-gradient(180deg,#ffe9a8,#e0b44a);border-color:#ffd76a}
+.scmins label{display:flex;align-items:center;gap:4px;font-size:12px;color:#c8bba0;margin-left:6px}.scmins label input{width:70px}
+.scopts{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#d8ccb0}
+.scopts label{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.scopts label input[type=number]{width:80px}
+.scopts small{font-size:10.5px;color:#8a7f68}
+.scwhen{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.scwhen label{display:flex;align-items:center;gap:4px;font-size:12.5px;padding:5px 10px;border-radius:12px;border:1px solid rgba(233,223,201,.18);cursor:pointer}
+.scwhen label.on{border-color:#e8c86a;color:#ffe6a0}.scwhen input[type=radio]{display:none}
+
+/* ══ 運 운명의 바퀴 ══ */
+.wheelov{position:fixed;inset:0;z-index:520;display:grid;place-items:center;animation:fadeIn .4s}
+.wheelov.out{opacity:0;transition:opacity .6s}
+.whbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(60,30,10,.82),rgba(4,2,1,.93) 70%)}
+.whbg::before{content:'';position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg,rgba(255,214,120,.05) 0deg 8deg,transparent 8deg 16deg);animation:auSpin 40s linear infinite}
+.wheelov.spinning .whbg::before{animation-duration:4s}
+.whbox{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(560px,94vw)}
+.whtop{display:flex;align-items:center;gap:10px;width:100%}
+.whtop>i{font-style:normal;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:22px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);box-shadow:0 0 18px rgba(255,214,120,.6)}
+.whtop>div{flex:1}.whtop b{display:block;font-weight:400;font-size:20px;color:#fff3d6;letter-spacing:.1em}.whtop span{font-size:11.5px;color:#b3a68c}
+.whx{font:inherit;width:34px;height:34px;border-radius:50%;cursor:pointer;color:#e9dfc9;background:rgba(255,255,255,.08);border:1px solid rgba(233,223,201,.3)}
+.whstage{position:relative;width:min(440px,86vw,58vh);aspect-ratio:1}
+.whglow{position:absolute;inset:-10%;border-radius:50%;background:radial-gradient(circle,rgba(255,214,120,.35),transparent 65%);animation:cAura 1.4s ease-in-out infinite alternate}
+.whwrap,.whwrap svg{position:absolute;inset:0;width:100%;height:100%}
+.whsvg{filter:drop-shadow(0 10px 30px rgba(0,0,0,.6))}
+.whg{font-size:30px}.whn{font-size:14px;letter-spacing:.05em}.whhub{font-size:36px}
+.whb{fill:#ffe9a8;animation:whBulb .7s steps(1) infinite}
+.wheelov.spinning .whb{animation-duration:.18s}
+@keyframes whBulb{50%{fill:#5a3a10}}
+.whsl{transition:filter .3s}
+.whsl.win{filter:brightness(1.9) drop-shadow(0 0 12px #fff);animation:whWin .5s ease-in-out infinite alternate}
+@keyframes whWin{to{filter:brightness(1.3)}}
+.whptr{position:absolute;left:50%;top:-6%;width:15%;transform:translateX(-50%);transform-origin:50% 10%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+.whptr.tk{animation:whTk .12s ease-out}
+@keyframes whTk{40%{transform:translateX(-50%) rotate(-14deg)}}
+.whres{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.2);opacity:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 26px;border-radius:16px;pointer-events:none;
+  background:rgba(10,6,2,.88);border:2px solid var(--wc,#ffd76a);box-shadow:0 0 40px var(--wc,#ffd76a)}
+.whres.on{animation:whRes .7s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes whRes{to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.whres i{font-style:normal;font-size:52px;color:var(--wc);text-shadow:0 0 20px var(--wc)}
+.whres b{font-weight:400;font-size:24px;color:#fff;letter-spacing:.12em}.whres small{font-size:12px;color:#7fe6cf}
+.whstat{min-height:30px;text-align:center;font-size:15px;color:#e9dfc9}
+.whcd b{font-weight:400;font-size:22px;color:#ffd76a;font-variant-numeric:tabular-nums}
+.whcd b.fine{font-size:34px;color:#ff6a5a;text-shadow:0 0 16px rgba(255,80,60,.7)}
+.wheelov.fine .whstage{animation:whShiver .1s steps(2) infinite}
+@keyframes whShiver{50%{transform:translate(1px,-1px)}}
+.whcd b.spin{font-size:24px;color:#fff;letter-spacing:.1em}
+.whcd b.land{font-size:28px;color:#ffd76a;letter-spacing:.15em;text-shadow:0 0 20px rgba(255,214,120,.8)}
+.whcheer{display:flex;align-items:center;gap:12px;width:100%}
+.whbtn{font:inherit;flex:none;display:flex;flex-direction:column;align-items:center;padding:12px 22px;border-radius:16px;cursor:pointer;color:#1a120a;
+  background:linear-gradient(180deg,#ffe9a8,#e0a03a);border:2px solid #fff3c8;box-shadow:0 6px 0 #8a5a10,0 0 24px rgba(255,214,120,.5);transition:transform .06s}
+.whbtn b{font-size:20px;font-weight:700;letter-spacing:.1em}.whbtn small{font-size:10.5px}
+.whbtn:active,.whbtn.hit{transform:translateY(4px);box-shadow:0 2px 0 #8a5a10,0 0 30px rgba(255,214,120,.8)}
+.whbtn.maxed{filter:grayscale(.6)}
+.wheelov.landed .whbtn{opacity:.4;pointer-events:none}
+.whgauge{flex:1;display:flex;flex-direction:column;gap:5px}
+.whgauge i{display:block;height:12px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(232,200,106,.3)}
+.whgauge u{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff8a3a,#ffd76a);transition:width .25s;text-decoration:none;position:relative}
+.whgauge.full u{background:linear-gradient(90deg,#7fe6cf,#bff6e8);box-shadow:0 0 14px #7fe6cf}
+.whgn{font-size:12px;color:#c8bba0}.whgn b{color:#fff;font-weight:400}
+.whshout{position:fixed;z-index:530;pointer-events:none;font-size:20px;font-weight:700;color:#ffd76a;text-shadow:0 2px 6px #000,0 0 14px rgba(255,214,120,.8);transform:translate(-50%,0);animation:whShout .9s ease-out forwards}
+@keyframes whShout{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,-10px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
+.whpill{position:fixed;left:50%;top:calc(58px + env(safe-area-inset-top));transform:translateX(-50%);z-index:61;display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:22px;cursor:pointer;font:inherit;
+  color:#fff3d6;background:rgba(30,18,6,.92);border:1px solid #ffd76a;box-shadow:0 0 18px rgba(255,214,120,.45)}
+.whpill i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);animation:auSpin 3s linear infinite}
+.whpill b{font-weight:400;font-size:13px}.whpill em{font-style:normal;font-size:12px;color:#ffd76a;font-variant-numeric:tabular-nums}
+.whmk{width:min(860px,96vw)}
+.whmkg{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+.whopts{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px;margin:6px 0 10px}
+.whopt{position:relative;display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:10px;cursor:pointer;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);transition:all .12s;flex-wrap:wrap}
+.whopt:hover{border-color:var(--wc)}
+.whopt.on{border-color:var(--wc);background:color-mix(in srgb,var(--wc) 16%,rgba(0,0,0,.4));box-shadow:0 0 10px color-mix(in srgb,var(--wc) 40%,transparent)}
+.whopt>i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:var(--wc);background:rgba(0,0,0,.4)}
+.whopt>b{font-weight:400;font-size:12px;flex:1}
+.whopt span{display:flex;align-items:center;gap:3px;width:100%;justify-content:flex-end}
+.whopt span button{font:inherit;width:20px;height:20px;padding:0;border-radius:5px;cursor:pointer;color:#e9dfc9;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2)}
+.whopt span em{font-style:normal;font-size:12px;color:#ffd76a;min-width:14px;text-align:center}
+.whset{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-top:6px}
+.whset label{display:flex;align-items:center;gap:5px;font-size:12px;color:#c8bba0;padding:5px 7px;border-radius:8px;background:rgba(0,0,0,.25)}
+.whset label i{font-style:normal}.whset input{width:60px;margin-left:auto}.whset label:first-child{grid-column:1/-1}.whset label:first-child input{width:auto;flex:1}
+.whmkpv{display:flex;flex-direction:column;gap:8px;align-items:center}
+.whmkpv #wm_pv{width:min(300px,80vw);aspect-ratio:1;position:relative}
+.whmkpv #wm_pv svg{width:100%;height:100%}
+.whmkodds{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.whmkodds span{font-size:11px;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,.3);border:1px solid color-mix(in srgb,var(--wc) 60%,transparent);display:flex;gap:4px;align-items:center}
+.whmkodds span i{font-style:normal;color:var(--wc)}.whmkodds span b{font-weight:400;color:#ffd76a}
+@media (max-width:700px){.whmkg{grid-template-columns:1fr}.whmkpv{order:-1}}
+
+/* ══ Tab 퍼뜨리기 빠른 창 ══ */
+.castpal{position:fixed;inset:0;z-index:610;background:rgba(8,6,4,.6);backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:flex-start;padding-top:8vh;animation:fadeIn .12s}
+.castpal.out{opacity:0;transition:opacity .15s}
+.cqbox{width:min(640px,95vw);max-height:84vh;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,#241a10,#120d08);border:1px solid rgba(232,200,106,.5);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.4);animation:winIn .25s cubic-bezier(.2,.9,.3,1.15)}
+.cqhead{display:flex;align-items:center;gap:10px;padding:12px 14px 10px;flex-wrap:wrap;background:linear-gradient(90deg,rgba(168,39,44,.22),transparent)}
+.cqhead>i{font-style:normal;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:20px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e);flex:none}
+.cqhead>div{flex:1;min-width:160px}.cqhead b{display:block;font-weight:400;font-size:17px;color:#fff3d6;letter-spacing:.15em}.cqhead span{font-size:10.5px;color:#9a8e74}
+.cqlive{display:flex;flex-wrap:wrap;gap:4px;align-items:center;width:100%}
+.cqlive small{font-size:10.5px;color:#8a7f68;margin-right:2px}
+.cqlive b{font-weight:400;font-size:11px;padding:2px 8px;border-radius:9px;color:var(--c);background:rgba(0,0,0,.4);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 0 8px color-mix(in srgb,var(--c) 30%,transparent)}
+.castpal .cprow{border-top:1px solid rgba(232,200,106,.15)}
+.cqfav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(232,200,106,.12)}
+.cqfav>small{width:100%;font-size:10.5px;letter-spacing:.25em;color:#c8a94e}
+.cqchip{font:inherit;display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:18px;cursor:pointer;color:#efe4cb;background:rgba(255,255,255,.05);border:1px solid rgba(233,223,201,.2);transition:all .1s}
+.cqchip i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:var(--c);background:rgba(0,0,0,.4)}
+.cqchip b{font-weight:400;font-size:12.5px}.cqchip span{display:none}
+.cqchip.on{border-color:#ffd76a;background:rgba(232,200,106,.15)}
+.cqlist{flex:1;min-height:0;overflow-y:auto;padding:4px 8px 8px}
+.cqcat{font-size:10.5px;letter-spacing:.3em;color:#c8a94e;padding:10px 6px 4px;position:sticky;top:0;background:linear-gradient(#150f09 70%,transparent);z-index:1}
+.cqitem{font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;border:1px solid transparent;background:none;color:#e9dfc9;cursor:pointer;text-align:left}
+.cqitem i{font-style:normal;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;color:var(--c);background:rgba(0,0,0,.35);border:1px solid color-mix(in srgb,var(--c) 40%,transparent);flex:none}
+.cqitem b{font-weight:400;flex:1;font-size:13.5px}.cqitem span{font-size:10.5px;color:#8a7f68;letter-spacing:.05em}
+.cqitem.on{background:rgba(232,200,106,.12);border-color:rgba(232,200,106,.35)}
+.cqitem.red i{color:#ff9a8a;border-color:rgba(255,120,110,.4)}
+:is(.cqitem,.cqchip).live::after{content:'켜짐';font-size:10px;padding:1px 6px;border-radius:7px;color:#0a1a14;background:#7fe6cf;margin-left:6px}
+:is(.cqitem,.cqchip).armed{border-color:#ff8a5a!important;background:rgba(255,120,60,.16)!important;animation:cqArm .5s ease-in-out infinite alternate}
+:is(.cqitem,.cqchip).armed span{display:inline;color:#ffb08a}
+@keyframes cqArm{to{box-shadow:0 0 14px rgba(255,140,80,.5)}}
+.cqfoot{padding:8px 14px;font-size:11px;color:#8a7f68;border-top:1px solid rgba(232,200,106,.15)}
+.cqfoot.arm{color:#ffd0b0;background:rgba(255,120,60,.1)}.cqfoot b{font-weight:400;color:#fff3d6}
+
+/* ══ 편의 ══ */
+.tllist{display:flex;flex-direction:column;gap:4px;max-height:56vh;overflow-y:auto}
+.tlrow{display:flex;gap:10px;align-items:baseline;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.03);border-left:2px solid rgba(232,200,106,.4);animation:rowIn .3s backwards}
+.tlrow small{flex:none;width:58px;font-size:10.5px;color:#8a7f68}.tlrow span{font-size:13px;line-height:1.5}
+.kysec{display:flex;flex-direction:column;gap:4px}
+.kysec>b{font-weight:400;font-size:11px;letter-spacing:.3em;color:#c8a94e;margin:4px 0 2px}
+.kyrow{display:flex;align-items:center;gap:10px;padding:5px 8px;border-radius:8px;background:rgba(255,255,255,.03)}
+.kyrow>span{flex:none;min-width:150px}.kyrow>span i{font-style:normal;font-size:10px;color:#8a7f68;margin:0 3px}
+.kyrow>em{font-style:normal;font-size:12.5px;color:#d8ccb0}
+.kyrow kbd,.cprow kbd{display:inline-block;min-width:22px;padding:2px 7px;border-radius:6px;font:inherit;font-size:11.5px;text-align:center;color:#fff3d6;background:linear-gradient(180deg,#3a2c1c,#1e160e);border:1px solid rgba(232,200,106,.4);box-shadow:0 2px 0 rgba(0,0,0,.5)}
+body.zenui :is(#topbar,.evpill,#chatfab,.scpill,.whpill,#tbmore,#menubtn,#toast,.mlegend,.maplegend,.actbar,#devsay){opacity:0!important;pointer-events:none!important;transition:opacity .3s}
+.zenhint{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9999;font-size:11px;padding:4px 10px;border-radius:10px;cursor:pointer;color:rgba(233,223,201,.6);background:rgba(0,0,0,.35);border:1px solid rgba(233,223,201,.2)}
+.ewarn{position:fixed;z-index:9000;transform:translate(-50%,-100%);padding:8px 14px;border-radius:12px;font-size:13px;white-space:nowrap;pointer-events:none;color:#fff3d6;
+  background:rgba(40,14,8,.95);border:1px solid #ff8a5a;box-shadow:0 0 18px rgba(255,120,60,.45);animation:ewIn .3s cubic-bezier(.2,1.5,.4,1)}
+.ewarn::after{content:'';position:absolute;left:var(--ax,50%);bottom:-6px;width:10px;height:10px;margin-left:-5px;transform:rotate(45deg);background:rgba(40,14,8,.95);border-right:1px solid #ff8a5a;border-bottom:1px solid #ff8a5a}
+.ewarn b{color:#ffd76a;font-weight:400}.ewarn u{text-decoration:none;color:#ff9a7a}
+.ewarn.out{opacity:0;transition:opacity .3s}
+@keyframes ewIn{from{opacity:0;transform:translate(-50%,-80%) scale(.8)}}
+.restnote{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;
+  width:min(420px,92vw);color:#e9dfc9;background:linear-gradient(135deg,rgba(30,40,30,.96),rgba(14,20,14,.96));border:1px solid rgba(127,230,207,.5);box-shadow:0 12px 40px rgba(0,0,0,.5);animation:winIn .4s cubic-bezier(.2,.9,.3,1.15)}
+.restnote>i{font-style:normal;font-size:26px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(127,230,207,.15);flex:none}
+.restnote>div{flex:1}.restnote b{display:block;font-weight:400;color:#bff6e8}.restnote span{font-size:12px;color:#a8b8a8}
+.restnote button{font:inherit;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;color:#e9dfc9;background:rgba(255,255,255,.08);border:1px solid rgba(233,223,201,.25)}
+.restnote.out{opacity:0;transform:translateX(-50%) translateY(-10px);transition:all .4s}
+.clbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.clfind{flex:1;min-width:160px;font-size:14px;padding:8px 12px;border-radius:10px}
+.clsort{display:flex;gap:4px}
+.clsort button{font:inherit;font-size:12px;padding:5px 10px;border-radius:12px;cursor:pointer;color:#d8ccb0;background:rgba(255,255,255,.05);border:1px solid rgba(233,223,201,.2)}
+.clsort button.on{color:#1a120a;background:linear-gradient(180deg,#ffe9a8,#e0b44a);border-color:#ffd76a}
+.cln{font-style:normal;font-size:12px;color:#8a7f68}
+.optbtns{display:flex;gap:6px}
+/* 카운트다운 — 마지막 5초 소수점 */
+.cdown.fine{animation:cdJit .1s steps(2) infinite}
+@keyframes cdJit{50%{transform:translate(calc(var(--f,0) * 2px),calc(var(--f,0) * -2px))}}
+.cdown.fine .cdnum small{font-size:.42em;opacity:.85;margin-left:.04em;letter-spacing:0}
+.cdown.fine .cdv{animation:cdBeat .5s ease-in-out infinite;background:radial-gradient(ellipse at center,transparent 30%,rgba(190,0,0,calc(.2 + var(--f,0) * .55)) 100%)}
+.cdown.fine .cdring{animation-duration:.5s}
+@keyframes cdBeat{50%{opacity:.55}}
+
+/* ══ 합성 연출 — 카메라 · 아우라 · 진 · 글자 고리 · 빛기둥 · 먹 띠 ══ */
+.mfx{perspective:1200px}
+.mfx .mfxcam{position:absolute;inset:0;transform-style:flat;transform:rotateX(24deg) scale(.82);transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.mfx.in .mfxcam{transform:rotateX(12deg) scale(.94)}
+.mfx.fly .mfxcam{transform:rotateX(8deg) rotateY(-12deg) scale(1)}
+.mfx.near .mfxcam{transform:rotateX(4deg) rotateY(-4deg) scale(1.1);transition-duration:.2s}
+.mfx.hit .mfxcam{transform:rotateX(0) rotateY(0) scale(1.02);transition:transform .5s cubic-bezier(.2,1.6,.4,1)}
+.mfx.stamp .mfxcam{animation:mfxOrbit 5s ease-in-out .3s infinite alternate}
+@keyframes mfxOrbit{from{transform:rotateX(0) rotateY(0) scale(1.02)}to{transform:rotateX(6deg) rotateY(9deg) scale(1.05)}}
+.mfxbars i{position:absolute;left:0;right:0;height:9vh;background:#000;z-index:3;transform:scaleY(0);transition:transform .6s cubic-bezier(.2,.9,.3,1)}
+.mfxbars i:first-child{top:0;transform-origin:top}.mfxbars i:last-child{bottom:0;transform-origin:bottom}
+:is(.mfx.in,.fuseshow.in) .mfxbars i{transform:scaleY(1)}
+.mfx .mfxfloor{position:absolute;left:50%;top:calc(45% + var(--ch) * .62);width:min(70vmin,520px);aspect-ratio:1;transform:translate(-50%,-50%) perspective(900px) rotateX(70deg) scale(.3);opacity:0;
+  transition:transform 1s cubic-bezier(.2,.9,.3,1),opacity .6s;filter:drop-shadow(0 0 12px var(--fa))}
+.mfx .mfxfloor svg{width:100%;height:100%;animation:bfSpin 9s linear infinite}
+.mfx.in .mfxfloor{transform:translate(-50%,-50%) perspective(900px) rotateX(70deg) scale(1);opacity:.55}
+.mfx.hit .mfxfloor{opacity:1;filter:drop-shadow(0 0 24px var(--fa)) brightness(1.6)}
+.mfx.hit .mfxfloor svg{animation-duration:2.5s}
+.mfx .mfxaura{position:absolute;left:50%;top:45%;width:calc(var(--ch) * 1.9);aspect-ratio:1;transform:translate(-50%,-50%) scale(.4);opacity:0;transition:transform .7s cubic-bezier(.2,1.4,.4,1),opacity .4s;pointer-events:none}
+.mfx .mfxaura i{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,var(--fa),transparent 25%,var(--fb) 50%,transparent 75%,var(--fa));filter:blur(14px);opacity:.7;animation:auSpin 3s linear infinite;
+  -webkit-mask:radial-gradient(circle,transparent 38%,#000 46%,#000 62%,transparent 70%);mask:radial-gradient(circle,transparent 38%,#000 46%,#000 62%,transparent 70%)}
+.mfx .mfxaura i:nth-child(2){inset:12%;animation-direction:reverse;animation-duration:2.2s;opacity:.55;filter:blur(8px)}
+.mfx .mfxaura i:nth-child(3){inset:-10%;background:radial-gradient(circle,color-mix(in srgb,var(--fa) 45%,transparent),transparent 60%);-webkit-mask:none;mask:none;animation:cAura 1.2s ease-in-out infinite alternate}
+.mfx.hit .mfxaura{transform:translate(-50%,-50%) scale(1);opacity:1}
+.mfx .mfxrune{position:absolute;left:50%;top:45%;width:0;height:0;opacity:0;transition:opacity .6s;animation:auSpin 12s linear infinite}
+.mfx .mfxrune b{position:absolute;left:-14px;top:-14px;width:28px;height:28px;display:grid;place-items:center;font-weight:400;font-size:20px;color:#fff;text-shadow:0 0 10px var(--fa),0 0 20px var(--fb);
+  transform:rotate(var(--r)) translateY(calc(var(--ch) * -.88)) rotate(calc(var(--r) * -1))}
+.mfx.stamp .mfxrune,.mfx.hit .mfxrune{opacity:.9}
+.mfx .mfxpillar{position:absolute;left:50%;top:-10%;width:180px;height:120%;margin-left:-90px;pointer-events:none;opacity:0;transform:scaleX(0);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--fa) 60%,#fff),#fff,color-mix(in srgb,var(--fb) 60%,#fff),transparent);filter:blur(6px)}
+.mfx.hit .mfxpillar{animation:mfxPillar 1.1s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes mfxPillar{0%{opacity:0;transform:scaleX(0)}15%{opacity:1;transform:scaleX(1.4)}100%{opacity:0;transform:scaleX(.1)}}
+.mfx .mfxdust{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1s}
+.mfx.stamp .mfxdust{opacity:1}
+.mfx .mfxdust i{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c),0 0 14px var(--c);animation:mfxDust 4s linear infinite}
+@keyframes mfxDust{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-100vh) translateX(30px);opacity:0}}
+.mfx.dev{background:radial-gradient(circle at 50% 45%,rgba(255,250,230,.22),transparent 50%),rgba(4,3,2,.9)}
+.mfx.dev .mfxstamp{color:#fff;text-shadow:0 0 20px #fff,0 0 50px #ffd76a,0 0 90px #ffd76a}
+.mfx.dev .mfxpillar{width:320px;margin-left:-160px}
+.mfx.dev.hit::before{animation-duration:1.2s}
+/* 합성소 */
+.fuseshow .fsaura{position:absolute;left:-150px;top:-150px;width:300px;height:300px;transform:translateZ(30px) scale(.3);opacity:0;pointer-events:none}
+.fuseshow .fsaura i{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,var(--fa),transparent 25%,var(--fb) 50%,transparent 75%,var(--fa));filter:blur(12px);animation:auSpin 2.6s linear infinite;
+  -webkit-mask:radial-gradient(circle,transparent 36%,#000 46%,#000 62%,transparent 70%);mask:radial-gradient(circle,transparent 36%,#000 46%,#000 62%,transparent 70%)}
+.fuseshow .fsaura i:nth-child(2){inset:-20%;animation-direction:reverse;animation-duration:4s;opacity:.6}
+.fuseshow.boom .fsaura{transform:translateZ(30px) scale(1.4);opacity:1;transition:transform 1s cubic-bezier(.2,1.5,.4,1),opacity .3s}
+.fuseshow .fsrune{position:absolute;left:0;top:0;width:0;height:0;transform:translateZ(20px);opacity:0;animation:auSpin 10s linear infinite}
+.fuseshow .fsrune b{position:absolute;left:-14px;top:-14px;width:28px;height:28px;display:grid;place-items:center;font-weight:400;font-size:22px;color:#fff;text-shadow:0 0 10px var(--fa),0 0 18px var(--fb);
+  transform:rotate(var(--r)) translateY(-230px) rotate(calc(var(--r) * -1))}
+.fuseshow.spin1 .fsrune{opacity:.55;transition:opacity 1s}.fuseshow.boom .fsrune{opacity:1}
+.fuseshow .fsstreak{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
+.fuseshow .fsstreak i{position:absolute;left:0;top:0;width:3px;height:46vmax;margin-left:-1.5px;transform-origin:top;transform:rotate(var(--a)) scaleY(0);opacity:0;
+  background:linear-gradient(var(--fa),transparent)}
+.fuseshow.boom .fsstreak i{animation:fsStreak 1.1s cubic-bezier(.1,.8,.3,1) forwards}
+.fuseshow .fsstreak i:nth-child(2n){background:linear-gradient(var(--fb),transparent)}
+@keyframes fsStreak{0%{transform:rotate(var(--a)) scaleY(0);opacity:1}60%{opacity:1}100%{transform:rotate(var(--a)) scaleY(1);opacity:0}}
+.fuseshow.linger .fsmerged{animation:fsBreath 2.4s ease-in-out infinite}
+@keyframes fsBreath{50%{filter:brightness(1.35) drop-shadow(0 0 20px var(--fa))}}
+/* ══ 終 종결석 ══ */
+.card.mutZ .face{box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px rgba(255,214,120,.8),inset 0 0 26px rgba(255,250,230,.5),0 0 18px rgba(255,250,230,.75),0 0 40px rgba(255,214,120,.45)}
+.card.mutZ .face{animation:mutZGlow 2.2s ease-in-out infinite}
+@keyframes mutZGlow{50%{box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px rgba(255,214,120,.9),inset 0 0 34px rgba(255,250,230,.7),0 0 26px rgba(255,250,230,.95),0 0 60px rgba(255,214,120,.6)}}
+.mutfx.mfzw{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.mfZ i{position:absolute;left:-30%;top:0;width:24%;height:100%;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:mfZ 2.6s ease-in-out infinite}
+.mfZ i:nth-child(2){animation-delay:.9s;opacity:.6}.mfZ i:nth-child(3){animation-delay:1.7s;opacity:.4}
+@keyframes mfZ{0%,40%{left:-30%}100%{left:130%}}
+.cmut i.mz{color:#1a120a;background:linear-gradient(135deg,#fff,#ffd76a);box-shadow:0 0 10px #fff}
+.mgorb.mg-devz{background:radial-gradient(circle at 35% 30%,#fff,#ffe9a8 45%,#8a6a2a)!important;box-shadow:0 0 20px #fff,0 0 40px rgba(255,214,120,.7)!important}
+.mgorb.mg-devz b{color:#3a2408!important;text-shadow:0 0 6px #fff!important}
+.pcsec.dev b{color:#fff;text-shadow:0 0 10px #ffd76a}
+.pcitem.devz{border-color:rgba(255,250,230,.6)!important;background:linear-gradient(135deg,rgba(255,250,230,.12),rgba(255,214,120,.06))!important}
+.pcdevb{display:flex;flex-direction:column;gap:4px}
+.dpowsub.devz{color:#fff;text-shadow:0 0 8px #ffd76a}
+.dpowbtn.devz{border-color:rgba(255,250,230,.7)!important;background:linear-gradient(135deg,rgba(255,250,230,.16),rgba(255,214,120,.08))!important}
+.dpowbtn.devz b{color:#fff}
+@media (prefers-reduced-motion:reduce){.mfx .mfxcam,.cdown.fine,.wheelov.fine .whstage,.cmkspeed{animation:none!important}}
+/* 새 창들의 글 칸 — 먹빛 바탕에 금빛 테 */
+:is(.mcomp,.cmk,.whmk,.scbox,.castpal,.clbar) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea){
+  font:inherit;color:#f2e7cc;background:rgba(0,0,0,.42);border:1px solid rgba(232,200,106,.32);border-radius:8px;padding:6px 9px;outline:none;transition:border-color .15s,box-shadow .15s}
+:is(.mcomp,.cmk,.whmk,.scbox,.castpal,.clbar) :is(input,select,textarea):focus{border-color:#e8c86a;box-shadow:0 0 0 2px rgba(232,200,106,.22)}
+:is(.mcomp,.cmk,.whmk,.scbox) select option,:is(.mcomp,.cmk,.whmk,.scbox) select optgroup{background:#1a130c;color:#f2e7cc}
+:is(.mcomp,.cmk,.whmk,.scbox) ::placeholder{color:#7a6f5a}
+:is(.mcomp,.cmk,.whmk) input[type=checkbox]{accent-color:#e8c86a}
+.castpal .cprow input{background:none;border:none;box-shadow:none}
+.castquick{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;border-radius:12px;background:linear-gradient(90deg,rgba(232,200,106,.12),transparent);border:1px solid rgba(232,200,106,.3)}
+.castquick small{font-size:10.5px;letter-spacing:.25em;color:#c8a94e;margin-right:4px}
+.castquick button{font:inherit;font-size:12.5px;display:flex;align-items:center;gap:6px;padding:5px 11px 5px 5px;border-radius:16px;cursor:pointer;color:#efe4cb;background:rgba(0,0,0,.3);border:1px solid rgba(232,200,106,.35);transition:all .12s}
+.castquick button:hover{border-color:#ffd76a;background:rgba(232,200,106,.15);transform:translateY(-1px)}
+.castquick button i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e)}
+.castquick button em{font-style:normal;font-size:10px;padding:0 5px;border-radius:5px;border:1px solid rgba(232,200,106,.5);color:#ffd76a}
+.whres{background:rgba(10,6,2,.95);backdrop-filter:blur(3px)}
 </style>
 <style>
 /* ══════════════════════════════════════════════════════════
@@ -7670,7 +8131,10 @@ function bindTip(node, htmlFn) {
 function toast(msg) {
   const t = el('div', 'toast', msg); $('#toast').appendChild(t);
   setTimeout(() => t.remove(), 2400);
+  /* 알림 기록 — 지나간 알림을 다시 본다 (N) */
+  try { TLOG.unshift({ at: Date.now(), m: String(msg).replace(/<[^>]*>/g, '').slice(0, 160) }); if (TLOG.length > 60) TLOG.length = 60; } catch (e) {}
 }
+const TLOG = [];
 
 /* ══════════════════════════════════════════════════════════
    1. 상태이상 정의
@@ -7750,7 +8214,9 @@ const OPT_DEF = {
   noFriend: false,          /* 벗 단오의 훈수를 끈다 */
   noBoxCall: false,         /* 상자 권유 쪽지를 끈다 */
   flair: true,              /* 간지 — 먹 띠 · 참격 · 연격 · 균열 */
-  turbo: false              /* VIP 2배속 */
+  turbo: false,             /* VIP 2배속 */
+  endWarn: true,            /* 기와 낼 부적이 남았는데 차례를 넘기려 하면 한 번 묻는다 */
+  rest: true                /* 한 시간마다 쉬어 가라고 일러 준다 */
 };
 let OPT = Object.assign({}, OPT_DEF);
 function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY)); if (m) META = Object.assign(META, m); } catch (e) {}
@@ -9098,14 +9564,14 @@ const MUT_FXH = { star: '<span class="mfM"><i></i><i></i><i></i><i></i></span>',
 /* 융합 띠 — 두 갈래면 반반, 세 갈래면 셋으로 */
 const fuGrad = ks => ks.length === 3 ? `linear-gradient(90deg,${MUT_COL[ks[0]]} 0 33.3%,${MUT_COL[ks[1]]} 33.3% 66.6%,${MUT_COL[ks[2]]} 66.6% 100%)` : `linear-gradient(90deg,${MUT_COL[ks[0]]} 0 50%,${MUT_COL[ks[1]]} 50% 100%)`;
 function mutLv(c, k) { let L = c[MUT_KEY[k]] ? 1 : 0; if (c.mutFu && c.mutFu.split('+').indexOf(k) >= 0) L += 2; return L; }
-const cup = c => !!(c.up || c.mutC || mutLv(c, 'chaos') > 0);   /* 혼원(混元)도 강화한 것처럼 */
+const cup = c => !!(c.up || c.mutC || mutLv(c, 'chaos') > 0 || c.mutZ);   /* 혼원(混元) · 종결(終結)도 강화한 것처럼 */
 const MUT_STAR = 1.25;
 const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배, 25% 확률로 버그가 나 한 번 더 */
 function cval(c) {
   const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (c.mutZ ? 2 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -12567,12 +13033,20 @@ function drawPower(grid) {
     <button class="dpowbig adm" id="dp_adm"><b>덱을 모두 어드민급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → 어드민급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
     <div class="dpowsub adm">어드민급 — 세계 최강 · 백야만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone adm">${ADM_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
+    ${caster() ? `<div class="dpowsub devz">終 개발자 종결 원료 — 백야의 종결석 · 지금 ${devMatHave()}개 · 원료 주머니에서 아무 부적에나 입힌다</div>
+    <div class="dpowrow devz"><button class="dpowbtn devz" id="dp_z1"><b>終 종결석 +1</b><small>수치 2배 · 백야의 일격 · 기 +1</small></button>
+      <button class="dpowbtn devz" id="dp_z5"><b>終 종결석 +5</b><small>한 번에 다섯</small></button>
+      <button class="dpowbtn devz" id="dp_zuse"><b>지금 입힌다</b><small>${devMatHave() ? '부적을 고른다' : '종결석이 없다'}</small></button></div>` : ''}
     <div class="dpowsub pw10">열 가지 권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
     <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && META.devPw && META.devPw[x.k] ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (META.devPw && META.devPw[x.k] ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
     <div class="dpowsub qq">??급 — 이름 없는 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone qq">${QQ_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
   grid.querySelector('#dp_deck').onclick = () => { devPowerDeck(); drawPower(grid); };
+  { const z1 = grid.querySelector('#dp_z1'), z5 = grid.querySelector('#dp_z5'), zu = grid.querySelector('#dp_zuse');
+    if (z1) z1.onclick = () => { devMatGive(1); drawPower(grid); };
+    if (z5) z5.onclick = () => { devMatGive(5); drawPower(grid); };
+    if (zu) zu.onclick = () => { closeOverlay(); devMatUse(); }; }
   grid.querySelector('#dp_adm').onclick = () => { devAdmDeck(); drawPower(grid); };
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
   grid.querySelector('#dp_inf').onclick = () => { META.devInf = !META.devInf; saveMeta(); try { SND.unlock(); } catch (e) {} if (G.b) syncAll(); toast(META.devInf ? '?급 무한 — 켜짐' : '?급 무한 — 꺼짐'); drawPower(grid); };
@@ -12630,7 +13104,7 @@ async function playCard(card, target) {
     }
   } catch (err) { console.error('부적 처리 오류', d.id, err); }
   if (card.mutK && !b.over) { try { await shadowEcho(ctx, d); } catch (err) { console.error('그림자 메아리', err); } }   /* 影 — 그림자가 따라 친다 */
-  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutFu) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
+  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutFu || card.mutZ) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
   /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
   try {
     b.curCard = null;
@@ -14242,6 +14716,7 @@ function renderBattle() {
       _etTap = 0;
       if (!b.hand.length) return;                     /* 차례를 새로 열었으면 여기까지 */
     }
+    if (!endWarnOk()) return;
     endTurn();
   };
   $('#skillbtn').onclick = () => useSkill();
@@ -14455,7 +14930,7 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutZ ? ' mutZ' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   const fu = c.mutFu ? c.mutFu.split('+') : null;                        /* 융합 — 반반 아우라 */
@@ -14468,10 +14943,10 @@ function cardNode(c, opts) {
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
-      ${c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${fu ? (fu.length === 3
+      ${c.mutZ ? '<div class="mutfx mfzw"><span class="mfZ"><i></i><i></i><i></i></span></div>' : ''}${c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${fu ? (fu.length === 3
         ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuM">${MUT_FXH[fu[1]]}</span><span class="fuR">${MUT_FXH[fu[2]]}</span>`
         : `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span>`) + '<span class="fuB"></span>' : ''}</div>` : ''}
-      ${c.mutS || c.mutC || c.mutH || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="cmut">${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu || c.mutZ ? `<div class="cmut">${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
       <i class="cglare"></i>
     </div>
@@ -15869,7 +16344,7 @@ function flash(msg) {
 /* ══════════════════════════════════════════════════════════
    9. 지도 생성 — 갈라지는 등산로 (간선이 교차하지 않는다)
    ══════════════════════════════════════════════════════════ */
-const MAP_W = 5, MAP_H = 17, MAP_PATHS = 6;          /* 막이 빨리 끝난다는 말에 12 → 17층 */
+const MAP_W = 5, MAP_H = 24, MAP_PATHS = 6;          /* 막이 빨리 끝난다는 말에 12 → 17 → 24층 (판 54) */
 /* ══════════════════════════════════════════════════════════
    지도 — 왼쪽에서 오른쪽으로 걸어 오르는 산길
    ──────────────────────────────────────────────────────────
@@ -15910,7 +16385,7 @@ function genMap(act) {
      한 막에 놓을 수 있는 수 자체에 뚜껑을 씌운다.
      게다가 바로 앞뒤 층에 야영지가 있으면 다시 놓지 않는다.
      ────────────────────────────────────────────────────── */
-  const REST_CAP = 3;                        /* 보스 앞 야영지를 빼고 이만큼만 (길이 길어져 하나 더) */
+  const REST_CAP = 4;                        /* 보스 앞 야영지를 빼고 이만큼만 (길이 길어져 하나씩 더) */
   let rests = 0;
   const restNear = n => nodes.some(o => o.type === 'rest' && Math.abs(o.r - n.r) <= 1);
   const ordered = nodes.slice().sort((a, b) => a.r - b.r || a.c - b.c);
@@ -15946,12 +16421,13 @@ function mapLayout(m) {
   m.h = (MAP_W - 1) * LANE + 208;
   m.cols = maxR + 1;
   const midY = m.h / 2 - 12;
+  const rise = 58 / Math.max(1, maxR);         /* 오르막은 막 길이와 상관없이 같은 높이만큼 */
   for (const n of m.nodes) {
     const jitter = n.type === 'boss' ? 0 : ((n.id * 37) % 18) - 9;
     n.x = PAD_L + n.r * STEP;
-    n.y = midY + (n.c - (MAP_W - 1) / 2) * LANE + jitter - n.r * 3.4;
+    n.y = midY + (n.c - (MAP_W - 1) / 2) * LANE + jitter - n.r * rise;
     /* 오를수록 길이 조금씩 높아진다 — 산을 타는 맛 */
-    if (n.type === 'boss') { n.x = PAD_L + maxR * STEP; n.y = midY - maxR * 3.4; }
+    if (n.type === 'boss') { n.x = PAD_L + maxR * STEP; n.y = midY - maxR * rise; }
     if (!n.prev) n.prev = [];
   }
   /* 옛 저장에 prev 가 없을 수 있다 — 여기서 다시 잇는다 */
@@ -16639,9 +17115,31 @@ function showCardList(list, title, shuffled) {
     <div class="cardgrid"></div><button class="brush-btn" id="cl_close">닫기</button>`);
   const pb = p.querySelector('#cl_plan'); if (pb) pb.onclick = () => { closeTop(); showPlan(); };
   const g = p.querySelector('.cardgrid');
-  const arr = shuffled ? shuffle(list.slice()) : list.slice();
-  if (!arr.length) g.innerHTML = '<div style="color:#c8bda3">비어 있다</div>';
-  for (const c of arr) g.appendChild(cardNode(c));
+  const base = shuffled ? shuffle(list.slice()) : list.slice();
+  /* 정렬 · 찾기 — 덱이 길어지면 찾기 어렵다 (뒤섞어 보이는 더미는 순서를 감춘다) */
+  const RK = r => { const i = GRADE_ORDER.indexOf(r); return i < 0 ? (r === 'curse' ? -1 : 99) : i; };
+  const SORTS = { got: '얻은 순', name: '이름', grade: '등급', cost: '기 값' };
+  if (!shuffled && base.length > 4) {
+    const bar = el('div', 'clbar', `<input class="clfind" placeholder="부적 찾기 — 이름 · 설명" spellcheck="false">
+      <span class="clsort">${Object.keys(SORTS).map(k => `<button data-s="${k}" class="${(META.clSort || 'got') === k ? 'on' : ''}">${SORTS[k]}</button>`).join('')}</span><em class="cln"></em>`);
+    g.parentNode.insertBefore(bar, g);
+    bar.querySelector('.clfind').onkeydown = e => e.stopPropagation();
+    bar.querySelector('.clfind').oninput = () => fill();
+    bar.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { META.clSort = b.dataset.s; saveMeta(); bar.querySelectorAll('[data-s]').forEach(x => x.classList.toggle('on', x === b)); fill(); });
+  }
+  const fill = () => {
+    const bar = p.querySelector('.clbar'), q = bar ? bar.querySelector('.clfind').value.trim() : '', srt = bar ? META.clSort || 'got' : 'got';
+    let arr = base.slice();
+    if (q) arr = arr.filter(c => { const d = cdef(c) || {}; return (String(d.n || '') + ' ' + String(typeof d.d === 'string' ? d.d : '')).includes(q); });
+    if (srt === 'name') arr.sort((a, b) => String((cdef(a) || {}).n || '').localeCompare(String((cdef(b) || {}).n || ''), 'ko'));
+    else if (srt === 'grade') arr.sort((a, b) => RK((cdef(b) || {}).rar) - RK((cdef(a) || {}).rar));
+    else if (srt === 'cost') arr.sort((a, b) => ccost(a) - ccost(b));
+    g.innerHTML = '';
+    if (!arr.length) g.innerHTML = `<div style="color:#c8bda3">${q ? '찾는 부적이 없다' : '비어 있다'}</div>`;
+    for (const c of arr) g.appendChild(cardNode(c));
+    const n = p.querySelector('.cln'); if (n) n.textContent = q ? `${arr.length} / ${base.length}장` : `${base.length}장`;
+  };
+  fill();
   p.querySelector('#cl_close').onclick = closeTop;
 }
 /* ══════════════════════════════════════════════════════════
@@ -21131,12 +21629,549 @@ function cutByName(k) {
 /* 관리자가 뿌린 컷씬 — 막 뿌린 것(1분 안)만, 한 번씩. 대전·모두의 적 한가운데에서는 틀지 않는다 */
 function cutLiveCheck() {
   const c = LIVE.cut;
-  if (!c || !c.k || !CUT_LIST[c.k] || CUT.seen[c.id]) return;
+  if (!c || !c.k || CUT.seen[c.id]) return;
+  const custom = c.k === 'custom';                       /* 컷씬 공방에서 백야가 손수 지은 것 */
+  if (custom ? !(c.def && typeof c.def === 'object') : !CUT_LIST[c.k]) return;
   if (srvNow() - (c.at || 0) > 60000) return;
   if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'world')) return;
   if (!acctOn() || cutPlaying()) return;
   CUT.seen[c.id] = 1;
-  cutByName(c.k).then(() => { if (G.b) try { syncAll(); } catch (e) {} });
+  (custom ? cutMkRun(c.def) : cutByName(c.k)).then(() => { if (G.b) try { syncAll(); } catch (e) {} });
+}
+/* ══ 映 컷씬 공방 — 백야가 즉석으로 짓는 컷씬 ══════════════════
+   장면을 쌓는다. 장면 하나는 배경 · 등장(셋까지) · 카메라 · 효과 · 소리 · 자막 · 제목 · 길이.
+   짓는 법은 짧은 글(JSON) 하나 — 이 기계에 저장해 두고, 모두에게 틀 수도 있다(서버가 싣는다).
+   열리는 기계: 관리자 · 퍼뜨리기 · 어드민 핵 열쇠를 다 가졌고, 공방 코드까지 적은 곳.
+   새 그림을 그리는 것이 아니라 이미 있는 무대 조각(하늘·산·인물·요괴·진·알갱이)을 엮는다.
+   ═════════════════════════════════════════════════════════ */
+const CMK_MAX = 40000, CMK_SC = 12, CMK_SAVE = 'baekgwi_cutmk', CMK_DRAFT = 'baekgwi_cutmk_draft';
+function cutMkMiss() {
+  const c = META.codes || {}, miss = [];
+  if (!c[ADMIN_H]) miss.push('관리자');
+  if (!caster()) miss.push('퍼뜨리기');
+  if (!c[ADMHACK_H]) miss.push('어드민 핵');
+  return miss;
+}
+const cutMkOn = () => !!(META.codes && META.codes[CUTMK_H]) && !cutMkMiss().length;
+const cutMkKey = () => { try { return localStorage.getItem(CUTMK_KEY) || ''; } catch (e) { return ''; } };
+/* 배경 — 이름 · 하늘 세 빛(목록 그림에도 쓴다) */
+const CMK_BG = {
+  starry:  { n: '별 쏟아지는 밤', sky: ['#02030c', '#0a1030', '#1a2048'], moon: [1250, 170, 58, '#f4f0ff'], ridge: ['#0c1028', '#060814'], amb: [['star', .7]], fog: '150,160,220', mote: '220,220,255' },
+  dawn:    { n: '새벽 놀', sky: ['#f2c48a', '#e8987a', '#6a4a62'], moon: [1180, 300, 70, '#fff0c8'], ridge: ['#4a3448', '#1c1420'], amb: [['gold', .4], ['petal', .25]], fog: '255,226,200', mote: '255,236,190' },
+  crimson: { n: '핏빛 밤 — 황제의 하늘', sky: ['#060104', '#3a0a12', '#1a0608'], moon: [800, 250, 96, '#ffcf6a'], ridge: ['#1a060c', '#070204'], amb: [['ember', .5], ['ash', .2, '#3a2a2a']], fog: '160,60,70', mote: '255,150,80' },
+  aurora:  { n: '극광의 밤', sky: ['#020611', '#06202a', '#0c2a30'], ridge: ['#08161c', '#04090c'], amb: [['star', .4]], aur: 1, fog: '150,230,210', mote: '160,255,220' },
+  snowy:   { n: '눈 내리는 마을', sky: ['#101014', '#2a2a30', '#4a4440'], ridge: ['#1e1c1c', '#141212'], amb: [['snow', .6]], fog: '220,220,235', mote: '240,240,255' },
+  storm:   { n: '천둥 치는 벼랑', sky: ['#05060a', '#141826', '#262a3a'], ridge: ['#10121a', '#0a0b10'], amb: [['rain', 1.4]], fog: '140,150,180', mote: '200,210,255', storm: 1 },
+  lab:     { n: '박사의 연구실', sky: ['#020806', '#06140e', '#0a1c14'], lab: 1, mote: '120,255,170' },
+  void:    { n: '먹빛 어둠', sky: ['#000000', '#030205', '#08060c'], ridge: ['#060509', '#030204'], amb: [['inkup', .08]], fog: '60,50,70', mote: '200,190,230' },
+  paper:   { n: '흰 종이 — 먹그림', sky: ['#e8dfc8', '#efe6d2', '#f6efde'], ridge: ['#b8ac90', '#4a4034'], amb: [['ash', .15, '#6a5e4a']], fog: '255,250,235', mote: '120,100,70', bright: 1 },
+  heaven:  { n: '하늘 궁궐', sky: ['#d8d0b0', '#f0e8d0', '#fffaf0'], moon: [800, 200, 130, '#ffffff'], ridge: ['#e0d8c0', '#d0c8b0'], amb: [['petal', .35, '#fff4e0'], ['gold', .2]], fog: '255,250,235', mote: '255,240,190', bright: 1 }
+};
+for (let a = 1; a <= 25; a++) if (CUT_ACT[a]) CMK_BG['a' + a] = { n: `${a}막 · ${ACT_NAME[a]}`, act: a, sky: CUT_ACT[a].sky };
+const CMK_WHO = {
+  man: { n: '퇴마사', g: '人' }, baekya: { n: '백야', g: '白' }, dano: { n: '단오', g: '午' }, doctor: { n: '박사', g: '博' },
+  emperor: { n: '황제', g: '帝' }, yk0: { n: '도깨비', g: '鬼' }, yk1: { n: '넋불', g: '火' }, yk2: { n: '여우', g: '狐' },
+  yk3: { n: '외눈', g: '目' }, horde: { n: '요괴 떼', g: '群' }, boss: { n: '보스 큰 글자', g: '字' }, talis: { n: '부적 고리', g: '符' }
+};
+const CMK_P = { l: '왼쪽', c: '가운데', r: '오른쪽' };
+const CMK_MOVE = { stay: '그대로', walk: '걸어 들어옴', rise: '솟아오름', drop: '내리꽂힘', glow: '빛으로 나타남', act: '손짓 (팔을 든다)', vanish: '연기로 사라짐' };
+const CMK_CAM = { still: '고정', push: '다가가기', pull: '물러나기', crane: '올려다보기', orbit: '돌기', dutch: '기울기', pan: '옆으로 훑기', focus: '첫 인물 확대', whip: '휙 돌리기', fall: '하늘에서 내려오기' };
+const CMK_TR = { fade: '어둠으로', cut: '바로', flash: '하얗게', ink: '먹물 번짐' };
+const CMK_FX = { flash: '섬광', shake: '흔들림', burst: '터짐', seal: '부적 진', speed: '집중선', ember: '불티', ink: '먹물', fog: '안개', stars: '별',
+  petal: '꽃잎', snow: '눈', rain: '비', gold: '금가루', soul: '넋불', leaf: '낙엽', glitch: '지지직', mono: '흑백', red: '붉은 기운' };
+const CMK_SFX = { none: '없음', gong: '징', drum: '북', thunder: '천둥', bell: '종', boss: '보스', charge: '기 모음', crit: '쾅', unlock: '열림',
+  holyhit: '성스러운 일격', talismanS: '부적', swoosh: '휙', heartbeat: '심장', shatter: '깨짐', victory: '승리' };
+const CMK_X = { l: 500, c: 800, r: 1100 };
+/* 받은 것은 언제나 거른다 — 모르는 낱말은 버리고, 글은 길이를 자른다(그리는 곳에서 wEsc) */
+function cutMkClean(d) {
+  const o = d && typeof d === 'object' ? d : {};
+  const has = (set, v) => typeof v === 'string' && Object.prototype.hasOwnProperty.call(set, v);
+  const pick = (set, v, df) => (has(set, v) ? v : df);
+  const sc = []; let tot = 0;
+  for (const s0 of (Array.isArray(o.sc) ? o.sc : []).slice(0, CMK_SC)) {
+    const s = s0 && typeof s0 === 'object' ? s0 : {};
+    const ms = Math.max(1500, Math.min(8000, Math.round((+s.ms || 4000) / 100) * 100));
+    if (tot + ms > CMK_MAX) break;
+    tot += ms;
+    sc.push({ ms, bg: pick(CMK_BG, s.bg, 'starry'), tr: pick(CMK_TR, s.tr, 'fade'), cam: pick(CMK_CAM, s.cam, 'push'), sfx: pick(CMK_SFX, s.sfx, 'none'),
+      who: (Array.isArray(s.who) ? s.who : []).filter(w => w && has(CMK_WHO, w.k)).slice(0, 3)
+        .map(w => ({ k: w.k, p: pick(CMK_P, w.p, 'c'), m: pick(CMK_MOVE, w.m, 'stay'), g: String(w.g || '').slice(0, 2), c: /^#[0-9a-f]{6}$/i.test(String(w.c || '')) ? w.c : '#a8272c' })),
+      fx: [...new Set((Array.isArray(s.fx) ? s.fx : []).filter(f => has(CMK_FX, f)))].slice(0, 8),
+      sp: String(s.sp || '').slice(0, 16),
+      say: (Array.isArray(s.say) ? s.say : []).map(x => String(x || '').slice(0, 80)).filter(x => x.trim()).slice(0, 3),
+      tt: String(s.tt || '').slice(0, 12), ts: String(s.ts || '').slice(0, 40) });
+  }
+  return { n: String(o.n || '').slice(0, 40), sc };
+}
+const cmkLen = d => d.sc.reduce((a, s) => a + (+s.ms || 0), 0);
+/* ── 무대 조각 ──────────────────────────────────────────── */
+const cmkAurSvg = () => `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible"><defs>
+  <linearGradient id="cmkag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8affd0" stop-opacity="0"/><stop offset=".5" stop-color="#5affb4" stop-opacity=".62"/><stop offset="1" stop-color="#1a7a6a" stop-opacity="0"/></linearGradient>
+  <linearGradient id="cmkap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d08aff" stop-opacity="0"/><stop offset=".5" stop-color="#b070ff" stop-opacity=".46"/><stop offset="1" stop-color="#4a2a8a" stop-opacity="0"/></linearGradient></defs>
+  <g style="filter:blur(5px)"><path class="cmka1" d="M-300 300 C100 140 420 360 800 220 S1500 120 1900 260 L1900 470 C1500 360 1120 560 800 430 S100 360 -300 520Z" fill="url(#cmkag)"/>
+  <path class="cmka2" d="M-300 170 C200 60 520 260 900 140 S1600 80 1900 160 L1900 300 C1500 240 1200 380 860 280 S200 220 -300 360Z" fill="url(#cmkap)"/></g></svg>`;
+function cmkBg(S, key) {
+  const B = CMK_BG[key] || CMK_BG.starry;
+  if (B.act) {
+    const a = B.act, T = CUT_ACT[a], light = /^#(e|f|d|c)/i.test(T.sky[2]);
+    cutLayer(S, cutSkySvg(T.sky[0], T.sky[1], T.sky[2], T.moon, T.moon && T.moon[3]), -900, 0);
+    cutLayer(S, cutRidge(T.ridge[0], 560, 150, a * .7, .9), -560, 1);
+    cutLayer(S, cutMotif(T.motif, '#6a2a2a'), -220, 2, 'cmotif');
+    cutLayer(S, cutRidge(T.ridge[1], 790, 46, a * 1.3), 0, 3);
+    for (const x of T.amb) cutAmbient(S, x[0], x[1], x[2]);
+    cutFloor(S, 800, T.ridge[1], light ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.04)');
+    cutFog(S, light ? '255,250,235' : '160,150,180', 640);
+    cutMotes(S, 22, light ? '255,240,190' : '220,210,255');
+    if (light) S.root.classList.add('bright');
+    if (T.motif === 'heavengate') S.root.classList.add('dooropen');
+    if (T.motif === 'scroll') S.root.classList.add('unroll');
+    return;
+  }
+  if (B.lab) {
+    cutLayer(S, cutSkySvg(B.sky[0], B.sky[1], B.sky[2], null), -900, 0);
+    cutLayer(S, `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible">
+      <rect x="-400" y="-300" width="2400" height="1500" fill="#07120d"/>
+      <g stroke="#0f2a1e" stroke-width="2">${Array.from({ length: 30 }, (_, i) => `<line x1="${-400 + i * 100}" y1="-300" x2="${-400 + i * 100}" y2="1200"/>`).join('')}
+        ${Array.from({ length: 16 }, (_, i) => `<line x1="-400" y1="${-300 + i * 100}" x2="2000" y2="${-300 + i * 100}"/>`).join('')}</g>
+      <path d="M-400 90 H2000 M-400 120 H2000" stroke="#1c3a2c" stroke-width="16"/><path d="M200 90 V600 M1400 120 V640" stroke="#1c3a2c" stroke-width="14"/>
+      ${[260, 1340].map(x => `<circle cx="${x}" cy="150" r="14" fill="#ff2a3a" class="calarm"/><circle cx="${x}" cy="150" r="60" fill="#ff2a3a" opacity=".12" class="calarm"/>`).join('')}
+      <rect x="-400" y="660" width="2400" height="600" fill="#040a07"/><path d="M-400 660 H2000" stroke="#1f5a3c" stroke-width="3"/></svg>`, -400, 1);
+    [[560, 300], [800, 270], [1040, 300]].forEach(([x, y], i) => cutPut(S, `<div class="cmon"><div class="cmonc">${cutHackCode(40, i * 13)}</div><div class="cmonx">ACCESS GRANTED</div></div>`, { x, y, z: -160, zi: 2 }));
+    cutFloor(S, 800, '#040a07', 'rgba(44,255,122,.06)'); cutMotes(S, 20, B.mote);
+    return;
+  }
+  cutLayer(S, cutSkySvg(B.sky[0], B.sky[1], B.sky[2], B.moon, B.moon && B.moon[3]), -900, 0);
+  if (B.aur) cutLayer(S, cmkAurSvg(), -840, 0, 'cmkaur');
+  cutLayer(S, cutRidge(B.ridge[0], 580, 140, 2.2, .9), -520, 1);
+  cutLayer(S, cutRidge(B.ridge[1], 800, 46, 5.1), 0, 3);
+  for (const x of B.amb || []) cutAmbient(S, x[0], x[1], x[2]);
+  cutFloor(S, 800, B.ridge[1], B.bright ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.04)');
+  cutFog(S, B.fog, 640); cutMotes(S, 24, B.mote);
+  if (B.bright) S.root.classList.add('bright');
+}
+/* 등장 — 무엇을 어떤 크기로, 발을 어디에 딛고 */
+function cmkFig(w, side) {
+  const flip = side > 0 ? ' style="transform:scaleX(-1)"' : '';
+  switch (w.k) {
+    case 'man': return { h: cutManSvg(), cls: 'cmanw', s: 1 };
+    case 'baekya': return { h: `<div class="cmkbaek">${cutManSvg('#ece6da', '#d8b04a')}</div>`, cls: 'cmanw cmkbaekw', s: 1 };
+    case 'dano': return { h: `<div class="cmkdano">${cutManSvg('#1a2a3c', '#3a6a8a')}<b class="t26badge">午</b></div>`, cls: 'cmanw', s: 1 };
+    case 'doctor': return { h: cutDoctorSvg(), cls: 'cdocw', s: 1.25 };
+    case 'emperor': return { h: cutEmperorSvg(), cls: 't26empw cmkemp', s: .62, y: 836 };
+    case 'talis': return { h: '<div class="cringr">' + Array.from({ length: 6 }, (_, i) => `<div class="cringi" style="transform:rotateY(${i * 60}deg) translateZ(210px)">${cutTalis('破邪顯正退魔'[i])}</div>`).join('') + '</div>',
+      cls: 'cring cmkring', s: .9, y: 560, mid: 1 };
+    case 'boss': {
+      const c = w.c || '#a8272c', ent = { stay: 'fog', walk: 'split', rise: 'rise', drop: 'descend', glow: 'glow', act: 'shatter', vanish: 'fog' }[w.m] || 'fog';
+      return { h: `<div class="cbwrap"><div class="cbaura" style="--bc:${c}"></div><div class="cbglyph" style="--bc:${c}">${cut3D(wEsc(w.g || '鬼'), 16, c, 3)}</div></div>`, cls: 'cboss ent-' + ent, s: .62, y: 470, mid: 1, boss: 1 };
+    }
+    default: { const k = +String(w.k).slice(2) || 0;
+      return { h: `<div class="cykb"${flip}>${cutYokaiSvg(k, ['#1c1024', '#24101a', '#101a24', '#1a1a10'][k])}</div>`, cls: 'cyk', s: 1.7 }; }
+  }
+}
+function cmkPut(S, w, x, y0, z, zi) {
+  const side = x < 760 ? -1 : x > 840 ? 1 : 0, F = cmkFig(w, side);
+  const n = cutPut(S, `<div class="cmkfi">${F.h}</div>`, { x, y: F.y || y0, z, ax: .5, ay: F.mid ? .5 : 1, cls: 'cmkfig ' + F.cls, zi, tf: `scale(${F.s})` });
+  n.style.transformOrigin = F.mid ? '50% 50%' : '50% 100%';
+  n._side = side; n._boss = !!F.boss;
+  return n;
+}
+/* 움직임 — 안쪽 껍질만 움직인다(바깥은 자리·깊이를 쥐고 있다) */
+function cmkMove(S, T, n, m, ms, delay) {
+  const fi = n.querySelector('.cmkfi'); if (!fi) return;
+  const A = (k, o) => fi.animate(k, Object.assign({ fill: 'backwards', delay }, o));
+  const at = () => cutAt(n);
+  if (n._boss) { T(delay + 30, () => n.classList.add('in')); }
+  else if (m === 'walk') A([{ transform: `translateX(${n._side > 0 ? 780 : -780}px)`, opacity: 0 }, { opacity: 1, offset: .12 }, { transform: 'none', opacity: 1 }], { duration: 1500, easing: 'cubic-bezier(.25,.7,.3,1)' });
+  else if (m === 'rise') A([{ transform: 'translateY(360px) scale(.9)', opacity: 0, filter: 'blur(6px)' }, { transform: 'none', opacity: 1, filter: 'none' }], { duration: 1150, easing: 'cubic-bezier(.2,.9,.3,1)' });
+  else if (m === 'drop') {
+    A([{ transform: 'translateY(-1100px)' }, { transform: 'translateY(0) scaleY(.84) scaleX(1.08)', offset: .78 }, { transform: 'none' }], { duration: 720, easing: 'cubic-bezier(.55,0,.6,1)' });
+    T(delay + 560, () => { cutShake(S, 14, 420); const p = at(); cutEmit(S, 'smoke', p.x, p.y + p.h * .45, 12, { sp: 5, life: 50, sz: 30, g: -.01 }); cutEmit(S, 'ring', p.x, p.y + p.h * .45, 1, { sp: 0, life: 22, sz: 50, g: 0 }); });
+  } else if (m === 'glow') {
+    A([{ opacity: 0, filter: 'brightness(5) blur(12px)', transform: 'scale(1.15)' }, { opacity: 1, filter: 'none', transform: 'none' }], { duration: 1300, easing: 'ease-out' });
+    T(delay + 120, () => { const p = at(); cutEmit(S, 'gold', p.x, p.y, 34, { sp: 6, life: 50, g: -.02, r: p.w * .5 }); });
+  } else A([{ opacity: 0 }, { opacity: 1 }], { duration: 650, easing: 'ease' });
+  if (m === 'act') T(delay + Math.max(700, ms * .35), () => {
+    n.classList.add('armup', 'raise', 'turn');
+    if (n.classList.contains('cyk')) fi.animate([{ transform: 'none' }, { transform: `translateX(${n._side > 0 ? -90 : 90}px) scale(1.08)` }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.3,1.4,.4,1)' });
+    const p = at(); cutEmit(S, 'gold', p.x + (n._side > 0 ? -30 : 30), p.y - p.h * .25, 28, { sp: 6, life: 44, g: .02 });
+  });
+  if (m === 'vanish') T(delay + Math.max(900, ms * .55), () => {
+    const p = at(); cutEmit(S, 'smoke', p.x, p.y, 14, { sp: 3, life: 70, sz: 40, g: -.03, r: p.w * .4 }); cutEmit(S, 'soul', p.x, p.y, 10, { sp: 2, life: 60, g: -.05 });
+    fi.animate([{ opacity: 1, filter: 'none' }, { opacity: 0, filter: 'blur(10px)', transform: 'translateY(-40px) scale(1.05)' }], { duration: 900, fill: 'forwards', easing: 'ease-in' });
+  });
+}
+function cmkCam(S, s) {
+  const f = s.who[0], fx = f ? (f.k === 'horde' ? 800 : CMK_X[f.p] || 800) : 800;
+  const nar = S.W / S.k < 1100, k = nar ? .8 : 1;
+  const P = {
+    still: [{ x: 800, y: 470, s: 1 }, { x: 800, y: 470, s: 1.03 }],
+    push:  [{ x: 800, y: 480, s: .95 }, { x: 800, y: 520, s: 1.28 }],
+    pull:  [{ x: 800, y: 520, s: 1.35 }, { x: 800, y: 470, s: .95 }],
+    crane: [{ x: 800, y: 700, s: 1.2, rx: -10 }, { x: 810, y: 440, s: 1, rx: 4 }],
+    orbit: [{ x: 800, y: 480, s: 1.05, ry: -26 }, { x: 820, y: 480, s: 1.1, ry: 22 }],
+    dutch: [{ x: 780, y: 470, s: 1.05, rz: 9 }, { x: 830, y: 480, s: 1.12, rz: -6 }],
+    pan:   [{ x: nar ? 580 : 520, y: 490, s: 1.15 }, { x: nar ? 1020 : 1080, y: 490, s: 1.15 }],
+    focus: [{ x: 800, y: 480, s: 1 }, { x: fx, y: f && f.k === 'boss' ? 470 : 600, s: 1.65 }],
+    whip:  [{ x: 420, y: 520, s: 1.3, rz: -6 }, { x: 900, y: 480, s: 1.05, rz: 2 }],
+    fall:  [{ x: 800, y: -300, s: 1.3, rx: 30 }, { x: 810, y: 480, s: 1, rx: 0 }]
+  }[s.cam] || [{ x: 800, y: 470, s: 1 }, { x: 800, y: 470, s: 1.05 }];
+  const Z = { x: 800, y: 450, s: 1, rx: 0, ry: 0, rz: 0 };
+  const a = Object.assign({}, Z, P[0]), b = Object.assign({}, Z, P[1]);
+  a.s *= k; b.s *= k;
+  cutCam(S, a, 0);
+  const dur = s.cam === 'whip' ? 900 : s.cam === 'fall' ? Math.min(2400, s.ms - 200) : s.ms - 120;
+  cutCam(S, b, dur, s.cam === 'whip' ? 'cubic-bezier(.7,0,.2,1)' : undefined);
+}
+function cmkInk(S) {
+  const n = el('div', 'cmkover cmkink', '<i></i><i></i><i></i>');
+  S.root.appendChild(n);
+  S.timers.push(setTimeout(() => n.remove(), 1200));
+}
+const cmkLine = (sp, t) => (sp ? `<em class="cmksp">${wEsc(sp)}</em>` : '') + `<span>${wEsc(t)}</span>`;
+function cmkTitle(S, T, s) {
+  const ch = [...s.tt];
+  S.title.classList.remove('fade');
+  S.title.innerHTML = `<div class="cmkttl" style="--n:${Math.max(3, ch.length)}">${ch.length ? `<div class="cmkbig">${ch.map(c => `<span>${c === ' ' ? '&nbsp;' : wEsc(c)}</span>`).join('')}</div>` : ''}<i class="cmkrule"></i>${s.ts ? `<div class="cmkts">${wEsc(s.ts)}</div>` : ''}</div>`;
+  const sp = S.title.querySelectorAll('.cmkbig span');
+  sp.forEach((x, i) => T(i * 110, () => {
+    x.classList.add('in');
+    if (!i) cutShake(S, 6, 260);
+    if (i === sp.length - 1) { const p = cutAt(x); cutEmit(S, 'gold', p.x, p.y, 18, { sp: 4, life: 46, g: -.02 }); }
+  }));
+  T(sp.length * 110 + 140, () => { const t = S.title.querySelector('.cmkttl'); if (t) t.classList.add('on'); });
+}
+/* 장면 하나 — 무대를 비우고 새로 깐다. 장면 안의 일은 모두 이 장면이 시작한 때에서 잰다 */
+function cmkScene(S, s) {
+  for (const t of S.scT || []) clearTimeout(t);
+  S.scT = [];
+  const T = (ms, fn) => { const id = setTimeout(() => { if (S.alive) try { fn(); } catch (e) { console.error('공방 장면', e); } }, ms); S.scT.push(id); S.timers.push(id); };
+  S.stage.innerHTML = ''; S.amb = []; S.parts = [];
+  S.root.classList.remove('mono', 'glitch', 'bright', 'dooropen', 'unroll');
+  S.root.querySelectorAll('.cmkover').forEach(n => n.remove());
+  S.title.innerHTML = ''; S.title.classList.remove('fade'); S.sub.classList.remove('on');
+  cmkBg(S, s.bg);
+  /* 등장 */
+  let zi = 5;
+  s.who.forEach((w, i) => {
+    const d = i * 220;
+    if (w.k === 'horde') {
+      for (let j = 0; j < 8; j++) {
+        const x = 260 + j * 155 + (j > 3 ? 70 : 0), y = 808 + (j % 2) * 14;
+        const n = cmkPut(S, { k: 'yk' + (j % 4) }, x, y - 22, 60 - (j % 3) * 50, zi);
+        n.style.setProperty('--hs', (.75 + (j % 3) * .12).toFixed(2));
+        n.style.transform += ` scale(${(.62 + (j % 3) * .1).toFixed(2)})`;
+        cmkMove(S, T, n, w.m, s.ms, d + j * 90);
+      }
+    } else cmkMove(S, T, cmkPut(S, w, CMK_X[w.p] || 800, 796, 120 + i * 12, zi), w.m, s.ms, d);
+    zi++;
+  });
+  /* 효과 */
+  const fx = new Set(s.fx);
+  const amb = { ember: ['ember', .6], ink: ['inkup', .1], stars: ['star', .6], petal: ['petal', .4], snow: ['snow', .6], rain: ['rain', 1.3], gold: ['gold', .45], soul: ['soul', .14, '140,200,255'], leaf: ['leaf', .4, '#a8322a'] };
+  for (const k in amb) if (fx.has(k)) cutAmbient(S, amb[k][0], amb[k][1], amb[k][2]);
+  if (fx.has('fog')) cutFog(S, '210,210,230', 600);
+  if (fx.has('seal')) { const n = cutPut(S, cutSealSvg('#ffd76a'), { x: 800, y: 790, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' }); n.style.opacity = 0;
+    T(300, () => { n.animate([{ opacity: 0, transform: n.style.transform + ' scale(.4)' }, { opacity: 1, transform: n.style.transform }], { duration: 900, fill: 'forwards', easing: 'cubic-bezier(.2,.9,.3,1)' }); }); }
+  if (fx.has('mono')) S.root.classList.add('mono');
+  if (fx.has('red')) { const n = el('div', 'cmkover t26tint'); S.root.appendChild(n); T(40, () => n.classList.add('on')); }
+  if (fx.has('speed')) S.root.appendChild(el('div', 'cmkover cmkspeed'));
+  if (fx.has('flash')) T(60, () => cutFlash(S, '#fff', 520));
+  if (fx.has('shake')) T(320, () => cutShake(S, 16, 700));
+  if (fx.has('glitch')) { T(80, () => S.root.classList.add('glitch')); T(560, () => S.root.classList.remove('glitch'));
+    T(s.ms * .55, () => S.root.classList.add('glitch')); T(s.ms * .55 + 280, () => S.root.classList.remove('glitch')); }
+  if (fx.has('burst')) T(Math.max(500, s.ms * .45), () => {
+    const n = S.stage.querySelector('.cmkfig'), p = n ? cutAt(n) : { x: S.W / 2, y: S.H / 2 };
+    cutBurst(S, p.x, p.y, '200,40,70', 1.2); cutFlash(S, 'rgba(255,230,200,.6)', 300); cutShake(S, 12, 420); cutHitstop(S, 90);
+  });
+  if ((CMK_BG[s.bg] || {}).storm) for (let t = 700; t < s.ms - 300; t += 1300 + Math.random() * 1100) T(t, () => { cutFlash(S, 'rgba(200,220,255,.55)', 260); cutShake(S, 5, 200); });
+  /* 카메라 · 소리 */
+  cmkCam(S, s);
+  if (s.sfx && s.sfx !== 'none') T(120, () => cutSfx(s.sfx));
+  /* 자막 — 장면 길이를 나눠 차례로 */
+  const n = s.say.length;
+  if (n) { const seg = (s.ms - 380) / n;
+    s.say.forEach((line, j) => T(260 + j * seg, () => cutSay(S, cmkLine(s.sp, line), Math.max(900, seg - 140)))); }
+  /* 제목 */
+  if (s.tt || s.ts) { T(Math.min(700, s.ms * .2), () => cmkTitle(S, T, s)); T(Math.max(900, s.ms - 560), () => S.title.classList.add('fade')); }
+}
+function cutMkMake(def) {
+  const sc = def.sc, starts = []; let t = 0;
+  for (const s of sc) { starts.push(t); t += s.ms; }
+  const tl = [];
+  sc.forEach((s, i) => {
+    if (!i) return;
+    const t0 = starts[i];
+    if (s.tr === 'fade') tl.push([Math.max(0, t0 - 320), S => cutFade(S, 1, 300)]);
+    if (s.tr === 'ink') tl.push([Math.max(0, t0 - 430), S => cmkInk(S)]);
+    tl.push([t0, S => {
+      cmkScene(S, s);
+      if (s.tr === 'fade') cutFade(S, 0, 480);
+      else if (s.tr === 'flash') { cutFlash(S, '#fff', 560); cutSfx('swoosh'); }
+    }]);
+  });
+  tl.push([Math.max(0, t - 620), S => cutFade(S, 1, 600)]);
+  return { len: t + 260, build(S) { S.root.classList.add('cmk'); S.dark.style.opacity = 1; cmkScene(S, sc[0]); cutFade(S, 0, 800); }, tl };
+}
+/* 모두에게 뿌린 것을 튼다 (이 기계에서 다시 거른다) */
+function cutMkRun(def) {
+  const d = cutMkClean(def);
+  if (!d.sc.length) return Promise.resolve();
+  const prev = G.scene; if (!G.b) G.scene = 'cutscene';
+  return cutPlay(cutMkMake(d)).then(() => { if (G.scene === 'cutscene') G.scene = prev; });
+}
+/* ══ 공방 창 ══════════════════════════════════════════════ */
+const CMK = { def: null, sel: 0, undo: [], redo: [] };
+const cmkBlank = bg => ({ ms: 4000, bg: bg || 'starry', tr: 'fade', cam: 'push', sfx: 'none', who: [{ k: 'man', p: 'c', m: 'stay' }], fx: [], sp: '', say: [], tt: '', ts: '' });
+function cmkPad(d) {
+  for (const s of d.sc) { s.who = (s.who || []).slice(0, 3); while (s.who.length < 3) s.who.push({ k: '', p: ['l', 'c', 'r'][s.who.length], m: 'stay', g: '', c: '#a8272c' }); }
+  return d;
+}
+const CMK_EX = {
+  hello: { n: '백야의 인사', sc: [
+    { ms: 5200, bg: 'starry', cam: 'crane', sfx: 'bell', who: [{ k: 'baekya', p: 'c', m: 'glow' }], fx: ['gold', 'stars'], sp: '백야', say: ['달도 뜨지 않은 밤 —', '모두 잘 지내고 있었나.'] },
+    { ms: 4200, bg: 'void', tr: 'ink', cam: 'push', sfx: 'gong', who: [{ k: 'baekya', p: 'c', m: 'act' }], fx: ['seal', 'gold', 'flash'], sp: '백야', say: ['오늘 밤, 하늘이 열린다.'] },
+    { ms: 4600, bg: 'dawn', tr: 'flash', cam: 'pull', sfx: 'holyhit', who: [], fx: ['petal', 'gold'], tt: '白夜', ts: '곧 이벤트가 시작된다' }] },
+  raid: { n: '요괴의 습격', sc: [
+    { ms: 4600, bg: 'crimson', cam: 'pan', sfx: 'drum', who: [{ k: 'horde', p: 'c', m: 'rise' }], fx: ['ember', 'red'], sp: '???', say: ['산 너머에서 북소리가 울린다.', '백 마리의 요괴가 —'] },
+    { ms: 4200, bg: 'crimson', tr: 'flash', cam: 'dutch', sfx: 'boss', who: [{ k: 'man', p: 'l', m: 'walk' }, { k: 'yk0', p: 'r', m: 'drop' }], fx: ['shake', 'burst'], sp: '퇴마사', say: ['물러서지 마라!'] },
+    { ms: 4800, bg: 'a5', tr: 'ink', cam: 'focus', sfx: 'crit', who: [{ k: 'boss', p: 'c', m: 'rise', g: '鬼', c: '#c8202a' }], fx: ['ember', 'speed'], tt: '百鬼夜行', ts: '요괴 행렬이 몰려온다' }] },
+  lab: { n: '박사의 음모', sc: [
+    { ms: 4600, bg: 'lab', cam: 'push', sfx: 'charge', who: [{ k: 'doctor', p: 'c', m: 'act' }], fx: ['glitch'], sp: '박사', say: ['흐흐… 드디어 완성이다.', '이 세계의 규칙을 다시 쓴다.'] },
+    { ms: 4200, bg: 'lab', tr: 'flash', cam: 'orbit', sfx: 'thunder', who: [{ k: 'doctor', p: 'l', m: 'stay' }, { k: 'yk3', p: 'r', m: 'rise' }], fx: ['glitch', 'flash', 'soul'], tt: '⌬ 해킹', ts: '박사의 비밀 연구가 풀려났다' }] },
+  emperor: { n: '황제의 부름', sc: [
+    { ms: 5000, bg: 'crimson', cam: 'crane', sfx: 'gong', who: [{ k: 'emperor', p: 'c', m: 'rise' }], fx: ['red', 'ember'], sp: '???', say: ['이름을 묻지 마라.', '짐은 이 산의 끝에 앉은 자.'] },
+    { ms: 4400, bg: 'crimson', tr: 'cut', cam: 'push', sfx: 'thunder', who: [{ k: 'emperor', p: 'c', m: 'act' }, { k: 'horde', p: 'c', m: 'rise' }], fx: ['seal', 'shake', 'red'], sp: '황제', say: ['일어나라 — 백귀여.'] },
+    { ms: 4200, bg: 'void', tr: 'ink', cam: 'pull', sfx: 'boss', who: [], fx: ['ink'], tt: '無名宮', ts: '곧 열린다' }] }
+};
+function cmkLoadDraft() {
+  try { const d = JSON.parse(localStorage.getItem(CMK_DRAFT) || 'null'); if (d && Array.isArray(d.sc) && d.sc.length) { const c = cutMkClean(d); if (c.sc.length) return cmkPad(c); } } catch (e) {}
+  return cmkPad({ n: '', sc: [cmkBlank()] });
+}
+let _cmkDraftT = 0;
+function cmkDraft() { clearTimeout(_cmkDraftT); _cmkDraftT = setTimeout(() => { try { localStorage.setItem(CMK_DRAFT, JSON.stringify(CMK.def)); } catch (e) {} }, 300); }
+const cmkSaves = () => { try { const a = JSON.parse(localStorage.getItem(CMK_SAVE) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+const cmkSavesPut = a => { try { localStorage.setItem(CMK_SAVE, JSON.stringify(a.slice(0, 30))); return true; } catch (e) { toast('저장할 자리가 모자라다'); return false; } };
+function cmkPush() { CMK.undo.push(JSON.stringify(CMK.def)); if (CMK.undo.length > 80) CMK.undo.shift(); CMK.redo = []; }
+async function cmkCast(def) {
+  const d = cutMkClean(def);
+  if (!d.sc.length) return { ok: false, why: '장면이 없다' };
+  if (!cutMkKey()) return { ok: false, why: '공방 열쇠가 이 기계에 없다 — 공방 코드를 다시 적으시오' };
+  const r = await castSend({ cut: { k: 'custom', def: d }, cutKey: cutMkKey() });
+  if (r.ok) try { logNote('cut', `공방 컷씬 「${d.n || '이름 없음'}」 — ${d.sc.length}장면 · ${(cmkLen(d) / 1000).toFixed(1)}초`); } catch (e) {}
+  return r;
+}
+function cmkPlay(def) {
+  const d = cutMkClean(def);
+  if (!d.sc.length) { toast('장면이 없다'); return; }
+  cutPlay(cutMkMake(d));
+}
+function showCutMaker() {
+  if (!cutMkOn()) {
+    toast(META.codes && META.codes[CUTMK_H] ? '컷씬 공방 — 빠진 열쇠: ' + cutMkMiss().join(' · ') : '컷씬 공방은 공방 코드가 있어야 열린다');
+    return;
+  }
+  if (!CMK.def) CMK.def = cmkLoadDraft();
+  const p = overlay(`<div class="cmk">
+    <div class="cmkhead">
+      <button class="gback" id="cmk_back">←</button>
+      <i class="cmkico">映</i>
+      <div class="cmkht"><h2>컷씬 공방</h2><span>장면을 쌓아 즉석 컷씬을 짓는다 · 미리 보고 · 저장하고 · 모두에게 튼다</span></div>
+      <input id="cmk_name" maxlength="40" placeholder="컷씬 이름 — 이를테면 「백야의 인사」">
+      <div class="cmklen"><div><b id="cmk_tot">0.0</b><small>/ 40초 · 장면 <em id="cmk_cnt">1</em>/12</small></div><i><u id="cmk_bar"></u></i></div>
+    </div>
+    <div class="cmktime" id="cmk_time"></div>
+    <div class="cmkbody">
+      <div class="cmklist" id="cmk_list"></div>
+      <div class="cmked" id="cmk_ed"></div>
+      <div class="cmkside">
+        <button class="cmkbtn play" id="cmk_all"><i>▶</i><b>처음부터 보기</b><small>Ctrl+Enter</small></button>
+        <button class="cmkbtn" id="cmk_one"><i>▷</i><b>이 장면만</b><small>Shift+Enter</small></button>
+        <button class="cmkbtn" id="cmk_save"><i>⎙</i><b>저장</b><small>Ctrl+S · 같은 이름은 덮어쓴다</small></button>
+        <button class="cmkbtn cast" id="cmk_cast"><i>📡</i><b>모두에게 틀기</b><small>지금 접속한 모두의 화면에 한 번</small></button>
+        <div class="cmkundo"><button id="cmk_undo" title="Ctrl+Z">↶ 되돌리기</button><button id="cmk_redo" title="Ctrl+Y">↷ 다시</button></div>
+        <div class="cmksub">저장한 컷씬</div><div class="cmksaves" id="cmk_saves"></div>
+        <div class="cmksub">예시로 시작</div><div class="cmkex" id="cmk_ex">${Object.keys(CMK_EX).map(k => `<button data-ex="${k}">${wEsc(CMK_EX[k].n)}<small>${CMK_EX[k].sc.length}장면</small></button>`).join('')}</div>
+        <button class="cmkbtn ghost" id="cmk_new"><b>새로 짓기</b><small>지금 것은 되돌리기로 살릴 수 있다</small></button>
+        <div class="cmkhelp">장면 카드는 끌어서 순서를 바꾼다 · <b>Ctrl+D</b> 장면 복제 · <b>Alt+↑↓</b> 장면 고르기 · 고친 것은 이 기계에 저절로 남는다</div>
+      </div>
+    </div>
+    <datalist id="cmk_spl"><option value="백야"><option value="퇴마사"><option value="단오"><option value="박사"><option value="황제"><option value="???"><option value="요괴"></datalist>
+  </div>`, 'cmkpanel');
+  p.dataset.noauto = '1';
+  const q = s => p.querySelector(s), D = () => CMK.def;
+  const cur = () => D().sc[Math.min(CMK.sel, D().sc.length - 1)];
+  const tot = () => cmkLen(D());
+  const skyOf = s => (CMK_BG[s.bg] || CMK_BG.starry).sky;
+  const whoG = s => s.who.filter(w => w.k).map(w => `<i>${w.k === 'boss' ? wEsc(w.g || '鬼') : CMK_WHO[w.k].g}</i>`).join('') || '<i class="none">·</i>';
+  const head = () => {
+    const t = tot();
+    q('#cmk_tot').textContent = (t / 1000).toFixed(1);
+    q('#cmk_cnt').textContent = D().sc.length;
+    q('#cmk_bar').style.width = Math.min(100, t / CMK_MAX * 100) + '%';
+    q('.cmklen').classList.toggle('full', t >= CMK_MAX - 1500 || D().sc.length >= CMK_SC);
+    q('#cmk_name').value = D().n || '';
+    let at = 0;
+    q('#cmk_time').innerHTML = D().sc.map((s, i) => { const sk = skyOf(s), x = at; at += s.ms;
+      return `<b class="${i === CMK.sel ? 'on' : ''}" data-i="${i}" style="width:${s.ms / CMK_MAX * 100}%;--s0:${sk[0]};--s2:${sk[2]}" title="${i + 1} · ${(x / 1000).toFixed(1)}~${(at / 1000).toFixed(1)}초"><em>${i + 1}</em></b>`; }).join('')
+      + `<span class="cmkrest" style="width:${Math.max(0, (CMK_MAX - at) / CMK_MAX * 100)}%"></span>`
+      + [10, 20, 30].map(s => `<u style="left:${s / 40 * 100}%">${s}</u>`).join('');
+    q('#cmk_time').querySelectorAll('b[data-i]').forEach(b => b.onclick = () => { CMK.sel = +b.dataset.i; drawAll(); });
+  };
+  const drawList = () => {
+    const box = q('#cmk_list');
+    box.innerHTML = D().sc.map((s, i) => { const sk = skyOf(s), B = CMK_BG[s.bg] || CMK_BG.starry;
+      return `<div class="cmksc${i === CMK.sel ? ' on' : ''}" data-i="${i}" draggable="true" style="--s0:${sk[0]};--s1:${sk[1]};--s2:${sk[2]}">
+        <div class="cmkth"><b>${i + 1}</b><span>${whoG(s)}</span>${s.tt ? `<em>${wEsc(s.tt)}</em>` : ''}${s.fx.length ? `<small class="cmkfxn">✦${s.fx.length}</small>` : ''}</div>
+        <div class="cmkinfo"><small>${wEsc(B.n)}</small><p>${wEsc(s.say[0] || s.ts || s.tt || '—')}</p><u>${(s.ms / 1000).toFixed(1)}초 · ${CMK_CAM[s.cam]}${i ? ' · ' + CMK_TR[s.tr] : ''}</u></div>
+        <div class="cmkscb"><button data-a="up" title="위로">↑</button><button data-a="dn" title="아래로">↓</button><button data-a="dup" title="복제 (Ctrl+D)">⧉</button><button data-a="del" title="지우기">✕</button></div>
+      </div>`; }).join('') + `<button class="cmkadd" id="cmk_add"${D().sc.length >= CMK_SC || tot() + 1500 > CMK_MAX ? ' disabled' : ''}>＋ 장면 더하기<small>앞 장면의 배경을 이어 받는다</small></button>`;
+    box.querySelectorAll('.cmksc').forEach(c => {
+      const i = +c.dataset.i;
+      c.onclick = e => { const a = e.target.closest('[data-a]'); if (a) { act(a.dataset.a, i); return; } if (CMK.sel !== i) { CMK.sel = i; drawAll(); } };
+      c.ondragstart = e => { e.dataTransfer.setData('text/plain', String(i)); c.classList.add('drag'); };
+      c.ondragend = () => c.classList.remove('drag');
+      c.ondragover = e => { e.preventDefault(); c.classList.add('over'); };
+      c.ondragleave = () => c.classList.remove('over');
+      c.ondrop = e => { e.preventDefault(); c.classList.remove('over'); const from = +e.dataTransfer.getData('text/plain'); if (isNaN(from) || from === i) return;
+        cmkPush(); const [m] = D().sc.splice(from, 1); D().sc.splice(i, 0, m); CMK.sel = i; changed(true); };
+    });
+    const add = q('#cmk_add'); if (add) add.onclick = () => act('add', CMK.sel);
+  };
+  const chips = (set, on, multi) => Object.keys(set).map(k => `<button data-v="${k}" class="${(multi ? on.indexOf(k) >= 0 : on === k) ? 'on' : ''}">${set[k]}</button>`).join('');
+  const opts = (set, on) => Object.keys(set).map(k => `<option value="${k}"${on === k ? ' selected' : ''}>${wEsc(set[k].n || set[k])}</option>`).join('');
+  const drawEd = () => {
+    const s = cur(), i = D().sc.indexOf(s), t0 = D().sc.slice(0, i).reduce((a, x) => a + x.ms, 0);
+    const bgOpt = (k => `<option value="${k}"${s.bg === k ? ' selected' : ''}>${wEsc(CMK_BG[k].n)}</option>`);
+    q('#cmk_ed').innerHTML = `
+      <div class="cmkedh"><b>장면 ${i + 1}</b><span>${(t0 / 1000).toFixed(1)}초 ~ ${((t0 + s.ms) / 1000).toFixed(1)}초</span><div class="cmkmini" style="--s0:${skyOf(s)[0]};--s1:${skyOf(s)[1]};--s2:${skyOf(s)[2]}">${whoG(s)}</div></div>
+      <div class="cmkf2"><label>배경</label><select id="e_bg"><optgroup label="이야기의 하늘">${Object.keys(CMK_BG).filter(k => !CMK_BG[k].act).map(bgOpt).join('')}</optgroup>
+        <optgroup label="막의 산 — 보스 컷씬의 무대">${Object.keys(CMK_BG).filter(k => CMK_BG[k].act).map(bgOpt).join('')}</optgroup></select></div>
+      <div class="cmkf2"><label>길이</label><input type="range" id="e_ms" min="1500" max="8000" step="100" value="${s.ms}"><b id="e_msv">${(s.ms / 1000).toFixed(1)}초</b></div>
+      ${i ? `<div class="cmkf2"><label>넘어오기</label><div class="cmkchips" data-f="tr">${chips(CMK_TR, s.tr)}</div></div>` : ''}
+      <div class="cmkf2 col"><label>등장 <small>셋까지 · 차례로 나온다</small></label>
+        ${s.who.map((w, j) => `<div class="cmkwho${w.k ? '' : ' empty'}" data-j="${j}"><em>${j + 1}</em>
+          <select data-w="k"><option value="">— 없음 —</option>${opts(CMK_WHO, w.k)}</select>
+          <div class="cmkchips sm" data-w="p">${chips(CMK_P, w.p)}</div>
+          <select data-w="m">${opts(CMK_MOVE, w.m)}</select>
+          ${w.k === 'boss' ? `<input data-w="g" maxlength="2" value="${wEsc(w.g || '')}" placeholder="鬼" class="cmkg" title="큰 글자 (한두 자)"><input data-w="c" type="color" value="${w.c || '#a8272c'}" title="기운의 빛">` : ''}
+        </div>`).join('')}</div>
+      <div class="cmkf2"><label>카메라</label><div class="cmkchips" data-f="cam">${chips(CMK_CAM, s.cam)}</div></div>
+      <div class="cmkf2"><label>효과 <small>${s.fx.length}/8</small></label><div class="cmkchips multi" data-f="fx">${chips(CMK_FX, s.fx, true)}</div></div>
+      <div class="cmkf2"><label>소리</label><select id="e_sfx">${opts(CMK_SFX, s.sfx)}</select><button class="cmkmini2" id="e_sfxt">♪ 들어 보기</button></div>
+      <div class="cmkf2 col"><label>자막 <small>한 줄에 한 마디 · 셋까지</small></label><div class="cmksay"><input id="e_sp" maxlength="16" list="cmk_spl" placeholder="말하는 이 (비워도 된다)" value="${wEsc(s.sp)}">
+        <textarea id="e_say" rows="3" placeholder="이를테면 —\n달도 뜨지 않은 밤 —\n하늘이 하얗게 갈라진다.">${wEsc(s.say.join('\n'))}</textarea></div></div>
+      <div class="cmkf2 col"><label>제목 카드</label><div class="cmkttlin"><input id="e_tt" maxlength="12" placeholder="큰 글 — 이를테면 白夜降臨" value="${wEsc(s.tt)}"><input id="e_ts" maxlength="40" placeholder="작은 글 — 이를테면 개발자가 내려왔다" value="${wEsc(s.ts)}"></div></div>`;
+    const ed = q('#cmk_ed');
+    const sel = (id, f) => { const n = ed.querySelector(id); n.onchange = () => { cmkPush(); s[f] = n.value; changed(f === 'bg'); }; };
+    sel('#e_bg', 'bg'); sel('#e_sfx', 'sfx');
+    const ms = ed.querySelector('#e_ms');
+    ms.onpointerdown = () => cmkPush();
+    ms.oninput = () => { const room = CMK_MAX - (tot() - s.ms); s.ms = Math.max(1500, Math.min(+ms.value, Math.floor(room / 100) * 100)); ms.value = s.ms;
+      ed.querySelector('#e_msv').textContent = (s.ms / 1000).toFixed(1) + '초'; changed(false, true); };
+    ed.querySelectorAll('.cmkchips[data-f]').forEach(box => box.onclick = e => {
+      const b = e.target.closest('button[data-v]'); if (!b) return; const f = box.dataset.f, v = b.dataset.v;
+      cmkPush();
+      if (f === 'fx') { const k = s.fx.indexOf(v); if (k >= 0) s.fx.splice(k, 1); else if (s.fx.length < 8) s.fx.push(v); else { toast('효과는 여덟까지'); return; } }
+      else s[f] = v;
+      changed(true);
+    });
+    ed.querySelectorAll('.cmkwho').forEach(r => {
+      const w = s.who[+r.dataset.j];
+      r.querySelectorAll('select[data-w],input[data-w]').forEach(n => {
+        const f = n.dataset.w;
+        n.onfocus = () => cmkPush();
+        n[n.tagName === 'SELECT' ? 'onchange' : 'oninput'] = () => { if (n.tagName === 'SELECT') cmkPush(); w[f] = n.value; if (f === 'k' && n.value === 'boss' && !w.g) w.g = '鬼'; changed(f === 'k'); };
+      });
+      r.querySelector('[data-w="p"]').onclick = e => { const b = e.target.closest('button[data-v]'); if (!b) return; cmkPush(); w.p = b.dataset.v; changed(true); };
+    });
+    const txt = (id, fn) => { const n = ed.querySelector(id); n.onfocus = () => cmkPush(); n.oninput = () => { fn(n.value); changed(false, true); }; };
+    txt('#e_sp', v => { s.sp = v.slice(0, 16); });
+    txt('#e_say', v => { s.say = v.split('\n').map(x => x.slice(0, 80)).slice(0, 3); });
+    txt('#e_tt', v => { s.tt = v.slice(0, 12); });
+    txt('#e_ts', v => { s.ts = v.slice(0, 40); });
+    ed.querySelector('#e_sfxt').onclick = () => { if (s.sfx !== 'none') cutSfx(s.sfx); else toast('소리를 고르시오'); };
+  };
+  const drawSaves = () => {
+    const a = cmkSaves();
+    q('#cmk_saves').innerHTML = a.length ? a.map((x, i) => { const d = cutMkClean(x.def);
+      return `<div class="cmksv" data-i="${i}"><div><b>${wEsc(x.n || '이름 없음')}</b><small>${d.sc.length}장면 · ${(cmkLen(d) / 1000).toFixed(1)}초 · ${new Date(x.at || 0).toLocaleDateString()}${x.cast ? ' · 📡' + x.cast : ''}</small></div>
+        <span><button data-s="load" title="불러오기">불러오기</button><button data-s="play" title="보기">▶</button><button data-s="cast" title="모두에게 틀기">📡</button><button data-s="del" title="지우기">✕</button></span></div>`; }).join('')
+      : '<div class="cmknone">아직 없다 — 다 지은 것을 「저장」하면 여기 남는다</div>';
+    q('#cmk_saves').querySelectorAll('[data-s]').forEach(b => b.onclick = async () => {
+      const i = +b.closest('.cmksv').dataset.i, arr = cmkSaves(), x = arr[i]; if (!x) return;
+      const k = b.dataset.s;
+      if (k === 'load') { cmkPush(); CMK.def = cmkPad(cutMkClean(Object.assign({}, x.def, { n: x.n }))); CMK.sel = 0; changed(true); toast(`「${x.n || '이름 없음'}」 불러왔다`); }
+      else if (k === 'play') cmkPlay(x.def);
+      else if (k === 'cast') castIt(Object.assign({}, x.def, { n: x.n }), i);
+      else if (k === 'del') { if (!confirm(`「${x.n || '이름 없음'}」을(를) 지울까?`)) return; arr.splice(i, 1); cmkSavesPut(arr); drawSaves(); }
+    });
+  };
+  const drawAll = () => { if (!p.isConnected) return; CMK.sel = Math.max(0, Math.min(CMK.sel, D().sc.length - 1)); head(); drawList(); drawEd(); };
+  /* 고쳤다 — 판을 다시 그리고(필요하면 편집 칸까지) 이 기계에 남긴다 */
+  const changed = (full, light) => { cmkDraft(); if (light) { head(); drawList(); return; } if (full) drawAll(); else { head(); drawList(); } };
+  const act = (a, i) => {
+    const sc = D().sc;
+    if (a === 'add') { if (sc.length >= CMK_SC || tot() + 1500 > CMK_MAX) { toast('장면은 열둘 · 마흔 초까지'); return; }
+      cmkPush(); const prev = sc[i] || sc[sc.length - 1], n = cmkBlank(prev ? prev.bg : 'starry');
+      n.ms = Math.min(4000, Math.floor((CMK_MAX - tot()) / 100) * 100); cmkPad({ sc: [n] }); sc.splice(i + 1, 0, n); CMK.sel = i + 1; }
+    else if (a === 'dup') { if (sc.length >= CMK_SC || tot() + sc[i].ms > CMK_MAX) { toast('복제할 자리가 없다 — 열둘 · 마흔 초까지'); return; }
+      cmkPush(); sc.splice(i + 1, 0, JSON.parse(JSON.stringify(sc[i]))); CMK.sel = i + 1; }
+    else if (a === 'del') { if (sc.length <= 1) { toast('장면이 하나는 있어야 한다'); return; } cmkPush(); sc.splice(i, 1); CMK.sel = Math.min(i, sc.length - 1); }
+    else if (a === 'up' && i > 0) { cmkPush(); [sc[i - 1], sc[i]] = [sc[i], sc[i - 1]]; CMK.sel = i - 1; }
+    else if (a === 'dn' && i < sc.length - 1) { cmkPush(); [sc[i + 1], sc[i]] = [sc[i], sc[i + 1]]; CMK.sel = i + 1; }
+    else return;
+    changed(true);
+  };
+  const save = () => {
+    const d = cutMkClean(D()); if (!d.sc.length) { toast('장면이 없다'); return; }
+    const n = (D().n || '').trim() || '이름 없는 컷씬';
+    const arr = cmkSaves(), i = arr.findIndex(x => x.n === n), row = { id: i >= 0 ? arr[i].id : Date.now(), n, at: Date.now(), def: d, cast: i >= 0 ? arr[i].cast || 0 : 0 };
+    if (i >= 0) arr.splice(i, 1);
+    arr.unshift(row);
+    if (cmkSavesPut(arr)) { toast(`「${n}」 저장했다${i >= 0 ? ' (덮어씀)' : ''}`); try { SND.unlock(); } catch (e) {} const b = q('#cmk_save'); b.classList.remove('done'); void b.offsetWidth; b.classList.add('done'); }
+    drawSaves();
+  };
+  const castIt = async (def, saveIdx) => {
+    const d = cutMkClean(def); if (!d.sc.length) { toast('장면이 없다'); return; }
+    const size = JSON.stringify(d).length;
+    if (size > 14000) { toast('너무 길다 — 자막을 줄이시오'); return; }
+    if (!confirm(`「${d.n || '이름 없는 컷씬'}」 — ${d.sc.length}장면 · ${(cmkLen(d) / 1000).toFixed(1)}초\n지금 접속한 모두의 화면에 한 번 튼다. 할까?`)) return;
+    const b = q('#cmk_cast'); b.disabled = true; b.querySelector('b').textContent = '보내는 중…';
+    const r = await cmkCast(d);
+    b.disabled = false; b.querySelector('b').textContent = '모두에게 틀기';
+    if (!r.ok) { toast('못 틀었다 — ' + r.why); try { SND.err(); } catch (e) {} return; }
+    toast('모두에게 틀었다 — 1분 안에 들어온 모두의 화면에 흐른다');
+    try { SND.bell(); stampWord('映', '#e8c86a'); } catch (e) {}
+    if (saveIdx != null) { const arr = cmkSaves(); if (arr[saveIdx]) { arr[saveIdx].cast = (arr[saveIdx].cast || 0) + 1; cmkSavesPut(arr); drawSaves(); } }
+  };
+  q('#cmk_name').oninput = e => { D().n = e.target.value.slice(0, 40); cmkDraft(); };
+  q('#cmk_name').onfocus = () => cmkPush();
+  q('#cmk_all').onclick = () => cmkPlay(D());
+  q('#cmk_one').onclick = () => cmkPlay({ n: D().n, sc: [cur()] });
+  q('#cmk_save').onclick = save;
+  q('#cmk_cast').onclick = () => castIt(D());
+  q('#cmk_undo').onclick = () => { if (!CMK.undo.length) { toast('되돌릴 것이 없다'); return; } CMK.redo.push(JSON.stringify(D())); CMK.def = JSON.parse(CMK.undo.pop()); changed(true); };
+  q('#cmk_redo').onclick = () => { if (!CMK.redo.length) { toast('다시 할 것이 없다'); return; } CMK.undo.push(JSON.stringify(D())); CMK.def = JSON.parse(CMK.redo.pop()); changed(true); };
+  q('#cmk_new').onclick = () => { cmkPush(); CMK.def = cmkPad({ n: '', sc: [cmkBlank()] }); CMK.sel = 0; changed(true); };
+  q('#cmk_ex').onclick = e => { const b = e.target.closest('[data-ex]'); if (!b) return; cmkPush(); CMK.def = cmkPad(cutMkClean(CMK_EX[b.dataset.ex])); CMK.sel = 0; changed(true); toast(`예시 「${CMK_EX[b.dataset.ex].n}」 — 고쳐서 쓰시오`); };
+  q('#cmk_back').onclick = () => { removeEventListener('keydown', keys, true); if (adminOn()) showAdmin(); else closeOverlay(); };
+  /* 단축키 — 공방이 열려 있을 때만 */
+  const keys = e => {
+    if (!p.isConnected) { removeEventListener('keydown', keys, true); return; }
+    if (cutPlaying() || p.parentNode.lastElementChild !== p) return;
+    const c = e.ctrlKey || e.metaKey, typing = /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '');
+    const hit = () => { e.preventDefault(); e.stopPropagation(); };
+    if (c && e.key === 'Enter') { hit(); cmkPlay(D()); }
+    else if (e.shiftKey && e.key === 'Enter' && !(typing && e.target.tagName === 'TEXTAREA')) { hit(); cmkPlay({ n: D().n, sc: [cur()] }); }
+    else if (c && (e.key === 's' || e.key === 'S' || e.key === 'ㄴ')) { hit(); save(); }
+    else if (c && !typing && (e.key === 'z' || e.key === 'Z' || e.key === 'ㅋ')) { hit(); q(e.shiftKey ? '#cmk_redo' : '#cmk_undo').click(); }
+    else if (c && !typing && (e.key === 'y' || e.key === 'Y' || e.key === 'ㅛ')) { hit(); q('#cmk_redo').click(); }
+    else if (c && (e.key === 'd' || e.key === 'D' || e.key === 'ㅇ')) { hit(); act('dup', CMK.sel); }
+    else if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { hit(); CMK.sel = Math.max(0, Math.min(D().sc.length - 1, CMK.sel + (e.key === 'ArrowUp' ? -1 : 1))); drawAll(); }
+  };
+  addEventListener('keydown', keys, true);
+  drawAll(); drawSaves();
+  try { SND.ui(); } catch (e) {}
 }
 /* ══ 찻잔 컷씬 — 백야와 마주 앉아 잔을 겨눈다 ═══════════════
    낮은 찻상을 사이에 두고 백야(왼쪽)와 손님(오른쪽)이 앉는다.
@@ -23606,7 +24641,7 @@ function showQuests() {
   const p = modal(`<div class="qbox"><div class="mhead"><i>課</i><div><h2>임무</h2><span>날마다 셋 · 주마다 셋 — 한국 시각 자정 · 월요일에 바뀐다</span></div></div>
     <div class="qsec"><b>오늘의 임무 <em id="q_dleft"></em></b><div class="qlist" id="q_d"></div></div>
     <div class="qsec"><b>이번 주 임무 <em id="q_wleft"></em></b><div class="qlist" id="q_w"></div></div>
-    <button class="brush-btn ghost" id="q_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'qp');
+    <div class="qfoot"><button class="brush-btn gold" id="q_all">모두 받기</button><button class="brush-btn ghost" id="q_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'qp');
   p.dataset.noauto = '1';
   const draw = () => {
     const q = questEnsure(), dEnd = (qDay() + 1) * 86400000 - 9 * 3600000, wEnd = ((qWeek() + 1) * 7 - 3) * 86400000 - 9 * 3600000;
@@ -23625,6 +24660,22 @@ function showQuests() {
   };
   draw();
   p.querySelector('#q_x').onclick = closeTop;
+  /* 모두 받기 — 마친 임무를 한 번에 */
+  p.querySelector('#q_all').onclick = () => {
+    const q = questEnsure(); let n = 0, dia = 0, jp = 0;
+    for (const kind of ['d', 'w']) for (const x of q[kind] || []) {
+      if (!x.done || x.paid) continue;
+      x.paid = true; const pay = QUEST_PAY[kind]; payDia(pay.dia); dia += pay.dia;
+      if (pay.jp) { META.jp = (META.jp || 0) + pay.jp; META.jpTotal = (META.jpTotal || 0) + pay.jp; jp += pay.jp; }
+      stAdd('quest'); logNote('quest', `임무 「${x.n}」 — 다이아 ${pay.dia}${pay.jp ? ' · 정진 ' + pay.jp : ''}`); n++;
+    }
+    if (!n) { toast('받을 임무가 없다'); try { SND.err(); } catch (e) {} return; }
+    saveMeta(); toast(`임무 ${n}개 — 다이아 ${dia}${jp ? ' · 정진 ' + jp : ''}`);
+    try { SND.coinRain(8); stampWord('畢', '#e8c86a'); } catch (e) {}
+    draw();
+  };
+  { const btn = p.querySelector('#q_all'), upd = () => { const k = questReady(); btn.disabled = !k; btn.textContent = k ? `모두 받기 (${k})` : '모두 받기'; }; upd();
+    p.addEventListener('click', () => setTimeout(upd, 0)); }
 }
 /* ══════════════════════════════════════════════════════════
    프로필 카드(名) — 칭호·테두리·아끼는 부적 셋·기록. 서버(pf:아이디)에 올려 남도 본다
@@ -23936,6 +24987,628 @@ function drawMailCompose(grid) {
   };
   paint(); sentPaint();
 }
+/* ══ 映 컷씬 공방 — 관리자 창의 탭 (열기 · 저장한 것을 바로 틀기) ══ */
+function drawCutMkTab(grid) {
+  const sv = cmkSaves();
+  grid.innerHTML = `<div class="cmktab2">
+    <div class="dashhead"><b>映 컷씬 공방</b><span>장면을 쌓아 즉석 컷씬을 짓는다 — 관리자 · 퍼뜨리기 · 어드민 핵 · 공방 코드, 네 열쇠가 다 있는 기계에서만 열린다</span></div>
+    <div class="cmkopen"><i>映</i><div><b>공방 열기</b><small>배경 ${Object.keys(CMK_BG).length} · 등장 ${Object.keys(CMK_WHO).length} · 카메라 ${Object.keys(CMK_CAM).length} · 효과 ${Object.keys(CMK_FX).length} · 소리 ${Object.keys(CMK_SFX).length - 1} — 장면 열둘 · 마흔 초까지</small></div>
+      <button class="brush-btn gold" id="cmk_go">열기</button></div>
+    <div class="mcsub">저장한 컷씬 — 바로 보기 · 바로 틀기</div>
+    <div class="cmksaves">${sv.length ? sv.map((x, i) => { const d = cutMkClean(x.def);
+      return `<div class="cmksv" data-i="${i}"><div><b>${wEsc(x.n || '이름 없음')}</b><small>${d.sc.length}장면 · ${(cmkLen(d) / 1000).toFixed(1)}초${x.cast ? ' · 📡' + x.cast + '번 틀었다' : ''}</small></div>
+        <span><button data-s="play">▶ 보기</button><button data-s="cast">📡 모두에게</button></span></div>`; }).join('') : '<div class="cmknone">아직 저장한 컷씬이 없다 — 공방에서 짓고 「저장」하면 여기 뜬다</div>'}</div></div>`;
+  grid.querySelector('#cmk_go').onclick = () => showCutMaker();
+  grid.querySelectorAll('[data-s]').forEach(b => b.onclick = async () => {
+    const i = +b.closest('.cmksv').dataset.i, arr = cmkSaves(), x = arr[i]; if (!x) return;
+    if (b.dataset.s === 'play') { cmkPlay(x.def); return; }
+    if (!confirm(`「${x.n || '이름 없음'}」을(를) 지금 접속한 모두의 화면에 틀까?`)) return;
+    const r = await cmkCast(Object.assign({}, x.def, { n: x.n }));
+    if (r.ok) { x.cast = (x.cast || 0) + 1; cmkSavesPut(arr); drawCutMkTab(grid); toast('모두에게 틀었다'); try { SND.bell(); } catch (e) {} }
+    else toast('못 틀었다 — ' + r.why);
+  });
+}
+/* ══════════════════════════════════════════════════════════
+   秘 비밀 코드 — 백야가 적거나 지어낸 코드를 정한 때 동안 푼다
+   ──────────────────────────────────────────────────────────
+   코드를 적는 칸(설정 · 이 창)에 적으면 서버가 지문을 견주어 보상을 준다.
+   한 아이디에 한 번 · 먼저 온 몇 명까지(0 은 끝없이). 「모두에게 보이기」로 연 코드는
+   이 창에 코드가 그대로 뜨고, 숨긴 코드는 백야가 채팅·방송으로 흘린다.
+   ══════════════════════════════════════════════════════════ */
+const scodeLive = () => { const x = LIVE.scode; return x && x.id && srvNow() < (+x.until || 0) ? x : null; };
+const scodeGot = id => !!(META.scGot && META.scGot[id]);
+const SC_WORDS = ['달빛', '먹구름', '붉은달', '부적', '백야', '도깨비', '여우불', '극광', '별비', '백귀', '청룡', '반딧불', '서리', '단오', '무명'];
+function scodeMake() {
+  const A = '23456789ABCDEFGHJKMNPQRSTUVWXYZ', r = n => Array.from({ length: n }, () => A[Math.floor(Math.random() * A.length)]).join('');
+  const w = () => SC_WORDS[Math.floor(Math.random() * SC_WORDS.length)];
+  const k = Math.random();
+  return k < .4 ? w() + w() + (10 + Math.floor(Math.random() * 90)) : k < .75 ? 'BAEK-' + r(4) : r(3) + '-' + r(3) + '-' + r(2);
+}
+const scLeft = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return (s >= 3600 ? Math.floor(s / 3600) + '시간 ' : '') + Math.floor(s % 3600 / 60) + ':' + String(s % 60).padStart(2, '0'); };
+async function scodeClaim(code) {
+  if (!acctOn()) return { ok: false, msg: '로그인해야 받는다' };
+  const r = await acctAsk('/scode/claim', { token: ACCT.token, code: String(code || '').trim() }, 12000);
+  if (!r.ok) { if (/이미 받/.test(r.why || '') && LIVE.scode) { META.scGot = META.scGot || {}; META.scGot[LIVE.scode.id] = Date.now(); saveMeta(); } return { ok: false, msg: r.why || '못 받았다' }; }
+  META.scGot = META.scGot || {}; META.scGot[r.id] = Date.now();
+  for (const k of Object.keys(META.scGot)) if (Date.now() - META.scGot[k] > 30 * 86400000) delete META.scGot[k];
+  const what = grantBundle(r.pay || {});
+  saveMeta();
+  try { stAdd('scode'); } catch (e) {}
+  if (LIVE.scode && LIVE.scode.id === r.id) LIVE.scode.n = r.n;
+  try { SND.unlock(); SND.coinRain(10); screenFlash('rgba(255,215,120,.38)', 620); stampWord('秘', '#e8c86a'); FX.gold(innerWidth / 2, innerHeight / 2, 50); } catch (e) {}
+  scodeTick();
+  return { ok: true, msg: `${r.title} — ${what || '받았다'}${G.run ? '' : ' (다음 등반에 지니고 나선다)'}` };
+}
+let _scSeen = 0;
+function scodeTick() {
+  const x = scodeLive(); let n = $('#scpill');
+  if (!x || !acctOn()) { if (n) n.remove(); return; }
+  const got = scodeGot(x.id), full = x.max && (x.n || 0) >= x.max;
+  if (!n) { n = el('button', 'scpill'); n.id = 'scpill'; n.onclick = () => showScodeBox(); document.body.appendChild(n); }
+  n.classList.toggle('got', got); n.classList.toggle('full', !!full && !got);
+  n.classList.toggle('inb', !!G.b);                       /* 싸우는 동안은 더미를 가리지 않게 숨긴다 */
+  const left = x.until - srvNow();
+  n.classList.toggle('last', left < 60000);
+  n.innerHTML = `<i>秘</i><b>${wEsc(x.title)}</b><em>${got ? '받았다' : full ? '다 나갔다' : scLeft(left)}</em>${x.max && !got ? `<small>${Math.max(0, x.max - (x.n || 0))}명 남음</small>` : ''}`;
+  if (_scSeen !== x.id) {
+    _scSeen = x.id;
+    if (!got && !cutPlaying()) { toast(`秘 비밀 코드가 풀렸다 — 「${x.title}」 · 왼쪽 아래 秘 를 눌러 적는다`);
+      try { SND.unlock(); stampWord('秘', '#e8c86a'); } catch (e) {} n.classList.remove('ping'); void n.offsetWidth; n.classList.add('ping'); }
+  }
+}
+function showScodeBox() {
+  const x = scodeLive();
+  if (!x) { toast('지금 풀린 비밀 코드가 없다'); return; }
+  const got = scodeGot(x.id);
+  const p = modal(`<div class="scbox">
+    <div class="mhead"><i>秘</i><div><h2>${wEsc(x.title)}</h2><span id="sc_left"></span></div></div>
+    ${x.hint ? `<div class="schint"><b>귀띔</b>${wEsc(x.hint)}</div>` : ''}
+    <div class="mcsub">받을 것</div><div class="mchips">${mailChips(x.pay || {}) || '<span class="mch">백야의 마음</span>'}</div>
+    ${x.plain ? `<div class="scplain"><small>모두에게 열린 코드</small><code>${wEsc(x.plain)}</code><button class="brush-btn ghost" id="sc_copy">복사</button></div>` : ''}
+    <div class="scin${got ? ' got' : ''}"><input id="sc_in" maxlength="24" autocomplete="off" spellcheck="false" placeholder="${got ? '이미 받았다' : '코드를 적으시오'}" value="${got ? '' : wEsc(x.plain || '')}"${got ? ' disabled' : ''}>
+      <button class="brush-btn gold" id="sc_go"${got ? ' disabled' : ''}>${got ? '받았다' : '받기'}</button></div>
+    <div class="scsay" id="sc_say">${got ? '이 코드는 이미 받았다 — 다음 코드를 기다리시오' : '한 아이디에 한 번 · 대소문자는 가리지 않는다'}</div>
+    <button class="brush-btn ghost" id="sc_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'scp');
+  const inp = p.querySelector('#sc_in'), say = p.querySelector('#sc_say'), go = p.querySelector('#sc_go');
+  const lt = () => { if (!p.isConnected) return; const y = scodeLive();
+    p.querySelector('#sc_left').textContent = y ? `남은 때 ${scLeft(y.until - srvNow())}${y.max ? ` · 먼저 온 ${y.max}명 — ${Math.max(0, y.max - (y.n || 0))}자리 남음` : ' · 누구나'}` : '끝났다';
+    setTimeout(lt, 500); };
+  lt();
+  const take = async () => {
+    const v = inp.value.trim(); if (!v) { say.textContent = '코드를 적으시오'; inp.focus(); return; }
+    go.disabled = true; say.textContent = '맞춰 보는 중…'; say.className = 'scsay';
+    const r = await scodeClaim(v);
+    say.textContent = r.msg; say.className = 'scsay ' + (r.ok ? 'ok' : 'bad');
+    if (r.ok) { go.textContent = '받았다'; inp.disabled = true; p.querySelector('.scin').classList.add('got'); }
+    else { go.disabled = false; try { SND.err(); } catch (e) {} inp.classList.remove('shk'); void inp.offsetWidth; inp.classList.add('shk'); }
+  };
+  go.onclick = take;
+  inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); take(); } };
+  const cp = p.querySelector('#sc_copy');
+  if (cp) cp.onclick = () => { try { navigator.clipboard.writeText(x.plain); toast('복사했다'); } catch (e) {} inp.value = x.plain; };
+  p.querySelector('#sc_x').onclick = closeTop;
+  if (!got) setTimeout(() => inp.focus(), 60);
+}
+/* 관리자 창 — 秘 비밀 코드 탭 */
+function drawScode(grid) {
+  const D = drawScode.d = drawScode.d || { code: '', title: '백야의 비밀 코드', hint: '', min: 30, max: 0, show: false, hype: true, cd: false,
+    gold: 500, dia: 50, jp: 0, cards: '', mats: {}, when: 'now', at: '' };
+  const MINS = [[5, '5분'], [10, '10분'], [30, '30분'], [60, '1시간'], [180, '3시간'], [720, '반나절'], [1440, '하루'], [4320, '사흘']];
+  grid.innerHTML = `<div class="mcomp sccomp">
+    <div class="dashhead"><b>秘 비밀 코드 뿌리기</b><span>코드를 적거나 지어내고 · 보상과 때를 고른다 — 그 때 안에 코드를 적은 사람이 받는다 · 한 아이디에 한 번 · 서버에는 코드의 지문만 남는다</span></div>
+    <div class="scnow" id="sc_now"></div>
+    <div class="mcgrid">
+      <div class="mcform">
+        <div class="mcsub">코드</div>
+        <div class="sccode"><input id="sd_code" maxlength="24" placeholder="이를테면 달빛부적77 — 한글·영문·숫자·- · _ (3~24자)" value="${wEsc(D.code)}" spellcheck="false" autocomplete="off">
+          <button class="brush-btn" id="sd_gen" title="새로 지어낸다">🎲 지어내기</button></div>
+        <label class="mcf">제목<input id="sd_title" maxlength="40" value="${wEsc(D.title)}" placeholder="이를테면 — 방송 깜짝 코드"></label>
+        <label class="mcf">귀띔 <small>모두에게 보인다 · 비워도 된다</small><input id="sd_hint" maxlength="120" value="${wEsc(D.hint)}" placeholder="이를테면 — 오늘 채팅창 첫 글자를 이어 보라"></label>
+        <div class="mcsub">보상</div>
+        <div class="mcpay">
+          <label><i style="color:#ffd76a">金</i>골드<input id="sd_gold" type="number" min="0" max="1000000" value="${D.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i>다이아<input id="sd_dia" type="number" min="0" max="100000" value="${D.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i>정진<input id="sd_jp" type="number" min="0" max="100000" value="${D.jp}"></label>
+          ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-smat="${k}" type="number" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
+        </div>
+        <label class="mcf">부적 (쉼표로 · 여덟 장까지)<input id="sd_cards" placeholder="이름을 치면 고를 수 있다" value="${wEsc(D.cards)}"></label>
+        <div class="mcsub">풀려 있는 때</div>
+        <div class="scmins">${MINS.map(([m, t]) => `<button data-m="${m}" class="${+D.min === m ? 'on' : ''}">${t}</button>`).join('')}<label>직접<input id="sd_min" type="number" min="1" max="10080" value="${D.min}">분</label></div>
+        <div class="scopts">
+          <label>먼저 온<input id="sd_max" type="number" min="0" max="100000" value="${D.max}">명 <small>0 은 끝없이</small></label>
+          <label class="chk"><input type="checkbox" id="sd_show"${D.show ? ' checked' : ''}> 모두에게 코드를 보여 준다 <small>공짜 코드 — 끄면 코드는 백야만 안다</small></label>
+          <label class="chk"><input type="checkbox" id="sd_hype"${D.hype ? ' checked' : ''}> 「백야가 비밀 코드를 풀었다」 말도 함께</label>
+          <label class="chk"><input type="checkbox" id="sd_cd"${D.cd ? ' checked' : ''}> 카운트다운 10초 뒤에 푼다</label>
+        </div>
+        <div class="mcsub">언제</div>
+        <div class="scwhen"><label class="${D.when === 'now' ? 'on' : ''}"><input type="radio" name="sd_when" value="now"${D.when === 'now' ? ' checked' : ''}>지금</label>
+          <label class="${D.when === 'at' ? 'on' : ''}"><input type="radio" name="sd_when" value="at"${D.when === 'at' ? ' checked' : ''}>예약</label>
+          <input id="sd_at" type="datetime-local" value="${wEsc(D.at)}"${D.when === 'at' ? '' : ' disabled'}></div>
+        <div class="mcrow"><span class="mclog" id="sd_log"></span><button class="brush-btn gold mcsend" id="sd_send">秘 뿌린다</button></div>
+      </div>
+      <div class="mcprev"><div class="mcsub">받는 쪽에서 보이는 모습</div><div id="sd_pv"></div></div>
+    </div></div>`;
+  const q = s => grid.querySelector(s);
+  const read = () => {
+    D.code = q('#sd_code').value.trim(); D.title = q('#sd_title').value.trim(); D.hint = q('#sd_hint').value.trim();
+    D.gold = Math.max(0, Math.floor(+q('#sd_gold').value || 0)); D.dia = Math.max(0, Math.floor(+q('#sd_dia').value || 0)); D.jp = Math.max(0, Math.floor(+q('#sd_jp').value || 0));
+    D.cards = q('#sd_cards').value; D.min = Math.max(1, Math.min(10080, Math.floor(+q('#sd_min').value || 30)));
+    D.max = Math.max(0, Math.floor(+q('#sd_max').value || 0)); D.show = q('#sd_show').checked; D.hype = q('#sd_hype').checked; D.cd = q('#sd_cd').checked;
+    D.when = (grid.querySelector('input[name="sd_when"]:checked') || {}).value || 'now'; D.at = q('#sd_at').value;
+    D.mats = {}; grid.querySelectorAll('[data-smat]').forEach(i => { const n = Math.max(0, Math.min(99, Math.floor(+i.value || 0))); if (n) D.mats[i.dataset.smat] = n; });
+  };
+  const cardsOf = () => D.cards.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
+  const okCode = c => /^[0-9A-Za-z가-힣_-]{3,24}$/.test(c);
+  const paint = () => {
+    read();
+    grid.querySelectorAll('.scmins button').forEach(b => b.classList.toggle('on', +b.dataset.m === D.min));
+    grid.querySelectorAll('.scwhen label').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+    q('#sd_at').disabled = D.when !== 'at';
+    q('#sd_code').classList.toggle('bad', !!D.code && !okCode(D.code));
+    const pay = { gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats };
+    q('#sd_pv').innerHTML = `<div class="scpill pv"><i>秘</i><b>${wEsc(D.title || '비밀 코드')}</b><em>${scLeft(D.min * 60000)}</em>${D.max ? `<small>${D.max}명 남음</small>` : ''}</div>
+      <div class="scbox pv"><div class="mhead"><i>秘</i><div><h2>${wEsc(D.title || '비밀 코드')}</h2><span>남은 때 ${scLeft(D.min * 60000)}${D.max ? ` · 먼저 온 ${D.max}명` : ' · 누구나'}</span></div></div>
+        ${D.hint ? `<div class="schint"><b>귀띔</b>${wEsc(D.hint)}</div>` : ''}
+        <div class="mchips">${mailChips(pay) || '<span class="mch">보상 없음</span>'}</div>
+        ${D.show ? `<div class="scplain"><small>모두에게 열린 코드</small><code>${wEsc(D.code || '—')}</code></div>` : '<div class="scsay">코드는 숨겨져 있다 — 백야가 흘린 것을 적는다</div>'}
+        <div class="scin"><input disabled placeholder="코드를 적으시오"><button class="brush-btn gold" disabled>받기</button></div></div>`;
+  };
+  const mine = () => { try { return JSON.parse(localStorage.getItem('baekgwi_scode_mine') || 'null') || {}; } catch (e) { return {}; } };
+  const nowPaint = () => {
+    const x = scodeLive(), m = mine(), box = q('#sc_now'); if (!box) return;
+    box.innerHTML = x ? `<i>秘</i><div><b>지금 풀린 코드 — ${wEsc(x.title)}</b><small>${x.plain ? '열린 코드 <code>' + wEsc(x.plain) + '</code>' : (m.id === x.id || (!m.id && m.code && x.at >= (m.at || 0) - 5000)) ? '숨긴 코드 <code>' + wEsc(m.code) + '</code>' : '숨긴 코드'} · 받은 사람 <b>${x.n || 0}</b>${x.max ? ' / ' + x.max : ''} · 남은 때 ${scLeft(x.until - srvNow())}</small></div>
+      <button class="brush-btn ghost" id="sc_off" style="color:#e2777a;border-color:#8a3a3a">거두기</button>` : '<span class="dashnone">지금 풀린 비밀 코드가 없다</span>';
+    const off = q('#sc_off'); if (off) off.onclick = async () => { if (!confirm('지금 풀린 비밀 코드를 거둘까?')) return;
+      const r = await castSend({ scode: null }); toast(r.ok ? '거두었다' : '못 거뒀다 — ' + r.why); nowPaint(); };
+  };
+  grid.querySelectorAll('input,textarea,select').forEach(i => { i.addEventListener('input', paint); i.addEventListener('change', paint); });
+  grid.querySelectorAll('.scmins button').forEach(b => b.onclick = () => { q('#sd_min').value = b.dataset.m; paint(); });
+  q('#sd_gen').onclick = () => { q('#sd_code').value = scodeMake(); paint(); q('#sd_code').animate([{ background: 'rgba(232,200,106,.35)' }, { background: 'transparent' }], { duration: 600 }); };
+  try { cardPicker(q('#sd_cards')); } catch (e) {}
+  q('#sd_send').onclick = async () => {
+    read();
+    if (!D.code) { D.code = scodeMake(); q('#sd_code').value = D.code; }
+    if (!okCode(D.code)) { q('#sd_log').innerHTML = '<span style="color:#ff9a9a">코드는 3~24자 — 한글·영문·숫자·- · _ 만</span>'; return; }
+    const body = { code: D.code, title: D.title || '비밀 코드', hint: D.hint, min: D.min, max: D.max, show: D.show, gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats };
+    let patch = { scode: body };
+    if (D.hype) Object.assign(patch, { notice: `${DEV_NAME}가 비밀 코드를 풀었다! — ${body.title}${D.show ? ' · 秘 를 누르면 코드가 보인다' : ' · 코드를 찾아라'}`, noticeAt: Date.now() });
+    if (D.cd) patch = { count: { sec: 10, label: '비밀 코드', then: patch } };
+    let at = 0;
+    if (D.when === 'at') { at = new Date(D.at).getTime(); if (!at || at < Date.now() + 30000) { q('#sd_log').innerHTML = '<span style="color:#ff9a9a">예약 때를 고르시오 (지금보다 뒤)</span>'; return; } }
+    const what = `「${body.title}」 코드 ${D.code} — ${D.min}분${D.max ? ' · ' + D.max + '명' : ''}`;
+    if (!confirm((at ? new Date(at).toLocaleString() + ' 에 ' : '지금 ') + what + ' 을(를) 푼다. 할까?')) return;
+    q('#sd_send').disabled = true; q('#sd_log').textContent = '보내는 중…';
+    const r = at ? await castSend({ schedule: { at, label: '秘 ' + body.title, note: D.hint || '비밀 코드가 풀린다', steps: [{ after: 0, label: '비밀 코드', patch }] } }) : await castSend(patch);
+    q('#sd_send').disabled = false;
+    if (!r.ok) { q('#sd_log').innerHTML = `<span style="color:#ff9a9a">못 했다 — ${wEsc(r.why)}</span>`; return; }
+    try { localStorage.setItem('baekgwi_scode_mine', JSON.stringify({ id: LIVE.scode && !at && !D.cd ? LIVE.scode.id : 0, code: D.code, at: Date.now() })); } catch (e) {}
+    q('#sd_log').innerHTML = `<b style="color:#7fe6cf">${at ? '예약했다' : D.cd ? '카운트다운 뒤에 풀린다' : '풀었다'}</b> — 코드 <code>${wEsc(D.code)}</code>`;
+    try { logNote('scode', what); SND.bell(); stampWord('秘', '#e8c86a'); } catch (e) {}
+    D.code = ''; q('#sd_code').value = '';
+    await liveFetch().catch(() => {}); nowPaint();
+  };
+  paint(); nowPaint();
+  const iv = setInterval(() => { if (!grid.isConnected || !q('#sc_now')) { clearInterval(iv); return; } nowPaint(); }, 1000);
+}
+/* ══════════════════════════════════════════════════════════
+   運 운명의 바퀴 — 이벤트를 한 바퀴에 모았다
+   ──────────────────────────────────────────────────────────
+   백야가 칸(슈팅 스타 · 풍년 · 금화 소나기 · 비밀 코드 · 꽝 …)을 고르고 돌린다.
+   모두의 화면 한가운데 바퀴가 뜨고, 카운트다운 동안(마지막 5초는 소수점까지)
+   함성 단추(또는 Space)를 두드린다 — 함성이 목표를 넘으면 모두의 우편함에 함성의 선물.
+   바퀴는 서버 시각에 맞춰 모두에게 똑같이 돌고 멈춘다. 멈춘 칸의 일이 그대로 모두에게 걸린다.
+   ══════════════════════════════════════════════════════════ */
+const WHEEL_OPTS = {
+  star:   { n: '슈팅 스타', g: '星', c: '#9fd8ff', p: () => ({ event: 'star', eventAt: Date.now() }) },
+  gold:   { n: '풍년', g: '豊', c: '#e8c86a', p: () => ({ event: 'gold', eventAt: Date.now() }) },
+  chaos:  { n: '혼돈', g: '混', c: '#e08ad8', p: () => ({ event: 'chaos', eventAt: Date.now() }) },
+  joy:    { n: '긍정 혼란', g: '樂', c: '#ff7ad9', p: () => ({ event: 'joy', eventAt: Date.now() }) },
+  aurora: { n: '극광의 밤', g: '極', c: '#7fffd4', p: () => ({ event: 'aurora', eventAt: Date.now() }) },
+  rain:   { n: '카드 대전', g: '札', c: '#7fe6cf', p: () => ({ event: 'rain', eventAt: Date.now() }) },
+  night:  { n: '저주의 밤', g: '咒', c: '#e0566a', p: () => ({ event: 'night', eventAt: Date.now() }) },
+  coin:   { n: '금화 소나기', g: '錢', c: '#ffd76a', p: () => ({ fx: { k: 'coin', sec: 60 } }) },
+  fire:   { n: '불꽃놀이', g: '花', c: '#ff8a5a', p: () => ({ fx: { k: 'fire', sec: 45 } }) },
+  talis:  { n: '부적비', g: '符', c: '#f0d890', p: () => ({ fx: { k: 'talis', sec: 45 } }) },
+  heal:   { n: '치유의 비', g: '癒', c: '#7fe0a8', p: () => ({ fx: { k: 'heal' } }) },
+  bounty: { n: '현상금', g: '賞', c: '#ff6a5a', p: () => ({ fx: { k: 'bounty' } }) },
+  pow2:   { n: '부적의 힘 ×2', g: '力', c: '#ffc23a', p: () => ({ buff: { ks: { pow: 2 }, min: 10 } }) },
+  goldb:  { n: '황금비', g: '金', c: '#ffe08a', p: () => ({ buff: { ks: { gold: 1 }, min: 10 } }) },
+  egg:    { n: '비밀의 계란', g: '卵', c: '#f4e6c0', p: () => ({ egg: { n: 8, s: 2, min: 10 } }) },
+  hunt:   { n: '숨은 부적', g: '探', c: '#c8a8ff', p: () => ({ hunt: { max: 10, min: 5, gold: 500, dia: 50, jp: 0, cards: [] } }) },
+  scode:  { n: '비밀 코드', g: '秘', c: '#e8c86a', p: () => ({ scode: { code: scodeMake(), title: '바퀴가 고른 코드', min: 10, show: true, gold: 300, dia: 30, jp: 20 } }) },
+  mail:   { n: '선물 우편', g: '郵', c: '#f2d9a0', p: () => ({ mail: { title: '운명의 선물', say: '운명의 바퀴가 골랐다.', gold: 500, dia: 50, days: 3, from: '백야' } }) },
+  shadow: { n: '그림자 침공', g: '影', c: '#8a7aa8', p: () => ({ shadow: { min: 10 } }) },
+  march:  { n: '백귀야행', g: '行', c: '#d84a4a', p: () => ({ march: { goal: 100, min: 10 } }) },
+  blank:  { n: '꽝', g: '笑', c: '#6a6058', p: () => ({ notice: '꽝! 백야가 웃는다 — 다음 바퀴를 기다리시오', noticeAt: Date.now() }) }
+};
+const WHEEL_PICK0 = ['star', 'gold', 'coin', 'talis', 'pow2', 'egg', 'scode', 'blank'];
+/* 바퀴 그림 — 위(12시)에서 시계 방향으로 칸을 나눈다 */
+function wheelSvg(sl, uid = 'w') {
+  const n = sl.length, seg = 360 / n, R = 200, rad = a => (a - 90) * Math.PI / 180;
+  const pt = (a, r) => [(250 + Math.cos(rad(a)) * r).toFixed(1), (250 + Math.sin(rad(a)) * r).toFixed(1)];
+  let h = '';
+  sl.forEach((s, i) => {
+    const a0 = i * seg, a1 = a0 + seg, [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R), mid = a0 + seg / 2;
+    h += `<path class="whsl" data-i="${i}" d="M250 250 L${x0} ${y0} A${R} ${R} 0 ${seg > 180 ? 1 : 0} 1 ${x1} ${y1}Z" fill="url(#${uid}g${i})" stroke="#1a120a" stroke-width="2"/>
+      <defs><radialGradient id="${uid}g${i}" cx="250" cy="250" r="${R}" gradientUnits="userSpaceOnUse"><stop offset=".2" stop-color="#140d08"/><stop offset=".75" stop-color="${s.c}" stop-opacity=".55"/><stop offset="1" stop-color="${s.c}" stop-opacity=".9"/></radialGradient></defs>
+      <g transform="rotate(${mid.toFixed(1)} 250 250)"><text x="250" y="${250 - R * .74}" text-anchor="middle" dominant-baseline="middle" class="whg" fill="#fff8e6">${wEsc(s.g)}</text>
+      <text x="250" y="${250 - R * .5}" text-anchor="middle" dominant-baseline="middle" class="whn" fill="#f4ead2">${wEsc(s.n)}</text></g>`;
+  });
+  const bulbs = Array.from({ length: 24 }, (_, i) => { const [x, y] = pt(i * 15, R + 16); return `<circle class="whb" cx="${x}" cy="${y}" r="5" style="animation-delay:${(i % 2) * .35}s"/>`; }).join('');
+  return `<svg viewBox="0 0 500 500" class="whsvg"><circle cx="250" cy="250" r="${R + 26}" fill="#120c08" stroke="#e8c86a" stroke-width="4"/>
+    <circle cx="250" cy="250" r="${R + 8}" fill="none" stroke="rgba(232,200,106,.4)" stroke-width="2"/>${bulbs}
+    <g class="whrot">${h}<circle cx="250" cy="250" r="${R}" fill="none" stroke="#e8c86a" stroke-width="3"/></g>
+    <circle cx="250" cy="250" r="46" fill="#1a120a" stroke="#e8c86a" stroke-width="4"/><text x="250" y="252" text-anchor="middle" dominant-baseline="middle" class="whhub" fill="#ffd76a">運</text></svg>`;
+}
+const wheelLive = () => { const w = LIVE.wheel; return w && w.id && Array.isArray(w.slices) && w.slices.length > 1 && srvNow() < (+w.landAt || 0) + 22000 ? w : null; };
+const WH = { id: 0, hide: 0, tap: 0, sent: 0, srv: 0, mine: 0, raf: 0, last: -1, landed: 0, sendT: 0 };
+/* 바퀴가 멈출 각도 — 모두에게 같도록 바퀴 번호로 흔들림을 정한다 */
+function wheelFinal(w) {
+  const n = w.slices.length, seg = 360 / n, j = ((w.id % 997) / 997 - .5) * seg * .6;
+  return 360 * 7 - (w.pick + .5) * seg + j;
+}
+function wheelAngle(w, now) {
+  if (now < w.spinAt) return Math.sin(now / 900) * 4;
+  const T = w.landAt - w.spinAt, u = Math.min(1, (now - w.spinAt) / T);
+  return wheelFinal(w) * (1 - Math.pow(1 - u, 4));
+}
+function wheelTick() {
+  const w = wheelLive();
+  if (!w) { if (WH.id) wheelClose(true); return; }
+  if (WH.id !== w.id) { WH.id = w.id; WH.hide = 0; WH.tap = 0; WH.sent = 0; WH.srv = w.cheer || 0; WH.mine = 0; WH.last = -1; WH.landed = 0; }
+  WH.srv = Math.max(WH.srv, w.cheer || 0);
+  const busy = G.b && (G.b.kind === 'pvp' || G.b.kind === 'world');
+  if (!acctOn()) return;
+  /* 멈추고 한참 지났다 — 결과는 이미 알렸다 */
+  if (srvNow() > w.landAt + 6500) { const pm = $('#whpill'); if (pm) pm.remove(); return; }
+  if (WH.hide || G.b || busy || cutPlaying()) wheelMini(w); else wheelShow(w);
+}
+function wheelMini(w) {
+  if ($('#wheelov')) $('#wheelov').remove();
+  let n = $('#whpill');
+  if (!n) { n = el('button', 'whpill'); n.id = 'whpill'; n.onclick = () => { if (G.b) { wheelCheer(1, n); return; } WH.hide = 0; wheelTick(); }; document.body.appendChild(n); }
+  const now = srvNow();
+  n.innerHTML = `<i>運</i><b>${wEsc(w.title || '운명의 바퀴')}</b><em>${now < w.spinAt ? '돌기까지 ' + Math.ceil((w.spinAt - now) / 1000) + '초' : now < w.landAt ? '도는 중 —' : '멈췄다 · ' + wEsc(w.slices[w.pick].n)}</em>`;
+  if (!WH.raf) wheelLoop();
+}
+function wheelShow(w) {
+  const pm = $('#whpill'); if (pm) pm.remove();
+  if ($('#wheelov')) { if (!WH.raf) wheelLoop(); return; }
+  const n = el('div', 'wheelov'); n.id = 'wheelov';
+  n.innerHTML = `<div class="whbg"></div>
+    <div class="whbox">
+      <div class="whtop"><i>運</i><div><b>${wEsc(w.title || '운명의 바퀴')}</b><span>${w.slices.length}칸 — 멈춘 칸의 일이 모두에게 걸린다</span></div><button class="whx" title="작게 (돌면서 지켜본다)">—</button></div>
+      <div class="whstage"><div class="whglow"></div><div class="whwrap">${wheelSvg(w.slices, 'wh' + (w.id % 1000))}</div>
+        <div class="whptr"><svg viewBox="0 0 60 80"><path d="M30 78 L6 22 Q30 -6 54 22Z" fill="#a8272c" stroke="#ffd76a" stroke-width="3"/><text x="30" y="34" text-anchor="middle" font-size="20" fill="#ffd76a">命</text></svg></div>
+        <div class="whres"></div></div>
+      <div class="whstat"><span class="whcd"></span></div>
+      <div class="whcheer"><button class="whbtn"><b>함성!</b><small>누르거나 Space</small></button>
+        <div class="whgauge"><i><u></u></i><span class="whgn"></span></div></div>
+    </div>`;
+  document.body.appendChild(n);
+  n.querySelector('.whx').onclick = () => { WH.hide = 1; wheelTick(); };
+  n.querySelector('.whbtn').onclick = e => wheelCheer(1, e.currentTarget);
+  try { SND.unlock(); SND.gong(); } catch (e) {}
+  if (!WH.raf) wheelLoop();
+}
+/* 한 박자 — 각도 · 숫자 · 똑딱 소리 · 멈춤 */
+function wheelLoop() {
+  WH.raf = requestAnimationFrame(() => {
+    WH.raf = 0;
+    const w = wheelLive();
+    if (!w || (!$('#wheelov') && !$('#whpill'))) return;
+    const now = srvNow(), ov = $('#wheelov');
+    const a = wheelAngle(w, now), n = w.slices.length, seg = 360 / n;
+    const under = Math.floor((((-a % 360) + 360) % 360) / seg) % n;
+    if (ov) {
+      const rot = ov.querySelector('.whrot'); if (rot) rot.setAttribute('transform', `rotate(${a.toFixed(2)} 250 250)`);
+      const cd = ov.querySelector('.whcd');
+      if (now < w.spinAt) {
+        const ms = w.spinAt - now;
+        cd.innerHTML = ms <= 5000 ? `돌기까지 <b class="fine">${(ms / 1000).toFixed(2)}</b>` : `돌기까지 <b>${Math.ceil(ms / 1000)}</b>초 — 함성을 모으시오`;
+        ov.classList.toggle('fine', ms <= 5000);
+      } else if (now < w.landAt) { cd.innerHTML = `<b class="spin">${wEsc(w.slices[under].n)}</b>`; ov.classList.add('spinning'); ov.classList.remove('fine'); }
+      const tot = WH.srv + (WH.tap - WH.sent), g = w.goal || 0;
+      ov.querySelector('.whgauge u').style.width = (g ? Math.min(100, tot / g * 100) : 100) + '%';
+      ov.querySelector('.whgauge').classList.toggle('full', !!g && tot >= g);
+      ov.querySelector('.whgn').innerHTML = g ? `함성 <b>${tot}</b> / ${g}${w.bonus && (w.bonus.gold || w.bonus.dia) ? ` — 넘기면 모두에게 ${[w.bonus.gold ? '金' + w.bonus.gold : '', w.bonus.dia ? '玉' + w.bonus.dia : '', w.bonus.jp ? '精' + w.bonus.jp : ''].filter(Boolean).join(' ')}` : ''} · ${w.ppl || 0}명` : `함성 <b>${tot}</b> · ${w.ppl || 0}명`;
+    } else {
+      const pill = $('#whpill'); if (pill && now < w.landAt) { const em = pill.querySelector('em'); if (em) em.textContent = now < w.spinAt ? '돌기까지 ' + ((w.spinAt - now) <= 5000 ? ((w.spinAt - now) / 1000).toFixed(2) : Math.ceil((w.spinAt - now) / 1000) + '초') : '도는 중 — ' + w.slices[under].n; }
+    }
+    /* 칸 경계를 넘을 때 똑딱 */
+    if (now >= w.spinAt && now < w.landAt && under !== WH.last) {
+      WH.last = under;
+      const u = (now - w.spinAt) / (w.landAt - w.spinAt);
+      try { SND.blip(520 + u * 380, { dur: .03, type: 'square', vol: .03 + u * .02 }); } catch (e) {}
+      if (ov) { const p = ov.querySelector('.whptr'); p.classList.remove('tk'); void p.offsetWidth; p.classList.add('tk'); }
+    }
+    if (now >= w.landAt && WH.landed !== w.id) { WH.landed = w.id; wheelLand(w); }
+    if (now < w.landAt + 6000) wheelLoop();
+    else if (ov && !ov.classList.contains('out')) { ov.classList.add('out'); setTimeout(() => ov.remove(), 600); }
+  });
+}
+function wheelLand(w) {
+  const s = w.slices[w.pick], ov = $('#wheelov');
+  const tot = WH.srv + (WH.tap - WH.sent), won = w.goal && tot >= w.goal;
+  if (ov) {
+    ov.classList.remove('spinning'); ov.classList.add('landed');
+    const sl = ov.querySelector(`.whsl[data-i="${w.pick}"]`); if (sl) sl.classList.add('win');
+    const r = ov.querySelector('.whres'); r.style.setProperty('--wc', s.c);
+    r.innerHTML = `<i>${wEsc(s.g)}</i><b>${wEsc(s.n)}</b>${won ? '<small>함성의 선물이 모두의 우편함에!</small>' : ''}`;
+    r.classList.add('on');
+    ov.querySelector('.whcd').innerHTML = `<b class="land">${wEsc(s.n)}</b>`;
+  }
+  try { SND.unlock(); SND.gong(); SND.crit(); if (/^꽝/.test(s.n)) SND.err(); else SND.victory(); screenFlash(s.c + '88', 700); shake(true);
+    const cx = innerWidth / 2, cy = innerHeight * .45; FX.burst(cx, cy, 60, '255,215,120', 9, 60, 6); FX.gold(cx, cy, 50); } catch (e) {}
+  toast(`運 운명의 바퀴 — 「${s.n}」${won ? ' · 함성의 선물이 우편함에' : ''}`);
+  setTimeout(() => { liveFetch().catch(() => {}); if (won) mailFetch(true); }, 2500);
+}
+function wheelClose(all) {
+  const a = $('#wheelov'), b = $('#whpill');
+  if (a) { a.classList.add('out'); setTimeout(() => a.remove(), 500); }
+  if (b) b.remove();
+  if (all) WH.id = 0;
+}
+/* 함성 — 두드린 수를 모았다가 0.6초마다 보낸다 */
+const WH_SHOUT = ['와!', '돌아라!', '가자!', '운명아!', '한 번 더!', '백야!', '星!', '豊!', '와아!'];
+function wheelCheer(k, from) {
+  const w = wheelLive(); if (!w || srvNow() >= w.landAt) return;
+  if (WH.tap - WH.sent + WH.mine >= 60) { if (from) from.classList.add('maxed'); return; }
+  WH.tap += k;
+  try { SND.blip(300 + Math.random() * 300, { dur: .05, type: 'triangle', vol: .05 }); } catch (e) {}
+  if (from) {
+    const r = from.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    try { FX.burst(x, y, 10, '255,215,120', 5, 30, 3); } catch (e) {}
+    const t = el('div', 'whshout', WH_SHOUT[Math.floor(Math.random() * WH_SHOUT.length)]);
+    t.style.left = (x + (Math.random() - .5) * 140) + 'px'; t.style.top = (y - 30) + 'px';
+    document.body.appendChild(t); setTimeout(() => t.remove(), 900);
+    from.classList.remove('hit'); void from.offsetWidth; from.classList.add('hit');
+  }
+  if (!WH.sendT) WH.sendT = setTimeout(wheelSend, 600);
+}
+async function wheelSend() {
+  WH.sendT = 0;
+  const n = Math.min(12, WH.tap - WH.sent); if (n <= 0) return;
+  WH.sent += n;
+  const r = await acctAsk('/wheel/cheer', { token: ACCT.token, n }, 8000).catch(() => ({ ok: false }));
+  if (r && r.ok) { WH.srv = Math.max(WH.srv, r.cheer || 0); WH.mine = r.mine || 0; if (LIVE.wheel) { LIVE.wheel.cheer = r.cheer; LIVE.wheel.ppl = r.ppl; } }
+  if (WH.tap > WH.sent) WH.sendT = setTimeout(wheelSend, 600);
+}
+addEventListener('keydown', e => {
+  if (e.code !== 'Space' || !$('#wheelov') || /INPUT|TEXTAREA/.test((e.target || {}).tagName || '')) return;
+  e.preventDefault(); e.stopPropagation();
+  if (!e.repeat) wheelCheer(1, $('#wheelov .whbtn'));
+}, true);
+/* ── 바퀴 짓기 (백야) — 칸을 고르고 무게 · 때 · 함성 목표를 정한다 ── */
+function showWheelMaker() {
+  if (!caster()) return;
+  const D = showWheelMaker.d = showWheelMaker.d || { pick: WHEEL_PICK0.slice(), w: {}, title: '운명의 바퀴', lead: 20, spin: 9, goal: 60, gold: 300, dia: 30, jp: 0 };
+  const p = modal(`<div class="whmk">
+    <div class="mhead"><i>運</i><div><h2>운명의 바퀴</h2><span>칸을 고르고 돌린다 — 모두의 화면에서 함께 돌고, 멈춘 칸의 일이 모두에게 걸린다</span></div></div>
+    <div class="whmkg">
+      <div>
+        <div class="mcsub">칸 <em id="wm_n"></em> <small>둘에서 열까지 · 고른 칸의 숫자는 무게(잘 걸리는 정도)</small></div>
+        <div class="whopts" id="wm_opts"></div>
+        <div class="mcsub">때 · 함성</div>
+        <div class="whset">
+          <label>이름<input id="wm_title" maxlength="30" value="${wEsc(D.title)}"></label>
+          <label>돌기 전<input id="wm_lead" type="number" min="5" max="30" value="${D.lead}">초</label>
+          <label>도는 때<input id="wm_spin" type="number" min="5" max="15" value="${D.spin}">초</label>
+          <label>함성 목표<input id="wm_goal" type="number" min="0" max="100000" value="${D.goal}"></label>
+          <label><i style="color:#ffd76a">金</i><input id="wm_gold" type="number" min="0" max="100000" value="${D.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i><input id="wm_dia" type="number" min="0" max="10000" value="${D.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i><input id="wm_jp" type="number" min="0" max="10000" value="${D.jp}"></label>
+        </div>
+        <div class="casthint">함성 목표를 넘기면 바퀴가 멈출 때 모두의 우편함에 위 보상이 간다 (0 이면 없음) · 한 사람이 한 바퀴에 예순 번까지 외친다</div>
+      </div>
+      <div class="whmkpv"><div id="wm_pv"></div><div class="whmkodds" id="wm_odds"></div></div>
+    </div>
+    <div class="mcrow"><span class="mclog" id="wm_log"></span><button class="brush-btn ghost" id="wm_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button>
+      <button class="brush-btn gold" id="wm_go">運 돌린다</button></div></div>`, 'whmkp');
+  const q = s => p.querySelector(s);
+  const slices = () => D.pick.map(k => ({ k, n: WHEEL_OPTS[k].n, g: WHEEL_OPTS[k].g, c: WHEEL_OPTS[k].c, w: D.w[k] || 1 }));
+  const draw = () => {
+    q('#wm_opts').innerHTML = Object.keys(WHEEL_OPTS).map(k => { const o = WHEEL_OPTS[k], on = D.pick.indexOf(k) >= 0;
+      return `<div class="whopt${on ? ' on' : ''}" data-k="${k}" style="--wc:${o.c}"><i>${o.g}</i><b>${o.n}</b>${on ? `<span><button data-d="-1">−</button><em>${D.w[k] || 1}</em><button data-d="1">＋</button></span>` : ''}</div>`; }).join('');
+    q('#wm_n').textContent = D.pick.length + '칸';
+    const sl = slices(), tw = sl.reduce((a, x) => a + x.w, 0);
+    q('#wm_pv').innerHTML = sl.length >= 2 ? wheelSvg(sl, 'wmk') : '<div class="dashnone">칸을 둘 이상 고르시오</div>';
+    q('#wm_odds').innerHTML = sl.map(x => `<span style="--wc:${x.c}"><i>${x.g}</i>${x.n}<b>${Math.round(x.w / tw * 100)}%</b></span>`).join('');
+    q('#wm_opts').querySelectorAll('.whopt').forEach(t => t.onclick = e => {
+      const k = t.dataset.k, d = e.target.closest('[data-d]');
+      if (d) { D.w[k] = Math.max(1, Math.min(10, (D.w[k] || 1) + +d.dataset.d)); draw(); return; }
+      const i = D.pick.indexOf(k);
+      if (i >= 0) D.pick.splice(i, 1); else if (D.pick.length < 10) D.pick.push(k); else { toast('칸은 열까지'); return; }
+      draw();
+    });
+  };
+  const read = () => { D.title = q('#wm_title').value.trim() || '운명의 바퀴';
+    for (const k of ['lead', 'spin', 'goal', 'gold', 'dia', 'jp']) D[k] = Math.max(0, Math.floor(+q('#wm_' + k).value || 0)); };
+  p.querySelectorAll('.whset input').forEach(i => i.oninput = read);
+  draw();
+  q('#wm_x').onclick = closeTop;
+  q('#wm_go').onclick = async () => {
+    read();
+    if (D.pick.length < 2) { q('#wm_log').innerHTML = '<span style="color:#ff9a9a">칸을 둘 이상 고르시오</span>'; return; }
+    if (wheelLive() && srvNow() < LIVE.wheel.landAt && !confirm('바퀴가 아직 돌고 있다 — 새로 돌릴까?')) return;
+    const wheel = { title: D.title, lead: D.lead, spin: D.spin, goal: D.goal, bonus: { gold: D.gold, dia: D.dia, jp: D.jp },
+      slices: D.pick.map(k => ({ n: WHEEL_OPTS[k].n, g: WHEEL_OPTS[k].g, c: WHEEL_OPTS[k].c, w: D.w[k] || 1, patch: WHEEL_OPTS[k].p() })) };
+    q('#wm_go').disabled = true; q('#wm_log').textContent = '보내는 중…';
+    const r = await castSend({ wheel, notice: `${DEV_NAME}가 운명의 바퀴를 돌린다! — 함성을 모으시오`, noticeAt: Date.now() });
+    q('#wm_go').disabled = false;
+    if (!r.ok) { q('#wm_log').innerHTML = `<span style="color:#ff9a9a">못 했다 — ${wEsc(r.why)}</span>`; return; }
+    try { logNote('wheel', `${D.title} — ${D.pick.map(k => WHEEL_OPTS[k].n).join(' · ')}`); } catch (e) {}
+    closeTop(); wheelTick();
+  };
+}
+/* ══════════════════════════════════════════════════════════
+   Tab — 퍼뜨리기 빠른 창 (백야만)
+   ──────────────────────────────────────────────────────────
+   퍼뜨리기가 많아 관리자 창을 뒤지기 번거롭다. Tab 을 누르면 곧장 뜬다.
+   위에는 자주 쓰는 것(쓴 만큼 앞으로), 아래에는 모두 — 찾기 칸은 초성(ㅅㅌㅅㅌ)도 알아듣는다.
+   바로 퍼뜨리는 것은 Enter 를 두 번(한 번 더 확인) · 창을 여는 것은 한 번.
+   ══════════════════════════════════════════════════════════ */
+const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const choOf = s => String(s).replace(/[가-힣]/g, c => CHO[Math.floor((c.charCodeAt(0) - 0xac00) / 588)]);
+function castQList() {
+  const L = [];
+  const hypeOn = () => { try { return localStorage.getItem('baekgwi_hypeauto') !== '0'; } catch (e) { return true; } };
+  const hype = (what, patch) => hypeOn() ? Object.assign(patch, { notice: HYPE_SAY + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
+  const ev = liveEvent();
+  const add = o => L.push(o);
+  const tab = t => () => { closeOverlay(); showAdmin(); setTimeout(() => { const b = $(`.adtab[data-t="${t}"]`); if (b) b.click(); }, 60); };
+  /* 창을 여는 것 */
+  add({ k: 'wheel', g: '運', n: '운명의 바퀴 돌리기', cat: '새 이벤트', al: '룰렛 바퀴 운명 돌림판 wheel', open: () => showWheelMaker() });
+  add({ k: 'scode', g: '秘', n: '비밀 코드 뿌리기', cat: '새 이벤트', al: '코드 비밀 쿠폰 code', open: tab('scode') });
+  add({ k: 'scodeq', g: '秘', n: '비밀 코드 바로 — 열린 코드 10분 · 金300 玉30', cat: '새 이벤트', al: '코드 쿠폰 빠른',
+    patch: () => hype('비밀 코드', { scode: { code: scodeMake(), title: '백야의 깜짝 코드', min: 10, show: true, gold: 300, dia: 30 } }) });
+  add({ k: 'say', g: '白', n: '백야의 말', cat: '말', al: '공지 말 알림 notice 왼쪽alt', open: () => devSayPanel() });
+  add({ k: 'mail', g: '郵', n: '우편함 작성', cat: '말', al: '우편 메일 선물 보상', open: tab('mail') });
+  add({ k: 'plan', g: '曆', n: '이벤트 예약 · 달력', cat: '말', al: '예약 일정 달력 schedule', open: () => openPlanner() });
+  if (cutMkOn()) add({ k: 'cutmk', g: '映', n: '컷씬 공방', cat: '컷씬', al: '컷씬 만들기 공방 편집', open: () => showCutMaker() });
+  add({ k: 'admin', g: '管', n: '관리자 창 — 퍼뜨리기 탭', cat: '창', al: '관리자 어드민 퍼뜨리기 전부', open: tab('cast') });
+  add({ k: 'dash', g: '管', n: '대시보드', cat: '창', al: '통계 접속 대시보드', open: tab('dash') });
+  /* 하늘의 이벤트 */
+  for (const k of Object.keys(WORLD)) {
+    const w = WORLD[k];
+    add({ k: 'ev_' + k, g: w.g, c: w.c, n: w.n + ' 시작', cat: '하늘의 이벤트', al: w.n + ' 이벤트 ' + k, on: () => k === 'rain' ? liveRain() : ev === k,
+      patch: () => hype(w.n, { event: k, eventAt: Date.now() }) });
+  }
+  add({ k: 'evoff', g: '止', n: '하늘의 이벤트 모두 끄기', cat: '하늘의 이벤트', al: '끄기 멈춤 이벤트 off', red: 1, patch: () => ({ event: '', eventAt: Date.now() }) });
+  /* 한바탕 */
+  for (const k of Object.keys(FXC)) add({ k: 'fx_' + k, g: FXC[k].g, c: FXC[k].c, n: FXC[k].n, cat: '한바탕', al: '한바탕 퍼뜨리기 ' + k,
+    on: () => { const f = fxcLive(); return !!f && f.k === k; }, patch: () => hype(FXC[k].n, { fx: { k } }) });
+  add({ k: 'fxoff', g: '止', n: '한바탕 거두기', cat: '한바탕', red: 1, patch: () => ({ fx: null }) });
+  /* 버프 */
+  add({ k: 'bf_pow', g: '力', c: '#ffc23a', n: '버프 — 부적의 힘 ×2 · 10분', cat: '버프', al: '버프 힘 두배', on: () => buffKeys().includes('pow'), patch: () => hype('백야의 버프', { buff: { ks: { pow: 2 }, min: 10 } }) });
+  add({ k: 'bf_gold', g: '金', c: '#ffd76a', n: '버프 — 황금비 · 10분', cat: '버프', al: '버프 골드 황금', patch: () => hype('백야의 버프', { buff: { ks: { gold: 1 }, min: 10 } }) });
+  add({ k: 'bf_all', g: '加', c: '#ffc23a', n: '버프 — 모두 · 10분', cat: '버프', al: '버프 전부 모두',
+    patch: () => { const ks = {}; for (const k of Object.keys(BUFF_DEF)) ks[k] = k === 'pow' ? 2 : 1; return hype('백야의 버프', { buff: { ks, min: 10 } }); } });
+  add({ k: 'bfoff', g: '止', n: '버프 거두기', cat: '버프', red: 1, patch: () => ({ buff: null }) });
+  /* 함께 하는 일 */
+  add({ k: 'egg', g: '卵', c: '#f4e6c0', n: '비밀의 계란 — 8개(비밀 2) · 10분', cat: '함께 하는 일', al: '계란 egg', on: () => !!LIVE.egg, patch: () => hype('비밀의 계란', { egg: { n: 8, s: 2, min: 10 } }) });
+  add({ k: 'eggoff', g: '止', n: '계란 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ egg: null }) });
+  add({ k: 'hunt', g: '探', c: '#c8a8ff', n: '숨은 부적 찾기 — 10명 · 5분 · 金500 玉50', cat: '함께 하는 일', al: '숨은 부적 찾기 hunt', on: () => !!LIVE.hunt,
+    patch: () => hype('숨은 부적 찾기', { hunt: { max: 10, min: 5, gold: 500, dia: 50, jp: 0, cards: [] } }) });
+  add({ k: 'huntoff', g: '止', n: '숨은 부적 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ hunt: null }) });
+  add({ k: 'march', g: '行', c: '#d84a4a', n: '백귀야행 — 100마리 · 10분', cat: '함께 하는 일', al: '백귀야행 행렬 march', on: () => !!(LIVE.march && !LIVE.march.done), patch: () => hype('백귀야행', { march: { goal: 100, min: 10 } }) });
+  add({ k: 'marchoff', g: '止', n: '백귀야행 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ march: null }) });
+  add({ k: 'shadow', g: '影', c: '#8a7aa8', n: '그림자 침공 — 10분', cat: '함께 하는 일', al: '그림자 침공 shadow', on: () => !!(LIVE.shadow && !LIVE.shadow.done), patch: () => hype('그림자 침공', { shadow: { min: 10 } }) });
+  add({ k: 'shadowoff', g: '止', n: '그림자 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ shadow: null }) });
+  add({ k: 'hb', g: '⌬', c: '#2cff7a', n: '해킹 보스 — 10분', cat: '함께 하는 일', al: '해킹 보스 박사 hack', patch: () => hype('해킹 보스', { hb: { min: 10, cut: false } }) });
+  add({ k: 'hboff', g: '止', n: '해킹 보스 닫기', cat: '함께 하는 일', red: 1, patch: () => ({ hb: null }) });
+  add({ k: 'boss', g: '敵', c: '#e0566a', n: '모두의 적 · 백야의 시험 · 투표 — 자세히', cat: '함께 하는 일', al: '모두의 적 보스 시험 투표 퀴즈 폭탄', open: tab('cast') });
+  /* 카운트다운 · 축제 */
+  add({ k: 'cd10', g: '⏱', n: '카운트다운 10초', cat: '카운트다운 · 축제', al: '카운트다운 countdown 숫자', patch: () => ({ count: { sec: 10, label: '' } }) });
+  add({ k: 'cdoff', g: '止', n: '카운트다운 멈춤', cat: '카운트다운 · 축제', red: 1, patch: () => ({ count: null }) });
+  for (const k of Object.keys(FEST)) add({ k: 'fest_' + k, g: '祭', c: '#ff9a5a', n: FEST[k].n, cat: '카운트다운 · 축제', al: '축제 페스티벌 ' + FEST[k].d,
+    patch: () => ({ schedule: { at: Date.now() + 1500, label: FEST[k].n, steps: FEST[k].steps.map(([after, label, patch], i) => ({ after, label, patch: i === 0 ? hype(FEST[k].n, Object.assign({}, patch)) : patch })) } }) });
+  /* 컷씬 */
+  for (const k of Object.keys(CUT_LIST)) add({ k: 'cut_' + k, g: '映', c: '#e8c86a', n: '컷씬 — ' + CUT_LIST[k].n, cat: '컷씬', al: '컷씬 영상 뿌리기 ' + k, patch: () => ({ cut: { k } }) });
+  if (cutMkOn()) cmkSaves().forEach((x, i) => add({ k: 'cmk_' + (x.id || i), g: '映', c: '#ffd76a', n: '공방 컷씬 — ' + (x.n || '이름 없음'), cat: '컷씬', al: '공방 컷씬 내가 지은',
+    run: async () => { const r = await cmkCast(Object.assign({}, x.def, { n: x.n })); return r; } }));
+  /* 노래 · 맛보기 */
+  for (const k of Object.keys(SONGS)) add({ k: 'song_' + k, g: '♪', c: '#9fd8ff', n: '노래 — ' + SONGS[k].n + ' · 10분', cat: '노래', al: '노래 음악 bgm ' + k,
+    on: () => !!(LIVE.music && LIVE.music.k === k && srvNow() < (LIVE.music.until || 0)), patch: () => ({ music: { k, min: 10 } }) });
+  add({ k: 'songoff', g: '止', n: '노래 끄기', cat: '노래', red: 1, patch: () => ({ music: null }) });
+  add({ k: 'autofree', g: '自', c: '#7fe6cf', n: '자동 플레이 맛보기 — 30분', cat: '노래', al: '자동 맛보기 오토', patch: () => hype('자동 플레이 맛보기 30분', { autofree: { min: 30 } }) });
+  return L;
+}
+const CASTQ_FAV = ['wheel', 'scodeq', 'say', 'ev_star', 'ev_gold', 'fx_coin', 'bf_pow', 'fest_short'];
+function castQScore(x, q, qc) {
+  const n = x.n.replace(/\s/g, '').toLowerCase(), al = (x.al || '').replace(/\s/g, '').toLowerCase(), all = n + al + x.cat;
+  if (n.startsWith(q)) return 5;
+  if (n.includes(q)) return 4;
+  if (all.includes(q)) return 3;
+  if (/^[ㄱ-ㅎ]+$/.test(q) && (choOf(n).includes(q) || choOf(al).includes(q))) return 2.5;
+  let i = 0; for (const ch of n) if (ch === q[i]) i++;
+  if (i >= q.length) return 1;
+  return 0;
+}
+function showCastPal() {
+  if (!caster() || $('#castpal')) return;
+  const o = el('div', 'castpal'); o.id = 'castpal';
+  const live = [];
+  const e = liveEvent(); if (e) live.push(`<b style="--c:${WORLD[e].c}">${WORLD[e].g} ${WORLD[e].n}</b>`);
+  if (liveRain()) live.push(`<b style="--c:${WORLD.rain.c}">札 카드 대전</b>`);
+  try { const f = fxcLive(); if (f) live.push(`<b style="--c:${FXC[f.k].c}">${FXC[f.k].g} ${FXC[f.k].n}</b>`); } catch (er) {}
+  if (buffKeys().length) live.push(`<b style="--c:#ffc23a">加 버프 ${buffKeys().length}</b>`);
+  if (scodeLive()) live.push(`<b style="--c:#e8c86a">秘 비밀 코드 ${LIVE.scode.n || 0}명</b>`);
+  if (wheelLive()) live.push(`<b style="--c:#ffd76a">運 바퀴</b>`);
+  if (LIVE.egg) live.push('<b style="--c:#f4e6c0">卵 계란</b>');
+  if (LIVE.hunt) live.push('<b style="--c:#c8a8ff">探 숨은 부적</b>');
+  o.innerHTML = `<div class="cqbox">
+    <div class="cqhead"><i>播</i><div><b>퍼뜨리기</b><span>Tab 으로 열고 닫는다 · ↑↓ 고르기 · Enter 두 번 퍼뜨린다</span></div>
+      <div class="cqlive">${live.length ? '<small>지금</small>' + live.join('') : '<small>지금 걸린 일 없음</small>'}</div></div>
+    <div class="cprow"><i>⌕</i><input id="cq_in" placeholder="무엇을 퍼뜨릴까 — 이름 · 초성(ㅅㅌㅅㅌ) · 갈래(버프·컷씬…)" autocomplete="off" spellcheck="false"><kbd>Tab</kbd></div>
+    <div class="cqfav" id="cq_fav"></div>
+    <div class="cqlist" id="cq_list"></div>
+    <div class="cqfoot" id="cq_foot">「백야가 이벤트를 시작했습니다!」 말 덧붙이기 — ${(() => { try { return localStorage.getItem('baekgwi_hypeauto') !== '0'; } catch (er) { return true; } })() ? '켬' : '끔'} (관리자 창에서 바꾼다)</div></div>`;
+  document.body.appendChild(o);
+  const inp = o.querySelector('#cq_in'), list = o.querySelector('#cq_list'), fav = o.querySelector('#cq_fav'), foot = o.querySelector('#cq_foot');
+  const ALL = castQList();
+  let rows = [], sel = 0, armed = -1;
+  const use = META.castUse || {};
+  const favs = () => {
+    const by = ALL.filter(x => use[x.k]).sort((a, b) => use[b.k] - use[a.k]).map(x => x.k);
+    const ks = []; for (const k of by.concat(CASTQ_FAV)) if (ks.length < 8 && !ks.includes(k) && ALL.some(x => x.k === k)) ks.push(k);
+    return ks.map(k => ALL.find(x => x.k === k));
+  };
+  const item = (x, i, cls) => `<button class="${cls}${i === sel ? ' on' : ''}${x.red ? ' red' : ''}${x.on && (() => { try { return x.on(); } catch (er) { return false; } })() ? ' live' : ''}${i === armed ? ' armed' : ''}" data-i="${i}" style="--c:${x.c || '#e8c86a'}">
+    <i>${x.g}</i><b>${wEsc(x.n)}</b><span>${i === armed ? 'Enter — 퍼뜨린다' : x.open ? '창 열기' : x.cat}</span></button>`;
+  const draw = () => {
+    const q = inp.value.trim().toLowerCase().replace(/\s+/g, '');
+    if (!q) {
+      const F = favs();
+      rows = F.concat(ALL.filter(x => !F.includes(x)));
+      fav.style.display = '';
+      fav.innerHTML = '<small>자주 쓰는 것</small>' + F.map((x, i) => item(x, i, 'cqchip')).join('');
+      let cat = '';
+      list.innerHTML = rows.slice(F.length).map((x, j) => { const i = j + F.length; const h = x.cat !== cat ? `<div class="cqcat">${wEsc(cat = x.cat)}</div>` : ''; return h + item(x, i, 'cqitem'); }).join('');
+    } else {
+      rows = ALL.map(x => [x, castQScore(x, q)]).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1] || (use[b[0].k] || 0) - (use[a[0].k] || 0)).map(r => r[0]);
+      fav.style.display = 'none';
+      list.innerHTML = rows.map((x, i) => item(x, i, 'cqitem')).join('') || '<div class="cpnone">찾는 퍼뜨리기가 없다</div>';
+    }
+    sel = Math.min(sel, Math.max(0, rows.length - 1));
+    o.querySelectorAll('[data-i]').forEach(b => { b.onclick = () => { sel = +b.dataset.i; go(sel, true); }; b.onmouseenter = () => { if (sel !== +b.dataset.i) { sel = +b.dataset.i; mark(); } }; });
+  };
+  const mark = () => o.querySelectorAll('[data-i]').forEach(b => { b.classList.toggle('on', +b.dataset.i === sel); });
+  const shut = () => { o.classList.add('out'); setTimeout(() => o.remove(), 160); };
+  const go = async (i, click) => {
+    const x = rows[i]; if (!x) return;
+    if (x.open) { use[x.k] = (use[x.k] || 0) + 1; META.castUse = use; saveMeta(); shut(); x.open(); return; }
+    if (armed !== i) { armed = i; draw(); foot.innerHTML = `<b>${wEsc(x.n)}</b> — ${click ? '한 번 더 누르면' : 'Enter 를 한 번 더 누르면'} 모두에게 퍼뜨린다`; foot.className = 'cqfoot arm'; try { SND.ui(); } catch (er) {} return; }
+    armed = -1; foot.textContent = '보내는 중…'; foot.className = 'cqfoot';
+    const r = x.run ? await x.run() : await castSend(x.patch());
+    if (!r || !r.ok) { foot.innerHTML = `<span style="color:#ff9a9a">못 했다 — ${wEsc((r && r.why) || '?')}</span>`; try { SND.err(); } catch (er) {} draw(); return; }
+    use[x.k] = (use[x.k] || 0) + 1; META.castUse = use; saveMeta();
+    try { logNote('cast', x.n); } catch (er) {}
+    toast(`播 퍼뜨렸다 — ${x.n}`);
+    try { SND.bell(); } catch (er) {}
+    shut();
+    liveFetch().catch(() => {});
+  };
+  inp.oninput = () => { sel = 0; armed = -1; draw(); };
+  inp.onkeydown = e => {
+    e.stopPropagation();
+    if (e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); shut(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(rows.length - 1, sel + 1); armed = -1; mark(); const b = o.querySelector('[data-i].on'); if (b) b.scrollIntoView({ block: 'nearest' }); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); armed = -1; mark(); const b = o.querySelector('[data-i].on'); if (b) b.scrollIntoView({ block: 'nearest' }); }
+    else if (e.key === 'Enter') { e.preventDefault(); go(sel); }
+  };
+  o.onclick = e => { if (e.target === o) shut(); };
+  draw();
+  setTimeout(() => inp.focus(), 20);
+  try { SND.ui(); } catch (er) {}
+}
+addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || e.ctrlKey || e.altKey || e.metaKey || !caster() || cutPlaying()) return;
+  const tg = e.target;
+  if (tg && /INPUT|TEXTAREA|SELECT/.test(tg.tagName) && !(tg.closest && tg.closest('#castpal'))) return;
+  e.preventDefault(); e.stopPropagation();
+  const o = $('#castpal'); if (o) o.remove(); else showCastPal();
+}, true);
 /* 달력에서 「일정 짜기」 — 관리자 창 퍼뜨리기 탭의 이벤트 예약으로 바로 */
 function openPlanner() {
   closeOverlay(); showAdmin();
@@ -23986,7 +25659,7 @@ function devSayPanel() {
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
 const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['soc', '교류', '社'], ['set', '설정', '設']];
-const MENU_NEW = { mail: 1, cal: 1, gallery: 1, quest: 1, ach: 1, profile: 1, rank: 1, friends: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_NEW = { cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
   { k: 'auto',  g: '自', n: '자동 플레이', tab: 'adv', al: '오토 auto 자동', show: inRun,
@@ -24023,8 +25696,18 @@ const MENU_ITEMS = [
   { k: 'rank',  g: '榜', n: '순위', tab: 'soc', al: '순위 랭킹 랭크 리더보드', run: () => showRanks() },
   { k: 'chat',  g: '話', n: '채팅', tab: 'soc', al: '채팅 대화 말', show: () => acctOn(), run: () => chatToggle() },
   { k: 'set',   g: '設', n: '설정', tab: 'set', al: '설정 옵션 소리 음량', run: () => showSettings(), keep: 1 },
+  { k: 'keys',  g: '鍵', n: '단축키', tab: 'set', al: '단축키 키보드 조작 hotkey', sub: () => '? · F1', run: () => showKeys() },
+  { k: 'toastlog', g: '錄', n: '알림 기록', tab: 'set', al: '알림 기록 지난 메시지 로그', sub: () => TLOG.length ? TLOG.length + '개' : '', run: () => showToastLog() },
+  { k: 'lite',  g: '輕', n: '가볍게 모드', tab: 'set', al: '가볍게 저사양 효과 끄기 배터리', sub: () => liteOn() ? '켜짐' : '꺼짐', run: () => liteToggle(), keep: 1 },
+  { k: 'mute',  g: '♪', n: '소리 끄고 켜기', tab: 'set', al: '소리 음소거 mute', sub: () => SND.on ? '켜짐' : '꺼짐', run: () => soundToggle(), keep: 1 },
+  { k: 'full',  g: '全', n: '전체 화면', tab: 'set', al: '전체화면 fullscreen', run: () => fullToggle() },
+  { k: 'zen',   g: '空', n: '화면 비우기', tab: 'set', al: '화면 비우기 스크린샷 숨기기 UI', sub: () => 'H', run: () => { closeOverlay(); zenToggle(); } },
   { k: 'help',  g: '書', n: '안내서', tab: 'set', al: '도움말 안내 설명', run: () => showHelp(), keep: 1 },
   { k: 'tbpin', g: '…', n: '윗줄 고르기', tab: 'set', al: '윗줄 단추 고정 숨기기 상단바', show: inRun, run: () => tbMoreShow(true) },
+  { k: 'castq', g: '播', n: '퍼뜨리기 빠른 창', tab: 'set', al: '퍼뜨리기 이벤트 빠른 tab', show: () => caster(), sub: () => 'Tab', run: () => { closeOverlay(); showCastPal(); } },
+  { k: 'wheelmk', g: '運', n: '운명의 바퀴 돌리기', tab: 'ev', al: '운명의 바퀴 룰렛 돌림판', show: () => caster(), run: () => showWheelMaker() },
+  { k: 'scodebox', g: '秘', n: '비밀 코드 적기', tab: 'ev', al: '비밀 코드 쿠폰 입력', show: () => !!scodeLive(), dot: () => scodeLive() && !scodeGot(LIVE.scode.id) ? '!' : 0, run: () => showScodeBox() },
+  { k: 'cutmk', g: '映', n: '컷씬 공방', tab: 'set', al: '컷씬 공방 만들기 제작 편집 영상 cutscene', show: () => cutMkOn(), run: () => showCutMaker() },
   { k: 'admin', g: '管', n: '관리자', tab: 'set', al: '관리자 어드민 퍼뜨리기', show: () => adminOn(), run: () => showAdmin() }
 ];
 const menuItem = k => MENU_ITEMS.find(x => x.k === k);
@@ -24118,6 +25801,108 @@ addEventListener('keydown', e => {
     const o = $('#cmdpal'); if (o) o.remove(); else showPalette();
   }
 }, true);
+/* ══════════════════════════════════════════════════════════
+   편의 열 가지 (판 54)
+     ① 알림 기록 (N)       ② 단축키 한눈에 (? · F1)   ③ 소리 끄고 켜기 (M)
+     ④ 전체 화면 (F)       ⑤ 화면 비우기 (H)          ⑥ 차례 넘기기 확인
+     ⑦ 덱 정렬 · 찾기      ⑧ 임무 모두 받기           ⑨ 가볍게 모드 (L)
+     ⑩ 쉬어 가기 알림 (한 시간마다)
+   ══════════════════════════════════════════════════════════ */
+const agoTxt = t => { const s = Math.max(0, Math.floor((Date.now() - t) / 1000)); return s < 60 ? s + '초 전' : s < 3600 ? Math.floor(s / 60) + '분 전' : Math.floor(s / 3600) + '시간 전'; };
+function showToastLog() {
+  const p = modal(`<div class="tlbox"><div class="mhead"><i>錄</i><div><h2>알림 기록</h2><span>지나간 알림을 다시 본다 — 이번에 켠 뒤로 예순 개까지 · N</span></div></div>
+    <div class="tllist" id="tl_list"></div>
+    <div class="qfoot"><button class="brush-btn ghost" id="tl_clr" style="color:#e9dfc9;border-color:#8a7f68">비우기</button><button class="brush-btn" id="tl_x">닫기</button></div></div>`, 'tlp');
+  const draw = () => { p.querySelector('#tl_list').innerHTML = TLOG.length ? TLOG.map(x => `<div class="tlrow"><small>${agoTxt(x.at)}</small><span>${wEsc(x.m)}</span></div>`).join('')
+    : '<div class="dashnone">아직 알림이 없다</div>'; };
+  draw();
+  p.querySelector('#tl_clr').onclick = () => { TLOG.length = 0; draw(); };
+  p.querySelector('#tl_x').onclick = closeTop;
+}
+const KEYS_LIST = () => [
+  ['싸움', [['1 ~ 9', '그 자리의 부적 쓰기'], ['E · Space', '차례 넘기기 (기가 남으면 한 번 묻는다)'], ['D', '내 덱 보기'], ['A', '자동 플레이 켜고 끄기'], ['오른쪽 클릭', '고른 부적 무르기']]],
+  ['어디서나', [['Esc', '창 닫기 · 메뉴'], ['Ctrl + K', '빠른 찾기 — 가고 싶은 자리'], ['C', '채팅'], ['N', '알림 기록'], ['M', '소리 끄고 켜기'], ['F', '전체 화면'], ['H', '화면 비우기 (한 번 더 누르면 돌아온다)'], ['L', '가볍게 모드 — 효과를 한꺼번에 줄인다'], ['? · F1', '이 창'], ['빈 곳 오른쪽 클릭 · 길게 누르기', '원형 퀵메뉴']]],
+  ['이벤트', [['Space', '운명의 바퀴가 떠 있을 때 — 함성'], ['秘 띠', '비밀 코드 적기 (설정의 코드 칸도 된다)']]],
+  ...(caster() ? [['백야만', [['Tab', '퍼뜨리기 빠른 창 — 자주 쓰는 것 · 초성 찾기'], ['왼쪽 Alt', '백야의 말'], ['왼쪽 Shift 두 번', '어드민 핵 창 (싸움 중)'], ...(cutMkOn() ? [['Ctrl+Enter · Ctrl+S · Ctrl+Z', '컷씬 공방 — 보기 · 저장 · 되돌리기']] : [])]]] : [])
+];
+function showKeys() {
+  if ($('.keysbox')) { closeTop(); return; }
+  const p = modal(`<div class="keysbox"><div class="mhead"><i>鍵</i><div><h2>단축키</h2><span>한 손으로 다 하는 법 — 글을 적는 칸에서는 먹지 않는다</span></div></div>
+    ${KEYS_LIST().map(([h, rows]) => `<div class="kysec"><b>${h}</b>${rows.map(([k, d]) => `<div class="kyrow"><span>${k.split(' · ').map(x => x.split(' + ').map(y => `<kbd>${y}</kbd>`).join('+')).join(' <i>또는</i> ')}</span><em>${d}</em></div>`).join('')}</div>`).join('')}
+    <button class="brush-btn" id="ky_x">닫기</button></div>`, 'kyp');
+  p.querySelector('#ky_x').onclick = closeTop;
+}
+function soundToggle() {
+  const v = !SND.on;
+  SND.on = v; META.sound = v; saveMeta();
+  if (v) { SND.init(); SND.ui(); SND.ambience(true, !!G.b); SND.bgm(true, G.b ? (G.b.kind === 'boss' ? 'boss' : 'battle') : 'map'); }
+  else { SND.ambience(false); SND.bgm(false); }
+  toast(v ? '♪ 소리를 켰다 (M)' : '♪ 소리를 껐다 (M)');
+}
+function fullToggle() {
+  try {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement);
+  } catch (e) { toast('이 기계에서는 전체 화면을 못 한다'); }
+}
+function zenToggle() {
+  const on = document.body.classList.toggle('zenui');
+  let h = $('#zenhint');
+  if (on) { if (!h) { h = el('div', 'zenhint', 'H — 돌아온다'); h.id = 'zenhint'; h.onclick = zenToggle; document.body.appendChild(h); } }
+  else if (h) h.remove();
+}
+const LITE_KEYS = ['particles', 'shake', 'flair', 'banner', 'cut3d'];
+const liteOn = () => !!META.liteSave;
+function liteToggle() {
+  if (liteOn()) { Object.assign(OPT, META.liteSave); META.liteSave = null; toast('가볍게 모드를 풀었다 — 효과가 돌아왔다 (L)'); }
+  else { META.liteSave = {}; for (const k of LITE_KEYS) { META.liteSave[k] = OPT[k]; OPT[k] = false; } toast('가볍게 모드 — 먹물 파편 · 흔들림 · 간지 · 큰 이름 · 3D 컷씬을 껐다 (L)'); }
+  saveMeta(); document.body.classList.toggle('lite', liteOn());
+}
+/* ⑥ 차례 넘기기 확인 — 기도 있고 낼 부적도 있는데 넘기려 하면 한 번 붙잡는다 */
+let _ewAt = 0;
+function endWarnOk() {
+  const b = G.b;
+  if (!OPT.endWarn || !b || b.busy || b.over || (typeof AUTO === 'object' && AUTO.on)) return true;
+  const can = b.hand.some(c => { const k = ecost(c); return k !== -2 && (k === -1 ? b.energy >= 1 : b.energy >= k); });
+  if (!(b.energy > 0 && can)) return true;
+  const now = Date.now();
+  if (now - _ewAt < 2000) { _ewAt = 0; const w = $('#ewarn'); if (w) w.remove(); return true; }
+  _ewAt = now;
+  let w = $('#ewarn'); if (w) w.remove();
+  w = el('div', 'ewarn', `<b>기 ${b.energy}</b> 가 남았고 낼 부적이 있다 — <u>한 번 더</u> 누르면 넘긴다`); w.id = 'ewarn';
+  const btn = $('#endturn');
+  document.body.appendChild(w);
+  if (btn) { const r = btn.getBoundingClientRect(), bw = w.offsetWidth;          /* 화면 밖으로 넘치지 않게 */
+    w.style.left = Math.min(innerWidth - bw / 2 - 8, Math.max(bw / 2 + 8, r.left + r.width / 2)) + 'px'; w.style.top = (r.top - 10) + 'px';
+    w.style.setProperty('--ax', (r.left + r.width / 2 - parseFloat(w.style.left) + bw / 2) + 'px'); }
+  setTimeout(() => { if (w.isConnected) { w.classList.add('out'); setTimeout(() => w.remove(), 300); } }, 2000);
+  try { SND.blip(440, { dur: .08, type: 'triangle', vol: .05 }); } catch (e) {}
+  return false;
+}
+/* ⑩ 쉬어 가기 — 창을 보고 있는 동안만 센다 */
+let _restMin = 0;
+setInterval(() => {
+  if (document.hidden) return;
+  _restMin++;
+  if (!OPT.rest || _restMin % 60 || cutPlaying()) return;
+  const h = _restMin / 60;
+  const n = el('div', 'restnote', `<i>茶</i><div><b>${h}시간째 산을 오르는 중</b><span>눈을 잠깐 감고, 물 한 잔 — 산은 기다려 준다</span></div><button>알겠다</button>`);
+  document.body.appendChild(n);
+  const bye = () => { n.classList.add('out'); setTimeout(() => n.remove(), 400); };
+  n.querySelector('button').onclick = bye; setTimeout(bye, 15000);
+  try { SND.bell(); } catch (e) {}
+}, 60000);
+addEventListener('keydown', e => {
+  const tg = e.target;
+  if (e.ctrlKey || e.metaKey || e.altKey || (tg && /INPUT|TEXTAREA|SELECT/.test(tg.tagName)) || cutPlaying()) return;
+  const k = e.key, c = e.code;
+  if (k === '?' || k === 'F1') { e.preventDefault(); showKeys(); }
+  else if (c === 'KeyN' || k === 'ㅜ') { if ($('.tlbox')) closeTop(); else showToastLog(); }
+  else if (c === 'KeyM' || k === 'ㅡ') soundToggle();
+  else if ((c === 'KeyF' || k === 'ㄹ') && !e.repeat) fullToggle();
+  else if ((c === 'KeyH' || k === 'ㅗ') && !e.repeat) zenToggle();
+  else if ((c === 'KeyL' || k === 'ㅣ') && !e.repeat) liteToggle();
+});
 /* ── 원형 퀵메뉴 — 우클릭(빈 곳) · 손가락으로 길게 누르기. 자주 쓴 여섯 ── */
 const RADIAL_BASE = ['deck', 'box', 'pouch', 'forge', 'place', 'set'];
 function radialPicks() {
@@ -24246,7 +26031,9 @@ const CAST_H  = '6b9bfccda2c19aed37f9abae89b7d5a5bc51102835dd9dfe5bd3f27e3c6f949
 const TASTE_H = '08969be0aec9795c2512e2e22742dc356b62a9478ee43e0cf9999dacb9bedc78';
 const GUEST_H = 'cffe7c12f9320abde4796b97d3ff94ef9af325e1124ce5a234e688d1d2cbc402';
 const CASTKEY = 'baekgwi_castkey';     /* 퍼뜨리는 열쇠 — 그 열쇠를 적은 기계에만 남는다 */
-const ADMHACK_H = 'e134048790de6e02d19fa78603d5be908a985a9eccc963c5d347679844d5eb2d';   /* 어드민 핵 — 지문만 */
+const ADMHACK_H = '23fb64a9d0940168cd3f6508d73ce3e02a9835af90f7fdd3fdc32948ce23a3de';   /* 어드민 핵 — 지문만 (판 54 에 새로 바꿨다) */
+const CUTMK_H = 'ca91a20e0af77c5c05e2f8511242e64fc2ea314972cc59ed2e06f6ec641c8f02';     /* 컷씬 공방 — 지문만 */
+const CUTMK_KEY = 'baekgwi_cutkey';   /* 공방 열쇠 — 모두에게 틀 때 서버에 보여 준다. 적은 기계에만 남는다 */
 
 /* ══════════════════════════════════════════════════════════
    코드 — 열쇠는 코드의 지문(codeKey)이다. 코드 자체는 적지 않는다.
@@ -24268,6 +26055,16 @@ const CODES = {
     n: '어드민 핵',
     d: '싸움·대전 중 왼쪽 Shift 를 두 번 누르면 어드민 핵 창이 뜬다',
     give() { return caster() ? '싸움·대전 중 왼쪽 Shift 두 번 — 어드민 핵 창' : '퍼뜨리기 열쇠가 있는 백야만 쓸 수 있다'; }
+  },
+  /* 컷씬 공방 — 관리자 · 퍼뜨리기 · 어드민 핵, 세 열쇠를 모두 가진 기계에서만 열린다 */
+  [CUTMK_H]: {
+    n: '컷씬 공방',
+    d: '장면을 쌓아 즉석 컷씬을 짓고, 미리 보고, 모두에게 튼다',
+    give() {
+      const miss = cutMkMiss();
+      if (miss.length) return '아직 닫혀 있다 — 빠진 열쇠: ' + miss.join(' · ');
+      setTimeout(() => { closeTop(); showCutMaker(); }, 200); return '映 컷씬 공방이 열렸다';
+    }
   },
   /* 게스트 — 적으면 이름을 달아 청하고, 관리자가 허락해야 게스트가 된다 */
   [GUEST_H]: {
@@ -24386,7 +26183,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 53;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 54;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -24515,6 +26312,8 @@ async function liveFetch() {
     LIVE.egg = d.egg && typeof d.egg === 'object' ? d.egg : null;          /* 비밀의 계란 */
     LIVE.buff = d.buff && typeof d.buff === 'object' && d.buff.ks ? d.buff : null;   /* 백야의 버프 */
     LIVE.fx = d.fx && typeof d.fx === 'object' && d.fx.k ? d.fx : null;             /* 한바탕 */
+    LIVE.scode = d.scode && typeof d.scode === 'object' && d.scode.id ? d.scode : null;   /* 비밀 코드 */
+    LIVE.wheel = d.wheel && typeof d.wheel === 'object' && d.wheel.id ? d.wheel : null;   /* 운명의 바퀴 */
     LIVE.mailAt = +d.mailAt || 0;                                                     /* 우편 — 새로 오면 묻는다 */
     if (LIVE.mailAt !== MAIL.liveAt) { const first = !MAIL.liveAt; MAIL.liveAt = LIVE.mailAt; if (!first || !MAIL.at) mailFetch(true); }
     LIVE.hb = d.hb && typeof d.hb === 'object' && d.hb.slot ? d.hb : null;           /* 해킹 보스 (매시 정각 · 백야가 강제로) */
@@ -25367,6 +27166,30 @@ const MAT_DEF = {
            d: '수치 1.2배 · 낼 때 35% 확률로 기 +1' }
 };
 const matHave = k => (META.mat && META.mat[k]) || 0;
+/* 백야의 종결석(終) — 개발자 종결 원료. 백야(퍼뜨리기 열쇠)만 얻고 쓴다. 등급을 가리지 않고 아무 부적에나.
+   수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격(10 + 막×3) · 기 +1. 합성소 · 우편 · 선물에는 없다 */
+const DEV_MAT = { n: '백야의 종결석', g: '終', mut: 'mutZ', mn: '종결(終結)', mg: '終', c: '#ffffff', rgb: '255,250,230',
+  d: '수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격(10 + 막×3) · 기 +1' };
+const devMatHave = () => (caster() && META.devMat) || 0;
+function devMatGive(n) {
+  if (!caster()) { toast('백야만 얻을 수 있다'); return; }
+  META.devMat = (META.devMat || 0) + n; saveMeta();
+  toast(`終 백야의 종결석 +${n} — 원료 주머니(囊)에 ${META.devMat}개`);
+  try { SND.unlock(); SND.holyhit && SND.holyhit(); stampWord('終', '#ffffff'); } catch (e) {}
+}
+async function devMatUse() {
+  if (!caster()) { toast('백야만 쓸 수 있다'); return; }
+  if (devMatHave() < 1) { toast('종결석이 없다 — 개발자의 권력에서 받는다'); SND.err(); return; }
+  const run = G.run;
+  if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (종결석은 그대로 남는다)'); SND.err(); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  const list = run.deck.filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c.mutZ);
+  if (!list.length) { toast('종결을 입힐 부적이 없다 (이미 깃든 것은 뺐다)'); SND.err(); return; }
+  const c = await pickFromList(list, `終 ${DEV_MAT.n} — 종결을 입힐 부적`, { hint: DEV_MAT.d, cancel: true });
+  if (!c) return;
+  META.devMat = devMatHave() - 1; c.mutZ = true; saveMeta(); saveRun();
+  mutApplyFx(c, { cols: ['#ffffff', '#ffd76a'], orbs: ['終', '白', '夜'], ocols: ['#ffffff', '#ffd76a', '#e8f4ff'], glyph: '終', name: DEV_MAT.mn + ' — ' + DEV_MAT.d, strip: ['mutZ'], dev: true });
+}
 const matTotal = () => Object.keys(MAT_DEF).reduce((a, k) => a + matHave(k), 0);
 /* 극광의 밤 — 차례를 열 때 손의 부적 하나(값이 있는 것)가 극광에 물들어 이 차례 값 0 */
 function auroraTurn(b) {
@@ -25425,24 +27248,34 @@ function mutApplyFx(c, o) {
   try { stAdd('mut'); } catch (e) {}
   const before = Object.assign({}, c); for (const k of o.strip || []) delete before[k];
   const [ca, cb] = o.cols, two = o.orbs.length > 1;
-  const n = el('div', 'mfx' + (two ? ' two' : '')); n.style.setProperty('--fa', ca); n.style.setProperty('--fb', cb);
-  n.innerHTML = `<div class="mfxrays"></div><div class="mfxcard"><div class="mfxspin"></div></div>
+  const n = el('div', 'mfx' + (two ? ' two' : '') + (o.dev ? ' dev' : '')); n.style.setProperty('--fa', ca); n.style.setProperty('--fb', cb);
+  /* 판 54 — 카메라가 돈다 · 발밑에 진 · 등 뒤에 도는 아우라 · 둘레를 도는 글자 · 빛기둥 · 위아래 먹 띠 · 떠도는 불티 */
+  const rune = (o.orbs.join('') + (o.dev ? '終白夜權限覺醒' : '變化融合覺醒符')).split('').concat(o.orbs).slice(0, 12);
+  n.innerHTML = `<div class="mfxbars"><i></i><i></i></div><div class="mfxcam">
+    <div class="mfxfloor">${cutSealSvg(o.dev ? '#ffffff' : ca, rune.slice(0, 8).join(''))}</div>
+    <div class="mfxrays"></div><div class="mfxaura"><i></i><i></i><i></i></div>
+    <div class="mfxrune">${rune.map((g, i) => `<b style="--r:${(i * 360 / rune.length).toFixed(1)}deg">${g}</b>`).join('')}</div>
+    <div class="mfxpillar"></div>
+    <div class="mfxcard"><div class="mfxspin"></div></div>
     ${(o.orbs.length === 3 ? ['l', 'c', 'r'] : o.orbs.length === 2 ? ['l', 'r'] : ['c']).map((pos, i) => `<div class="mfxorb ${pos}" style="--oc:${(o.ocols || o.cols)[i] || o.cols[0]}"><b>${o.orbs[i]}</b></div>`).join('')}
-    <div class="mfxrings"><i></i><i></i><i></i></div><div class="mfxsparks">${Array.from({ length: 28 }, (_, i) =>
-      `<i style="--a:${(i * 360 / 28 + Math.random() * 10).toFixed(0)}deg;--d:${(120 + Math.random() * 180).toFixed(0)}px;--c:${i % 2 ? cb : ca}"></i>`).join('')}</div>
-    <div class="mfxstamp">${o.glyph}</div><div class="mfxname"><b>${wEsc(cname(c))}</b><span>${o.name}</span></div>`;
+    <div class="mfxrings"><i></i><i></i><i></i></div><div class="mfxsparks">${Array.from({ length: 36 }, (_, i) =>
+      `<i style="--a:${(i * 360 / 36 + Math.random() * 10).toFixed(0)}deg;--d:${(120 + Math.random() * 220).toFixed(0)}px;--c:${i % 2 ? cb : ca}"></i>`).join('')}</div>
+    <div class="mfxstamp">${o.glyph}</div></div>
+    <div class="mfxdust">${Array.from({ length: 26 }, (_, i) => `<i style="left:${(Math.random() * 100).toFixed(1)}%;--c:${i % 2 ? cb : ca};animation-delay:${(-Math.random() * 5).toFixed(2)}s;animation-duration:${(3 + Math.random() * 3).toFixed(1)}s"></i>`).join('')}</div>
+    <div class="mfxname"><b>${wEsc(cname(c))}</b><span>${o.name}</span></div>`;
   const spin = n.querySelector('.mfxspin');
   spin.appendChild(cardNode(before, { tip: false }));
   document.body.appendChild(n);
   const T = [], at = (ms, f) => T.push(setTimeout(() => { if (n.isConnected) try { f(); } catch (e) { console.error('돌연변이 연출', e); } }, ms));
   try { SND.unlock(); SND.charge && SND.charge(); SND.blip(260, { dur: .7, type: 'sine', vol: .06, to: 900 }); } catch (e) {}
   at(30, () => n.classList.add('in'));
-  at(150, () => n.classList.add('fly'));
-  at(820, () => { n.classList.add('hit'); try { SND.gong(); SND.crit && SND.crit(); shake(true); } catch (e) {} });
+  at(150, () => { n.classList.add('fly'); try { SND.swoosh && SND.swoosh(); } catch (e) {} });
+  at(640, () => n.classList.add('near'));                                                     /* 카메라가 숨을 들이쉰다 */
+  at(820, () => { n.classList.add('hit'); try { SND.gong(); SND.crit && SND.crit(); shake(true); if (o.dev) { SND.holyhit && SND.holyhit(); SND.thunder && SND.thunder(); } } catch (e) {} });
   at(1180, () => { spin.innerHTML = ''; spin.appendChild(cardNode(c, { tip: false })); });      /* 옆으로 선 순간 새 모습으로 */
   at(1750, () => { n.classList.add('stamp'); try { SND.power && SND.power(); SND.blip(1200, { dur: .25, type: 'triangle', vol: .06, to: 1800 }); } catch (e) {} });
-  at(3600, () => n.classList.add('out'));
-  at(4100, () => n.remove());
+  at(o.dev ? 4600 : 4000, () => n.classList.add('out'));
+  at(o.dev ? 5100 : 4500, () => n.remove());
   n.onclick = () => { if (n.classList.contains('stamp')) { T.forEach(clearTimeout); n.classList.add('out'); setTimeout(() => n.remove(), 400); } };
 }
 /* ── 융합 원료 — 합성소에서 둘이 합친 것 (META.matFu['star+chaos'] …) ── */
@@ -25454,7 +27287,7 @@ const FU_ONE = { star: '수치 +60% · 별똥별 2개', chaos: '강화한 것처
 const fuDesc = k => [...new Set(fuParts(k))].map(x => `${MUT_GL[x]} ${FU_ONE[x]}`).join(' / ');
 const fuOrb = (k, cls = '') => { const ps = fuParts(k);
   return `<div class="fuorb ${cls}${ps.length === 3 ? ' tri' : ''}" style="--fa:${MUT_COL[ps[0]]};--fb:${MUT_COL[ps[ps.length - 1]]};--fg:${fuGrad(ps)}">${ps.map(x => `<b>${MAT_DEF[x].g}</b>`).join('')}${'<i></i>'.repeat(8)}</div>`; };
-const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0);
+const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0) + devMatHave();
 /* 원료 주머니 — 재료 · 융합 원료 · 그 밖의 것 */
 function showMutLab() { showPouch(); }
 function showPouch() {
@@ -25471,6 +27304,10 @@ function showPouch() {
         <div class="pctxt"><b>${fuName(k)} <em>×${fuHave(k)}</em></b><small>${fuDesc(k)}</small></div>
         <button class="brush-btn gold" data-use="${k}">쓴다</button></div>`).join('')
       : '<div class="pcempty">아직 없다 — 합성소에서 다른 퇴마사와 재료를 합쳐라</div>'}</div>
+    ${caster() ? `<div class="pcsec dev"><b>終 백야만</b><span>개발자 종결 원료 — 백야만 얻고 쓴다 · 등급을 가리지 않는다</span></div>
+    <div class="pcgrid"><div class="pcitem devz${devMatHave() ? '' : ' none'}" style="--mc:#ffffff;--mr:255,250,230"><div class="mgorb mg-devz small"><b>終</b>${'<i></i>'.repeat(8)}</div>
+      <div class="pctxt"><b>${DEV_MAT.n} <em>×${devMatHave()}</em></b><span>終 ${DEV_MAT.mn}</span><small>${DEV_MAT.d}</small></div>
+      <span class="pcdevb"><button class="brush-btn" id="pc_zget">+1 받는다</button><button class="brush-btn${devMatHave() ? ' gold' : ''}" id="pc_zuse"${devMatHave() ? '' : ' disabled'}>쓴다</button></span></div></div>` : ''}
     <div class="pcsec"><b>그 밖의 것</b></div>
     <div class="pcgrid">
       <div class="pcitem hk${META.hkStone ? '' : ' none'}"><div class="pcico">汚</div><div class="pctxt"><b>오염 관석 <em>×${META.hkStone || 0}</em></b><small>해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더 (해킹상점)</small></div>
@@ -25482,6 +27319,9 @@ function showPouch() {
   p.dataset.noauto = '1';
   p.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { closeTop(); matUse(b.dataset.use); });
   p.querySelector('#pc_stone').onclick = () => { closeTop(); hkStoneUse(); };
+  { const zg = p.querySelector('#pc_zget'), zu = p.querySelector('#pc_zuse');
+    if (zg) zg.onclick = () => { devMatGive(1); closeTop(); showPouch(); };
+    if (zu) zu.onclick = () => { closeTop(); devMatUse(); }; }
   p.querySelector('#pc_box').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#pc_fuse').onclick = () => { closeTop(); showFuseLab(); };
   p.querySelector('#pc_x').onclick = closeTop;
@@ -25619,8 +27459,12 @@ function fuseShow(r, lab) {
         <div class="fsfloor">${cutSealSvg('#ffffff', '合成融化星混豊變')}</div>
         <div class="fsorbit" id="fs_o"><div class="fsarm a">${orb(a)}</div><div class="fsarm b">${orb(b)}</div></div>
         <div class="fspillar"></div>
+        <div class="fsaura"><i></i><i></i></div>
+        <div class="fsrune">${'合成融化星混豊光變覺醒符'.split('').map((g, i) => `<b style="--r:${i * 30}deg">${g}</b>`).join('')}</div>
         <div class="fsmerged">${fuOrb(res)}</div>
       </div></div>
+      <div class="mfxbars fsbars"><i></i><i></i></div>
+      <div class="fsstreak">${Array.from({ length: 18 }, (_, i) => `<i style="--a:${(i * 20 + Math.random() * 8).toFixed(0)}deg;animation-delay:${(Math.random() * .5).toFixed(2)}s"></i>`).join('')}</div>
       <div class="fsstars">${Array.from({ length: 70 }, () => { const ang = Math.random() * 360, d = 30 + Math.random() * 60;
         return `<i style="--a:${ang.toFixed(0)}deg;--d:${d.toFixed(0)}vmax;animation-delay:${(Math.random() * 1.6).toFixed(2)}s"></i>`; }).join('')}</div>
       <div class="fsflash"></div><div class="fsrings"><i></i><i></i><i></i></div>
@@ -25640,6 +27484,9 @@ function fuseShow(r, lab) {
     at(4100, () => { n.classList.add('pillar'); cam('rotateX(6deg) rotateY(0deg) rotateZ(-360deg) scale(1.6)', 700, 'cubic-bezier(.6,0,.9,.4)'); try { SND.charge && SND.charge(); shake(true); } catch (e) {} });
     at(4800, () => { n.classList.add('boom'); cam('rotateX(0deg) rotateZ(-360deg) rotateY(0deg) scale(1)', 900, 'cubic-bezier(.2,1.4,.4,1)');
       try { SND.gong(); SND.crit && SND.crit(); SND.victory(); } catch (e) {} });
+    /* 다 합친 뒤 — 카메라가 천천히 한 바퀴 숨 쉬듯 돈다 */
+    at(5800, () => { n.classList.add('linger'); cam('rotateX(14deg) rotateY(12deg) rotateZ(-360deg) scale(1.06)', 3600, 'ease-in-out'); });
+    at(9400, () => cam('rotateX(8deg) rotateY(-10deg) rotateZ(-360deg) scale(1.02)', 3600, 'ease-in-out'));
     at(5600, () => {
       n.classList.add('done');
       /* 받는다 — 놓은 재료 하나를 쓰고 융합 원료 하나 */
@@ -25662,6 +27509,11 @@ function fuseShow(r, lab) {
 async function matMutPlay(card) {
   const b = G.b; if (!b || b.kind === 'pvp' || b.kind === 'mpbot') return;
   const act = (G.run && G.run.act) || 1, Ls = mutLv(card, 'star'), Lc = mutLv(card, 'chaos'), Lg = mutLv(card, 'gold');
+  if (card.mutZ) {                                                 /* 종결 — 하늘이 하얗게 갈라지고 모든 적에게 백야의 일격 */
+    try { screenFlash('rgba(255,255,255,.75)', 520); SND.holyhit && SND.holyhit(); shake(true); } catch (e) {}
+    for (const e of alive()) { try { const c = e.el ? centerOf(e.el) : null; if (c) FX.burst(c.x, c.y, 30, '255,250,230', 8, 50, 5); } catch (er) {} pure(e, 10 + act * 3); }
+    energy(1); matPop('終 백야의 일격 · 기 +1', '#ffffff'); syncAll(); await checkDeaths(); if (!G.b || b.over) return;
+  }
   for (let i = 0; i < Ls; i++) {                                   /* 유성 — 세기만큼 별똥별 */
     const t = pick(alive()); if (!t) break;
     meteorFx(t); await wait(300); if (!G.b || b.over) return; pure(t, 5 + act * 2); await checkDeaths();
@@ -25947,18 +27799,25 @@ function countRun(c) {
     const now = srvNow();
     if (now < c.at) { n.className = 'cdown pre'; return; }
     if (now < c.until) {
-      const left = Math.ceil((c.until - now) / 1000);
+      const ms = c.until - now, left = Math.ceil(ms / 1000), fine = ms <= 5000;
+      /* 마지막 5초 — 소수점 둘째 자리까지 흘러내린다 (숨이 막히게) */
+      if (fine) {
+        const sec = ms / 1000;
+        num.innerHTML = `${Math.floor(sec)}<small>.${String(Math.floor(sec % 1 * 100)).padStart(2, '0')}</small>`;
+        n.style.setProperty('--f', (1 - sec / 5).toFixed(3));
+      }
       if (left === shown) return;
       shown = left;
       /* 마지막 R 초에 걸쳐 하얀빛 → 붉은빛 */
       const t = Math.max(0, Math.min(1, 1 - (left - 1) / (R - 1)));
-      n.className = 'cdown run';
+      n.className = 'cdown run' + (fine ? ' fine' : '');
       n.style.setProperty('--t', t.toFixed(3));
       const gb = Math.round(255 - 225 * t);
       num.style.color = `rgb(255,${gb},${gb})`;
-      num.textContent = left;
+      if (!fine) num.textContent = left;
       num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
-      try { SND.unlock(); SND.blip(330 + t * 550, { dur: .14, type: 'square', vol: .045 + t * .03 }); if (t > .5) SND.blip(80, { dur: .18, type: 'sine', vol: .08 }); } catch (e) {}
+      try { SND.unlock(); SND.blip(330 + t * 550, { dur: .14, type: 'square', vol: .045 + t * .03 }); if (t > .5) SND.blip(80, { dur: .18, type: 'sine', vol: .08 });
+        if (fine) SND.heartbeat(); } catch (e) {}
       return;
     }
     /* 0 — 새빨갛게 터진다 */
@@ -25975,6 +27834,13 @@ function countRun(c) {
   tick();
   if (n.classList.contains('zero')) return;
   _cdTimer = setInterval(tick, 80);
+  /* 마지막 5초는 한 장면마다 고친다 — 소수점이 매끄럽게 흐르게 */
+  const raf = () => {
+    if (!n.isConnected || n.classList.contains('zero') || !_cdTimer) return;
+    if (c.until - srvNow() <= 5200) tick();
+    requestAnimationFrame(raf);
+  };
+  requestAnimationFrame(raf);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -27403,6 +29269,8 @@ function liveTick() {
   try { evSky(k || (rn ? 'rain' : '')); } catch (e) { console.error('이벤트 하늘', e); }
   try { huntTick(); pollTick(); } catch (e) { console.error('찾기·투표', e); }
   try { cutLiveCheck(); } catch (e) { console.error('컷씬', e); }
+  try { scodeTick(); } catch (e) { console.error('비밀 코드', e); }
+  try { wheelTick(); } catch (e) { console.error('운명의 바퀴', e); }
   try { hackTick(); } catch (e) { console.error('해킹', e); }
   try { autoFreeTick(); } catch (e) { console.error('맛보기', e); }
   try { marchTick(); } catch (e) { console.error('백귀야행', e); }
@@ -27705,6 +29573,9 @@ function drawCast(grid) {
       <b>지금 걸린 것</b>
       <div id="ct_now"></div>
     </div>
+    <div class="castquick"><small>빠른 길</small>
+      <button data-q="pal"><i>播</i>퍼뜨리기 빠른 창<em>Tab</em></button><button data-q="wheel"><i>運</i>운명의 바퀴</button>
+      <button data-q="scode"><i>秘</i>비밀 코드</button>${cutMkOn() ? '<button data-q="cutmk"><i>映</i>컷씬 공방</button>' : ''}</div>
     ${LIVE_URL ? '' : `<div class="castwarn">소식 자리(LIVE_URL)가 비어 있다 —
       아직 아무 데도 퍼지지 않는다. 서버를 세우고 그 주소를 적어야 한다.</div>`}
 
@@ -28096,6 +29967,11 @@ function drawCast(grid) {
   paint();
 
   grid.querySelector('#ct_notice').value = LIVE.notice || '';
+  grid.querySelectorAll('.castquick [data-q]').forEach(b => b.onclick = () => {
+    const k = b.dataset.q;
+    if (k === 'pal') { closeOverlay(); showCastPal(); } else if (k === 'wheel') showWheelMaker();
+    else if (k === 'cutmk') showCutMaker(); else { const t = $('.adtab[data-t="scode"]'); if (t) t.click(); }
+  });
 
   const send = async (patch, what) => {
     say('보내는 중…', true);
@@ -29757,7 +31633,7 @@ function showAdmin() {
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
           <button class="adtab power" data-t="power">權 개발자의 권력</button>
-          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button><button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button><button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button><button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button><button class="adtab sctab" data-t="scode">秘 비밀 코드</button>' + (cutMkOn() ? '<button class="adtab cmktab" data-t="cutmk">映 컷씬 공방</button>' : '') + '<button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -29777,6 +31653,8 @@ function showAdmin() {
     if (tab === 'dash') { find.style.display = 'none'; drawDash(grid); return; }
     if (tab === 'log') { find.style.display = 'none'; drawLog(grid); return; }
     if (tab === 'mail') { find.style.display = 'none'; drawMailCompose(grid); return; }
+    if (tab === 'scode') { find.style.display = 'none'; drawScode(grid); return; }
+    if (tab === 'cutmk') { find.style.display = 'none'; drawCutMkTab(grid); return; }
     find.style.display = '';
     const add = (g, n, sub, col, fn) => {
       const t = el('div', 'trtile adtile',
@@ -30354,6 +32232,7 @@ function redeemCode(raw) {
   META.codes[k] = Date.now(); saveMeta();
   /* 퍼뜨리는 열쇠는 서버에 보여 줘야 하므로 이 기계에만 적어 둔다 */
   if (k === CAST_H) { try { localStorage.setItem(CASTKEY, plain.toLowerCase()); } catch (e) {} }
+  if (k === CUTMK_H) { try { localStorage.setItem(CUTMK_KEY, plain.toLowerCase()); } catch (e) {} }
   let got = c.give();
   saveMeta();
   const tb = $('#topbar'); if (tb && G.run) { tb.remove(); renderTop(); }   /* 관리자 단추가 바로 보이도록 */
@@ -30458,6 +32337,17 @@ function showSettings() {
   row('보스 컷씬', '막마다 보스가 나타날 때 카메라가 도는 장면을 튼다 (건너뛰기·Esc 로 넘긴다)', () => OPT.cuts, v => { OPT.cuts = v; });
   row('3D 컷씬', '컷씬을 진짜 3D 로 그린다 — 폰이 버거우면 끈다 (가벼운 평면 컷씬으로)', () => OPT.cut3d !== false, v => { OPT.cut3d = v; });
   row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
+  row('가볍게 모드', '먹물 파편 · 흔들림 · 간지 · 큰 이름 · 3D 컷씬을 한꺼번에 끄고, 풀면 그대로 돌려놓는다 (L)', () => liteOn(), v => { if (v !== liteOn()) { liteToggle(); setTimeout(() => { closeTop(); showSettings(); }, 50); } });
+
+  head('편 의');
+  row('차례 넘기기 확인', '기와 낼 부적이 남았는데 넘기려 하면 한 번 더 누르게 한다', () => OPT.endWarn !== false, v => { OPT.endWarn = v; });
+  row('쉬어 가기 알림', '한 시간마다 잠깐 쉬라고 일러 준다', () => OPT.rest !== false, v => { OPT.rest = v; });
+  {
+    const n = el('div', 'optrow', `<div class="lb"><b>단축키 · 알림 기록</b><small>? 또는 F1 — 단축키 한눈에 · N — 지나간 알림 · M 소리 · F 전체 화면 · H 화면 비우기</small></div>`);
+    const b1 = el('button', 'val'); b1.textContent = '단축키'; b1.onclick = () => showKeys();
+    const b2 = el('button', 'val'); b2.textContent = '알림 기록'; b2.onclick = () => showToastLog();
+    const box = el('div', 'optbtns'); box.appendChild(b1); box.appendChild(b2); n.appendChild(box); list.appendChild(n);
+  }
 
   head('자 동 플 레 이');
   {
@@ -30536,8 +32426,11 @@ function showSettings() {
     inp.setAttribute('autocomplete', 'off');
     const btn = el('button', 'val'); btn.textContent = '입력';
     const say = el('div', 'codesay');
-    const go = () => {
-      const r = redeemCode(inp.value);
+    const go = async () => {
+      const v = inp.value;
+      let r = redeemCode(v);
+      /* 게임에 없는 코드 — 지금 풀린 비밀 코드인지 서버에 묻는다 */
+      if (!r.ok && r.msg === '없는 코드다' && scodeLive()) { inp.value = ''; say.textContent = '맞춰 보는 중…'; say.style.color = '#c8bda3'; r = await scodeClaim(v); }
       say.textContent = r.msg;
       say.style.color = r.ok ? '#7fe6cf' : '#e08a7a';
       inp.value = '';
@@ -30840,7 +32733,7 @@ const GUIDE = {
       <tr><td>2. 전투</td><td>손에 든 부적을 내서 요괴를 쓰러뜨린다.</td></tr>
       <tr><td>3. 보상</td><td>골드와 부적을 얻는다. <b>부적은 3장 중 1장만</b> 고를 수 있다.
         나오는 등급은 오를수록 좋아진다 (지도 탭 참고).</td></tr>
-      <tr><td>4. 반복</td><td>17층을 올라 보스를 잡으면 다음 막으로. <b>6막</b>까지 있다.</td></tr>
+      <tr><td>4. 반복</td><td>24층을 올라 보스를 잡으면 다음 막으로. <b>25막</b>까지 있다.</td></tr>
       <tr><td>운(運)</td><td>매 차례 요괴마다 <b>30%</b>로 <b>각성</b>한다 — 치는 힘·막는 힘 1.5배, 이름 뒤에 覺 (보스는 제 각성이 따로 있다).</td></tr>
     </table>
     <div class="tip"><b>쓰러져도 처음부터가 아니다.</b> 갈림길에 들어설 때마다 그 순간이 저장된다.
@@ -31041,6 +32934,11 @@ const GUIDE = {
       <tr><td><span class="kbd">C</span></td><td>채팅 열기 · 닫기 (폰은 오른쪽 가장자리의 話 단추)</td></tr>
       <tr><td><span class="kbd">Esc</span></td><td>취소 · 창 닫기 · 메뉴 열기</td></tr>
       <tr><td>오른쪽 클릭</td><td>고른 부적 취소</td></tr>
+      <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">K</span></td><td>빠른 찾기 — 가고 싶은 자리</td></tr>
+      <tr><td><span class="kbd">N</span></td><td>알림 기록 — 지나간 알림 다시 보기</td></tr>
+      <tr><td><span class="kbd">M</span> · <span class="kbd">F</span></td><td>소리 끄고 켜기 · 전체 화면</td></tr>
+      <tr><td><span class="kbd">H</span> · <span class="kbd">L</span></td><td>화면 비우기 · 가볍게 모드</td></tr>
+      <tr><td><span class="kbd">?</span> · <span class="kbd">F1</span></td><td>단축키 한눈에</td></tr>
     </table>
     <h3>화면 위쪽 단추</h3>
     <div class="icoline"><b>祕</b><span>비기 장착 — 하나만, 전투당 한 번</span></div>
@@ -32333,7 +34231,7 @@ addEventListener('keydown', e => {
   if (e.key >= '1' && e.key <= '9') {
     const c = G.b.hand[+e.key - 1];
     if (c) onCardClick(c);
-  } else if (e.key === 'e' || e.key === 'E' || e.key === ' ') { e.preventDefault(); endTurn(); }
+  } else if (e.key === 'e' || e.key === 'E' || e.key === ' ') { e.preventDefault(); if (endWarnOk()) endTurn(); }
   else if (e.key === 'd' || e.key === 'D') showCardList(G.run.deck, '나의 덱');
 });
 addEventListener('resize', () => { if (G.b) syncHand(); if (G.scene === 'map' && _mapFit) _mapFit(); });

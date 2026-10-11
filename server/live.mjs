@@ -47,6 +47,8 @@ function expire(now) {
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
   if (live.fx && now > live.fx.until) { live.fx = null; changed = true; }
+  if (live.scode && now > live.scode.until) { live.scode = null; changed = true; }
+  if (live.wheel && live.wheel.done && now > live.wheel.landAt + 25000) { live.wheel = null; live.wheelP = null; changed = true; }
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
@@ -347,7 +349,7 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
@@ -499,7 +501,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -577,6 +579,68 @@ function mailAdd(m) {
   live.mails = (live.mails || []).filter(x => x.id !== one.id).concat(one).slice(-MAIL_MAX);
   live.mailAt = one.at;
   return one;
+}
+/* ── 컷씬 공방 — 백야가 손수 지은 컷씬. 공방 열쇠(지문만 둔다)까지 맞아야 모두에게 튼다 ──
+   짓는 법(def)은 장면 열둘 · 마흔 초까지. 낱말은 영문·숫자만 받고, 글은 길이만 자른다(게임이 다시 거른다) */
+const CUT_SHA = 'ca91a20e0af77c5c05e2f8511242e64fc2ea314972cc59ed2e06f6ec641c8f02';
+const cutKeyOk = k => typeof k === 'string' && k.length < 80 && same(sha(k.trim().toLowerCase()), CUT_SHA);
+const CUTW = /^[a-zA-Z0-9]{1,12}$/;
+function cutDefClean(d) {
+  if (!d || typeof d !== 'object' || !Array.isArray(d.sc)) return null;
+  const w = v => (typeof v === 'string' && CUTW.test(v) ? v : '');
+  const sc = []; let tot = 0;
+  for (const s0 of d.sc.slice(0, 12)) {
+    const s = s0 && typeof s0 === 'object' ? s0 : {};
+    const ms = Math.max(1500, Math.min(8000, parseInt(s.ms, 10) || 4000));
+    if (tot + ms > 40000) break;
+    tot += ms;
+    sc.push({ ms, bg: w(s.bg), tr: w(s.tr), cam: w(s.cam), sfx: w(s.sfx),
+      who: (Array.isArray(s.who) ? s.who : []).slice(0, 3).filter(x => x && typeof x === 'object' && w(x.k))
+        .map(x => ({ k: w(x.k), p: w(x.p), m: w(x.m), g: str(x.g, 2), c: /^#[0-9a-fA-F]{6}$/.test(String(x.c || '')) ? x.c : '' })),
+      fx: (Array.isArray(s.fx) ? s.fx : []).slice(0, 8).map(w).filter(Boolean),
+      sp: str(s.sp, 16), say: (Array.isArray(s.say) ? s.say : []).slice(0, 3).map(t => str(t, 80)).filter(Boolean),
+      tt: str(s.tt, 12), ts: str(s.ts, 40) });
+  }
+  return sc.length ? { n: str(d.n, 40), sc } : null;
+}
+/* ── 비밀 코드 — 백야가 적은(또는 지은) 코드를 정한 때 동안 푼다 ──
+   코드는 받자마자 지문으로 바꾼다 — 서버 기록·로그 어디에도 원문이 남지 않게.
+   「모두에게 보이기」로 연 것만 원문(plain)을 싣는다. 한 아이디에 한 번 · 먼저 온 max 명(0 은 끝없이) */
+const SCODE_RE = /^[0-9A-Za-z가-힣_-]{3,24}$/;
+const scodeKey = c => sha('sc|' + String(c || '').trim().toLowerCase());
+function scodePrep(x) {
+  if (!x || typeof x !== 'object' || !('code' in x)) return x;
+  const code = String(x.code || '').trim();
+  if (!SCODE_RE.test(code)) return { bad: '코드는 3~24자 — 한글·영문·숫자·- · _ 만' };
+  const o = Object.assign({}, x, { h: scodeKey(code) });
+  delete o.code;
+  if (x.show) o.plain = code;
+  return o;
+}
+const scodeView = () => live.scode ? Object.assign({}, live.scode, { h: undefined }) : null;
+const SC_TRY = new Map(), SC_MEM = new Set();
+/* ── 運 운명의 바퀴 — 백야가 고른 이벤트들을 한 바퀴에 단다 ──
+   카운트다운(lead) 동안 모두가 함성을 지르고, 바퀴가 spin 초 돌다 멈춘다. 멈춘 칸의 일이 그대로 모두에게 걸린다.
+   칸마다 무게(w)가 있어 잘 걸리는 칸 · 드문 칸을 정할 수 있다. 함성이 목표(goal)를 넘으면 모두의 우편함에 함성의 선물.
+   칸의 일(patch)은 /live 로 내보내지 않는다 — 비밀 코드 칸의 지문이 새지 않게 */
+const WHEEL_CHEER_MAX = 60, WH_WHO = new Map();
+let _whKeep = 0;
+async function wheelStep(now) {
+  const w = live.wheel;
+  if (!w || w.done || now < w.landAt) return false;
+  w.done = true;
+  if (now - w.landAt > 5 * 60000) { w.missed = true; live.at = now; await keep(); return true; }   /* 서버가 오래 잠들었다 — 늦게 걸지 않는다 */
+  const p = (live.wheelP || [])[w.pick] || {};
+  if (Object.keys(p).length) { const patch = Object.assign({}, p); if ('notice' in patch) patch.noticeAt = now; await applyCast(patch); }
+  const b = w.bonus || {};
+  if (w.goal && (w.cheer || 0) >= w.goal && (b.gold || b.dia || b.jp)) {
+    mailAdd({ title: '함성의 선물', say: `운명의 바퀴에 ${w.ppl || 0}명이 함께 ${w.cheer}번 외쳤다.`, from: '백야', gold: b.gold, dia: b.dia, jp: b.jp, days: 3 });
+    w.won = true;
+  }
+  live.at = now; await keep();
+  statAdd('wheel').catch(() => {});
+  console.log('운명의 바퀴 —', (w.slices[w.pick] || {}).n, '· 함성', w.cheer);
+  return true;
 }
 /* ── 순위 — rk:이름 에 위 백 명, rkv:이름:아이디 에 그 사람의 값. add 는 쌓고 min 은 가장 작은 값 ── */
 async function rankBump(key, id, val, mode) {
@@ -696,6 +760,39 @@ async function applyCast(q) {
     else if (q.mail.del) live.mails = (live.mails || []).filter(x => x.id !== q.mail.del);
     else mailAdd(q.mail);
   }
+  if ('wheel' in q) {
+    const w = q.wheel, now = Date.now();
+    if (!w || typeof w !== 'object') { live.wheel = null; live.wheelP = null; }
+    else {
+      const sl = (Array.isArray(w.slices) ? w.slices : []).slice(0, 10).filter(x => x && typeof x === 'object');
+      if (sl.length >= 2) {
+        const P = sl.map(x => { const p = pickCast(x.patch && typeof x.patch === 'object' ? x.patch : {}); delete p.wheel; return p; });
+        const S = sl.map(x => ({ n: str(x.n, 16) || '?', g: str(x.g, 2) || '?', c: /^#[0-9a-fA-F]{6}$/.test(String(x.c || '')) ? x.c : '#e8c86a',
+                                 w: Math.max(1, Math.min(10, parseInt(x.w, 10) || 1)) }));
+        const tot = S.reduce((a, x) => a + x.w, 0);
+        let r = Math.random() * tot, pick = S.length - 1;
+        for (let i = 0; i < S.length; i++) { r -= S[i].w; if (r < 0) { pick = i; break; } }
+        const lead = Math.max(5, Math.min(30, parseInt(w.lead, 10) || 10)), spin = Math.max(5, Math.min(15, parseInt(w.spin, 10) || 9));
+        const bn = w.bonus && typeof w.bonus === 'object' ? w.bonus : {};
+        live.wheel = { id: now, at: now, spinAt: now + lead * 1000, landAt: now + (lead + spin) * 1000, pick, slices: S, title: str(w.title, 30) || '운명의 바퀴',
+          cheer: 0, ppl: 0, goal: num(w.goal, 100000), bonus: { gold: num(bn.gold, 100000), dia: num(bn.dia, 10000), jp: num(bn.jp, 10000) }, done: false };
+        live.wheelP = P;
+      }
+    }
+  }
+  if ('scode' in q) {
+    const x = q.scode, now = Date.now();
+    if (!x || !x.h || x.bad) live.scode = null;
+    else {
+      const min = Math.max(1, Math.min(7 * 1440, parseInt(x.min, 10) || 30));
+      const mats = {};
+      if (x.mats && typeof x.mats === 'object') for (const k of FUSE_MATS) { const n = num(x.mats[k], 99); if (n) mats[k] = n; }
+      live.scode = { id: now, at: now, until: now + min * 60000, h: str(x.h, 64), title: str(x.title, 40) || '비밀 코드', hint: str(x.hint, 120),
+        plain: x.plain ? str(x.plain, 24) : '', max: num(x.max, 100000), n: 0,
+        pay: { gold: num(x.gold, 1000000), dia: num(x.dia, 100000), jp: num(x.jp, 100000),
+               cards: Array.isArray(x.cards) ? x.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [], mats } };
+    }
+  }
   if ('fx' in q) {
     const f = q.fx, now = Date.now();
     if (!f || !FX_KINDS[f.k]) live.fx = null;
@@ -770,10 +867,13 @@ async function applyCast(q) {
       marchWho = new Map();
     }
   }
-  /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다) */
+  /* 컷씬 — 모든 앱에서 한 번 흐른다. 이름만 보낸다(무엇인지는 게임이 안다).
+     공방에서 지은 것(def)은 짓는 법을 통째로 싣는다 — 열쇠는 /cast 에서 이미 보았다 */
   if ('cut' in q) {
+    const def = q.cut && q.cut.def ? cutDefClean(q.cut.def) : null;
     const k = q.cut && str(q.cut.k, 24);
-    live.cut = k && /^[a-z0-9_]+$/.test(k) ? { k, id: Date.now(), at: Date.now() } : null;
+    live.cut = def ? { k: 'custom', def, id: Date.now(), at: Date.now() }
+      : k && k !== 'custom' && /^[a-z0-9_]+$/.test(k) ? { k, id: Date.now(), at: Date.now() } : null;
   }
   /* 숨은 부적 찾기 — 모든 앱의 지도 어딘가에 희미한 부적이 숨는다. 먼저 찾은 max 명만 받는다 */
   if ('hunt' in q) {
@@ -885,7 +985,7 @@ async function runSchedule(now) {
   } finally { _schedBusy = false; }
   return changed;
 }
-setInterval(() => { store().then(() => runSchedule(Date.now())).catch(() => {}); }, 2000);
+setInterval(() => { store().then(() => runSchedule(Date.now())).then(() => wheelStep(Date.now())).catch(() => {}); }, 1000);
 
 /* ══════════════════════════════════════════════════════════
    게스트 — 관리자가 허락한 손님
@@ -1211,13 +1311,14 @@ const server = http.createServer(async (req, res) => {
     if (banned) return send(res, 200, { banned: true, why: banned, now });
     await chatLoad(); chatPrune(now); await pollLoad();
     await runSchedule(now);
+    await wheelStep(now);
     if (expire(now)) await keep();
     /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
     const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, note: x.note || '', cal: !!x.cal, done: !!x.done, missed: !!x.missed,
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -1419,6 +1520,58 @@ const server = http.createServer(async (req, res) => {
     return send(res, 404, { ok: false, why: '없는 자리' });
   }
 
+  /* ── 운명의 바퀴 — 함성. 모아서 보낸다(한 번에 열둘까지 · 한 사람 한 바퀴에 예순까지) ── */
+  if (url.pathname === '/wheel/cheer' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 500) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 외칠 수 있다' });
+    const w = live.wheel, now = Date.now();
+    if (!w || w.done || now > w.landAt) return send(res, 200, { ok: false, why: '바퀴가 멈췄다' });
+    const k = w.id + ':' + id, had = WH_WHO.get(k) || 0;
+    const add = Math.max(0, Math.min(12, parseInt(q.n, 10) || 0, WHEEL_CHEER_MAX - had));
+    if (!had && add) w.ppl = (w.ppl || 0) + 1;
+    WH_WHO.set(k, had + add); if (WH_WHO.size > 50000) WH_WHO.clear();
+    w.cheer = (w.cheer || 0) + add;
+    if (now - _whKeep > 2000) { _whKeep = now; live.at = now; await keep(); }
+    return send(res, 200, { ok: true, cheer: w.cheer, ppl: w.ppl, mine: had + add });
+  }
+
+  /* ── 비밀 코드 받기 — 로그인한 사람만, 한 아이디에 한 번 ── */
+  if (url.pathname === '/scode/claim' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 받는다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const sc = live.scode;
+    if (!sc || now > sc.until) return send(res, 404, { ok: false, why: '지금 풀린 비밀 코드가 없다' });
+    /* 마구 두드려 맞히기를 막는다 — 한 아이디에 1분 여덟 번 */
+    const t = SC_TRY.get(id) || { n: 0, at: now };
+    if (now - t.at > 60000) { t.n = 0; t.at = now; }
+    t.n++; SC_TRY.set(id, t); if (SC_TRY.size > 20000) SC_TRY.clear();
+    if (t.n > 8) return send(res, 429, { ok: false, why: '너무 자주 두드렸다 — 잠시 뒤에' });
+    if (!same(scodeKey(q.code), sc.h)) return send(res, 403, { ok: false, why: '코드가 맞지 않다' });
+    const mk = sc.id + ':' + id;
+    if (SC_MEM.has(mk)) return send(res, 409, { ok: false, why: '이미 받았다' });
+    if (sc.max && (sc.n || 0) >= sc.max) return send(res, 410, { ok: false, why: `이미 다 나갔다 — 먼저 온 ${sc.max}명이 받았다` });
+    SC_MEM.add(mk); if (SC_MEM.size > 50000) SC_MEM.clear();
+    const got = (await get('scc:' + sc.id)) || {};
+    if (got[id]) return send(res, 409, { ok: false, why: '이미 받았다' });
+    got[id] = now; await put('scc:' + sc.id, got);
+    sc.n = (sc.n || 0) + 1; live.at = now; await keep();
+    statAdd('scode').catch(() => {});
+    const p = sc.pay || {};
+    alog(id, `비밀 코드 「${sc.title}」 — ${[p.gold ? '골드 ' + p.gold : '', p.dia ? '다이아 ' + p.dia : '', p.jp ? '정진 ' + p.jp : '', (p.cards || []).length ? '부적 ' + p.cards.length + '장' : ''].filter(Boolean).join(' · ') || '빈 보상'}`).catch(() => {});
+    return send(res, 200, { ok: true, id: sc.id, title: sc.title, pay: p, n: sc.n, max: sc.max });
+  }
+
   /* ── 마지막 막(25막)을 깼다 — 로그인한 사람만 적는다. 백야의 앱이 clearAt 을 보고 명단을 받아 간다 ── */
   if (url.pathname === '/clear/final' && req.method === 'POST') {
     let body = '';
@@ -1521,11 +1674,26 @@ const server = http.createServer(async (req, res) => {
     let body = '';
     for await (const chunk of req) {
       body += chunk;
-      if (body.length > 8000) return send(res, 413, { ok: false, why: '너무 길다' });
+      if (body.length > 16000) return send(res, 413, { ok: false, why: '너무 길다' });
     }
     let q;
     try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     if (!same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+    /* 지금 할 것과 예약할 것 — 하나하나 들여다본다 */
+    {
+      const sch = q.schedule && typeof q.schedule === 'object' ? q.schedule : null;
+      const pats = [q, sch && sch.patch].concat(sch && Array.isArray(sch.steps) ? sch.steps.map(x => x && x.patch) : []).filter(x => x && typeof x === 'object');
+      /* 카운트다운 끝에 걸 것 · 운명의 바퀴 칸마다 걸 것도 */
+      for (let i = 0; i < pats.length && i < 60; i++) {
+        const x = pats[i];
+        if (x.count && typeof x.count === 'object' && x.count.then && typeof x.count.then === 'object') pats.push(x.count.then);
+        if (x.wheel && typeof x.wheel === 'object' && Array.isArray(x.wheel.slices)) for (const sl of x.wheel.slices.slice(0, 10)) if (sl && sl.patch && typeof sl.patch === 'object') pats.push(sl.patch);
+      }
+      /* 공방에서 지은 컷씬 — 공방 열쇠까지 맞아야 */
+      if (pats.some(x => x.cut && typeof x.cut === 'object' && x.cut.def) && !cutKeyOk(q.cutKey)) return send(res, 403, { ok: false, why: '공방 열쇠가 다르다' });
+      /* 비밀 코드 — 원문은 여기서 지문으로 바뀐다 */
+      for (const x of pats) if (x.scode) { x.scode = scodePrep(x.scode); if (x.scode && x.scode.bad) return send(res, 400, { ok: false, why: x.scode.bad }); }
+    }
 
     await store();
     /* 예약 — 지금 하지 않고 정한 때에 한다 */
