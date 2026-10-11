@@ -1101,6 +1101,44 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 #menubtn{position:relative}#menubtn.hasdot::after{content:'';position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:#ff4a4a;box-shadow:0 0 6px #ff4a4a}
 .mpside .mpttl{display:block;width:max-content;margin:2px auto}
 
+/* ══ 관리자 — 대시보드 · 로그 · 축제 · 공지 틀 (판 52) ══ */
+.dash,.alogw{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;padding:4px;color:#e9dfc9}
+.dashhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dashhead b{font-weight:400;font-size:18px;letter-spacing:.1em;color:#f2e2b4}
+.dashhead span{flex:1;font-size:11.5px;color:#8a7f68}
+.dashhead input{flex:1;min-width:160px}
+.dashload,.dashnone{padding:20px;text-align:center;color:#8a7f68;font-size:13px}
+.dtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.dtiles.sm{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+.dtile{position:relative;padding:12px 10px 10px;border-radius:10px;background:linear-gradient(160deg,rgba(40,32,22,.9),rgba(16,12,8,.92));border:1px solid rgba(232,200,106,.22);overflow:hidden}
+.dtile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dc)}
+.dtile i{position:absolute;right:8px;top:6px;font-style:normal;font-size:22px;color:var(--dc);opacity:.35}
+.dtile b{display:block;font-weight:400;font-size:26px;color:#fff3d6;line-height:1.1}
+.dtiles.sm .dtile b{font-size:20px}
+.dtile span{font-size:11.5px;color:#c8bba0}.dtile small{display:block;font-size:10.5px;color:#8a7f68}
+.dsec>b{display:block;font-weight:400;font-size:12px;letter-spacing:.25em;color:#c8a94e;margin-bottom:6px}
+.dashsvg{width:100%;height:auto;background:rgba(0,0,0,.25);border-radius:10px;border:1px solid rgba(255,255,255,.06)}
+.dashsvg .dgrid{stroke:rgba(255,255,255,.07)}.dashsvg .dlab,.dashsvg text{fill:#8a7f68;font-size:9px}
+.dashsvg .dline{fill:none;stroke:#e8c86a;stroke-width:2}.dashsvg .ddot{fill:#fff3d6;stroke:#e8c86a;stroke-width:2}
+.dbars{display:flex;flex-direction:column;gap:4px}
+.dbars>div{display:grid;grid-template-columns:70px 1fr 34px;align-items:center;gap:8px;font-size:12px}
+.dbars s{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,#a8272c,#e8a84a);text-decoration:none;min-width:2px}
+.dbars em{font-style:normal;text-align:right;color:#f2e7cc}
+.aloglist{display:flex;flex-direction:column;max-height:60vh;overflow-y:auto;border-radius:10px;border:1px solid rgba(255,255,255,.07)}
+.alog{display:grid;grid-template-columns:86px 110px 1fr;gap:10px;padding:6px 10px;font-size:12.5px;border-bottom:1px solid rgba(255,255,255,.05);text-align:left}
+.alog:nth-child(odd){background:rgba(255,255,255,.025)}
+.alog time{color:#8a7f68;font-variant-numeric:tabular-nums}.alog b{font-weight:400;color:#f2e2b4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.alog span{color:#d8ccb0}
+.adtab.dashtab{color:#ffe8a8;border-color:#c8961a}
+.festgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.festbtn{font:inherit;text-align:left;padding:10px 12px;border-radius:10px;cursor:pointer;color:#fff3d6;
+  background:linear-gradient(135deg,rgba(168,39,44,.55),rgba(200,140,40,.35));border:1px solid #e8a84a;box-shadow:0 0 12px rgba(255,160,60,.2);transition:.15s}
+.festbtn:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,180,80,.45)}
+.festbtn b{display:block;font-weight:400;font-size:14.5px}.festbtn small{font-size:11px;color:#f2d8b4;line-height:1.5}
+.ntpl{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.ntchip{display:inline-flex;align-items:center;border-radius:12px;background:rgba(232,200,106,.12);border:1px solid rgba(232,200,106,.35);font-size:12px;overflow:hidden}
+.ntchip b{font-weight:400;padding:4px 8px;cursor:pointer;color:#f2e7cc}.ntchip b:hover{background:rgba(232,200,106,.2)}
+.ntchip u{text-decoration:none;padding:4px 7px;cursor:pointer;color:#e2777a;border-left:1px solid rgba(232,200,106,.25)}
+
 /* ══ 빠른 찾기 ══ */
 .cmdpal{position:fixed;inset:0;z-index:600;background:rgba(8,6,4,.55);backdrop-filter:blur(2px);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh;animation:fadeIn .15s}
 .cpbox{width:min(560px,94vw);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#221a12,#140f0a);border:1px solid rgba(232,200,106,.4);box-shadow:0 20px 60px rgba(0,0,0,.6)}
@@ -23098,7 +23136,7 @@ function payDia(n) { if (!n) return; if (G.run) { G.run.dia = (G.run.dia || 0) +
 function achCheck() {
   META.ach = META.ach || {};
   const got = [];
-  for (const a of ACH) if (!META.ach[a.id] && achCur(a) >= a.need) { META.ach[a.id] = Date.now(); payDia(a.dia); got.push(a); }
+  for (const a of ACH) if (!META.ach[a.id] && achCur(a) >= a.need) { META.ach[a.id] = Date.now(); payDia(a.dia); got.push(a); logNote('ach', `업적 「${a.n}」 — 다이아 ${a.dia}`); }
   if (!got.length) return;
   saveMeta(); pfPush();
   if (got.length > 3) { toast(`功 업적 ${got.length}개를 한꺼번에 이루었다 — 다이아 +${got.reduce((s, a) => s + a.dia, 0)} (업적 창)`); try { SND.gong(); } catch (e) {} return; }
@@ -23168,7 +23206,7 @@ function showQuests() {
     p.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
       const kind = b.dataset.q[0], x = q[kind][+b.dataset.q.slice(1)]; if (!x || !x.done || x.paid) return;
       x.paid = true; const pay = QUEST_PAY[kind]; payDia(pay.dia); if (pay.jp) { META.jp = (META.jp || 0) + pay.jp; META.jpTotal = (META.jpTotal || 0) + pay.jp; }
-      saveMeta(); stAdd('quest'); toast(`임무 보상 — 다이아 ${pay.dia}${pay.jp ? ' · 정진 ' + pay.jp : ''}`); try { SND.coinRain(6); } catch (e) {} draw();
+      saveMeta(); stAdd('quest'); logNote('quest', `임무 「${x.n}」 — 다이아 ${pay.dia}${pay.jp ? ' · 정진 ' + pay.jp : ''}`); toast(`임무 보상 — 다이아 ${pay.dia}${pay.jp ? ' · 정진 ' + pay.jp : ''}`); try { SND.coinRain(6); } catch (e) {} draw();
     });
   };
   draw();
@@ -23300,6 +23338,105 @@ async function showFriends() {
   p.querySelector('#fr_to').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') p.querySelector('#fr_add').click(); };
   load();
 }
+/* ══════════════════════════════════════════════════════════
+   받은 것 알림 — 앱에서만 생기는 보상(금화·부적비·임무·업적…)을 서버 로그에 적는다
+   한꺼번에 몰리면 묶어서 세 셈마다 한 번
+   ══════════════════════════════════════════════════════════ */
+const _noteQ = [];
+let _noteT = 0;
+function logNote(k, what) {
+  if (!acctOn()) return;
+  _noteQ.push([k, what]);
+  if (_noteT) return;
+  _noteT = setTimeout(() => {
+    _noteT = 0; if (!_noteQ.length) return;
+    const k0 = _noteQ[0][0], txt = _noteQ.splice(0).map(x => x[1]).join(' · ').slice(0, 100);
+    acctAsk('/log/note', { token: ACCT.token, k: k0, what: txt }, 8000).catch(() => {});
+  }, 3000);
+}
+/* ══════════════════════════════════════════════════════════
+   관리자 대시보드 — 지금 접속 · 하루 접속 그래프 · 오늘 가입 · 이벤트별 참가
+   ══════════════════════════════════════════════════════════ */
+function dashChart(hist) {
+  const W = 560, H = 140, now = Date.now(), t0 = now - 24 * 3600e3;
+  const pts = (hist || []).filter(x => x.t >= t0);
+  if (pts.length < 2) return '<div class="dashnone">그래프는 다섯 분마다 한 점씩 쌓인다 — 서버가 켜진 지 얼마 안 됐다</div>';
+  const max = Math.max(3, ...pts.map(x => x.n));
+  const X = t => ((t - t0) / (now - t0) * W).toFixed(1), Y = n => (H - 8 - n / max * (H - 22)).toFixed(1);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + X(p.t) + ' ' + Y(p.n)).join(' ');
+  const ticks = [0, 6, 12, 18, 24].map(h => { const t = t0 + h * 3600e3, d = new Date(t); return `<text x="${X(t)}" y="${H + 12}" text-anchor="middle">${String(d.getHours()).padStart(2, '0')}시</text>`; }).join('');
+  return `<svg viewBox="0 -4 ${W} ${H + 18}" class="dashsvg"><defs><linearGradient id="dashg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8c86a" stop-opacity=".45"/><stop offset="1" stop-color="#e8c86a" stop-opacity="0"/></linearGradient></defs>
+    ${[0.25, .5, .75, 1].map(f => `<line x1="0" x2="${W}" y1="${Y(max * f)}" y2="${Y(max * f)}" class="dgrid"/><text x="2" y="${+Y(max * f) - 2}" class="dlab">${Math.round(max * f)}</text>`).join('')}
+    <path d="${line} L${X(pts[pts.length - 1].t)} ${H - 8} L${X(pts[0].t)} ${H - 8}Z" fill="url(#dashg)"/><path d="${line}" class="dline"/>
+    <circle cx="${X(pts[pts.length - 1].t)}" cy="${Y(pts[pts.length - 1].n)}" r="4" class="ddot"/>${ticks}</svg>`;
+}
+async function drawDash(grid) {
+  grid.innerHTML = '<div class="dash"><div class="dashload">불러오는 중…</div></div>';
+  const r = await adminAsk('/admin/stats', {});
+  if (!grid.isConnected || !grid.querySelector('.dash')) return;
+  const box = grid.querySelector('.dash');
+  if (!r.ok) { box.innerHTML = `<div class="dashload">못 불러왔다 — ${wEsc(r.why)}</div>`; return; }
+  const t = r.today || {}, hm = at => { if (!at) return '—'; const d = new Date(at); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  const tile = (g, n, v, sub, c) => `<div class="dtile" style="--dc:${c || '#e8c86a'}"><i>${g}</i><b>${v}</b><span>${n}</span>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  const SCN = { title: '첫 화면', map: '지도', battle: '싸움', shop: '상점', event: '사건', cutscene: '컷씬', win: '승천' };
+  const by = Object.entries(r.by || {}).sort((a, b) => b[1] - a[1]);
+  box.innerHTML = `<div class="dashhead"><b>管 대시보드</b><span>서버 켜진 때 ${hm(r.since)} · 스무 셈마다 새로</span><button class="brush-btn ghost" id="dash_re" style="color:#e9dfc9;border-color:#8a7f68">새로</button></div>
+    <div class="dtiles">${tile('人', '지금 접속', r.online, '', '#7fe6b0')}${tile('日', '오늘 들른 사람', r.todayUniq)}${tile('峯', '가장 많던 때', r.peak, hm(r.peakAt))}${tile('新', '오늘 가입', t.signup || 0, '', '#6fd0e8')}</div>
+    <div class="dsec"><b>하루 동안 접속자</b>${dashChart(r.hist)}</div>
+    ${by.length ? `<div class="dsec"><b>지금 어디에</b><div class="dbars">${by.map(([k, n]) => `<div><span>${SCN[k] || k}</span><s style="width:${(n / Math.max(1, r.online) * 100).toFixed(0)}%"></s><em>${n}</em></div>`).join('')}</div></div>` : ''}
+    <div class="dsec"><b>오늘 이벤트 참가 · 받은 것</b><div class="dtiles sm">
+      ${tile('博', '해킹 보스 격파', t.hb || 0, '', '#5cff9a')}${tile('影', '그림자 처치', t.sh || 0, '', '#9a8ab8')}${tile('爆', '폭탄 참가', t.bomb || 0, '', '#ff8a5a')}
+      ${tile('鎔', '합성', t.fuse || 0, '', '#c88aff')}${tile('郵', '우편 수령', t.mail || 0, '', '#ff9a8a')}${tile('錢', '한바탕 줍기', (t.n_fx || 0), '', '#ffd76a')}
+      ${tile('課', '임무 보상', t.n_quest || 0, '', '#7fe0a8')}${tile('功', '업적', t.n_ach || 0, '', '#ffe08a')}${tile('曆', '남은 예약', r.sched || 0)}</div></div>`;
+  box.querySelector('#dash_re').onclick = () => drawDash(grid);
+  clearTimeout(drawDash._t); drawDash._t = setTimeout(() => { if (grid.isConnected && grid.querySelector('.dash')) drawDash(grid); }, 20000);
+}
+/* 지급 로그 — 누가 언제 무엇을 받았나 (서버가 아는 것 + 앱이 알린 것) */
+async function drawLog(grid) {
+  grid.innerHTML = `<div class="alogw"><div class="dashhead"><b>錄 지급 로그</b><span>최근 삼백 줄 · 우편·해킹 보스·합성 + 앱이 알린 줍기·임무·업적</span>
+      <input id="lg_q" placeholder="닉네임·내용으로 거르기"><button class="brush-btn ghost" id="lg_re" style="color:#e9dfc9;border-color:#8a7f68">새로</button></div>
+    <div class="aloglist">불러오는 중…</div></div>`;
+  const r = await adminAsk('/admin/log', {});
+  const L = grid.querySelector('.aloglist'); if (!L) return;
+  if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
+  const paint = () => {
+    const q = grid.querySelector('#lg_q').value.trim();
+    const rows = r.list.filter(x => !q || (x.nick + x.id + x.what).includes(q));
+    L.innerHTML = rows.length ? rows.map(x => { const d = new Date(x.at);
+      return `<div class="alog"><time>${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</time><b title="${wEsc(x.id)}">${wEsc(x.nick || '—')}</b><span>${wEsc(x.what)}</span></div>`; }).join('')
+      : '<div class="dashnone">적힌 것이 없다</div>';
+  };
+  paint();
+  grid.querySelector('#lg_q').oninput = paint;
+  grid.querySelector('#lg_re').onclick = () => drawLog(grid);
+}
+/* ══════════════════════════════════════════════════════════
+   원클릭 축제 — 예약 하나로 여러 장면을 차례로 (카운트다운 → 불꽃 → 버프 → 금화 …)
+   공지 템플릿 — 자주 쓰는 말을 이 기계에 적어 둔다
+   ══════════════════════════════════════════════════════════ */
+const FEST = {
+  full: { n: '축제 모드 (풀코스)', d: '카운트다운 → 불꽃놀이 → 부적의 힘 ×2·황금비 버프 10분 → 금화 소나기 → 풍년 → 부적비 → 치유의 비 · 약 5분', steps: [
+    [0, '카운트다운', { notice: '🎉 백야의 축제가 곧 시작됩니다!', count: { sec: 10, label: '축제', then: { fx: { k: 'fire', sec: 45 } } } }],
+    [30, '버프', { buff: { ks: { pow: 2, gold: 1 }, min: 10 } }],
+    [75, '금화 소나기', { fx: { k: 'coin', sec: 60 } }],
+    [140, '풍년', { event: 'gold' }],
+    [200, '부적비', { fx: { k: 'talis', sec: 45 } }],
+    [255, '치유의 비', { fx: { k: 'heal' } }]] },
+  short: { n: '짧은 축제', d: '불꽃놀이 → 금화 소나기 · 약 1분 반', steps: [
+    [0, '불꽃놀이', { notice: '🎆 잠깐의 축제!', fx: { k: 'fire', sec: 30 } }],
+    [35, '금화 소나기', { fx: { k: 'coin', sec: 50 } }]] },
+  reward: { n: '보상 폭탄', d: '금화 소나기 → 부적비 → 치유의 비 · 약 2분 반', steps: [
+    [0, '금화 소나기', { notice: '💰 보상이 쏟아집니다!', fx: { k: 'coin', sec: 50 } }],
+    [55, '부적비', { fx: { k: 'talis', sec: 45 } }],
+    [105, '치유의 비', { fx: { k: 'heal' } }]] },
+  hunt: { n: '사냥 축제', d: '현상금 10분 + 부적의 힘 ×2·흡혈 버프 10분 + 슈팅 스타', steps: [
+    [0, '현상금', { notice: '⚔ 사냥 축제 — 요괴를 잡으면 현상금!', fx: { k: 'bounty', sec: 600 }, buff: { ks: { pow: 2, drain: 1 }, min: 10 } }],
+    [5, '슈팅 스타', { event: 'star' }]] }
+};
+const NTPL_KEY = 'baekgwi_ntpl';
+const NTPL_BASE = ['잠시 후 서버 점검이 있습니다. 진행 중인 판을 마무리해 주세요.', '이벤트가 곧 시작됩니다! 접속해 계신 분들 모두 함께해요.', '접속해 주셔서 고맙습니다 — 백야', '오늘 밤 아홉 시, 특별한 일이 일어납니다.'];
+const ntplGet = () => { try { const v = JSON.parse(localStorage.getItem(NTPL_KEY) || 'null'); return Array.isArray(v) ? v : NTPL_BASE.slice(); } catch (e) { return NTPL_BASE.slice(); } };
+const ntplSet = v => { try { localStorage.setItem(NTPL_KEY, JSON.stringify(v.slice(0, 20))); } catch (e) {} };
 /* ══════════════════════════════════════════════════════════
    메뉴 한 벌 — 멈춤 창(탭·타일) · 빠른 찾기(Ctrl+K) · 원형 퀵메뉴 · 윗줄 「…」
    ──────────────────────────────────────────────────────────
@@ -23709,7 +23846,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 51;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 52;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -26666,6 +26803,7 @@ function fxcPick(f, kind, n) {
   void n.offsetWidth; n.classList.add('got');
   if (!f.local) fxcAdd(f.id);
   try { stAdd('fxpick'); } catch (e) {}
+  logNote('fx', kind === 'coin' ? '금화 소나기 · 골드 20' : '부적비');
   if (kind === 'coin') {
     G.run.gold += 20; saveRun(); renderTop();
     try { SND.coin(); FX.gold(at.x, at.y, 12); flyGet('金 +20', '#ffd76a', '#goldv'); } catch (e) {}
@@ -26687,7 +26825,7 @@ function fxcHeal(f) {
   if (!G.run || fxcPvp()) { toast('치유의 비 — 모험 중인 사람만 받는다'); return; }
   if (!f.local && fxcGot(f.id)) return;
   if (!f.local) fxcAdd(f.id);
-  const was = G.run.hp; G.run.hp = G.run.maxHp;
+  const was = G.run.hp; G.run.hp = G.run.maxHp; logNote('fx', '치유의 비');
   if (G.b && P()) { P().hp = P().maxHp; syncAll(); }
   saveRun(); renderTop();
   try { evtPop(`체력 +${G.run.maxHp - was}`, '#7fe6b0', { x: innerWidth / 2, y: innerHeight * .4 }); FX.burst(innerWidth / 2, innerHeight * .4, 30, '110,230,160', 5, 60, 4); } catch (e) {}
@@ -26696,7 +26834,7 @@ function fxcHeal(f) {
 function fxcKill(e) {
   const f = fxcLive(); if (!f || f.k !== 'bounty' || !G.run || fxcPvp() || (e && e.isPlayer)) return;
   if (fxcGot(f.id) >= FXC_CAP.bounty) return;
-  fxcAdd(f.id); G.run.dia = (G.run.dia || 0) + 2; saveRun(); renderTop();
+  fxcAdd(f.id); G.run.dia = (G.run.dia || 0) + 2; saveRun(); renderTop(); logNote('fx', '현상금 · 다이아 2');
   try { const c = e && e.el ? centerOf(e.el) : { x: innerWidth / 2, y: innerHeight * .4 }; evtPop('懸賞 · 玉 +2', '#6fd0e8', { x: c.x, y: c.y - 60 }); SND.coin(); } catch (x) {}
   fxcPill(f);
 }
@@ -27058,7 +27196,15 @@ function drawCast(grid) {
       <div class="casthint">앱 맨 윗면에 「${DEV_NAME}」 이름으로 걸린다. 비우고 퍼뜨리면 내려간다.</div>
       <textarea id="ct_notice" maxlength="300" rows="3"
         placeholder="이를테면 — 오늘 밤 아홉 시, 별이 쏟아집니다."></textarea>
-      <button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
+      <div class="ntpl" id="ct_ntpl"></div>
+      <div class="castbtnrow"><button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
+        <button class="brush-btn ghost" id="ct_ntsave" style="color:#e9dfc9;border-color:#8a7f68">＋ 지금 말을 틀로 적어 두기</button></div>
+    </div>
+
+    <div class="castsec festsec"><b>🎉 원클릭 축제</b>
+      <div class="casthint">누르면 예약 하나로 여러 장면이 차례로 걸린다(예약 목록에서 취소할 수 있다). 「백야가 이벤트를 시작했습니다!」 알림 설정을 따른다.</div>
+      <div class="festgrid">${Object.keys(FEST).map(k => `<button class="festbtn" data-fest="${k}"><b>${FEST[k].n}</b><small>${FEST[k].d}</small></button>`).join('')}</div>
+      <div class="casthint" id="ct_festlog"></div>
     </div>
 
     <div class="castsec eggsec"><b>卵 비밀의 계란 뿌리기</b>
@@ -27429,6 +27575,20 @@ function drawCast(grid) {
     else say('못 했다: ' + r.why, false);
     return r;
   };
+  /* 공지 템플릿 */
+  const ntDraw = () => { const box = grid.querySelector('#ct_ntpl'); if (!box) return; const list = ntplGet();
+    box.innerHTML = list.map((t, i) => `<span class="ntchip"><b data-i="${i}" title="${wEsc(t)}">${wEsc(t.length > 22 ? t.slice(0, 22) + '…' : t)}</b><u data-x="${i}" title="지운다">×</u></span>`).join('') || '<span class="casthint">적어 둔 틀이 없다</span>';
+    box.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { grid.querySelector('#ct_notice').value = ntplGet()[+b.dataset.i]; });
+    box.querySelectorAll('[data-x]').forEach(b => b.onclick = () => { const l = ntplGet(); l.splice(+b.dataset.x, 1); ntplSet(l); ntDraw(); }); };
+  ntDraw();
+  grid.querySelector('#ct_ntsave').onclick = () => { const v = grid.querySelector('#ct_notice').value.trim(); if (!v) { say('적어 둘 말이 비었다', false); return; }
+    const l = ntplGet(); if (!l.includes(v)) { l.unshift(v); ntplSet(l); } ntDraw(); say('틀로 적어 두었다', true); };
+  /* 원클릭 축제 */
+  grid.querySelectorAll('[data-fest]').forEach(b => b.onclick = () => {
+    const f = FEST[b.dataset.fest]; if (!confirm(`「${f.n}」을(를) 지금 시작할까?\n${f.d}`)) return;
+    const steps = f.steps.map(([after, label, patch], i) => ({ after, label, patch: i === 0 ? hype(f.n, Object.assign({}, patch)) : patch }));
+    send({ schedule: { at: Date.now() + 1500, label: f.n, steps } }, f.n).then(r => { const lg = grid.querySelector('#ct_festlog'); if (lg) lg.innerHTML = r && r.ok ? `<b style="color:#7fe6cf">${f.n}</b> — 시작했다 · 예약 목록에 걸렸다` : ''; });
+  });
   grid.querySelector('#ct_sendn').onclick = () => {
     const v = grid.querySelector('#ct_notice').value.trim();
     send({ notice: v, noticeAt: Date.now() }, v ? '말' : '말 내리기');
@@ -29067,7 +29227,7 @@ function showAdmin() {
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
           <button class="adtab power" data-t="power">權 개발자의 권력</button>
-          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button>' : ''}
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button><button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -29084,6 +29244,8 @@ function showAdmin() {
     if (tab === 'guest') { find.style.display = 'none'; drawGuests(grid); return; }
     if (tab === 'power') { find.style.display = 'none'; drawPower(grid); return; }
     if (tab === 'mem') { find.style.display = 'none'; drawMembers(grid); return; }
+    if (tab === 'dash') { find.style.display = 'none'; drawDash(grid); return; }
+    if (tab === 'log') { find.style.display = 'none'; drawLog(grid); return; }
     find.style.display = '';
     const add = (g, n, sub, col, fn) => {
       const t = el('div', 'trtile adtile',

@@ -588,7 +588,26 @@ async function rankBump(key, id, val, mode) {
   await put('rk:' + key, top.slice(0, 100));
 }
 /* 누가 언제 켜 두었나 — 벗 목록의 접속 표시 (아이디로) */
-const acctSeen = new Map();
+const acctSeen = new Map(), noteLast = new Map();
+/* ── 관리자 대시보드 · 지급 로그 ──
+   STAT — 오늘(한국 날짜)의 셈 · STAT_HIST — 다섯 분마다 접속자 수(하루치) · alog — 누가 무엇을 받았나(삼백 줄) */
+let STAT = null, STAT_HIST = null;
+async function statLoad() { if (!STAT) { STAT = (await get('stat:today')) || {}; STAT_HIST = (await get('stat:hist')) || []; } }
+async function statAdd(k, n = 1) {
+  await statLoad(); const d = kstDay(Date.now());
+  if (STAT.day !== d) STAT = { day: d };
+  STAT[k] = (STAT[k] || 0) + n; await put('stat:today', STAT).catch(() => {});
+}
+async function alog(id, what) {
+  const list = (await get('alog')) || [];
+  list.unshift({ at: Date.now(), id: id || '', nick: id ? ((await nickOf(id)) || id) : '', what: str(what, 120) });
+  await put('alog', list.slice(0, 300)).catch(() => {});
+}
+setInterval(async () => {
+  try { await store(); await statLoad(); const now = Date.now(); const c = seenCount(now);
+    STAT_HIST.push({ t: now, n: c.n }); STAT_HIST = STAT_HIST.filter(x => now - x.t <= 24 * 3600e3).slice(-300);
+    await put('stat:hist', STAT_HIST); } catch (e) {}
+}, 5 * 60000);
 /* 한바탕(fx) — 이름과 기본 길이(초) */
 const FX_KINDS = { fire: 40, coin: 45, heal: 180, bounty: 600, talis: 45 };
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -1277,6 +1296,31 @@ const server = http.createServer(async (req, res) => {
                             today: seenToday.size, since: bootAt, now });
   }
 
+  /* ── 관리자 대시보드 · 지급 로그 (백야만) · 앱이 알리는 받은 것(로그인한 사람) ── */
+  if ((url.pathname === '/admin/stats' || url.pathname === '/admin/log' || url.pathname === '/log/note') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store(); await statLoad();
+    const now = Date.now();
+    if (url.pathname === '/log/note') {
+      const id = await tokWho(q.token); if (!id) return send(res, 401, { ok: false });
+      if (now - (noteLast.get(id) || 0) < 1500) return send(res, 429, { ok: false });
+      noteLast.set(id, now); if (noteLast.size > 20000) noteLast.clear();
+      const k = str(q.k, 12); if (k) statAdd('n_' + k).catch(() => {});
+      await alog(id, str(q.what, 100));
+      return send(res, 200, { ok: true });
+    }
+    if (!CODE || !same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+    if (url.pathname === '/admin/log') return send(res, 200, { ok: true, list: (await get('alog')) || [], now });
+    const c = seenCount(now);
+    if (kstDay(now) !== seenDay) { seenDay = kstDay(now); seenToday = new Set(); }
+    const today = STAT.day === kstDay(now) ? STAT : {};
+    return send(res, 200, { ok: true, now, online: c.n, by: c.by, peak: seenPeak, peakAt: seenPeakAt, todayUniq: seenToday.size, since: bootAt,
+      hist: (STAT_HIST || []).concat({ t: now, n: c.n }), today,
+      mails: (live.mails || []).length, sched: (live.sched || []).filter(x => !x.done).length });
+  }
+
   /* ── 순위표 — 누구나 본다 ── */
   if (url.pathname === '/rank' && req.method === 'GET') {
     await store();
@@ -1346,6 +1390,7 @@ const server = http.createServer(async (req, res) => {
       const one = mailMake(q);
       const box = ((await get('ml:' + to)) || []).filter(x => now <= x.until).concat(one).slice(-MAIL_ONE_MAX);
       await put('ml:' + to, box);
+      alog(to, `(백야가 보냄) 우편 「${one.title}」`).catch(() => {});
       return send(res, 200, { ok: true, to, nick: (await nickOf(to)) || to, id: one.id });
     }
     const id = await tokWho(q.token);
@@ -1362,6 +1407,8 @@ const server = http.createServer(async (req, res) => {
       got[mid] = now;
       for (const k of Object.keys(got)) if (now - got[k] > 40 * 86400000) delete got[k];
       await put('mlc:' + id, got);
+      statAdd('mail').catch(() => {});
+      alog(id, `우편 「${m.title}」 — ${[m.gold ? '골드 ' + m.gold : '', m.dia ? '다이아 ' + m.dia : '', m.jp ? '정진 ' + m.jp : '', (m.cards || []).length ? '부적 ' + m.cards.length + '장' : ''].filter(Boolean).join(' · ') || '빈 우편'}`).catch(() => {});
       return send(res, 200, { ok: true, mail: m });
     }
     return send(res, 404, { ok: false, why: '없는 자리' });
@@ -1558,6 +1605,7 @@ const server = http.createServer(async (req, res) => {
       }
       r[me + 'Ready'] = !!q.yes; r.at = now;
       if (r.aReady && r.bReady && r.aMat && r.bMat) {
+        statAdd('fuse').catch(() => {}); alog(id, '합성소 — 융합 원료를 만들었다').catch(() => {});
         r.state = 'fuse'; r.fuseAt = now + 1800; r.result = (r.aMat + '+' + r.bMat).split('+').sort((x, y) => FUSE_MATS.indexOf(x) - FUSE_MATS.indexOf(y)).join('+');
         console.log('합성소 — 합성:', r.aNick, '+', r.bNick, '→', r.result);
       }
@@ -1610,7 +1658,7 @@ const server = http.createServer(async (req, res) => {
     if (!me.n) sh.ppl = (sh.ppl || 0) + 1;
     me.n++; me.at = now; shadowWho.set(id, me);
     sh.n = (sh.n || 0) + 1; sh.top = shadowTop(); live.at = now;
-    rankBump('sh', id, 1, 'add').catch(() => {});
+    rankBump('sh', id, 1, 'add').catch(() => {}); statAdd('sh').catch(() => {});
     await keep();
     return send(res, 200, { ok: true, mine: me.n, n: sh.n, top: sh.top });
   }
@@ -1647,6 +1695,7 @@ const server = http.createServer(async (req, res) => {
       const tok = (await bal()) + HB_PAY; await put('ht:' + id, tok);
       console.log('해킹 보스를 쓰러뜨렸다:', id, '· 토큰', tok);
       await rankBump('hb', id, 1, 'add').catch(() => {});
+      statAdd('hb').catch(() => {}); alog(id, `해킹 보스 격파 — 토큰 +${HB_PAY}`).catch(() => {});
       return send(res, 200, { ok: true, pay: HB_PAY, tok, slot: se.slot });
     }
     if (url.pathname === '/hb/buy') {
@@ -1678,7 +1727,7 @@ const server = http.createServer(async (req, res) => {
     if (!b) return send(res, 409, { ok: false, why: '폭탄 돌리기가 없다' });
     if (url.pathname === '/bomb/join') {
       if (b.phase !== 'join') return send(res, 409, { ok: false, why: '참가를 받는 때가 지났다' });
-      if (!BOMB.ppl.has(id)) { BOMB.ppl.set(id, (await nickOf(id)) || id); b.n = BOMB.ppl.size; live.at = now; await keep(); }
+      if (!BOMB.ppl.has(id)) { BOMB.ppl.set(id, (await nickOf(id)) || id); b.n = BOMB.ppl.size; live.at = now; await keep(); statAdd('bomb').catch(() => {}); }
       return send(res, 200, { ok: true, bomb: view(id), me: id, now });
     }
     if (url.pathname === '/bomb/pass') {
@@ -2309,6 +2358,7 @@ const server = http.createServer(async (req, res) => {
       await umTouch(id, Date.now()); if (q.dev) await devLink(id, q.dev);
       const tok = await tokMake(id);
       console.log('이름을 걸었다:', id);
+      statAdd('signup').catch(() => {});
       return send(res, 200, { ok: true, id, nick, token: tok, save: null, at: 0 });
     }
 
