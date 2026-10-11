@@ -347,13 +347,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um|ht|hbw|ml|mlc):|^(mptop|bans|clears)$/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um|ht|hbw|ml|mlc|pf|fr|rk|rkv):|^(mptop|bans|clears)$/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -576,6 +576,19 @@ function mailAdd(m) {
   live.mailAt = one.at;
   return one;
 }
+/* ── 순위 — rk:이름 에 위 백 명, rkv:이름:아이디 에 그 사람의 값. add 는 쌓고 min 은 가장 작은 값 ── */
+async function rankBump(key, id, val, mode) {
+  let v = val;
+  if (mode === 'add') { v = ((+(await get(`rkv:${key}:${id}`))) || 0) + val; await put(`rkv:${key}:${id}`, v); }
+  else { const old = await get(`rkv:${key}:${id}`); if (old != null && +old <= val) return; await put(`rkv:${key}:${id}`, v); }
+  const top = (await get('rk:' + key)) || [], i = top.findIndex(x => x.id === id);
+  const row = { id, nick: (await nickOf(id)) || id, v, at: Date.now() };
+  if (i >= 0) top[i] = row; else top.push(row);
+  top.sort((a, b) => mode === 'min' ? a.v - b.v : b.v - a.v);
+  await put('rk:' + key, top.slice(0, 100));
+}
+/* 누가 언제 켜 두었나 — 벗 목록의 접속 표시 (아이디로) */
+const acctSeen = new Map();
 /* 한바탕(fx) — 이름과 기본 길이(초) */
 const FX_KINDS = { fire: 40, coin: 45, heal: 180, bounty: 600, talis: 45 };
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -938,7 +951,7 @@ const chatClean = s => { let t = String(s || '').replace(/[\u0000-\u001f\u007f�
   .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length)).replace(CHAT_SECRET, '[가림]');
   if (CODE && t.includes(CODE)) t = t.split(CODE).join('[가림]');
   return t; };
-const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '' });
+const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '', ttl: x.ttl || '' });
 const chatLastId = () => (chat && chat.log.length ? chat.log[chat.log.length - 1].id : 0);
 /* 채팅은 셋 분만 남는다 — 한 마디는 말한 지 셋 분이 지나면 사라진다 */
 const CHAT_LIFE = 3 * 60 * 1000;
@@ -1019,7 +1032,7 @@ function mpStart(mode, teams, ranked) {
   teams.forEach((t, ti) => t.forEach(p => {
     /* 인게임 — 저마다 모험의 최대 체력으로 선다 (모르면 모드 기본값) */
     const h = p.hp >= 30 ? p.hp : hp;
-    players.push({ acct: p.acct, name: p.name, team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck, lv: p.lv || 1 });
+    players.push({ acct: p.acct, name: p.name, ttl: p.ttl || '', team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck, lv: p.lv || 1 });
     units[p.acct] = { hp: h, maxHp: h, block: 0, s: {} };
   }));
   const m = { id, mode, ranked: !!ranked, players, units, order, turn: { i: 0, no: 1, acct: order[0], deadline: now + MP_TURN_MS + 4000 },
@@ -1173,6 +1186,7 @@ const server = http.createServer(async (req, res) => {
     seenMark(url.searchParams.get('w'), url.searchParams.get('s'), now);
     /* 막힌 기기·아이디 — 소식 대신 「이용 정지」만 */
     const banned = await banWhy(str(url.searchParams.get('u'), 20), url.searchParams.get('w'));
+    { const u0 = str(url.searchParams.get('u'), 20); if (u0 && nameOk(u0)) { acctSeen.set(u0, Date.now()); if (acctSeen.size > 50000) acctSeen.clear(); } }
     if (banned) return send(res, 200, { banned: true, why: banned, now });
     await chatLoad(); chatPrune(now); await pollLoad();
     await runSchedule(now);
@@ -1263,6 +1277,59 @@ const server = http.createServer(async (req, res) => {
                             today: seenToday.size, since: bootAt, now });
   }
 
+  /* ── 순위표 — 누구나 본다 ── */
+  if (url.pathname === '/rank' && req.method === 'GET') {
+    await store();
+    const pick = async k => ((await get('rk:' + k)) || []).slice(0, 50).map(x => ({ nick: x.nick, v: x.v }));
+    const mp = ((await get('mptop')) || []).slice(0, 50).map(x => ({ nick: x.nick, v: x.rp, tier: x.tier, w: x.w, l: x.l }));
+    return send(res, 200, { ok: true, mp, sh: await pick('sh'), hb: await pick('hb'), sp: await pick('sp'), now: Date.now() });
+  }
+  /* ── 프로필 · 벗 — /pf/set 내 것을 적는다 · /pf/get 남의 것을 본다 · /fr/list · /fr/add · /fr/del ── */
+  if ((url.pathname.startsWith('/pf/') || url.pathname.startsWith('/fr/')) && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    const whoOf = async w => { w = str(w, 20); if (!w) return ''; if (await get('u:' + w)) return w; const n = await get('nk:' + w.toLowerCase()); return n || ''; };
+    const pfView = async (uid) => { const pf = (await get('pf:' + uid)) || {}, mp = await mpProf(uid);
+      return { id: uid, nick: (await nickOf(uid)) || uid, title: pf.title || '', fav: pf.fav || [], frame: pf.frame || 'ink', best: pf.best || 0, wins: pf.wins || 0,
+               runs: pf.runs || 0, ach: pf.ach || 0, achN: pf.achN || 0, dex: pf.dex || 0, rp: mp.rp, tier: mpTier(mp.rp), mw: mp.w, ml: mp.l,
+               on: now - (acctSeen.get(uid) || 0) < 90000, at: pf.at || 0 }; };
+    if (url.pathname === '/pf/get') {
+      const uid = await whoOf(q.who); if (!uid) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
+      return send(res, 200, { ok: true, pf: await pfView(uid) });
+    }
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    if (url.pathname === '/pf/set') {
+      const p0 = q.pf || {}, n = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+      const pf = { title: str(p0.title, 14), fav: Array.isArray(p0.fav) ? p0.fav.slice(0, 3).map(x => str(x, 40)) : [], frame: str(p0.frame, 12) || 'ink',
+                   best: n(p0.best, 99), wins: n(p0.wins, 99999), runs: n(p0.runs, 99999), ach: n(p0.ach, 999), achN: n(p0.achN, 999), dex: n(p0.dex, 9999), at: now };
+      await put('pf:' + id, pf);
+      return send(res, 200, { ok: true });
+    }
+    const fr = (await get('fr:' + id)) || [];
+    if (url.pathname === '/fr/list') {
+      const list = [];
+      for (const f of fr.slice(0, 50)) { const v = await pfView(f); v.back = ((await get('fr:' + f)) || []).includes(id); list.push(v); }
+      list.sort((a, b) => (b.on - a.on) || a.nick.localeCompare(b.nick));
+      return send(res, 200, { ok: true, list });
+    }
+    if (url.pathname === '/fr/add') {
+      const uid = await whoOf(q.who);
+      if (!uid) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
+      if (uid === id) return send(res, 400, { ok: false, why: '나 자신이다' });
+      if (fr.includes(uid)) return send(res, 409, { ok: false, why: '이미 벗이다' });
+      if (fr.length >= 50) return send(res, 400, { ok: false, why: '벗은 쉰까지' });
+      await put('fr:' + id, fr.concat(uid));
+      return send(res, 200, { ok: true, pf: await pfView(uid) });
+    }
+    if (url.pathname === '/fr/del') { await put('fr:' + id, fr.filter(x => x !== str(q.id, 20))); return send(res, 200, { ok: true }); }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
   /* ── 우편함 — /mail/me 받을 것 · /mail/claim 받는다 · /mail/send 한 사람에게(백야만) ── */
   if (url.pathname.startsWith('/mail/') && req.method === 'POST') {
     let body = '';
@@ -1314,6 +1381,7 @@ const server = http.createServer(async (req, res) => {
     list.unshift({ id, nick: (await nickOf(id)) || id, at: now, asc: num(q.asc, 999), mins: num(q.mins, 100000), deck: num(q.deck, 999),
                    act: num(q.act, 999) });
     await put('clears', list.slice(0, 300));
+    if (num(q.mins, 100000) > 0) await rankBump('sp', id, num(q.mins, 100000), 'min').catch(() => {});
     live.clearAt = now; live.clearN = (live.clearN || 0) + 1; live.at = now;
     await keep();
     console.log('마지막 막을 깼다:', id);
@@ -1542,6 +1610,7 @@ const server = http.createServer(async (req, res) => {
     if (!me.n) sh.ppl = (sh.ppl || 0) + 1;
     me.n++; me.at = now; shadowWho.set(id, me);
     sh.n = (sh.n || 0) + 1; sh.top = shadowTop(); live.at = now;
+    rankBump('sh', id, 1, 'add').catch(() => {});
     await keep();
     return send(res, 200, { ok: true, mine: me.n, n: sh.n, top: sh.top });
   }
@@ -1577,6 +1646,7 @@ const server = http.createServer(async (req, res) => {
       await put('hbw:' + id, se.slot);
       const tok = (await bal()) + HB_PAY; await put('ht:' + id, tok);
       console.log('해킹 보스를 쓰러뜨렸다:', id, '· 토큰', tok);
+      await rankBump('hb', id, 1, 'add').catch(() => {});
       return send(res, 200, { ok: true, pay: HB_PAY, tok, slot: se.slot });
     }
     if (url.pathname === '/hb/buy') {
@@ -1743,7 +1813,8 @@ const server = http.createServer(async (req, res) => {
     }
     chatLast.set(id, now);
     if (chatLast.size > 20000) chatLast.clear();
-    const x = { id: Math.max(now, chatLastId() + 1), n, t, at: now, k, u: id };   /* id 는 늘 커진다 */
+    const ttl = k ? '' : str(((await get('pf:' + id)) || {}).title, 14);
+    const x = { id: Math.max(now, chatLastId() + 1), n, t, at: now, k, u: id, ttl };   /* id 는 늘 커진다 */
     chat.log.push(x);
     if (chat.log.length > CHAT_KEEP) chat.log = chat.log.slice(-CHAT_KEEP);
     await chatSave();
@@ -1844,7 +1915,7 @@ const server = http.createServer(async (req, res) => {
     const now = Date.now(), act = url.pathname.slice(4);
     const prof = await mpProf(acct);
     /* 인게임 멀티 — 지금 모험의 덱·최대 체력·막을 들고 온다 */
-    const me = { acct, name: (await nickOf(acct)) || acct, rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
+    const me = { acct, name: (await nickOf(acct)) || acct, ttl: str(((await get('pf:' + acct)) || {}).title, 14), rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
                  hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)) };
     const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct });
 

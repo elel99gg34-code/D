@@ -939,7 +939,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .mmfind{font:inherit;font-size:12.5px;color:#e9dfc9;background:rgba(255,255,255,.06);border:1px solid rgba(233,223,201,.3);border-radius:16px;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px}
 .mmfind:hover{background:rgba(255,255,255,.12)}
 .mmfind kbd,.cprow kbd{font:inherit;font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid rgba(233,223,201,.35);color:#b3a68c}
-.mmtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mmtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
 .mmtab{position:relative;font:inherit;font-size:14px;letter-spacing:.12em;padding:9px 6px;border-radius:8px;cursor:pointer;color:#c8bba0;
   background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.18);display:flex;align-items:center;justify-content:center;gap:6px}
 .mmtab i{font-style:normal;font-size:15px;opacity:.7}
@@ -1013,6 +1013,93 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .galbox .galtile.lock{cursor:default;filter:grayscale(1) brightness(.6);background:rgba(20,16,24,.8)}
 .galbox .galtile.lock i{color:#4a3e5a;text-shadow:none}
 .galbox .galtile.lock small{color:#8a7f98}
+
+/* ══ 업적 · 임무 · 프로필 · 순위 · 벗 (판 51) ══ */
+.achbox,.qbox,.pfbox,.rkbox,.frbox{width:min(680px,95vw);display:flex;flex-direction:column;gap:12px;align-items:stretch}
+:is(.achbox,.qbox,.rkbox,.frbox) .mhead{display:flex;align-items:center;gap:12px}
+:is(.achbox,.qbox,.rkbox,.frbox) .mhead>i{font-style:normal;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff3d6;flex:none;
+  background:radial-gradient(circle at 35% 30%,#c8961a,#5a3a08);border:2px solid #ffe08a;box-shadow:0 0 18px rgba(255,200,80,.4)}
+.qbox .mhead>i{background:radial-gradient(circle at 35% 30%,#2a8a6a,#0a3020)}
+.rkbox .mhead>i{background:radial-gradient(circle at 35% 30%,#a8272c,#3a0a0c)}
+.frbox .mhead>i{background:radial-gradient(circle at 35% 30%,#3a6a8a,#0e2232)}
+:is(.achbox,.qbox,.rkbox,.frbox) .mhead>div{flex:1}
+:is(.achbox,.qbox,.rkbox,.frbox) .mhead h2{margin:0;text-align:left;font-size:22px}
+:is(.achbox,.qbox,.rkbox,.frbox) .mhead span{font-size:12px;color:#b3a68c}
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;max-height:60vh;overflow-y:auto;padding-right:4px}
+.achcell{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid rgba(233,223,201,.14);text-align:left}
+.achcell>i{font-style:normal;width:38px;height:38px;border-radius:8px;display:grid;place-items:center;font-size:20px;flex:none;color:#6a6050;background:rgba(0,0,0,.35)}
+.achcell>div{flex:1;min-width:0}.achcell b{display:block;font-weight:400;font-size:13.5px;color:#c8bba0}.achcell small{font-size:10.5px;color:#8a7f68}
+.achcell>em{font-style:normal;font-size:11px;color:#6fd0e8;white-space:nowrap}
+.achcell.on{border-color:rgba(255,214,120,.55);background:linear-gradient(160deg,rgba(90,66,20,.6),rgba(30,22,10,.7))}
+.achcell.on>i{color:#2a1a04;background:radial-gradient(circle at 35% 30%,#ffe8a0,#c8961a);box-shadow:0 0 12px rgba(255,210,100,.5)}
+.achcell.on b{color:#fff0c8}
+.achbar{position:relative;height:14px;margin-top:4px;border-radius:7px;background:rgba(0,0,0,.4);overflow:hidden}
+.achbar s{position:absolute;left:0;top:0;bottom:0;text-decoration:none;background:linear-gradient(90deg,#a8272c,#e8a84a)}
+.achcell.on .achbar s{background:linear-gradient(90deg,#c8961a,#ffe08a)}
+.achbar span{position:relative;display:block;text-align:center;font-size:9.5px;line-height:14px;color:#fff}
+.achban{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);z-index:620;display:flex;align-items:center;gap:12px;padding:10px 20px 10px 12px;border-radius:12px;
+  background:linear-gradient(160deg,#3a2a10,#140e06);border:1.5px solid #ffd76a;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 30px rgba(255,200,80,.35);animation:achIn 3.6s ease forwards;color:#fff0c8}
+.achban>i{font-style:normal;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#2a1a04;background:radial-gradient(circle at 35% 30%,#fff2c0,#d8a020);box-shadow:0 0 16px #ffd76a}
+.achban small{display:block;font-size:10.5px;letter-spacing:.3em;color:#e8c86a}.achban b{display:block;font-weight:400;font-size:18px}.achban em{font-style:normal;font-size:11.5px;color:#d8c8a0}
+@keyframes achIn{0%{opacity:0;transform:translate(-50%,-20px) scale(.9)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-10px)}}
+.qbox .qsec>b{display:flex;justify-content:space-between;font-weight:400;font-size:12px;letter-spacing:.25em;color:#c8a94e;margin-bottom:6px}
+.qbox .qsec>b em{font-style:normal;letter-spacing:.05em;color:#8a7f68}
+.qbox .qlist{display:flex;flex-direction:column;gap:6px}
+.qbox .qrow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.15);text-align:left}
+.qbox .qrow>div{flex:1;min-width:0}.qbox .qrow b{font-weight:400;font-size:14px;color:#f2e7cc}
+.qbox .qrow>em{font-style:normal;font-size:11.5px;color:#6fd0e8;white-space:nowrap}
+.qbox .qrow button{padding:7px 14px;font-size:13px}
+.qbox .qrow.done{border-color:rgba(127,230,176,.55);box-shadow:inset 3px 0 0 #7fe6b0}
+.qbox .qrow.paid{opacity:.5}.qbox .qok{font-size:12px;color:#7fe6b0}
+.pfbox .pfwrap{display:flex;justify-content:center}
+.pfcard{position:relative;width:min(440px,92vw);padding:18px;border-radius:16px;overflow:hidden;text-align:left;color:#f2e7cc;
+  background:linear-gradient(160deg,#2a2016,#120d08);border:2px solid #6a5a40;box-shadow:0 14px 40px rgba(0,0,0,.55)}
+.pfcard .pfglow{position:absolute;inset:-40%;pointer-events:none;opacity:.35;background:conic-gradient(from 0deg,transparent,var(--fc,#8a7a5a),transparent 40%);animation:auSpin 9s linear infinite}
+.pfcard.fr-gold{border-color:#ffd76a;--fc:#ffd76a;box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 26px rgba(255,210,100,.4)}
+.pfcard.fr-void{border-color:#b080ff;--fc:#b080ff;background:linear-gradient(160deg,#241640,#0c0618)}
+.pfcard.fr-hack{border-color:#2cff7a;--fc:#2cff7a;background:linear-gradient(160deg,#0a2a16,#020a05)}
+.pfcard.fr-aurora{border-color:#7fffd4;--fc:#7fffd4;background:linear-gradient(160deg,#0a2a30,#06101a)}
+.pfcard.fr-blood{border-color:#ff3a4a;--fc:#ff3a4a;background:linear-gradient(160deg,#3a0a10,#120406)}
+.pfcard.fr-jade{border-color:#5ac890;--fc:#5ac890;background:linear-gradient(160deg,#103a28,#06140c)}
+.pfcard>*{position:relative}
+.pftop{display:flex;align-items:center;gap:14px}
+.pftop b{display:block;font-weight:400;font-size:22px;letter-spacing:.06em}
+.pftop small{font-size:12px;color:#b3a68c}.pfon{color:#7fe6b0}
+.pfttl,.cttl,.mpttl{display:inline-block;font-style:normal;font-size:11px;padding:1px 7px;margin-right:6px;border-radius:9px;vertical-align:middle;color:#2a1a04;background:linear-gradient(90deg,#ffe8a0,#d8a020);box-shadow:0 0 8px rgba(255,200,80,.35)}
+.pftop .pfttl{display:inline-block;margin:3px 0 2px}
+.pfstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 12px}
+.pfstats>div{padding:8px 4px;border-radius:9px;text-align:center;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08)}
+.pfstats i{display:block;font-style:normal;font-size:14px;color:var(--fc,#c8a94e)}.pfstats b{display:block;font-weight:400;font-size:18px}
+.pfstats b s{text-decoration:none;font-size:11px;color:#8a7f68;margin:0 2px}.pfstats small{font-size:10.5px;color:#a8987c}
+.pffav{display:flex;gap:8px;justify-content:center}.pffav>span{font-size:12px;color:#8a7f68}
+.pffc{width:31%;padding:8px 4px;border-radius:8px;text-align:center;background:rgba(0,0,0,.35);border:1.5px solid var(--gc)}
+.pffc i{display:block;font-style:normal;font-size:24px;color:var(--gc);text-shadow:0 0 10px var(--gc)}.pffc b{display:block;font-weight:400;font-size:12px}.pffc small{font-size:10px;color:#a8987c}
+.pfedit{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:13px;color:#c8bba0}
+.pfedit select{margin-left:6px}
+.pfsub{font-size:12px;color:#b3a68c;text-align:center}
+.pfq{width:100%;box-sizing:border-box}
+.pfpick{display:flex;flex-wrap:wrap;gap:5px;max-height:22vh;overflow-y:auto;justify-content:center}
+.pfpc{font:inherit;font-size:12px;padding:4px 9px 4px 5px;border-radius:12px;cursor:pointer;color:#efe4cb;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:4px}
+.pfpc i{font-style:normal;color:var(--gc)}.pfpc.on{border-color:var(--gc);box-shadow:0 0 10px var(--gc);background:rgba(255,255,255,.08)}
+.pfnone{font-size:12px;color:#8a7f68}
+.pfbtns{display:flex;gap:10px;justify-content:center}
+.rkbox .rklist{display:flex;flex-direction:column;gap:4px;max-height:56vh;overflow-y:auto}
+.rkrow{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.035);text-align:left}
+.rkrow em{font-style:normal;width:28px;text-align:center;font-size:15px;color:#8a7f68}
+.rkrow b{flex:1;font-weight:400;cursor:pointer;color:#f2e7cc}.rkrow b:hover{color:#ffd76a}
+.rkrow span{font-size:14px;color:#f2e7cc;display:flex;align-items:center;gap:4px}.rkrow span small{font-size:10.5px;color:#8a7f68}
+.rkrow.top1 em{color:#ffd76a;font-size:18px}.rkrow.top2 em{color:#d8dce8;font-size:17px}.rkrow.top3 em{color:#d89a5a;font-size:16px}
+.rkrow.me{background:rgba(232,200,106,.14);box-shadow:inset 3px 0 0 #e8c86a}
+.frbox .frinv{display:flex;gap:8px}.frbox .frinv input{flex:1}
+.frbox .frlist{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow-y:auto}
+.frrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.14);text-align:left}
+.frrow>s{width:9px;height:9px;border-radius:50%;background:#5a5448;flex:none}
+.frrow.on>s{background:#7fe6b0;box-shadow:0 0 8px #7fe6b0}
+.frnm{flex:1;min-width:0;cursor:pointer}.frnm b{display:block;font-weight:400;font-size:14px;color:#f2e7cc}.frnm b u{text-decoration:none;color:#7fe6cf;font-size:12px}.frnm small{font-size:11px;color:#a8987c}
+.frb{font:inherit;width:34px;height:34px;border-radius:8px;cursor:pointer;color:#f2e7cc;background:rgba(157,124,46,.22);border:1px solid #9d7c2e;font-size:15px}
+.frb.del{background:none;border-color:rgba(200,80,80,.4);color:#e2777a;font-size:12px}
+#menubtn{position:relative}#menubtn.hasdot::after{content:'';position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:#ff4a4a;box-shadow:0 0 6px #ff4a4a}
+.mpside .mpttl{display:block;width:max-content;margin:2px auto}
 
 /* ══ 빠른 찾기 ══ */
 .cmdpal{position:fixed;inset:0;z-index:600;background:rgba(8,6,4,.55);backdrop-filter:blur(2px);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh;animation:fadeIn .15s}
@@ -12071,6 +12158,7 @@ async function playCard(card, target) {
   if (d.rar === 'ssc') SND.blip(1046, { dur: .5, type: 'sine', vol: .06, to: 1568, rev: .7 });
 
   b.curCard = card;
+  try { stAdd('play'); if (isQ(d.rar)) stAdd('qplay'); } catch (e) {}
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
   if (isQ(d.rar)) await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : d.rar === 'adm' ? 'adm' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
@@ -12218,6 +12306,7 @@ async function usePotion(idx, target) {
   if (d.tgt === 'enemy' && !target) { startPotionTargeting(idx); return; }
   run.potions.splice(idx, 1);
   SND.potion();
+  try { stAdd('pot'); } catch (e) {}
   const b0 = G.b;
   if (b0) b0.busy = true;
   try {
@@ -12391,6 +12480,7 @@ async function checkDeaths() {
     if (e.hp <= 0 && !e.dead) {
       e.dead = true; any = true; killed++;
       fire('onKill', e);
+      try { stAdd('kill'); } catch (x) {}
       if (e.el) { const c0 = centerOf(e.el); killCrack(c0.x, c0.y, tint('#fff2c8')); }
       killFx(e);
       dropOnKill(e);
@@ -12546,6 +12636,7 @@ function _winBattle() {
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
+  try { stAdd('battle'); if (b.kind === 'elite') stAdd('elite'); if (b.kind === 'boss') stAdd('boss'); } catch (e) {}
   incenseBurn();                                 /* 향초가 한 자루 탄다 */
   if (b.kind === 'elite') {
     petEliteTick();                            /* 팻을 되살리는 걸음 */
@@ -13578,6 +13669,7 @@ function showForge() {
     const win = rnd() < fgOdds(lv);
     if (win) {
       c.fg = lv + 1;
+      try { stAdd('forge'); } catch (e) {}
       SND.unlock(); SND.gong();
       screenFlash('rgba(255,180,90,.42)', 640);
       FX.burst(innerWidth / 2, innerHeight / 2, 34, '255,180,90', 6, 60, 4.6);
@@ -15771,6 +15863,7 @@ function nextAct() {
     if (run.act >= LAST_ACT) { victory(); return; }
   }
   noteClear(run.act);                       /* 이 막은 넘었다 — 오기는 여기서 걷힌다 */
+  try { stAdd('act'); } catch (e) {}
   run.act++;
   run.floor = 0;
   setTimeout(checkUnlockToast, 900);
@@ -22825,6 +22918,7 @@ async function mailClaim(id, quiet) {
   if (!r.ok) { if (!quiet) toast('못 받았다 — ' + r.why); if (/이미/.test(r.why || '')) MAIL.got.add(id); return false; }
   MAIL.got.add(id);
   const what = grantBundle(r.mail);
+  try { stAdd('mail'); } catch (e) {}
   if (!quiet) { toast(`${r.mail.title} — ${what || '받았다'}${G.run ? '' : ' (다음 등반에 지니고 나선다)'}`);
     try { SND.unlock(); SND.coinRain(8); screenFlash('rgba(255,215,120,.3)', 520); } catch (e) {} }
   return what;
@@ -22948,6 +23042,265 @@ function showGallery() {
   p.querySelectorAll('.galtile:not(.lock)').forEach(b => b.onclick = () => { closeTop(); const k = b.dataset.k; if (k === 'teaser26') act26Trailer(); else cutByName(k); });
 }
 /* ══════════════════════════════════════════════════════════
+   쌓는 셈(META.st) — 업적·임무가 함께 본다
+   ══════════════════════════════════════════════════════════ */
+const stV = k => (META.st && META.st[k]) || 0;
+let _pfOnce = 0;
+let _stT = 0;
+function stAdd(k, n = 1) {
+  if (!n || (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot') && k !== 'mpw' && k !== 'mpplay')) return;
+  META.st = META.st || {}; META.st[k] = (META.st[k] || 0) + n;
+  try { questBump(k, n); } catch (e) {}
+  clearTimeout(_stT); _stT = setTimeout(() => { saveMeta(); try { achCheck(); } catch (e) {} }, 500);
+}
+/* ══════════════════════════════════════════════════════════
+   업적(功) · 칭호 — 깨면 칭호가 생기고 다이아가 온다. 칭호는 채팅·대전 이름 앞에 붙는다
+   ══════════════════════════════════════════════════════════ */
+const dexN = () => Object.keys((META.dex && META.dex.cards) || {}).length;
+const ACH = [
+  { id: 'k100',  g: '斬', n: '백 마리',        t: '요괴 사냥꾼',   k: 'kill',  need: 100,  dia: 30 },
+  { id: 'k1000', g: '斬', n: '천 마리',        t: '백귀를 벤 자',  k: 'kill',  need: 1000, dia: 100 },
+  { id: 'k5000', g: '斬', n: '오천 마리',      t: '만귀의 적',     k: 'kill',  need: 5000, dia: 300, frame: 'blood' },
+  { id: 'e10',   g: '鬼', n: '엘리트 열',      t: '엘리트 사냥꾼', k: 'elite', need: 10,   dia: 40 },
+  { id: 'e100',  g: '鬼', n: '엘리트 백',      t: '귀왕 사냥꾼',   k: 'elite', need: 100,  dia: 150 },
+  { id: 'b5',    g: '魔', n: '보스 다섯',      t: '봉우리를 넘은 자', k: 'boss', need: 5,  dia: 50 },
+  { id: 'b50',   g: '魔', n: '보스 쉰',        t: '산의 주인',     k: 'boss',  need: 50,   dia: 200 },
+  { id: 'a5',    g: '山', n: '제5막을 넘다',   t: '안개 너머',     f: () => META.cleared || 0, need: 5,  dia: 40 },
+  { id: 'a10',   g: '山', n: '제10막을 넘다',  t: '구천의 끝',     f: () => META.cleared || 0, need: 10, dia: 80 },
+  { id: 'a20',   g: '山', n: '제20막을 넘다',  t: '천국 문 앞',    f: () => META.cleared || 0, need: 20, dia: 150 },
+  { id: 'a25',   g: '天', n: '승천',           t: '승천한 자',     f: () => META.cleared || 0, need: 25, dia: 400, frame: 'gold' },
+  { id: 'p500',  g: '符', n: '부적 오백 장',   t: '부적쟁이',      k: 'play',  need: 500,  dia: 30 },
+  { id: 'p5000', g: '符', n: '부적 오천 장',   t: '부적의 달인',   k: 'play',  need: 5000, dia: 150 },
+  { id: 'q10',   g: '？', n: '?급 열 번',      t: '금단을 만진 자', k: 'qplay', need: 10,  dia: 80, frame: 'void' },
+  { id: 'pot50', g: '藥', n: '물약 쉰 병',     t: '약방 단골',     k: 'pot',   need: 50,   dia: 40 },
+  { id: 'fg20',  g: '冶', n: '벼림 스무 번',   t: '대장장이',      k: 'forge', need: 20,   dia: 50 },
+  { id: 'hb1',   g: '博', n: '박사 격파',      t: '해커 사냥꾼',   k: 'hb',    need: 1,    dia: 30 },
+  { id: 'hb10',  g: '博', n: '박사 열 번',     t: '박사의 천적',   k: 'hb',    need: 10,   dia: 120, frame: 'hack' },
+  { id: 'sh50',  g: '影', n: '그림자 쉰',      t: '그림자 베는 이', k: 'shadow', need: 50, dia: 60 },
+  { id: 'bomb5', g: '爆', n: '폭탄 생존 다섯', t: '불사신',        k: 'bomb',  need: 5,    dia: 60 },
+  { id: 'fu1',   g: '鎔', n: '첫 합성',        t: '연금술사',      k: 'fuse',  need: 1,    dia: 40 },
+  { id: 'mut5',  g: '變', n: '돌연변이 다섯',  t: '변이의 손',     k: 'mut',   need: 5,    dia: 80, frame: 'aurora' },
+  { id: 'mp1',   g: '對', n: '첫 대전 승리',   t: '결투자',        k: 'mpw',   need: 1,    dia: 30 },
+  { id: 'mp30',  g: '對', n: '대전 서른 승',   t: '대전의 패왕',   k: 'mpw',   need: 30,   dia: 200 },
+  { id: 'dex100',g: '典', n: '도감 백 칸',     t: '수집가',        f: dexN,    need: 100,  dia: 60 },
+  { id: 'run10', g: '足', n: '열 번 오르기',   t: '다시 오르는 자', f: () => META.runs || 0, need: 10, dia: 40 },
+  { id: 'mail5', g: '郵', n: '우편 다섯 통',   t: '반가운 손님',   k: 'mail',  need: 5,    dia: 20 },
+  { id: 'coin30',g: '錢', n: '금화 서른',      t: '금화 줍는 이',  k: 'fxpick', need: 30,  dia: 30 },
+  { id: 'qst7',  g: '課', n: '임무 일곱',      t: '성실한 퇴마사', k: 'quest', need: 7,    dia: 50 },
+  { id: 'qst50', g: '課', n: '임무 쉰',        t: '산의 일꾼',     k: 'quest', need: 50,   dia: 200, frame: 'jade' }
+];
+const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥' };
+const achCur = a => a.f ? a.f() : stV(a.k);
+const achHas = id => !!(META.ach && META.ach[id]);
+const achTitles = () => ACH.filter(a => achHas(a.id)).map(a => a.t);
+const pfFramesOpen = () => ['ink'].concat(ACH.filter(a => a.frame && achHas(a.id)).map(a => a.frame));
+function payDia(n) { if (!n) return; if (G.run) { G.run.dia = (G.run.dia || 0) + n; saveRun(); renderTop(); } else META.giftDia = (META.giftDia || 0) + n; }
+function achCheck() {
+  META.ach = META.ach || {};
+  const got = [];
+  for (const a of ACH) if (!META.ach[a.id] && achCur(a) >= a.need) { META.ach[a.id] = Date.now(); payDia(a.dia); got.push(a); }
+  if (!got.length) return;
+  saveMeta(); pfPush();
+  if (got.length > 3) { toast(`功 업적 ${got.length}개를 한꺼번에 이루었다 — 다이아 +${got.reduce((s, a) => s + a.dia, 0)} (업적 창)`); try { SND.gong(); } catch (e) {} return; }
+  got.forEach((a, i) => setTimeout(() => achBanner(a), i * 1600));
+}
+function achBanner(a) {
+  const n = el('div', 'achban', `<i>${a.g}</i><div><small>功 업적</small><b>${a.n}</b><em>칭호 「${a.t}」${a.frame ? ` · 테두리 「${PF_FRAMES[a.frame]}」` : ''} · 玉 +${a.dia}</em></div>`);
+  document.body.appendChild(n); setTimeout(() => n.remove(), 3600);
+  try { SND.gong(); SND.unlock(); } catch (e) {}
+}
+function showAch() {
+  achCheck();
+  const n = ACH.filter(a => achHas(a.id)).length;
+  const p = modal(`<div class="achbox"><div class="mhead"><i>功</i><div><h2>업적 · 칭호</h2><span>이룬 것 ${n} / ${ACH.length} · 칭호는 프로필에서 고른다</span></div>
+      <button class="brush-btn gold" id="ac_pf">名 프로필</button></div>
+    <div class="achgrid">${ACH.map(a => { const has = achHas(a.id), cur = Math.min(a.need, achCur(a));
+      return `<div class="achcell${has ? ' on' : ''}"><i>${a.g}</i><div><b>${a.n}</b><small>칭호 「${a.t}」${a.frame ? ` · 테두리 ${PF_FRAMES[a.frame]}` : ''}</small>
+        <div class="achbar"><s style="width:${(cur / a.need * 100).toFixed(1)}%"></s><span>${has ? '이룸' : cur.toLocaleString() + ' / ' + a.need.toLocaleString()}</span></div></div><em>玉${a.dia}</em></div>`; }).join('')}</div>
+    <button class="brush-btn ghost" id="ac_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'achp');
+  p.dataset.noauto = '1';
+  p.querySelector('#ac_x').onclick = closeTop;
+  p.querySelector('#ac_pf').onclick = () => { closeTop(); showProfile(); };
+}
+/* ══════════════════════════════════════════════════════════
+   임무(課) — 날마다 셋 · 주마다 셋. 한국 시각 자정·월요일에 새로
+   ══════════════════════════════════════════════════════════ */
+const QUEST_D = [['kill', '요괴 {n}마리 쓰러뜨리기', [12, 15, 20]], ['elite', '엘리트 {n}마리 쓰러뜨리기', [1, 2]], ['play', '부적 {n}장 내기', [30, 40, 50]],
+  ['battle', '싸움 {n}번 이기기', [4, 5, 6]], ['pot', '물약 {n}병 마시기', [1, 2]], ['forge', '부적 {n}번 벼리기', [1, 2]], ['act', '막 {n}개 넘기', [1]], ['boss', '보스 {n}마리', [1]]];
+const QUEST_W = [['kill', '요괴 {n}마리 쓰러뜨리기', [120, 150]], ['elite', '엘리트 {n}마리', [10, 12]], ['boss', '보스 {n}마리', [3, 4]], ['play', '부적 {n}장 내기', [300, 400]],
+  ['act', '막 {n}개 넘기', [4, 5]], ['hb', '해킹 보스 {n}번 쓰러뜨리기', [2]], ['battle', '싸움 {n}번 이기기', [30]], ['mpplay', '대전 {n}판', [3]], ['forge', '부적 {n}번 벼리기', [6]]];
+const QUEST_PAY = { d: { dia: 25 }, w: { dia: 120, jp: 30 } };
+const qDay = () => Math.floor((srvNow() + 9 * 3600000) / 86400000);
+const qWeek = () => Math.floor((qDay() + 3) / 7);
+function qPick(pool, seed) {
+  let h = 2166136261; for (const ch of String(seed)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const rnd2 = () => { h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0; h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0; return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  const idx = pool.map((_, i) => i).sort(() => rnd2() - .5).slice(0, 3);
+  return idx.map(i => { const [k, txt, vs] = pool[i], need = vs[Math.floor(rnd2() * vs.length)]; return { k, n: txt.replace('{n}', need), need, got: 0, done: false, paid: false }; });
+}
+function questEnsure() {
+  const q = META.quest = META.quest || {}, d = qDay(), w = qWeek(), who = (ACCT && ACCT.id) || 'me';
+  if (q.day !== d) { q.day = d; q.d = qPick(QUEST_D, 'd' + d + who); }
+  if (q.week !== w) { q.week = w; q.w = qPick(QUEST_W, 'w' + w + who); }
+  return q;
+}
+function questBump(k, n) {
+  const q = questEnsure(); let fin = null;
+  for (const x of (q.d || []).concat(q.w || [])) if (x.k === k && !x.done) { x.got = Math.min(x.need, x.got + n); if (x.got >= x.need) { x.done = true; fin = x; } }
+  if (fin) { toast(`課 임무를 마쳤다 — ${fin.n} (임무 창에서 받는다)`); try { SND.unlock(); } catch (e) {} }
+}
+const questReady = () => { const q = questEnsure(); return (q.d || []).concat(q.w || []).filter(x => x.done && !x.paid).length; };
+function showQuests() {
+  const p = modal(`<div class="qbox"><div class="mhead"><i>課</i><div><h2>임무</h2><span>날마다 셋 · 주마다 셋 — 한국 시각 자정 · 월요일에 바뀐다</span></div></div>
+    <div class="qsec"><b>오늘의 임무 <em id="q_dleft"></em></b><div class="qlist" id="q_d"></div></div>
+    <div class="qsec"><b>이번 주 임무 <em id="q_wleft"></em></b><div class="qlist" id="q_w"></div></div>
+    <button class="brush-btn ghost" id="q_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'qp');
+  p.dataset.noauto = '1';
+  const draw = () => {
+    const q = questEnsure(), dEnd = (qDay() + 1) * 86400000 - 9 * 3600000, wEnd = ((qWeek() + 1) * 7 - 3) * 86400000 - 9 * 3600000;
+    { const ms = Math.max(0, dEnd - srvNow()); p.querySelector('#q_dleft').textContent = `${Math.floor(ms / 3600000)}시간 ${Math.floor(ms % 3600000 / 60000)}분 뒤 바뀜`; }
+    p.querySelector('#q_wleft').textContent = Math.ceil((wEnd - srvNow()) / 86400000) + '일 뒤 바뀜';
+    const row = (x, kind, i) => { const pay = QUEST_PAY[kind];
+      return `<div class="qrow${x.paid ? ' paid' : x.done ? ' done' : ''}"><div><b>${x.n}</b><div class="achbar"><s style="width:${(x.got / x.need * 100).toFixed(1)}%"></s><span>${x.got} / ${x.need}</span></div></div>
+        <em>玉${pay.dia}${pay.jp ? ' · 精' + pay.jp : ''}</em>${x.paid ? '<span class="qok">받음</span>' : `<button class="brush-btn gold" data-q="${kind}${i}"${x.done ? '' : ' disabled'}>받기</button>`}</div>`; };
+    p.querySelector('#q_d').innerHTML = q.d.map((x, i) => row(x, 'd', i)).join('');
+    p.querySelector('#q_w').innerHTML = q.w.map((x, i) => row(x, 'w', i)).join('');
+    p.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+      const kind = b.dataset.q[0], x = q[kind][+b.dataset.q.slice(1)]; if (!x || !x.done || x.paid) return;
+      x.paid = true; const pay = QUEST_PAY[kind]; payDia(pay.dia); if (pay.jp) { META.jp = (META.jp || 0) + pay.jp; META.jpTotal = (META.jpTotal || 0) + pay.jp; }
+      saveMeta(); stAdd('quest'); toast(`임무 보상 — 다이아 ${pay.dia}${pay.jp ? ' · 정진 ' + pay.jp : ''}`); try { SND.coinRain(6); } catch (e) {} draw();
+    });
+  };
+  draw();
+  p.querySelector('#q_x').onclick = closeTop;
+}
+/* ══════════════════════════════════════════════════════════
+   프로필 카드(名) — 칭호·테두리·아끼는 부적 셋·기록. 서버(pf:아이디)에 올려 남도 본다
+   ══════════════════════════════════════════════════════════ */
+let _pfT = 0;
+function pfPush() {
+  if (!acctOn()) return;
+  clearTimeout(_pfT);
+  _pfT = setTimeout(() => {
+    const pf = META.pf || {};
+    acctAsk('/pf/set', { token: ACCT.token, pf: { title: pf.title || '', fav: pf.fav || [], frame: pf.frame || 'ink', best: META.cleared || 0, wins: META.wins || 0, runs: META.runs || 0,
+      ach: ACH.filter(a => achHas(a.id)).length, achN: ACH.length, dex: dexN() } }, 12000).catch(() => {});
+  }, 1500);
+}
+function pfCardHtml(pf) {
+  const fav = (pf.fav || []).filter(id => CARDS[id]);
+  return `<div class="pfcard fr-${wEsc(pf.frame || 'ink')}"><div class="pfglow"></div>
+    <div class="pftop">${mpEmblem(pf.rp || 0, 'big')}<div><b>${wEsc(pf.nick || '?')}</b>${pf.title ? `<em class="pfttl">${wEsc(pf.title)}</em>` : ''}
+      <small>${mpTierName(pf.rp || 0)}${pf.on ? ' · <span class="pfon">● 접속 중</span>' : ''}</small></div></div>
+    <div class="pfstats"><div><i>山</i><b>${pf.best || 0}</b><small>최고 막</small></div><div><i>天</i><b>${pf.wins || 0}</b><small>승천</small></div>
+      <div><i>足</i><b>${pf.runs || 0}</b><small>등반</small></div><div><i>功</i><b>${pf.ach || 0}<s>/${pf.achN || ACH.length}</s></b><small>업적</small></div>
+      <div><i>典</i><b>${pf.dex || 0}</b><small>도감</small></div><div><i>對</i><b>${pf.mw || 0}<s>승</s> ${pf.ml || 0}<s>패</s></b><small>대전</small></div></div>
+    <div class="pffav">${fav.length ? fav.map(id => `<div class="pffc" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${GRADE[CARDS[id].rar].n}</small></div>`).join('') : '<span>아끼는 부적을 아직 고르지 않았다</span>'}</div>
+  </div>`;
+}
+async function showProfile(who) {
+  const mine = !who || (ACCT && (who === ACCT.id || who === ACCT.nick));
+  if (!mine) {
+    const p = modal(`<div class="pfbox"><div class="pfwrap">불러오는 중…</div><div class="pfbtns"><button class="brush-btn ghost" id="pf_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'pfp');
+    p.dataset.noauto = '1'; p.querySelector('#pf_x').onclick = closeTop;
+    const r = await acctAsk('/pf/get', { who }, 10000);
+    const w = p.querySelector('.pfwrap'); if (!w) return;
+    if (!r.ok) { w.textContent = '못 불러왔다 — ' + r.why; return; }
+    w.innerHTML = pfCardHtml(r.pf);
+    if (acctOn() && r.pf.id !== ACCT.id) { const b = el('button', 'brush-btn gold', '友 벗으로 적기'); b.onclick = async () => { const x = await acctAsk('/fr/add', { token: ACCT.token, who: r.pf.id }, 10000); toast(x.ok ? `${r.pf.nick} — 벗으로 적었다` : x.why); };
+      p.querySelector('.pfbtns').prepend(b); }
+    return;
+  }
+  META.pf = META.pf || {};
+  const pf = META.pf;
+  const me = () => ({ nick: (ACCT && (ACCT.nick || ACCT.id)) || '나', title: pf.title, frame: pf.frame || 'ink', fav: pf.fav || [], best: META.cleared || 0, wins: META.wins || 0, runs: META.runs || 0,
+    ach: ACH.filter(a => achHas(a.id)).length, achN: ACH.length, dex: dexN(), rp: (MP.prof && MP.prof.rp) || 0, mw: (MP.prof && MP.prof.w) || 0, ml: (MP.prof && MP.prof.l) || 0, on: true });
+  const p = modal(`<div class="pfbox"><div class="pfwrap"></div>
+    <div class="pfedit"><label>칭호 <select id="pf_t"><option value="">(없음)</option>${achTitles().map(t => `<option${t === pf.title ? ' selected' : ''}>${wEsc(t)}</option>`).join('')}</select></label>
+      <label>테두리 <select id="pf_f">${pfFramesOpen().map(f => `<option value="${f}"${f === (pf.frame || 'ink') ? ' selected' : ''}>${PF_FRAMES[f]}</option>`).join('')}</select></label></div>
+    <div class="pfsub">아끼는 부적 — 도감에 있는 것 가운데 셋까지 (다시 누르면 뺀다)</div>
+    <input id="pf_q" class="pfq" placeholder="부적 이름으로 찾기">
+    <div class="pfpick"></div>
+    <div class="pfbtns"><button class="brush-btn" id="pf_ach">功 업적</button><button class="brush-btn ghost" id="pf_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'pfp');
+  p.dataset.noauto = '1';
+  const ord = ['adm', 'qq', 'qx', 'unknown', 'ssx', 'ssc', 'special', 'zero', 'rare', 'uncommon', 'common', 'basic'];
+  const owned = Object.keys((META.dex && META.dex.cards) || {}).filter(id => CARDS[id] && !CARDS[id].devOnly).sort((a, b) => ord.indexOf(CARDS[a].rar) - ord.indexOf(CARDS[b].rar));
+  const draw = () => {
+    p.querySelector('.pfwrap').innerHTML = pfCardHtml(me());
+    const qv = p.querySelector('#pf_q').value.trim();
+    const list = owned.filter(id => !qv || CARDS[id].n.includes(qv)).slice(0, 80);
+    p.querySelector('.pfpick').innerHTML = list.map(id => `<button class="pfpc${(pf.fav || []).includes(id) ? ' on' : ''}" data-id="${id}" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}</button>`).join('') || '<span class="pfnone">도감에 적힌 부적이 없다</span>';
+    p.querySelectorAll('.pfpc').forEach(b => b.onclick = () => { const f = pf.fav = (pf.fav || []).slice(), id = b.dataset.id, i = f.indexOf(id);
+      if (i >= 0) f.splice(i, 1); else { if (f.length >= 3) f.shift(); f.push(id); } saveMeta(); pfPush(); draw(); });
+  };
+  draw();
+  p.querySelector('#pf_q').oninput = draw;
+  p.querySelector('#pf_t').onchange = e => { pf.title = e.target.value; saveMeta(); pfPush(); draw(); };
+  p.querySelector('#pf_f').onchange = e => { pf.frame = e.target.value; saveMeta(); pfPush(); draw(); };
+  p.querySelector('#pf_ach').onclick = () => { closeTop(); showAch(); };
+  p.querySelector('#pf_x').onclick = closeTop;
+}
+/* ══════════════════════════════════════════════════════════
+   순위(榜) — 대전 랭크 · 그림자 처치 · 해킹 보스 · 최단 25막
+   ══════════════════════════════════════════════════════════ */
+async function showRanks(tab) {
+  tab = tab || 'mp';
+  const TABS = [['mp', '대전 랭크', '對'], ['sh', '그림자 처치', '影'], ['hb', '해킹 보스', '博'], ['sp', '최단 25막', '天']];
+  const p = modal(`<div class="rkbox"><div class="mhead"><i>榜</i><div><h2>순위</h2><span>위 쉰 명 · 이름을 누르면 프로필</span></div></div>
+    <div class="mmtabs rktabs">${TABS.map(([k, n, g]) => `<button class="mmtab${k === tab ? ' on' : ''}" data-t="${k}"><i>${g}</i>${n}</button>`).join('')}</div>
+    <div class="rklist">불러오는 중…</div>
+    <button class="brush-btn ghost" id="rk_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'rkp');
+  p.dataset.noauto = '1'; p.querySelector('#rk_x').onclick = closeTop;
+  const r = await acctAsk('/rank', null, 12000);
+  const draw = () => {
+    const L = p.querySelector('.rklist'); if (!L) return;
+    p.querySelectorAll('.rktabs .mmtab').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
+    if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
+    const rows = r[tab] || [], myNick = ACCT && (ACCT.nick || ACCT.id);
+    const val = x => tab === 'mp' ? `${mpEmblem(x.v, 'sm')} ${x.v}<small>RP</small>` : tab === 'sp' ? `${x.v}<small>분</small>` : `${x.v.toLocaleString()}<small>${tab === 'sh' ? '마리' : '번'}</small>`;
+    L.innerHTML = rows.length ? rows.map((x, i) => `<div class="rkrow${x.nick === myNick ? ' me' : ''}${i < 3 ? ' top' + (i + 1) : ''}"><em>${i + 1}</em><b data-n="${wEsc(x.nick)}">${wEsc(x.nick)}</b><span>${val(x)}</span></div>`).join('')
+      : '<div class="mempty">아직 아무도 없다 — 첫 이름이 되어 보시오</div>';
+    L.querySelectorAll('[data-n]').forEach(b => b.onclick = () => showProfile(b.dataset.n));
+  };
+  p.querySelectorAll('.rktabs .mmtab').forEach(b => b.onclick = () => { tab = b.dataset.t; draw(); });
+  draw();
+}
+/* ══════════════════════════════════════════════════════════
+   벗(友) — 닉네임으로 적어 두고, 접속 여부를 보고, 합성소·대전으로 부른다
+   ══════════════════════════════════════════════════════════ */
+async function showFriends() {
+  if (!acctOn()) { toast('로그인해야 벗을 적는다'); return; }
+  const p = modal(`<div class="frbox"><div class="mhead"><i>友</i><div><h2>벗</h2><span>쉰까지 · 서로 적으면 ⇄ 표시</span></div></div>
+    <div class="frinv"><input id="fr_to" maxlength="20" placeholder="벗의 닉네임 또는 아이디"><button class="brush-btn gold" id="fr_add">적는다</button></div>
+    <div class="frlist">불러오는 중…</div>
+    <button class="brush-btn ghost" id="fr_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'frp');
+  p.dataset.noauto = '1'; p.querySelector('#fr_x').onclick = closeTop;
+  const load = async () => {
+    const r = await acctAsk('/fr/list', { token: ACCT.token }, 12000);
+    const L = p.querySelector('.frlist'); if (!L) return;
+    if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
+    L.innerHTML = r.list.length ? r.list.map(f => `<div class="frrow${f.on ? ' on' : ''}"><s></s><div class="frnm" data-n="${wEsc(f.id)}"><b>${f.title ? `<em class="pfttl">${wEsc(f.title)}</em>` : ''}${wEsc(f.nick)}${f.back ? ' <u title="서로 벗">⇄</u>' : ''}</b>
+        <small>${mpTierName(f.rp || 0)} · 최고 ${f.best}막 · ${f.on ? '접속 중' : '쉬는 중'}</small></div>
+        <button class="frb" data-a="fuse" data-n="${wEsc(f.nick)}" title="합성소로 부른다">鎔</button><button class="frb" data-a="mp" data-n="${wEsc(f.nick)}" title="대전으로 부른다">對</button>
+        <button class="frb del" data-a="del" data-id="${wEsc(f.id)}" title="지운다">✕</button></div>`).join('')
+      : '<div class="mempty"><i>友</i>아직 적은 벗이 없다 — 채팅이나 순위에서 이름을 눌러 프로필을 보고 적을 수도 있다</div>';
+    L.querySelectorAll('.frnm').forEach(b => b.onclick = () => showProfile(b.dataset.n));
+    L.querySelectorAll('.frb').forEach(b => b.onclick = async () => {
+      const a = b.dataset.a;
+      if (a === 'del') { if (!confirm('이 벗을 지울까?')) return; await acctAsk('/fr/del', { token: ACCT.token, id: b.dataset.id }, 10000); load(); return; }
+      if (!G.run) { toast('모험 중에만 부를 수 있다'); return; }
+      closeOverlay();
+      if (a === 'fuse') { showFuseLab(); setTimeout(() => { const i = $('#fl_to'), c = $('#fl_call'); if (i && c) { i.value = b.dataset.n; c.click(); } }, 500); }
+      else { showMulti(); toast('방을 만들면 초대 칸에 벗의 이름이 들어가 있다'); const nm = b.dataset.n; let n = 0;
+        const t = setInterval(() => { const i = $('#mp_invid'); if (i && !i.value) { i.value = nm; clearInterval(t); } if (++n > 60) clearInterval(t); }, 500); }
+    });
+  };
+  p.querySelector('#fr_add').onclick = async () => { const to = p.querySelector('#fr_to').value.trim(); if (!to) return;
+    const x = await acctAsk('/fr/add', { token: ACCT.token, who: to }, 10000); toast(x.ok ? `${x.pf.nick} — 벗으로 적었다` : x.why); if (x.ok) { p.querySelector('#fr_to').value = ''; load(); } };
+  p.querySelector('#fr_to').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') p.querySelector('#fr_add').click(); };
+  load();
+}
+/* ══════════════════════════════════════════════════════════
    메뉴 한 벌 — 멈춤 창(탭·타일) · 빠른 찾기(Ctrl+K) · 원형 퀵메뉴 · 윗줄 「…」
    ──────────────────────────────────────────────────────────
    갈 수 있는 자리를 한 목록(MENU_ITEMS)에 모아 두고, 네 곳이 같은 목록을 쓴다.
@@ -22955,12 +23308,13 @@ function showGallery() {
          al 찾기 말 · show() 보일 때 · run() 할 일 · dot() 빨간 점(숫자·'!'·true)
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
-const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['set', '설정', '設']];
-const MENU_NEW = { mail: 1, cal: 1, gallery: 1 };      /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['soc', '교류', '社'], ['set', '설정', '設']];
+const MENU_NEW = { mail: 1, cal: 1, gallery: 1, quest: 1, ach: 1, profile: 1, rank: 1, friends: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
   { k: 'auto',  g: '自', n: '자동 플레이', tab: 'adv', al: '오토 auto 자동', show: inRun,
     sub: () => autoOk() ? (AUTO.on ? '켜짐 — 누르면 멈춘다' : '꺼짐') : 'VIP', run: () => autoToggle(), keep: 1 },
+  { k: 'quest', g: '課', n: '임무', tab: 'adv', al: '임무 퀘스트 일일 주간 미션', dot: () => questReady(), sub: () => { const q = questEnsure(); return (q.d || []).concat(q.w || []).filter(x => x.done).length + ' / 6'; }, run: () => showQuests() },
   { k: 'deck',  g: '冊', n: '덱 보기', tab: 'adv', al: '덱 카드 부적 목록', show: inRun, sub: () => (G.run ? G.run.deck.length : 0) + '장', run: () => showCardList(G.run.deck, '나의 덱') },
   { k: 'plan',  g: '計', n: '덱 설정', tab: 'adv', al: '덱설정 계획 순서', show: () => inRun() && !G.run._pvp, run: () => showPlan() },
   { k: 'skill', g: '祕', n: '비기', tab: 'adv', al: '스킬 비기', show: inRun, sub: () => G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음', run: () => openSkills() },
@@ -22969,13 +23323,14 @@ const MENU_ITEMS = [
   { k: 'train', g: '修', n: '수행터', tab: 'adv', al: '수행 정진 훈련', show: () => inRun() && !G.b, sub: () => '精 ' + (META.jp || 0), run: () => { markUsed('train'); openTraining(); } },
   { k: 'shrine',g: '神', n: '신전', tab: 'adv', al: '신전 가호 유물 바치기', show: () => inRun() && !G.b, run: () => { markUsed('shrine'); openShrine(); } },
   { k: 'rfuse', g: '合', n: '유물 조합', tab: 'col', al: '유물 조합 합치기', show: inRun, run: () => openFuse() },
-  { k: 'mp',    g: '對', n: '멀티플레이', tab: 'adv', al: '대전 멀티 pvp 랭크', show: () => inRun() && !G.b, run: () => showMulti() },
+  { k: 'mp',    g: '對', n: '멀티플레이', tab: 'soc', al: '대전 멀티 pvp 랭크', show: () => inRun() && !G.b, run: () => showMulti() },
   { k: 'map',   g: '圖', n: '지도로', tab: 'adv', al: '지도 돌아가기', show: () => inRun() && !G.b && G.scene !== 'map', run: () => { closeOverlay(); saveRun(); showMap(); } },
   { k: 'yield', g: '退', n: '라운드 포기', tab: 'adv', al: '포기 항복 나가기', show: inFight, red: 1, sub: () => '갈림길로', run: () => askYield() },
   { k: 'box',   g: '匣', n: '부적 뽑기', tab: 'col', al: '뽑기 가챠 상자', show: inRun, run: () => { markUsed('box'); openBoxes(); } },
   { k: 'pouch', g: '囊', n: '원료 주머니', tab: 'col', al: '재료 원료 돌연변이 주머니', show: inRun, dot: () => pouchCount(), run: () => showPouch() },
   { k: 'fuselab', g: '鎔', n: '합성소', tab: 'col', al: '합성 융합 합성소', show: inRun, run: () => showFuseLab() },
   { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션', run: () => showDex() },
+  { k: 'ach',   g: '功', n: '업적 · 칭호', tab: 'col', al: '업적 칭호 도전과제', sub: () => ACH.filter(a => achHas(a.id)).length + ' / ' + ACH.length, run: () => showAch() },
   { k: 'gallery', g: '畵', n: '컷씬 다시보기', tab: 'col', al: '컷씬 다시보기 갤러리 영상 장면', run: () => showGallery() },
   { k: 'htok',  g: '⌬', n: '해킹상점', tab: 'ev', al: '해킹 토큰 상점 박사', show: inRun, badge: '한정',
     dot: () => hbOpenNow() && !hbWonNow() ? '!' : 0, sub: () => hbOpenNow() && !hbWonNow() ? '보스 출현!' : '', run: () => showHackTokShop() },
@@ -22986,6 +23341,10 @@ const MENU_ITEMS = [
   { k: 'news',  g: '告', n: '공지사항', tab: 'ev', al: '공지 소식 뉴스', dot: () => newsUnread(), run: () => showNews() },
   { k: 't26',   g: '帝', n: '26막 예고', tab: 'ev', al: '26막 예고편 무명궁 황제 미리보기', show: () => !G.b, run: () => showAct26Preview() },
   { k: 'guest', g: '客', n: '게스트 창', tab: 'ev', al: '게스트', show: () => guestOn(), run: () => showGuest() },
+  { k: 'profile', g: '名', n: '프로필', tab: 'soc', al: '프로필 칭호 테두리 내정보', show: () => acctOn(), run: () => showProfile() },
+  { k: 'friends', g: '友', n: '벗', tab: 'soc', al: '친구 벗 초대', show: () => acctOn(), run: () => showFriends() },
+  { k: 'rank',  g: '榜', n: '순위', tab: 'soc', al: '순위 랭킹 랭크 리더보드', run: () => showRanks() },
+  { k: 'chat',  g: '話', n: '채팅', tab: 'soc', al: '채팅 대화 말', show: () => acctOn(), run: () => chatToggle() },
   { k: 'set',   g: '設', n: '설정', tab: 'set', al: '설정 옵션 소리 음량', run: () => showSettings(), keep: 1 },
   { k: 'help',  g: '書', n: '안내서', tab: 'set', al: '도움말 안내 설명', run: () => showHelp(), keep: 1 },
   { k: 'tbpin', g: '…', n: '윗줄 고르기', tab: 'set', al: '윗줄 단추 고정 숨기기 상단바', show: inRun, run: () => tbMoreShow(true) },
@@ -23133,6 +23492,7 @@ const TB_DEFAULT_HIDE = ['trainbtn', 'shrinebtn', 'fusebtn'];
 const tbHidden = id => (META.tbHide || TB_DEFAULT_HIDE).indexOf(id) >= 0;
 function tbApply(t) {
   t = t || $('#topbar'); if (!t) return;
+  { const mb = t.querySelector('#menubtn'); if (mb) { let d = false; try { d = MENU_ITEMS.some(x => menuVis(x) && menuDot(x)); } catch (e) {} mb.classList.toggle('hasdot', d); } }
   for (const [id] of TB_BTNS) { const b = t.querySelector('#' + id); if (b) b.classList.toggle('tbhide', tbHidden(id)); }
   const m = t.querySelector('#tbmore'); if (m) { const dots = TB_BTNS.some(([id]) => { if (!tbHidden(id)) return false; const b = t.querySelector('#' + id + ' em'); return b && b.textContent; });
     m.querySelector('em').textContent = dots ? '•' : ''; }
@@ -23349,7 +23709,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 50;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 51;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -23736,7 +24096,7 @@ function bombResult(b, me) {
   /* 구경꾼에게는 소식만 — 한참 지난 것은 조용히 넘긴다 */
   if (!me.joined) { if (srvNow() - (b.end || 0) < 12000) toast(`💣 펑! — ${b.loserNick} 의 손에서 폭탄이 터졌다 (넘긴 수 ${b.passes})`); return; }
   let got = '';
-  if (!lost) got = bombPay(b.pay);
+  if (!lost) { got = bombPay(b.pay); try { stAdd('bomb'); } catch (e) {} }
   bombBoom(lost, lost ? '펑! 폭탄이 내 손에서 터졌다' : '살아남았다!',
     lost ? `보상 없음 · 넘긴 수 ${b.passes}` : `${wEsc(b.loserNick)} 의 손에서 터졌다 · ${got}`);
 }
@@ -23944,7 +24304,7 @@ async function hbBattleWin() {
   battleWatch(false); G.b = null;
   const cut = !!(h && h.forced && h.cut);
   const x = await acctAsk('/hb/win', { token: ACCT.token }, 10000);
-  if (x.ok) { META.hbWon = x.slot || (h && h.slot) || META.hbWon; HB_TOK = x.tok; }
+  if (x.ok) { META.hbWon = x.slot || (h && h.slot) || META.hbWon; HB_TOK = x.tok; if (x.pay) try { stAdd('hb'); } catch (e) {} }
   saveMeta(); if (run) saveRun();
   try { SND.victory(); screenFlash('rgba(44,255,122,.5)', 600); } catch (e) {}
   if (cut && x.ok) { try { await cutByName('hbblast'); } catch (e) {} }
@@ -24109,6 +24469,7 @@ async function shadowKill(e) {
   const at = e.el ? centerOf(e.el) : { x: innerWidth * .62, y: innerHeight * .4 };
   try { FX.burst(at.x, at.y, 60, '20,16,24', 8, 70, 7); FX.burst(at.x, at.y, 24, '235,235,235', 6, 50, 3); SND.thunder && SND.thunder(); shake(true); } catch (x) {}
   const dia = 10 + (run.act || 1) * 2; run.dia = (run.dia || 0) + dia;
+  try { stAdd('shadow'); } catch (x) {}
   if (c) { c.mutK = true; shadowMark(c, at); }
   saveRun(); renderTop();
   toast(c ? `影 그림자를 베었다 — 「${cname(c)}」에 그림자가 깃들었다 · 玉 +${dia}` : `影 그림자를 베었다 · 玉 +${dia}`);
@@ -24384,6 +24745,7 @@ async function matUse(k) {
 /* 돌연변이를 입힌다 — 재료가 날아들어 부적에 박히고, 부적이 돌며 새 모습으로 깨어난다
    o: { cols:[색, 색], orbs:[글자, 글자], glyph, name, strip:[입히기 전 모습에서 뺄 이름] } */
 function mutApplyFx(c, o) {
+  try { stAdd('mut'); } catch (e) {}
   const before = Object.assign({}, c); for (const k of o.strip || []) delete before[k];
   const [ca, cb] = o.cols, two = o.orbs.length > 1;
   const n = el('div', 'mfx' + (two ? ' two' : '')); n.style.setProperty('--fa', ca); n.style.setProperty('--fb', cb);
@@ -24568,6 +24930,7 @@ function showFuseLab(room) {
 }
 /* 합성 — 재료가 돌고, 별빛이 모이고, 카메라가 돌다 하나로 */
 function fuseShow(r, lab) {
+  try { stAdd('fuse'); } catch (e) {}
   const a = r.my.mat, b = r.other.mat, res = r.result;
   const wait0 = Math.max(0, Math.min(2500, (r.fuseAt || 0) - srvNow()));
   setTimeout(() => {
@@ -26302,6 +26665,7 @@ function fxcPick(f, kind, n) {
   n.style.cssText = `left:${r.left}px;top:${r.top}px;animation:none;transform:none`;   /* 떨어지던 그 자리에 세운다 — 애니메이션을 바꾸면 처음 자리로 튀었다 */
   void n.offsetWidth; n.classList.add('got');
   if (!f.local) fxcAdd(f.id);
+  try { stAdd('fxpick'); } catch (e) {}
   if (kind === 'coin') {
     G.run.gold += 20; saveRun(); renderTop();
     try { SND.coin(); FX.gold(at.x, at.y, 12); flyGet('金 +20', '#ffd76a', '#goldv'); } catch (e) {}
@@ -26369,6 +26733,7 @@ function liveTick() {
   try { buffTick(); } catch (e) { console.error('버프', e); }
   try { fxcTick(); } catch (e) { console.error('한바탕', e); }
   try { calTick(); mailFetch(false); } catch (e) { console.error('달력·우편', e); }
+  if (acctOn() && !_pfOnce) { _pfOnce = 1; try { questEnsure(); achCheck(); pfPush(); } catch (e) { console.error('업적·프로필', e); } }
   try { hbTick(); } catch (e) { console.error('해킹 보스', e); }
   try { shadowTick(); } catch (e) { console.error('그림자 침공', e); }
   try { matTick(); } catch (e) { console.error('이벤트 재료', e); }
@@ -27934,11 +28299,12 @@ function chatDraw() {
   l.innerHTML = CHAT.log.map(m => {
     const d = new Date(m.at), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
     const mine = !m.k && m.n === ACCT.id;
-    return `<div class="cm ${m.k || ''}${mine ? ' me' : ''}" data-id="${m.id}"><b>${wEsc(m.n)}${m.k === 'dev' ? '<i>개발자</i>' : m.k === 'guest' ? '<i>게스트</i>' : ''}</b>` +
+    return `<div class="cm ${m.k || ''}${mine ? ' me' : ''}" data-id="${m.id}"><b data-pn="${m.k ? '' : wEsc(m.n)}">${m.ttl ? `<em class="cttl">${wEsc(m.ttl)}</em>` : ''}${wEsc(m.n)}${m.k === 'dev' ? '<i>개발자</i>' : m.k === 'guest' ? '<i>게스트</i>' : ''}</b>` +
       `<span>${wEsc(m.t)}</span><time>${hm}</time>` +
       (dev && m.k !== 'dev' ? '<u class="cmd" title="이 말을 지운다">지우기</u><u class="cmm" title="10분 동안 말을 막고 그 사람의 말을 걷는다">입막기</u>' +
         (!m.k ? '<u class="cmi" title="이 사람을 게스트로 초대한다">초대</u>' : '') : '') + '</div>';
   }).join('');
+  l.querySelectorAll('.cm b[data-pn]').forEach(b => { if (b.dataset.pn) { b.style.cursor = 'pointer'; b.title = '프로필 보기'; b.onclick = () => showProfile(b.dataset.pn); } });
   if (dev) l.querySelectorAll('.cm').forEach(n => {
     const id = +n.dataset.id;
     const act = async body => { const r = await acctAsk('/chat/mod', Object.assign({ code: castKey() }, body));
@@ -28389,9 +28755,9 @@ function mpBegin(mv) {
   if (ally) mpAllyPanel(ally);
   /* 누가 누구와 — 이름과 랭크를 크게 */
   const intro = el('div', 'mpintro');
-  intro.innerHTML = `<div class="mpside a">${mv.players.filter(p => p.team === myTeam).map(p => `<div>${mpEmblem(p.rp, 'big')}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+  intro.innerHTML = `<div class="mpside a">${mv.players.filter(p => p.team === myTeam).map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
     <div class="mpvsbig">VS</div>
-    <div class="mpside b">${foes.map(p => `<div>${mpEmblem(p.rp, 'big')}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+    <div class="mpside b">${foes.map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
     <div class="mpmodetag">${mv.mode === '2v2' ? '2 대 2' : '1 대 1'} · ${mv.ranked ? '랭크 매치' : '친선전'}</div>`;
   document.body.appendChild(intro);
   try { SND.gong(); SND.boss(); screenFlash('rgba(255,215,140,.3)', 600); } catch (e) {}
@@ -28541,7 +28907,7 @@ function mpRetag(e) {
 function mpNameTag(u, pl, mine) {
   const nm = u && u.querySelector('.nm'); if (!nm || !pl) return;
   nm.classList.add('mpnm');
-  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}<b>${wEsc(pl.name || '?')}</b><em class="mprk">${mpTierName(pl.rp || 0)}</em>` +
+  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}${pl.ttl ? `<i class="mpttl">${wEsc(pl.ttl)}</i>` : ''}<b>${wEsc(pl.name || '?')}</b><em class="mprk">${mpTierName(pl.rp || 0)}</em>` +
     (mine ? '' : `<button class="mpdeckbtn" title="상대의 덱">덱 ${Array.isArray(pl.deck) ? pl.deck.length : ''}</button>`);
   const db = nm.querySelector('.mpdeckbtn');
   if (db) db.onclick = ev => { ev.stopPropagation(); mpShowDeck(pl); };
@@ -28588,6 +28954,7 @@ function mpResult(mv) {
   if (MP.resShown) return;
   MP.resShown = true;
   const r = mv.res, won = r && r.won;
+  try { stAdd('mpplay'); if (won) stAdd('mpw'); } catch (e) {}
   if (G.b) { G.b.over = true; G.b.busy = true; }
   const w = $('#mpwait'); if (w) w.remove();
   try { won ? (SND.victory(), screenFlash('rgba(255,215,120,.45)', 900), FX.gold(innerWidth / 2, innerHeight * .4, 60)) : SND.lose(); } catch (e) {}
