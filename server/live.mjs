@@ -47,6 +47,7 @@ function expire(now) {
   if (live.egg && now > live.egg.until) { live.egg = null; changed = true; }
   if (live.buff && now > live.buff.until) { live.buff = null; changed = true; }
   if (live.fx && now > live.fx.until) { live.fx = null; changed = true; }
+  if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
@@ -346,13 +347,13 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
       }
     }
-  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um):|^(mptop|bans|clears)$/.test(k)) out.kv[k] = v;
+  } else for (const [k, v] of mem) if (/^(u|t|pay|g|mp|nick|nk|ud|um|ht|hbw|ml|mlc):|^(mptop|bans|clears)$/.test(k)) out.kv[k] = v;
   const p = await db();
   if (p) out.pg = { souls: (await p.query('select * from souls')).rows, tokens: (await p.query('select * from tokens')).rows };
   return out;
@@ -498,7 +499,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -560,6 +561,21 @@ let marchWho = new Map();                 /* 백귀야행 — 이번 행렬에�
 const bossLive = () => !!(live.boss && !live.boss.done && !live.boss.fled);
 const marchLive = () => !!(live.march && !live.march.done);                 /* 카운트다운이 0 이 되기까지 적어도 이만큼 — 모든 앱이 한 번은 묻게 */      /* 모두의 적은 모두 합쳐 서른 분까지 늘린다 */
 const num = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+/* ── 우편 — 모두에게(live.mails) · 한 사람에게(ml:아이디). 받은 것은 mlc:아이디 에 적는다 ── */
+const MAIL_MAX = 30, MAIL_ONE_MAX = 50;
+function mailMake(m) {
+  const now = Date.now(), days = Math.max(1, Math.min(30, parseInt(m.days, 10) || 7));
+  const cards = Array.isArray(m.cards) ? m.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
+  return { id: str(m.id, 40) || ('m' + now + Math.floor(Math.random() * 1000)), at: now, until: now + days * 86400000,
+           title: str(m.title, 40) || '우편', say: str(m.say, 200), from: str(m.from, 20) || '백야',
+           gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards };
+}
+function mailAdd(m) {
+  const one = mailMake(m);
+  live.mails = (live.mails || []).filter(x => x.id !== one.id).concat(one).slice(-MAIL_MAX);
+  live.mailAt = one.at;
+  return one;
+}
 /* 한바탕(fx) — 이름과 기본 길이(초) */
 const FX_KINDS = { fire: 40, coin: 45, heal: 180, bounty: 600, talis: 45 };
 function pickCast(q) { const o = {}; for (const k of CAST_KEYS) if (k in q) o[k] = q[k]; return o; }
@@ -592,6 +608,9 @@ async function applyCast(q) {
         ? { id: Date.now(), cards, gold, dia, jp, say: str(q.gift.say, 120), at: Date.now(),
             until: Date.now() + EV_MS }
         : null;
+      /* 우편함에도 — 그때 없던 사람도 기한 안에는 받는다 */
+      if (live.gift) mailAdd({ id: 'g' + live.gift.id, title: str(q.gift.title, 40) || '백야의 선물', say: live.gift.say,
+                               cards, gold, dia, jp, days: q.gift.days });
     }
   }
   /* 노래 — 모든 앱에서 같은 곡이 나온다. 정한 분이 지나면 저절로 멎는다 */
@@ -637,6 +656,12 @@ async function applyCast(q) {
     }
   }
   /* 한바탕 — 불꽃놀이 · 금화 소나기 · 치유의 비 · 현상금 · 부적비. 모두의 화면에 한동안 */
+  /* 우편 — 모두에게 한 통 (mail:null 은 모두 거둔다, {del:id} 는 한 통만) */
+  if ('mail' in q) {
+    if (!q.mail) live.mails = [];
+    else if (q.mail.del) live.mails = (live.mails || []).filter(x => x.id !== q.mail.del);
+    else mailAdd(q.mail);
+  }
   if ('fx' in q) {
     const f = q.fx, now = Date.now();
     if (!f || !FX_KINDS[f.k]) live.fx = null;
@@ -1236,6 +1261,43 @@ const server = http.createServer(async (req, res) => {
     if (kstDay(now) !== seenDay) { seenDay = kstDay(now); seenToday = new Set(); }
     return send(res, 200, { ok: true, n: c.n, by: c.by, peak: seenPeak, peakAt: seenPeakAt,
                             today: seenToday.size, since: bootAt, now });
+  }
+
+  /* ── 우편함 — /mail/me 받을 것 · /mail/claim 받는다 · /mail/send 한 사람에게(백야만) ── */
+  if (url.pathname.startsWith('/mail/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 6000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    if (expire(now)) await keep();
+    if (url.pathname === '/mail/send') {
+      if (!CODE || !same(String(q.code || ''), CODE)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+      let to = str(q.to, 20); if (!to) return send(res, 400, { ok: false, why: '받는 이를 적으시오' });
+      if (!(await get('u:' + to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await get('u:' + to))) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
+      const one = mailMake(q);
+      const box = ((await get('ml:' + to)) || []).filter(x => now <= x.until).concat(one).slice(-MAIL_ONE_MAX);
+      await put('ml:' + to, box);
+      return send(res, 200, { ok: true, to, nick: (await nickOf(to)) || to, id: one.id });
+    }
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const mine = ((await get('ml:' + id)) || []).filter(x => now <= x.until);
+    const pub = (live.mails || []).filter(x => now <= x.until);
+    const got = (await get('mlc:' + id)) || {};
+    if (url.pathname === '/mail/me') return send(res, 200, { ok: true, list: pub.concat(mine.map(x => Object.assign({ mine: 1 }, x))), got: Object.keys(got), now });
+    if (url.pathname === '/mail/claim') {
+      const mid = str(q.id, 40), m = pub.find(x => x.id === mid) || mine.find(x => x.id === mid);
+      if (!m) return send(res, 404, { ok: false, why: '기한이 지났거나 없는 우편이다' });
+      if (got[mid]) return send(res, 409, { ok: false, why: '이미 받았다' });
+      got[mid] = now;
+      for (const k of Object.keys(got)) if (now - got[k] > 40 * 86400000) delete got[k];
+      await put('mlc:' + id, got);
+      return send(res, 200, { ok: true, mail: m });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
   }
 
   /* ── 마지막 막(25막)을 깼다 — 로그인한 사람만 적는다. 백야의 앱이 clearAt 을 보고 명단을 받아 간다 ── */

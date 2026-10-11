@@ -962,6 +962,58 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .mmtile.hk{border-color:rgba(44,255,122,.45)}.mmtile.hk i{color:#5cff9a;text-shadow:0 0 10px #2cff7a}
 .mmempty{grid-column:1/-1;text-align:center;color:#8a7f68;padding:30px 0}
 .mmfoot{display:flex;justify-content:center}
+/* ══ 우편함 · 이벤트 달력 · 컷씬 다시보기 (판 50) ══ */
+.mailbox,.calbox,.galbox{width:min(640px,94vw);display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.mailbox .mhead,.calbox .mhead,.galbox .mhead{display:flex;align-items:center;gap:12px}
+.mailbox .mhead>i,.calbox .mhead>i,.galbox .mhead>i{font-style:normal;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff3d6;
+  background:radial-gradient(circle at 35% 30%,#b8402a,#5a140c);border:2px solid #e8c86a;box-shadow:0 0 18px rgba(232,120,60,.4);flex:none}
+.calbox .mhead>i{background:radial-gradient(circle at 35% 30%,#3a7a6a,#103028)}
+.galbox .mhead>i{background:radial-gradient(circle at 35% 30%,#5a4a8a,#1a1030)}
+.mailbox .mhead h2,.calbox .mhead h2,.galbox .mhead h2{margin:0;text-align:left;font-size:22px}
+.mailbox .mhead span,.calbox .mhead span,.galbox .mhead span{font-size:12px;color:#b3a68c;letter-spacing:.06em}
+.mailbox .mhead>div,.calbox .mhead>div,.galbox .mhead>div{flex:1}
+.mailbox .mlist{display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow-y:auto;padding-right:4px}
+.mailbox .mrow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:linear-gradient(160deg,rgba(60,46,30,.8),rgba(24,18,12,.88));border:1px solid rgba(232,200,106,.3);animation:mmIn .25s ease backwards}
+.mailbox .mrow.mine{border-color:rgba(127,230,207,.45)}
+.mailbox .mrow.got{opacity:.55;filter:saturate(.5)}
+.mailbox .mseal2{flex:none;width:40px;height:40px;border-radius:6px;display:grid;place-items:center;font-size:20px;color:#fff3e8;background:#a8272c;transform:rotate(-4deg);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.mailbox .mrow.mine .mseal2{background:#1f7a66}
+.mailbox .mbody{flex:1;min-width:0;text-align:left}
+.mailbox .mbody b{display:block;font-weight:400;font-size:15px;color:#f6ead0}
+.mailbox .mbody small{font-size:11px;color:#a8987c}
+.mailbox .mbody p{margin:4px 0 0;font-size:12.5px;color:#d8ccb0;line-height:1.5}
+.mailbox .mchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.mailbox .mch{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:2px 8px 2px 4px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);color:#efe4cb}
+.mailbox .mch i{font-style:normal;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:10px;background:rgba(255,255,255,.1)}
+.mailbox .mch.g i{color:#ffd76a}.mailbox .mch.d i{color:#6fd0e8}.mailbox .mch.j i{color:#c9a8ff}.mailbox .mch.c{border-color:var(--gc)}.mailbox .mch.c i{color:var(--gc)}
+.mailbox .mget{flex:none;padding:8px 16px;font-size:13px}
+.mailbox .mdone{flex:none;font-size:12px;color:#8a7f68}
+.mailbox .mempty,.calbox .calnone{text-align:center;color:#8a7f68;padding:26px 10px;font-size:13px;line-height:1.7}
+.mailbox .mempty i{display:block;font-style:normal;font-size:40px;opacity:.35}
+.topbtn.mailt{color:#ffe6d8;background:rgba(168,39,44,.25);border-color:#c8505a}
+.calbox .calsec>b{display:block;font-weight:400;font-size:12px;letter-spacing:.3em;color:#c8a94e;margin-bottom:6px;text-align:left}
+.calbox .calnow,.calbox .calnext{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow-y:auto}
+.calbox .calrow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.15);text-align:left}
+.calbox .calrow i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px;flex:none;color:#f2e2b4;background:rgba(232,200,106,.14)}
+.calbox .calrow.on{border-color:var(--ec);box-shadow:0 0 12px rgba(255,255,255,.06),inset 3px 0 0 var(--ec)}
+.calbox .calrow.on i{color:var(--ec);background:rgba(0,0,0,.35);box-shadow:0 0 10px var(--ec)}
+.calbox .calrow.hb i{color:#5cff9a}
+.calbox .calrow div{flex:1;min-width:0}.calbox .calrow b{display:block;font-weight:400;font-size:14px;color:#f2e7cc}
+.calbox .calrow small{font-size:11px;color:#a8987c}
+.calbox .calrow em{font-style:normal;font-size:12px;color:#ffd0a0;white-space:nowrap}
+.calbox .calday{font-size:11px;color:#8a7f68;letter-spacing:.2em;margin:4px 2px 0;text-align:left}
+.calbox .calopt{font-size:12.5px;color:#c8bba0;display:flex;align-items:center;gap:6px;justify-content:center}
+.galbox .galgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px;max-height:58vh;overflow-y:auto;padding:2px}
+.galbox .galtile{font:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:10px;cursor:pointer;color:#efe4cb;
+  background:linear-gradient(160deg,rgba(50,36,70,.85),rgba(16,10,24,.92));border:1px solid rgba(200,160,255,.3);transition:.15s}
+.galbox .galtile:hover:not(.lock){transform:translateY(-2px);border-color:#e0c8ff;box-shadow:0 0 14px rgba(176,128,255,.4)}
+.galbox .galtile i{font-style:normal;font-size:30px;color:#f0e4ff;text-shadow:0 0 12px rgba(176,128,255,.6)}
+.galbox .galtile b{font-weight:400;font-size:12.5px;line-height:1.3}
+.galbox .galtile small{font-size:10.5px;color:#b8a8d8}
+.galbox .galtile.lock{cursor:default;filter:grayscale(1) brightness(.6);background:rgba(20,16,24,.8)}
+.galbox .galtile.lock i{color:#4a3e5a;text-shadow:none}
+.galbox .galtile.lock small{color:#8a7f98}
+
 /* ══ 빠른 찾기 ══ */
 .cmdpal{position:fixed;inset:0;z-index:600;background:rgba(8,6,4,.55);backdrop-filter:blur(2px);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh;animation:fadeIn .15s}
 .cpbox{width:min(560px,94vw);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#221a12,#140f0a);border:1px solid rgba(232,200,106,.4);box-shadow:0 20px 60px rgba(0,0,0,.6)}
@@ -12904,6 +12956,7 @@ function renderTop() {
       ${guestOn() ? '<button class="topbtn guest" id="guestbtn" title="게스트"><b>客</b><i>게스트</i><em></em></button>' : ''}
       <button class="topbtn skill" id="skilltop" title="비기"><b>祕</b><i>비기</i><em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합"><b>合</b><i>조합</i><em></em></button>
+      <button class="topbtn mailt" id="mailtop" title="우편함"><b>郵</b><i>우편</i><em></em></button>
       <button class="topbtn more" id="tbmore" title="접어 둔 단추 · 윗줄 고르기"><b>…</b><i>더보기</i><em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
       <button class="brush-btn ghost" id="menubtn" style="padding:6px 12px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c">≡</button>`;
@@ -12950,6 +13003,8 @@ function renderTop() {
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
     t.querySelector('#tbmore').onclick = e => { e.stopPropagation(); SND.ui(); tbMoreShow(); };
+    t.querySelector('#mailtop').onclick = () => { SND.ui(); menuRun('mail'); };
+    setTimeout(mailBadge, 0);
     t.querySelector('#placebtn').onclick = () => { markUsed('places'); showPlaces(); };
     t.querySelector('#trainbtn').onclick = () => { markUsed('train'); openTraining(); };
     t.querySelector('#shrinebtn').onclick = () => { markUsed('shrine'); openShrine(); };
@@ -21050,6 +21105,7 @@ const cut3On = () => OPT.cut3d !== false && webglOk();
 const c3Low = () => innerWidth < 700 || (navigator.deviceMemory && navigator.deviceMemory <= 3);
 /* 이름으로 부른다 — 3D 가 되면 3D, 아니면 예전 것 */
 async function cutRun(k, arg) {
+  try { cutSeenMark(k); } catch (e) {}
   const m = /^boss(\d+)$/.exec(k);
   const make3 = m ? () => c3Boss(+m[1], arg || (ENCOUNTERS[+m[1]] && ENCOUNTERS[+m[1]].boss[0]))
     : k === 'musou' ? () => c3Musou() : k === 'tea' ? () => c3Tea(arg) : k === 'hack' ? () => c3Hack()
@@ -22718,6 +22774,180 @@ function victory() {
 /* 하늘을 가르는 것과 싸우는 동안에는 멈춤 창이 없다 — 나가려면 띠의 「나간다」 */
 const worldFighting = () => !!(G.b && G.b.kind === 'world' && !G.b.over);
 /* ══════════════════════════════════════════════════════════
+   우편함(郵) — 백야의 선물·개인 우편이 쌓이고, 기한 안에 아무 때나 받는다
+   ──────────────────────────────────────────────────────────
+   서버가 우편을 쥐고(모두에게 live.mails · 한 사람에게 ml:아이디) 받은 것도 서버가 적는다
+   (mlc:아이디) — 기계를 바꿔도 두 번 받지 못한다. 모험 중이 아니면 다음 등반에 딸려 온다.
+   ══════════════════════════════════════════════════════════ */
+const MAIL = { list: [], got: new Set(), at: 0, busy: false, once: false, liveAt: 0 };
+const mailOpen = m => !MAIL.got.has(m.id) && srvNow() <= (+m.until || 0);
+const mailUnread = () => MAIL.list.filter(mailOpen).length;
+async function mailFetch(force) {
+  if (!acctOn() || MAIL.busy) return;
+  if (!force && Date.now() - MAIL.at < 180000) return;
+  MAIL.busy = true;
+  const r = await acctAsk('/mail/me', { token: ACCT.token }, 12000);
+  MAIL.busy = false; MAIL.at = Date.now();
+  if (!r.ok) return;
+  const before = mailUnread();
+  MAIL.list = (r.list || []).sort((a, b) => b.at - a.at); MAIL.got = new Set(r.got || []);
+  const after = mailUnread();
+  if (MAIL.once && after > before) { toast(`郵 우편이 왔다 — 받을 것 ${after}통 (우편함)`); try { SND.bell(); } catch (e) {} }
+  MAIL.once = true;
+  mailBadge();
+  const p = $('#mailp'); if (p) mailDraw(p);
+}
+function mailBadge() {
+  const b = $('#mailtop em'); if (b) b.textContent = mailUnread() || '';
+  try { tbApply(); } catch (e) {}
+}
+/* 받은 것을 몸에 — 모험 중이면 지금, 아니면 다음 등반에 */
+function grantBundle(b) {
+  const cards = (b.cards || []).filter(id => CARDS[id] && !CARDS[id].devOnly);
+  const gold = Math.max(0, +b.gold || 0), dia = Math.max(0, +b.dia || 0), jp = Math.max(0, +b.jp || 0);
+  META.jp = (META.jp || 0) + jp; META.jpTotal = (META.jpTotal || 0) + jp;
+  if (G.run) {
+    for (const id of cards) { G.run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
+    G.run.gold += gold; G.run.dia = (G.run.dia || 0) + dia; saveRun(); renderTop();
+  } else {
+    META.giftBag = (META.giftBag || []).concat(cards).slice(0, 40);
+    META.giftGold = (META.giftGold || 0) + gold; META.giftDia = (META.giftDia || 0) + dia;
+  }
+  saveMeta();
+  return [gold ? '골드 ' + gold : '', dia ? '다이아 ' + dia : '', jp ? '정진 ' + jp : '', cards.length ? '부적 ' + cards.length + '장' : ''].filter(Boolean).join(' · ');
+}
+const mailChips = m => [m.gold ? `<span class="mch g"><i>金</i>${m.gold.toLocaleString()}</span>` : '', m.dia ? `<span class="mch d"><i>玉</i>${m.dia.toLocaleString()}</span>` : '',
+  m.jp ? `<span class="mch j"><i>精</i>${m.jp.toLocaleString()}</span>` : '',
+  ...(m.cards || []).filter(id => CARDS[id]).map(id => `<span class="mch c" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}</span>`)].join('');
+const mailLeft = m => { const ms = (+m.until || 0) - srvNow(); return ms > 86400000 ? Math.ceil(ms / 86400000) + '일 남음' : ms > 3600000 ? Math.ceil(ms / 3600000) + '시간 남음' : ms > 0 ? Math.ceil(ms / 60000) + '분 남음' : '기한 지남'; };
+async function mailClaim(id, quiet) {
+  const r = await acctAsk('/mail/claim', { token: ACCT.token, id }, 12000);
+  if (!r.ok) { if (!quiet) toast('못 받았다 — ' + r.why); if (/이미/.test(r.why || '')) MAIL.got.add(id); return false; }
+  MAIL.got.add(id);
+  const what = grantBundle(r.mail);
+  if (!quiet) { toast(`${r.mail.title} — ${what || '받았다'}${G.run ? '' : ' (다음 등반에 지니고 나선다)'}`);
+    try { SND.unlock(); SND.coinRain(8); screenFlash('rgba(255,215,120,.3)', 520); } catch (e) {} }
+  return what;
+}
+function mailDraw(p) {
+  const L = p.querySelector('.mlist'); if (!L) return;
+  const n = mailUnread();
+  p.querySelector('.mcount').textContent = n ? `받을 것 ${n}통` : '받을 것이 없다';
+  p.querySelector('#ml_all').disabled = !n;
+  L.innerHTML = MAIL.list.length ? MAIL.list.map(m => {
+    const open = mailOpen(m), got = MAIL.got.has(m.id);
+    return `<div class="mrow${got ? ' got' : ''}${m.mine ? ' mine' : ''}">
+      <div class="mseal2">${m.mine ? '私' : '郵'}</div>
+      <div class="mbody"><b>${wEsc(m.title || '우편')}</b><small>${wEsc(m.from || '백야')} · ${got ? '받음' : mailLeft(m)}</small>
+        ${m.say ? `<p>${wEsc(m.say)}</p>` : ''}<div class="mchips">${mailChips(m)}</div></div>
+      ${open ? `<button class="brush-btn gold mget" data-id="${wEsc(m.id)}">받기</button>` : `<span class="mdone">${got ? '받음' : '지남'}</span>`}
+    </div>`; }).join('') : '<div class="mempty"><i>郵</i>빈 우편함 — 백야의 선물이나 이벤트 보상이 오면 여기에 쌓인다</div>';
+  L.querySelectorAll('.mget').forEach(b => b.onclick = async () => { b.disabled = true; await mailClaim(b.dataset.id); mailDraw(p); mailBadge(); });
+}
+function showMailbox() {
+  if (!acctOn()) { toast('로그인해야 우편함을 쓴다'); return; }
+  const p = modal(`<div class="mailbox"><div class="mhead"><i>郵</i><div><h2>우편함</h2><span class="mcount">…</span></div>
+      <button class="brush-btn gold" id="ml_all">모두 받기</button></div>
+    <div class="mlist"><div class="mempty">불러오는 중…</div></div>
+    <div class="hint">기한이 지나면 사라진다 · 모험 중이 아니면 골드·다이아·부적은 다음 등반에 딸려 온다</div>
+    <button class="brush-btn ghost" id="ml_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'mailp');
+  p.id = 'mailp'; p.dataset.noauto = '1';
+  p.querySelector('#ml_x').onclick = closeTop;
+  p.querySelector('#ml_all').onclick = async () => {
+    const ids = MAIL.list.filter(mailOpen).map(m => m.id); let k = 0;
+    for (const id of ids) if (await mailClaim(id, true)) k++;
+    if (k) { toast(`우편 ${k}통을 받았다`); try { SND.coinRain(12); screenFlash('rgba(255,215,120,.3)', 520); } catch (e) {} }
+    mailDraw(p); mailBadge();
+  };
+  mailDraw(p);
+  mailFetch(true);
+}
+
+/* ══════════════════════════════════════════════════════════
+   이벤트 달력(曆) — 지금 열린 것 · 백야가 잡아 둔 것 · 매시 정각 해킹 보스
+   잡아 둔 일이 1분 안으로 다가오면 알려 준다(한 번씩).
+   ══════════════════════════════════════════════════════════ */
+function calNow() {
+  const now = srvNow(), out = [];
+  const add = (g, n, c, until, d) => out.push({ g, n, c, left: until ? until - now : 0, d });
+  const k = liveEvent(); if (k && WORLD[k]) add(WORLD[k].g, WORLD[k].n, WORLD[k].c, now + evLeft(), WORLD[k].d);
+  if (liveRain()) add(WORLD.rain.g, WORLD.rain.n, WORLD.rain.c, now + rainLeft(), WORLD.rain.d);
+  if (buffOn()) add('加', '백야의 버프', '#ffc23a', LIVE.buff.until, buffKeys().map(x => BUFF_DEF[x].n).join(' · '));
+  const f = fxcLive(); if (f) add(FXC[f.k].g, FXC[f.k].n, FXC[f.k].c, f.until, FXC[f.k].d);
+  if (hbOpenNow()) add('博', '해킹 보스', '#5cff9a', 0, hbWonNow() ? '이번 보스는 쓰러뜨렸다' : '지금 나와 있다 — 잡으면 토큰');
+  if (LIVE.shadow && !LIVE.shadow.done) add('影', '그림자 침공', '#9a8ab8', LIVE.shadow.until, '그림자를 베어라');
+  if (LIVE.devboss && srvNow() < LIVE.devboss.until) add('白', '백야의 시험', '#f4f0ff', LIVE.devboss.until, '백야가 보스가 되었다');
+  if (LIVE.march && !LIVE.march.done) add('行', '백귀야행', '#c88aff', LIVE.march.until, '요괴 행렬을 함께 막는다');
+  return out;
+}
+function calNext() {
+  const now = srvNow(), list = (LIVE.sched || []).filter(x => !x.done && !x.missed && x.at > now - 5000).map(x => ({ id: x.id, at: x.at, label: x.label || '이벤트', steps: x.steps || [] }));
+  const hb = LIVE.hbNext || (Math.floor(now / 3600000) + 1) * 3600000;
+  for (let i = 0; i < 3; i++) list.push({ id: 'hb' + (hb + i * 3600000), at: hb + i * 3600000, label: '해킹 보스 (매시 정각)', hb: 1 });
+  return list.sort((a, b) => a.at - b.at);
+}
+const calDay = t => { const d = new Date(t - SRV_SKEW), n = new Date(); const dd = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 86400000);
+  return dd === 0 ? '오늘' : dd === 1 ? '내일' : `${d.getMonth() + 1}월 ${d.getDate()}일`; };
+const calHM = t => { const d = new Date(t - SRV_SKEW); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+function showCalendar() {
+  const p = modal(`<div class="calbox"><div class="mhead"><i>曆</i><div><h2>이벤트 달력</h2><span>백야가 잡아 둔 일 · 매시 정각 해킹 보스</span></div></div>
+    <div class="calsec"><b>지금 열려 있다</b><div class="calnow"></div></div>
+    <div class="calsec"><b>다가올 일</b><div class="calnext"></div></div>
+    <label class="calopt"><input type="checkbox" id="cal_rm"${META.calRemind === false ? '' : ' checked'}> 잡아 둔 일이 1분 안으로 다가오면 알려 준다</label>
+    <button class="brush-btn ghost" id="cal_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'calp');
+  p.dataset.noauto = '1';
+  const draw = () => {
+    if (!p.isConnected) return clearInterval(t);
+    const now = calNow();
+    p.querySelector('.calnow').innerHTML = now.length ? now.map(x => `<div class="calrow on" style="--ec:${x.c}"><i>${x.g}</i><div><b>${x.n}</b><small>${wEsc(x.d || '')}</small></div><em>${x.left > 0 ? wTime(x.left) + ' 남음' : '진행 중'}</em></div>`).join('')
+      : '<div class="calnone">지금은 조용하다</div>';
+    let lastDay = '';
+    p.querySelector('.calnext').innerHTML = calNext().map(x => { const day = calDay(x.at), head = day !== lastDay ? `<div class="calday">${day}</div>` : ''; lastDay = day;
+      return head + `<div class="calrow${x.hb ? ' hb' : ''}"><i>${x.hb ? '博' : '祭'}</i><div><b>${wEsc(x.label)}</b><small>${calHM(x.at)}${x.steps && x.steps.length > 1 ? ` · ${x.steps.length}단계` : ''}</small></div><em>${wTime(Math.max(0, x.at - srvNow()))} 뒤</em></div>`; }).join('');
+  };
+  const t = setInterval(draw, 1000); draw();
+  p.querySelector('#cal_rm').onchange = e => { META.calRemind = e.target.checked; saveMeta(); };
+  p.querySelector('#cal_x').onclick = () => { clearInterval(t); closeTop(); };
+}
+const _calTold = {};
+function calTick() {
+  if (META.calRemind === false || !G.run) return;
+  const now = srvNow();
+  for (const x of (LIVE.sched || [])) {
+    if (x.done || x.missed || _calTold[x.id]) continue;
+    const d = x.at - now;
+    if (d > 0 && d <= 60000) { _calTold[x.id] = 1; toast(`曆 곧 시작 — ${x.label || '이벤트'} (${Math.ceil(d / 1000)}초 뒤)`); try { SND.bell(); } catch (e) {} }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   컷씬 다시보기(畵廊) — 본 컷씬은 다시 틀 수 있다. 못 본 것은 먹 실루엣.
+   ══════════════════════════════════════════════════════════ */
+function cutSeenMark(k) { if (!k) return; META.cutSeen = META.cutSeen || {}; if (!META.cutSeen[k]) { META.cutSeen[k] = 1; saveMeta(); } }
+function cutSeenSeed() {   /* 이 판 전에 넘은 막의 보스는 본 것으로 친다 */
+  if (META.cutSeenSeeded) return;
+  META.cutSeen = META.cutSeen || {};
+  for (let a = 1; a <= Math.min(25, (META.cleared || 0)); a++) META.cutSeen['boss' + a] = 1;
+  if (META.t26seen) META.cutSeen.teaser26 = 1;
+  META.cutSeenSeeded = 1; saveMeta();
+}
+const GALLERY_HINT = k => /^boss(\d+)$/.test(k) ? `제${k.slice(4)}막 보스 칸을 밟으면 열린다` : k === 'teaser26' ? '25막을 넘거나 예고를 보면 열린다'
+  : k === 'tea' ? '백야와 면담하면 열린다' : /^(hack|hbblast)$/.test(k) ? '[해킹] 이벤트에서 열린다' : k === 'musou' ? '백야가 뿌리면 열린다' : '백야만 아는 장면';
+function showGallery() {
+  cutSeenSeed();
+  const seen = META.cutSeen || {}, keys = Object.keys(CUT_LIST).filter(k => !/^dev/.test(k) || seen[k] || adminOn());
+  const n = keys.filter(k => seen[k]).length;
+  const p = modal(`<div class="galbox"><div class="mhead"><i>畵</i><div><h2>컷씬 다시보기</h2><span>본 장면 ${n} / ${keys.length}</span></div></div>
+    <div class="galgrid">${keys.map(k => { const s = seen[k] || adminOn(); const bm = /^boss(\d+)$/.exec(k);
+      const E = bm ? ENEMIES[(ENCOUNTERS[+bm[1]] && ENCOUNTERS[+bm[1]].boss[0]) || ''] : null;
+      const g = bm ? (E ? E.g : '魔') : { teaser26: '帝', tea: '茶', hack: '博', hbblast: '爆', musou: '無' }[k] || '幕';
+      return `<button class="galtile${s ? '' : ' lock'}" data-k="${k}"${s ? '' : ' disabled'}><i>${s ? g : '？'}</i><b>${s ? wEsc(CUT_LIST[k].n.replace(/^제(\d+)막 보스 — /, '$1막 · ')) : '???'}</b><small>${s ? '▶ 다시 보기' : GALLERY_HINT(k)}</small></button>`; }).join('')}</div>
+    <button class="brush-btn ghost" id="gal_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'galp');
+  p.dataset.noauto = '1';
+  p.querySelector('#gal_x').onclick = closeTop;
+  p.querySelectorAll('.galtile:not(.lock)').forEach(b => b.onclick = () => { closeTop(); const k = b.dataset.k; if (k === 'teaser26') act26Trailer(); else cutByName(k); });
+}
+/* ══════════════════════════════════════════════════════════
    메뉴 한 벌 — 멈춤 창(탭·타일) · 빠른 찾기(Ctrl+K) · 원형 퀵메뉴 · 윗줄 「…」
    ──────────────────────────────────────────────────────────
    갈 수 있는 자리를 한 목록(MENU_ITEMS)에 모아 두고, 네 곳이 같은 목록을 쓴다.
@@ -22726,7 +22956,7 @@ const worldFighting = () => !!(G.b && G.b.kind === 'world' && !G.b.over);
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
 const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['set', '설정', '設']];
-const MENU_NEW = {};                                   /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_NEW = { mail: 1, cal: 1, gallery: 1 };      /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
   { k: 'auto',  g: '自', n: '자동 플레이', tab: 'adv', al: '오토 auto 자동', show: inRun,
@@ -22746,10 +22976,13 @@ const MENU_ITEMS = [
   { k: 'pouch', g: '囊', n: '원료 주머니', tab: 'col', al: '재료 원료 돌연변이 주머니', show: inRun, dot: () => pouchCount(), run: () => showPouch() },
   { k: 'fuselab', g: '鎔', n: '합성소', tab: 'col', al: '합성 융합 합성소', show: inRun, run: () => showFuseLab() },
   { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션', run: () => showDex() },
+  { k: 'gallery', g: '畵', n: '컷씬 다시보기', tab: 'col', al: '컷씬 다시보기 갤러리 영상 장면', run: () => showGallery() },
   { k: 'htok',  g: '⌬', n: '해킹상점', tab: 'ev', al: '해킹 토큰 상점 박사', show: inRun, badge: '한정',
     dot: () => hbOpenNow() && !hbWonNow() ? '!' : 0, sub: () => hbOpenNow() && !hbWonNow() ? '보스 출현!' : '', run: () => showHackTokShop() },
   { k: 'hshop', g: '⌬', n: '이벤트 해킹상점', tab: 'ev', al: '해킹 칩 상점', show: () => inRun() && hackShopOn(), run: () => showHackShop() },
   { k: 'hmap',  g: '⌬', n: '해킹맵으로', tab: 'ev', al: '해킹맵', show: () => inRun() && !G.b && hackMapOk(), run: () => showHackMap() },
+  { k: 'mail',  g: '郵', n: '우편함', tab: 'ev', al: '우편 우편함 선물 보상 메일', show: () => acctOn(), dot: () => mailUnread(), run: () => showMailbox() },
+  { k: 'cal',   g: '曆', n: '이벤트 달력', tab: 'ev', al: '달력 일정 예약 캘린더 이벤트', run: () => showCalendar() },
   { k: 'news',  g: '告', n: '공지사항', tab: 'ev', al: '공지 소식 뉴스', dot: () => newsUnread(), run: () => showNews() },
   { k: 't26',   g: '帝', n: '26막 예고', tab: 'ev', al: '26막 예고편 무명궁 황제 미리보기', show: () => !G.b, run: () => showAct26Preview() },
   { k: 'guest', g: '客', n: '게스트 창', tab: 'ev', al: '게스트', show: () => guestOn(), run: () => showGuest() },
@@ -22895,7 +23128,7 @@ addEventListener('contextmenu', e => {
 }
 /* ── 윗줄 「…」 — 덜 쓰는 단추를 접어 두고, 무엇을 꺼낼지 고른다 ── */
 const TB_BTNS = [['placebtn', '場', '터'], ['forgetop', '冶', '대장간'], ['mptopbtn', '對', '대전'], ['trainbtn', '修', '수행터'], ['shrinebtn', '神', '신전'],
-  ['boxbtn', '匣', '뽑기'], ['hktop', '⌬', '해킹상점'], ['pouchbtn', '囊', '원료 주머니'], ['skilltop', '祕', '비기'], ['fusebtn', '合', '유물 조합']];
+  ['boxbtn', '匣', '뽑기'], ['hktop', '⌬', '해킹상점'], ['pouchbtn', '囊', '원료 주머니'], ['skilltop', '祕', '비기'], ['fusebtn', '合', '유물 조합'], ['mailtop', '郵', '우편함']];
 const TB_DEFAULT_HIDE = ['trainbtn', 'shrinebtn', 'fusebtn'];
 const tbHidden = id => (META.tbHide || TB_DEFAULT_HIDE).indexOf(id) >= 0;
 function tbApply(t) {
@@ -23116,7 +23349,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 49;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 50;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -23245,6 +23478,8 @@ async function liveFetch() {
     LIVE.egg = d.egg && typeof d.egg === 'object' ? d.egg : null;          /* 비밀의 계란 */
     LIVE.buff = d.buff && typeof d.buff === 'object' && d.buff.ks ? d.buff : null;   /* 백야의 버프 */
     LIVE.fx = d.fx && typeof d.fx === 'object' && d.fx.k ? d.fx : null;             /* 한바탕 */
+    LIVE.mailAt = +d.mailAt || 0;                                                     /* 우편 — 새로 오면 묻는다 */
+    if (LIVE.mailAt !== MAIL.liveAt) { const first = !MAIL.liveAt; MAIL.liveAt = LIVE.mailAt; if (!first || !MAIL.at) mailFetch(true); }
     LIVE.hb = d.hb && typeof d.hb === 'object' && d.hb.slot ? d.hb : null;           /* 해킹 보스 (매시 정각 · 백야가 강제로) */
     LIVE.hbNext = +d.hbNext || 0;
     LIVE.shadow = d.shadow && typeof d.shadow === 'object' ? d.shadow : null;      /* 그림자 침공 */
@@ -25346,6 +25581,8 @@ function giftCheck() {
   if (g.until && srvNow() > g.until) return;       /* 때가 지났다 — 그 시각에 없던 사람 */
   META.gotGifts = META.gotGifts || {};
   if (META.gotGifts[g.id]) return;
+  /* 백야의 선물은 우편함으로 — 기한 안에 아무 때나 받는다 (게스트의 것은 그 자리에서) */
+  if (!g.by && acctOn()) { META.gotGifts[g.id] = 1; saveMeta(); toast('郵 백야의 선물이 우편함에 왔다 — 우편함에서 받는다'); try { SND.bell(); } catch (e) {} mailFetch(true); return; }
   /* 게스트가 뿌린 것은 남에게 주는 것 — 뿌린 이 자신은 받지 않는다 */
   if (g.by && guestOn() && g.by === guestGet().name) { META.gotGifts[g.id] = 1; saveMeta(); return; }
   const real = cards0.filter(id => CARDS[id] && !CARDS[id].devOnly && !(g.by && (CARDS[id].rar === 'unknown' || CARDS[id].hackOnly || CARDS[id].mpOnly)));   /* 게스트 선물의 ?급은 받지 않는다 */
@@ -26131,6 +26368,7 @@ function liveTick() {
   try { bombTick(); } catch (e) { console.error('폭탄', e); }
   try { buffTick(); } catch (e) { console.error('버프', e); }
   try { fxcTick(); } catch (e) { console.error('한바탕', e); }
+  try { calTick(); mailFetch(false); } catch (e) { console.error('달력·우편', e); }
   try { hbTick(); } catch (e) { console.error('해킹 보스', e); }
   try { shadowTick(); } catch (e) { console.error('그림자 침공', e); }
   try { matTick(); } catch (e) { console.error('이벤트 재료', e); }
@@ -26688,8 +26926,10 @@ function drawCast(grid) {
     </div>
 
     <div class="castsec"><b>이벤트에 온 이에게 — 선물 (부적·재화 뿌리기)</b>
-      <div class="casthint">지금 켜 둔 사람 모두에게 한 번씩 닿는다(셋 분 동안). 받은 사람은 두 번 받지 못한다.
+      <div class="casthint">모두의 우편함에 한 통 — 정한 날만큼 남아 있어 그때 없던 사람도 받는다. 받은 사람은 두 번 받지 못한다(서버가 적는다).
         재화만, 부적만, 둘 다 — 무엇이든 된다.</div>
+      <div class="castrow"><input id="ct_gtitle" maxlength="40" placeholder="우편 제목 (비우면 「백야의 선물」)">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px;white-space:nowrap">기한 <input id="ct_gdays" type="number" min="1" max="30" value="7" style="width:56px"> 일</label></div>
       <input id="ct_gsay" maxlength="120" placeholder="함께 적을 말 (비워도 된다)">
       <div class="castrow castpay">
         <label>골드<input id="ct_ggold" type="number" min="0" max="1000000" value="0"></label>
@@ -26704,6 +26944,22 @@ function drawCast(grid) {
           style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
       <div class="casthint" id="ct_gpick"></div>
+    </div>
+
+    <div class="castsec"><b>郵 한 사람에게 우편</b>
+      <div class="casthint">아이디나 닉네임으로 그 사람의 우편함에만 보낸다. 기한 안에 아무 때나 받는다.</div>
+      <div class="castrow"><input id="ct_mto" maxlength="20" placeholder="받는 이 — 아이디 또는 닉네임"><input id="ct_mtitle" maxlength="40" placeholder="제목"></div>
+      <input id="ct_msay" maxlength="200" placeholder="적을 말">
+      <div class="castrow castpay">
+        <label>골드<input id="ct_mgold" type="number" min="0" max="1000000" value="0"></label>
+        <label>다이아<input id="ct_mdia" type="number" min="0" max="100000" value="0"></label>
+        <label>정진<input id="ct_mjp" type="number" min="0" max="100000" value="0"></label>
+        <label>기한(일)<input id="ct_mdays" type="number" min="1" max="30" value="7"></label>
+      </div>
+      <input id="ct_mcards" placeholder="줄 부적 (쉼표로 · 여덟 장까지 · 비워도 된다)">
+      <div class="castbtnrow"><button class="brush-btn gold" id="ct_msend">우편 보내기</button>
+        <button class="brush-btn ghost" id="ct_mclear" style="color:#e9dfc9;border-color:#8a7f68">모두에게 보낸 우편 거두기</button></div>
+      <div class="casthint" id="ct_mlog"></div>
     </div>
 
     <div class="castsec"><b>모두의 적 — 하늘을 가르는 것</b>
@@ -27018,11 +27274,25 @@ function drawCast(grid) {
     const good = showPick();
     const gold = gnum('#ct_ggold'), dia = gnum('#ct_gdia'), jp = gnum('#ct_gjp');
     if (!good.length && !gold && !dia && !jp) { say('뿌릴 것이 없다 — 재화를 적거나 부적을 고르시오', false); return; }
-    send(hype('선물', { gift: { cards: good, gold, dia, jp, say: grid.querySelector('#ct_gsay').value.trim() } }),
+    send(hype('선물', { gift: { cards: good, gold, dia, jp, say: grid.querySelector('#ct_gsay').value.trim(),
+      title: grid.querySelector('#ct_gtitle').value.trim(), days: gnum('#ct_gdays') || 7 } }),
          '선물 — ' + [gold ? '골드 ' + gold : '', dia ? '다이아 ' + dia : '', jp ? '정진 ' + jp : '', good.length ? '부적 ' + good.length + '장' : '']
            .filter(Boolean).join(' · '));
   };
   grid.querySelector('#ct_gifto').onclick = () => send({ gift: null }, '선물 거두기');
+  /* 한 사람에게 우편 */
+  try { cardPicker(grid.querySelector('#ct_mcards')); } catch (e) {}
+  grid.querySelector('#ct_msend').onclick = async () => {
+    const to = grid.querySelector('#ct_mto').value.trim(), log = grid.querySelector('#ct_mlog');
+    if (!to) { log.textContent = '받는 이를 적으시오'; return; }
+    const cards = grid.querySelector('#ct_mcards').value.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
+    const body = { to, title: grid.querySelector('#ct_mtitle').value.trim() || '백야의 우편', say: grid.querySelector('#ct_msay').value.trim(),
+      gold: gnum('#ct_mgold'), dia: gnum('#ct_mdia'), jp: gnum('#ct_mjp'), days: gnum('#ct_mdays') || 7, cards };
+    log.textContent = '보내는 중…';
+    const r = await adminAsk('/mail/send', body);
+    log.innerHTML = r.ok ? `<b style="color:#7fe6cf">${wEsc(r.nick)}</b> 에게 보냈다` : '못 보냈다 — ' + wEsc(r.why);
+  };
+  grid.querySelector('#ct_mclear').onclick = () => { if (confirm('모두에게 보낸 우편을 모두 거둘까? (이미 받은 사람 것은 그대로)')) send({ mail: null }, '우편 거두기'); };
 
   /* 모두의 적 — 보상은 그때마다 여기서 정한다 */
   const bcards = grid.querySelector('#ct_bcards'), bpick = grid.querySelector('#ct_bpick');
