@@ -931,6 +931,85 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 @media (prefers-reduced-motion:reduce){.mapmotes,.mapnode .mrim,.mapnode .mrim u,.mspirit,#maphead .actbar i,#maphead .actbar i::after{animation:none!important}
   .mspirit{display:none}#mapinner.mapintro .mapnode,#mapinner.mapintro .mseal{animation:none!important}}
 
+/* ══ 멈춤 창 — 탭과 타일 (판 49) ══ */
+.panel.mm2p{justify-content:safe center}
+.mm2{width:min(620px,94vw);display:flex;flex-direction:column;gap:12px}
+.mmhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mmhead h2{margin:0}
+.mmfind{font:inherit;font-size:12.5px;color:#e9dfc9;background:rgba(255,255,255,.06);border:1px solid rgba(233,223,201,.3);border-radius:16px;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.mmfind:hover{background:rgba(255,255,255,.12)}
+.mmfind kbd,.cprow kbd{font:inherit;font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid rgba(233,223,201,.35);color:#b3a68c}
+.mmtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mmtab{position:relative;font:inherit;font-size:14px;letter-spacing:.12em;padding:9px 6px;border-radius:8px;cursor:pointer;color:#c8bba0;
+  background:rgba(255,255,255,.04);border:1px solid rgba(233,223,201,.18);display:flex;align-items:center;justify-content:center;gap:6px}
+.mmtab i{font-style:normal;font-size:15px;opacity:.7}
+.mmtab.on{color:#fff3d6;background:linear-gradient(180deg,rgba(168,39,44,.55),rgba(90,20,22,.55));border-color:#c8505a;box-shadow:0 0 14px rgba(200,60,60,.3)}
+.mmtab s{position:absolute;right:8px;top:7px;width:7px;height:7px;border-radius:50%;background:#ff4a4a;box-shadow:0 0 6px #ff4a4a}
+.mmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;min-height:120px;align-content:start}
+.mmtile{position:relative;font:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px 10px;border-radius:10px;cursor:pointer;
+  color:#efe4cb;background:linear-gradient(160deg,rgba(60,48,32,.75),rgba(24,19,14,.85));border:1px solid rgba(214,190,140,.28);transition:.15s;animation:mmIn .28s ease backwards}
+.mmtile:nth-child(2){animation-delay:.03s}.mmtile:nth-child(3){animation-delay:.06s}.mmtile:nth-child(4){animation-delay:.09s}.mmtile:nth-child(5){animation-delay:.12s}
+.mmtile:nth-child(6){animation-delay:.15s}.mmtile:nth-child(n+7){animation-delay:.18s}
+@keyframes mmIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
+.mmtile:hover{transform:translateY(-2px);border-color:#e8c86a;box-shadow:0 6px 16px rgba(0,0,0,.4),0 0 14px rgba(232,200,106,.25)}
+.mmtile i{font-style:normal;font-size:26px;line-height:1.1;color:#f2e2b4;text-shadow:0 0 10px rgba(232,200,106,.35)}
+.mmtile b{font-weight:400;font-size:13px;letter-spacing:.04em}
+.mmtile small{font-size:10.5px;color:#a8987c;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mmtile em{position:absolute;right:6px;top:6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-style:normal;font-size:10px;line-height:16px;color:#fff;background:#d8303a;box-shadow:0 0 8px rgba(255,60,60,.6)}
+.mmtile em:empty{min-width:9px;width:9px;height:9px;padding:0}
+.mmtile u{position:absolute;left:6px;top:6px;text-decoration:none;font-size:9.5px;padding:1px 5px;border-radius:6px;background:#ff2d55;color:#fff}
+.mmtile.red{border-color:rgba(200,60,60,.6)}.mmtile.red i{color:#ff9a8a}
+.mmtile.hk{border-color:rgba(44,255,122,.45)}.mmtile.hk i{color:#5cff9a;text-shadow:0 0 10px #2cff7a}
+.mmempty{grid-column:1/-1;text-align:center;color:#8a7f68;padding:30px 0}
+.mmfoot{display:flex;justify-content:center}
+/* ══ 빠른 찾기 ══ */
+.cmdpal{position:fixed;inset:0;z-index:600;background:rgba(8,6,4,.55);backdrop-filter:blur(2px);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh;animation:fadeIn .15s}
+.cpbox{width:min(560px,94vw);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#221a12,#140f0a);border:1px solid rgba(232,200,106,.4);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.cprow{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(232,200,106,.2)}
+.cprow i{font-style:normal;color:#e8c86a;font-size:18px}
+.cprow input{flex:1;font:inherit;font-size:16px;color:#f2e7cc;background:none;border:none;outline:none}
+.cplist{max-height:min(52vh,420px);overflow-y:auto;padding:6px}
+.cpitem{position:relative;width:100%;font:inherit;display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;border:none;background:none;color:#e9dfc9;cursor:pointer;text-align:left}
+.cpitem i{font-style:normal;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;font-size:16px;background:rgba(232,200,106,.12);color:#f2e2b4}
+.cpitem b{font-weight:400;flex:1}
+.cpitem span{font-size:11px;color:#8a7f68;letter-spacing:.1em}
+.cpitem em{min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-style:normal;font-size:10px;line-height:16px;color:#fff;background:#d8303a}
+.cpitem em:empty{min-width:8px;width:8px;height:8px;padding:0}
+.cpitem.on{background:rgba(232,200,106,.14);box-shadow:inset 3px 0 0 #e8c86a}
+.cpnone{padding:20px;text-align:center;color:#8a7f68}
+.cphint{padding:8px 14px;font-size:11px;color:#8a7f68;border-top:1px solid rgba(232,200,106,.12)}
+/* ══ 원형 퀵메뉴 ══ */
+.radmenu{position:fixed;z-index:590;width:0;height:0}
+.radmenu .rmring{position:absolute;left:calc(var(--R) * -1 - 34px);top:calc(var(--R) * -1 - 34px);width:calc(var(--R) * 2 + 68px);height:calc(var(--R) * 2 + 68px);border-radius:50%;
+  background:radial-gradient(circle,rgba(20,14,10,.0) 30%,rgba(20,14,10,.55) 62%,rgba(20,14,10,0) 72%);border:1px dashed rgba(232,200,106,.35);animation:rmRing .25s ease-out;pointer-events:none}
+@keyframes rmRing{from{transform:scale(.4);opacity:0}}
+.radmenu .rmitem{position:absolute;left:-29px;top:-29px;width:58px;height:58px;border-radius:50%;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  color:#f2e7cc;background:radial-gradient(circle at 35% 30%,#4a3a26,#1e1710);border:1.5px solid #c8a050;box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 12px rgba(232,200,106,.25);
+  transform:rotate(var(--a)) translate(var(--R)) rotate(calc(var(--a) * -1));animation:rmPop .3s cubic-bezier(.2,.9,.3,1.3) var(--d) backwards;transition:box-shadow .15s,filter .15s}
+@keyframes rmPop{from{transform:rotate(var(--a)) translate(0) rotate(calc(var(--a) * -1)) scale(.3);opacity:0}}
+.radmenu .rmitem:hover{filter:brightness(1.25);box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 20px rgba(255,214,120,.6)}
+.radmenu .rmitem i{font-style:normal;font-size:20px;line-height:1}
+.radmenu .rmitem b{font-weight:400;font-size:9.5px;white-space:nowrap}
+.radmenu .rmitem em{position:absolute;right:2px;top:2px;width:9px;height:9px;border-radius:50%;background:#ff4a4a;box-shadow:0 0 6px #ff4a4a}
+.radmenu .rmmid{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;font:inherit;cursor:pointer;color:#e9dfc9;background:rgba(20,14,10,.85);border:1px solid rgba(233,223,201,.35)}
+/* ══ 윗줄 「…」 ══ */
+.topbtn.tbhide{display:none!important}
+.topbtn.more{color:#e9dfc9;background:rgba(255,255,255,.06);border-color:#8a7f68}
+.topbtn.more em{min-width:9px;width:9px;height:9px;padding:0;font-size:0}
+.tbmorep{position:fixed;z-index:130;width:260px;padding:10px;border-radius:10px;background:linear-gradient(180deg,#241b12,#15100b);border:1px solid rgba(232,200,106,.45);box-shadow:0 14px 40px rgba(0,0,0,.6);animation:fadeIn .15s;color:#e9dfc9}
+.tbmhead{font-size:11px;letter-spacing:.2em;color:#c8a94e;margin:4px 2px 6px}
+.tbmgo{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.tbmgo button{position:relative;font:inherit;font-size:12.5px;display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:7px;cursor:pointer;color:#f2e7cc;background:rgba(157,124,46,.22);border:1px solid #9d7c2e}
+.tbmgo button i{font-style:normal;font-size:15px}
+.tbmgo button em{margin-left:auto;font-style:normal;font-size:10px;padding:0 5px;border-radius:7px;background:#d8303a;color:#fff}
+.tbmnone{grid-column:1/-1;font-size:12px;color:#8a7f68}
+.tbmpin{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:12.5px}
+.tbmpin label{display:flex;align-items:center;gap:5px;cursor:pointer}
+.tbmpin label i{font-style:normal;color:#e8c86a}
+.tbmreset{margin-top:8px;width:100%;font:inherit;font-size:12px;padding:6px;border-radius:6px;cursor:pointer;color:#c8bba0;background:none;border:1px solid rgba(233,223,201,.25)}
+@media (prefers-reduced-motion:reduce){.mmtile,.radmenu .rmitem,.radmenu .rmring{animation:none!important}}
+@media (hover:none){.mmfind kbd,.cprow kbd{display:none}}
+
 /* ---------- 카드 목록/보상/상점 등 패널 ---------- */
 /* 창은 화면보다 길어질 수 있다 — 넘치면 스스로 구르게 두고,
    가운데 정렬 때문에 위가 잘리지 않도록 safe center 를 쓴다.
@@ -12825,6 +12904,7 @@ function renderTop() {
       ${guestOn() ? '<button class="topbtn guest" id="guestbtn" title="게스트"><b>客</b><i>게스트</i><em></em></button>' : ''}
       <button class="topbtn skill" id="skilltop" title="비기"><b>祕</b><i>비기</i><em></em></button>
       <button class="topbtn fuse" id="fusebtn" title="유물 조합"><b>合</b><i>조합</i><em></em></button>
+      <button class="topbtn more" id="tbmore" title="접어 둔 단추 · 윗줄 고르기"><b>…</b><i>더보기</i><em></em></button>
       <button class="brush-btn ghost" id="deckbtn" style="padding:6px 13px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c"></button>
       <button class="brush-btn ghost" id="menubtn" style="padding:6px 12px;font-size:13px;color:#e9dfc9;border-color:#7a6f5c">≡</button>`;
     const rb = t.querySelector('#relicbar');
@@ -12869,6 +12949,7 @@ function renderTop() {
     pb.appendChild(pc);
     t.querySelector('#deckbtn').onclick = () => showCardList(G.run.deck, '나의 덱');
     t.querySelector('#menubtn').onclick = showMenu;
+    t.querySelector('#tbmore').onclick = e => { e.stopPropagation(); SND.ui(); tbMoreShow(); };
     t.querySelector('#placebtn').onclick = () => { markUsed('places'); showPlaces(); };
     t.querySelector('#trainbtn').onclick = () => { markUsed('train'); openTraining(); };
     t.querySelector('#shrinebtn').onclick = () => { markUsed('shrine'); openShrine(); };
@@ -12984,6 +13065,7 @@ function renderTop() {
   hb.classList.toggle('hide', !show);
   hb.classList.toggle('poor', run.gold < EMERGENCY_COST);
   healCall(show);
+  tbApply(t);
 }
 /* ── 응급 회복 알림 ────────────────────────────────────────
    체력이 바닥나면 메뉴를 뒤질 것 없이 화면에 바로 뜬다.
@@ -22635,60 +22717,218 @@ function victory() {
 }
 /* 하늘을 가르는 것과 싸우는 동안에는 멈춤 창이 없다 — 나가려면 띠의 「나간다」 */
 const worldFighting = () => !!(G.b && G.b.kind === 'world' && !G.b.over);
+/* ══════════════════════════════════════════════════════════
+   메뉴 한 벌 — 멈춤 창(탭·타일) · 빠른 찾기(Ctrl+K) · 원형 퀵메뉴 · 윗줄 「…」
+   ──────────────────────────────────────────────────────────
+   갈 수 있는 자리를 한 목록(MENU_ITEMS)에 모아 두고, 네 곳이 같은 목록을 쓴다.
+   항목: k 이름 · g 글자 · n 보이는 이름 · tab 모험(adv)/수집(col)/이벤트(ev)/설정(set)
+         al 찾기 말 · show() 보일 때 · run() 할 일 · dot() 빨간 점(숫자·'!'·true)
+   새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
+   ══════════════════════════════════════════════════════════ */
+const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['set', '설정', '設']];
+const MENU_NEW = {};                                   /* 새로 들인 자리 — 판마다 채운다 */
+const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
+const MENU_ITEMS = [
+  { k: 'auto',  g: '自', n: '자동 플레이', tab: 'adv', al: '오토 auto 자동', show: inRun,
+    sub: () => autoOk() ? (AUTO.on ? '켜짐 — 누르면 멈춘다' : '꺼짐') : 'VIP', run: () => autoToggle(), keep: 1 },
+  { k: 'deck',  g: '冊', n: '덱 보기', tab: 'adv', al: '덱 카드 부적 목록', show: inRun, sub: () => (G.run ? G.run.deck.length : 0) + '장', run: () => showCardList(G.run.deck, '나의 덱') },
+  { k: 'plan',  g: '計', n: '덱 설정', tab: 'adv', al: '덱설정 계획 순서', show: () => inRun() && !G.run._pvp, run: () => showPlan() },
+  { k: 'skill', g: '祕', n: '비기', tab: 'adv', al: '스킬 비기', show: inRun, sub: () => G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음', run: () => openSkills() },
+  { k: 'place', g: '場', n: '터', tab: 'adv', al: '상점 장기 대전투장 서당 터', show: inRun, run: () => { markUsed('places'); showPlaces(); } },
+  { k: 'forge', g: '冶', n: '대장간', tab: 'adv', al: '강화 대장간 벼림', show: inRun, run: () => { markUsed('forge'); openForge(); } },
+  { k: 'train', g: '修', n: '수행터', tab: 'adv', al: '수행 정진 훈련', show: () => inRun() && !G.b, sub: () => '精 ' + (META.jp || 0), run: () => { markUsed('train'); openTraining(); } },
+  { k: 'shrine',g: '神', n: '신전', tab: 'adv', al: '신전 가호 유물 바치기', show: () => inRun() && !G.b, run: () => { markUsed('shrine'); openShrine(); } },
+  { k: 'rfuse', g: '合', n: '유물 조합', tab: 'col', al: '유물 조합 합치기', show: inRun, run: () => openFuse() },
+  { k: 'mp',    g: '對', n: '멀티플레이', tab: 'adv', al: '대전 멀티 pvp 랭크', show: () => inRun() && !G.b, run: () => showMulti() },
+  { k: 'map',   g: '圖', n: '지도로', tab: 'adv', al: '지도 돌아가기', show: () => inRun() && !G.b && G.scene !== 'map', run: () => { closeOverlay(); saveRun(); showMap(); } },
+  { k: 'yield', g: '退', n: '라운드 포기', tab: 'adv', al: '포기 항복 나가기', show: inFight, red: 1, sub: () => '갈림길로', run: () => askYield() },
+  { k: 'box',   g: '匣', n: '부적 뽑기', tab: 'col', al: '뽑기 가챠 상자', show: inRun, run: () => { markUsed('box'); openBoxes(); } },
+  { k: 'pouch', g: '囊', n: '원료 주머니', tab: 'col', al: '재료 원료 돌연변이 주머니', show: inRun, dot: () => pouchCount(), run: () => showPouch() },
+  { k: 'fuselab', g: '鎔', n: '합성소', tab: 'col', al: '합성 융합 합성소', show: inRun, run: () => showFuseLab() },
+  { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션', run: () => showDex() },
+  { k: 'htok',  g: '⌬', n: '해킹상점', tab: 'ev', al: '해킹 토큰 상점 박사', show: inRun, badge: '한정',
+    dot: () => hbOpenNow() && !hbWonNow() ? '!' : 0, sub: () => hbOpenNow() && !hbWonNow() ? '보스 출현!' : '', run: () => showHackTokShop() },
+  { k: 'hshop', g: '⌬', n: '이벤트 해킹상점', tab: 'ev', al: '해킹 칩 상점', show: () => inRun() && hackShopOn(), run: () => showHackShop() },
+  { k: 'hmap',  g: '⌬', n: '해킹맵으로', tab: 'ev', al: '해킹맵', show: () => inRun() && !G.b && hackMapOk(), run: () => showHackMap() },
+  { k: 'news',  g: '告', n: '공지사항', tab: 'ev', al: '공지 소식 뉴스', dot: () => newsUnread(), run: () => showNews() },
+  { k: 't26',   g: '帝', n: '26막 예고', tab: 'ev', al: '26막 예고편 무명궁 황제 미리보기', show: () => !G.b, run: () => showAct26Preview() },
+  { k: 'guest', g: '客', n: '게스트 창', tab: 'ev', al: '게스트', show: () => guestOn(), run: () => showGuest() },
+  { k: 'set',   g: '設', n: '설정', tab: 'set', al: '설정 옵션 소리 음량', run: () => showSettings(), keep: 1 },
+  { k: 'help',  g: '書', n: '안내서', tab: 'set', al: '도움말 안내 설명', run: () => showHelp(), keep: 1 },
+  { k: 'tbpin', g: '…', n: '윗줄 고르기', tab: 'set', al: '윗줄 단추 고정 숨기기 상단바', show: inRun, run: () => tbMoreShow(true) },
+  { k: 'admin', g: '管', n: '관리자', tab: 'set', al: '관리자 어드민 퍼뜨리기', show: () => adminOn(), run: () => showAdmin() }
+];
+const menuItem = k => MENU_ITEMS.find(x => x.k === k);
+const menuVis = x => { try { return !x.show || !!x.show(); } catch (e) { return false; } };
+const menuDot = x => { let d = 0; try { d = x.dot ? x.dot() : 0; } catch (e) {} if (!d && MENU_NEW[x.k] && !(META.menuSeen && META.menuSeen[x.k])) d = '새'; return d; };
+function menuRun(k, opts) {
+  const x = menuItem(k); if (!x || !menuVis(x)) return;
+  META.menuUse = META.menuUse || {}; META.menuUse[k] = (META.menuUse[k] || 0) + 1;
+  if (MENU_NEW[k]) { META.menuSeen = META.menuSeen || {}; META.menuSeen[k] = 1; }
+  saveMeta();
+  try { SND.init(); SND.ui(); } catch (e) {}
+  if (!(opts && opts.stay)) closeOverlay();
+  try { x.run(); } catch (e) { console.error('메뉴', k, e); }
+}
+/* ── 멈춤 창 — 네 탭, 타일 격자 ── */
 function showMenu() {
   if (worldFighting()) { toast('모두의 적과 싸우는 중 — 나가려면 위 띠의 「나간다」'); return; }
   if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) { mpMenu(); return; }
-  const p = modal(`<h2>잠시 멈춤</h2>
-    <div style="display:flex;flex-direction:column;gap:12px;width:260px">
-      <button class="brush-btn" id="m_auto">${autoOk() ? `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}${!vipOn() ? ' · 맛보기' : ''}` : '자동 플레이 (VIP)'}</button>
-      <button class="brush-btn" id="m_box">부적 뽑기</button>
-      <button class="brush-btn gold" id="m_news">공지사항${newsUnread() ? ` <b style="color:#fff">${newsUnread()}</b>` : ''}</button>
-      <button class="brush-btn" id="m_set">설정</button>
-      ${!G.b ? '<button class="brush-btn mpbtn" id="m_mp">對 멀티플레이</button>' : ''}
-      <button class="brush-btn matbtn" id="m_mut">囊 원료 주머니${pouchCount() ? ` <b>${pouchCount()}</b>` : ''}</button>
-      <button class="brush-btn matbtn fusebtn" id="m_fuse">合 합성소</button>
-      <button class="brush-btn hkmenubtn" id="m_htok"><em>한정!</em>⌬ 해킹상점${hbOpenNow() && !hbWonNow() ? ' · <b>보스 출현!</b>' : ''}</button>
-      ${hackShopOn() ? '<button class="brush-btn" id="m_hshop" style="color:#5cff9a;border-color:#2cff7a">⌬ 이벤트 해킹상점 (칩)</button>' : ''}
-      ${!G.b && hackMapOk() ? '<button class="brush-btn" id="m_hmap" style="color:#5cff9a;border-color:#2cff7a">[해킹] 해킹맵으로</button>' : ''}
-      ${guestOn() ? '<button class="brush-btn" id="m_guest" style="color:#f0b8e8;border-color:#e08ad8">客 게스트 창</button>' : ''}
-      <button class="brush-btn" id="m_skill">비기 (${G.run && G.run.skill ? SKILLS[G.run.skill].n : '없음'})</button>
-      <button class="brush-btn" id="m_deck">덱 보기 (${G.run ? G.run.deck.length : 0})</button>
-      ${G.run && !G.run._pvp ? `<button class="brush-btn gold" id="m_plan">덱 설정${planClean(G.run).length ? ` · ${planClean(G.run).filter(h => h.length).length}개` : ''}</button>` : ''}
-      ${!G.b ? `<button class="brush-btn t26btn" id="m_26">第26幕 예고 · ${ACT26.n}</button>` : ''}
-      <button class="brush-btn ghost" id="m_dex" style="color:#e9dfc9;border-color:#8a7f68">도감</button>
-      <button class="brush-btn ghost" id="m_help" style="color:#e9dfc9;border-color:#8a7f68">안내서</button>
-      ${!G.b && G.scene !== 'map' ? '<button class="brush-btn gold" id="m_map">지도로 돌아가기</button>' : ''}
-      ${G.b && !G.b.over ? '<button class="brush-btn red" id="m_yield">라운드 포기 (갈림길로)</button>' : ''}
-      <button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button>
-    </div>`);
+  const old = $('#overlay .mm2p'); if (old) closeTop();
+  let tab = META.menuTab || 'adv';
+  const p = modal(`<div class="mm2">
+      <div class="mmhead"><h2>잠시 멈춤</h2><button class="mmfind" id="m_find">⌕ 찾기 <kbd>Ctrl K</kbd></button></div>
+      <div class="mmtabs"></div>
+      <div class="mmgrid"></div>
+      <div class="mmfoot"><button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button></div>
+    </div>`, 'mm2p');
   p.dataset.noauto = '1';
-  p.querySelector('#m_auto').onclick = e => {
-    autoToggle();
-    if (autoOk()) e.target.textContent = `자동 플레이 ${AUTO.on ? '멈추기' : '시작'}`;
-    if (AUTO.on) closeTop();
+  const draw = () => {
+    const tabs = p.querySelector('.mmtabs'), grid = p.querySelector('.mmgrid');
+    tabs.innerHTML = MENU_TABS.map(([k, n, g]) => {
+      const dot = MENU_ITEMS.some(x => x.tab === k && menuVis(x) && menuDot(x));
+      return `<button class="mmtab${k === tab ? ' on' : ''}" data-t="${k}"><i>${g}</i>${n}${dot ? '<s></s>' : ''}</button>`;
+    }).join('');
+    grid.innerHTML = MENU_ITEMS.filter(x => x.tab === tab && menuVis(x)).map(x => {
+      const d = menuDot(x), sub = x.sub ? x.sub() : '';
+      return `<button class="mmtile${x.red ? ' red' : ''}${x.k === 'htok' ? ' hk' : ''}" id="m_${x.k}" data-k="${x.k}"><i>${x.g}</i><b>${x.n}</b>${sub ? `<small>${sub}</small>` : ''}${x.badge ? `<u>${x.badge}</u>` : ''}${d ? `<em>${d === true ? '' : d}</em>` : ''}</button>`;
+    }).join('') || '<div class="mmempty">여기서는 열 것이 없다</div>';
+    tabs.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tab = b.dataset.t; META.menuTab = tab; saveMeta(); try { SND.ui(); } catch (e) {} draw(); });
+    grid.querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
+      const x = menuItem(b.dataset.k);
+      if (x.k === 'auto') { autoToggle(); if (AUTO.on) closeTop(); else draw(); return; }
+      if (x.keep) { menuRun(x.k, { stay: true }); return; }
+      menuRun(x.k);
+    });
   };
-  /* 막힌 자리에서 빠져나오는 길 — 이 칸의 몫은 포기한다 */
-  const mm = p.querySelector('#m_map');
-  if (mm) mm.onclick = () => { closeOverlay(); saveRun(); showMap(); };
-  p.querySelector('#m_set').onclick = () => showSettings();
-  const mg = p.querySelector('#m_guest'); if (mg) mg.onclick = () => { closeTop(); showGuest(); };
-  const mm2 = p.querySelector('#m_mp'); if (mm2) mm2.onclick = () => { closeTop(); showMulti(); };
-  const mpl = p.querySelector('#m_plan'); if (mpl) mpl.onclick = () => { closeTop(); showPlan(); };
-  const mhs = p.querySelector('#m_hshop'); if (mhs) mhs.onclick = () => { closeTop(); showHackShop(); };
-  p.querySelector('#m_htok').onclick = () => { closeTop(); showHackTokShop(); };
-  p.querySelector('#m_mut').onclick = () => { closeTop(); showPouch(); };
-  p.querySelector('#m_fuse').onclick = () => { closeTop(); showFuseLab(); };
-  const mhm = p.querySelector('#m_hmap'); if (mhm) mhm.onclick = () => { closeTop(); showHackMap(); };
-  p.querySelector('#m_deck').onclick = () => showCardList(G.run.deck, '나의 덱');
-  p.querySelector('#m_news').onclick = () => { closeTop(); showNews(); };
-  p.querySelector('#m_box').onclick = () => { closeTop(); openBoxes(); };
-  p.querySelector('#m_skill').onclick = () => { closeTop(); openSkills(); };
-  p.querySelector('#m_dex').onclick = showDex;
-  const m26 = p.querySelector('#m_26'); if (m26) m26.onclick = () => { closeTop(); showAct26Preview(); };
-  p.querySelector('#m_help').onclick = () => showHelp();
-  const yb = p.querySelector('#m_yield');
-  if (yb) yb.onclick = () => { closeTop(); askYield(); };
+  draw();
+  p.querySelector('#m_find').onclick = () => { closeTop(); showPalette(); };
   p.querySelector('#m_close').onclick = closeTop;
+}
+/* ── 빠른 찾기 — Ctrl+K · 치면 걸러지고, 위아래로 고르고, Enter ── */
+function showPalette() {
+  if ($('#cmdpal')) return;
+  const o = el('div', 'cmdpal'); o.id = 'cmdpal';
+  o.innerHTML = `<div class="cpbox"><div class="cprow"><i>⌕</i><input id="cp_in" placeholder="어디로 갈까 — 합성 · 도감 · 뽑기 · 설정 …" autocomplete="off"><kbd>Esc</kbd></div><div class="cplist"></div>
+    <div class="cphint">↑↓ 고르기 · Enter 열기 · 탭 이름(모험·수집·이벤트·설정)으로도 찾는다</div></div>`;
+  document.body.appendChild(o);
+  const inp = o.querySelector('#cp_in'), list = o.querySelector('.cplist');
+  let sel = 0, rows = [];
+  const tabName = k => (MENU_TABS.find(t => t[0] === k) || [])[1] || '';
+  const draw = () => {
+    const q = inp.value.trim().toLowerCase().replace(/\s+/g, '');
+    rows = MENU_ITEMS.filter(menuVis).filter(x => !q || (x.n + x.al + x.k + tabName(x.tab)).toLowerCase().replace(/\s+/g, '').includes(q));
+    if (q) rows.sort((a, b) => (b.n.replace(/\s/g, '').startsWith(q) ? 1 : 0) - (a.n.replace(/\s/g, '').startsWith(q) ? 1 : 0));
+    else { const u = META.menuUse || {}; rows.sort((a, b) => (u[b.k] || 0) - (u[a.k] || 0)); }
+    sel = Math.min(sel, Math.max(0, rows.length - 1));
+    list.innerHTML = rows.map((x, i) => { const d = menuDot(x);
+      return `<button class="cpitem${i === sel ? ' on' : ''}" data-i="${i}"><i>${x.g}</i><b>${x.n}</b><span>${tabName(x.tab)}</span>${d ? `<em>${d === true ? '' : d}</em>` : ''}</button>`; }).join('')
+      || '<div class="cpnone">찾는 자리가 없다</div>';
+    list.querySelectorAll('[data-i]').forEach(b => { b.onclick = () => go(+b.dataset.i); b.onmouseenter = () => { sel = +b.dataset.i; mark(); }; });
+  };
+  const mark = () => list.querySelectorAll('[data-i]').forEach(b => b.classList.toggle('on', +b.dataset.i === sel));
+  const shut = () => o.remove();
+  const go = i => { const x = rows[i]; if (!x) return; shut(); if (x.k === 'auto') { autoToggle(); return; } menuRun(x.k); };
+  inp.oninput = () => { sel = 0; draw(); };
+  inp.onkeydown = e => {
+    e.stopPropagation();
+    if (e.key === 'Escape') { e.preventDefault(); shut(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(rows.length - 1, sel + 1); mark(); const b = list.querySelector('.on'); if (b) b.scrollIntoView({ block: 'nearest' }); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); mark(); const b = list.querySelector('.on'); if (b) b.scrollIntoView({ block: 'nearest' }); }
+    else if (e.key === 'Enter') { e.preventDefault(); go(sel); }
+  };
+  o.onclick = e => { if (e.target === o) shut(); };
+  draw();
+  setTimeout(() => inp.focus(), 20);
+  try { SND.ui(); } catch (e) {}
+}
+addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.key === 'ㅏ' || e.code === 'KeyK')) {
+    if (cutPlaying()) return;
+    e.preventDefault(); e.stopPropagation();
+    const o = $('#cmdpal'); if (o) o.remove(); else showPalette();
+  }
+}, true);
+/* ── 원형 퀵메뉴 — 우클릭(빈 곳) · 손가락으로 길게 누르기. 자주 쓴 여섯 ── */
+const RADIAL_BASE = ['deck', 'box', 'pouch', 'forge', 'place', 'set'];
+function radialPicks() {
+  const u = META.menuUse || {};
+  const vis = MENU_ITEMS.filter(x => menuVis(x) && x.k !== 'yield' && x.k !== 'tbpin');
+  const used = vis.filter(x => u[x.k]).sort((a, b) => u[b.k] - u[a.k]).map(x => x.k);
+  const out = [];
+  for (const k of used.concat(RADIAL_BASE)) if (out.length < 6 && out.indexOf(k) < 0 && vis.some(x => x.k === k)) out.push(k);
+  return out;
+}
+function radialMenu(x, y) {
+  radialClose();
+  if (!G.run || cutPlaying()) return;
+  const picks = radialPicks(); if (!picks.length) return;
+  const R = innerWidth < 600 ? 74 : 92;
+  x = Math.max(R + 40, Math.min(innerWidth - R - 40, x)); y = Math.max(R + 40, Math.min(innerHeight - R - 40, y));
+  const n = el('div', 'radmenu'); n.id = 'radmenu';
+  n.style.cssText = `left:${x}px;top:${y}px;--R:${R}px`;
+  n.innerHTML = `<div class="rmring"></div>` + picks.map((k, i) => { const it = menuItem(k), a = -90 + i * 360 / picks.length, d = menuDot(it);
+    return `<button class="rmitem" data-k="${k}" style="--a:${a}deg;--d:${(i * .03).toFixed(2)}s"><i>${it.g}</i><b>${it.n}</b>${d ? '<em></em>' : ''}</button>`; }).join('')
+    + `<button class="rmmid" title="닫기">✕</button>`;
+  document.body.appendChild(n);
+  n.querySelectorAll('[data-k]').forEach(b => b.onclick = e => { e.stopPropagation(); radialClose(); const k = b.dataset.k; if (k === 'auto') autoToggle(); else menuRun(k); });
+  n.querySelector('.rmmid').onclick = e => { e.stopPropagation(); radialClose(); };
+  setTimeout(() => addEventListener('pointerdown', radialAway, true), 0);
+  try { SND.blip(660, { dur: .08, type: 'sine', vol: .05, to: 990 }); } catch (e) {}
+}
+function radialAway(e) { const n = $('#radmenu'); if (n && !n.contains(e.target)) radialClose(); }
+function radialClose() { const n = $('#radmenu'); if (n) n.remove(); removeEventListener('pointerdown', radialAway, true); }
+const radialSpot = t => !(t && t.closest && t.closest('button,a,input,textarea,select,.card,.unit,.mapnode,.panel,#topbar,.cmdpal,.radmenu,.chatbox,#chat,.evpill,.cut,label'));
+addEventListener('contextmenu', e => {
+  if (G.b && (G.b.sel || G.b.potSel != null)) return;            /* 부적을 겨눈 중 — 위에서 겨눔을 푼다 */
+  if (!G.run || ($('#overlay') && $('#overlay').style.display === 'block') || !radialSpot(e.target)) return;
+  e.preventDefault(); radialMenu(e.clientX, e.clientY);
+});
+{ let lp = null;
+  addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch' || !G.run || !radialSpot(e.target) || ($('#overlay') && $('#overlay').style.display === 'block')) return;
+    const x = e.clientX, y = e.clientY;
+    lp = { x, y, t: setTimeout(() => { lp = null; radialMenu(x, y); try { navigator.vibrate && navigator.vibrate(12); } catch (er) {} }, 560) };
+  }, { passive: true });
+  const cancel = e => { if (!lp) return; if (e.type === 'pointermove' && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) < 12) return; clearTimeout(lp.t); lp = null; };
+  addEventListener('pointermove', cancel, { passive: true }); addEventListener('pointerup', cancel); addEventListener('pointercancel', cancel);
+}
+/* ── 윗줄 「…」 — 덜 쓰는 단추를 접어 두고, 무엇을 꺼낼지 고른다 ── */
+const TB_BTNS = [['placebtn', '場', '터'], ['forgetop', '冶', '대장간'], ['mptopbtn', '對', '대전'], ['trainbtn', '修', '수행터'], ['shrinebtn', '神', '신전'],
+  ['boxbtn', '匣', '뽑기'], ['hktop', '⌬', '해킹상점'], ['pouchbtn', '囊', '원료 주머니'], ['skilltop', '祕', '비기'], ['fusebtn', '合', '유물 조합']];
+const TB_DEFAULT_HIDE = ['trainbtn', 'shrinebtn', 'fusebtn'];
+const tbHidden = id => (META.tbHide || TB_DEFAULT_HIDE).indexOf(id) >= 0;
+function tbApply(t) {
+  t = t || $('#topbar'); if (!t) return;
+  for (const [id] of TB_BTNS) { const b = t.querySelector('#' + id); if (b) b.classList.toggle('tbhide', tbHidden(id)); }
+  const m = t.querySelector('#tbmore'); if (m) { const dots = TB_BTNS.some(([id]) => { if (!tbHidden(id)) return false; const b = t.querySelector('#' + id + ' em'); return b && b.textContent; });
+    m.querySelector('em').textContent = dots ? '•' : ''; }
+}
+function tbMoreShow(edit) {
+  const old = $('#tbmorep'); if (old) { old.remove(); if (!edit) return; }
+  const t = $('#topbar'); if (!t) return;
+  const n = el('div', 'tbmorep'); n.id = 'tbmorep';
+  const paint = () => {
+    const hid = TB_BTNS.filter(([id]) => tbHidden(id));
+    n.innerHTML = `<div class="tbmhead">접어 둔 단추</div>
+      <div class="tbmgo">${hid.length ? hid.map(([id, g, nm]) => { const em = t.querySelector('#' + id + ' em'); return `<button data-go="${id}"><i>${g}</i>${nm}${em && em.textContent ? `<em>${em.textContent}</em>` : ''}</button>`; }).join('') : '<span class="tbmnone">모두 윗줄에 나와 있다</span>'}</div>
+      <div class="tbmhead">윗줄에 둘 것 고르기</div>
+      <div class="tbmpin">${TB_BTNS.map(([id, g, nm]) => `<label><input type="checkbox" data-pin="${id}"${tbHidden(id) ? '' : ' checked'}><i>${g}</i>${nm}</label>`).join('')}</div>
+      <button class="tbmreset">처음대로</button>`;
+    n.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { n.remove(); const tb = t.querySelector('#' + b.dataset.go); if (tb) tb.click(); });
+    n.querySelectorAll('[data-pin]').forEach(c => c.onchange = () => {
+      const hide = (META.tbHide || TB_DEFAULT_HIDE).slice(), id = c.dataset.pin, i = hide.indexOf(id);
+      if (c.checked && i >= 0) hide.splice(i, 1); if (!c.checked && i < 0) hide.push(id);
+      META.tbHide = hide; saveMeta(); tbApply(t); paint();
+    });
+    n.querySelector('.tbmreset').onclick = () => { delete META.tbHide; saveMeta(); tbApply(t); paint(); };
+  };
+  paint();
+  document.body.appendChild(n);
+  const r = t.querySelector('#tbmore') ? t.querySelector('#tbmore').getBoundingClientRect() : { right: innerWidth - 10, bottom: 50 };
+  n.style.top = (r.bottom + 6) + 'px'; n.style.right = Math.max(8, innerWidth - r.right) + 'px';
+  const away = e => { if (!n.contains(e.target) && !(e.target.closest && e.target.closest('#tbmore'))) { n.remove(); removeEventListener('pointerdown', away, true); } };
+  setTimeout(() => addEventListener('pointerdown', away, true), 0);
 }
 /* ── 설정 ────────────────────────────────────────────────── */
 const SCOPE_NAME = { battle: '전투만', run: '지도까지' };
@@ -22876,7 +23116,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 48;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 49;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
