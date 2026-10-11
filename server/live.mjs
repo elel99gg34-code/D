@@ -566,9 +566,11 @@ const MAIL_MAX = 30, MAIL_ONE_MAX = 50;
 function mailMake(m) {
   const now = Date.now(), days = Math.max(1, Math.min(30, parseInt(m.days, 10) || 7));
   const cards = Array.isArray(m.cards) ? m.cards.slice(0, 8).map(c => str(c, 40)).filter(Boolean) : [];
+  const mats = {};
+  if (m.mats && typeof m.mats === 'object') for (const k of FUSE_MATS) { const n = num(m.mats[k], 99); if (n) mats[k] = n; }
   return { id: str(m.id, 40) || ('m' + now + Math.floor(Math.random() * 1000)), at: now, until: now + days * 86400000,
-           title: str(m.title, 40) || '우편', say: str(m.say, 200), from: str(m.from, 20) || '백야',
-           gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards };
+           title: str(m.title, 40) || '우편', say: str(m.say, 300), from: str(m.from, 20) || '백야',
+           gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards, mats };
 }
 function mailAdd(m) {
   const one = mailMake(m);
@@ -863,7 +865,7 @@ async function runSchedule(now) {
       if (x.done || now < x.at) continue;
       const steps = x.steps || [{ after: 0, patch: x.patch || {} }];
       /* 한 장면도 못 했는데 15분을 넘겼다 — 통째로 건너뛴다 */
-      if (!steps.some(t => t.done) && now - x.at > SCHED_LATE) {
+      if (!x.cal && !steps.some(t => t.done) && now - x.at > SCHED_LATE) {
         x.done = x.missed = true; changed = true; console.log('예약을 놓쳤다:', x.label); continue;
       }
       for (const t of steps) {
@@ -1211,7 +1213,7 @@ const server = http.createServer(async (req, res) => {
     await runSchedule(now);
     if (expire(now)) await keep();
     /* 예약은 때와 이름만 — 무엇을 할지(할 말·보상)는 관리자만 본다 */
-    const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, done: !!x.done, missed: !!x.missed,
+    const sched = (live.sched || []).map(x => ({ id: x.id, at: x.at, label: x.label, note: x.note || '', cal: !!x.cal, done: !!x.done, missed: !!x.missed,
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
@@ -1324,8 +1326,11 @@ const server = http.createServer(async (req, res) => {
   /* ── 순위표 — 누구나 본다 ── */
   if (url.pathname === '/rank' && req.method === 'GET') {
     await store();
-    const pick = async k => ((await get('rk:' + k)) || []).slice(0, 50).map(x => ({ nick: x.nick, v: x.v }));
-    const mp = ((await get('mptop')) || []).slice(0, 50).map(x => ({ nick: x.nick, v: x.rp, tier: x.tier, w: x.w, l: x.l }));
+    /* 순위에는 게스트와 개발자(백야)를 싣지 않는다 */
+    const gs = new Set(Object.values(await guestsGet()).filter(v => v && v.state === 'ok' && v.acct).map(v => v.acct));
+    const shown = x => x && x.nick !== '백야' && !/백야|baekya|admin|관리자|운영/i.test(String(x.id || '')) && !gs.has(x.id);
+    const pick = async k => ((await get('rk:' + k)) || []).filter(shown).slice(0, 50).map(x => ({ nick: x.nick, v: x.v }));
+    const mp = ((await get('mptop')) || []).filter(shown).slice(0, 50).map(x => ({ nick: x.nick, v: x.rp, tier: x.tier, w: x.w, l: x.l }));
     return send(res, 200, { ok: true, mp, sh: await pick('sh'), hb: await pick('hb'), sp: await pick('sp'), now: Date.now() });
   }
   /* ── 프로필 · 벗 — /pf/set 내 것을 적는다 · /pf/get 남의 것을 본다 · /fr/list · /fr/add · /fr/del ── */
@@ -1408,7 +1413,7 @@ const server = http.createServer(async (req, res) => {
       for (const k of Object.keys(got)) if (now - got[k] > 40 * 86400000) delete got[k];
       await put('mlc:' + id, got);
       statAdd('mail').catch(() => {});
-      alog(id, `우편 「${m.title}」 — ${[m.gold ? '골드 ' + m.gold : '', m.dia ? '다이아 ' + m.dia : '', m.jp ? '정진 ' + m.jp : '', (m.cards || []).length ? '부적 ' + m.cards.length + '장' : ''].filter(Boolean).join(' · ') || '빈 우편'}`).catch(() => {});
+      alog(id, `우편 「${m.title}」 — ${[m.gold ? '골드 ' + m.gold : '', m.dia ? '다이아 ' + m.dia : '', m.jp ? '정진 ' + m.jp : '', (m.cards || []).length ? '부적 ' + m.cards.length + '장' : '', Object.keys(m.mats || {}).length ? '원료 ' + Object.values(m.mats).reduce((a, b) => a + b, 0) : ''].filter(Boolean).join(' · ') || '빈 우편'}`).catch(() => {});
       return send(res, 200, { ok: true, mail: m });
     }
     return send(res, 404, { ok: false, why: '없는 자리' });
@@ -1534,8 +1539,10 @@ const server = http.createServer(async (req, res) => {
       const steps = raw.slice(0, 12).map(x => ({ after: Math.max(0, Math.min(3600, parseInt(x && x.after, 10) || 0)),
                                                 label: str(x && x.label, 40), patch: pickCast((x && x.patch) || {}) }))
                        .filter(x => Object.keys(x.patch).length);
-      if (!steps.length) return send(res, 400, { ok: false, why: '예약할 장면이 없다' });
-      live.sched.push({ id: now + Math.floor(Math.random() * 1000), at, label: str(q.schedule.label, 60) || '예약한 일', steps });
+      /* 달력에만 알리기 — 장면 없이 때와 이름·설명만 모두의 달력에 건다 */
+      const cal = !!q.schedule.calOnly;
+      if (!steps.length && !cal) return send(res, 400, { ok: false, why: '예약할 장면이 없다' });
+      live.sched.push({ id: now + Math.floor(Math.random() * 1000), at, label: str(q.schedule.label, 60) || '예약한 일', note: str(q.schedule.note, 120), cal: cal && !steps.length, steps: cal && !steps.length ? [] : steps });
       live.sched.sort((x, y) => x.at - y.at);
     }
     if ('unschedule' in q) live.sched = (live.sched || []).filter(x => String(x.id) !== String(q.unschedule));
