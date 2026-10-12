@@ -1786,11 +1786,11 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsitem .dsup{position:absolute;right:8px;top:8px;font-size:10px;padding:2px 6px;border-radius:4px;color:#2a1a06;background:linear-gradient(120deg,#ffe08a,#e2a53a)}
 .dsitem .dsn{font-size:14px;color:#f6ecd4;letter-spacing:.04em;word-break:keep-all}
 .dsitem .dsd{font-size:11px;color:#a89a7e;line-height:1.5;min-height:3em;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.dsitem .dsbuy{margin-top:auto;width:100%;padding:8px 0;border-radius:8px;font-size:14px;color:#062a1e;letter-spacing:.06em;
+.dsitem .dsbuy,.dsfeat .dsbuy{margin-top:auto;width:100%;padding:8px 0;border-radius:8px;font-size:14px;color:#062a1e;letter-spacing:.06em;
   background:linear-gradient(120deg,#9ff3d6,#3fbf95);box-shadow:0 4px 0 #1f7a5e;border:none;transition:.12s}
-.dsitem .dsbuy:hover{transform:translateY(-1px);box-shadow:0 5px 0 #1f7a5e,0 0 16px rgba(110,240,190,.5)}
-.dsitem .dsbuy s{color:#2d6b57;font-size:11px;margin-right:5px}
-.dsitem .dsbuy.poor{background:linear-gradient(120deg,#6b6455,#4a4438);color:#c9bda2;box-shadow:0 4px 0 #34301f}
+.dsitem .dsbuy:hover,.dsfeat .dsbuy:hover{transform:translateY(-1px);box-shadow:0 5px 0 #1f7a5e,0 0 16px rgba(110,240,190,.5)}
+.dsitem .dsbuy s,.dsfeat .dsbuy s{color:#2d6b57;font-size:11px;margin-right:5px}
+.dsitem .dsbuy.poor,.dsfeat .dsbuy.poor{background:linear-gradient(120deg,#6b6455,#4a4438);color:#c9bda2;box-shadow:0 4px 0 #34301f}
 .dsitem.sold{filter:grayscale(.75) brightness(.7)}
 .dsitem.sold:after{white-space:nowrap;content:'完 판매 끝';position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-14deg);padding:5px 14px;border:2px solid #e05a4a;
   color:#ffb0a6;font-size:15px;letter-spacing:.2em;border-radius:6px;background:rgba(40,8,6,.75)}
@@ -1805,6 +1805,107 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ── 백야의 방 (판 57) ── */
+.hkdoc .hkhot circle,.hkdoc .hkhot ellipse{fill:transparent;cursor:pointer;pointer-events:all}
+.hkdoc .hkhot circle:hover,.hkdoc .hkhot ellipse:hover{fill:rgba(44,255,122,.12)}
+.hkbreak{animation:hkBreak .95s steps(8) both}
+@keyframes hkBreak{0%{filter:none}20%{filter:hue-rotate(90deg) contrast(2);transform:translateX(6px) skewX(4deg)}40%{filter:invert(1);transform:translateX(-8px)}
+  60%{filter:hue-rotate(200deg) saturate(3);transform:translateY(4px) skewY(-3deg)}80%{filter:brightness(3) blur(2px);transform:scale(1.04)}100%{filter:brightness(0);transform:none}}
+.bkroomm{background:#0b0e1c!important}
+.panel.hkfull>.bkroom,.bkroom{position:fixed;inset:0;z-index:2;display:grid;grid-template-columns:1fr minmax(300px,380px);grid-template-rows:auto 1fr;
+  grid-template-areas:'head head' 'scene side';gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px));
+  background:radial-gradient(ellipse at 40% 30%,#1c2442,#0a0c18 70%);overflow:hidden;box-sizing:border-box}
+.bkroom .bkhead{grid-area:head;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding-right:52px}
+.bkroom .bkscene{grid-area:scene}.bkroom .bkside{grid-area:side}
+.bkroom .bkhead h1{font-weight:400;font-size:30px;letter-spacing:.3em;color:#f4f7ff;text-shadow:0 0 22px rgba(160,200,255,.6)}
+.bkroom .bkhead small{font-size:12.5px;color:#a8b4d8}.bkroom .bkhead b{color:#ffd76a;font-weight:400}
+.bkscene{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(160,190,255,.25);box-shadow:0 10px 40px rgba(0,0,0,.6);min-height:240px}
+.bkscene .bksvg{position:absolute;inset:0;width:100%;height:100%;transition:transform 1.1s cubic-bezier(.3,.7,.2,1);transform-origin:46% 46%}
+.bkscene.zoom .bksvg{transform:scale(1.75)}
+.bkhint{position:absolute;left:12px;top:10px;font-size:12px;color:#cfe0ff;background:rgba(0,0,0,.45);padding:4px 10px;border-radius:12px;animation:dspPulse 1.6s ease-in-out infinite;--gc:#7fb4e8}
+.bkfig{cursor:pointer;transition:filter .2s}.bkfig:hover{filter:drop-shadow(0 0 8px rgba(190,220,255,.8))}
+.bkfig .bkface{opacity:0;transition:opacity .35s}
+.bkfig .bkhead{transform-box:fill-box;transform-origin:30% 80%;transition:transform .45s cubic-bezier(.3,1.4,.4,1)}
+.bkfig.turn .bkhead{transform:rotate(-8deg) translateX(-4px)}.bkfig.turn .bkface{opacity:1}
+.bkhand{animation:bkType .22s ease-in-out infinite alternate}.bkhand.d{animation-delay:.11s}
+@keyframes bkType{to{transform:translateY(-3px)}}
+.bkfig .bkhand{transform-box:fill-box;transform-origin:center}
+.bkcode{animation:bkScroll 7s linear infinite}.bkcode.s{animation-duration:5s}
+@keyframes bkScroll{from{transform:translateY(0)}to{transform:translateY(-130px)}}
+.bksteam path{animation:bkSteam 2.6s ease-in-out infinite}.bksteam path+path{animation-delay:1.3s}
+@keyframes bkSteam{0%{opacity:0;transform:translateY(4px)}40%{opacity:.6}100%{opacity:0;transform:translateY(-14px)}}
+.bkwisp{animation:bkWisp 3.2s ease-in-out infinite}@keyframes bkWisp{50%{transform:translate(-6px,-10px)}}
+.bkstar{animation:bkStar 2.4s ease-in-out infinite}@keyframes bkStar{50%{opacity:.25}}
+.bkbar{animation:bkBarA 3s ease-in-out infinite}@keyframes bkBarA{50%{width:72px}}
+.bkerr{animation:rampFlick .5s steps(2) infinite}
+.bktail{transform-box:fill-box;transform-origin:top;animation:bkTail 4s ease-in-out infinite}@keyframes bkTail{50%{transform:rotate(2deg)}}
+.bklampg{animation:bkLamp 5s ease-in-out infinite}@keyframes bkLamp{50%{opacity:.8}}
+.bkside{display:flex;flex-direction:column;gap:10px;min-height:0;overflow-y:auto}
+.hkwallet.bk{border-color:rgba(160,200,255,.5);background:linear-gradient(100deg,rgba(30,40,80,.8),rgba(10,14,30,.8))}
+.hkitem2.bk{border-color:rgba(160,200,255,.4)}
+.hkitem2.bk s{background:#ffd76a;color:#2a1a02}
+.hkitem2.bk u em{font-style:normal;text-decoration:line-through;opacity:.5;margin-right:4px;font-size:.85em}
+.bksay{padding:10px 14px;border-radius:12px;font-size:13.5px;color:#eaf0ff;background:rgba(20,26,50,.85);border:1px solid rgba(160,200,255,.35);line-height:1.6}
+.bksay.pop{animation:bubIn .3s cubic-bezier(.2,1.5,.4,1)}
+.bkcut{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:9%;cursor:pointer}
+.bkcut .bkbar{position:absolute;left:0;right:0;height:13%;background:#000;animation:bkBarIn .5s ease both}
+.bkcut .bkbar.t{top:0}.bkcut .bkbar.b{bottom:0}
+@keyframes bkBarIn{from{height:0}}
+.bkcut .bkline{position:relative;z-index:2;max-width:86%;text-align:center;font-size:clamp(14px,2.2vw,19px);color:#fff;letter-spacing:.06em;line-height:1.7;
+  text-shadow:0 2px 8px #000,0 0 18px rgba(120,160,255,.6);margin-bottom:6px}
+.bkcut small{position:relative;z-index:2;font-size:10.5px;color:#8a96b8;margin-bottom:-4%}
+.bkcut.out{opacity:0;transition:.45s}
+@media(max-width:760px){.panel.hkfull>.bkroom,.bkroom{grid-template-columns:1fr;grid-template-rows:auto minmax(220px,40vh) 1fr;grid-template-areas:'head' 'scene' 'side';overflow-y:auto}.bkroom .bkhead h1{font-size:22px}}
+.gbanner.emonav{background:linear-gradient(120deg,#4a3a12,#221a08);border-color:rgba(255,215,106,.5)}
+.gbanner.emonav .bg{background:radial-gradient(circle at 35% 30%,#fff0b0,#c99a10);color:#3a2a04;font-size:22px}
+.gbanner.emonav.on{border-color:#ffd76a;box-shadow:0 0 22px rgba(255,215,106,.45)}
+.emoshop{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:4px 2px 8px;align-content:start}
+.emocard{border-radius:14px;padding:12px;background:linear-gradient(165deg,rgba(44,36,24,.95),rgba(18,14,10,.95));border:1.5px solid rgba(255,215,106,.35);display:flex;flex-direction:column;gap:10px}
+.emocard.own{border-color:rgba(127,230,207,.55)}
+.emoprev{display:grid;gap:4px;padding:6px;border-radius:10px;background:rgba(255,248,236,.06)}
+.emoprev.st{grid-template-columns:repeat(4,1fr)}.emoprev.st span svg{width:100%;height:auto;display:block}
+.emoprev.tx{grid-template-columns:repeat(2,1fr)}.emoprev.tx span{font-size:12px;color:#efe4cb;padding:5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(0,0,0,.25);border-radius:6px}
+.emoinfo b{display:block;font-weight:400;font-size:16px;color:#ffe9b0;letter-spacing:.06em}.emoinfo small{font-size:11.5px;color:#a89a7e}
+.emoact{display:flex;justify-content:flex-end}.emoact em{font-style:normal;font-size:12px;color:#7fe6cf}
+.emoact .emobuy{font:inherit;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;color:#2a1206;background:linear-gradient(120deg,#ffd76a,#ffb03a);border:none;box-shadow:0 3px 0 #a3701c}
+/* ── 백야의 진열 (판 57) ── */
+.dsppill{position:fixed;left:50%;top:calc(var(--tbh,44px) + 54px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:470;display:flex;align-items:center;gap:9px;
+  padding:6px 14px 6px 6px;border-radius:24px;cursor:pointer;color:#fff;font:inherit;background:linear-gradient(100deg,rgba(40,6,12,.92),rgba(80,10,30,.9));
+  border:1.5px solid var(--gc);box-shadow:0 0 22px color-mix(in srgb,var(--gc) 60%,transparent);animation:dspPulse 1.4s ease-in-out infinite}
+.dsppill i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:#1a0a04;background:radial-gradient(circle at 35% 30%,#fff3d0,var(--gc))}
+.dsppill b{display:block;font-weight:400;font-size:12.5px;letter-spacing:.1em}.dsppill small{font-size:11px;color:#ffd0dc;font-variant-numeric:tabular-nums}
+.dsppill.inb{top:auto;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) scale(.85)}
+@keyframes dspPulse{50%{box-shadow:0 0 36px var(--gc)}}
+.dspalert{position:fixed;inset:0;z-index:900;display:grid;place-items:center;pointer-events:auto;animation:dspIn .5s ease both}
+.dspalert.out{opacity:0;transition:.45s}
+@keyframes dspIn{from{opacity:0}}
+.dspalert .dspbg{position:absolute;inset:0;background:radial-gradient(circle,color-mix(in srgb,var(--gc) 35%,transparent),rgba(5,0,4,.88) 65%)}
+.dspalert .dsprays{position:absolute;left:50%;top:50%;width:200vmax;height:200vmax;transform:translate(-50%,-50%);opacity:.35;
+  background:repeating-conic-gradient(from 0deg,var(--gc) 0 4deg,transparent 4deg 16deg);animation:vspin 14s linear infinite;mask:radial-gradient(circle,#000 10%,transparent 55%);-webkit-mask:radial-gradient(circle,#000 10%,transparent 55%)}
+.dspalert .dspin{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:0 16px}
+.dspalert small{font-size:13px;letter-spacing:.2em;color:#ffe9c0;text-shadow:0 0 10px #000}
+.dspalert .dspcard{position:relative;width:150px;height:200px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(160deg,#fff6e0,#e8d2a6);
+  border:3px solid var(--gc);box-shadow:0 0 40px var(--gc),0 0 90px color-mix(in srgb,var(--gc) 50%,transparent);animation:dspCard 1s cubic-bezier(.2,1.5,.4,1) both,dspFloat 2.4s 1s ease-in-out infinite}
+.dspalert .dspcard i{font-style:normal;font-size:78px;color:#1a120a}
+.dspalert .dspcard em{position:absolute;left:8px;top:8px;font-style:normal;font-size:12px;padding:2px 8px;border-radius:5px;color:#fff;background:var(--gc)}
+@keyframes dspCard{from{opacity:0;transform:scale(.2) rotate(-25deg)}}
+@keyframes dspFloat{50%{transform:translateY(-8px)}}
+.dspalert b{font-weight:400;font-size:34px;letter-spacing:.14em;color:#fff;text-shadow:0 0 18px var(--gc),0 2px 4px #000}
+.dspalert span{font-size:14px;color:#ffd9b0}
+.dspalert .dspbtns{display:flex;gap:10px;margin-top:6px}
+.dspalert.hi b{animation:rampFlick .16s steps(2) 6}
+.dsfeat{position:relative;display:flex;align-items:center;gap:16px;padding:12px 16px;border-radius:14px;overflow:hidden;isolation:isolate;
+  background:linear-gradient(100deg,rgba(60,8,20,.95),rgba(20,4,10,.95));border:2px solid var(--gc);box-shadow:0 0 26px color-mix(in srgb,var(--gc) 50%,transparent)}
+.dsfeat:before{content:'';position:absolute;inset:-60%;z-index:-1;opacity:.3;background:conic-gradient(var(--gc),transparent,var(--gc),transparent,var(--gc));animation:vspin 6s linear infinite}
+.dsfeat .dsg{width:64px;height:84px;border-radius:8px;display:grid;place-items:center;font-size:34px;color:#1a120a;background:linear-gradient(160deg,#fff6e0,#e8d2a6);border:2px solid var(--gc);flex:none}
+.dsfeat .dft{flex:1;min-width:0}
+.dsfeat .dft small{display:block;font-size:11px;letter-spacing:.2em;color:#ffcfda}
+.dsfeat .dft b{display:block;font-weight:400;font-size:19px;color:#fff;letter-spacing:.08em}
+.dsfeat .dft span{font-size:11.5px;color:#d8c0c8;line-height:1.5;display:block}
+.dsfeat .dfc{font-size:22px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 0 12px var(--gc)}
+.dsfeat .dsbuy{width:auto!important;padding:9px 18px!important;margin:0!important;flex:none}
+.dsfeat{padding:9px 14px}.dsfeat .dsg{width:52px;height:68px;font-size:28px}
+.dsfeat.got{filter:grayscale(.7) brightness(.75)}
 @media(max-width:760px){.gbody{flex-direction:column}.gnav{width:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px 10px;gap:8px;flex:none}
   .gnav .gsec{display:none}.gbanner{flex:none;min-width:136px;padding:8px 10px}.gbanner .bg{width:32px;height:32px;font-size:17px}.gbanner .bn small{display:none}
   .gbanner:hover{transform:none}.gmain{padding:10px 12px 10px}.dshead{gap:8px}.dsclock{margin-left:0}.dsgrid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}.dsitem .dsg{width:60px;height:78px;font-size:30px}.dstitle{font-size:21px}}
@@ -4451,6 +4552,32 @@ body.bf-pow #hand .card{filter:drop-shadow(0 0 5px rgba(255,200,70,.75))}
 .hkitem.hot{border-color:#2cff7a;box-shadow:0 0 16px rgba(44,255,122,.55);animation:hkMenu 1.6s ease-in-out infinite}
 .hkitem.hot i{color:#b8ff5a;text-shadow:0 0 10px #2cff7a}
 /* 해킹 오염(汚) — 초록 글리치 테두리 */
+/* ── 판 57 — 폭주 · 광 · 감염 ── */
+.unit.rampage .body{filter:drop-shadow(0 0 14px rgba(255,20,20,.9)) drop-shadow(0 0 30px rgba(0,0,0,.8))}
+.unit.rampage .body .glyph{animation:rampShake .18s steps(2) infinite}
+@keyframes rampShake{50%{transform:translate(1px,-1px)}}
+.unit.kwang .body{filter:drop-shadow(0 0 12px rgba(255,110,20,.85))}
+.unit.kwang.rampage .body{filter:drop-shadow(0 0 12px rgba(255,110,20,.85)) drop-shadow(0 0 22px rgba(255,20,20,.9))}
+.rampcut,.kwangcut{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:640;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:16px 60px;background:linear-gradient(90deg,transparent,rgba(30,0,0,.92) 18%,rgba(30,0,0,.92) 82%,transparent);animation:rampIn .45s cubic-bezier(.2,1.4,.4,1) both}
+.rampcut b{font-size:64px;line-height:1;color:#ff2a2a;letter-spacing:.1em;text-shadow:0 0 18px #ff0000,0 0 40px #800,3px 3px 0 #000;animation:rampFlick .12s steps(2) infinite}
+.kwangcut b{font-size:64px;line-height:1;color:#ff8a2a;text-shadow:0 0 18px #ff5a00,0 0 40px #a02000,3px 3px 0 #000}
+.rampcut span,.kwangcut span{font-size:17px;color:#fff;letter-spacing:.12em}
+.rampcut small,.kwangcut small{font-size:12px;color:#ffb0a0}
+.rampcut.out,.kwangcut.out{opacity:0;transform:translate(-50%,-50%) scale(1.15);transition:.5s}
+@keyframes rampIn{from{opacity:0;transform:translate(-50%,-50%) scaleX(.2)}}
+@keyframes rampFlick{50%{opacity:.75;transform:translateX(2px)}}
+.ghwisp{position:absolute;z-index:600;width:30px;height:30px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff,#c9a8ff 35%,rgba(120,60,220,.5) 60%,transparent 72%);box-shadow:0 0 20px #b98cff;filter:blur(.5px)}
+.card.mutG .face{box-shadow:inset 0 0 0 2px rgba(185,140,255,.85),inset 0 0 16px rgba(150,90,255,.5)}
+.card.mutG .face::before{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(ellipse at 50% 110%,rgba(150,90,255,.28),transparent 60%);animation:ghBreath 2.6s ease-in-out infinite}
+@keyframes ghBreath{50%{opacity:.35}}
+.card .cmut .mg{background:radial-gradient(circle,#f4eaff,#b98cff 60%,#3a1a6a);color:#1a0636;box-shadow:0 0 8px #b98cff}
+.unit.rampage .nm:after{content:' 覺 暴';color:#ff4a3a}
+.unit.kwang .nm:after{content:' 狂';color:#ff8a2a}
+.unit.kwang.awake .nm:after{content:' 覺 狂';color:#ff8a2a}
+.unit.kwang.rampage .nm:after{content:' 覺 暴 狂';color:#ff4a3a}
 .card .cmut .mh{background:radial-gradient(circle,#eafff0,#2cff7a 60%,#0a5a2a);color:#002a10;box-shadow:0 0 8px #2cff7a;animation:hbGlitch 1.4s steps(1) infinite}
 .card.mutH .face{box-shadow:inset 0 0 0 2px rgba(44,255,122,.85),inset 0 0 14px rgba(44,255,122,.45)}
 .card.mutH .face::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
@@ -6184,6 +6311,46 @@ body.nochrome .chatfab{display:none}
 .guinv{display:inline-block;margin:2px 6px 2px 0;padding:1px 7px;border:1px solid rgba(224,138,216,.45);border-radius:10px;color:#f0b8e8}
 .guinv u{text-decoration:none;color:#ff9a8a;cursor:pointer;margin-left:4px}
 .chatp .chf{display:flex;gap:6px;padding:8px;border-top:1px solid rgba(127,176,224,.25)}
+/* ── 이모티콘 · 대전 말풍선 · /imply (판 57) ── */
+.chatp .chemo-b{width:34px;flex:none;font-size:17px;border-radius:3px;background:rgba(0,0,0,.35);border:1px solid #4e4738;color:#ffd76a;cursor:pointer}
+.chatp .chemo-b.on{background:rgba(255,215,106,.18);border-color:#ffd76a}
+.chatp .chemo{border-top:1px solid rgba(127,176,224,.25);padding:6px 8px 8px;max-height:46vh;overflow-y:auto}
+.chatp .chemo[hidden]{display:none}
+.emotabs{display:flex;gap:5px;margin-bottom:6px;overflow-x:auto}
+.emotabs button{flex:none;width:42px;height:42px;padding:2px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px solid transparent;cursor:pointer;display:grid;place-items:center;color:#efe4cb;font-size:9px;overflow:hidden}
+.emotabs button svg{width:36px;height:36px}
+.emotabs button i{font-style:normal;white-space:nowrap}
+.emotabs button.on{border-color:#ffd76a;background:rgba(255,215,106,.15)}
+.emotabs button.lock{opacity:.55}
+.emohead{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.emohead b{font-weight:400;font-size:13px;color:#f4e8ca}.emohead small{font-size:10.5px;color:#9a8d74;flex:1;min-width:120px}
+.emohead em{font-style:normal;font-size:10.5px;padding:1px 7px;border-radius:8px;color:#062a1e;background:#7fe6cf}
+.emohead .emobuy{font:inherit;font-size:11.5px;padding:4px 10px;border-radius:12px;cursor:pointer;color:#2a1206;background:linear-gradient(120deg,#ffd76a,#ffb03a);border:none}
+.emogrid{display:grid;gap:5px}
+.emogrid.st{grid-template-columns:repeat(4,1fr)}
+.emogrid.tx{grid-template-columns:repeat(2,1fr)}
+.emogrid button{font:inherit;cursor:pointer;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(200,170,110,.18);color:#efe4cb;padding:3px;transition:.12s}
+.emogrid button:hover{background:rgba(255,215,106,.12);border-color:#ffd76a;transform:translateY(-1px)}
+.emogrid.st button svg{width:100%;height:auto;display:block}
+.emogrid.tx button{font-size:12px;padding:7px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.emogrid.lock button{filter:grayscale(.8);opacity:.5}
+.stk{display:inline-block;width:96px;height:96px;vertical-align:middle;animation:stkPop .35s cubic-bezier(.2,1.6,.4,1) both}
+.stk svg{width:100%;height:100%;filter:drop-shadow(0 3px 5px rgba(0,0,0,.4))}
+.stk.inbub{width:76px;height:76px}
+@keyframes stkPop{from{transform:scale(.4) rotate(-12deg);opacity:0}}
+.chatp .cm .stk{display:block;margin-top:2px}
+.mpbub{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);z-index:30;width:max-content;max-width:220px;min-width:40px;padding:7px 12px;border-radius:14px;
+  background:#fff8ec;color:#2a1a10;font-size:13.5px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.45);border:2px solid #e8c86a;pointer-events:none;
+  word-break:keep-all;text-align:center;animation:bubIn .3s cubic-bezier(.2,1.5,.4,1) both;white-space:normal}
+.mpbub:after{content:'';position:absolute;left:50%;top:100%;transform:translateX(-50%);border:8px solid transparent;border-top-color:#e8c86a}
+.mpbub.me{border-color:#7fb4e8}.mpbub.me:after{border-top-color:#7fb4e8}
+.mpbub.st{background:transparent;border:none;box-shadow:none;padding:0}.mpbub.st:after{display:none}
+.mpbub.out{opacity:0;transform:translateX(-50%) translateY(-8px);transition:.45s}
+@keyframes bubIn{from{opacity:0;transform:translateX(-50%) translateY(10px) scale(.6)}}
+.chatp.mpmode .chh b:after{content:' · 대전';color:#ff9a7a}
+.chatp.imply{animation:implySpin .55s linear 10,implyHue 1.1s linear 5}
+@keyframes implySpin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(.85)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes implyHue{to{filter:hue-rotate(360deg)}}
 .chatp .chi{flex:1;min-width:0;font:inherit;background:rgba(0,0,0,.45);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:7px 9px}
 .chatp .chi:focus{outline:none;border-color:#7fb0e0}
 .chatp .chs{font:inherit;cursor:pointer;background:rgba(60,100,150,.5);border:1px solid #7fb0e0;color:#e8f4ff;border-radius:3px;padding:0 12px}
@@ -10012,7 +10179,7 @@ function cval(c) {
   const v = cdef(c).v(cup(c));
   const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (c.mutZ ? 2 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (c.mutZ ? 2 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -12905,6 +13072,7 @@ function applyDamage(ent, dmg, pierce) {
     if (!ent.halfDone && ent.hp * 2 <= ent.maxHp) {
       ent.halfDone = true;
       if (ent.def.onHalf) ent.def.onHalf(ent);
+      if (ent.def.boss) bossKwang(ent);                 /* 판 57 — 반이 깎이면 「광」 */
     }
     /* 반이 깎이는 순간과 각성이 한꺼번에 올 수도 있으므로 따로 본다 */
     /* 모두의 적은 제 나름의 반 꺾임(onHalf)이 있어 각성까지 얹지 않는다 —
@@ -13449,6 +13617,125 @@ const AWAKEN_MOVES = {
                 sparkles(c.x, c.y, 16, '#ff8a3a', 90); shockRing(c.x, c.y, 260, '#ff6a2a'); } } }
 };
 const AWAKEN_KEYS = Object.keys(AWAKEN_MOVES);
+/* ══ 판 57 — 폭주(暴走) · 광(狂) · 감염(鬼染) ════════════════════
+   폭주 — 각성한 요괴가 35% 로 한 번 더 날뛴다: 치는 힘이 또 2배 (1막은 빼 둔다 — 처음 오른 이를 짓밟지 않게)
+   광   — 보스의 체력이 반 아래로 떨어지는 순간: 주는 피해 +25% · 차례마다 힘 +1 · 「狂」
+   감염 — 귀신·투명한 요괴(원귀·물귀신·그림자·아지랑이·얼굴 없는 것…)가 때리면 15% 로 덱의 부적 하나에 귀기가 옮는다.
+          해킹 박사의 오염처럼 부적에 남는다: 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1. 한 싸움에 두 번까지.
+   멀티 대전·하늘을 가르는 것·해킹맵·백야의 시험에서는 셋 다 일어나지 않는다.
+   ═══════════════════════════════════════════════════════════ */
+const RAMPAGE_P = 0.35, RAMPAGE_MUL = 2, KWANG_MUL = 1.25;
+const MUT_GHOST = 1.3, GHOST_INF = 0.15, GHOST_WEAK = 0.25, GHOST_MAX = 2;
+const GHOST_RE = /귀|령|그림자|유령|도깨비불|넋|저승|사신|무당|아지랑이|꼴 없는|얼굴 없는|이름 없는|공허|없음|빈 절|무덤|메아리|허깨비|투명|죽은 이/;
+const noTwist = b => !b || /^(pvp|mpbot|world|hack|hb|devboss)/.test(b.kind || '') || (G.run && G.run._pvp);
+const isGhost = e => !!(e && e.def && !/^hk_/.test(e.id || '') && (e.shadow || GHOST_RE.test(e.def.n || e.n || '')));
+function rampageRoll(e) {
+  const b = G.b;
+  if (noTwist(b) || !e || !e.awake || e.rampage || e.hp <= 0) return false;
+  if ((G.run && G.run.act || 1) < 2) return false;
+  if (rnd() >= RAMPAGE_P) return false;
+  e.rampage = true;
+  e.dmgMul = (e.dmgMul || 1) * RAMPAGE_MUL;          /* 표시는 이름 뒤 「暴」 — 부적의 「폭주」 상태와 헷갈리지 않게 상태로 두지 않는다 */
+  if (e.el) e.el.classList.add('rampage');
+  setTimeout(() => {
+    try {
+      const c = e.el ? centerOf(e.el) : { x: innerWidth * .65, y: innerHeight * .4 };
+      stampWord('暴 走', '#ff2020');
+      screenFlash('radial-gradient(circle at 65% 40%,rgba(255,30,30,.6),rgba(20,0,0,.85))', 900);
+      rgbSplit(); shake(true); blink(1.2); hitstop(true);
+      SND.boss(); SND.thunder(); setTimeout(() => { try { SND.crit(); SND.gong(); } catch (x) {} }, 260);
+      shockRing(c.x, c.y, 520, '#ff2020'); shockRing(c.x, c.y, 360, '#000');
+      FX.burst(c.x, c.y, 50, '255,30,30', 9, 70, 7); sparkles(c.x, c.y, 24, '#ff6a4a', 200);
+      for (let i = 0; i < 4; i++) setTimeout(() => lightBeam(c.x + (i - 1.5) * 70, i % 2 ? 'rgba(0,0,0,.55)' : 'rgba(255,30,30,.6)', 140), 120 + i * 80);
+      const n = el('div', 'rampcut', `<b>暴走</b><span>${wEsc(e.n)} — 폭주</span><small>치는 힘 또 ×${RAMPAGE_MUL}</small>`);
+      document.body.appendChild(n); setTimeout(() => n.classList.add('out'), 1300); setTimeout(() => n.remove(), 1900);
+    } catch (x) {}
+  }, 520);
+  logAdd('hurt', `${e.n} — 폭주 (힘 ×${RAMPAGE_MUL})`, 0);
+  toast(`${e.n} — 각성한 채 폭주했다! 치는 힘이 또 ${RAMPAGE_MUL}배`);
+  syncAll();
+  return true;
+}
+function bossKwang(e) {
+  const b = G.b;
+  if (noTwist(b) || !e || !e.def || !e.def.boss || e.kwang || e.hp <= 0) return;
+  e.kwang = true;
+  e.dmgMul = (e.dmgMul || 1) * KWANG_MUL;            /* 표시는 이름 뒤 「狂」 */
+  if (e.el) e.el.classList.add('kwang');
+  /* 보스 제 「반 꺾임」 말(onHalf)이 먼저 지나가게 — 겹치면 글자가 엉킨다 */
+  setTimeout(() => { try {
+    const c = e.el ? centerOf(e.el) : { x: innerWidth * .65, y: innerHeight * .4 };
+    stampWord('狂', '#ff3a1a');
+    screenFlash('radial-gradient(circle at 65% 40%,rgba(255,80,20,.5),rgba(40,0,0,.75))', 800);
+    zoomPunch(); shake(true); rushVignette('rgba(220,40,10,.55)');
+    SND.charge(); setTimeout(() => { try { SND.boss(); } catch (x) {} }, 200);
+    shockRing(c.x, c.y, 420, '#ff5a1a'); sparkles(c.x, c.y, 26, '#ffb04a', 170);
+    const n = el('div', 'kwangcut', `<b>狂</b><span>${wEsc(e.n)} — 광(狂)</span><small>반이 깎여 미쳐 날뛴다 · 주는 피해 +25% · 차례마다 힘 +1</small>`);
+    document.body.appendChild(n); setTimeout(() => n.classList.add('out'), 1500); setTimeout(() => n.remove(), 2100);
+  } catch (x) {} }, e.def.onHalf ? 1300 : 120);
+  logAdd('hurt', `${e.n} — 광(狂)`, 0);
+  syncAll();
+}
+function ghostInfect(e) {
+  const b = G.b, run = G.run;
+  if (noTwist(b) || !run || !isGhost(e) || (b.ghostN || 0) >= GHOST_MAX) return;
+  if (rnd() >= GHOST_INF) return;
+  const cand = run.deck.filter(c => !c.mutG && CARDS[c.id] && CARDS[c.id].rar !== 'curse' && CARDS[c.id].type !== 'curse');
+  if (!cand.length) return;
+  const card = pick(cand);
+  card.mutG = true; b.ghostN = (b.ghostN || 0) + 1;
+  for (const pile of [b.hand, b.drawPile, b.discardPile, b.exhaustPile]) for (const x of pile || []) if (x.uid === card.uid) x.mutG = true;
+  saveRun();
+  try {
+    const from = e.el ? centerOf(e.el) : { x: innerWidth * .65, y: innerHeight * .4 }, to = { x: innerWidth / 2, y: innerHeight - 120 };
+    for (let i = 0; i < 3; i++) {
+      const w = el('div', 'ghwisp'); w.style.cssText = `left:${from.x}px;top:${from.y}px`;
+      w.animate([{ transform: 'translate(-50%,-50%) scale(.6)', opacity: 0 }, { opacity: 1, offset: .2 },
+        { transform: `translate(calc(-50% + ${(to.x - from.x) * .5 + (i - 1) * 60}px),calc(-50% + ${(to.y - from.y) * .5 - 90}px)) scale(1.2)`, offset: .55 },
+        { transform: `translate(calc(-50% + ${to.x - from.x}px),calc(-50% + ${to.y - from.y}px)) scale(.4)`, opacity: 0 }], { duration: 900 + i * 120, easing: 'ease-in-out', fill: 'forwards' });
+      $('#app').appendChild(w); setTimeout(() => w.remove(), 1200);
+    }
+    setTimeout(() => { try { stampWord('感 染', '#b98cff'); screenFlash('rgba(120,60,200,.3)', 500); SND.blip(220, { dur: .5, type: 'sine', vol: .07, to: 110, rev: .8 }); } catch (x) {} }, 700);
+  } catch (x) {}
+  toast(`감염 — ${e.n}의 귀기가 「${cname(card)}」에 옮았다 (鬼 · 수치 ${MUT_GHOST}배 · 낼 때 25% 모두 약화)`);
+  logAdd('hurt', `감염 — 「${cname(card)}」`, 0);
+  syncAll();
+}
+/* 귀기 감염된 부적을 냈다 */
+function ghostOnPlay(card) {
+  if (!card || !card.mutG || !G.b || rnd() >= GHOST_WEAK) return;
+  for (const t of alive()) st(t, 'weak', 1);
+  try { stampWord('鬼', '#b98cff'); for (const t of alive()) if (t.el) { const c = centerOf(t.el); sparkles(c.x, c.y, 10, '#d8b8ff', 90); } } catch (x) {}
+}
+
+/* ══ 덱 바꾸기 — 백야가 퍼뜨리면 모두의 덱이 한동안 ?X급 · ?급으로 (판 57) ═══════════
+   이벤트 동안 진도를 빨리 빼라고. 원래 덱은 적어 두었다가, 백야가 끄거나 때가 지나면 그대로 돌려준다.
+   그 사이에 새로 얻은 부적은 돌아갈 때 함께 남는다. 싸우는 중에는 바꾸지 않고 싸움이 끝나면 바꾼다.
+   멀티 대전·하늘을 가르는 것에서는 건드리지 않는다.
+   ═══════════════════════════════════════════════════════════ */
+const DECKX_N = { qx: '?X급', unknown: '?급' };
+const deckxLive = () => { const x = LIVE.deckx; return x && x.id && DECKX_N[x.k] && srvNow() < (+x.until || 0) ? x : null; };
+function deckxTick() {
+  const run = G.run; if (!run || run._pvp || G.b || G.scene === 'title') return;
+  const x = deckxLive();
+  if (x && run._deckx !== x.id) {
+    if (!run._evOld) run._evOld = run.deck.filter(c => !c._evx).map(c => Object.assign({}, c));
+    const ids = (x.k === 'qx' ? QX_IDS() : UNKNOWN_IDS()); if (!ids.length) return;
+    const n = Math.max(12, run._evOld.length);
+    run.deck = Array.from({ length: n }, (_, i) => Object.assign(mkCard(ids[i % ids.length], true), { _evx: 1 }));
+    run._deckx = x.id; run.plan = [];
+    saveRun(); try { renderTop(); } catch (e) {}
+    try { SND.unlock(); SND.gong(); stampWord(x.k === 'qx' ? '?X 급' : '? 급', x.k === 'qx' ? '#ffd84a' : '#b98cff');
+      screenFlash(x.k === 'qx' ? 'radial-gradient(circle,rgba(255,240,180,.7),rgba(180,120,10,.4))' : 'radial-gradient(circle,rgba(220,190,255,.7),rgba(80,30,160,.5))', 900); } catch (e) {}
+    toast(`${x.by || '백야'}의 이벤트 — 덱이 ${DECKX_N[x.k]}으로 바뀌었다 (끝나면 원래 덱으로 돌아온다)`);
+  } else if (!x && run._deckx) {
+    const keep = run.deck.filter(c => !c._evx);
+    run.deck = (run._evOld || []).concat(keep);
+    delete run._evOld; delete run._deckx; run.plan = [];
+    saveRun(); try { renderTop(); } catch (e) {}
+    toast('덱 바꾸기가 끝났다 — 원래 덱으로 돌아왔다' + (keep.length ? ` (그사이 얻은 ${keep.length}장도 함께)` : ''));
+  }
+}
 function awaken(e) {
   if (e.awake || !e.def.boss) return;
   e.awake = true;
@@ -13465,6 +13752,7 @@ function awaken(e) {
     for (let i = 0; i < 5; i++) setTimeout(() => lightBeam(c.x + (i - 2) * 80, i % 2 ? 'rgba(255,210,120,.55)' : 'rgba(255,90,40,.65)', 150), 420 + i * 90);
   }
   syncAll();
+  setTimeout(() => { try { rampageRoll(e); } catch (x) {} }, 2100);       /* 판 57 — 35% 로 폭주 (각성 그림이 지나간 뒤) */
 }
 function pickIntent(e) {
   if (e.hp <= 0) return;
@@ -13546,6 +13834,7 @@ function luckAwaken(b) {
   logAdd('hurt', `운 — ${woke.map(e => e.n).join(' · ')} 각성`, 0);
   toast(`운이 기울었다 — ${woke.map(e => e.n).join(' · ')} 각성 (힘 ${LUCK_MUL}배)`);
   syncAll();
+  woke.forEach((e, i) => setTimeout(() => { try { rampageRoll(e); } catch (x) {} }, 700 + i * 500));   /* 판 57 — 35% 로 폭주 */
 }
 
 /* --- 플레이어 턴 시작 --- */
@@ -13570,6 +13859,11 @@ async function _startPlayerTurn(b) {
   const p = P();
   if (!p.s.barricade) p.block = 0;
   b.energy = b.maxEnergy + (p.s.focus || 0);
+  if (b._mpSecond && b.turn === 1) {                   /* 대전 — 뒤에 두는 쪽의 첫 차례 */
+    const f = b._mpSecond; b.energy += f.qi; if (f.blk) blk(f.blk, true);
+    const say = [f.draw ? `부적 ${f.draw}장 더` : '', f.qi ? `기 +${f.qi}` : '', f.blk ? `방어 ${f.blk}` : ''].filter(Boolean).join(' · ');
+    if (say) { toast('후공의 기세 — ' + say); try { stampWord('後 攻', '#9fd8ff'); } catch (e) {} }
+  }
   luckAwaken(b);                                        /* 운(運) — 요괴가 깨어날 수도 있다 */
   if (p.s.godmode) { b.energy += 10; b.drawMod = (b.drawMod || 0) + 5; }   /* 어드민급 「신권」 */
   if (devPw('qi')) b.energy = Math.max(b.energy, 10);                     /* 개발자의 권력 「기 무한」 */
@@ -13841,7 +14135,8 @@ async function playCard(card, target) {
   const ctx = { v: cval(card), u: cup(card), t: target, card, x: spent };
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
-  if (card.mutH && times === 1 && rnd() < MUT_HACK_ECHO) { times = 2; hackEchoFx(); }   /* 해킹 오염 — 버그가 나 한 번 더 */
+  if (card.mutH && times === 1 && rnd() < MUT_HACK_ECHO) { times = 2; hackEchoFx(); }
+  try { ghostOnPlay(card); } catch (x) {}                                       /* 귀기 감염 — 25% 로 모두 약화 */   /* 해킹 오염 — 버그가 나 한 번 더 */
   /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
      아래 finally 를 건너뛰어 자물쇠가 걸린 채 남았다 */
   try {
@@ -14053,6 +14348,7 @@ async function _endTurn() {
       if (e.hp <= 0 || b.over) continue; }
     if (e.s.stun) { st(e, 'stun', -1); floatText(e, '무력', 'blk'); await wait(420); decay(e); pickIntent(e); continue; }
     highlight(e, true);
+    if (e.kwang) st(e, 'str', 1);                       /* 광 — 차례마다 힘 +1 */
     await wait(230);
     await doMove(e, e.mv);
     /* 한 수를 적어 둔다 — 다음 수를 고를 때(next) 이것을 본다.
@@ -14126,6 +14422,7 @@ async function doMove(e, m) {
     }
   }
   if (!G.b || b.over) return;
+  if (m.d) ghostInfect(e);                                   /* 판 57 — 귀신·투명한 요괴의 감염 */
   if (m.blk) { eblk(e, m.blk);
     if (e.el) { const c2 = centerOf(e.el); shockRing(c2.x, c2.y, 130, '#7fb4e8');
       sparkles(c2.x, c2.y, 6, '#bfe0ff', 46); }
@@ -15598,6 +15895,8 @@ function syncEnemies() {
     fillStats(e.el, e);
     unitAura(e.el, e);
     if (e.awake) { if (!e.el.classList.contains('awake')) e.el.classList.add('awake'); awakenSeal(e); }
+    if (e.rampage && !e.el.classList.contains('rampage')) e.el.classList.add('rampage');
+    if (e.kwang && !e.el.classList.contains('kwang')) e.el.classList.add('kwang');
     /* 의도 */
     const box = e.el.querySelector('.intent');
     const m = e.mv;
@@ -15687,7 +15986,7 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutZ ? ' mutZ' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutG ? ' mutG' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutZ ? ' mutZ' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   const fu = c.mutFu ? c.mutFu.split('+') : null;                        /* 융합 — 반반 아우라 */
@@ -15703,7 +16002,7 @@ function cardNode(c, opts) {
       ${c.mutZ ? '<div class="mutfx mfzw"><span class="mfZ"><i></i><i></i><i></i></span></div>' : ''}${c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${fu ? (fu.length === 3
         ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuM">${MUT_FXH[fu[1]]}</span><span class="fuR">${MUT_FXH[fu[2]]}</span>`
         : `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span>`) + '<span class="fuB"></span>' : ''}</div>` : ''}
-      ${c.mutS || c.mutC || c.mutH || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu || c.mutZ ? `<div class="cmut">${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH || c.mutG || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutFu || c.mutZ ? `<div class="cmut">${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}${c.mutG ? '<i class="mg" title="귀기 감염(鬼) — 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1">鬼</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
       <i class="cglare"></i>
     </div>
@@ -20975,6 +21274,58 @@ function cpnBarFill(host, sel, cb) {
   if (!cpnTotal()) host.appendChild(el('em', '', '<small style="color:#7a7263;margin-left:6px">— 퍼뜨리기·우편·비밀 코드·바퀴로 받는다</small>'));
 }
 
+/* ══ 백야의 진열 · 모두 새로 진열 · 대전 선공 보정 (판 57) ════════════
+   백야가 부적 한 장을 모두의 일일상점 맨 위에 「3분」 동안 내건다 — 화려한 알림이 뜨고, 한 사람 한 번 산다.
+   「모두 새로 진열」은 모두의 일일상점을 한 번 공짜로 다시 굴린다.
+   대전 — 두 번째부터 두는 쪽은 첫 차례에 보정을 받는다 (기본: 부적 1장 · 기 1). 백야가 퍼뜨리기에서 바꾼다.
+   ═══════════════════════════════════════════════════════════ */
+const PVPFIX_DEF = { qi: 1, draw: 1, blk: 0 };
+const pvpFix = () => { const x = LIVE.pvpfix; return x && typeof x === 'object' ? { qi: +x.qi || 0, draw: +x.draw || 0, blk: +x.blk || 0 } : PVPFIX_DEF; };
+const dspawnLive = () => { const x = LIVE.dspawn; return x && x.id && CARDS[x.card] && srvNow() < (+x.until || 0) ? x : null; };
+const dspawnGot = id => !!(META.dspGot && META.dspGot[id]);
+function dspawnTick() {
+  /* 모두 새로 진열 */
+  const r = LIVE.dsroll;
+  if (r && r.id && META.dsrollSeen !== r.id) {
+    const first = META.dsrollSeen == null; META.dsrollSeen = r.id;
+    if (!first || Date.now() - r.id < 10 * 60000) { try { dshopGet(true); META.dshop.rr = Math.max(0, (META.dshop.rr || 1) - 1); } catch (e) {} toast(`市 ${r.by || '백야'}가 모두의 일일상점을 새로 진열했다`); }
+    saveMeta();
+  }
+  const x = dspawnLive(); let n = $('#dsppill');
+  if (!x || !acctOn() || dspawnGot(x.id)) { if (n) n.remove(); return; }
+  const d = CARDS[x.card], gc = GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a', left = Math.max(0, x.until - srvNow());
+  /* 처음 보는 진열 — 화려하게 알린다 */
+  META.dspSeen = META.dspSeen || {};
+  if (!META.dspSeen[x.id]) { META.dspSeen[x.id] = 1; for (const k of Object.keys(META.dspSeen)) if (Date.now() - +k > 86400000) delete META.dspSeen[k]; saveMeta(); dspawnAlert(x); }
+  if (!n) { n = el('button', 'dsppill'); n.id = 'dsppill'; n.onclick = () => dspawnGo(); document.body.appendChild(n); }
+  n.style.setProperty('--gc', gc);
+  n.innerHTML = `<i>${d.g}</i><span><b>백야의 진열</b><small>${GRADE[d.rar] ? GRADE[d.rar].n : ''} ${wEsc(d.n)}${x.up ? '+' : ''} · ${Math.floor(left / 60000)}:${String(Math.floor(left / 1000) % 60).padStart(2, '0')}</small></span>`;
+  n.classList.toggle('inb', !!G.b);
+  n.style.display = $('.gacha') ? 'none' : '';          /* 상점 안에서는 맨 위 칸이 대신 보인다 */
+}
+function dspawnGo() {
+  if (!G.run) { toast('모험 중에 상점에서 산다'); return; }
+  if (G.b) { toast('싸움이 끝나면 상점(匣)에서 — 3분 안에!'); return; }
+  closeOverlay(); G.run.shopTab = 'daily'; showSpecialShop();
+}
+function dspawnAlert(x) {
+  const d = CARDS[x.card], G0 = GRADE[d.rar] || {}, pal = CAST_PAL[d.rar] || CAST_PAL.ssx, gc = pal[1];
+  const hi = castTier(d.rar) >= 6;
+  const n = el('div', 'dspalert' + (hi ? ' hi' : ''), `<div class="dspbg"></div><div class="dsprays"></div>
+    <div class="dspin"><small>白 ${wEsc(x.by || '백야')}가 일일상점에 풀었다 · 3분 한정</small>
+      <div class="dspcard"><i>${d.g}</i><em>${wEsc(G0.s || '')}</em></div>
+      <b>${wEsc(d.n)}${x.up ? '+' : ''}</b><span>${wEsc(G0.n || '')} · 玉${x.price} · 한 사람 한 번</span>
+      <div class="dspbtns"><button class="brush-btn gold" id="dsp_go">상점으로</button><button class="brush-btn ghost" id="dsp_x" style="color:#e9dfc9;border-color:#8a7f68">나중에</button></div></div>`);
+  n.style.setProperty('--gc', gc);
+  document.body.appendChild(n);
+  const close = () => { n.classList.add('out'); setTimeout(() => n.remove(), 500); };
+  n.querySelector('#dsp_go').onclick = () => { close(); dspawnGo(); };
+  n.querySelector('#dsp_x').onclick = close;
+  setTimeout(() => { if (n.isConnected) close(); }, 9000);
+  try { SND.unlock(); SND.gong(); if (hi) { SND.thunder(); blink(1.2); rgbSplit(); } screenFlash(`radial-gradient(circle,rgba(255,255,255,.85),${gc}99)`, 900); shake(hi);
+    const cx = innerWidth / 2, cy = innerHeight / 2; shockRing(cx, cy, 520, gc); sparkles(cx, cy, 40, '#fff4d0', 240); FX.gold(cx, cy, 60);
+    for (let i = 0; i < 5; i++) setTimeout(() => lightBeam(cx + (i - 2) * 110, i % 2 ? 'rgba(255,230,160,.5)' : gc + '99', 160), 200 + i * 90); } catch (e) {}
+}
 function showSpecialShop(refill) {
   G.scene = 'special';
   const run = G.run;
@@ -20982,7 +21333,7 @@ function showSpecialShop(refill) {
   if (run.banner == null) run.banner = 3;
   if (refill) run.banner = 3;
   let tabGrade = 'all', cpnSel = '';
-  let onDaily = !refill && run.shopTab !== 'box';
+  let onDaily = !refill && run.shopTab !== 'box' && run.shopTab !== 'emo', onEmo = !refill && run.shopTab === 'emo';
 
   function draw() {
     const bi = run.banner, B = BANNERS[bi];
@@ -21042,20 +21393,25 @@ function showSpecialShop(refill) {
     const nav = p.querySelector('.gnav');
     nav.appendChild(el('div', 'gsec', '오 늘'));
     const DD = dshopGet(), left = DD.items.filter(x => !x.sold).length;
-    const dn = el('button', 'gbanner daily' + (onDaily ? ' on' : ''),
+    const dn = el('button', 'gbanner daily' + (onDaily && !onEmo ? ' on' : ''),
       `<div class="bg">市</div><div class="bn"><b>일일상점</b><small>${left ? `남은 ${left}칸 · 다이아` : '오늘은 다 팔렸다'}</small></div>
        ${DD.items.some(x => x.g === 'qx' && !x.sold) ? '<div class="tag" style="background:#c99a10">?X</div>' : saleNow() ? `<div class="tag">−${saleNow().pct}%</div>` : '<div class="tag">日</div>'}`);
-    dn.onclick = () => { if (onDaily) return; onDaily = true; run.shopTab = 'daily'; SND.ui(); draw(); };
+    dn.onclick = () => { if (onDaily && !onEmo) return; onDaily = true; onEmo = false; run.shopTab = 'daily'; SND.ui(); draw(); };
     nav.appendChild(dn);
     nav.appendChild(el('div', 'gsec', '뽑 기'));
     BANNERS.forEach((b, i) => {
-      const n = el('button', 'gbanner' + (b.hot ? ' hot' : '') + (i === bi && !onDaily ? ' on' : ''),
+      const n = el('button', 'gbanner' + (b.hot ? ' hot' : '') + (i === bi && !onDaily && !onEmo ? ' on' : ''),
         `<div class="bg">${b.g}</div><div class="bn"><b>${b.n}</b><small>${b.sub}</small></div>
          ${b.hot ? '<div class="tag">HOT</div>' : ''}`);
-      n.onclick = () => { if (i === bi && !onDaily) return; onDaily = false; run.shopTab = 'box'; run.banner = i; tabGrade = 'all'; SND.ui(); draw(); };
+      n.onclick = () => { if (i === bi && !onDaily && !onEmo) return; onDaily = false; onEmo = false; run.shopTab = 'box'; run.banner = i; tabGrade = 'all'; SND.ui(); draw(); };
       if (b.vip) n.classList.add('vipnav');
       nav.appendChild(n);
     });
+    nav.appendChild(el('div', 'gsec', '꾸 밈'));
+    const en = el('button', 'gbanner emonav' + (onEmo ? ' on' : ''), `<div class="bg">☺</div><div class="bn"><b>이모티콘</b><small>박사 스티커 · 글 이모티콘</small></div>`);
+    en.onclick = () => { if (onEmo) return; onEmo = true; onDaily = false; run.shopTab = 'emo'; SND.ui(); draw(); };
+    nav.appendChild(en);
+    if (onEmo) { renderEmoShop(p); return; }
 
     if (onDaily) { renderDaily(p); return; }
     if (B.vip) { renderVip(p); return; }
@@ -21132,6 +21488,24 @@ function showSpecialShop(refill) {
 
     renderBonus(p, cur);
   }
+  /* ── 이모티콘 — 팩 단위 (카톡처럼) ─────────────────── */
+  function renderEmoShop(p) {
+    const main = p.querySelector('.gmain');
+    main.innerHTML = `<div class="dshead"><div class="dstitle" style="color:#ffe9b0">이모티콘<small>채팅에서 ☺ 단추로 쓴다 · 기본 이모지 대신 · 한 번 사면 영영 · ${caster() ? '<b style="color:#7fe6cf">백야는 모두 공짜</b>' : '「박사의 하루」는 공짜'}</small></div></div>
+      <div class="emoshop"></div>`;
+    const box = main.querySelector('.emoshop');
+    const paint = () => { box.innerHTML = '';
+      for (const k of Object.keys(EMO_PACKS)) {
+        const P0 = EMO_PACKS[k], own = emoOwn(k);
+        const c = el('div', 'emocard' + (own ? ' own' : ''), `<div class="emoprev ${P0.kind}">${P0.kind === 'st' ? P0.st.map(s => `<span>${docSticker(...s)}</span>`).join('') : P0.tx.slice(0, 8).map(s => `<span>${wEsc(s)}</span>`).join('')}</div>
+          <div class="emoinfo"><b>${wEsc(P0.n)}</b><small>${wEsc(P0.d)} · ${P0.kind === 'st' ? '스티커 ' + P0.st.length : '글 ' + P0.tx.length}</small></div>
+          <div class="emoact">${own ? `<em>${P0.free ? '공짜 · 가짐' : caster() ? '백야 — 공짜로 받았다' : '가짐'}</em>` : `<button class="emobuy">${won(P0.price)} 으로 산다</button>`}</div>`);
+        const bb = c.querySelector('.emobuy'); if (bb) bb.onclick = () => askKrw('이모티콘 「' + P0.n + '」', P0.price, '한 번 사면 영영');
+        box.appendChild(c);
+      } };
+    paint(); emoLoad(true).then(() => { if (box.isConnected) paint(); });
+    p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+  }
   /* 할인권을 고르면 값 앞에 원래 값을 그어 보인다 */
   function gCost(n) { const c = cpnCost(n, cpnHave(cpnSel) ? cpnSel : ''); return c < n ? `<s>玉${n}</s>玉${c}` : '玉' + n; }
   /* ── 일일상점 ───────────────────────────────────────── */
@@ -21143,11 +21517,35 @@ function showSpecialShop(refill) {
     main.innerHTML = `<div class="dshead"><div class="dstitle">일일상점<small>날마다 자정(한국 시각)에 새로 진열 · 다이아로만 산다</small></div>
         <div class="dsclock">새 진열까지<b id="ds_clk">${dshopLeft()}</b></div></div>
       ${sale ? `<div class="dssale"><b>오늘의 특가 −${sale.pct}%</b><span>${wEsc(sale.by || '백야')}이 걸었다 · 일일상점 값에 먼저 붙는다</span></div>` : ''}
+      <div id="ds_feat"></div>
       <div class="cpnbar" id="ds_cpn"></div>
       <div class="dsgrid"></div>
       <div class="dsfoot"><button class="dsrr" id="ds_rr">↻ 새로 진열 ${D.rr ? '· 玉' + DSHOP_RR : '· 오늘 한 번 공짜'}</button>
         <span>한 칸마다 ${odds} · <b class="qx">그리고 아주 드물게 ?X급 0.01%</b></span></div>`;
     cpnBarFill(main.querySelector('#ds_cpn'), cpnSel, k => { cpnSel = k; renderDaily(p); });
+    /* 백야의 진열 — 3분 한정 · 한 사람 한 번 */
+    const fx = dspawnLive();
+    if (fx) {
+      const fd = CARDS[fx.card], fg = GRADE[fd.rar] || {}, got = dspawnGot(fx.id), price = cpnCost(fx.price, cpnSel);
+      const f = el('div', 'dsfeat' + (got ? ' got' : ''), `<div class="dsg">${fd.g}</div>
+        <div class="dft"><small>白 ${wEsc(fx.by || '백야')}의 진열 · 3분 한정 · 한 사람 한 번</small><b>${wEsc(fd.n)}${fx.up ? '+' : ''} <em style="font-style:normal;font-size:12px;color:${fg.c}">${wEsc(fg.n || '')}</em></b>
+          <span>${fd.txt(fd.v(!!fx.up), !!fx.up).replace(/<[^>]+>/g, '')}</span></div>
+        <div class="dfc" id="ds_fc">${(l => Math.floor(l / 60000) + ':' + String(Math.floor(l / 1000) % 60).padStart(2, '0'))(Math.max(0, fx.until - srvNow()))}</div>
+        ${got ? '<span style="color:#9fe0c0">샀다</span>' : `<button class="dsbuy${(run.dia || 0) < price ? ' poor' : ''}">${price < fx.price ? `<s>玉${fx.price}</s>` : ''}玉${price}</button>`}`);
+      f.style.setProperty('--gc', (CAST_PAL[fd.rar] || [])[1] || fg.c || '#ffd76a');
+      main.querySelector('#ds_feat').appendChild(f);
+      f.querySelector('.dsg').onclick = () => showCardDetail(fx.card);
+      const bb = f.querySelector('.dsbuy'); if (bb) bb.onclick = () => {
+        const x2 = dspawnLive(); if (!x2 || x2.id !== fx.id) { toast('3분이 지났다'); renderDaily(p); return; }
+        const k = cpnHave(cpnSel) ? cpnSel : '', cost = cpnCost(x2.price, k);
+        if ((run.dia || 0) < cost) { SND.err(); toast(`다이아가 모자란다 — 玉${cost} 필요`); return; }
+        run.dia -= cost; if (k) cpnUse(k);
+        META.dspGot = META.dspGot || {}; META.dspGot[x2.id] = Date.now(); saveMeta();
+        run.deck.push(mkCard(x2.card, !!x2.up)); run.stats.cards++; dexAdd('cards', x2.card); saveRun(); renderTop();
+        try { const c = centerOf(f); SND.gong(); FX.gold(c.x, c.y, 50); sparkles(c.x, c.y, 24, '#fff2c0', 160); screenFlash('rgba(255,220,150,.35)', 600); stampWord(fg.s || '白', fg.c || '#ffd76a'); } catch (e) {}
+        toast(`${fd.n}${x2.up ? '+' : ''}을 샀다 — 玉${cost}`); dspawnTick(); setTimeout(() => draw(), 400);
+      };
+    }
     const grid = main.querySelector('.dsgrid');
     D.items.forEach((it, i) => {
       const d = CARDS[it.id]; if (!d) return;
@@ -21169,6 +21567,7 @@ function showSpecialShop(refill) {
       dshopGet(true); SND.shuffle ? SND.shuffle() : SND.ui(); draw();
     };
     const clk = setInterval(() => { const c = $('#ds_clk'); if (!c || !c.isConnected) { clearInterval(clk); return; }
+      const fc = $('#ds_fc'), fx2 = dspawnLive(); if (fc) { if (!fx2) { fc.textContent = '끝'; } else { const l = fx2.until - srvNow(); fc.textContent = Math.floor(l / 60000) + ':' + String(Math.floor(l / 1000) % 60).padStart(2, '0'); } }
       if (META.dshop && META.dshop.day !== qDay()) { clearInterval(clk); toast('일일상점이 새로 진열되었다'); draw(); return; } c.textContent = dshopLeft(); }, 1000);
     p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
     if (D.items.some(x => x.g === 'qx' && !x.sold) && !D.qxSeen) { D.qxSeen = 1; saveMeta();
@@ -25386,6 +25785,7 @@ function grantBundle(b) {
   META.jp = (META.jp || 0) + jp; META.jpTotal = (META.jpTotal || 0) + jp;
   const mats = []; for (const k in (b.mats || {})) if (MAT_DEF[k] && +b.mats[k] > 0) { META.mat = META.mat || {}; META.mat[k] = matHave(k) + (+b.mats[k]); mats.push(MAT_DEF[k].n + ' ' + b.mats[k]); }
   if (b.cpn) { const c = cpnAdd(b.cpn); if (c) mats.push(c); }
+  if (Array.isArray(b.emo) && b.emo.length) { META.emo = META.emo || {}; for (const k of b.emo) if (EMO_PACKS[k]) { META.emo[k] = 1; mats.push('이모티콘 「' + EMO_PACKS[k].n + '」'); } EMO.at = 0; }
   if (G.run) {
     for (const id of cards) { G.run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
     G.run.gold += gold; G.run.dia = (G.run.dia || 0) + dia; saveRun(); renderTop();
@@ -25400,7 +25800,8 @@ const mailChips = m => [m.gold ? `<span class="mch g"><i>金</i>${m.gold.toLocal
   m.jp ? `<span class="mch j"><i>精</i>${m.jp.toLocaleString()}</span>` : '',
   ...Object.keys(m.mats || {}).filter(k => MAT_DEF[k] && m.mats[k] > 0).map(k => `<span class="mch c" style="--gc:${MAT_DEF[k].c}"><i>${MAT_DEF[k].g}</i>${MAT_DEF[k].n} ×${m.mats[k]}</span>`),
   ...(m.cards || []).filter(id => CARDS[id]).map(id => `<span class="mch c" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}</span>`),
-  ...CPN_KS.filter(k => m.cpn && +m.cpn[k] > 0).map(k => `<span class="mch c" style="--gc:${CPN[k].c}"><i>券</i>${CPN[k].n} ×${m.cpn[k]}</span>`)].join('');
+  ...CPN_KS.filter(k => m.cpn && +m.cpn[k] > 0).map(k => `<span class="mch c" style="--gc:${CPN[k].c}"><i>券</i>${CPN[k].n} ×${m.cpn[k]}</span>`),
+  ...(m.emo || []).filter(k => EMO_PACKS[k]).map(k => `<span class="mch c" style="--gc:#ffd76a"><i>☺</i>${EMO_PACKS[k].n}</span>`)].join('');
 const mailLeft = m => { const ms = (+m.until || 0) - srvNow(); return ms > 86400000 ? Math.ceil(ms / 86400000) + '일 남음' : ms > 3600000 ? Math.ceil(ms / 3600000) + '시간 남음' : ms > 0 ? Math.ceil(ms / 60000) + '분 남음' : '기한 지남'; };
 async function mailClaim(id, quiet) {
   const r = await acctAsk('/mail/claim', { token: ACCT.token, id }, 12000);
@@ -25981,6 +26382,7 @@ function drawMailCompose(grid) {
           <label><i style="color:#c9a8ff">精</i>정진<input id="mc_jp" type="number" min="0" max="100000" value="${D.jp}"></label>
           ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-mat="${k}" type="number" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
           ${CPN_KS.map(k => `<label><i style="color:${CPN[k].c}">券</i>${CPN[k].n}<input data-cpn="${k}" type="number" min="0" max="99" value="${D.cpn[k] || 0}"></label>`).join('')}
+          ${Object.keys(EMO_PACKS).filter(k => !EMO_PACKS[k].free).map(k => `<label><i style="color:#ffd76a">☺</i>${EMO_PACKS[k].n}<input data-emo="${k}" type="checkbox"${(D.emo || []).includes(k) ? ' checked' : ''} style="width:auto"></label>`).join('')}
         </div>
         <label class="mcf">부적 (쉼표로 · 여덟 장까지)<input id="mc_cards" placeholder="이름을 치면 고를 수 있다" value="${wEsc(D.cards)}"></label>
         <div class="mcrow"><label class="mcf sm">기한<select id="mc_days">${[1, 3, 7, 14, 30].map(d => `<option value="${d}"${+D.days === d ? ' selected' : ''}>${d}일</option>`).join('')}</select></label>
@@ -25998,9 +26400,10 @@ function drawMailCompose(grid) {
     D.cards = q('#mc_cards').value; D.days = +q('#mc_days').value || 7;
     D.mats = {}; grid.querySelectorAll('[data-mat]').forEach(i => { const n = Math.max(0, Math.min(99, Math.floor(+i.value || 0))); if (n) D.mats[i.dataset.mat] = n; });
     D.cpn = {}; grid.querySelectorAll('[data-cpn]').forEach(i => { const n = Math.max(0, Math.min(99, Math.floor(+i.value || 0))); if (n) D.cpn[i.dataset.cpn] = n; });
+    D.emo = [...grid.querySelectorAll('[data-emo]')].filter(i => i.checked).map(i => i.dataset.emo);
   };
   const cardsOf = () => D.cards.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
-  const mailOf = () => ({ id: 'preview', title: D.title || '(제목 없음)', say: D.say, from: admName(), gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats, cpn: D.cpn,
+  const mailOf = () => ({ id: 'preview', title: D.title || '(제목 없음)', say: D.say, from: admName(), gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats, cpn: D.cpn, emo: D.emo,
     at: Date.now(), until: srvNow() + D.days * 86400000, mine: D.to === 'one' });
   const paint = () => {
     read();
@@ -26032,7 +26435,7 @@ function drawMailCompose(grid) {
     const cards = cardsOf();
     if (!D.title) { q('#mc_log').innerHTML = '<span style="color:#ff9a9a">제목을 적으시오</span>'; return; }
     if (D.to === 'one' && !D.who) { q('#mc_log').innerHTML = '<span style="color:#ff9a9a">받는 이를 적으시오</span>'; return; }
-    const body = { title: D.title, say: D.say, gold: D.gold, dia: D.dia, jp: D.jp, cards, mats: D.mats, cpn: D.cpn, days: D.days, from: admName() };
+    const body = { title: D.title, say: D.say, gold: D.gold, dia: D.dia, jp: D.jp, cards, mats: D.mats, cpn: D.cpn, emo: D.emo, days: D.days, from: admName() };
     const what = D.to === 'all' ? '모든 유저' : D.who;
     if (!confirm(`「${D.title}」을(를) ${what}의 우편함에 보낼까?`)) return;
     q('#mc_send').disabled = true; q('#mc_log').textContent = '보내는 중…';
@@ -26622,6 +27025,17 @@ function castQList() {
   for (const pct of [10, 20, 30]) add({ k: 'sale' + pct, g: '價', c: '#ff7aa8', n: `오늘의 특가 −${pct}% — 일일상점 · 3시간`, cat: '할인권 · 특가', al: '특가 세일 할인 sale',
     on: () => !!(saleNow() && saleNow().pct === pct), patch: () => hype('오늘의 특가 −' + pct + '%', { sale: { pct, min: 180, by: admName() } }) });
   add({ k: 'saleoff', g: '止', n: '특가 내리기', cat: '할인권 · 특가', red: 1, patch: () => ({ sale: null }) });
+  /* 덱 바꾸기 */
+  for (const k of ['qx', 'unknown']) add({ k: 'dx_' + k, g: '換', c: k === 'qx' ? '#ffd84a' : '#b98cff', n: `덱 바꾸기 — 모두의 덱을 ${DECKX_N[k]}으로 · 30분`, cat: '덱 바꾸기', al: '덱 바꾸기 도배 이벤트 진도 ' + k,
+    on: () => !!(deckxLive() && deckxLive().k === k), patch: () => hype('덱이 ' + DECKX_N[k] + '으로!', { deckx: { k, min: 30, by: admName() } }) });
+  add({ k: 'dxoff', g: '止', n: '덱 바꾸기 끄기 — 원래 덱으로', cat: '덱 바꾸기', red: 1, patch: () => ({ deckx: null }) });
+  /* 일일상점 이벤트 */
+  add({ k: 'dsp_ssx', g: '市', c: '#ff2d55', n: '백야의 진열 — SSX 무작위 · 玉3000 · 3분', cat: '일일상점 이벤트', al: '일일상점 진열 스폰 ssx 상점',
+    on: () => !!dspawnLive(), patch: () => { const id = pick(GRADE_POOL.ssx); return hype(CARDS[id].n + ' 진열', { dspawn: { card: id, up: false, price: 3000, by: admName() } }); } });
+  add({ k: 'dsp_ssc', g: '市', c: '#1fb6c9', n: '백야의 진열 — SSC 무작위 · 玉2000 · 3분', cat: '일일상점 이벤트', al: '일일상점 진열 스폰 ssc',
+    patch: () => { const id = pick(GRADE_POOL.ssc); return hype(CARDS[id].n + ' 진열', { dspawn: { card: id, up: false, price: 2000, by: admName() } }); } });
+  add({ k: 'dspoff', g: '止', n: '백야의 진열 거두기', cat: '일일상점 이벤트', red: 1, patch: () => ({ dspawn: null }) });
+  add({ k: 'dsroll', g: '↻', c: '#8ff0cf', n: '모두의 일일상점 새로 진열', cat: '일일상점 이벤트', al: '일일상점 리롤 새로', patch: () => ({ dsroll: { by: admName() } }) });
   add({ k: 'plan', g: '曆', n: '이벤트 예약 · 달력', cat: '말', al: '예약 일정 달력 schedule', open: () => openPlanner() });
   if (cutMkOn()) add({ k: 'cutmk', g: '映', n: '컷씬 공방', cat: '컷씬', al: '컷씬 만들기 공방 편집', open: () => showCutMaker() });
   add({ k: 'admin', g: '管', n: '관리자 창 — 퍼뜨리기 탭', cat: '창', al: '관리자 어드민 퍼뜨리기 전부', open: tab('cast') });
@@ -27349,7 +27763,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 56;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 57;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -27484,6 +27898,10 @@ async function liveFetch() {
     LIVE.wheel = d.wheel && typeof d.wheel === 'object' && d.wheel.id ? d.wheel : null;   /* 운명의 바퀴 */
     LIVE.cpn = d.cpn && typeof d.cpn === 'object' && d.cpn.id ? d.cpn : null;            /* 할인권 퍼뜨리기 */
     LIVE.sale = d.sale && typeof d.sale === 'object' && +d.sale.pct > 0 ? d.sale : null;  /* 오늘의 특가 */
+    LIVE.deckx = d.deckx && typeof d.deckx === 'object' && d.deckx.id ? d.deckx : null;   /* 덱 바꾸기 */
+    LIVE.dspawn = d.dspawn && typeof d.dspawn === 'object' && d.dspawn.id ? d.dspawn : null; /* 백야의 진열 */
+    LIVE.dsroll = d.dsroll && typeof d.dsroll === 'object' && d.dsroll.id ? d.dsroll : null; /* 모두 새로 진열 */
+    LIVE.pvpfix = d.pvpfix && typeof d.pvpfix === 'object' ? d.pvpfix : null;            /* 대전 선공 보정 */
     try { cpnTick(); } catch (e) {}
     LIVE.mailAt = +d.mailAt || 0;                                                     /* 우편 — 새로 오면 묻는다 */
     if (LIVE.mailAt !== MAIL.liveAt) { const first = !MAIL.liveAt; MAIL.liveAt = LIVE.mailAt; if (!first || !MAIL.at) mailFetch(true); }
@@ -28044,6 +28462,173 @@ async function showHackTokShop() {
   p.querySelector('#ht_stone').onclick = () => { closeTop(); hkStoneUse(); };
   p.querySelector('#ht_box').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#ht_x').onclick = closeTop;
+  try { hkRoomHook(p, say); } catch (e) { console.error('백야의 방', e); }      /* 눈 → 코 → 입 */
+}
+/* ══ 백야의 방 — 해킹상점에서 박사의 눈 → 코 → 입을 차례로 누르면 (판 57) ══════════
+   박사의 화면이 깨지고, 그 너머에서 이 세계를 코딩하는 백야가 보인다. 이 방에서는 모든 물건이 반값.
+   백야를 누르면 짧은 컷씬과 한 마디. 나갔다가 다시 들어오면 박사만 있다 (이 방은 적어 두지 않는다).
+   ══════════════════════════════════════════════════════════════ */
+const BK_SAY = ['바쁘다. 코드가 꼬였어.', '…아직 고칠 게 많군.', '박사? 그 녀석도 내가 짠 거다.', '세미콜론 하나에 세계가 흔들린다.', '차가 식었군.', '말하지 말라고 했을 텐데.'];
+function hkRoomHook(p, say) {
+  const svg = p.querySelector('#ht_doc svg'); if (!svg) return;
+  svg.insertAdjacentHTML('beforeend', `<path d="M130 86 Q125 94 131 96" stroke="#a88a6a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <g class="hkhot"><circle data-hp="eye" cx="116" cy="80" r="13"/><circle data-hp="eye" cx="144" cy="80" r="13"/><circle data-hp="nose" cx="130" cy="92" r="7"/><ellipse data-hp="mouth" cx="130" cy="104" rx="15" ry="7"/></g>`);
+  const seq = ['eye', 'nose', 'mouth']; let i = 0, t0 = 0;
+  svg.querySelectorAll('[data-hp]').forEach(h => h.addEventListener('click', e => {
+    e.stopPropagation();
+    const part = h.dataset.hp, now = Date.now();
+    if (now - t0 > 6000) i = 0;
+    t0 = now;
+    try { const r = h.getBoundingClientRect(); sparkles(r.left + r.width / 2, r.top + r.height / 2, 6, '#2cff7a', 40); } catch (x) {}
+    if (part === seq[i]) {
+      i++;
+      try { SND.blip(440 + i * 220, { dur: .08, type: 'square', vol: .05 }); } catch (x) {}
+      if (i === 3) { i = 0; hkRoomEnter(p); }
+    } else { i = part === 'eye' ? 1 : 0; if (part !== 'eye') say(['어딜 만지나!', '크크… 간지럽군.', '손 치워라.'][Math.floor(Math.random() * 3)], true); }
+  }));
+}
+function bkRoomSvg() {
+  const code = (n, w, c, y0) => Array.from({ length: n }, (_, i) => `<rect x="${8 + (i % 3) * 10}" y="${y0 + i * 9}" width="${Math.round(w * (.3 + ((i * 37) % 60) / 100))}" height="4" rx="2" fill="${c[i % c.length]}"/>`).join('');
+  const books = ['#7a2a2a', '#2a4a7a', '#7a6a2a', '#2a6a4a', '#5a2a6a', '#7a4a2a', '#3a3a5a'].map((c, i) => `<rect x="${606 + i * 22}" y="${46 + (i % 2) * 6}" width="18" height="${44 - (i % 2) * 6}" fill="${c}" stroke="#0a0a12"/>`).join('');
+  return `<svg viewBox="0 0 800 520" class="bksvg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="bkw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#171c33"/><stop offset="1" stop-color="#0b0e1c"/></linearGradient>
+      <linearGradient id="bksky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22336a"/><stop offset="1" stop-color="#0a1230"/></linearGradient>
+      <radialGradient id="bklamp" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#ffd98a" stop-opacity=".42"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="bkmglow" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#2cff7a" stop-opacity=".22"/><stop offset="1" stop-color="#2cff7a" stop-opacity="0"/></radialGradient>
+      <linearGradient id="bkhair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#dfe6f8"/><stop offset="1" stop-color="#b8c6ea"/></linearGradient>
+      <clipPath id="bkm1"><rect x="430" y="180" width="220" height="140" rx="4"/></clipPath>
+      <clipPath id="bkm2"><rect x="300" y="210" width="118" height="88" rx="3"/></clipPath>
+      <clipPath id="bkm3"><rect x="662" y="205" width="110" height="95" rx="3"/></clipPath>
+    </defs>
+    <rect width="800" height="520" fill="url(#bkw)"/>
+    <!-- 창 — 달밤 -->
+    <rect x="62" y="52" width="186" height="214" rx="6" fill="#2a2236"/>
+    <rect x="72" y="62" width="166" height="194" fill="url(#bksky)"/>
+    <circle cx="190" cy="112" r="40" fill="#fff6dc" opacity=".12"/><circle cx="190" cy="112" r="24" fill="#fff6dc"/>
+    ${Array.from({ length: 14 }, (_, i) => `<circle cx="${80 + (i * 53) % 150}" cy="${72 + (i * 29) % 170}" r="${i % 3 ? 1 : 1.6}" fill="#e8eeff" class="bkstar" style="animation-delay:${(i * .3).toFixed(1)}s"/>`).join('')}
+    <path d="M155 62 V256 M72 160 H238" stroke="#2a2236" stroke-width="6"/>
+    <g class="bktal"><path d="M108 66 V96" stroke="#c8a860" stroke-width="1.5"/><rect x="98" y="96" width="20" height="44" fill="#f0e2a8" stroke="#a8823a"/><text x="108" y="124" font-size="14" text-anchor="middle" fill="#a8272c">白</text></g>
+    <!-- 책장 -->
+    <rect x="596" y="94" width="186" height="8" fill="#3a2a1e"/>${books}
+    <rect x="596" y="150" width="186" height="8" fill="#3a2a1e"/>
+    <!-- 등 -->
+    <path d="M500 0 V84" stroke="#555" stroke-width="2"/><path d="M478 84 H522 L512 104 H488Z" fill="#c8a060"/>
+    <ellipse cx="500" cy="300" rx="260" ry="230" fill="url(#bklamp)" class="bklampg"/>
+    <!-- 바닥 · 깔개 -->
+    <rect y="440" width="800" height="80" fill="#0a0c16"/><ellipse cx="420" cy="470" rx="300" ry="34" fill="#2a1830" opacity=".7"/>
+    <!-- 모니터 셋 -->
+    <ellipse cx="540" cy="250" rx="200" ry="140" fill="url(#bkmglow)"/>
+    <rect x="424" y="174" width="232" height="152" rx="8" fill="#14181e" stroke="#2a323a" stroke-width="3"/>
+    <rect x="430" y="180" width="220" height="140" rx="4" fill="#06100c"/>
+    <g clip-path="url(#bkm1)"><g transform="translate(430 180)"><g class="bkcode">${code(30, 190, ['#2cff7a', '#7fd8ff', '#2cff7a', '#ffd76a', '#c8a8ff'], 6)}</g></g></g>
+    <rect x="296" y="206" width="126" height="96" rx="5" fill="#14181e" stroke="#2a323a" stroke-width="3"/>
+    <g clip-path="url(#bkm2)"><rect x="300" y="210" width="118" height="88" fill="#0a0a18"/><g transform="translate(300 210)"><g class="bkcode s">${code(22, 100, ['#7fd8ff', '#ffb0d0', '#7fd8ff'], 4)}</g></g></g>
+    <rect x="658" y="201" width="118" height="103" rx="5" fill="#14181e" stroke="#2a323a" stroke-width="3"/>
+    <g clip-path="url(#bkm3)"><rect x="662" y="205" width="110" height="95" fill="#100808"/>
+      <text x="717" y="240" text-anchor="middle" font-size="12" fill="#ff6a7a" font-family="monospace" class="bkerr">博士.exe</text>
+      <text x="717" y="258" text-anchor="middle" font-size="10" fill="#ffb0a0" font-family="monospace">patch 57 …</text>
+      <rect x="676" y="268" width="82" height="6" rx="3" fill="#2a1a1a"/><rect x="676" y="268" width="50" height="6" rx="3" fill="#ff6a7a" class="bkbar"/></g>
+    <path d="M532 326 V346 M548 326 V346" stroke="#2a323a" stroke-width="6"/><rect x="506" y="344" width="68" height="6" rx="2" fill="#2a323a"/>
+    <!-- 책상 -->
+    <rect x="270" y="350" width="520" height="20" rx="3" fill="#4a3424"/><rect x="270" y="368" width="520" height="6" fill="#2a1c12"/>
+    <rect x="290" y="374" width="14" height="70" fill="#2a1c12"/><rect x="760" y="374" width="14" height="70" fill="#2a1c12"/>
+    <rect x="466" y="338" width="150" height="12" rx="3" fill="#1a1c24"/><g fill="#3a3e4a">${Array.from({ length: 14 }, (_, i) => `<rect x="${470 + i * 10.5}" y="340" width="8" height="3" rx="1"/>`).join('')}${Array.from({ length: 13 }, (_, i) => `<rect x="${474 + i * 10.5}" y="345" width="8" height="3" rx="1"/>`).join('')}</g>
+    <!-- 찻잔 -->
+    <path d="M338 326 h24 v16 q0 10 -12 10 q-12 0 -12 -10z" fill="#e8e2d0" stroke="#8a8270"/><path d="M362 330 q8 0 8 6 q0 6 -8 6" stroke="#8a8270" fill="none" stroke-width="2"/>
+    <g class="bksteam" stroke="#e8eeff" stroke-width="2" fill="none" opacity=".5"><path d="M344 320 q-4 -8 0 -14 q4 -6 0 -12"/><path d="M354 318 q4 -8 0 -14 q-4 -6 0 -12"/></g>
+    <!-- 도깨비불 — 백야의 길동무 -->
+    <g class="bkwisp"><circle cx="660" cy="150" r="14" fill="#9fe8ff" opacity=".25"/><path d="M660 136 Q672 150 664 162 Q660 168 656 162 Q648 150 660 136Z" fill="#bff4ff"/><circle cx="657" cy="152" r="1.8" fill="#0a2a3a"/><circle cx="664" cy="152" r="1.8" fill="#0a2a3a"/></g>
+    <!-- 백야 — 의자에 앉아 화면을 본다 (누르면 돌아본다) -->
+    <g class="bkfig" id="bk_fig">
+      <path d="M300 250 Q296 210 330 206 Q372 204 376 246 L380 384 L304 384Z" fill="#2a1a22" stroke="#140c12" stroke-width="2"/>
+      <rect x="320" y="384" width="40" height="8" fill="#140c12"/><path d="M340 392 V430 M318 432 H362" stroke="#2a2a32" stroke-width="5"/>
+      <path d="M332 262 Q356 240 392 246 Q420 252 430 300 L436 372 L330 376 Q318 320 332 262Z" fill="#1c2340" stroke="#0e1224" stroke-width="2"/>
+      <path d="M392 248 L404 262 L388 300" stroke="#e8eeff" stroke-width="5" fill="none"/>
+      <g class="bkarm r"><path d="M410 270 Q440 300 470 330 L462 340 Q430 316 400 292Z" fill="#1c2340" stroke="#0e1224" stroke-width="2"/><ellipse cx="472" cy="336" rx="9" ry="5" fill="#f0dcc4" class="bkhand"/></g>
+      <g class="bkarm l"><path d="M396 280 Q430 312 506 334 L502 344 Q440 330 390 300Z" fill="#161c34" stroke="#0e1224" stroke-width="2"/><ellipse cx="508" cy="338" rx="9" ry="5" fill="#e8d2b8" class="bkhand d"/></g>
+      <g class="bkhead">
+        <path d="M352 236 Q340 290 352 330 Q358 344 350 356 Q370 344 366 318 Q362 284 372 246Z" fill="url(#bkhair)" class="bktail"/>
+        <ellipse cx="384" cy="214" rx="30" ry="33" fill="#f0dcc4"/>
+        <path d="M352 222 Q350 178 386 176 Q418 178 414 214 Q410 196 398 192 Q404 210 392 206 Q380 200 372 206 Q366 214 364 232 Q356 236 352 222Z" fill="url(#bkhair)"/>
+        <path d="M356 214 Q346 236 352 250" stroke="#dfe6f8" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <ellipse cx="410" cy="220" rx="4" ry="7" fill="#e6ccb0"/>
+        <g class="bkface"><path d="M398 214 q6 -3 11 0" stroke="#2a1a10" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="404" cy="216" r="1.2" fill="#9fe8ff"/>
+          <path d="M402 236 q5 2 9 -1" stroke="#8a4a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>
+        <path d="M368 186 l-6 -10 M380 180 l-2 -12 M394 180 l4 -11" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+  </svg>`;
+}
+async function hkRoomEnter(p) {
+  try { SND.unlock(); SND.thunder(); SND.blip(120, { dur: .6, type: 'sawtooth', vol: .07, to: 1800 }); rgbSplit(); blink(1.4); shake(true); } catch (e) {}
+  p.classList.add('hkbreak');
+  try { stampWord('ACCESS · 白夜', '#e8f4ff'); } catch (e) {}
+  if (acctOn()) acctAsk('/hb/room', { token: ACCT.token }, 10000).then(r => { if (r.ok && r.tok != null) HB_TOK = r.tok; }).catch(() => {});
+  await wait(950);
+  p.classList.remove('hkbreak');
+  p.classList.add('bkroomm');
+  p.innerHTML = `<div class="bkroom"><div class="bkscene">${bkRoomSvg()}<div class="bkhint">↖ 백야를 눌러 본다</div></div>
+    <button class="hkclose" id="bk_x" title="나간다">✕</button>
+    <div class="bkhead"><h1>白 夜 의 방</h1><small>박사의 화면 너머 — 이 세계를 고치는 사람의 작업실. 여기서는 모든 것이 <b>반값</b>이다.</small></div>
+    <div class="bkside"><div class="hkwallet bk"><i>⌬</i><span>해킹 토큰</span><b id="bk_tok">…</b></div><div class="hkshop2" id="bk_grid"></div>
+      <div class="bksay" id="bk_say">…</div></div></div>`;
+  try { screenFlash('radial-gradient(circle,rgba(255,240,200,.6),rgba(10,14,30,.9))', 900); SND.bell(); } catch (e) {}
+  const q = s => p.querySelector(s);
+  const tell = t => { const b = q('#bk_say'); if (b) { b.textContent = t; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } };
+  tell('…들어왔군. 박사의 얼굴을 그렇게 누르는 녀석은 처음이다.');
+  const draw = () => {
+    q('#bk_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : HB_TOK) : '로그인';
+    const g = q('#bk_grid'); g.innerHTML = '';
+    for (const it of HB_SHOP) {
+      const half = Math.ceil(it.p / 2), can = HB_TOK != null && HB_TOK >= half;
+      const b = el('button', 'hkitem2 bk' + (can ? ' can' : ''), `<s>반값</s><span class="hkglyph"><b>${it.g}</b></span><span class="hktxt"><b>${it.n}</b><small>${it.d}</small></span><u><em>⌬ ${it.p}</em> ⌬ ${half}</u>`);
+      b.onclick = async () => {
+        if (!acctOn()) { toast('로그인해야 한다'); SND.err(); return; }
+        if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
+        if (HB_TOK != null && HB_TOK < half) { tell('토큰이 모자라다. 박사의 분신부터 잡아 와라.'); SND.err(); return; }
+        b.disabled = true;
+        const r = await acctAsk('/hb/buy', { token: ACCT.token, k: it.k, room: true }, 10000);
+        b.disabled = false;
+        if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; tell('…끊겼다. ' + r.why); SND.err(); draw(); return; }
+        HB_TOK = r.tok; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
+        try { SND.coin && SND.coin(); } catch (e) {}
+        tell(pick(['가져가라.', '잘 써라.', '반값이라고 아무에게나 말하진 마라.'])); toast(`${it.n} — 반값에 샀다`); draw();
+      };
+      g.appendChild(b);
+    }
+  };
+  draw();
+  hbMe().then(() => { if (p.isConnected) draw(); });
+  let cutDone = false, busy = false;
+  q('#bk_fig').addEventListener('click', async () => {
+    if (busy) return; busy = true;
+    const hint = q('.bkhint'); if (hint) hint.remove();
+    if (!cutDone) { cutDone = true; await bkCut(p); } else { const f = q('#bk_fig'); f.classList.add('turn'); tell(pick(BK_SAY)); try { SND.blip(520, { dur: .1, vol: .04 }); } catch (e) {} await wait(1400); f.classList.remove('turn'); }
+    busy = false;
+  });
+  q('#bk_x').onclick = closeTop;
+}
+/* 백야를 눌렀다 — 짧은 컷씬 */
+async function bkCut(p) {
+  const sc = p.querySelector('.bkscene'), fig = p.querySelector('#bk_fig');
+  const ov = el('div', 'bkcut', `<i class="bkbar t"></i><i class="bkbar b"></i><div class="bkline"></div><small>눌러서 넘긴다</small>`);
+  sc.appendChild(ov);
+  let skip = false; ov.onclick = () => { skip = true; };
+  const line = ov.querySelector('.bkline');
+  const lines = ['…박사의 눈, 코, 입. 그 순서를 아는 이는 많지 않은데.', '여긴 내 작업실이다. 지금도 이 세계를 고치는 중이지.', '가져갈 게 있으면 가져가라. 반값이다 — 대신 아무에게도 말하지 마라.'];
+  sc.classList.add('zoom'); try { SND.gong(); } catch (e) {}
+  await wait(500); fig.classList.add('turn');
+  for (const t of lines) {
+    if (skip) break;
+    line.textContent = ''; line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
+    for (let i = 1; i <= t.length && !skip; i++) { line.textContent = t.slice(0, i); if (i % 3 === 0) try { SND.blip(880, { dur: .02, vol: .02 }); } catch (e) {} await wait(26); }
+    line.textContent = t;
+    for (let k = 0; k < 14 && !skip; k++) await wait(100);
+  }
+  ov.classList.add('out'); sc.classList.remove('zoom'); fig.classList.remove('turn');
+  await wait(450); ov.remove();
+  const b = p.querySelector('#bk_say'); if (b) b.textContent = '…말하지 말라고 했다.';
 }
 /* 오염 관석 — 고른 부적에 해킹 오염 돌연변이 */
 async function hkStoneUse() {
@@ -29431,7 +30016,7 @@ const NICK_RE_C = /^[a-zA-Z0-9가-힣_]{2,12}$/;
 function showNickSet(must, done) {
   const p = modal(`<h2>${must ? '닉네임을 정하시오' : '닉네임 바꾸기'}</h2>
     <div class="hint" style="max-width:420px;margin-top:6px;line-height:1.8">${must ? '이제 모두 닉네임이 있어야 한다 — 채팅·멀티플레이·랭킹에 이 이름이 뜬다.<br>' : ''}
-      2~12 글자, 한글·영문·숫자·_ 만. 겹치면 안 된다. 「백야」·관리자·운영 따위는 못 쓴다.</div>
+      2~12 글자, 한글·영문·숫자·_ 만. 겹치면 안 된다. 「백야」·관리자·운영 따위는 못 쓴다.${must ? '' : '<br><b style="color:#ffd76a">한 번 바꾸면 두 달 동안 다시 못 바꾼다.</b> <span id="nk_when"></span>'}</div>
     <div class="acctform" style="max-width:360px;margin:12px auto 0"><input id="nk_in" maxlength="12" placeholder="닉네임" spellcheck="false" autocomplete="off" value="${wEsc(ACCT.nick || '')}"></div>
     <div class="acctsay" id="nk_say" style="min-height:18px;margin-top:6px"></div>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
@@ -29456,6 +30041,10 @@ function showNickSet(must, done) {
   inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') go(); };
   const x = p.querySelector('#nk_x'); if (x) x.onclick = closeTop;
   setTimeout(() => inp.focus(), 60);
+  /* 다음에 바꿀 수 있는 날 */
+  if (!must && acctOn()) acctAsk('/auth/me', { token: ACCT.token }).then(r => { const w = p.querySelector('#nk_when'); if (!w || !r.ok) return;
+    const left = (+r.nickNext || 0) - Date.now();
+    w.innerHTML = left > 0 && !caster() ? `<span style="color:#e08a7a">지금은 못 바꾼다 — ${Math.ceil(left / 86400000)}일 뒤 (${new Date(r.nickNext).toLocaleDateString()})</span>` : '<span style="color:#7fe6cf">지금 바꿀 수 있다</span>'; });
 }
 /* 옛 계정 — 서버에 닉네임이 있는지 먼저 묻고, 없으면 정하게 한다 */
 let _nickAsking = false;
@@ -30505,6 +31094,8 @@ function fxcKill(e) {
   fxcPill(f);
 }
 function liveTick() {
+  try { deckxTick(); } catch (e) { console.error('덱 바꾸기', e); }
+  try { dspawnTick(); } catch (e) { console.error('백야의 진열', e); }
   const k = liveEvent(), left = evLeft(), rn = liveRain();
   /* 몸에 이름표를 달아 둔다 — 그림은 CSS 가 맡는다 */
   for (const x of Object.keys(WORLD))
@@ -30891,6 +31482,43 @@ function drawCast(grid) {
         <button class="brush-btn ghost" id="ct_saoff" style="color:#e9dfc9;border-color:#8a7f68">내린다</button>
       </div>
       <div class="casthint" id="ct_cpnow"></div>
+    </div>
+
+    <div class="castsec dxsec"><b>換 덱 바꾸기 — 모두의 덱을 ?X급 · ?급으로</b>
+      <div class="casthint">이벤트 동안 진도를 빨리 빼라고 — 모험 중인 모두의 덱이 정한 동안 ?X급(또는 ?급) 강화 부적으로 바뀐다.
+        원래 덱은 적어 두었다가 끄거나 때가 지나면 그대로 돌아간다(그사이 얻은 부적도 남는다). 싸우는 중이면 싸움이 끝난 뒤에 바뀐다.</div>
+      <div class="castbtnrow">
+        <button class="brush-btn gold" data-dx="qx" style="background:linear-gradient(120deg,#ffe08a,#c99a10);color:#2a1a02">?X급으로 바꾼다</button>
+        <button class="brush-btn gold" data-dx="unknown" style="background:linear-gradient(120deg,#d8b8ff,#7b4bd8);color:#fff">?급으로 바꾼다</button>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_dxm" type="number" min="1" max="720" value="30" style="width:64px"> 분</label>
+        <button class="brush-btn ghost" id="ct_dxoff" style="color:#e9dfc9;border-color:#8a7f68">끈다 — 원래 덱으로</button>
+      </div>
+      <div class="casthint" id="ct_dxnow"></div>
+    </div>
+
+    <div class="castsec dspsec"><b>市 일일상점 이벤트 — 백야의 진열 · 모두 새로 진열</b>
+      <div class="casthint">백야의 진열 — 고른 부적 한 장이 모두의 일일상점 맨 위에 <b>3분 동안</b> 걸린다. 퍼지는 순간 모두의 화면에 화려한 알림이 뜨고, 한 사람 한 번 산다(할인권도 쓸 수 있다).
+        모두 새로 진열 — 모두의 일일상점을 한 번 공짜로 다시 굴린다.</div>
+      <div class="castbtnrow">
+        <input id="ct_dspc" placeholder="부적 이름 (비우면 SSX 무작위)" style="min-width:200px">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">玉 <input id="ct_dspp" type="number" min="0" max="100000" value="3000" style="width:80px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_dspu" type="checkbox"> 강화</label>
+        <button class="brush-btn gold" id="ct_dspgo">진열한다 (3분)</button>
+        <button class="brush-btn ghost" id="ct_dspoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+        <button class="brush-btn ghost" id="ct_dsroll" style="color:#e9dfc9;border-color:#8a7f68">↻ 모두 새로 진열</button>
+      </div>
+      <div class="casthint" id="ct_dspnow"></div>
+    </div>
+
+    <div class="castsec pvpfsec"><b>對 대전 선공 보정 — 뒤에 두는 쪽의 첫 차례</b>
+      <div class="casthint">먼저 두는 쪽이 유리하다 — 두 번째부터 두는 사람은 첫 차례에 아래만큼 더 받는다. 기본은 부적 1장 · 기 1.</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">부적 +<input id="ct_pfd" type="number" min="0" max="3" style="width:52px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">기 +<input id="ct_pfq" type="number" min="0" max="3" style="width:52px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">방어 +<input id="ct_pfb" type="number" min="0" max="30" style="width:56px"></label>
+        <button class="brush-btn gold" id="ct_pfgo">정한다</button>
+        <button class="brush-btn ghost" id="ct_pfoff" style="color:#e9dfc9;border-color:#8a7f68">기본으로</button>
+      </div>
     </div>
 
     <div class="castsec festsec"><b>🎉 원클릭 축제</b>
@@ -31285,6 +31913,38 @@ function drawCast(grid) {
     send(hype('오늘의 특가 −' + pct + '%', { sale: { pct, min: h * 60, by: admName() } }), `오늘의 특가 −${pct}% · ${h}시간`).then(cpNow);
   };
   grid.querySelector('#ct_saoff').onclick = () => send({ sale: null }, '특가 내리기').then(cpNow);
+  /* 덱 바꾸기 */
+  const dxNow = () => { const e = grid.querySelector('#ct_dxnow'); if (!e) return; const x = deckxLive();
+    e.innerHTML = x ? `지금 — 모두의 덱이 <b style="color:${x.k === 'qx' ? '#ffd84a' : '#c9a8ff'}">${DECKX_N[x.k]}</b> · ${wTime(x.until - srvNow())} 남음` : '지금 — 꺼져 있다'; };
+  dxNow();
+  grid.querySelectorAll('[data-dx]').forEach(b => b.onclick = () => {
+    const k = b.dataset.dx, min = Math.max(1, Math.min(720, Math.floor(+grid.querySelector('#ct_dxm').value || 30)));
+    if (!confirm(`모험 중인 모두의 덱을 ${min}분 동안 ${DECKX_N[k]}으로 바꿀까?`)) return;
+    const patch = hype('덱이 ' + DECKX_N[k] + '으로!', { deckx: { k, min, by: admName() } });
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: '덱 바꾸기', then: patch } }, `카운트다운 ${cds()}초 → 덱 ${DECKX_N[k]}`).then(dxNow);
+    send(patch, `덱 바꾸기 — ${DECKX_N[k]} · ${min}분`).then(dxNow);
+  });
+  grid.querySelector('#ct_dxoff').onclick = () => send({ deckx: null }, '덱 바꾸기 끄기').then(dxNow);
+  /* 백야의 진열 */
+  try { cardPicker(grid.querySelector('#ct_dspc')); } catch (e) {}
+  const dspNow = () => { const e = grid.querySelector('#ct_dspnow'); if (!e) return; const x = dspawnLive();
+    e.innerHTML = x ? `지금 — <b>${wEsc(CARDS[x.card].n)}${x.up ? '+' : ''}</b> 玉${x.price} · ${wTime(x.until - srvNow())} 남음` : '지금 — 걸린 진열 없음'; };
+  dspNow();
+  grid.querySelector('#ct_dspgo').onclick = () => {
+    let id = grid.querySelector('#ct_dspc').value.split(',')[0].trim();
+    if (id && !CARDS[id]) { const f = Object.keys(CARDS).find(k => CARDS[k].n === id); if (f) id = f; }
+    if (!id) id = pick(GRADE_POOL.ssx);
+    if (!CARDS[id]) { say('모르는 부적이다', false); return; }
+    const price = Math.max(0, Math.min(100000, Math.floor(+grid.querySelector('#ct_dspp').value || 0))), up = grid.querySelector('#ct_dspu').checked;
+    send(hype(CARDS[id].n + ' 진열', { dspawn: { card: id, up, price, by: admName() } }), `백야의 진열 — ${CARDS[id].n}${up ? '+' : ''} 玉${price} · 3분`).then(dspNow);
+  };
+  grid.querySelector('#ct_dspoff').onclick = () => send({ dspawn: null }, '진열 거두기').then(dspNow);
+  grid.querySelector('#ct_dsroll').onclick = () => { if (confirm('모두의 일일상점을 새로 진열할까?')) send({ dsroll: { by: admName() } }, '모두 새로 진열'); };
+  /* 대전 선공 보정 */
+  { const f = pvpFix(); grid.querySelector('#ct_pfd').value = f.draw; grid.querySelector('#ct_pfq').value = f.qi; grid.querySelector('#ct_pfb').value = f.blk; }
+  grid.querySelector('#ct_pfgo').onclick = () => { const v = s => Math.max(0, Math.floor(+grid.querySelector(s).value || 0));
+    send({ pvpfix: { draw: v('#ct_pfd'), qi: v('#ct_pfq'), blk: v('#ct_pfb') } }, `선공 보정 — 부적 +${v('#ct_pfd')} · 기 +${v('#ct_pfq')} · 방어 +${v('#ct_pfb')}`); };
+  grid.querySelector('#ct_pfoff').onclick = () => send({ pvpfix: null }, '선공 보정 기본으로').then(() => { const f = PVPFIX_DEF; grid.querySelector('#ct_pfd').value = f.draw; grid.querySelector('#ct_pfq').value = f.qi; grid.querySelector('#ct_pfb').value = f.blk; });
   /* 원클릭 축제 */
   grid.querySelectorAll('[data-fest]').forEach(b => b.onclick = () => {
     const f = FEST[b.dataset.fest]; if (!confirm(`「${f.n}」을(를) 지금 시작할까?\n${f.d}`)) return;
@@ -32055,6 +32715,155 @@ async function drawGuests(grid) {
    이름은 서버가 로그인 표로 알아본다. 관리자는 「백야」로, 허락받은
    게스트는 게스트 이름으로 말한다. 관리자는 지우기·입막기·비우기.
    ══════════════════════════════════════════════════════════ */
+/* ══ 이모티콘 (판 57) ═══════════════════════════════════════════
+   기본 이모지(그림 글자)는 채팅에 못 쓴다 — 대신 팩으로 된 이모티콘을 쓴다 (카톡처럼).
+     박사의 하루 (2D 박사 감정 스티커 8) — 누구나 공짜
+     실험실 박사 (스티커 8) · 글 이모티콘 기본 · 글 이모티콘 격한 감정 — 값을 매겨 둔다(결제는 아직 붙이지 않았다)
+   백야(·백사)는 모두 공짜로 받는다. 백야는 우편으로 팩을 선물할 수 있다.
+   스티커는 [[st:팩:번호]] 한 줄로 오가고, 서버가 가진 팩인지 본다. 글 이모티콘은 글 그대로 간다.
+   ══════════════════════════════════════════════════════════════ */
+const EMO_PACKS = {
+  doc1: { n: '박사의 하루', d: '2D 박사의 여덟 가지 얼굴', kind: 'st', free: true, price: 0,
+    st: [['happy', 'grin', '', ['wave'], '안녕!'], ['star', 'grin', 'up', ['thumb', 'sparkle'], '좋아!'], ['angry', 'teeth', 'angry', ['anger', 'red'], '화났다'],
+      ['sad', 'frown', 'sad', ['tears'], '흑흑…'], ['shock', 'o', 'up', ['exclaim', 'sweat'], '헉!'], ['happy', 'grin', 'up', ['sparkle', 'blush'], '하하하'],
+      ['heart', 'smile', '', ['hearts', 'blush'], '사랑해'], ['dot', 'flat', 'sad', ['question'], '음…']] },
+  doc2: { n: '실험실 박사', d: '폭발 · 해킹 · 버그 — 연구실의 하루', kind: 'st', price: 1500,
+    st: [['star', 'grin', 'up', ['flask', 'sparkle'], '대성공!'], ['x', 'o', '', ['smoke', 'soot'], '펑!'], ['glow', 'smirk', 'angry', ['code'], '해킹 중'],
+      ['closed', 'wave', '', ['zzz'], '졸려…'], ['wink', 'tongue', '', ['blush'], '메롱'], ['spiral', 'wave', 'sad', ['sweat'], '어지러워'],
+      ['happy', 'smile', '', ['thumb', 'blush'], '수고했어'], ['shock', 'frown', 'sad', ['bug', 'sweat'], '버그다…']] },
+  txt1: { n: '글 이모티콘 — 기본', d: '눌러서 바로 보내는 글 이모티콘 열둘', kind: 'tx', price: 900,
+    tx: ['(｀・ω・´)ゞ', '٩(◕‿◕)۶', '(｡•̀ᴗ-)✧', '(っ˘ڡ˘ς)', 'ヽ(´▽`)/', '(´；ω；`)', '(；´Д`)', 'ಠ_ಠ', '¯\\_(ツ)_/¯', '(｡♥‿♥｡)', '( ˘ω˘ )zzZ', '(ง •̀_•́)ง'] },
+  txt2: { n: '글 이모티콘 — 격한 감정', d: '상을 엎고 다시 세우는 열둘', kind: 'tx', price: 900,
+    tx: ['(╯°□°)╯︵ ┻━┻', '┬─┬ノ( º _ ºノ)', '(ノಠ益ಠ)ノ彡┻━┻', 'ᕦ(ò_óˇ)ᕤ', '(☞ﾟヮﾟ)☞', '༼ つ ◕_◕ ༽つ', '(⊙_☉)', '(◣_◢)', '┐(￣ヘ￣)┌', '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', '(ʘ‿ʘ)', 'Σ(°ロ°)'] }
+};
+const STK_RE_C = /^\[\[st:([a-z0-9]{2,8}):(\d{1,2})\]\]$/;
+const EMO = { mine: null, at: 0 };
+const emoOwn = k => !!EMO_PACKS[k] && (EMO_PACKS[k].free || caster() || !!(EMO.mine && EMO.mine.includes(k)) || !!(META.emo && META.emo[k]));
+async function emoLoad(force) {
+  if (!acctOn() || (!force && EMO.mine && Date.now() - EMO.at < 120000)) return;
+  const r = await acctAsk('/auth/emo', { token: ACCT.token }, 12000);
+  if (r.ok) { EMO.mine = r.packs || []; EMO.at = Date.now(); }
+}
+/* 2D 박사 — 얼굴 하나를 눈·입·눈썹·덧붙임으로 짓는다 */
+function docSticker(eye, mouth, brow, extra, cap) {
+  const X = new Set(extra || []), face = X.has('red') ? '#f2b9a2' : '#ecd9bf';
+  const L = [46, 74], ey = 62;
+  const eyes = L.map((x, i) => {
+    switch (eye) {
+      case 'happy': return `<path d="M${x - 6} ${ey + 2} Q${x} ${ey - 5} ${x + 6} ${ey + 2}" stroke="#2a1a10" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+      case 'angry': return `<circle cx="${x}" cy="${ey + 1}" r="2.6" fill="#2a1a10"/><path d="M${x - 7} ${ey - 5 + (i ? 4 : 0)} L${x + 7} ${ey - 1 - (i ? 4 : 0)}" stroke="#2a1a10" stroke-width="2.2"/>`;
+      case 'sad': return `<circle cx="${x}" cy="${ey + 2}" r="2.6" fill="#2a1a10"/>`;
+      case 'shock': return `<circle cx="${x}" cy="${ey}" r="6.5" fill="#fff" stroke="#2a1a10" stroke-width="1.6"/><circle cx="${x}" cy="${ey}" r="2" fill="#2a1a10"/>`;
+      case 'heart': return `<path d="M${x} ${ey + 5} C${x - 9} ${ey - 2} ${x - 4} ${ey - 9} ${x} ${ey - 3} C${x + 4} ${ey - 9} ${x + 9} ${ey - 2} ${x} ${ey + 5}Z" fill="#ff3a6a"/>`;
+      case 'x': return `<path d="M${x - 5} ${ey - 5} L${x + 5} ${ey + 5} M${x + 5} ${ey - 5} L${x - 5} ${ey + 5}" stroke="#2a1a10" stroke-width="2.6" stroke-linecap="round"/>`;
+      case 'spiral': return `<path d="M${x} ${ey} m0 -1 a1 1 0 1 1 -1 2 a3 3 0 1 1 4 -3 a5 5 0 1 1 -7 5" stroke="#2a1a10" stroke-width="1.8" fill="none"/>`;
+      case 'star': return `<path d="M${x} ${ey - 7} L${x + 2} ${ey - 2} L${x + 7} ${ey} L${x + 2} ${ey + 2} L${x} ${ey + 7} L${x - 2} ${ey + 2} L${x - 7} ${ey} L${x - 2} ${ey - 2}Z" fill="#ffc21a" stroke="#a86a00" stroke-width=".8"/>`;
+      case 'closed': return `<path d="M${x - 6} ${ey + 1} L${x + 6} ${ey + 1}" stroke="#2a1a10" stroke-width="2.6" stroke-linecap="round"/>`;
+      case 'glow': return `<path d="M${x - 5} ${ey - 3} L${x + 4} ${ey} L${x - 5} ${ey + 3}" stroke="#0a5a2a" stroke-width="2.4" fill="none" transform="${i ? `scale(-1,1) translate(${-2 * x},0)` : ''}"/>`;
+      case 'wink': return i ? `<path d="M${x - 6} ${ey + 2} Q${x} ${ey - 5} ${x + 6} ${ey + 2}" stroke="#2a1a10" stroke-width="2.6" fill="none" stroke-linecap="round"/>` : `<circle cx="${x}" cy="${ey}" r="3" fill="#2a1a10"/>`;
+      default: return `<circle cx="${x}" cy="${ey}" r="3" fill="#2a1a10"/><circle cx="${x + 1}" cy="${ey - 1}" r="1" fill="#fff"/>`;
+    }
+  }).join('');
+  const mouths = {
+    smile: '<path d="M50 84 Q60 93 70 84" stroke="#6a2a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/>',
+    grin: '<path d="M47 82 Q60 101 73 82Z" fill="#7a2a22" stroke="#6a2a1a" stroke-width="2" stroke-linejoin="round"/><path d="M50 83 L70 83 L68 87 L52 87Z" fill="#fff"/><ellipse cx="60" cy="92" rx="6" ry="3" fill="#ff8a8a"/>',
+    frown: '<path d="M50 91 Q60 82 70 91" stroke="#6a2a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/>',
+    o: '<ellipse cx="60" cy="88" rx="5.5" ry="7" fill="#7a2a22" stroke="#6a2a1a" stroke-width="1.6"/>',
+    flat: '<path d="M52 87 L68 87" stroke="#6a2a1a" stroke-width="2.8" stroke-linecap="round"/>',
+    tongue: '<path d="M50 84 Q60 93 70 84" stroke="#6a2a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M57 88 Q60 97 64 88Z" fill="#ff6a7a" stroke="#c0304a" stroke-width="1"/>',
+    wave: '<path d="M48 87 q3 -4 6 0 q3 4 6 0 q3 -4 6 0 q3 4 6 0" stroke="#6a2a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+    teeth: '<rect x="49" y="82" width="22" height="10" rx="3" fill="#fff" stroke="#6a2a1a" stroke-width="2"/><path d="M49 87 H71 M54.5 82 V92 M60 82 V92 M65.5 82 V92" stroke="#6a2a1a" stroke-width="1.2"/>',
+    smirk: '<path d="M51 87 Q63 91 71 81" stroke="#6a2a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
+  };
+  const brows = { angry: '<path d="M36 47 L54 54 M84 47 L66 54" stroke="#cfcfcf" stroke-width="4.5" stroke-linecap="round"/>',
+    sad: '<path d="M36 53 L54 47 M84 53 L66 47" stroke="#cfcfcf" stroke-width="4.5" stroke-linecap="round"/>',
+    up: '<path d="M37 47 Q45 41 54 46 M83 47 Q75 41 66 46" stroke="#cfcfcf" stroke-width="4.5" fill="none" stroke-linecap="round"/>' };
+  const ex = [];
+  if (X.has('blush')) ex.push('<ellipse cx="35" cy="77" rx="6" ry="3.5" fill="#ff8aa0" opacity=".65"/><ellipse cx="85" cy="77" rx="6" ry="3.5" fill="#ff8aa0" opacity=".65"/>');
+  if (X.has('soot')) ex.push('<ellipse cx="40" cy="80" rx="8" ry="5" fill="#3a3030" opacity=".55"/><ellipse cx="80" cy="50" rx="7" ry="4" fill="#3a3030" opacity=".5"/>');
+  if (X.has('tears')) ex.push('<path d="M42 70 Q38 84 42 96 M78 70 Q82 84 78 96" stroke="#6ac8ff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".9"/>');
+  if (X.has('sweat')) ex.push('<path d="M92 34 Q98 44 92 48 Q86 44 92 34Z" fill="#8ad8ff" stroke="#3a98d0" stroke-width="1.2"/>');
+  if (X.has('anger')) ex.push('<g stroke="#e8203a" stroke-width="3.2" fill="none" stroke-linecap="round" transform="translate(94 26)"><path d="M-8 -3 Q-3 -3 -3 -8"/><path d="M8 -3 Q3 -3 3 -8"/><path d="M-8 3 Q-3 3 -3 8"/><path d="M8 3 Q3 3 3 8"/></g>');
+  if (X.has('hearts')) ex.push('<g fill="#ff4a7a"><path d="M16 30 c-6 -6 -12 2 0 9 c12 -7 6 -15 0 -9Z"/><path d="M100 18 c-4 -4 -9 1 0 7 c9 -6 4 -11 0 -7Z" opacity=".8"/><path d="M104 46 c-3 -3 -7 1 0 5 c7 -4 3 -8 0 -5Z" opacity=".6"/></g>');
+  if (X.has('zzz')) ex.push('<g fill="#7a8aff" font-weight="900" font-family="sans-serif"><text x="88" y="34" font-size="16">Z</text><text x="100" y="22" font-size="12">z</text><text x="108" y="12" font-size="9">z</text></g>');
+  if (X.has('question')) ex.push('<text x="92" y="38" font-size="30" font-weight="900" fill="#ffb02a" stroke="#6a3a00" stroke-width="1.5" font-family="sans-serif">?</text>');
+  if (X.has('exclaim')) ex.push('<text x="94" y="38" font-size="32" font-weight="900" fill="#ff3a3a" stroke="#6a0000" stroke-width="1.5" font-family="sans-serif">!</text>');
+  if (X.has('sparkle')) ex.push('<g fill="#ffd84a"><path d="M14 40 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3Z"/><path d="M104 30 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2Z"/><path d="M100 70 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5 l4 -1.5Z"/></g>');
+  if (X.has('smoke')) ex.push('<g fill="#9a9494" opacity=".85"><circle cx="40" cy="16" r="8"/><circle cx="52" cy="10" r="10"/><circle cx="66" cy="14" r="8"/><circle cx="78" cy="8" r="7"/></g>');
+  if (X.has('code')) ex.push('<g fill="#2cff7a" font-family="monospace" font-size="6" opacity=".9"><text x="38" y="58">01</text><text x="68" y="58">10</text><text x="40" y="70">10</text><text x="70" y="70">01</text></g>');
+  if (X.has('bug')) ex.push('<g transform="translate(86 22)"><ellipse rx="8" ry="6" fill="#2cff7a" stroke="#0a5a2a" stroke-width="1.5"/><path d="M-6 -4 L-11 -8 M6 -4 L11 -8 M-8 0 L-13 0 M8 0 L13 0 M-6 4 L-11 8 M6 4 L11 8" stroke="#0a5a2a" stroke-width="1.5"/><circle cx="-3" cy="-2" r="1.3" fill="#002a10"/><circle cx="3" cy="-2" r="1.3" fill="#002a10"/></g>');
+  if (X.has('flask')) ex.push('<g transform="translate(12 78)"><path d="M6 0 H14 V8 L20 22 Q21 26 17 26 H3 Q-1 26 0 22 L6 8Z" fill="rgba(220,255,240,.6)" stroke="#2a6a5a" stroke-width="1.6"/><path d="M2 18 H18 L20 22 Q21 25 17 25 H3 Q-1 25 0 22Z" fill="#2cff7a"/></g>');
+  const hand = (x, y, thumb) => `<g transform="translate(${x} ${y})"><circle r="9" fill="#ecd9bf" stroke="#8a6a4a" stroke-width="1.6"/>${thumb
+    ? '<path d="M-2 -8 Q-3 -18 3 -18 Q6 -16 4 -8" fill="#ecd9bf" stroke="#8a6a4a" stroke-width="1.6"/>'
+    : '<path d="M-7 -6 L-9 -14 M-3 -8 L-4 -17 M1 -8 L1 -17 M5 -7 L7 -15" stroke="#8a6a4a" stroke-width="3.2" stroke-linecap="round"/><path d="M-7 -6 L-9 -14 M-3 -8 L-4 -17 M1 -8 L1 -17 M5 -7 L7 -15" stroke="#ecd9bf" stroke-width="1.6" stroke-linecap="round"/>'}</g>`;
+  if (X.has('wave')) ex.push(hand(16, 70, false) + '<path d="M4 54 q-4 -6 0 -12 M8 50 q-3 -4 0 -8" stroke="#c8a87a" stroke-width="1.6" fill="none"/>');
+  if (X.has('thumb')) ex.push(hand(100, 96, true));
+  const lens = eye === 'glow' ? 'fill="#2cff7a" fill-opacity=".55"' : 'fill="#bff4dc" fill-opacity=".28"';
+  return `<svg viewBox="0 0 120 120" class="stksvg">
+    <path d="M20 120 Q24 100 40 98 L60 108 L80 98 Q96 100 100 120Z" fill="#e8f0ea" stroke="#9aaaa2" stroke-width="1.6"/>
+    <path d="M52 99 L60 108 L68 99" fill="#2a3a34"/>
+    <ellipse cx="60" cy="66" rx="31" ry="33" fill="${face}" stroke="#a88a6a" stroke-width="1.6"/>
+    <ellipse cx="28" cy="68" rx="5" ry="8" fill="${face}" stroke="#a88a6a" stroke-width="1.4"/><ellipse cx="92" cy="68" rx="5" ry="8" fill="${face}" stroke="#a88a6a" stroke-width="1.4"/>
+    <path d="M27 58 Q18 22 44 22 Q50 6 64 16 Q82 4 88 26 Q104 26 93 58 Q86 36 60 38 Q34 36 27 58Z" fill="#e8e8e8" stroke="#b0b0b0" stroke-width="1.4"/>
+    <path d="M28 46 L14 34 M92 44 L106 30 M44 22 L38 6 M80 18 L90 4" stroke="#e8e8e8" stroke-width="6" stroke-linecap="round"/>
+    ${brows[brow] || ''}
+    <circle cx="46" cy="62" r="12" ${lens} stroke="#222" stroke-width="3"/><circle cx="74" cy="62" r="12" ${lens} stroke="#222" stroke-width="3"/>
+    <path d="M58 62 H62" stroke="#222" stroke-width="3"/><path d="M34 60 L28 58 M86 60 L92 58" stroke="#222" stroke-width="2.4"/>
+    ${eyes}
+    <path d="M38 55 l5 -3 M66 55 l5 -3" stroke="#fff" stroke-width="2" opacity=".8"/>
+    ${mouths[mouth] || mouths.smile}
+    ${ex.join('')}
+    ${cap ? `<text x="60" y="116" text-anchor="middle" font-size="15" font-weight="900" fill="#2a1a10" stroke="#fff" stroke-width="4" paint-order="stroke" font-family="sans-serif">${wEsc(cap)}</text>` : ''}
+  </svg>`;
+}
+function stkHtml(t, cls) {
+  const m = STK_RE_C.exec(String(t || '')); if (!m) return '';
+  const P = EMO_PACKS[m[1]]; const s = P && P.st && P.st[+m[2]]; if (!s) return '';
+  return `<span class="stk ${cls || ''}" title="${wEsc(P.n)}">${docSticker(...s)}</span>`;
+}
+/* 이모티콘 고르는 판 — 채팅 창 아래에 펼친다 */
+function emoPicker(host, onPick) {
+  let tab = Object.keys(EMO_PACKS)[0];
+  const draw = () => {
+    const P = EMO_PACKS[tab], own = emoOwn(tab);
+    host.innerHTML = `<div class="emotabs">${Object.keys(EMO_PACKS).map(k => `<button data-k="${k}" class="${k === tab ? 'on' : ''}${emoOwn(k) ? '' : ' lock'}" title="${wEsc(EMO_PACKS[k].n)}">${EMO_PACKS[k].kind === 'st'
+      ? docSticker(...EMO_PACKS[k].st[0].slice(0, 4)) : `<i>${wEsc(EMO_PACKS[k].tx[0].slice(0, 6))}</i>`}</button>`).join('')}</div>
+      <div class="emohead"><b>${wEsc(P.n)}</b><small>${wEsc(P.d)}</small>${own ? (P.free ? '<em>공짜</em>' : caster() ? '<em>백야는 공짜</em>' : '<em>가짐</em>') : `<button class="emobuy">${won(P.price)} 으로 산다</button>`}</div>
+      <div class="emogrid ${P.kind}${own ? '' : ' lock'}">${P.kind === 'st' ? P.st.map((s, i) => `<button data-i="${i}">${docSticker(...s)}</button>`).join('')
+        : P.tx.map((s, i) => `<button data-i="${i}">${wEsc(s)}</button>`).join('')}</div>`;
+    host.querySelectorAll('.emotabs button').forEach(b => b.onclick = () => { tab = b.dataset.k; SND.ui(); draw(); });
+    const buy = host.querySelector('.emobuy'); if (buy) buy.onclick = () => askKrw('이모티콘 「' + P.n + '」', P.price, '한 번 사면 영영');
+    host.querySelectorAll('.emogrid button').forEach(b => b.onclick = () => {
+      if (!emoOwn(tab)) { SND.err(); toast(`「${P.n}」은 아직 없다 — ${won(P.price)}`); return; }
+      SND.ui(); onPick(P.kind === 'st' ? `[[st:${tab}:${b.dataset.i}]]` : P.tx[+b.dataset.i]);
+    });
+  };
+  draw();
+}
+/* 기본 이모지를 걸러 낸다 — 글 이모티콘은 둔다 */
+const EMOJI_RE_C = /\p{Emoji_Presentation}|\p{Regional_Indicator}|️|‍|[\u{1F3FB}-\u{1F3FF}]/gu;
+const emojiStrip = s => String(s || '').replace(EMOJI_RE_C, '');
+
+/* ══ 대전 중의 말 — 그 판의 사람들에게만 · 말한 이의 머리 위에 말풍선 ══ */
+const mpOn = () => !!(G.b && G.b.kind === 'pvp' && MP.match && MP.match.id);
+async function mpSay(text) {
+  const t = emojiStrip(text).trim(); if (!t) return { ok: false, why: '할 말이 비었다' };
+  const body = { id: MP.match.id, text: t }; if (caster()) body.code = castKey();
+  return mpAsk('say', body);
+}
+function mpSayShow(acct, t) {
+  MP.sayLog = (MP.sayLog || []).concat({ acct, t, at: Date.now() }).slice(-40);
+  const ent = mpUnitEnt(acct); const host = ent && ent.el ? ent.el : $('#mpally');
+  if (host) {
+    const old = host.querySelector('.mpbub'); if (old) old.remove();
+    const st = stkHtml(t, 'inbub');
+    const b = el('div', 'mpbub' + (MP.match && acct === MP.match.me ? ' me' : '') + (st ? ' st' : ''), st || `<span></span>`);
+    if (!st) b.querySelector('span').textContent = t;
+    host.appendChild(b); setTimeout(() => b.classList.add('out'), 4200); setTimeout(() => b.remove(), 4700);
+  }
+  try { if (MP.match && acct !== MP.match.me) SND.blip(1046, { dur: .08, vol: .04 }); } catch (e) {}
+  if ($('#chatp') && $('#chatp').classList.contains('mpmode')) chatDraw();
+}
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -32097,8 +32906,9 @@ function chatOpen() {
   p.innerHTML = `<div class="chh"><b>話 채팅</b><small>${wEsc(ACCT.id)}${dev ? ' · <em>백야로 말한다</em>' : ''} · 셋 분 지나면 사라짐</small>
       ${dev ? '<button class="chclr" title="모두 지운다">비우기</button>' : ''}<button class="chx" title="닫기">×</button></div>
     <div class="chl"><div class="chnone">불러오는 중…</div></div>
-    <div class="chf"><input class="chi" maxlength="120" placeholder="할 말 — 엔터로 보낸다" spellcheck="false" autocomplete="off">
+    <div class="chf"><button class="chemo-b" title="이모티콘">☺</button><input class="chi" maxlength="120" placeholder="할 말 — 엔터로 보낸다" spellcheck="false" autocomplete="off">
       <button class="chs">보내기</button></div>
+    <div class="chemo" hidden></div>
     <div class="chw"></div>`;
   document.body.appendChild(p);
   const inp = p.querySelector('.chi'), warn = p.querySelector('.chw');
@@ -32110,17 +32920,35 @@ function chatOpen() {
     const r = await acctAsk('/chat/mod', { code: castKey(), clear: true });
     if (r.ok) { CHAT.log = []; chatDraw(); tell('모두 지웠다'); } else tell(r.why, true);
   };
-  const go = async () => {
-    const t = inp.value.trim();
+  /* 이모티콘 판 */
+  const eb = p.querySelector('.chemo-b'), ebox = p.querySelector('.chemo');
+  eb.onclick = () => { SND.ui(); ebox.hidden = !ebox.hidden; eb.classList.toggle('on', !ebox.hidden);
+    if (!ebox.hidden) { emoPicker(ebox, v => { if (STK_RE_C.test(v)) { sendRaw(v); } else { inp.value = (inp.value + ' ' + v).trim().slice(0, 120); inp.focus(); } });
+      emoLoad().then(() => { if (!ebox.hidden) emoPicker(ebox, v => { if (STK_RE_C.test(v)) sendRaw(v); else { inp.value = (inp.value + ' ' + v).trim().slice(0, 120); inp.focus(); } }); }); } };
+  /* 기본 이모지는 못 쓴다 */
+  inp.addEventListener('input', () => { if (EMOJI_RE_C.test(inp.value)) { EMOJI_RE_C.lastIndex = 0; inp.value = emojiStrip(inp.value); tell('기본 이모지는 못 쓴다 — ☺ 이모티콘을 쓰시오', true); } EMOJI_RE_C.lastIndex = 0; });
+  const sendRaw = async t => {
     if (!t || CHAT.busy) return;
     CHAT.busy = true; tell('');
+    if (mpOn()) {                                   /* 대전 중 — 그 판의 사람들에게만 */
+      const r = await mpSay(t); CHAT.busy = false;
+      if (!r.ok) { tell(r.why, true); SND.err(); return; }
+      inp.value = ''; return;
+    }
     const g = guestOn() ? guestGet().sec : '';
     const r = await acctAsk('/chat/send', { token: ACCT.token, text: t, code: dev ? castKey() : undefined,
                                            gsec: g && /^[0-9a-f]{32}$/.test(g) ? g : undefined }, 15000);
     CHAT.busy = false;
     if (!r.ok) { tell(r.why, true); SND.err(); return; }
-    inp.value = '';
+    if (!STK_RE_C.test(t)) inp.value = '';
     chatPull();
+  };
+  const go = () => {
+    const t = emojiStrip(inp.value).trim();
+    /* /imply — 내 화면의 채팅 창만 빙글빙글 (아무에게도 보내지 않는다) */
+    if (/^\/imply$/i.test(t)) { inp.value = ''; p.classList.remove('imply'); void p.offsetWidth; p.classList.add('imply'); tell('빙글빙글 — 나만 보인다');
+      try { SND.unlock(); SND.blip(660, { dur: .5, type: 'triangle', vol: .05, to: 1760 }); } catch (e) {} setTimeout(() => p.classList.remove('imply'), 5600); return; }
+    sendRaw(t);
   };
   p.querySelector('.chs').onclick = go;
   inp.onkeydown = e => {
@@ -32157,12 +32985,20 @@ function chatDraw() {
   const l = p.querySelector('.chl');
   const stick = l.scrollTop + l.clientHeight >= l.scrollHeight - 30;
   const dev = caster();
+  /* 대전 중 — 그 판의 말만 (상대·한 편에게만 간다) */
+  p.classList.toggle('mpmode', mpOn());
+  if (mpOn()) {
+    const L = MP.sayLog || [];
+    l.innerHTML = `<div class="chnone" style="padding:6px 8px"><small>對 대전 중 — 여기서 한 말은 <b>이 판의 사람들에게만</b> 보인다 · 말풍선으로 뜬다</small></div>` +
+      L.map(m => { const me = m.acct === MP.match.me; return `<div class="cm${me ? ' me' : ''}"><b>${wEsc(mpName(m.acct))}</b><span>${stkHtml(m.t) || wEsc(m.t)}</span></div>`; }).join('');
+    l.scrollTop = l.scrollHeight; return;
+  }
   if (!CHAT.log.length) { l.innerHTML = '<div class="chnone">아무 말이 없다 — 먼저 말을 건네 보시오<br><small>말은 셋 분이 지나면 사라진다</small></div>'; return; }
   l.innerHTML = CHAT.log.map(m => {
     const d = new Date(m.at), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
     const mine = !m.k && m.n === ACCT.id;
     return `<div class="cm ${m.k || ''}${mine ? ' me' : ''}" data-id="${m.id}"><b data-pn="${m.k ? '' : wEsc(m.n)}">${m.ttl ? `<em class="cttl">${wEsc(m.ttl)}</em>` : ''}${wEsc(m.n)}${m.k === 'dev' ? '<i>개발자</i>' : m.k === 'guest' ? '<i>게스트</i>' : ''}</b>` +
-      `<span>${wEsc(m.t)}</span><time>${hm}</time>` +
+      `<span>${stkHtml(m.t) || wEsc(m.t)}</span><time>${hm}</time>` +
       (dev && m.k !== 'dev' ? '<u class="cmd" title="이 말을 지운다">지우기</u><u class="cmm" title="10분 동안 말을 막고 그 사람의 말을 걷는다">입막기</u>' +
         (!m.k ? '<u class="cmi" title="이 사람을 게스트로 초대한다">초대</u>' : '') : '') + '</div>';
   }).join('');
@@ -32591,7 +33427,7 @@ const mpUnitEnt = acct => {
 };
 function mpBegin(mv) {
   MP.match = { id: mv.id, mode: mv.mode, ranked: mv.ranked, me: mv.me, players: mv.players, order: mv.order };
-  MP.since = 0; MP.myNo = 0; MP.resShown = false; MP.evq = []; MP.lastUnits = mv.units;
+  MP.since = 0; MP.myNo = 0; MP.resShown = false; MP.evq = []; MP.lastUnits = mv.units; MP.sayLog = [];
   MP.lobby = false; MP.room = null; MP.queue = null;
   closeOverlay();
   mpSave();
@@ -32610,8 +33446,8 @@ function mpBegin(mv) {
   G.b.enemies.forEach((e, i) => { e.mpAcct = foes[i].acct; e.mpTier = foes[i].rp; mpNameTag(e.el, foes[i]); });
   if (P() && P().el) mpNameTag(P().el, me, true);
   G.b.mpMine = false; G.b.busy = true;
-  /* 두 번째로 두는 쪽은 첫 차례에 한 장 더 */
-  if (mv.order[0] !== mv.me) G.b.drawMod = (G.b.drawMod || 0) + 1;
+  /* 두 번째로 두는 쪽은 첫 차례에 보정 — 기본 부적 1장 · 기 1 (판 57 · 백야가 퍼뜨리기에서 고친다) */
+  if (mv.order[0] !== mv.me) { const f = pvpFix(); G.b.drawMod = (G.b.drawMod || 0) + f.draw; G.b._mpSecond = f; }
   mpApplyUnits(mv.units, false);
   mpHud(mv);
   if (ally) mpAllyPanel(ally);
@@ -32669,6 +33505,7 @@ async function mpDrain(mv) {
         await wait(520);
       } else if (e.kind === 'end' && e.acct !== me) { await mpApplyUnits(e.units, true); await wait(260); }
       else if (e.kind === 'timeout') { toast(`${mpName(e.acct)} — 시간이 다해 차례가 넘어갔다`); }
+      else if (e.kind === 'say') { try { mpSayShow(e.acct, e.say); } catch (x) {} }
       else if (e.kind === 'tag') { try { mpRetag(e); } catch (x) {} }
       else if (e.kind === 'gone') { toast(`${mpName(e.acct)}이(가) ${e.acct === me ? '쓰러졌다' : '판을 떠났다'}`); }
       else if (e.kind === 'turn' || e.kind === 'start') {

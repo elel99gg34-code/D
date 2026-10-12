@@ -50,6 +50,8 @@ function expire(now) {
   if (live.scode && now > live.scode.until) { live.scode = null; changed = true; }
   if (live.cpn && now > live.cpn.until) { live.cpn = null; changed = true; }
   if (live.sale && now > live.sale.until) { live.sale = null; changed = true; }
+  if (live.deckx && now > live.deckx.until) { live.deckx = null; changed = true; }
+  if (live.dspawn && now > live.dspawn.until) { live.dspawn = null; changed = true; }
   if (live.wheel && live.wheel.done && now > live.wheel.landAt + 25000) { live.wheel = null; live.wheelP = null; changed = true; }
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
@@ -206,10 +208,18 @@ function nickWhy(nick, dev) {
   if (NICK_BAN.test(nick) && !(dev && (nick === '백야' || nick === '백사'))) return '쓸 수 없는 닉네임이다 (백야·관리자·운영 따위, 거친 말)';
   return '';
 }
+/* 닉네임은 두 달에 한 번 바꾼다 — 처음 정하는 것(가입·옛 계정)은 세지 않는다. 관리자는 매이지 않는다 */
+const NICK_GAP = 60 * 86400000;
 async function nickSet(id, nick, dev) {
   const why = nickWhy(nick, dev); if (why) return why;
   if (!(await nickFree(nick, id))) return '이미 누가 쓰는 닉네임이다';
   const old = await nickOf(id);
+  const change = old && old.toLowerCase() !== nick.toLowerCase();
+  if (change && !dev) {
+    const at = +(await get('nkat:' + id)) || 0, left = at + NICK_GAP - Date.now();
+    if (left > 0) return `닉네임은 두 달에 한 번 바꿀 수 있다 — ${Math.ceil(left / 86400000)}일 뒤에`;
+  }
+  if (change) await put('nkat:' + id, Date.now());
   if (old && old.toLowerCase() !== nick.toLowerCase()) await put('nk:' + old.toLowerCase(), null);
   await put('nk:' + nick.toLowerCase(), id);
   await put('nick:' + id, nick);
@@ -355,7 +365,7 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*', 'nkat:*', 'emo:*']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
@@ -507,7 +517,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -515,6 +525,7 @@ const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain
 const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_PAY = 5, HB_MIN_FIGHT = 3000, HB_SESS_MAX = 45 * 60000;
 const HB_SHOP = { stone: 30, box: 20, qi: 25, dia: 8, hp: 6, gold: 5 };      /* 해킹상점 값(토큰) — 앱과 같아야 한다 */
 const hbSess = new Map();                                                    /* 아이디 → 지금 싸우는 판 */
+const hbRoom = new Map();                 /* 백야의 방에 든 사람 — 열 분 동안 반값 */
 function hbWin(now) {
   const f = live.hbForce;
   if (f && now < f.until) return { slot: 'f' + f.id, at: f.at, until: f.until, forced: true, cut: !!f.cut };
@@ -581,7 +592,8 @@ function mailMake(m) {
   if (m.mats && typeof m.mats === 'object') for (const k of FUSE_MATS) { const n = num(m.mats[k], 99); if (n) mats[k] = n; }
   return { id: str(m.id, 40) || ('m' + now + Math.floor(Math.random() * 1000)), at: now, until: now + days * 86400000,
            title: str(m.title, 40) || '우편', say: str(m.say, 300), from: str(m.from, 20) || '백야',
-           gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards, mats, cpn: cpnClean(m.cpn) };
+           gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards, mats, cpn: cpnClean(m.cpn),
+           emo: Array.isArray(m.emo) ? m.emo.filter(x => EMO_PACKS.includes(x) && !EMO_FREE.includes(x)).slice(0, 4) : [] };
 }
 function mailAdd(m) {
   const one = mailMake(m);
@@ -913,6 +925,23 @@ async function applyCast(q) {
     live.cpn = x && Object.keys(ks).length ? { id: now, at: now, until: now + Math.max(1, Math.min(1440, parseInt(x.min, 10) || 10)) * 60000, ks, say: str(x.say, 80) } : null;
   }
   /* 오늘의 특가 — 일일상점 값을 더 깎는다 */
+  /* 덱 바꾸기 — 모두의 덱을 한동안 ?X급(qx) 또는 ?급(unknown)으로. 끄거나 때가 지나면 제 덱으로 돌아간다 */
+  if ('deckx' in q) {
+    const x = q.deckx, now = Date.now();
+    live.deckx = x && (x.k === 'qx' || x.k === 'unknown') ? { id: now, k: x.k, at: now, until: now + Math.max(1, Math.min(720, parseInt(x.min, 10) || 30)) * 60000, by: str(x.by, 12) } : null;
+  }
+  /* 백야의 진열 — 모두의 일일상점 맨 위에 부적 한 장을 3분 동안 (한 사람 한 번) */
+  if ('dspawn' in q) {
+    const x = q.dspawn, now = Date.now();
+    live.dspawn = x && x.card ? { id: now, card: str(x.card, 40), up: !!x.up, price: num(x.price, 100000), at: now, until: now + 3 * 60000, by: str(x.by, 12) } : null;
+  }
+  /* 모두의 일일상점을 한 번 새로 진열 */
+  if ('dsroll' in q) live.dsroll = q.dsroll ? { id: Date.now(), by: str(q.dsroll.by, 12) } : null;
+  /* 대전 선공 보정 — 두 번째부터 첫 차례에 받는 몫 */
+  if ('pvpfix' in q) {
+    const x = q.pvpfix, n = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
+    live.pvpfix = x && typeof x === 'object' ? { qi: n(x.qi, 3), draw: n(x.draw, 3), blk: n(x.blk, 30) } : null;
+  }
   if ('sale' in q) {
     const x = q.sale, now = Date.now();
     live.sale = x && num(x.pct, 50) ? { pct: num(x.pct, 50), at: now, until: now + Math.max(10, Math.min(2880, parseInt(x.min, 10) || 1440)) * 60000, by: str(x.by, 12) } : null;
@@ -1198,8 +1227,58 @@ const chatSave = () => put(CHAT_KEY, chat).catch(() => {});
 const CHAT_BAD = /(씨\s*발|시\s*발|ㅅ\s*ㅂ|ㅆ\s*ㅂ|병\s*신|ㅂ\s*ㅅ|좆|존\s*나|개\s*새|지\s*랄|fuck|shit|bitch)/gi;
 /* 열쇠처럼 생긴 것은 채팅에 못 올린다 — 관리자·퍼뜨리기·선물 코드, 들어와 있는 표 */
 const CHAT_SECRET = /baekya-[a-z]+-[a-z0-9]{6,}|\b[0-9a-f]{32,}\b/gi;
-const chatClean = s => { let t = String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, ' ')
+/* ── 검열 (판 57) — 띄어 쓰거나 기호·숫자를 끼워도 걸린다 ─────────────────────
+   말을 글자 마디로 나눈 뒤(빈칸으로), 한 글자짜리 마디는 다음 마디와 붙여 본다 — 「시 발」「개 새 끼」를 잡고,
+   「다시 발견」처럼 두 글자 넘는 마디끼리는 붙이지 않는다. 마디 안의 기호·숫자는 빼고 본다(「씨1발」「시.발」).
+   욕 · 패드립(부모 욕) · 성적인 말 · 영어 욕 · 한영 자판으로 친 욕(tlqkf 따위)을 「*」로 가린다. */
+const BAD_SKEL = new RegExp([
+  '[씨시쒸씌쓔ㅆ][발빨팔벌불뻘바](?!점)', 'ㅅㅂ', 'ㅆㅂ', 'ㅄ', '[병븅빙][신쉰딱]', 'ㅂㅅ', '좆', '좃', '존나', '존내', '졸라', 'ㅈㄴ', 'ㅈㄹ', '지랄',
+  '개[새쌔섀세쉐][끼기키꺄]?', '개[같년놈]', '[새쌔섀][끼키]', 'ㅅㄲ', '미친[놈년새것]', 'ㅁㅊ', '또라이', '돌아이', '닥쳐', '썅', '쌍[년놈]', '꺼져',
+  /* 패드립 — 부모·집안을 건드리는 말 */
+  '니[애에]?[미비]', '[애에][미비]', '느[금]', '느그[엄애아어]', '느개비', '니엄마', '니어미', '니앰', '니엠', '[엠앰엄]창', 'ㄴㄱㅁ', '니할[매미]', '니가족',
+  '엄마[없죽뒤]', '애미[없뒤죽]', '애비[없뒤죽]', '부모[없죽]', '고아[새년놈]', '느금마',
+  /* 성적인 말 */
+  '섹스', '쎅스', '야동', '딸딸이',
+  /* 영어 · 한영 자판 */
+  'fuck', 'fck', 'fuk', 'shit', 'bitch', 'bastard', 'asshole', 'dick', 'pussy', 'cunt', 'nigg', 'stfu', 'motherf', 'ssibal', 'sibal', 'tlqkf', 'qudtls', 'whssk', 'rotorl', 'tkdrl'
+].join('|'), 'gi');
+const BAD_PHRASE = /엄마[없죽뒤]|어미[없죽뒤]|애미[없뒤죽]|애비[없뒤죽]|부모[없죽뒤]|느금|니애미|니애비|니에미|느그엄마|느개비|니엄마[가는]?[없죽뒤]|고아[새년놈]/g;
+function censor(s) {
+  const t = String(s || ''); if (!t) return t;
+  const toks = []; let cur = null;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (/\s/.test(ch)) { if (cur && cur.c.length) toks.push(cur); cur = null; continue; }
+    if (!cur) cur = { c: [], m: [] };
+    if (/[가-힣ㄱ-ㅎㅏ-ㅣa-z]/i.test(ch)) { cur.c.push(ch.toLowerCase()); cur.m.push(i); }
+  }
+  if (cur && cur.c.length) toks.push(cur);
+  const segs = []; let acc = null;
+  for (const tk of toks) {
+    if (!acc) acc = { c: tk.c.slice(), m: tk.m.slice() }; else { acc.c.push(...tk.c); acc.m.push(...tk.m); }
+    if (tk.c.length > 1) { segs.push(acc); acc = null; }
+  }
+  if (acc) segs.push(acc);
+  /* 패드립 문구는 띄어 써도 — 말 전체를 붙여 한 번 더 본다 */
+  { const all = { c: [], m: [] }; for (const tk of toks) { all.c.push(...tk.c); all.m.push(...tk.m); } all.phrase = true; segs.push(all); }
+  const hit = new Set();
+  for (const sg of segs) { const sk = sg.c.join(''), R = sg.phrase ? BAD_PHRASE : BAD_SKEL; R.lastIndex = 0; let m;
+    while ((m = R.exec(sk))) { if (!m[0].length) { R.lastIndex++; continue; }
+      const a = sg.m[m.index], z = sg.m[m.index + m[0].length - 1]; for (let j = a; j <= z; j++) if (!/\s/.test(t[j])) hit.add(j); if (!m[0].length) R.lastIndex++; } }
+  if (!hit.size) return t;
+  let out = ''; for (let i = 0; i < t.length; i++) out += hit.has(i) ? '*' : t[i];
+  return out;
+}
+/* 이모티콘 팩 — 「박사의 하루」는 누구나. 나머지는 사서(또는 백야가 우편으로) 얻는다 */
+const EMO_PACKS = ['doc1', 'doc2', 'txt1', 'txt2'], EMO_FREE = ['doc1'];
+const STK_RE = /^\[\[st:([a-z0-9]{2,8}):(\d{1,2})\]\]$/;
+async function emoHas(id, pack) { if (EMO_FREE.includes(pack)) return true; const l = (await get('emo:' + id)) || []; return l.includes(pack); }
+async function emoGive(id, packs) { const l = (await get('emo:' + id)) || []; for (const p of packs) if (EMO_PACKS.includes(p) && !l.includes(p)) l.push(p); await put('emo:' + id, l); return l; }
+/* 기본 이모지(그림 글자)는 못 쓴다 — 글로 된 이모티콘(╯°□°)╯ 은 된다 */
+const EMOJI_RE = /\p{Emoji_Presentation}|\p{Regional_Indicator}|\uFE0F|\u200D|[\u{1F3FB}-\u{1F3FF}]/gu;
+const chatClean = s => { let t = String(s || '').replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, ' ').replace(EMOJI_RE, '')
   .replace(/\s+/g, ' ').trim().slice(0, CHAT_LEN).replace(CHAT_BAD, m => '*'.repeat(m.replace(/\s/g, '').length)).replace(CHAT_SECRET, '[가림]');
+  t = censor(t);
   if (CODE && t.includes(CODE)) t = t.split(CODE).join('[가림]');
   return t; };
 const chatView = x => ({ id: x.id, n: x.n, t: x.t, at: x.at, k: x.k || '', ttl: x.ttl || '' });
@@ -1294,6 +1373,7 @@ function mpStart(mode, teams, ranked) {
   console.log('판을 열었다:', mode, ranked ? '랭크' : '친선', players.map(p => p.acct + '(' + p.team + ')').join(' '));
   return m;
 }
+const mpSayAt = new Map();
 function mpEv(m, e) { m.seq++; e.seq = m.seq; e.t = Date.now(); m.ev.push(e); if (m.ev.length > 200) m.ev.splice(0, m.ev.length - 200); }
 const mpTeamOf = (m, acct) => (m.players.find(p => p.acct === acct) || {}).team;
 const mpAlive = (m, team) => m.players.some(p => p.team === team && m.units[p.acct].hp > 0);
@@ -1653,6 +1733,7 @@ const server = http.createServer(async (req, res) => {
       got[mid] = now;
       for (const k of Object.keys(got)) if (now - got[k] > 40 * 86400000) delete got[k];
       await put('mlc:' + id, got);
+      if (m.emo && m.emo.length) await emoGive(id, m.emo);
       statAdd('mail').catch(() => {});
       alog(id, `우편 「${m.title}」 — ${[m.gold ? '골드 ' + m.gold : '', m.dia ? '다이아 ' + m.dia : '', m.jp ? '정진 ' + m.jp : '', (m.cards || []).length ? '부적 ' + m.cards.length + '장' : '', Object.keys(m.mats || {}).length ? '원료 ' + Object.values(m.mats).reduce((a, b) => a + b, 0) : ''].filter(Boolean).join(' · ') || '빈 우편'}`).catch(() => {});
       return send(res, 200, { ok: true, mail: m });
@@ -2016,8 +2097,10 @@ const server = http.createServer(async (req, res) => {
       statAdd('hb').catch(() => {}); alog(id, `해킹 보스 격파 — 토큰 +${HB_PAY}`).catch(() => {});
       return send(res, 200, { ok: true, pay: HB_PAY, tok, slot: se.slot });
     }
+    /* 백야의 방 — 박사의 눈·코·입을 차례로 누른 사람. 열 분 동안 반값 */
+    if (url.pathname === '/hb/room') { hbRoom.set(id, now); if (hbRoom.size > 20000) hbRoom.clear(); return send(res, 200, { ok: true, tok: await bal() }); }
     if (url.pathname === '/hb/buy') {
-      const k = String(q.k || ''), price = HB_SHOP[k];
+      const k = String(q.k || ''), half = !!q.room && now - (hbRoom.get(id) || 0) < 10 * 60000, price = HB_SHOP[k] && (half ? Math.ceil(HB_SHOP[k] / 2) : HB_SHOP[k]);
       if (!price) return send(res, 400, { ok: false, why: '없는 물건' });
       const have = await bal();
       if (have < price) return send(res, 409, { ok: false, why: `해킹 토큰이 ${price - have} 모자라다`, tok: have });
@@ -2173,11 +2256,13 @@ const server = http.createServer(async (req, res) => {
     const t = chatClean(q.text);
     if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
     let n = (await nickOf(id)) || id, k = '';
-    if (isDev) { n = '백야'; k = 'dev'; }
+    if (isDev) { n = admRole(q.code) === 'baeksa' ? '백사' : '백야'; k = 'dev'; }
     else if (/^[0-9a-f]{32}$/.test(String(q.gsec || ''))) {
       const me = (await guestsGet())[sha(q.gsec)];
       if (me && me.state === 'ok') { n = me.name; k = 'guest'; }
     }
+    /* 이모티콘(스티커) — 가진 팩만. 백야·백사는 다 쓴다 */
+    { const st = STK_RE.exec(t); if (st && !isDev && !(await emoHas(id, st[1]))) return send(res, 403, { ok: false, why: '아직 없는 이모티콘이다 — 상점에서 받으시오' }); }
     chatLast.set(id, now);
     if (chatLast.size > 20000) chatLast.clear();
     const ttl = k ? '' : str(((await get('pf:' + id)) || {}).title, 14);
@@ -2385,6 +2470,17 @@ const server = http.createServer(async (req, res) => {
     }
     /* 판 안의 일 */
     const mid = mpOf.get(acct), m = mid && mpMatches.get(mid);
+    /* 대전 중의 말 — 그 판에 든 사람들에게만 (모두의 채팅에는 가지 않는다) */
+    if (act === 'say') {
+      if (!m || m.id !== q.id) return send(res, 404, { ok: false, why: '그 판이 없다' });
+      if (now - (mpSayAt.get(acct) || 0) < 1500) return send(res, 429, { ok: false, why: '너무 빠르다' });
+      const t = chatClean(String(q.text || '').slice(0, 80));
+      if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+      { const st = STK_RE.exec(t); if (st && !(await emoHas(acct, st[1])) && !admRole(q.code)) return send(res, 403, { ok: false, why: '아직 없는 이모티콘이다' }); }
+      mpSayAt.set(acct, now); if (mpSayAt.size > 5000) mpSayAt.clear();
+      mpEv(m, { kind: 'say', acct, say: t });
+      return send(res, 200, { ok: true, t });
+    }
     if (act === 'play' || act === 'end' || act === 'leave') {
       if (!m || m.id !== q.id) return send(res, 404, { ok: false, why: '그 판이 없다' });
       m.seen[acct] = now;
@@ -2693,7 +2789,14 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/auth/me') {
       const id = await tokWho(q.token);
       if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
-      return send(res, 200, { ok: true, id, nick: await nickOf(id) });
+      const nat = +(await get('nkat:' + id)) || 0;
+      return send(res, 200, { ok: true, id, nick: await nickOf(id), nickNext: nat ? nat + NICK_GAP : 0 });
+    }
+    /* 내 이모티콘 팩 */
+    if (url.pathname === '/auth/emo') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      return send(res, 200, { ok: true, packs: EMO_FREE.concat((await get('emo:' + id)) || []) });
     }
 
     /* 걸어 둔 이름으로 들어온다 */
