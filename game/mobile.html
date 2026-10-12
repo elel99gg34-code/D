@@ -6657,6 +6657,257 @@ body.zenui :is(#topbar,.evpill,#chatfab,.scpill,.whpill,#tbmore,#menubtn,#toast,
 .castquick button i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e)}
 .castquick button em{font-style:normal;font-size:10px;padding:0 5px;border-radius:5px;border:1px solid rgba(232,200,106,.5);color:#ffd76a}
 .whres{background:rgba(10,6,2,.95);backdrop-filter:blur(3px)}
+/* ══ 판 55 — 적의 수: 이름이 곧 연출 ══════════════════════════ */
+/* 이름패 — 요괴 머리 위 */
+.eplate{position:absolute;z-index:31;pointer-events:none;transform:translate(-50%,-100%);display:flex;align-items:center;gap:9px;padding:5px 14px 5px 5px;border-radius:24px 8px 24px 8px;white-space:nowrap;
+  background:linear-gradient(100deg,rgba(14,10,8,.94),color-mix(in srgb,var(--ec) 26%,rgba(14,10,8,.94)) 70%,rgba(14,10,8,.9));
+  border:1px solid color-mix(in srgb,var(--ec) 70%,transparent);box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 18px color-mix(in srgb,var(--ec) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:epIn .42s cubic-bezier(.2,1.4,.4,1) both}
+.eplate.out{animation:epOut .32s ease-in forwards}
+@keyframes epIn{0%{opacity:0;transform:translate(-50%,-70%) scale(.7);clip-path:inset(0 100% 0 0 round 20px)}60%{clip-path:inset(0 0 0 0 round 20px)}100%{opacity:1;transform:translate(-50%,-100%) scale(1);clip-path:inset(0 0 0 0 round 20px)}}
+@keyframes epOut{to{opacity:0;transform:translate(-50%,-125%) scale(.92);filter:blur(3px)}}
+.eplate .eps{position:relative;flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+  background:radial-gradient(circle at 35% 30%,var(--ec2),var(--ec) 55%,color-mix(in srgb,var(--ec) 50%,#000));box-shadow:0 0 14px var(--ec),inset 0 -3px 6px rgba(0,0,0,.35);animation:epSeal .5s cubic-bezier(.2,1.6,.4,1) .08s both}
+.eplate .eps b{font-size:19px;font-weight:700;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.6),0 1px 0 rgba(0,0,0,.5)}
+.eplate .eps::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--ec2) 70%,transparent);animation:auSpin 4s linear infinite}
+@keyframes epSeal{from{transform:scale(0) rotate(-120deg)}}
+.eplate span{display:flex;flex-direction:column;line-height:1.1}
+.eplate span small{font-size:9.5px;letter-spacing:.25em;color:color-mix(in srgb,var(--ec2) 80%,#fff);opacity:.85}
+.eplate span b{font-size:16px;font-weight:400;letter-spacing:.08em;color:#fff6e6;text-shadow:0 0 10px color-mix(in srgb,var(--ec) 80%,transparent)}
+.eplate em{font-style:normal;font-size:18px;font-weight:700;color:#ff8a7a;margin-left:2px;text-shadow:0 0 10px rgba(255,80,60,.6)}
+.eplate em small{font-size:11px;color:#ffc8b8}
+.eplate u{position:absolute;left:46px;right:14px;bottom:3px;height:2px;border-radius:1px;text-decoration:none;background:linear-gradient(90deg,var(--ec),transparent);transform-origin:left;animation:brushIn .5s ease .15s backwards}
+.eplate.aw{border-color:#ffb648;box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 2px rgba(200,30,20,.75),0 0 26px rgba(255,80,40,.7);
+  background:linear-gradient(100deg,rgba(40,4,4,.96),color-mix(in srgb,var(--ec) 30%,rgba(60,8,4,.96)) 70%,rgba(40,4,4,.92))}
+.eplate.aw .eps{box-shadow:0 0 0 2px #ffb648,0 0 20px #ff3a1a}
+.eplate.aw::before{content:'覺';position:absolute;right:-10px;top:-12px;width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:13px;color:#fff3d6;
+  background:#b8261c;box-shadow:0 0 10px #ff3a1a;transform:rotate(8deg);animation:epSeal .5s cubic-bezier(.2,1.6,.4,1) .2s both}
+/* 큰 수 — 화면 가운데 큰 패 */
+.ebanner{position:absolute;left:50%;z-index:32;transform:translateX(-50%);pointer-events:none;display:grid;place-items:center;width:min(92vw,720px);height:120px;animation:ebIn 1.25s ease forwards}
+@keyframes ebIn{0%{opacity:0;transform:translateX(-50%) scale(1.25);filter:blur(8px)}12%{opacity:1;transform:translateX(-50%) scale(1);filter:none}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(1.03)}}
+.ebanner .ebg{position:absolute;font-style:normal;font-size:150px;line-height:1;font-weight:700;color:transparent;-webkit-text-stroke:2px color-mix(in srgb,var(--ec) 80%,transparent);opacity:.45;
+  filter:drop-shadow(0 0 20px var(--ec));animation:ebBg 1.25s ease-out forwards}
+@keyframes ebBg{from{transform:scale(.6) rotate(-8deg)}to{transform:scale(1.15) rotate(3deg)}}
+.ebanner .ebx{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 40px;
+  background:linear-gradient(90deg,transparent,rgba(10,6,4,.82) 18%,rgba(10,6,4,.82) 82%,transparent)}
+.ebanner .ebx small{font-size:12px;letter-spacing:.4em;color:var(--ec2)}.ebanner .ebx small em{font-style:normal;color:#ff6a4a}
+.ebanner .ebx b{font-size:clamp(26px,4.6vw,44px);font-weight:700;letter-spacing:.18em;color:#fff;text-shadow:0 0 18px var(--ec),0 0 50px var(--ec),0 3px 0 rgba(0,0,0,.6)}
+.ebanner s{position:absolute;left:8%;right:8%;height:3px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--ec),var(--ec2),var(--ec),transparent);text-decoration:none;transform-origin:center;animation:ebLine .5s cubic-bezier(.2,.9,.3,1) both}
+.ebanner s:nth-of-type(1){top:18px}.ebanner s:nth-of-type(2){bottom:18px;animation-delay:.08s}
+@keyframes ebLine{from{transform:scaleX(0)}}
+.ebanner.aw .ebx{background:linear-gradient(90deg,transparent,rgba(60,6,4,.88) 18%,rgba(60,6,4,.88) 82%,transparent)}
+.ebanner.aw .ebx b{text-shadow:0 0 18px #ff3a1a,0 0 50px var(--ec),0 3px 0 rgba(0,0,0,.6)}
+/* 의도 — 갈래의 인장 */
+.intent .ith{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#fff;margin-right:-1px;
+  background:radial-gradient(circle at 35% 30%,var(--ec2),var(--ec) 60%,color-mix(in srgb,var(--ec) 45%,#000));box-shadow:0 0 8px color-mix(in srgb,var(--ec) 70%,transparent);text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.intent.aw .ith{box-shadow:0 0 0 1.5px #ffb648,0 0 10px #ff3a1a}
+/* 날아가는 것 */
+.eap{position:absolute;z-index:30;pointer-events:none;left:0;top:0;will-change:transform}
+.eap-orb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff,var(--ec2) 30%,var(--ec) 65%,transparent 72%);
+  box-shadow:0 0 18px var(--ec),0 0 36px var(--ec);filter:saturate(1.3)}
+.eap-orb::after{content:'';position:absolute;right:60%;top:20%;width:60px;height:60%;border-radius:50%;background:linear-gradient(270deg,var(--ec),transparent);opacity:.65;filter:blur(3px)}
+.eap-orb.eth-ink{background:radial-gradient(circle,#0a0608 45%,rgba(10,6,8,.6) 60%,transparent 72%);box-shadow:none}
+.eap-orb.eth-void,.eap-orb.eth-curse{background:radial-gradient(circle at 45% 45%,#000 30%,var(--ec) 55%,transparent 72%)}
+.eap-shard{width:54px;height:12px;clip-path:polygon(0 50%,22% 0,100% 50%,22% 100%);background:linear-gradient(90deg,rgba(255,255,255,.2),var(--ec2) 40%,#fff 90%);filter:drop-shadow(0 0 8px var(--ec))}
+.eap-arrow{width:64px;height:6px;background:linear-gradient(90deg,transparent,var(--ec) 30%,#fff);clip-path:polygon(0 30%,82% 30%,82% 0,100% 50%,82% 100%,82% 70%,0 70%);filter:drop-shadow(0 0 6px var(--ec))}
+.eap-blade{width:60px;height:60px;border-radius:50%;border-right:6px solid var(--ec2);border-top:2px solid transparent;filter:drop-shadow(0 0 8px var(--ec));animation:eapSpin .2s linear infinite}
+.eap-blade.eth-petal{border-right-color:#ffb0cc}
+@keyframes eapSpin{to{rotate:360deg}}
+.eap-talis{width:22px;height:38px;border-radius:2px;background:linear-gradient(#f4e2b0,#e8c878);border:1.5px solid #a8272c;box-shadow:0 0 12px var(--ec)}
+.eap-talis::after{content:'符';position:absolute;inset:0;display:grid;place-items:center;font-size:14px;color:#a8272c;transform:rotate(90deg)}
+.eap-cloud{width:90px;height:56px;border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--ec) 70%,transparent),transparent 70%);filter:blur(4px)}
+.eap-packet{width:16px;height:16px;background:var(--ec);box-shadow:0 0 10px var(--ec),18px 6px 0 -3px var(--ec),-16px -6px 0 -4px var(--ec)}
+.eap-ring{width:80px;height:80px;border-radius:50%;border:3px solid var(--ec2);box-shadow:0 0 14px var(--ec),inset 0 0 14px var(--ec)}
+.eap-chain{height:10px;width:0;transform-origin:0 50%;background:repeating-linear-gradient(90deg,var(--ec) 0 12px,transparent 12px 14px,var(--ec2) 14px 22px,transparent 22px 24px);
+  border-radius:5px;filter:drop-shadow(0 0 6px var(--ec)) drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.eap-chain.out{opacity:0;transition:opacity .3s}
+.eap-meteor{width:120px;height:26px;border-radius:13px;background:linear-gradient(90deg,transparent,var(--ec) 60%,#fff 92%);filter:drop-shadow(0 0 14px var(--ec)) drop-shadow(0 0 30px var(--ec))}
+.eghost{position:absolute;z-index:29;pointer-events:none;transform:translate(-50%,-50%);font-weight:700;opacity:.5;filter:blur(1px);animation:eGhost .42s ease-out forwards}
+@keyframes eGhost{to{opacity:0;transform:translate(-80%,-50%) scale(1.15)}}
+/* 맞는 자리 */
+.eah{position:absolute;z-index:9;pointer-events:none;width:0;height:0}
+.eah i{position:absolute;display:block}
+.eah .core{left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--ec2) 22%,color-mix(in srgb,var(--ec) 60%,transparent) 45%,transparent 70%);animation:eaCore .5s ease-out forwards}
+@keyframes eaCore{0%{transform:scale(.2);opacity:1}100%{transform:scale(1.5);opacity:0}}
+/* 불 */
+.eah-fire .fl{left:calc(var(--x) - 12px);bottom:-40px;width:24px;height:var(--h);border-radius:50% 50% 30% 30%/70% 70% 30% 30%;
+  background:linear-gradient(0deg,#ff3a0a,#ff9a2a 45%,#ffe08a 80%,transparent);filter:blur(1px) drop-shadow(0 0 8px #ff6a1a);transform-origin:50% 100%;animation:eaFl .7s ease-out forwards;opacity:0}
+@keyframes eaFl{0%{opacity:0;transform:scaleY(.2)}25%{opacity:1;transform:scaleY(1.1)}100%{opacity:0;transform:scaleY(.6) translateY(-50px)}}
+/* 얼음 */
+.eah-ice .sh{left:-6px;top:-24px;width:12px;height:48px;clip-path:polygon(50% 0,100% 40%,50% 100%,0 40%);background:linear-gradient(#fff,var(--ec));
+  filter:drop-shadow(0 0 6px var(--ec));transform:rotate(var(--a)) translateY(calc(var(--d) * -1));animation:eaSh .7s cubic-bezier(.2,.8,.3,1) forwards;opacity:0}
+@keyframes eaSh{0%{opacity:0;transform:rotate(var(--a)) translateY(-160px) scaleY(.4)}35%{opacity:1;transform:rotate(var(--a)) translateY(-10px) scaleY(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scaleY(.8)}}
+.eah-ice .frost{left:-100px;top:-100px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(230,250,255,.7),rgba(127,216,255,.3) 45%,transparent 70%);
+  -webkit-mask:repeating-conic-gradient(#000 0 8deg,transparent 8deg 14deg);mask:repeating-conic-gradient(#000 0 8deg,transparent 8deg 14deg);animation:eaCore .8s ease-out forwards}
+/* 번개 */
+.eah-thunder .glow{left:-120px;top:-120px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(160,215,255,.4) 40%,transparent 70%);animation:eaCore .45s ease-out forwards}
+.eah-thunder .arc{left:0;top:-2px;width:90px;height:4px;transform-origin:0 50%;transform:rotate(var(--a));background:linear-gradient(90deg,#fff,var(--ec),transparent);
+  clip-path:polygon(0 0,30% 100%,45% 0,70% 100%,100% 50%,70% 0,45% 100%,30% 0);filter:drop-shadow(0 0 4px #bfe8ff);animation:eaArc .35s steps(3) forwards}
+@keyframes eaArc{0%{opacity:1;transform:rotate(var(--a)) scaleX(.3)}100%{opacity:0;transform:rotate(var(--a)) scaleX(1.3)}}
+/* 물 */
+.eah-water .wave{left:-90px;top:-40px;width:180px;height:80px;border-radius:50% 50% 0 0;border-top:8px solid var(--ec2);border-left:3px solid transparent;border-right:3px solid transparent;
+  filter:drop-shadow(0 0 8px var(--ec));animation:eaWave .7s ease-out forwards;opacity:0}
+@keyframes eaWave{0%{opacity:1;transform:scale(.3,.6)}100%{opacity:0;transform:scale(1.4,1) translateY(-20px)}}
+.eah-water .dr{left:-5px;top:-7px;width:10px;height:14px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 40% 35%,#fff,var(--ec));
+  transform:rotate(var(--a)) translateX(0);animation:eaDr .7s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes eaDr{to{transform:rotate(var(--a)) translateX(var(--d)) scale(.4);opacity:0}}
+/* 바람 · 꽃보라 */
+:is(.eah-wind,.eah-petal) .bl{left:-90px;top:-50px;width:180px;height:100px;border-radius:50%;border-top:5px solid var(--ec2);transform:rotate(var(--a));filter:drop-shadow(0 0 6px var(--ec));animation:eaBl .5s ease-out forwards;opacity:0}
+@keyframes eaBl{0%{opacity:1;transform:rotate(var(--a)) translateX(120px) scale(.5)}100%{opacity:0;transform:rotate(var(--a)) translateX(-80px) scale(1.1)}}
+:is(.eah-wind,.eah-petal) .lf{left:-6px;top:-4px;width:12px;height:7px;border-radius:50%;background:var(--ec);animation:eaLf .9s ease-out forwards}
+.eah-petal .lf{background:#ffb0cc}
+@keyframes eaLf{to{transform:translate(var(--x),var(--y)) rotate(400deg);opacity:0}}
+/* 독 */
+.eah-poison .cloud{left:-90px;top:-70px;width:180px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(127,220,74,.55),rgba(60,140,30,.25) 50%,transparent 70%);filter:blur(6px);animation:eaCloud 1s ease-out forwards}
+@keyframes eaCloud{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.4) translateY(-20px);opacity:0}}
+.eah-poison .bb{left:calc(var(--x) - 8px);top:10px;width:16px;height:16px;border-radius:50%;border:2px solid #c8ff90;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.7),rgba(127,220,74,.4));
+  transform:scale(var(--s));animation:eaBb .9s ease-out forwards;opacity:0}
+@keyframes eaBb{0%{opacity:1;transform:scale(calc(var(--s) * .3))}100%{opacity:0;transform:translateY(-90px) scale(var(--s))}}
+/* 안개 */
+.eah-mist .fog{left:calc(var(--x) - 100px);top:-50px;width:200px;height:100px;border-radius:50%;background:radial-gradient(ellipse,rgba(220,214,232,.6),transparent 70%);filter:blur(10px);animation:eaFog 1.2s ease-out forwards;opacity:0}
+@keyframes eaFog{0%{opacity:0;transform:translateX(80px) scale(.6)}40%{opacity:1}100%{opacity:0;transform:translateX(-60px) scale(1.5)}}
+/* 피 */
+.eah-blood .cr{left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;border-right:9px solid #e0283c;transform:rotate(var(--a));filter:drop-shadow(0 0 8px #ff2a40);animation:eaCr .45s ease-out forwards;opacity:0}
+@keyframes eaCr{0%{opacity:1;transform:rotate(var(--a)) scale(.4)}100%{opacity:0;transform:rotate(calc(var(--a) + 70deg)) scale(1.15)}}
+.eah-blood .dp{left:var(--x);top:0;width:7px;height:11px;border-radius:50% 50% 50% 50%/30% 30% 70% 70%;background:#c0182c;animation:eaDp .8s ease-in forwards}
+@keyframes eaDp{0%{transform:translateY(-10px);opacity:1}100%{transform:translateY(70px);opacity:0}}
+.esiphon{position:absolute;z-index:8;height:6px;transform-origin:0 50%;pointer-events:none;border-radius:3px;
+  background:repeating-linear-gradient(90deg,rgba(224,40,60,.9) 0 10px,rgba(255,150,160,.6) 10px 16px);filter:drop-shadow(0 0 6px #ff2a40);animation:eaSiph .7s linear forwards}
+@keyframes eaSiph{0%{opacity:0;background-position:0 0}20%{opacity:1}100%{opacity:0;background-position:120px 0}}
+/* 이빨 */
+.eah-bite .jaw{left:-70px;width:140px;height:60px;clip-path:polygon(0 0,100% 0,100% 30%,90% 100%,80% 30%,70% 100%,60% 30%,50% 100%,40% 30%,30% 100%,20% 30%,10% 100%,0 30%);
+  background:linear-gradient(#fff6e8,#d8c8b0);filter:drop-shadow(0 0 8px var(--ec)) drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.eah-bite .jaw.up{top:-90px;animation:eaJawU .42s cubic-bezier(.6,0,.3,1.4) forwards}
+.eah-bite .jaw.dn{top:30px;transform:scaleY(-1);animation:eaJawD .42s cubic-bezier(.6,0,.3,1.4) forwards}
+@keyframes eaJawU{0%{transform:translateY(-40px);opacity:0}55%{transform:translateY(46px);opacity:1}100%{transform:translateY(30px);opacity:0}}
+@keyframes eaJawD{0%{transform:scaleY(-1) translateY(-40px);opacity:0}55%{transform:scaleY(-1) translateY(46px);opacity:1}100%{transform:scaleY(-1) translateY(30px);opacity:0}}
+/* 발톱 */
+.eah-claw .cl{left:-80px;top:-4px;width:160px;height:8px;border-radius:50%;background:linear-gradient(90deg,transparent,var(--ec) 20%,#fff 50%,var(--ec) 80%,transparent);
+  filter:drop-shadow(0 0 6px var(--ec));transform:rotate(var(--a)) translateY(var(--o)) scaleX(0);animation:eaCl .45s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes eaCl{0%{transform:rotate(var(--a)) translateY(var(--o)) scaleX(0);opacity:1}40%{transform:rotate(var(--a)) translateY(var(--o)) scaleX(1.1);opacity:1}100%{transform:rotate(var(--a)) translateY(var(--o)) scaleX(1.1);opacity:0}}
+/* 베기 */
+.eah-slash .sl{left:-140px;top:-5px;width:280px;height:10px;border-radius:50%;background:linear-gradient(90deg,transparent,var(--ec) 15%,#fff 50%,var(--ec) 85%,transparent);
+  box-shadow:0 0 18px var(--ec2);transform:rotate(var(--a)) scaleX(0);animation:eaSl .5s cubic-bezier(.2,.9,.3,1) forwards}
+.eah-slash .sl.thin{height:4px;top:-2px}
+@keyframes eaSl{0%{transform:rotate(var(--a)) scaleX(0);opacity:1}35%{transform:rotate(var(--a)) scaleX(1.15);opacity:1}100%{transform:rotate(var(--a)) scaleX(1.2) translateY(6px);opacity:0}}
+/* 찌르기 */
+.eah-pierce .thr{left:-10px;top:-3px;width:200px;height:6px;transform-origin:0 50%;background:linear-gradient(270deg,transparent,var(--ec) 40%,#fff);animation:eaThr .4s ease-out forwards}
+@keyframes eaThr{0%{transform:scaleX(0) translateX(120px);opacity:1}40%{transform:scaleX(1);opacity:1}100%{opacity:0}}
+.eah-pierce .star{left:-40px;top:-40px;width:80px;height:80px;background:radial-gradient(circle,#fff,var(--ec2) 25%,transparent 60%);clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:eaCore .45s ease-out forwards}
+.eah-pierce .sp{left:0;top:-1px;width:30px;height:2px;background:var(--ec2);transform:rotate(var(--a));animation:eaSp .45s ease-out forwards}
+@keyframes eaSp{to{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
+/* 낙성 · 분쇄 */
+:is(.eah-meteor,.eah-blunt) .crater{left:-90px;top:20px;width:180px;height:50px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.5),rgba(80,60,40,.3) 50%,transparent 70%);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ec) 50%,transparent);animation:eaCrat .9s ease-out forwards}
+@keyframes eaCrat{0%{transform:scale(.2);opacity:1}30%{transform:scale(1.1)}100%{transform:scale(1.2);opacity:0}}
+.eah-meteor .rk,.eah-blunt .ck{left:0;top:0;width:10px;height:8px;border-radius:2px;background:#8a7860;transform:rotate(var(--a));animation:eaRk .7s cubic-bezier(.2,.7,.4,1) forwards}
+.eah-blunt .ck{width:var(--d);height:3px;background:linear-gradient(90deg,#fff8e0,transparent);transform-origin:0 50%;animation:eaCk .5s ease-out forwards}
+@keyframes eaRk{to{transform:rotate(var(--a)) translateX(var(--d)) rotate(200deg);opacity:0}}
+@keyframes eaCk{0%{transform:rotate(var(--a)) scaleX(0);opacity:1}100%{transform:rotate(var(--a)) scaleX(1);opacity:0}}
+/* 포효 */
+.eah-sonic .wv{left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;border:4px solid var(--ec2);box-shadow:0 0 16px var(--ec),inset 0 0 16px var(--ec);animation:eaWv .7s ease-out forwards;opacity:0}
+@keyframes eaWv{0%{transform:scale(.2);opacity:1}100%{transform:scale(2.4);opacity:0}}
+/* 빛 */
+.eah-holy .pillar{left:-50px;top:-100vh;width:100px;height:calc(100vh + 80px);background:linear-gradient(transparent,rgba(255,240,180,.75) 60%,#fff);filter:blur(6px);transform-origin:50% 100%;animation:eaPil .7s ease-out forwards}
+@keyframes eaPil{0%{transform:scaleX(0);opacity:1}25%{transform:scaleX(1.3);opacity:1}100%{transform:scaleX(.1);opacity:0}}
+/* 사슬 */
+.eah-bind .ch{left:-90px;top:-8px;width:180px;height:16px;border-radius:8px;transform:rotate(var(--a));
+  background:repeating-linear-gradient(90deg,var(--ec) 0 14px,transparent 14px 16px,var(--ec2) 16px 26px,transparent 26px 28px);filter:drop-shadow(0 0 6px rgba(0,0,0,.6)) drop-shadow(0 0 6px var(--ec));animation:eaCh 1s ease forwards}
+@keyframes eaCh{0%{transform:rotate(var(--a)) scaleX(0);opacity:1}30%{transform:rotate(var(--a)) scaleX(1)}80%{opacity:1}100%{transform:rotate(var(--a)) scaleX(1);opacity:0}}
+.eah-bind .lock{left:-16px;top:-18px;width:32px;height:28px;border-radius:5px;background:linear-gradient(#e8d8a8,#a88a4a);box-shadow:0 0 12px var(--ec);animation:eaLock 1s ease forwards;opacity:0}
+.eah-bind .lock::before{content:'';position:absolute;left:6px;top:-14px;width:20px;height:18px;border:4px solid #c8b078;border-bottom:none;border-radius:12px 12px 0 0}
+@keyframes eaLock{0%{opacity:0;transform:scale(2)}35%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+/* 공허 */
+.eah-void .hole{left:-60px;top:-60px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#000 35%,rgba(90,40,160,.7) 55%,transparent 72%);box-shadow:0 0 30px var(--ec);animation:eaHole 1s ease forwards}
+@keyframes eaHole{0%{transform:scale(0)}35%{transform:scale(1.1)}70%{transform:scale(.9)}100%{transform:scale(0);opacity:.2}}
+.eah-void .in{left:0;top:-1px;width:120px;height:2px;transform-origin:0 50%;background:linear-gradient(90deg,transparent,var(--ec2));transform:rotate(var(--a));animation:eaIn .7s ease-in forwards}
+@keyframes eaIn{0%{transform:rotate(var(--a)) translateX(60px) scaleX(1);opacity:0}30%{opacity:1}100%{transform:rotate(var(--a)) translateX(0) scaleX(0);opacity:0}}
+/* 저주 */
+.eah-curse .rune{left:-80px;top:-80px;width:160px;height:160px;border-radius:50%;border:2px dashed var(--ec);box-shadow:0 0 18px var(--ec),inset 0 0 18px var(--ec);animation:eaRune 1.1s ease forwards}
+.eah-curse .rune.r2{left:-55px;top:-55px;width:110px;height:110px;border-style:dotted;animation-direction:reverse}
+@keyframes eaRune{0%{transform:scale(.3) rotate(0);opacity:0}30%{opacity:1}100%{transform:scale(1.1) rotate(180deg);opacity:0}}
+.eah-curse .hd{left:-6px;top:0;width:12px;height:70px;border-radius:6px 6px 3px 3px;background:linear-gradient(#2a0838,var(--ec));transform-origin:50% 0;transform:rotate(var(--a)) translateY(40px);animation:eaHd .8s ease-out forwards;opacity:0}
+@keyframes eaHd{0%{opacity:0;transform:rotate(var(--a)) translateY(90px) scaleY(.2)}40%{opacity:.9;transform:rotate(var(--a)) translateY(30px) scaleY(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(20px) scaleY(1.1)}}
+/* 주술 */
+.eah-spell .seal{left:-80px;top:-80px;width:160px;height:160px;border-radius:50%;border:3px solid var(--ec);
+  background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--ec) 40%,transparent),transparent 30%);box-shadow:0 0 20px var(--ec);animation:eaRune .9s ease forwards}
+.eah-spell .seal::after{content:'符';position:absolute;inset:0;display:grid;place-items:center;font-size:56px;color:var(--ec2);text-shadow:0 0 14px var(--ec)}
+/* 먹 */
+.eah-ink .bt{left:calc(var(--x) - 20px);top:calc(var(--y) - 20px);width:40px;height:40px;border-radius:47% 53% 42% 58%/52% 44% 56% 48%;background:radial-gradient(circle,#0a0608 50%,rgba(10,6,8,.6) 62%,transparent 72%);
+  transform:scale(0);animation:eaBt .9s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes eaBt{40%{transform:scale(var(--s));opacity:1}100%{transform:scale(var(--s));opacity:0}}
+.eah-ink .stroke{left:-110px;top:-14px;width:220px;height:28px;border-radius:14px 40% 14px 40%;background:linear-gradient(90deg,transparent,#0a0608 15%,#1a1418 85%,transparent);transform:rotate(-14deg) scaleX(0);transform-origin:left;animation:eaStroke .8s ease forwards}
+@keyframes eaStroke{30%{transform:rotate(-14deg) scaleX(1);opacity:1}100%{transform:rotate(-14deg) scaleX(1);opacity:0}}
+/* 해킹 */
+.eah-hack .px{left:var(--x);top:var(--y);width:12px;height:12px;background:var(--ec);box-shadow:0 0 8px var(--ec);animation:eaPx .6s steps(3) forwards}
+@keyframes eaPx{0%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(.4) translateX(20px)}}
+.eah-hack .code{left:-60px;top:-60px;width:120px;text-align:center;font:700 22px ui-monospace,Menlo,Consolas,monospace;color:#2cff7a;text-shadow:0 0 10px #2cff7a;animation:eaCode .8s steps(4) forwards}
+@keyframes eaCode{0%{opacity:0;transform:translateY(20px)}25%{opacity:1}100%{opacity:0;transform:translateY(-30px)}}
+.eah.soft{opacity:.85}
+/* 각성한 요괴의 한 겹 */
+.eah .awk{left:-40px;top:-80px;width:80px;height:80px;display:grid;place-items:center;font-style:normal;animation:eaAwk .7s cubic-bezier(.2,1.5,.4,1) forwards}
+.eah .awk::after{content:'覺';font-size:52px;font-weight:700;color:#fff3d6;text-shadow:0 0 12px #ff3a1a,0 0 30px #ff3a1a,0 2px 0 #6a0a04}
+@keyframes eaAwk{0%{opacity:0;transform:scale(2.4)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.15) translateY(-16px)}}
+.eah .awr{left:-80px;top:-80px;width:160px;height:160px;border-radius:50%;border:5px solid #ff3a1a;box-shadow:0 0 22px #ff3a1a,inset 0 0 22px #ffb648;animation:eaWv .7s ease-out forwards;opacity:0}
+/* 제 몸에 두르는 빛 */
+.eself{position:absolute;z-index:9;pointer-events:none;width:0;height:0}
+.eself i{position:absolute;left:-80px;top:-80px;width:160px;height:160px;border-radius:50%;border:3px solid var(--ec);box-shadow:0 0 18px var(--ec),inset 0 0 18px var(--ec);animation:esRing .9s ease-out forwards}
+.eself i:nth-child(2){animation-delay:.12s;border-style:dashed}
+@keyframes esRing{0%{transform:scale(1.5);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(.8);opacity:0}}
+.eself b{position:absolute;left:-30px;top:-120px;width:60px;text-align:center;font-size:40px;font-weight:700;color:#fff;text-shadow:0 0 12px var(--ec),0 0 26px var(--ec);animation:esGlyph .9s ease-out forwards}
+@keyframes esGlyph{0%{opacity:0;transform:translateY(20px) scale(.6)}35%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-20px)}}
+.eself-guard i{border-radius:22%;transform:rotate(45deg)}
+.eself.aw i{border-color:#ff5a2a;box-shadow:0 0 22px #ff3a1a,inset 0 0 18px var(--ec)}
+
+/* ══ 각성 — 눈을 뜨는 순간 ══ */
+.awdim{position:absolute;inset:0;z-index:7;pointer-events:none;background:radial-gradient(ellipse at 60% 40%,rgba(80,0,0,.2),rgba(0,0,0,.72) 75%);animation:awDim 1.9s ease forwards}
+@keyframes awDim{0%{opacity:0}20%{opacity:1}75%{opacity:1}100%{opacity:0}}
+.awsuck{position:absolute;z-index:30;pointer-events:none;width:0;height:0}
+.awsuck i{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#ffb070;box-shadow:0 0 10px #ff4a1a,0 0 20px #ff4a1a;
+  transform:rotate(var(--a)) translateX(var(--d));animation:awSuck .55s cubic-bezier(.6,0,.9,.5) forwards}
+@keyframes awSuck{0%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) scale(1.4)}20%{opacity:1}100%{opacity:1;transform:rotate(calc(var(--a) + 90deg)) translateX(0) scale(.3)}}
+.awpillar{position:absolute;z-index:8;pointer-events:none;top:0;bottom:0;width:140px;margin-left:-70px;transform-origin:50% 100%;
+  background:linear-gradient(90deg,transparent,rgba(255,60,20,.55),rgba(255,220,150,.95),rgba(255,60,20,.55),transparent);filter:blur(4px);animation:awPil 1.3s ease-out forwards}
+.awpillar.big{width:260px;margin-left:-130px}
+@keyframes awPil{0%{transform:scaleX(0) scaleY(.2);opacity:1}25%{transform:scaleX(1.2) scaleY(1);opacity:1}100%{transform:scaleX(.05) scaleY(1);opacity:0}}
+.awcrack{position:absolute;z-index:9;pointer-events:none;width:600px;height:600px;margin:-300px 0 0 -300px}
+.awcrack.big{transform:scale(1.8)}
+.awcrack svg{width:100%;height:100%;overflow:visible}
+.awcrack path{fill:none;stroke:#fff0d0;stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 6px #ff3a1a) drop-shadow(0 0 14px #ff6a2a);stroke-dasharray:400;stroke-dashoffset:400;animation:awCrack 1.5s ease forwards}
+@keyframes awCrack{0%{stroke-dashoffset:400;opacity:1}25%{stroke-dashoffset:0}75%{opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+.awstamp{position:absolute;z-index:33;pointer-events:none;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px}
+.awstamp b{display:flex;gap:8px}
+.awstamp b span{display:grid;place-items:center;width:62px;height:62px;border-radius:8px;font-size:40px;font-weight:700;color:#fff3e0;background:radial-gradient(circle at 35% 30%,#e0402a,#7a0a04);
+  border:2px solid #ffb648;box-shadow:0 0 20px #ff3a1a,0 0 50px rgba(255,60,20,.6),inset 0 -4px 8px rgba(0,0,0,.4);animation:awSt .6s cubic-bezier(.2,1.6,.4,1) both}
+.awstamp b span:nth-child(2){animation-delay:.14s}
+.awstamp.big b span{width:clamp(90px,14vw,150px);height:clamp(90px,14vw,150px);font-size:clamp(60px,9.5vw,104px);border-radius:14px}
+@keyframes awSt{0%{opacity:0;transform:scale(3) rotate(-25deg);filter:blur(8px)}60%{opacity:1;transform:scale(.92) rotate(4deg);filter:none}100%{transform:scale(1) rotate(-4deg)}}
+.awstamp small{font-size:clamp(13px,1.8vw,19px);letter-spacing:.35em;color:#ffd0b0;text-shadow:0 2px 8px #000,0 0 16px rgba(255,60,20,.8);animation:fadeIn .6s ease .5s both}
+.awstamp{animation:awStOut 2s ease forwards}
+@keyframes awStOut{0%,75%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%)}}
+.unit.awaking .body{animation:awaking 1s cubic-bezier(.3,1.4,.4,1)}
+@keyframes awaking{0%{transform:scale(1)}20%{transform:scale(.88)}45%{transform:scale(1.28);filter:brightness(2.2) drop-shadow(0 0 30px #ff3a1a)}100%{transform:scale(1)}}
+/* 깬 뒤 — 발밑의 붉은 진 · 피어오르는 불티 · 붉은 눈빛 */
+.awseal{position:absolute;inset:0;pointer-events:none;z-index:0}
+.awseal svg{position:absolute;left:-30%;width:160%;bottom:-82%;height:auto;aspect-ratio:1;transform:rotateX(72deg);opacity:.85;filter:drop-shadow(0 0 8px #ff3a1a);animation:awSeal 6s linear infinite}
+@keyframes awSeal{from{transform:rotateX(72deg) rotate(0)}to{transform:rotateX(72deg) rotate(360deg)}}
+.awseal i{position:absolute;bottom:10%;width:6px;height:6px;border-radius:50%;background:#ffb070;box-shadow:0 0 8px #ff4a1a;animation:awEmber 2.2s ease-in infinite;opacity:0}
+.awseal i:nth-of-type(1){left:20%}.awseal i:nth-of-type(2){left:38%;animation-delay:.4s}.awseal i:nth-of-type(3){left:55%;animation-delay:.9s}
+.awseal i:nth-of-type(4){left:72%;animation-delay:1.3s}.awseal i:nth-of-type(5){left:30%;animation-delay:1.7s}.awseal i:nth-of-type(6){left:64%;animation-delay:.2s}
+@keyframes awEmber{0%{opacity:0;transform:translateY(0) scale(1)}20%{opacity:1}100%{opacity:0;transform:translateY(-150px) translateX(10px) scale(.4)}}
+.awseal .aweye{position:absolute;left:50%;top:50%;width:70%;height:70%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,60,20,.28),transparent 60%);animation:awEye 1.6s ease-in-out infinite}
+@keyframes awEye{50%{transform:translate(-50%,-50%) scale(1.25);opacity:.55}}
+.unit.awake .body .glyph{text-shadow:0 0 10px rgba(255,60,20,.9),0 0 26px rgba(255,90,30,.6),0 2px 6px rgba(0,0,0,.3)}
+.unit.awake .ebar i{background:linear-gradient(90deg,#8a0a04,#ff3a1a,#ffb648)!important;box-shadow:0 0 10px rgba(255,60,20,.7)}
+/* Esc 창 — 라운드 포기는 맨 위에 따로 */
+.mmyield{font:inherit;width:100%;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;cursor:pointer;text-align:left;color:#ffe0d8;
+  background:linear-gradient(100deg,rgba(120,16,16,.55),rgba(60,8,8,.4));border:1px solid rgba(226,90,90,.65);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);transition:all .15s}
+.mmyield:hover{background:linear-gradient(100deg,rgba(160,24,24,.7),rgba(80,10,10,.55));border-color:#ff8a7a;transform:translateY(-1px);box-shadow:0 0 18px rgba(255,80,70,.35)}
+.mmyield>i{font-style:normal;width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:20px;color:#fff;background:radial-gradient(circle at 35% 30%,#e0503a,#7a0a0a);border:1.5px solid #ffb0a0}
+.mmyield>span{flex:1;display:flex;flex-direction:column}.mmyield b{font-weight:400;font-size:15.5px;letter-spacing:.1em}.mmyield small{font-size:11px;color:#d8a8a0}
+.mmyield>em{font-style:normal;font-size:12px;color:#ffb0a0}
+@media (prefers-reduced-motion:reduce){.awseal svg,.awseal i,.eap-blade{animation:none!important}}
+.ebanner .ebd em{font-style:normal;font-size:20px;font-weight:700;color:#ff8a7a;text-shadow:0 0 10px rgba(255,80,60,.7)}.ebanner .ebd small{font-size:13px;color:#ffc8b8}
 </style>
 <style>
 /* ══════════════════════════════════════════════════════════
@@ -12687,6 +12938,313 @@ function startBattle(enemyIds, kind, opts) {
   setTimeout(() => startPlayerTurn(), 420);
 }
 
+/* ══════════════════════════════════════════════════════════
+   적의 수 — 이름이 곧 연출 (판 55)
+   ──────────────────────────────────────────────────────────
+   요괴가 수를 쓸 때, 그 수의 이름을 읽어 스물넷 갈래 가운데 하나로 나눈다.
+     이름에 든 낱말(불·서리·벼락·사슬·지운다…) → 수에 적힌 결(fx) → 요괴의 속성 → 수의 종류 순으로 본다.
+   갈래마다 따로 그린다:
+     · 이름패 — 갈래의 인장 글자 · 빛깔 · 붓 자국 (큰 수는 화면 가운데 큰 패)
+     · 날아가는 것 — 불덩이 · 얼음창 · 화살 · 바람 날 · 사슬 · 소리 고리 · 별똥… (몸으로 치는 수는 달려든다)
+     · 맞는 자리 — 불꽃 혀 · 얼음 조각 · 번개 · 물보라 · 발톱 자국 · 이빨 · 먹물 · 글자 고리 …
+   각성(覺)한 요괴는 같은 수도 한 겹 더 — 붉은 금테 · 覺 인장 · 잔상 · 겹 충격파 · 붉은 맥박.
+   ══════════════════════════════════════════════════════════ */
+const EATK = {
+  fire:    { g: '炎', n: '화염',   c: '#ff6a1a', c2: '#ffd27a', proj: 'orb',    base: 'fire' },
+  ice:     { g: '氷', n: '빙결',   c: '#7fd8ff', c2: '#e8fbff', proj: 'shard',  base: '' },
+  thunder: { g: '雷', n: '뇌격',   c: '#a8d8ff', c2: '#ffffff', proj: 'sky',    base: 'lightning' },
+  water:   { g: '水', n: '물결',   c: '#3f9fe4', c2: '#bfe8ff', proj: 'orb',    base: '' },
+  wind:    { g: '風', n: '바람',   c: '#bfe8d8', c2: '#ffffff', proj: 'blade',  base: 'wind' },
+  petal:   { g: '花', n: '꽃보라', c: '#ff9ac0', c2: '#ffe0ec', proj: 'blade',  base: 'petal' },
+  poison:  { g: '毒', n: '맹독',   c: '#7fdc4a', c2: '#d8ffb0', proj: 'orb',    base: 'poison' },
+  mist:    { g: '霧', n: '안개',   c: '#b8b0c8', c2: '#efeaf6', proj: 'cloud',  base: '' },
+  blood:   { g: '血', n: '흡혈',   c: '#e0283c', c2: '#ff9aa8', proj: '',       base: '' },
+  bite:    { g: '牙', n: '아가리', c: '#ff7a5a', c2: '#fff0e0', proj: '',       base: '' },
+  claw:    { g: '爪', n: '발톱',   c: '#ff5a4a', c2: '#ffd0c0', proj: '',       base: 'claw' },
+  slash:   { g: '斬', n: '참격',   c: '#ffe0b0', c2: '#ffffff', proj: '',       base: 'slash2' },
+  pierce:  { g: '貫', n: '관통',   c: '#ffd88a', c2: '#fff6dc', proj: 'arrow',  base: 'pierce' },
+  meteor:  { g: '隕', n: '낙성',   c: '#ffb04a', c2: '#fff0c0', proj: 'meteor', base: '' },
+  blunt:   { g: '砕', n: '분쇄',   c: '#d8b888', c2: '#fff0d8', proj: '',       base: 'blunt' },
+  sonic:   { g: '咆', n: '포효',   c: '#ffb85a', c2: '#fff0d0', proj: 'ring',   base: '' },
+  holy:    { g: '光', n: '천광',   c: '#ffe68a', c2: '#ffffff', proj: 'sky',    base: 'holy' },
+  bind:    { g: '鎖', n: '속박',   c: '#b8a890', c2: '#f0e6d0', proj: 'chain',  base: '' },
+  void:    { g: '虛', n: '공허',   c: '#9a6aff', c2: '#e0d0ff', proj: 'orb',    base: 'void' },
+  curse:   { g: '呪', n: '저주',   c: '#c04ad8', c2: '#f0b8ff', proj: 'orb',    base: '' },
+  spell:   { g: '符', n: '주술',   c: '#e8b04a', c2: '#fff0c0', proj: 'talis',  base: 'talisman' },
+  ink:     { g: '墨', n: '먹',     c: '#3a3040', c2: '#c8b8a0', proj: 'orb',    base: '' },
+  hack:    { g: '⌬', n: '해킹',   c: '#2cff7a', c2: '#d0ffe0', proj: 'packet', base: '' },
+  /* 치지 않는 수 — 이름패만 */
+  guard:   { g: '盾', n: '수비',   c: '#7fb4e8', c2: '#e0f0ff' },
+  power:   { g: '氣', n: '기세',   c: '#ffa040', c2: '#ffe0b0' },
+  heal:    { g: '癒', n: '회복',   c: '#7fe0a8', c2: '#e0fff0' }
+};
+const EATK_KW = [
+  ['spell', /염불|옥새|북두|마패|어명|법안|제를 올|진을 친|결계|부적을 고|칙령|가피/],
+  ['curse', /명부|이름 훔|저승|소환장|손이 올라|손을 뻗|귀곡|귀병/],
+  ['hack', /DELETE|디도스|해킹|코드|방화벽|지지직|404|패킷|버그|데이터|오류|과부하/],
+  ['ink', /먹물|먹이 번|붓|한 획|적기|적는|고쳐 적|재로 쓴/],
+  ['thunder', /벼락|번개|뇌기|낙뢰|천둥|전격|雷/],
+  ['ice', /얼음|서리|빙(?!글)|차갑|시리|식힌|삭풍|눈보라|한기|냉기|얼어/],
+  ['fire', /불(?!리)|화염|업화|겁화|점화|열기|타오|흑염|브레스|연료|잿|태우|숯|용암|역린|용트림|해를 모|낙인|탄다|炎/],
+  ['water', /물세례|밀물|폭우|파도|해일|소용돌이|물밀|물보라|물대포|굽이친/],
+  ['poison', /독|부식|썩/],
+  ['mist', /안개|자욱|흐릿|흐려|오리무중|먼지|연기/],
+  ['blood', /흡혈|피(?!리)|흡정|혼 빨|혼 흡수|숨 앗|빨기/],
+  ['bite', /물기|문다|씹|아가리|이빨|삼키|삼킴|깨물|물어|갉아/],
+  ['claw', /할퀴|발톱|찢|용조|나찰조|손톱|긁|떼어낸|파낸/],
+  ['slash', /베|가르|참(?!는)|斬|낫|횡소|작두|칼|검(?!은)|긋는|도끼|쓸어|꼬리|구미|갈라|수확|금줄|휘두/],
+  ['pierce', /창|찌르|꿰|관통|주살|화살|사격|쪼기|박힌|파고|뻗어|꽂|가리킨/],
+  ['meteor', /유성|별이 떨|낙성|운석|하늘이 내려|곤두박질|굴러떨/],
+  ['void', /지우|지워|지운|무\(無\)|텅|공허|없던|아무것|비어|접힌|접힘|해체|어둠|잠식|그림자|은신|무화|스러|침묵|적막|밤|발밑을 삼|검은|헤아릴|^끝$|^무$/],
+  ['blunt', /찍|후려|짓밟|돌진|질주|박치기|몽둥이|철퇴|으깨|분쇄|강타|무너|밀쳐|떠민|무게|내리|몸통|치기|때리|주먹|박살|들이받|격|천마|광란|발질|누름|누른다|덮치|사방을 친|행진|몰려/],
+  ['sonic', /포효|사자후|통곡|울부짖|^운다$|비명|외침|북소리|종을|뿔피리|메아리|산울림|쇳소리|호령|울음|자장가|속삭|귓속말|찬가|방울|조롱|웃|광소|노래|되울림/],
+  ['holy', /빛|천벌|해 가|축복|천군|천무|신을|승천|천극|월광|심판|판결|천문|광배|눈이 부|되비추|트임|처음$/],
+  ['bind', /사슬|족쇄|휘감|얽|똬리|옥문|빗장|봉인|가둔|잠그|철문|성문|묶|포박|덫|끌어|봉문|비단|숨을 막/],
+  ['curse', /저주|원한|주박|업|흉|죄|선고|후회|원망|귀|혼백|넋|왜|홀리|요혹|요술|이름|노려|응시|의심|권한|교지/],
+  ['wind', /바람|질풍|회오리|돌풍|날갯|푸드덕|흩날|흩뿌|風|폭풍|빙글|내쉰/]
+];
+const EATK_FX = { fire: 'fire', lightning: 'thunder', poison: 'poison', wind: 'wind', void: 'void', void_slash: 'void', holy: 'holy', slash: 'slash', slash2: 'slash',
+  spin: 'wind', lance: 'pierce', pierce: 'pierce', blunt: 'blunt', petal: 'petal', talisman: 'spell', claw: 'claw' };
+const EATK_ELEM = { fire: 'fire', water: 'water', wood: 'wind', dark: 'void', psy: 'sonic', fae: 'holy', fiend: 'curse' };
+function eatkTheme(e, m) {
+  if (!m) return 'claw';
+  if (m._th) return m._th;
+  const L = String(m.label || ''), L2 = L.replace(/\s+/g, '');
+  let th = '';
+  for (const [k, re] of EATK_KW) if (re.test(L) || re.test(L2)) { th = k; break; }
+  const hits = m.d || m.deb;
+  if (!th && hits && m.fx && EATK_FX[m.fx]) th = EATK_FX[m.fx];
+  if (!th && hits && e && e.id) th = EATK_ELEM[elemOf(e.id)] || '';
+  if (!th) th = m.d ? 'claw' : m.deb ? 'curse' : m.heal && !m.blk ? 'heal' : m.blk && !m.self ? 'guard' : m.self ? 'power' : m.blk ? 'guard' : 'power';
+  try { Object.defineProperty(m, '_th', { value: th, enumerable: false, configurable: true }); } catch (x) {}
+  return th;
+}
+const eaV = th => { const t = EATK[th] || EATK.claw; return `--ec:${t.c};--ec2:${t.c2}`; };
+/* ── 이름패 ── */
+function eatkPlate(e, m, th, dmg) {
+  if (!e.el) return;
+  const t = EATK[th] || EATK.claw, aw = !!e.awake, big = OPT.banner && ((dmg || 0) >= 18 || m.awaken || (aw && dmg >= 10));
+  const r = e.el.querySelector('.body').getBoundingClientRect();
+  const hitsTxt = m.d ? `<em>${dmg}${(m.n || 1) > 1 ? ` <small>×${m.n}</small>` : ''}</em>` : '';
+  if (big) {                                                /* 큰 수 — 가운데 큰 패 하나로 (작은 패와 겹치지 않게) */
+    const B = el('div', 'ebanner' + (aw ? ' aw' : ''), `<i class="ebg">${t.g}</i><div class="ebx"><small>${wEsc(e.n)}${aw ? ' <em>覺</em>' : ''} — ${t.n}</small><b>${wEsc(String(m.label || '').replace(/^각성 · /, ''))}</b>${hitsTxt ? `<span class="ebd">${hitsTxt}</span>` : ''}</div><s></s><s></s>`);
+    B.style.cssText += eaV(th);
+    B.style.top = Math.max(64, innerHeight * .15) + 'px';
+    $('#app').appendChild(B); setTimeout(() => B.remove(), 1250);
+    try { SND.swoosh && SND.swoosh(); } catch (x) {}
+    return;
+  }
+  const n = el('div', 'eplate' + (aw ? ' aw' : '') + (m.d ? ' atk' : ''), `<i class="eps"><b>${t.g}</b></i><span><small>${t.n}${aw ? ' · 覺' : ''}</small><b>${wEsc(String(m.label || '').replace(/^각성 · /, ''))}</b></span>${hitsTxt}<u></u>`);
+  n.style.cssText += eaV(th);
+  n.style.left = (r.left + r.width / 2) + 'px'; n.style.top = Math.max(60, r.top - 6) + 'px';
+  $('#app').appendChild(n);
+  setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 320); }, 1250);
+}
+/* ── 다가가는 것 — 날아가거나 달려든다. 맞을 때가 되면 풀린다 ── */
+function eatkLead(e, th, i) {
+  const t = EATK[th] || EATK.claw, p = P();
+  if (!e.el || !p || !p.el) return Promise.resolve();
+  const a = centerOf(e.el.querySelector('.body')), b = centerOf(p.el.querySelector('.body') || p.el);
+  const dur = Math.round((i ? 150 : 230) * SPEED * turboX());
+  if (!t.proj) {                                             /* 몸으로 친다 — 잔상을 남기며 달려든다 */
+    eatkDash(e, a, b, dur);
+    return new Promise(r => setTimeout(r, dur * .75));
+  }
+  if (t.proj === 'sky') return Promise.resolve();            /* 하늘에서 바로 내리친다 */
+  const n = el('div', 'eap eap-' + t.proj + ' eth-' + th);
+  n.style.cssText += eaV(th);
+  const dx = b.x - a.x, dy = b.y - a.y, ang = Math.atan2(dy, dx) * 180 / Math.PI;
+  if (t.proj === 'meteor') {
+    const sx = b.x + 260, sy = -60;
+    n.style.left = sx + 'px'; n.style.top = sy + 'px';
+    const ma = Math.atan2(b.y - sy, b.x - sx) * 180 / Math.PI;
+    n.animate([{ transform: `translate(-50%,-50%) rotate(${ma}deg) scale(.6)` }, { transform: `translate(calc(-50% + ${b.x - sx}px),calc(-50% + ${b.y - sy}px)) rotate(${ma}deg) scale(1.1)` }],
+      { duration: dur * 1.3, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
+    $('#app').appendChild(n); setTimeout(() => n.remove(), dur * 1.3 + 40);
+    return new Promise(r => setTimeout(r, dur * 1.25));
+  }
+  n.style.left = a.x + 'px'; n.style.top = a.y + 'px';
+  if (t.proj === 'chain') {
+    const len = Math.hypot(dx, dy);
+    n.style.transform = `translate(0,-50%) rotate(${ang}deg)`;
+    n.animate([{ width: '0px' }, { width: len + 'px' }], { duration: dur, easing: 'cubic-bezier(.3,.8,.3,1)', fill: 'forwards' });
+    $('#app').appendChild(n); setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 300); }, dur + 260);
+    return new Promise(r => setTimeout(r, dur));
+  }
+  if (t.proj === 'ring') {
+    for (let k = 0; k < 3; k++) {
+      const q = el('div', 'eap eap-ring'); q.style.cssText += eaV(th); q.style.left = a.x + 'px'; q.style.top = a.y + 'px';
+      q.animate([{ transform: 'translate(-50%,-50%) scale(.3)', opacity: .95 }, { transform: `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(1.6)`, opacity: 0 }],
+        { duration: dur * 1.2, delay: k * 70, easing: 'ease-out', fill: 'both' });
+      $('#app').appendChild(q); setTimeout(() => q.remove(), dur * 1.2 + k * 70 + 40);
+    }
+    return new Promise(r => setTimeout(r, dur));
+  }
+  const arc = t.proj === 'orb' || t.proj === 'talis' ? -60 : t.proj === 'cloud' ? -20 : 0;
+  const mid = `translate(calc(-50% + ${dx / 2}px),calc(-50% + ${dy / 2 + arc}px)) rotate(${ang}deg) scale(1.05)`;
+  n.animate([{ transform: `translate(-50%,-50%) rotate(${ang}deg) scale(.5)`, opacity: 0 }, { opacity: 1, offset: .15, transform: `translate(calc(-50% + ${dx * .15}px),calc(-50% + ${dy * .15 + arc * .4}px)) rotate(${ang}deg) scale(.8)` },
+    { transform: mid }, { transform: `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) rotate(${ang}deg) scale(1.15)`, opacity: 1 }],
+    { duration: dur, easing: 'cubic-bezier(.45,.05,.75,.95)', fill: 'forwards' });
+  $('#app').appendChild(n); setTimeout(() => n.remove(), dur + 30);
+  /* 꼬리 — 지나간 자리에 빛가루 */
+  if (OPT.particles !== false) for (let k = 1; k <= 4; k++) setTimeout(() => {
+    const f = k / 5; try { sparkles(a.x + dx * f, a.y + dy * f + (arc ? arc * Math.sin(Math.PI * f) : 0), 2, t.c2, 18); } catch (x) {} }, dur * k / 5);
+  return new Promise(r => setTimeout(r, dur));
+}
+function eatkDash(e, a, b, dur) {
+  const body = e.el.querySelector('.body'); if (!body) return;
+  const dx = (b.x - a.x) * .32, dy = (b.y - a.y) * .25;
+  body.animate([{ transform: 'none' }, { transform: `translate(${dx * .35}px,${dy * .35}px) scale(1.06)`, offset: .45 }, { transform: `translate(${dx}px,${dy}px) scale(1.16) rotate(-4deg)`, offset: .8 }, { transform: 'none' }],
+    { duration: dur * 1.7, easing: 'cubic-bezier(.4,0,.2,1)' });
+  /* 잔상 — 글자가 두 겹 남는다 */
+  const g = body.querySelector('.glyph'); if (!g) return;
+  for (let k = 0; k < 2; k++) setTimeout(() => {
+    const ghost = el('div', 'eghost', g.textContent); const c = centerOf(body);
+    ghost.style.left = c.x + 'px'; ghost.style.top = c.y + 'px'; ghost.style.fontSize = getComputedStyle(g).fontSize;
+    ghost.style.color = e.awake ? '#ff5a3a' : '#e8dcc8';
+    $('#app').appendChild(ghost); setTimeout(() => ghost.remove(), 420);
+  }, dur * (.3 + k * .25));
+}
+/* ── 맞는 자리 ── */
+function eatkHit(th, ent, o = {}) {
+  if (!ent || !ent.el) return;
+  const t = EATK[th] || EATK.claw;
+  const box0 = ent.el.querySelector('.body') || ent.el, r = box0.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  if (t.base && !o.soft) impact(t.base, ent);               /* 본디 있던 타격 그림 위에 한 겹 더 */
+  const n = el('div', 'eah eah-' + th + (o.aw ? ' aw' : '') + (o.soft ? ' soft' : ''));
+  n.style.cssText += eaV(th);
+  n.style.left = cx + 'px'; n.style.top = cy + 'px';
+  const rr = (a, b) => a + Math.random() * (b - a);
+  const add = (cls, st) => { const i = el('i', cls || ''); if (st) i.style.cssText = st; n.appendChild(i); return i; };
+  let life = 900;
+  switch (th) {
+    case 'fire':
+      for (let k = 0; k < 9; k++) add('fl', `--x:${rr(-60, 60).toFixed(0)}px;--h:${rr(70, 150).toFixed(0)}px;animation-delay:${(k * .03).toFixed(2)}s`);
+      add('core'); try { FX.burst(cx, cy, 16, '255,140,40', 5, 50, 4); } catch (x) {} break;
+    case 'ice':
+      for (let k = 0; k < 10; k++) add('sh', `--a:${(k * 36 + rr(-10, 10)).toFixed(0)}deg;--d:${rr(50, 110).toFixed(0)}px;animation-delay:${(k * .015).toFixed(3)}s`);
+      add('frost'); add('core');
+      try { SND.shatter && SND.shatter(); SND.blip(1760, { dur: .25, type: 'triangle', vol: .05, to: 2600 }); screenFlash('rgba(190,240,255,.35)', 300); sparkles(cx, cy, 12, '#e8fbff', 90); } catch (x) {} break;
+    case 'thunder':
+      add('glow'); for (let k = 0; k < 6; k++) add('arc', `--a:${(k * 60 + rr(-15, 15)).toFixed(0)}deg;animation-delay:${(k * .02).toFixed(2)}s`); break;
+    case 'water':
+      add('wave'); add('wave', 'animation-delay:.08s'); for (let k = 0; k < 12; k++) add('dr', `--a:${rr(-170, -10).toFixed(0)}deg;--d:${rr(60, 130).toFixed(0)}px;animation-delay:${(k * .012).toFixed(3)}s`);
+      try { SND.blip(320, { dur: .35, type: 'sine', vol: .06, to: 120 }); shockRing(cx, cy, 200, '#7fc4ff'); } catch (x) {} break;
+    case 'wind': case 'petal':
+      for (let k = 0; k < 4; k++) add('bl', `--a:${(rr(-40, 40)).toFixed(0)}deg;animation-delay:${(k * .05).toFixed(2)}s`);
+      for (let k = 0; k < (th === 'petal' ? 10 : 6); k++) add('lf', `--x:${rr(-90, 90).toFixed(0)}px;--y:${rr(-80, 40).toFixed(0)}px;animation-delay:${(k * .03).toFixed(2)}s`); break;
+    case 'poison':
+      add('cloud'); for (let k = 0; k < 9; k++) add('bb', `--x:${rr(-50, 50).toFixed(0)}px;--s:${rr(.5, 1.3).toFixed(2)};animation-delay:${(k * .05).toFixed(2)}s`); life = 1100; break;
+    case 'mist':
+      for (let k = 0; k < 4; k++) add('fog', `--x:${rr(-60, 60).toFixed(0)}px;animation-delay:${(k * .07).toFixed(2)}s`); life = 1200;
+      try { SND.blip(180, { dur: .6, type: 'sine', vol: .04, to: 140 }); } catch (x) {} break;
+    case 'blood':
+      add('cr', '--a:-30deg'); add('cr', '--a:150deg;animation-delay:.06s');
+      for (let k = 0; k < 7; k++) add('dp', `--x:${rr(-40, 40).toFixed(0)}px;animation-delay:${(k * .04).toFixed(2)}s`);
+      /* 빨아들인다 — 붉은 줄기가 요괴에게로 */
+      if (o.from) { try { const s = el('div', 'esiphon'); const dx = o.from.x - cx, dy = o.from.y - cy;
+        s.style.left = cx + 'px'; s.style.top = cy + 'px'; s.style.width = Math.hypot(dx, dy) + 'px'; s.style.transform = `translate(0,-50%) rotate(${Math.atan2(dy, dx) * 180 / Math.PI}deg)`;
+        $('#app').appendChild(s); setTimeout(() => s.remove(), 700); } catch (x) {} }
+      try { SND.blip(140, { dur: .4, type: 'sawtooth', vol: .05, to: 60 }); } catch (x) {} break;
+    case 'bite':
+      add('jaw up'); add('jaw dn'); add('core');
+      try { SND.bluntS && SND.bluntS(); hitstop(false); } catch (x) {} break;
+    case 'claw':
+      { const k = o.aw ? 5 : 3, a0 = rr(-35, -15); for (let j = 0; j < k; j++) add('cl', `--a:${a0}deg;--o:${((j - (k - 1) / 2) * 22).toFixed(0)}px;animation-delay:${(j * .035).toFixed(3)}s`); } break;
+    case 'slash':
+      add('sl', `--a:${rr(-38, -18).toFixed(0)}deg`); add('sl thin', `--a:${rr(10, 30).toFixed(0)}deg;animation-delay:.07s`); add('core'); break;
+    case 'pierce':
+      add('thr'); add('star'); for (let k = 0; k < 5; k++) add('sp', `--a:${(150 + rr(-35, 35)).toFixed(0)}deg;--d:${rr(40, 90).toFixed(0)}px`); break;
+    case 'meteor':
+      add('crater'); add('core'); for (let k = 0; k < 8; k++) add('rk', `--a:${rr(-170, -10).toFixed(0)}deg;--d:${rr(60, 140).toFixed(0)}px`);
+      try { SND.thunder && SND.thunder(); shake(true); zoomPunch(); screenFlash('rgba(255,200,120,.45)', 420); FX.burst(cx, cy, 30, '255,170,80', 7, 60, 6); } catch (x) {} life = 1100; break;
+    case 'blunt':
+      add('crater'); for (let k = 0; k < 6; k++) add('ck', `--a:${(k * 60 + rr(-20, 20)).toFixed(0)}deg;--d:${rr(50, 95).toFixed(0)}px`); break;
+    case 'sonic':
+      for (let k = 0; k < 4; k++) add('wv', `animation-delay:${(k * .07).toFixed(2)}s`);
+      try { SND.boss && o.big ? SND.boss() : SND.blip(220, { dur: .45, type: 'sawtooth', vol: .05, to: 90 }); blink(.5); } catch (x) {} break;
+    case 'holy':
+      add('pillar'); add('core'); break;
+    case 'bind':
+      add('ch', '--a:-24deg'); add('ch', '--a:24deg;animation-delay:.08s'); add('lock');
+      try { SND.blip(260, { dur: .2, type: 'square', vol: .05, to: 180 }); setTimeout(() => SND.blip(200, { dur: .25, type: 'square', vol: .05, to: 120 }), 120); } catch (x) {} life = 1000; break;
+    case 'void':
+      add('hole'); for (let k = 0; k < 10; k++) add('in', `--a:${(k * 36).toFixed(0)}deg;animation-delay:${(k * .02).toFixed(2)}s`); life = 1000; break;
+    case 'curse':
+      add('rune'); add('rune r2'); for (let k = 0; k < 5; k++) add('hd', `--a:${(k * 72 + rr(-10, 10)).toFixed(0)}deg;animation-delay:${(k * .05).toFixed(2)}s`);
+      try { SND.voidhit && !o.soft && SND.voidhit(); SND.blip(110, { dur: .5, type: 'sawtooth', vol: .04, to: 70 }); } catch (x) {} life = 1100; break;
+    case 'spell':
+      add('seal'); add('core'); break;
+    case 'ink':
+      for (let k = 0; k < 7; k++) add('bt', `--x:${rr(-70, 70).toFixed(0)}px;--y:${rr(-60, 60).toFixed(0)}px;--s:${rr(.5, 1.4).toFixed(2)};animation-delay:${(k * .03).toFixed(2)}s`);
+      add('stroke'); try { FX.ink(cx, cy, 18); SND.bluntS && SND.bluntS(); } catch (x) {} break;
+    case 'hack':
+      for (let k = 0; k < 14; k++) add('px', `--x:${rr(-80, 80).toFixed(0)}px;--y:${rr(-70, 70).toFixed(0)}px;animation-delay:${(k * .02).toFixed(2)}s`);
+      add('code'); n.querySelector('.code').textContent = ['ERR', '0x0F', 'DEL', '404', 'NULL'][Math.floor(rr(0, 5))];
+      try { SND.err && SND.err(); rgbSplit(); } catch (x) {} break;
+  }
+  /* 각성한 요괴 — 한 겹 더 */
+  if (o.aw) {
+    add('awk'); add('awr'); add('awr', 'animation-delay:.1s');
+    try { shockRing(cx, cy, 300, '#ff3a1a'); rushVignette('rgba(200,20,10,.42)'); sparkles(cx, cy, 10, '#ffb070', 110); } catch (x) {}
+  }
+  $('#app').appendChild(n);
+  setTimeout(() => n.remove(), life);
+}
+
+/* ══ 각성(覺醒) — 눈을 뜨는 순간 ═════════════════════════════
+   빛을 빨아들이고 → 붉은 기둥이 솟고 → 화면이 갈라지며 → 「覺醒」 인장이 찍힌다.
+   깬 뒤에는 발밑에 붉은 진이 돌고, 몸에서 불티가 피어오른다(.awseal).
+   ═════════════════════════════════════════════════════════ */
+function awakenSeal(e) {
+  if (!e.el) return;
+  const body = e.el.querySelector('.body'); if (!body || body.querySelector('.awseal')) return;
+  const s = el('div', 'awseal', `<svg viewBox="0 0 200 200"><g fill="none" stroke="#ff4a2a"><circle cx="100" cy="100" r="94" stroke-width="3"/><circle cx="100" cy="100" r="80" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <path d="M100 8 L180 146 L20 146Z M100 192 L20 54 L180 54Z" stroke-width="1.6" opacity=".8"/></g>
+    <g fill="#ffb070" font-size="18" text-anchor="middle">${'覺醒怒魔鬼血炎咒'.split('').map((g, i) => { const a = i / 8 * Math.PI * 2; return `<text x="${(100 + Math.cos(a) * 87).toFixed(0)}" y="${(106 + Math.sin(a) * 87).toFixed(0)}">${g}</text>`; }).join('')}</g></svg>
+    <i></i><i></i><i></i><i></i><i></i><i></i><b class="aweye"></b>`);
+  body.appendChild(s);
+}
+function awakenFx(e, boss) {
+  if (!e.el) return;
+  const body = e.el.querySelector('.body'), c = centerOf(body);
+  awakenSeal(e);
+  e.el.classList.add('awaking'); setTimeout(() => e.el && e.el.classList.remove('awaking'), boss ? 1700 : 1000);
+  /* 빨아들인다 */
+  const suck = el('div', 'awsuck', Array.from({ length: boss ? 28 : 16 }, (_, i) => `<i style="--a:${(i * 360 / (boss ? 28 : 16)).toFixed(0)}deg;--d:${(boss ? 260 : 150) + (i % 3) * 40}px;animation-delay:${(i % 4 * .05).toFixed(2)}s"></i>`).join(''));
+  suck.style.left = c.x + 'px'; suck.style.top = c.y + 'px';
+  $('#app').appendChild(suck); setTimeout(() => suck.remove(), 900);
+  setTimeout(() => {
+    if (!e.el) return;
+    /* 기둥 · 갈라짐 · 고리 */
+    const pil = el('div', 'awpillar' + (boss ? ' big' : '')); pil.style.left = c.x + 'px';
+    $('#app').appendChild(pil); setTimeout(() => pil.remove(), 1300);
+    const crack = el('div', 'awcrack' + (boss ? ' big' : ''), `<svg viewBox="-300 -300 600 600">${Array.from({ length: boss ? 9 : 5 }, (_, i) => {
+      let a = i / (boss ? 9 : 5) * Math.PI * 2 + Math.random() * .4, x = 0, y = 0, d = 'M0 0';
+      for (let k = 0; k < 6; k++) { x += Math.cos(a) * (30 + Math.random() * 25); y += Math.sin(a) * (30 + Math.random() * 25); a += (Math.random() - .5) * .7; d += ` L${x.toFixed(0)} ${y.toFixed(0)}`; }
+      return `<path d="${d}"/>`; }).join('')}</svg>`);
+    crack.style.left = c.x + 'px'; crack.style.top = c.y + 'px';
+    $('#app').appendChild(crack); setTimeout(() => crack.remove(), 1500);
+    for (let k = 0; k < 3; k++) setTimeout(() => { try { shockRing(c.x, c.y, (boss ? 520 : 300) - k * 80, k === 1 ? '#ffd27a' : '#ff3a1a'); } catch (x) {} }, k * 90);
+    try { FX.burst(c.x, c.y, boss ? 60 : 26, '255,70,30', boss ? 10 : 7, 70, 6); FX.burst(c.x, c.y, boss ? 30 : 12, '255,210,120', 7, 50, 4); sparkles(c.x, c.y, boss ? 30 : 14, '#ffb070', boss ? 220 : 120); } catch (x) {}
+    /* 인장 */
+    const st = el('div', 'awstamp' + (boss ? ' big' : ''), `<b>${boss ? '<span>覺</span><span>醒</span>' : '<span>覺</span>'}</b>${boss ? `<small>${wEsc(e.n)} — 눈을 떴다</small>` : ''}`);
+    if (boss) { st.style.left = '50%'; st.style.top = '42%'; } else { st.style.left = c.x + 'px'; st.style.top = (c.y - 70) + 'px'; }
+    $('#app').appendChild(st); setTimeout(() => st.remove(), boss ? 2000 : 1300);
+  }, boss ? 420 : 260);
+  if (boss) {
+    const dim = el('div', 'awdim'); $('#app').appendChild(dim); setTimeout(() => dim.remove(), 1900);
+  }
+}
+/* 치지 않는 수 — 제 몸에 두르는 빛 (막기 · 기세 · 회복 · 낱말이 맞은 갈래) */
+function eatkSelf(e, th) {
+  if (!e.el) return;
+  const t = EATK[th] || EATK.power, c = centerOf(e.el.querySelector('.body'));
+  const n = el('div', 'eself eself-' + th + (e.awake ? ' aw' : ''), `<i></i><i></i><b>${t.g}</b>`);
+  n.style.cssText += eaV(th); n.style.left = c.x + 'px'; n.style.top = c.y + 'px';
+  $('#app').appendChild(n); setTimeout(() => n.remove(), 950);
+}
 /* ══ 각성(覺醒) — 보스가 반으로 꺾이면 눈을 뜬다 ══════════
    피해가 50% 오르고, 본래 없던 세 수를 새로 쓴다.
    ═══════════════════════════════════════════════════════════ */
@@ -12706,17 +13264,16 @@ function awaken(e) {
   e.awake = true;
   e.dmgMul = (e.dmgMul || 1) * 1.5;      /* 딱 50% — 힘까지 얹으면 너무 세다 */
   if (e.el) e.el.classList.add('awake');
-  stampWord('각 성', '#ff3a2a');
+  awakenFx(e, true);                                       /* 판 55 — 빨아들이고 · 기둥 · 갈라짐 · 「覺醒」 */
   screenFlash('radial-gradient(circle,rgba(255,90,40,.65),rgba(60,0,0,.85))', 1000);
   blink(2); zoomPunch(); rgbSplit(); shake(true); hitstop(true);
   rushVignette('rgba(200,30,20,.55)');
-  SND.boss(); SND.gong(); SND.charge();
+  SND.boss(); SND.gong(); SND.charge(); setTimeout(() => { try { SND.thunder(); SND.crit(); } catch (x) {} }, 420);
   if (e.el) { const c = centerOf(e.el);
     sparkles(c.x, c.y, 30, '#ff9a4a', 180); shockRing(c.x, c.y, 460, '#ff5a2a');
     FX.burst(c.x, c.y, 40, '255,90,40', 8, 60, 6);
-    for (let i = 0; i < 3; i++) setTimeout(() => lightBeam(c.x + (i - 1) * 90, 'rgba(255,120,50,.6)', 150), i * 110);
+    for (let i = 0; i < 5; i++) setTimeout(() => lightBeam(c.x + (i - 2) * 80, i % 2 ? 'rgba(255,210,120,.55)' : 'rgba(255,90,40,.65)', 150), 420 + i * 90);
   }
-  flash(e.n + ' 각성');
   syncAll();
 }
 function pickIntent(e) {
@@ -12792,6 +13349,7 @@ function luckAwaken(b) {
     stampWord('運 · 각 성', '#ff5a2a');
     screenFlash('radial-gradient(circle,rgba(255,110,50,.4),rgba(60,0,0,.55))', 700);
     shake(false); SND.charge(); SND.gong();
+    woke.forEach((e, i) => setTimeout(() => { try { awakenFx(e, false); } catch (x) {} }, i * 160));
     for (const e of woke) if (e.el) { const c = centerOf(e.el);
       sparkles(c.x, c.y, 18, '#ff9a4a', 120); shockRing(c.x, c.y, 300, '#ff5a2a'); FX.burst(c.x, c.y, 24, '255,90,40', 6, 50, 5); }
   } catch (err) {}
@@ -13341,17 +13899,22 @@ async function doMove(e, m) {
   if (!b || b.over) return;                 /* 도중에 전투가 사라졌을 수 있다 */
   logAdd('hurt', `${e.n} — ${m.label}`, 0);
   /* 콜로세움 — 상대가 내는 부적을 눈에 보이게 띄운다 */
+  /* 판 55 — 수의 이름을 읽어 갈래를 정하고, 그 갈래의 이름패 · 날아가는 것 · 맞는 그림으로 친다 */
+  const th = eatkTheme(e, m), dmg0 = m.d && P() ? calcAtk(e, P(), m.d) : 0;
   if (m.cardId && CARDS[m.cardId]) { colPlayFx(e, m); await wait(360); }
-  else if (m.d && m.d >= 18) skillBanner(m.label); else floatText(e, m.label, 'blk');
+  else eatkPlate(e, m, th, dmg0);
   await wait(160);
+  if (!m.d && (m.blk || m.self || m.heal)) eatkSelf(e, th);
   if (m.d) {
     for (let i = 0; i < (m.n || 1); i++) {
+      if (!G.b || b.over || !P() || P().hp <= 0) return;
+      await eatkLead(e, th, i);                              /* 날아가거나 달려든다 */
       if (!G.b || b.over || !P() || P().hp <= 0) return;
       const dmg = calcAtk(e, P(), m.d);
       const r = applyDamage(P(), dmg);
       if (r.hp) logAdd('hurt', `${e.n}에게 맞았다`, r.hp);
       if (r.blocked) logAdd('block', '막아 냈다', r.blocked);
-      impact(m.fx || 'claw', P());
+      eatkHit(th, P(), { aw: !!e.awake, big: dmg >= 18, from: e.el ? centerOf(e.el) : null });
       hitFx(P(), r.hp, r.blocked, true);
       petShare(r.hp);                        /* 팻이 곁에서 함께 맞는다 */
       /* 요괴가 때릴 때도 손맛이 있어야 한다 */
@@ -13365,7 +13928,7 @@ async function doMove(e, m) {
       if (r.hp >= 22) { rgbSplit(); zoomPunch();
         lightBeam(pc.x, 'rgba(255,90,90,.45)', 150); }
       SND.hit(dmg > 14 ? 2 : 1); shake(dmg > 14);
-      lunge(e);
+      if ((EATK[th] || {}).proj) lunge(e);                  /* 몸으로 치는 수는 이미 달려들었다 */
       if (P().s.thorns) pure(e, P().s.thorns);
       syncAll();
       await wait(m.n > 1 ? 240 : 160);
@@ -13382,7 +13945,8 @@ async function doMove(e, m) {
         sparkles(c3.x, c3.y, 14, '#ffb060', 80); shockRing(c3.x, c3.y, 220, '#ff8a3a');
         lightBeam(c3.x, 'rgba(255,140,60,.45)', 130); blink(.6); } }
     for (const k in m.self) st(e, k, m.self[k]); await wait(160); }
-  if (m.deb && P()) { for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
+  if (m.deb && P()) { if (!m.d) eatkHit(th, P(), { soft: true, aw: !!e.awake });
+    for (const k in m.deb) st(P(), k, m.deb[k]); SND.tone(190, .3, 'sawtooth', .1, 120); await wait(200); }
   if (m.heal) { eheal(e, m.heal); await wait(160); }
   if (m.extra) { await m.extra(e); await wait(160); }
   syncAll();
@@ -14842,6 +15406,7 @@ function syncEnemies() {
     bb.classList.toggle('hide', e.block <= 0);
     fillStats(e.el, e);
     unitAura(e.el, e);
+    if (e.awake) { if (!e.el.classList.contains('awake')) e.el.classList.add('awake'); awakenSeal(e); }
     /* 의도 */
     const box = e.el.querySelector('.intent');
     const m = e.mv;
@@ -14850,10 +15415,11 @@ function syncEnemies() {
       const t = e.s.stun ? 'stun' : m.t;
       let label = e.s.stun ? '무력' :
         (m.d ? `${dmg}` + ((m.n || 1) > 1 ? `<span class="x">×${m.n}</span>` : '') : '');
-      box.className = 'intent' + (dmg >= 15 ? ' big' : '');
-      box.innerHTML = intentSvg(t) + label;
+      const th = eatkTheme(e, m), T = EATK[th] || EATK.claw;
+      box.className = 'intent' + (dmg >= 15 ? ' big' : '') + (e.awake ? ' aw' : '');
+      box.innerHTML = (!e.s.stun && (m.d || m.deb) && !curseTag('blind') ? `<i class="ith" style="${eaV(th)}" title="${T.n}">${T.g}</i>` : '') + intentSvg(t) + label;
       box.onmouseenter = () => { const r = box.getBoundingClientRect();
-        tipShow(`<b>${e.s.stun ? '무력' : m.label}</b><br>${intentDesc(e, m)}`, r.left + r.width / 2, r.top); };
+        tipShow(`<b>${e.s.stun ? '무력' : m.label}</b>${e.s.stun || curseTag('blind') ? '' : ` <span style="color:${T.c}">${T.g} ${T.n}</span>`}<br>${intentDesc(e, m)}`, r.left + r.width / 2, r.top); };
       box.onmouseleave = tipHide;
     } else box.innerHTML = '';
     e.el.classList.toggle('targetable', !!(G.b.sel || G.b.potSel != null) && !G.b.busy);
@@ -25730,6 +26296,7 @@ function showMenu() {
   let tab = META.menuTab || 'adv';
   const p = modal(`<div class="mm2">
       <div class="mmhead"><h2>잠시 멈춤</h2><button class="mmfind" id="m_find">⌕ 찾기 <kbd>Ctrl K</kbd></button></div>
+      ${menuVis(menuItem('yield')) ? '<button class="mmyield" id="m_yield"><i>退</i><span><b>라운드 포기</b><small>이 싸움을 접고 갈림길로 돌아간다</small></span><em>갈림길로 ›</em></button>' : ''}
       <div class="mmtabs"></div>
       <div class="mmgrid"></div>
       <div class="mmfoot"><button class="brush-btn ghost" id="m_close" style="color:#e9dfc9;border-color:#8a7f68">돌아가기</button></div>
@@ -25741,7 +26308,7 @@ function showMenu() {
       const dot = MENU_ITEMS.some(x => x.tab === k && menuVis(x) && menuDot(x));
       return `<button class="mmtab${k === tab ? ' on' : ''}" data-t="${k}"><i>${g}</i>${n}${dot ? '<s></s>' : ''}</button>`;
     }).join('');
-    grid.innerHTML = MENU_ITEMS.filter(x => x.tab === tab && menuVis(x)).map(x => {
+    grid.innerHTML = MENU_ITEMS.filter(x => x.tab === tab && x.k !== 'yield' && menuVis(x)).map(x => {
       const d = menuDot(x), sub = x.sub ? x.sub() : '';
       return `<button class="mmtile${x.red ? ' red' : ''}${x.k === 'htok' ? ' hk' : ''}" id="m_${x.k}" data-k="${x.k}"><i>${x.g}</i><b>${x.n}</b>${sub ? `<small>${sub}</small>` : ''}${x.badge ? `<u>${x.badge}</u>` : ''}${d ? `<em>${d === true ? '' : d}</em>` : ''}</button>`;
     }).join('') || '<div class="mmempty">여기서는 열 것이 없다</div>';
@@ -25756,6 +26323,7 @@ function showMenu() {
   draw();
   p.querySelector('#m_find').onclick = () => { closeTop(); showPalette(); };
   p.querySelector('#m_close').onclick = closeTop;
+  { const y = p.querySelector('#m_yield'); if (y) y.onclick = () => menuRun('yield'); }
 }
 /* ── 빠른 찾기 — Ctrl+K · 치면 걸러지고, 위아래로 고르고, Enter ── */
 function showPalette() {
@@ -26183,7 +26751,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 54;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 55;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
