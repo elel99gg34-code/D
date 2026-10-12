@@ -365,7 +365,7 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*', 'nkat:*', 'emo:*', 'mpseason', 'mphall']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*', 'nkat:*', 'emo:*', 'mpseason', 'mphall', 'gd:*', 'gm:*', 'gname:*', 'gdlist']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
@@ -1393,7 +1393,7 @@ function mpStart(mode, teams, ranked) {
   teams.forEach((t, ti) => t.forEach(p => {
     /* 인게임 — 저마다 모험의 최대 체력으로 선다 (모르면 모드 기본값) */
     const h = p.hp >= 30 ? p.hp : hp;
-    players.push({ acct: p.acct, name: p.name, ttl: p.ttl || '', team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck, lv: p.lv || 1 });
+    players.push({ acct: p.acct, name: p.name, ttl: p.ttl || '', team: ti ? 'B' : 'A', rp: p.rp || 0, tier: mpTier(p.rp || 0), deck: p.deck, lv: p.lv || 1, plv: p.plv || 1, gid: p.gid || '', gtag: p.gtag || '' });
     units[p.acct] = { hp: h, maxHp: h, block: 0, s: {} };
   }));
   const m = { id, mode, ranked: !!ranked, players, units, order, turn: { i: 0, no: 1, acct: order[0], deadline: now + MP_TURN_MS + 4000 },
@@ -1405,6 +1405,27 @@ function mpStart(mode, teams, ranked) {
   return m;
 }
 const mpSayAt = new Map();
+/* 길드 — 채팅은 기억에만 */
+const GUILD_MAX = 20, gChat = new Map(), gSayAt = new Map();
+let _gSeq = 0;
+function gSay(gid, uid, t, now, nick) {
+  const l = (gChat.get(gid) || []).filter(x => now - x.at < 3600000);
+  const x = { id: Math.max(now, (l.length ? l[l.length - 1].id : 0) + 1, ++_gSeq), n: uid ? nick : '', u: uid || '', t, at: now, sys: !uid };
+  l.push(x); gChat.set(gid, l.slice(-40)); if (gChat.size > 3000) gChat.clear();
+  return x;
+}
+/* 길드 점수 — 랭크 대전이 끝날 때. 서로 다른 길드끼리 맞붙었으면 길드전 */
+async function guildSettle(m) {
+  if (!m.ranked || !m.win) return;
+  const gOf = {}; for (const p of m.players) gOf[p.acct] = await get('gm:' + p.acct);
+  const teamG = t => [...new Set(m.players.filter(p => p.team === t).map(p => gOf[p.acct]).filter(Boolean))];
+  const wG = teamG(m.win), lG = teamG(m.win === 'A' ? 'B' : 'A');
+  const war = wG.length && lG.length && !wG.some(g => lG.includes(g));
+  const bump = async (gid, d, won) => { const g = await get('gd:' + gid); if (!g) return; g.pts = Math.max(0, (g.pts || 0) + d); if (war) { if (won) g.w = (g.w || 0) + 1; else g.l = (g.l || 0) + 1; } await put('gd:' + gid, g); };
+  for (const g of wG) await bump(g, war ? 10 : 3, true);
+  if (war) for (const g of lG) await bump(g, -3, false);
+  if (war) { m.war = true; mpEv(m, { kind: 'war', win: wG, lose: lG }); }
+}
 function mpEv(m, e) { m.seq++; e.seq = m.seq; e.t = Date.now(); m.ev.push(e); if (m.ev.length > 200) m.ev.splice(0, m.ev.length - 200); }
 const mpTeamOf = (m, acct) => (m.players.find(p => p.acct === acct) || {}).team;
 const mpAlive = (m, team) => m.players.some(p => p.team === team && m.units[p.acct].hp > 0);
@@ -1446,6 +1467,7 @@ async function mpSettle(m) {
     res[p.acct] = { won, dRp, rp: prof.rp, tok, tokAll: prof.tok, tier: mpTier(prof.rp), tierBefore };
   }
   m.res = res;
+  await guildSettle(m).catch(e => console.error('길드 셈', e.message));
   mpEv(m, { kind: 'settled' });
   console.log('판 셈:', m.id, JSON.stringify(res));
 }
@@ -1504,12 +1526,12 @@ function mpMatchmake(now) {
 /* 판을 그 사람에게 보여 줄 모양 — since 뒤의 일만 */
 function mpView(m, acct, since) {
   return { id: m.id, mode: m.mode, ranked: m.ranked, me: acct, order: m.order,
-    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, plv: p.plv || 1, deck: p.acct === acct ? undefined : p.deck.slice() })),
+    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, plv: p.plv || 1, gid: p.gid || '', gtag: p.gtag || '', deck: p.acct === acct ? undefined : p.deck.slice() })),
     units: Object.fromEntries(Object.entries(m.units).map(([k, u]) => [k, mpUnitView(u)])),
     turn: { acct: m.turn.acct, no: m.turn.no, left: Math.max(0, m.turn.deadline - Date.now()) },
     seq: m.seq, ev: m.ev.filter(e => e.seq > (since || 0)), over: m.over, win: m.win, res: m.res ? m.res[acct] || null : null };
 }
-function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp), lv: x.lv, plv: x.plv || 1, hp: x.hp })), queued: !!r.queued }; }
+function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp), lv: x.lv, plv: x.plv || 1, gtag: x.gtag || '', hp: x.hp })), queued: !!r.queued }; }
 
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
@@ -2304,6 +2326,82 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, { ok: true, msg: chatView(x) });
   }
 
+  /* ══ 길드 (판 57) ══════════════════════════════════════════════
+     gd:길드 = { id, name, tag, glyph, desc, owner, members:[아이디], pts, w, l, at } · gm:아이디 = 길드 · gname:이름 = 길드 · gdlist = [길드]
+     길드 채팅은 서버 기억에만 (마흔 마디 · 한 시간) · 길드 점수는 대전(랭크)에서 — 이기면 +3, 서로 다른 길드끼리 맞붙으면 「길드전」 +10 / -3 */
+  if (url.pathname.startsWith('/guild/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false, why: '너무 길다' }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(), act = url.pathname.slice(7);
+    if (act === 'top') {
+      const ids = (await get('gdlist')) || [], out = [];
+      for (const gid of ids.slice(0, 300)) { const g = await get('gd:' + gid); if (g) out.push({ id: g.id, name: g.name, tag: g.tag, glyph: g.glyph, pts: g.pts || 0, n: g.members.length, w: g.w || 0, l: g.l || 0 }); }
+      out.sort((a, b) => b.pts - a.pts || b.n - a.n);
+      return send(res, 200, { ok: true, top: out.slice(0, 50) });
+    }
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const myGid = await get('gm:' + id), my = myGid ? await get('gd:' + myGid) : null;
+    const view = async g => g && { id: g.id, name: g.name, tag: g.tag, glyph: g.glyph, desc: g.desc || '', owner: g.owner, pts: g.pts || 0, w: g.w || 0, l: g.l || 0, at: g.at,
+      members: await Promise.all(g.members.map(async m => ({ id: m, nick: (await nickOf(m)) || m, own: m === g.owner, rp: ((await get('mp:' + m)) || {}).rp || 0 }))) };
+    const rankOf = async g => { if (!g) return 0; const ids = (await get('gdlist')) || []; let r = 1; for (const x of ids) { if (x === g.id) continue; const o = await get('gd:' + x); if (o && (o.pts || 0) > (g.pts || 0)) r++; } return r; };
+    if (act === 'me') return send(res, 200, { ok: true, g: await view(my), rank: await rankOf(my), chat: (gChat.get(myGid) || []).slice(-40) });
+    if (act === 'create') {
+      if (my) return send(res, 409, { ok: false, why: '이미 길드에 들어 있다' });
+      const name = censor(str(q.name, 12).trim()), tag = str(q.tag, 3).trim(), glyph = Array.from(str(q.glyph, 4).trim())[0] || '旗';
+      if (!/^[가-힣a-zA-Z0-9_ ]{2,10}$/.test(name) || name.includes('*')) return send(res, 400, { ok: false, why: '길드 이름은 2~10 글자 — 한글·영문·숫자' });
+      if (!/^[가-힣一-龥a-zA-Z0-9]{1,3}$/.test(tag)) return send(res, 400, { ok: false, why: '길드 표식은 1~3 글자' });
+      if (NICK_BAN.test(name) || NICK_BAN.test(tag) || censor(tag) !== tag) return send(res, 400, { ok: false, why: '쓸 수 없는 이름이다' });
+      if (await get('gname:' + name.toLowerCase())) return send(res, 409, { ok: false, why: '이미 있는 길드 이름이다' });
+      const g = { id: 'g' + now.toString(36) + Math.floor(Math.random() * 1e4).toString(36), name, tag, glyph, desc: censor(str(q.desc, 60)), owner: id, members: [id], pts: 0, w: 0, l: 0, at: now };
+      await put('gd:' + g.id, g); await put('gm:' + id, g.id); await put('gname:' + name.toLowerCase(), g.id);
+      await put('gdlist', ((await get('gdlist')) || []).concat(g.id).slice(-2000));
+      alog(id, `길드 「${name}」을 세웠다`).catch(() => {});
+      return send(res, 200, { ok: true, g: await view(g), rank: await rankOf(g) });
+    }
+    if (act === 'join') {
+      if (my) return send(res, 409, { ok: false, why: '이미 길드에 들어 있다 — 먼저 나오시오' });
+      const gid = await get('gname:' + str(q.name, 12).trim().toLowerCase()) || str(q.gid, 20), g = gid && await get('gd:' + gid);
+      if (!g) return send(res, 404, { ok: false, why: '그런 길드가 없다' });
+      if (g.members.length >= GUILD_MAX) return send(res, 409, { ok: false, why: `길드가 가득 찼다 (${GUILD_MAX}명)` });
+      g.members.push(id); await put('gd:' + g.id, g); await put('gm:' + id, g.id);
+      gSay(g.id, null, `${(await nickOf(id)) || id} 님이 길드에 들어왔다`, now);
+      return send(res, 200, { ok: true, g: await view(g), rank: await rankOf(g) });
+    }
+    if (!my) return send(res, 404, { ok: false, why: '길드에 들어 있지 않다' });
+    if (act === 'leave') {
+      my.members = my.members.filter(m => m !== id); await put('gm:' + id, null);
+      if (!my.members.length) { await put('gd:' + my.id, null); await put('gname:' + my.name.toLowerCase(), null); await put('gdlist', ((await get('gdlist')) || []).filter(x => x !== my.id)); gChat.delete(my.id); }
+      else { if (my.owner === id) my.owner = my.members[0]; await put('gd:' + my.id, my); gSay(my.id, null, `${(await nickOf(id)) || id} 님이 길드를 떠났다`, now); }
+      return send(res, 200, { ok: true });
+    }
+    if (act === 'kick') {
+      if (my.owner !== id) return send(res, 403, { ok: false, why: '길드장만 내보낼 수 있다' });
+      const who = str(q.who, 20); if (who === id || !my.members.includes(who)) return send(res, 404, { ok: false, why: '그런 길드원이 없다' });
+      my.members = my.members.filter(m => m !== who); await put('gd:' + my.id, my); await put('gm:' + who, null);
+      gSay(my.id, null, `${(await nickOf(who)) || who} 님을 내보냈다`, now);
+      return send(res, 200, { ok: true, g: await view(my) });
+    }
+    if (act === 'desc') {
+      if (my.owner !== id) return send(res, 403, { ok: false, why: '길드장만' });
+      my.desc = censor(chatClean(str(q.desc, 60))); await put('gd:' + my.id, my);
+      return send(res, 200, { ok: true, g: await view(my) });
+    }
+    if (act === 'say') {
+      if (now - (gSayAt.get(id) || 0) < 1500) return send(res, 429, { ok: false, why: '너무 빠르다' });
+      const t = chatClean(q.text); if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+      { const st = STK_RE.exec(t); if (st && !(await emoHas(id, st[1])) && !admRole(q.code)) return send(res, 403, { ok: false, why: '아직 없는 이모티콘이다' }); }
+      gSayAt.set(id, now); if (gSayAt.size > 20000) gSayAt.clear();
+      const x = gSay(my.id, id, t, now, (await nickOf(id)) || id);
+      return send(res, 200, { ok: true, msg: x });
+    }
+    if (act === 'chat') return send(res, 200, { ok: true, chat: (gChat.get(my.id) || []).filter(x => x.id > (+q.after || 0)).slice(-40), pts: my.pts || 0 });
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
   /* ── 백야와의 1대1 면담 ──────────────────────────────────
      관리자(퍼뜨리기 열쇠)가 아이디·닉네임으로 청한다 → 받은 이가 수락하면 방이 열린다.
      방에서는 둘만의 말, 백야의 선물(한 번에 · 폭탄처럼 쏟아지게), 게스트 초대, 나가기.
@@ -2412,6 +2510,7 @@ const server = http.createServer(async (req, res) => {
     const me = { acct, name: (await nickOf(acct)) || acct, ttl: str(((await get('pf:' + acct)) || {}).title, 14), rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
                  hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)),
                  plv: Math.max(1, Math.min(99, parseInt(q.plv, 10) || 1)) };
+    { const gid = await get('gm:' + acct), g = gid && await get('gd:' + gid); if (g) { me.gid = g.id; me.gtag = g.tag; } }
     /* 대전은 레벨 2부터 (판 57) — 관리자는 매이지 않는다 */
     const plvOk = me.plv >= 2 || !!admRole(q.code);
     if (!plvOk && (act === 'queue' || act === 'room' || act === 'party')) return send(res, 403, { ok: false, why: '대전은 레벨 2부터 — 요괴를 몇 무리 더 쓰러뜨리고 오시오', lvlock: true });

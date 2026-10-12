@@ -1805,6 +1805,46 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ── 길드 (판 57) ── */
+.guildwin{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(165deg,#141a14,#1e2418 45%,#0c100a)}
+.guildwin .gwbg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,120,.16),transparent 60%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0 2px,transparent 2px 60px)}
+.guildwin .schead,.guildwin .gwbody{position:relative;z-index:1}
+.gwbody{flex:1;min-height:0;overflow-y:auto;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;max-width:1180px;width:100%;margin:0 auto;box-sizing:border-box}
+.gwhero{display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:14px;background:linear-gradient(100deg,rgba(60,50,20,.8),rgba(20,18,10,.8));border:1px solid rgba(255,215,120,.4)}
+.gwhero>i{font-style:normal;width:70px;height:84px;flex:none;display:grid;place-items:center;font-size:40px;color:#2a1a04;background:linear-gradient(180deg,#ffe9a8,#c99a3a);
+  clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);box-shadow:0 0 22px rgba(255,210,120,.5);animation:mpFlag 3.4s ease-in-out infinite}
+.gwhero b{display:block;font-weight:400;font-size:22px;color:#fff3d6;letter-spacing:.08em}.gwhero b em{font-style:normal;font-size:14px;color:#ffd76a}
+.gwhero small{display:block;font-size:12px;color:#c8bda3;margin-top:3px}.gwhero small b{display:inline;font-size:inherit;color:#ffd76a}
+.gwhero .gwact{margin-left:auto;display:flex;flex-direction:column;gap:6px}
+.gwhero .val{font:inherit;font-size:12px;padding:6px 12px;border-radius:5px;cursor:pointer;background:rgba(40,36,24,.9);border:1px solid #7a6a4a;color:#e9dfc9}
+.gwhero .val.no{color:#ffb0a0;border-color:#8a3a3a}
+.gwgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gwgrid.three{grid-template-columns:240px 1fr 300px}
+.gwbox{padding:12px 14px;border-radius:12px;background:rgba(10,12,8,.75);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:8px;min-width:0}
+.gwbox h3{margin:0;font-weight:400;font-size:14px;color:#ffe9b0;letter-spacing:.1em}.gwbox h3 small{font-size:11px;color:#8a7f68;margin-left:6px}
+.gwbox label{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#d8ccb0}.gwbox label input{flex:1;min-width:0}
+.gwbox input{font:inherit;font-size:13px;background:rgba(0,0,0,.45);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:6px 9px}.gwbox input:focus{outline:none;border-color:#c9a24a}
+.gwf .val{font:inherit;font-size:12.5px;cursor:pointer;padding:6px 14px;border-radius:4px;background:linear-gradient(180deg,#5a4818,#3a2e10);border:1px solid #c9a24a;color:#ffe9b0}
+.gwm.me b{color:#ffd76a}
+.gwmem{display:flex;flex-direction:column;gap:4px;max-height:52vh;overflow-y:auto}
+.gwm{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.04);font-size:13px;color:#efe4cb}
+.gwm.own{background:rgba(255,215,120,.1)}.gwm em{font-style:normal;font-size:10px;padding:0 5px;border-radius:4px;background:#ffd76a;color:#2a1a04}
+.gwm small{margin-left:auto;font-size:11px;color:#9a8d74}.gwm u{font-size:11px;color:#ff9a9a;cursor:pointer;margin-left:6px}
+.gwchat{flex:1;min-height:200px;max-height:46vh;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding:4px}
+.gwc{font-size:13px;color:#efe4cb;line-height:1.5}.gwc b{font-weight:400;color:#9fd8a8;margin-right:6px}.gwc.me b{color:#ffd76a}.gwc.sys{font-size:11.5px;color:#8a9a7a;text-align:center}
+.gwf{display:flex;gap:6px}.gwf input{flex:1;min-width:0}
+.gwf .chemo-b{width:34px;flex:none;font-size:17px;border-radius:3px;background:rgba(0,0,0,.35);border:1px solid #4e4738;color:#ffd76a;cursor:pointer}
+.gwchatbox .chemo{max-height:40vh;overflow-y:auto}
+.gwtop{display:flex;flex-direction:column;gap:4px;max-height:40vh;overflow-y:auto}
+.gwt{display:grid;grid-template-columns:24px 28px 1fr auto;grid-template-rows:auto auto;column-gap:6px;align-items:center;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.04);cursor:default}
+.gwt[data-n]{cursor:pointer}.gwt.mine{background:rgba(255,215,120,.12);border:1px solid rgba(255,215,120,.35)}
+.gwt em{grid-row:1/3;font-style:normal;color:#ffd76a;font-size:14px;text-align:center}.gwt i{grid-row:1/3;font-style:normal;width:26px;height:26px;border-radius:6px;display:grid;place-items:center;background:linear-gradient(180deg,#ffe9a8,#c99a3a);color:#2a1a04}
+.gwt b{font-weight:400;font-size:13px;color:#efe4cb}.gwt small{grid-column:3;font-size:10.5px;color:#9a8d74}.gwt u{grid-row:1/3;grid-column:4;text-decoration:none;color:#ffd76a;font-size:15px}
+@media(max-width:900px){.gwgrid,.gwgrid.three{grid-template-columns:1fr}.gwhero{flex-wrap:wrap}.gwhero .gwact{margin-left:0;flex-direction:row}}
+.mpgtag{font-style:normal;font-size:10px;margin-left:4px;padding:0 5px;border-radius:5px;color:#2a1a04;background:linear-gradient(180deg,#ffe9a8,#c99a3a)}
+.mpwar{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:640;pointer-events:none;font-size:clamp(30px,6vw,64px);letter-spacing:.3em;color:#ffd76a;text-shadow:0 0 22px #ff9a2a,0 4px 0 #3a1a04;animation:rampIn .5s cubic-bezier(.2,1.4,.4,1) both}
+.mpwar.out{opacity:0;transition:.6s}
+.mpwar small{display:block;text-align:center;font-size:.32em;letter-spacing:.2em;color:#ffe9b0;margin-top:4px}
 /* ★ 레전드 로얄(傳說) — 대전 시즌 1위의 옷 · 판 57. 왕관 · 무지갯빛 금박 · 반짝이 · 돌아가는 무지개 고리 */
 .card.skinned.sk-legend .face{background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(255,215,120,.38),transparent 55%),
   radial-gradient(ellipse 90% 70% at 50% 112%,rgba(170,90,255,.5),transparent 62%),linear-gradient(160deg,#2c0f40,#12061e 52%,#2c1406);
@@ -27293,6 +27333,7 @@ const MENU_ITEMS = [
   { k: 't26',   g: '帝', n: '26막 예고', tab: 'ev', al: '26막 예고편 무명궁 황제 미리보기', show: () => !G.b, run: () => showAct26Preview() },
   { k: 'guest', g: '客', n: '게스트 창', tab: 'ev', al: '게스트', show: () => guestOn(), run: () => showGuest() },
   { k: 'profile', g: '名', n: '프로필', tab: 'soc', al: '프로필 칭호 테두리 내정보', show: () => acctOn(), run: () => showProfile() },
+  { k: 'guild', g: '旗', n: '길드', tab: 'soc', al: '길드 클랜 길드채팅 길드전 길드순위', show: () => acctOn() && !G.b, run: () => showGuild() },
   { k: 'friends', g: '友', n: '벗', tab: 'soc', al: '친구 벗 초대', show: () => acctOn(), run: () => showFriends() },
   { k: 'rank',  g: '榜', n: '순위', tab: 'soc', al: '순위 랭킹 랭크 리더보드', run: () => showRanks() },
   { k: 'chat',  g: '話', n: '채팅', tab: 'soc', al: '채팅 대화 말', show: () => acctOn(), run: () => chatToggle() },
@@ -32929,6 +32970,118 @@ function mpSayShow(acct, t) {
   try { if (MP.match && acct !== MP.match.me) SND.blip(1046, { dur: .08, vol: .04 }); } catch (e) {}
   if ($('#chatp') && $('#chatp').classList.contains('mpmode')) chatDraw();
 }
+/* ══ 길드 (판 57) ═══════════════════════════════════════════════
+   길드를 세우거나 들어간다 (스무 명까지). 길드 안에서만 보이는 길드 채팅 · 길드원 · 길드 점수 순위.
+   길드 점수 — 길드원이 랭크 대전에서 이기면 +3. 서로 다른 길드원끼리 맞붙으면 「길드전」: 이긴 길드 +10 · 진 길드 -3.
+   ══════════════════════════════════════════════════════════════ */
+const GUILD = { g: null, rank: 0, chat: [], last: 0, timer: 0, tab: 'home' };
+const guildAsk = (path, body) => acctAsk('/guild/' + path, Object.assign({ token: ACCT.token, code: caster() ? castKey() : undefined }, body || {}), 15000);
+async function showGuild() {
+  if (!acctOn()) { toast('로그인해야 길드를 쓸 수 있다'); SND.err(); return; }
+  const p = overlay(`<div class="guildwin"><div class="gwbg"></div>
+    <div class="schead"><button class="gback" id="gw_back">←</button><h2>길 드</h2><div class="scnote">${lvLabel()} · 旗</div></div>
+    <div class="gwbody" id="gw_body"><div class="dashload">길드를 불러오는 중…</div></div></div>`, 'guildpanel');
+  p.dataset.noauto = '1';
+  const back = () => { clearInterval(GUILD.timer); GUILD.timer = 0; closeOverlay(); if (G.run) { saveRun(); showMap(); } else showTitle(); };
+  p.querySelector('#gw_back').onclick = back;
+  const r = await guildAsk('me');
+  if (!p.isConnected) return;
+  if (!r.ok) { p.querySelector('#gw_body').innerHTML = `<div class="dashnone">서버에 닿지 못했다 — ${wEsc(r.why)}</div>`; return; }
+  GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = r.chat || []; GUILD.last = GUILD.chat.length ? GUILD.chat[GUILD.chat.length - 1].id : 0;
+  guildDraw(p);
+  clearInterval(GUILD.timer);
+  GUILD.timer = setInterval(async () => {
+    if (!p.isConnected) { clearInterval(GUILD.timer); return; }
+    if (!GUILD.g || document.hidden) return;
+    const c = await guildAsk('chat', { after: GUILD.last });
+    if (c.ok && c.chat.length) { GUILD.chat = GUILD.chat.concat(c.chat).slice(-60); GUILD.last = GUILD.chat[GUILD.chat.length - 1].id; guildChatDraw(p); }
+    if (c.ok && GUILD.g) GUILD.g.pts = c.pts;
+    /* 누가 들어오거나 떠났다 — 길드원 칸을 새로 */
+    if (c.ok && c.chat.some(m => m.sys)) { const r = await guildAsk('me'); if (r.ok && p.isConnected) { const was = !!GUILD.g; GUILD.g = r.g; GUILD.rank = r.rank; if (!r.g && was) { toast('길드에서 나오게 되었다'); guildDraw(p); } else guildMemDraw(p); } }
+    if (!c.ok && c.why && /들어 있지 않다/.test(c.why) && GUILD.g) { GUILD.g = null; toast('길드에서 나오게 되었다'); guildDraw(p); }
+  }, 4000);
+}
+function guildDraw(p) {
+  const body = p.querySelector('#gw_body'), g = GUILD.g;
+  if (!g) {
+    body.innerHTML = `<div class="gwhero"><i>旗</i><div><b>아직 길드가 없다</b><small>길드를 세우거나, 이름을 알면 들어간다 · 길드원은 스무 명까지 · 길드 채팅 · 길드전</small></div></div>
+      <div class="gwgrid">
+        <div class="gwbox"><h3>旗 길드를 세운다</h3>
+          <label>이름 <input id="gw_name" maxlength="10" placeholder="2~10 글자"></label>
+          <label>표식 <input id="gw_tag" maxlength="3" placeholder="1~3 글자 (예: 白)"></label>
+          <label>깃발 글자 <input id="gw_glyph" maxlength="2" placeholder="한 글자 (예: 夜)"></label>
+          <label>한 줄 소개 <input id="gw_desc" maxlength="60" placeholder="(비워도 된다)"></label>
+          <button class="brush-btn gold" id="gw_make">세운다</button><div class="casthint" id="gw_say1"></div></div>
+        <div class="gwbox"><h3>門 길드에 들어간다</h3>
+          <label>길드 이름 <input id="gw_jn" maxlength="12" placeholder="정확한 이름"></label>
+          <button class="brush-btn" id="gw_join">들어간다</button><div class="casthint" id="gw_say2"></div>
+          <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
+      </div>`;
+    const q = s => body.querySelector(s);
+    q('#gw_make').onclick = async () => {
+      const r = await guildAsk('create', { name: q('#gw_name').value, tag: q('#gw_tag').value, glyph: q('#gw_glyph').value || '旗', desc: q('#gw_desc').value });
+      if (!r.ok) { q('#gw_say1').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
+      GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = []; guildFx(r.g, '세웠다'); guildDraw(p);
+    };
+    q('#gw_join').onclick = async () => {
+      const r = await guildAsk('join', { name: q('#gw_jn').value });
+      if (!r.ok) { q('#gw_say2').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
+      GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = []; guildFx(r.g, '들어왔다'); guildDraw(p);
+    };
+    guildTop(q('#gw_top'), id => { q('#gw_jn').value = id; });
+    return;
+  }
+  const own = g.owner === ACCT.id;
+  body.innerHTML = `<div class="gwhero mine"><i>${wEsc(g.glyph)}</i><div><b>${wEsc(g.name)} <em>[${wEsc(g.tag)}]</em></b>
+      <small>${wEsc(g.desc || '소개가 없다')}</small><small>길드 점수 <b class="gpts">${g.pts}</b> · 순위 <b>${GUILD.rank}위</b> · 길드전 ${g.w}승 ${g.l}패 · 길드원 <span id="gw_hn">${g.members.length}</span>/20</small></div>
+      <div class="gwact">${own ? '<button class="val" id="gw_desc2">소개 고치기</button>' : ''}<button class="val no" id="gw_leave">길드를 떠난다</button></div></div>
+    <div class="gwgrid three">
+      <div class="gwbox"><h3>人 길드원 <small id="gw_mn">${g.members.length}/20</small></h3><div class="gwmem" id="gw_mem"></div></div>
+      <div class="gwbox gwchatbox"><h3>話 길드 채팅 <small>길드원에게만</small></h3><div class="gwchat" id="gw_chat"></div>
+        <div class="gwf"><button class="chemo-b" id="gw_emo" title="이모티콘">☺</button><input id="gw_in" maxlength="120" placeholder="길드에 할 말 — 엔터"><button class="val gold" id="gw_send">보내기</button></div><div class="chemo" id="gw_emobox" hidden></div></div>
+      <div class="gwbox"><h3>戰 길드전</h3><div class="casthint">길드원이 <b>랭크 대전</b>에서 다른 길드의 길드원과 맞붙으면 <b style="color:#ffd76a">길드전</b> — 이긴 길드 <b>+10</b>, 진 길드 <b>-3</b>. 그냥 이기기만 해도 <b>+3</b>.</div>
+        <button class="brush-btn gold" id="gw_war" style="margin-top:8px">對 대전 마당으로</button>
+        <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
+    </div>`;
+  const q = s => body.querySelector(s);
+  guildChatDraw(p);
+  const send = async t => { if (!t) return; const r = await guildAsk('say', { text: emojiStrip(t) }); if (!r.ok) { toast(r.why); SND.err(); return; }
+    GUILD.chat = GUILD.chat.concat(r.msg).slice(-60); GUILD.last = Math.max(GUILD.last, r.msg.id); guildChatDraw(p); };
+  q('#gw_send').onclick = () => { const v = q('#gw_in').value.trim(); q('#gw_in').value = ''; send(v); };
+  q('#gw_in').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') q('#gw_send').click(); };
+  q('#gw_in').addEventListener('input', () => { const i = q('#gw_in'); if (EMOJI_RE_C.test(i.value)) i.value = emojiStrip(i.value); EMOJI_RE_C.lastIndex = 0; });
+  q('#gw_emo').onclick = () => { const b = q('#gw_emobox'); b.hidden = !b.hidden; if (!b.hidden) { emoLoad().then(() => emoPicker(b, v => { if (STK_RE_C.test(v)) send(v); else { q('#gw_in').value = (q('#gw_in').value + ' ' + v).trim(); } })); } };
+  q('#gw_leave').onclick = async () => { if (!confirm(`「${g.name}」을 떠날까?${g.members.length === 1 ? ' — 마지막 길드원이라 길드가 사라진다' : ''}`)) return;
+    const r = await guildAsk('leave'); if (r.ok) { GUILD.g = null; toast('길드를 떠났다'); guildDraw(p); } else toast(r.why); };
+  const d2 = q('#gw_desc2'); if (d2) d2.onclick = async () => { const v = prompt('한 줄 소개 (60자)', g.desc || ''); if (v == null) return; const r = await guildAsk('desc', { desc: v }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); };
+  guildMemDraw(p);
+  q('#gw_war').onclick = () => { clearInterval(GUILD.timer); closeOverlay(); showMulti(); };
+  guildTop(q('#gw_top'));
+}
+function guildMemDraw(p) {
+  const box = p.querySelector('#gw_mem'), g = GUILD.g; if (!box || !g) return;
+  const own = g.owner === ACCT.id, n = p.querySelector('#gw_mn'), hn = p.querySelector('#gw_hn'); if (n) n.textContent = g.members.length + '/20'; if (hn) hn.textContent = g.members.length;
+  box.innerHTML = g.members.map(m => `<div class="gwm${m.own ? ' own' : ''}${m.id === ACCT.id ? ' me' : ''}"><b>${wEsc(m.nick)}</b>${m.own ? '<em>길드장</em>' : ''}<small>${m.rp} 점</small>${own && !m.own ? `<u data-kick="${wEsc(m.id)}">내보내기</u>` : ''}</div>`).join('');
+  box.querySelectorAll('[data-kick]').forEach(u => u.onclick = async () => { if (!confirm('내보낼까?')) return; const r = await guildAsk('kick', { who: u.dataset.kick }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
+}
+function guildChatDraw(p) {
+  const box = p.querySelector('#gw_chat'); if (!box) return;
+  box.innerHTML = GUILD.chat.length ? GUILD.chat.map(m => m.sys ? `<div class="gwc sys">${wEsc(m.t)}</div>`
+    : `<div class="gwc${m.u === ACCT.id ? ' me' : ''}"><b>${wEsc(m.n)}</b><span>${stkHtml(m.t) || wEsc(m.t)}</span></div>`).join('') : '<div class="dashnone">길드원에게 먼저 말을 건네 보시오</div>';
+  box.scrollTop = box.scrollHeight;
+}
+async function guildTop(host, pickName) {
+  const r = await acctAsk('/guild/top', {}, 12000);
+  if (!host.isConnected) return;
+  host.innerHTML = r.ok && r.top.length ? r.top.slice(0, 20).map((x, i) => `<div class="gwt${GUILD.g && GUILD.g.id === x.id ? ' mine' : ''}" data-n="${wEsc(x.name)}"><em>${i + 1}</em><i>${wEsc(x.glyph)}</i><b>${wEsc(x.name)}</b><small>[${wEsc(x.tag)}] · ${x.n}명 · 길드전 ${x.w}승</small><u>${x.pts}</u></div>`).join('')
+    : '<div class="dashnone">아직 길드가 없다 — 처음으로 세워 보시오</div>';
+  if (pickName) host.querySelectorAll('[data-n]').forEach(d => d.onclick = () => pickName(d.dataset.n));
+}
+function guildFx(g, what) {
+  try { SND.unlock(); SND.gong(); stampWord(g.glyph + ' 旗', '#ffd76a'); screenFlash('rgba(255,215,120,.35)', 700); FX.gold(innerWidth / 2, innerHeight / 2, 40); } catch (e) {}
+  toast(`길드 「${g.name}」 — ${what}`);
+}
+
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -33279,6 +33432,7 @@ function showMulti() {
             <button class="val" id="mp_deck">들고 가는 덱</button>
             <button class="val gold" id="mp_shop">교환소</button>
             <button class="val" id="mp_top">랭킹</button>
+            <button class="val" id="mp_guild">旗 길드</button>
           </div>
         </div>
       </div>
@@ -33306,6 +33460,7 @@ function showMulti() {
   mpRunPaint();
   p.querySelector('#mp_shop').onclick = () => { SND.ui(); showMpShop(); };
   p.querySelector('#mp_top').onclick = () => { SND.ui(); showMpTop(); };
+  p.querySelector('#mp_guild').onclick = () => { SND.ui(); MP.lobby = false; if (!MP.queue && !MP.room && !MP.match) mpStopLoop(); showGuild(); };
   mpStartLoop();
   songSync();
 }
@@ -33539,9 +33694,9 @@ function mpBegin(mv) {
   if (ally) mpAllyPanel(ally);
   /* 누가 누구와 — 이름과 랭크를 크게 */
   const intro = el('div', 'mpintro');
-  intro.innerHTML = `<div class="mpside a">${mv.players.filter(p => p.team === myTeam).map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+  intro.innerHTML = `<div class="mpside a">${mv.players.filter(p => p.team === myTeam).map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}${p.gtag ? `<i class="mpgtag">${wEsc(p.gtag)}</i>` : ''}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
     <div class="mpvsbig">VS</div>
-    <div class="mpside b">${foes.map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
+    <div class="mpside b">${foes.map(p => `<div>${mpEmblem(p.rp, 'big')}${p.ttl ? `<i class="mpttl">${wEsc(p.ttl)}</i>` : ''}<b>${wEsc(p.name)}${p.gtag ? `<i class="mpgtag">${wEsc(p.gtag)}</i>` : ''}</b><em>${mpTierName(p.rp)}</em></div>`).join('')}</div>
     <div class="mpmodetag">${mv.mode === '2v2' ? '2 대 2' : '1 대 1'} · ${mv.ranked ? '랭크 매치' : '친선전'}</div>`;
   document.body.appendChild(intro);
   try { SND.gong(); SND.boss(); screenFlash('rgba(255,215,140,.3)', 600); } catch (e) {}
@@ -33593,6 +33748,7 @@ async function mpDrain(mv) {
       else if (e.kind === 'timeout') { toast(`${mpName(e.acct)} — 시간이 다해 차례가 넘어갔다`); }
       else if (e.kind === 'say') { try { mpSayShow(e.acct, e.say); } catch (x) {} }
       else if (e.kind === 'tag') { try { mpRetag(e); } catch (x) {} }
+      else if (e.kind === 'war') { try { mpWarFx(e); } catch (x) {} }
       else if (e.kind === 'gone') { toast(`${mpName(e.acct)}이(가) ${e.acct === me ? '쓰러졌다' : '판을 떠났다'}`); }
       else if (e.kind === 'turn' || e.kind === 'start') {
         if (e.acct === me && !(e.kind === 'start' && MP.myNo)) await mpMyTurn(mv);
@@ -33688,11 +33844,20 @@ function mpRetag(e) {
   if (ent && ent.el) mpNameTag(ent.el, pl, e.acct === MP.match.me);
   if (ent && e.acct !== MP.match.me) ent.n = pl.name;
 }
+/* 길드전 — 서로 다른 길드끼리 맞붙은 랭크 대전이 끝났다 */
+function mpWarFx(e) {
+  const mine = MP.match && (MP.match.players || []).find(p => p.acct === MP.match.me);
+  const won = mine && mine.gid && (e.win || []).includes(mine.gid);
+  const b = el('div', 'mpwar', `${won ? '길드전 승리' : '길드전'}<small>${won ? '길드 점수 +10' : '길드 점수 -3'}</small>`);
+  document.body.appendChild(b);
+  try { SND.gong(); } catch (x) {}
+  setTimeout(() => { b.classList.add('out'); setTimeout(() => b.remove(), 650); }, 2600);
+}
 /* 이름표 — 닉네임 · 랭크(문장과 등급) · 덱 보기 */
 function mpNameTag(u, pl, mine) {
   const nm = u && u.querySelector('.nm'); if (!nm || !pl) return;
   nm.classList.add('mpnm');
-  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}${pl.ttl ? `<i class="mpttl">${wEsc(pl.ttl)}</i>` : ''}<b>${wEsc(pl.name || '?')}</b><em class="mprk">${mpTierName(pl.rp || 0)}</em><em class="mplv${(mine ? lvAdmin() : (pl.plv || 1) >= 99) ? ' adm' : ''}">${mine ? lvLabel() : (pl.plv || 1) >= 99 ? 'ADMIN' : 'Lv ' + (pl.plv || 1)}</em>` +
+  nm.innerHTML = `${mpEmblem(pl.rp || 0, 'sm')}${pl.ttl ? `<i class="mpttl">${wEsc(pl.ttl)}</i>` : ''}<b>${wEsc(pl.name || '?')}</b>${pl.gtag ? `<i class="mpgtag">${wEsc(pl.gtag)}</i>` : ''}<em class="mprk">${mpTierName(pl.rp || 0)}</em><em class="mplv${(mine ? lvAdmin() : (pl.plv || 1) >= 99) ? ' adm' : ''}">${mine ? lvLabel() : (pl.plv || 1) >= 99 ? 'ADMIN' : 'Lv ' + (pl.plv || 1)}</em>` +
     (mine ? '' : `<button class="mpdeckbtn" title="상대의 덱">덱 ${Array.isArray(pl.deck) ? pl.deck.length : ''}</button>`);
   const db = nm.querySelector('.mpdeckbtn');
   if (db) db.onclick = ev => { ev.stopPropagation(); mpShowDeck(pl); };
