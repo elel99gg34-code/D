@@ -1104,6 +1104,36 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 /* ══ 관리자 — 대시보드 · 로그 · 축제 · 공지 틀 (판 52) ══ */
 .dash,.alogw{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;padding:4px;color:#e9dfc9}
 .dashhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* ── 守 관리 봇 (판 56) ── */
+.botwrap{display:flex;flex-direction:column;gap:12px;grid-column:1/-1}
+.botsw{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;background:linear-gradient(100deg,rgba(60,60,70,.5),rgba(20,20,26,.6));border:1px solid rgba(160,170,190,.35)}
+.botsw .botface{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#9aa4b8;background:radial-gradient(circle at 35% 30%,#3a4252,#12151c);border:2px solid #4a5468;flex:none}
+.botsw.on .botface{color:#062a1e;background:radial-gradient(circle at 35% 30%,#b8ffe6,#2fb58a);border-color:#8ff0cf;box-shadow:0 0 22px rgba(110,240,190,.55);animation:botbeat 2.2s ease-in-out infinite}
+@keyframes botbeat{50%{box-shadow:0 0 34px rgba(110,240,190,.8)}}
+.botsw b{display:block;font-weight:400;font-size:16px;color:#eef3ff;letter-spacing:.08em}
+.botsw small{font-size:11.5px;color:#9aa4b8}
+.botsw .brush-btn{margin-left:auto}
+.botgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.botgrid .castsec{margin:0}
+.botrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:6px 0;font-size:12.5px;color:#d8ccb0}
+.botrow label{display:flex;align-items:center;gap:6px}
+.botrow input[type=number]{width:70px}
+.botacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.botact{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:7px;align-items:center;padding:7px 9px;border-radius:9px;cursor:pointer;
+  background:rgba(0,0,0,.25);border:1px solid rgba(200,170,110,.2);opacity:.55;transition:.12s}
+.botact.on{opacity:1;border-color:rgba(110,240,190,.55);background:rgba(20,70,54,.35)}
+.botact input{display:none}
+.botact i{grid-row:1/3;font-style:normal;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px;color:#1a120a;background:linear-gradient(135deg,#ffe9a8,#c8962e)}
+.botact b{font-weight:400;font-size:12.5px;color:#f0e6cc}
+.botact small{font-size:10px;color:#9a8d74;line-height:1.35}
+.botdaily{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.botd{display:flex;gap:6px;align-items:center}
+.botd .botx{background:none;border:1px solid rgba(220,100,100,.5);color:#e2777a;border-radius:6px;width:26px;height:26px;cursor:pointer}
+.botchk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#d8ccb0;margin:4px 0 6px}
+.botnow{display:inline-flex;gap:6px;align-items:center}
+.botlog{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;font-size:12px;color:#d8ccb0}
+.botlog>div{padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.22)}
+.botlog em{font-style:normal;color:#8fbfae;margin-right:8px;font-variant-numeric:tabular-nums}
 .dashhead b{font-weight:400;font-size:18px;letter-spacing:.1em;color:#f2e2b4}
 .dashhead span{flex:1;font-size:11.5px;color:#8a7f68}
 .dashhead input{flex:1;min-width:160px}
@@ -1538,7 +1568,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
   animation:skillName .95s ease-out forwards;white-space:nowrap}
 .skillname.ssx{color:#ffdce3;text-shadow:0 0 16px #ff2d55,0 0 40px #ff8a00,0 2px 6px rgba(0,0,0,.8)}
 
-/* ══ 부적 뽑기 상점 ══════════════════════════════════════ */
+/* ══ 상점 (일일상점 · 상자 뽑기) ════════════════════════ */
 .gacha{position:absolute;inset:0;display:flex;flex-direction:column;background:
   linear-gradient(160deg,#1b1712 0%,#241d15 40%,#15120e 100%)}
 .gacha::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
@@ -1559,7 +1589,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 
 .gbody{position:relative;flex:1;display:flex;min-height:0}
 /* 왼쪽 배너 목록 */
-.gnav{width:212px;flex:none;padding:14px 10px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.gnav{width:244px;flex:none;padding:14px 10px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 .gnav::-webkit-scrollbar{width:6px}.gnav::-webkit-scrollbar-thumb{background:rgba(200,170,110,.3);border-radius:3px}
 .gbanner{position:relative;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;text-align:left;
   background:linear-gradient(120deg,#3a3226,#241d15);border:1.5px solid rgba(200,170,110,.35);transition:.16s}
@@ -1672,7 +1702,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .rewitem.gift .t b{color:#14503f}
 
 /* 가운데 */
-.gmain{flex:1;min-width:0;padding:16px 20px 12px;display:flex;flex-direction:column;gap:10px}
+.gmain{flex:1;min-width:0;padding:18px 26px 14px;display:flex;flex-direction:column;gap:10px}
 .gtitle{color:#ffe9b0;font-size:26px;letter-spacing:.14em;margin-left:.14em;text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .gsub{color:#e0c98f;font-size:13px;letter-spacing:.03em;margin-top:-4px}
 .gsub b{color:#ff9c5a}
@@ -1685,7 +1715,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
   background:rgba(10,8,6,.55);border:1px solid rgba(200,170,110,.25);
   display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start}
 .gpool::-webkit-scrollbar{width:7px}.gpool::-webkit-scrollbar-thumb{background:rgba(200,170,110,.35);border-radius:4px}
-.gunit{position:relative;width:88px;height:112px;border-radius:7px;cursor:pointer;
+.gunit{position:relative;width:98px;height:124px;border-radius:7px;cursor:pointer;
   background:linear-gradient(160deg,#efe4cb,#cdbb96);border:2px solid #6b6053;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:.16s}
 .gunit:hover{transform:translateY(-5px) scale(1.05);z-index:3}
@@ -1716,6 +1746,68 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
   background:linear-gradient(150deg,#3a3226,#221b13);border:1.5px solid rgba(200,170,110,.55);color:#e8d5a8}
 .gmile.done span{background:linear-gradient(150deg,#2f7f5a,#17513a);border-color:#6fe0a8;color:#eafff4}
 .gmile.ssx span{border-color:#ff2d55;color:#ffd7de}
+/* ── 상점 넓히기 · 일일상점 (판 56) ───────────────────── */
+.gnav .gsec{font-size:10.5px;letter-spacing:.32em;color:#8f826a;padding:6px 6px 0;text-indent:.32em;display:flex;align-items:center;gap:8px}
+.gnav .gsec:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(200,170,110,.35),transparent)}
+.gbanner.daily{background:linear-gradient(120deg,#1d4a3a,#11261e);border-color:rgba(120,230,190,.55)}
+.gbanner.daily .bg{background:radial-gradient(circle at 35% 30%,#8ff0cf,#1d6b52);color:#04261b;box-shadow:0 0 14px rgba(110,240,190,.5)}
+.gbanner.daily .bn b{color:#dcfff2}
+.gbanner.daily.on{border-color:#8ff0cf;box-shadow:0 0 24px rgba(110,240,190,.45),inset 0 0 24px rgba(110,240,190,.14)}
+.gbanner.daily .tag{background:#1fae7e}
+.ghead .gcur .cpn i{background:linear-gradient(140deg,#ffc6de,#d0477e);color:#2a0716}
+.dshead{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.dstitle{color:#dcfff2;font-size:26px;letter-spacing:.16em;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.dstitle small{display:block;font-size:11.5px;letter-spacing:.05em;color:#8fbfae;margin-top:2px}
+.dsclock{margin-left:auto;font-size:12.5px;color:#9fc8ba;padding:6px 12px;border-radius:20px;background:rgba(10,30,24,.6);border:1px solid rgba(120,230,190,.3)}
+.dsclock b{color:#e9fff7;font-variant-numeric:tabular-nums;letter-spacing:.06em;margin-left:4px}
+.dssale{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:8px;font-size:12.5px;color:#ffe7f0;
+  background:linear-gradient(100deg,rgba(210,40,90,.5),rgba(120,20,60,.25));border:1px solid rgba(255,120,170,.5);animation:dssale 2.4s ease-in-out infinite}
+.dssale b{font-size:15px;color:#fff;letter-spacing:.08em}
+@keyframes dssale{50%{box-shadow:0 0 22px rgba(255,80,140,.45)}}
+.cpnbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:#c9b99a}
+.cpnbar>span{letter-spacing:.12em;margin-right:2px}
+.cpnbar button{padding:5px 11px;border-radius:14px;font-size:12px;color:#e9dcc0;background:rgba(255,255,255,.06);border:1px solid rgba(220,190,140,.3);transition:.14s}
+.cpnbar button i{font-style:normal;margin-left:5px;color:#9a8d74}
+.cpnbar button:hover:not(:disabled){border-color:#ffc6de;color:#fff}
+.cpnbar button.on{background:linear-gradient(120deg,#ff8ab8,#c23a72);color:#fff;border-color:#ffd0e2;box-shadow:0 0 14px rgba(255,110,170,.45)}
+.cpnbar button.on i{color:#ffe3ee}
+.cpnbar button:disabled{opacity:.35;cursor:default}
+.dsgrid{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;padding:4px 2px 8px;align-content:start}
+.dsgrid::-webkit-scrollbar{width:7px}.dsgrid::-webkit-scrollbar-thumb{background:rgba(120,230,190,.3);border-radius:4px}
+.dsitem{position:relative;border-radius:12px;padding:14px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;isolation:isolate;overflow:hidden;
+  background:linear-gradient(165deg,rgba(40,34,26,.95),rgba(16,13,10,.95));border:1.5px solid color-mix(in srgb,var(--gc) 55%,transparent);
+  box-shadow:0 8px 22px rgba(0,0,0,.45);animation:dsin .5s cubic-bezier(.2,.9,.3,1.2) both;transition:transform .16s}
+.dsitem:hover{transform:translateY(-4px)}
+@keyframes dsin{from{opacity:0;transform:translateY(16px) scale(.92)}}
+.dsitem:before{content:'';position:absolute;inset:-40%;z-index:-1;opacity:.22;background:radial-gradient(circle,var(--gc),transparent 60%)}
+.dsitem .dsg{width:74px;height:94px;border-radius:8px;display:grid;place-items:center;font-size:36px;color:#22190f;margin-top:4px;
+  background:linear-gradient(160deg,#f3e8cf,#cdbb96);border:2px solid var(--gc);box-shadow:0 0 16px color-mix(in srgb,var(--gc) 45%,transparent)}
+.dsitem .dsb{position:absolute;left:8px;top:8px;padding:2px 7px;border-radius:4px;font-size:10px;color:#fff;background:var(--gc);border:1px solid rgba(255,255,255,.4)}
+.dsitem .dsup{position:absolute;right:8px;top:8px;font-size:10px;padding:2px 6px;border-radius:4px;color:#2a1a06;background:linear-gradient(120deg,#ffe08a,#e2a53a)}
+.dsitem .dsn{font-size:14px;color:#f6ecd4;letter-spacing:.04em;word-break:keep-all}
+.dsitem .dsd{font-size:11px;color:#a89a7e;line-height:1.5;min-height:3em;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dsitem .dsbuy{margin-top:auto;width:100%;padding:8px 0;border-radius:8px;font-size:14px;color:#062a1e;letter-spacing:.06em;
+  background:linear-gradient(120deg,#9ff3d6,#3fbf95);box-shadow:0 4px 0 #1f7a5e;border:none;transition:.12s}
+.dsitem .dsbuy:hover{transform:translateY(-1px);box-shadow:0 5px 0 #1f7a5e,0 0 16px rgba(110,240,190,.5)}
+.dsitem .dsbuy s{color:#2d6b57;font-size:11px;margin-right:5px}
+.dsitem .dsbuy.poor{background:linear-gradient(120deg,#6b6455,#4a4438);color:#c9bda2;box-shadow:0 4px 0 #34301f}
+.dsitem.sold{filter:grayscale(.75) brightness(.7)}
+.dsitem.sold:after{white-space:nowrap;content:'完 판매 끝';position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-14deg);padding:5px 14px;border:2px solid #e05a4a;
+  color:#ffb0a6;font-size:15px;letter-spacing:.2em;border-radius:6px;background:rgba(40,8,6,.75)}
+.dsitem.r-special .dsg{animation:flameGlow 1.7s ease-in-out infinite}
+.dsitem.r-qx{border-color:#ffd84a;background:linear-gradient(165deg,#3a2e08,#120d02)}
+.dsitem.r-qx .dsg{background:linear-gradient(160deg,#fff6cc,#e8c050);animation:dsqx 1.4s ease-in-out infinite}
+.dsitem.r-qx:before{opacity:.5;animation:vspin 5s linear infinite;background:conic-gradient(#ffd84a,transparent,#ff8a3a,transparent,#ffd84a)}
+@keyframes dsqx{50%{box-shadow:0 0 34px #ffd84a,0 0 70px rgba(255,180,40,.5)}}
+.dsfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:11.5px;color:#8f846d}
+.dsfoot .dsrr{padding:7px 14px;border-radius:8px;font-size:12.5px;color:#dcfff2;background:rgba(30,90,70,.45);border:1px solid rgba(120,230,190,.45)}
+.dsfoot .dsrr:hover{background:rgba(40,120,92,.6)}
+.dsfoot b{font-weight:400}
+.dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
+.gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+@media(max-width:760px){.gbody{flex-direction:column}.gnav{width:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px 10px;gap:8px;flex:none}
+  .gnav .gsec{display:none}.gbanner{flex:none;min-width:136px;padding:8px 10px}.gbanner .bg{width:32px;height:32px;font-size:17px}.gbanner .bn small{display:none}
+  .gbanner:hover{transform:none}.gmain{padding:10px 12px 10px}.dshead{gap:8px}.dsclock{margin-left:0}.dsgrid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}.dsitem .dsg{width:60px;height:78px;font-size:30px}.dstitle{font-size:21px}}
 
 /* 뽑기 버튼 */
 .gbtns{flex:none;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -5698,6 +5790,15 @@ body.chaos #bg .sky{animation:chaosSky 6s ease-in-out infinite}
 .acctform input:focus{outline:none;border-color:#c8a94e}
 .acctpwnote{font-size:11px;color:#8f846c;margin-top:6px;line-height:1.6}
 .acctbtns{display:flex;gap:8px;flex-wrap:wrap}
+.acctbtns .acfind{flex-basis:100%;background:none;border:none;color:#c9a86a;font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:2px 0;cursor:pointer}
+.rchint{max-width:440px;margin:6px auto 0;line-height:1.8}
+.rcform{max-width:360px;margin:12px auto 0}.rcform input{flex:1 1 100%}
+.rcstate{margin:10px auto 0;font-size:12.5px;color:#c9bda2}
+.rcfound{display:flex;gap:14px;align-items:center;justify-content:center;margin:12px auto 4px;padding:12px 18px;border-radius:12px;max-width:380px;
+  background:linear-gradient(120deg,rgba(40,90,70,.45),rgba(16,30,24,.6));border:1px solid rgba(120,230,190,.45)}
+.rcfound i{font-style:normal;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#062a1e;background:radial-gradient(circle at 35% 30%,#b8ffe6,#2fb58a);flex:none}
+.rcfound small{display:block;font-size:11px;color:#9fc8ba}
+.rcfound b{display:block;font-size:22px;color:#eafff6;letter-spacing:.08em;font-weight:400;user-select:all;-webkit-user-select:all}
 .acctbtns .ghost{background:none;border-color:#6d6250;color:#a99d85}
 .acctsay{width:100%;font-size:11.5px;min-height:15px;letter-spacing:.02em}
 .pickrow{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}
@@ -6179,6 +6280,11 @@ body.nochrome .chatfab{display:none}
 #notice .nt b small{margin-left:6px;padding:0 5px;border:1px solid currentColor;border-radius:3px;font-size:9px;
   letter-spacing:.1em;opacity:.8}
 #notice.guest.on::after{background:#e08ad8}
+#notice.staff{background:linear-gradient(160deg,#10303e,#081820);border-color:#7fd8f0}
+#notice.staff i{background:#2a7fa0;color:#eafcff;box-shadow:0 0 12px rgba(127,216,240,.5)}
+#notice.staff .nt b{color:#bff0ff}
+#notice.staff .nt b small{color:#7fb8cc}
+#notice.staff.on::after{background:#7fd8f0}
 /* 사라지기까지 남은 때 — 아래 가장자리에 줄어드는 금줄 */
 #notice.on::after{content:'';position:absolute;left:10px;right:10px;bottom:3px;height:2px;
   border-radius:2px;background:#e8c86a;transform-origin:left;opacity:.7;
@@ -6908,6 +7014,90 @@ body.zenui :is(#topbar,.evpill,#chatfab,.scpill,.whpill,#tbmore,#menubtn,#toast,
 .mmyield>em{font-style:normal;font-size:12px;color:#ffb0a0}
 @media (prefers-reduced-motion:reduce){.awseal svg,.awseal i,.eap-blade{animation:none!important}}
 .ebanner .ebd em{font-style:normal;font-size:20px;font-weight:700;color:#ff8a7a;text-shadow:0 0 10px rgba(255,80,60,.7)}.ebanner .ebd small{font-size:13px;color:#ffc8b8}
+/* ══ 판 56 — 부적을 낼 때, 등급마다 한 단씩 ══ */
+/* ① 먹 붓질 */
+.ctbrush{position:fixed;z-index:57;pointer-events:none;height:8px;margin-top:-4px;transform-origin:0 50%;transform:rotate(var(--a)) scaleX(0);border-radius:4px 50% 50% 4px;
+  background:linear-gradient(90deg,rgba(20,14,10,0),rgba(20,14,10,.8) 12%,color-mix(in srgb,var(--gc) 55%,#1a120c) 70%,var(--gc));
+  -webkit-mask:repeating-linear-gradient(0deg,#000 0 2px,rgba(0,0,0,.55) 2px 3px);mask:repeating-linear-gradient(0deg,#000 0 2px,rgba(0,0,0,.55) 2px 3px);
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--gc) 60%,transparent));animation:ctBrush .6s cubic-bezier(.25,.8,.3,1) forwards}
+.ctbrush.t1,.ctbrush.t2{height:10px;margin-top:-5px}.ctbrush.t3,.ctbrush.t4{height:13px;margin-top:-6px}.ctbrush.t5,.ctbrush.t6{height:17px;margin-top:-8px;filter:drop-shadow(0 0 10px var(--gc)) drop-shadow(0 0 22px var(--gc))}
+@keyframes ctBrush{0%{transform:rotate(var(--a)) scaleX(0);opacity:1}40%{transform:rotate(var(--a)) scaleX(1);opacity:1}100%{transform:rotate(var(--a)) scaleX(1);opacity:0}}
+/* ② 부적 종이 */
+.cttalis{position:fixed;z-index:61;pointer-events:none;left:0;top:0;width:26px;height:46px;border-radius:2px;display:grid;place-items:center;
+  background:linear-gradient(#f6e6b8,#e8c878);border:1.5px solid #a8272c;box-shadow:0 0 12px var(--gc),0 0 26px color-mix(in srgb,var(--gc) 60%,transparent)}
+.cttalis b{font-size:15px;color:#a8272c;font-weight:700}
+.cttalis.t4,.cttalis.t5,.cttalis.t6{width:32px;height:56px;box-shadow:0 0 18px var(--gc),0 0 40px var(--gc)}
+.cttalis.t6{background:linear-gradient(#2a0a10,#5a0a18);border-color:#ff2d55}.cttalis.t6 b{color:#ffd0d8;text-shadow:0 0 8px #ff2d55}
+.cttalis.t5{background:linear-gradient(#e8fcff,#9fe8f0);border-color:#1fb6c9}.cttalis.t5 b{color:#0a5a66}
+/* ③ 발밑의 진 */
+.ctseal{position:fixed;z-index:3;pointer-events:none;width:170px;height:170px;margin:-85px 0 0 -85px;filter:drop-shadow(0 0 8px var(--gc));animation:ctSeal .9s cubic-bezier(.2,.9,.3,1) forwards}
+.ctseal svg{width:100%;height:100%;animation:auSpin 2.4s linear infinite}
+.ctseal.t3{width:200px;height:200px;margin:-100px 0 0 -100px}.ctseal.t4{width:230px;height:230px;margin:-115px 0 0 -115px}
+.ctseal.t5,.ctseal.t6,.ctseal.t7,.ctseal.t8{width:270px;height:270px;margin:-135px 0 0 -135px;animation-duration:1.15s;filter:drop-shadow(0 0 12px var(--gc)) drop-shadow(0 0 30px var(--gc))}
+.ctseal i{position:absolute;inset:14%;border-radius:50%;border:2px dashed var(--gc);animation:auSpin 1.6s linear infinite reverse;box-shadow:0 0 14px var(--gc),inset 0 0 14px var(--gc)}
+.ctseal.t5::after{content:'';position:absolute;inset:-6%;border-radius:50%;background:conic-gradient(from 0deg,transparent,var(--gc) 8%,transparent 16%,transparent 50%,var(--gc) 58%,transparent 66%);
+  -webkit-mask:radial-gradient(circle,transparent 62%,#000 64%,#000 70%,transparent 72%);mask:radial-gradient(circle,transparent 62%,#000 64%,#000 70%,transparent 72%);animation:auSpin .9s linear infinite}
+@keyframes ctSeal{0%{transform:scale(.2) rotate(-60deg);opacity:0}25%{transform:scale(1.05);opacity:1}75%{opacity:.9}100%{transform:scale(1.15);opacity:0}}
+/* ④ 등급 도장 */
+.ctstamp{position:fixed;z-index:62;pointer-events:none;width:0;height:0}
+.ctstamp b{position:absolute;left:-22px;top:-22px;min-width:44px;height:44px;padding:0 4px;border-radius:6px;display:grid;place-items:center;font-size:22px;font-weight:700;color:#fff3e8;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--gc) 70%,#fff),color-mix(in srgb,var(--gc) 80%,#1a0a04));border:2px solid color-mix(in srgb,var(--gc) 60%,#fff);
+  box-shadow:0 0 12px var(--gc),inset 0 -3px 6px rgba(0,0,0,.35);text-shadow:0 1px 2px rgba(0,0,0,.6);animation:ctStamp .76s cubic-bezier(.2,1.6,.4,1) forwards}
+.ctstamp.t0 b,.ctstamp.t1 b{background:radial-gradient(circle at 35% 30%,#d8443a,#7a1410);border-color:#f0b8a8;box-shadow:0 0 8px rgba(168,39,44,.6);font-size:18px;left:-17px;top:-17px;min-width:34px;height:34px}
+.ctstamp.t4 b,.ctstamp.t5 b,.ctstamp.t6 b{left:-30px;top:-30px;min-width:60px;height:60px;font-size:26px;box-shadow:0 0 20px var(--gc),0 0 44px var(--gc)}
+.ctstamp.t7 b,.ctstamp.t8 b{left:-34px;top:-34px;min-width:68px;height:68px;font-size:30px;box-shadow:0 0 26px var(--gc),0 0 60px var(--gc)}
+@keyframes ctStamp{0%{transform:scale(2.6) rotate(-24deg);opacity:0}30%{transform:scale(.92) rotate(5deg);opacity:1}55%{transform:scale(1) rotate(-4deg)}85%{opacity:1}100%{transform:scale(1.05) rotate(-4deg) translateY(-10px);opacity:0}}
+.ctstamp i{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:color-mix(in srgb,var(--gc) 70%,#1a0a04);animation:ctInk .6s cubic-bezier(.2,.8,.3,1) .12s forwards;opacity:0}
+.ctstamp i:nth-of-type(1){--x:-38px;--y:-20px}.ctstamp i:nth-of-type(2){--x:36px;--y:-28px}.ctstamp i:nth-of-type(3){--x:-30px;--y:30px}.ctstamp i:nth-of-type(4){--x:40px;--y:24px}
+.ctstamp i:nth-of-type(5){--x:-60px;--y:0}.ctstamp i:nth-of-type(6){--x:58px;--y:-4px}.ctstamp i:nth-of-type(7){--x:0;--y:-52px}.ctstamp i:nth-of-type(8){--x:6px;--y:54px}
+@keyframes ctInk{0%{opacity:1;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.3)}}
+/* 빛살 */
+.ctrays{position:fixed;z-index:56;pointer-events:none;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--gc) 75%,transparent) 0 4deg,transparent 4deg 18deg);
+  -webkit-mask:radial-gradient(circle,#000 10%,transparent 68%);mask:radial-gradient(circle,#000 10%,transparent 68%);animation:ctRays .76s ease-out forwards}
+.ctrays.t5,.ctrays.t6,.ctrays.t7,.ctrays.t8{width:460px;height:460px;margin:-230px 0 0 -230px}
+@keyframes ctRays{0%{transform:scale(.2) rotate(0);opacity:1}100%{transform:scale(1.2) rotate(40deg);opacity:0}}
+/* ⑤ 가장자리 빛 · 먹 띠 */
+.ctedge{position:fixed;inset:0;z-index:55;pointer-events:none;box-shadow:inset 0 0 90px color-mix(in srgb,var(--gc) 70%,transparent),inset 0 0 220px color-mix(in srgb,var(--gc) 35%,transparent);animation:ctEdge .9s ease-out forwards}
+@keyframes ctEdge{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.ctbars i{position:fixed;left:0;right:0;height:9vh;z-index:63;pointer-events:none;background:#050304;animation:ctBars .9s cubic-bezier(.2,.9,.3,1) forwards}
+.ctbars i:first-child{top:0;transform-origin:top}.ctbars i:last-child{bottom:0;transform-origin:bottom}
+@keyframes ctBars{0%{transform:scaleY(0)}20%,75%{transform:scaleY(1)}100%{transform:scaleY(0)}}
+/* ⑥ 컷인 — 화면을 가로지르는 이름 띠 */
+.ctcut{position:fixed;inset:0;z-index:64;pointer-events:none;overflow:hidden}
+.ctcut .ctband{position:absolute;left:-10%;right:-10%;top:calc(38% - 64px);height:128px;display:flex;align-items:center;gap:26px;padding:0 calc(10% + 6vw);transform:skewY(-6deg);
+  background:linear-gradient(90deg,transparent,var(--bg) 8%,color-mix(in srgb,var(--bg) 70%,var(--gc)) 50%,var(--bg) 92%,transparent);
+  border-top:2px solid var(--gc);border-bottom:2px solid var(--gc);box-shadow:0 0 30px color-mix(in srgb,var(--gc) 60%,transparent),0 0 0 6px rgba(0,0,0,.35);
+  animation:ctBand .86s cubic-bezier(.2,.9,.3,1) forwards}
+.ctcut.t6 .ctband{animation-duration:1s;height:146px;top:calc(38% - 73px)}
+@keyframes ctBand{0%{transform:skewY(-6deg) translateX(110%)}22%{transform:skewY(-6deg) translateX(0)}78%{transform:skewY(-6deg) translateX(-3%);opacity:1}100%{transform:skewY(-6deg) translateX(-120%);opacity:0}}
+.ctcut .ctlines{position:absolute;inset:0;opacity:.35;background:repeating-linear-gradient(90deg,transparent 0 30px,rgba(255,255,255,.25) 30px 32px,transparent 32px 70px);animation:ctLines .25s linear infinite}
+@keyframes ctLines{to{background-position:-70px 0}}
+.ctcut .ctglyph{position:relative;font-style:normal;font-size:104px;line-height:1;font-weight:700;color:#fff;transform:skewY(6deg);
+  text-shadow:0 0 18px var(--gc),0 0 50px var(--gc),4px 4px 0 rgba(0,0,0,.5);animation:ctGlyph .86s ease-out forwards}
+@keyframes ctGlyph{0%{transform:skewY(6deg) scale(1.6);filter:blur(6px)}25%{transform:skewY(6deg) scale(1);filter:none}100%{transform:skewY(6deg) scale(1.08)}}
+.ctcut .ctname{position:relative;flex:1;display:flex;flex-direction:column;transform:skewY(6deg)}
+.ctcut .ctname small{font-size:13px;letter-spacing:.4em;color:color-mix(in srgb,var(--gc) 75%,#fff)}
+.ctcut .ctname b{font-size:clamp(28px,4.4vw,52px);font-weight:700;letter-spacing:.14em;color:#fff;text-shadow:0 0 14px var(--gc),0 3px 0 rgba(0,0,0,.6)}
+.ctcut .ctcrest{position:relative;font-style:normal;transform:skewY(6deg) rotate(-8deg);min-width:74px;height:74px;padding:0 8px;border-radius:10px;display:grid;place-items:center;
+  border:2.5px solid var(--gc);background:rgba(0,0,0,.45);box-shadow:0 0 18px var(--gc),inset 0 0 14px var(--gc);animation:ctStamp 1s cubic-bezier(.2,1.6,.4,1) .12s both}
+.ctcut .ctcrest span{font-size:28px;font-weight:700;color:#fff;text-shadow:0 0 10px var(--gc)}
+.ctcut .ctflash{position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--gc) 40%,#fff) 48%,transparent 62%);opacity:0;animation:ctFlash .5s ease-out .1s}
+@keyframes ctFlash{0%{opacity:.9;transform:translateX(-60%)}100%{opacity:0;transform:translateX(60%)}}
+/* 결마다 */
+.ctcut.k-ssx .ctband{background:linear-gradient(90deg,transparent,#0a0204 8%,#3a0410 40%,#0a0204 92%,transparent);border-width:3px}
+.ctcut.k-ssx .ctglyph{color:#ffe0e6}
+.ctcut.k-ssx::before{content:'';position:absolute;inset:-20%;background:repeating-conic-gradient(from 0deg at 50% 38%,transparent 0 3deg,rgba(255,45,85,.22) 3deg 3.6deg);animation:ctSpeed .15s steps(2) infinite}
+@keyframes ctSpeed{50%{transform:rotate(1deg)}}
+.ctcut.k-ssc .ctlines{background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(160,255,255,.35) 22px 24px,transparent 24px 50px)}
+.ctcut.k-void .ctglyph,.ctcut.k-void .ctname b{animation:ctGlitch .18s steps(2) infinite;text-shadow:3px 0 #ff2d8a,-3px 0 #2de0ff,0 0 20px var(--gc)}
+@keyframes ctGlitch{50%{transform:skewY(6deg) translateX(2px)}}
+.ctcut.k-adm .ctlines{background:repeating-linear-gradient(0deg,rgba(0,255,176,.25) 0 2px,transparent 2px 6px),repeating-linear-gradient(90deg,rgba(0,255,176,.18) 0 2px,transparent 2px 24px)}
+.ctcut.k-none .ctband{background:linear-gradient(90deg,transparent,#e8ecf6 8%,#ffffff 50%,#e8ecf6 92%,transparent)}
+.ctcut.k-none .ctname b,.ctcut.k-none .ctglyph{color:#1a1c24;text-shadow:0 0 14px rgba(255,255,255,.9)}
+.ctcut.k-none .ctname small{color:#5a6070}
+.ctcut.k-exp .ctband{background:linear-gradient(90deg,transparent,#1a1404 8%,#4a3a08 50%,#1a1404 92%,transparent)}
+@media (prefers-reduced-motion:reduce){.ctcut .ctlines,.ctcut::before,.ctseal svg,.ctseal i{animation:none!important}}
 </style>
 </head>
 <body>
@@ -8383,7 +8573,7 @@ function adoptRun(obj) {
 /* ── 도감: 모험을 넘어서 남는 기록 ───────────────────────── */
 function dexAdd(kind, id) {
   if (kind === 'enemies' && /^(mp[f_]|hk_)/.test(id)) return false;
-  if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly)) return false;
+  if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly && CARDS[id].rar !== 'qx')) return false;   /* ?X급은 일일상점에서 흘러나오니 도감에 남긴다 */
   if (kind === 'relics' && RELICS[id] && RELICS[id].eventOnly) return false;   /* 이벤트 유물은 도감에 적지 않는다 */  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
   if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
   return false;
@@ -9612,7 +9802,7 @@ const GRADE = {
   ssc:      { n: 'SSC급', s: 'SSC', c: '#1fb6c9', desc: 'S급을 넘어선 청람빛 부적. SSX에는 못 미치나, 그 아래는 전부 아래다.' },
   ssx:      { n: 'SSX급', s: 'SSX', c: '#ff2d55', desc: '전설로만 전하는 금단의 부적' },
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.05% 확률로만 모습을 드러낸다.' },
-  qx:       { n: '?X급',  s: '?X', c: '#e8b820', desc: '실험 중인 등급. 아직 세상에 없다 — 개발자만 쥘 수 있다.' },
+  qx:       { n: '?X급',  s: '?X', c: '#e8b820', desc: '실험 중인 등급. 개발자의 손에서 태어났고, 일일상점에 아주 드물게(0.01%) 흘러나온다.' },
   qq:       { n: '??급',  s: '??', c: '#d0d4e0', desc: '이름조차 붙지 않은 등급. 신호가 깨져 읽히지 않는다 — 개발자만 쥘 수 있다.' },
   adm:      { n: '어드민급', s: 'ADMIN', c: '#00ffb0', desc: '세계 최강. 세상의 규칙 위에 선 등급 — 백야만 쥘 수 있다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
@@ -13387,7 +13577,7 @@ async function playCard(card, target) {
   const i = b.hand.findIndex(x => x.uid === card.uid);
   if (i >= 0) b.hand.splice(i, 1);
   setTint(card);                             /* 스킨을 입었다면 이 부적의 빛깔로 */
-  castMotion(card, d, target);
+  const cutin = castMotion(card, d, target);
   SND.cardPlay(d.type);
   if (d.type === 'attack') SND.slash();
   if (d.rar === 'ssc') SND.blip(1046, { dur: .5, type: 'sine', vol: .06, to: 1568, rev: .7 });
@@ -13395,8 +13585,9 @@ async function playCard(card, target) {
   b.curCard = card;
   try { stAdd('play'); if (isQ(d.rar)) stAdd('qplay'); } catch (e) {}
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
-  if (worthBanner(card)) skillBanner(cname(card), d.rar === 'ssx');
-  if (isQ(d.rar)) await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : d.rar === 'adm' ? 'adm' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
+  if (worthBanner(card) && !cutin) skillBanner(cname(card), d.rar === 'ssx');
+  if (isQ(d.rar)) { await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : d.rar === 'adm' ? 'adm' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
+    try { castCutin(card, d); } catch (err) {} }                                                                                   /* 쾅 뒤에 결마다 다른 컷인 */
   if (d.rar === 'ssx' || isQ(d.rar)) {
     blink(1.3); zoomPunch(); rgbSplit();
     sparkles(innerWidth / 2, innerHeight * .5, 22, tint(GRADE[d.rar].c), 220);
@@ -14281,7 +14472,7 @@ function renderTop() {
       <button class="topbtn mpgo" id="mptopbtn" title="대전 — 다른 퇴마사와 겨룬다"><b>對</b><i>대전</i><em></em></button>
       <button class="topbtn train" id="trainbtn" title="수행터 — 져도 남는 길"><b>修</b><i>수행터</i><em></em></button>
       <button class="topbtn shrine" id="shrinebtn" title="신성의 신전 — 유물을 바치고 가호를"><b>神</b><i>신전</i><em></em></button>
-      <button class="topbtn box" id="boxbtn" title="부적 뽑기"><b>匣</b><i>뽑기</i><em></em></button>
+      <button class="topbtn box" id="boxbtn" title="상점 — 일일상점 · 상자 뽑기"><b>匣</b><i>상점</i><em></em></button>
       <button class="topbtn hack" id="hktop" title="해킹상점 — 한정!"><b>⌬</b><i>해킹</i><s>한정</s><em></em></button>
       <button class="topbtn pouch" id="pouchbtn" title="원료 주머니 · 합성소"><b>囊</b><i>주머니</i><em></em></button>
       ${adminOn() ? '<button class="topbtn admin" id="adminbtn" title="관리자"><b>管</b><i>관리자</i><em></em></button>' : ''}
@@ -14363,7 +14554,7 @@ function renderTop() {
       <span style="color:#9a8d74">지닌 유물 ${G.run ? G.run.relics.length : 0} / ${relicSlots()}</span>`);
     bindTip(t.querySelector('#placebtn'), () => `<b>터</b> — 갈 만한 자리<br>
       상점 · 대전투장 · 장기 · 저주의 서당<br>
-      <span style="color:#9a8d74">부적 뽑기는 옆의 匣 단추</span>`);
+      <span style="color:#9a8d74">상점(일일상점·뽑기)은 옆의 匣 단추</span>`);
     t.querySelector('#skilltop').onclick = () => openSkills();
     t.querySelector('#fusebtn').onclick = () => openFuse();
     const hb0 = t.querySelector('#healbtn');
@@ -14410,7 +14601,7 @@ function renderTop() {
   const bb = t.querySelector('#boxbtn'), cur = (run.summons || 0) % 100;
   const next = MILESTONES.find(m => m.at > cur);
   bb.querySelector('em').textContent = next ? (next.at - cur) : '';
-  bb.title = '부적 뽑기 — 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
+  bb.title = '상점 — 뽑기 다음 보너스까지 ' + (next ? next.at - cur : 0) + '회';
   bb.classList.toggle('busy', !!G.b);
   /* 아직 한 번도 안 눌러 본 자리는 반짝인다 */
   bb.classList.toggle('fresh', !usedPlace('box'));
@@ -14559,7 +14750,7 @@ function markUsed(id) {
 const GUIDES = [
   { id: 'box', g: '匣', n: '부적 뽑기 — 값을 받지 않는다',
     when: r => r.floor >= 1,
-    say: () => `위쪽 <em>匣</em> 단추가 <em>부적 뽑기</em>다.
+    say: () => `위쪽 <em>匣</em> 단추가 <em>상점</em>이다 — 일일상점과 부적 뽑기가 모여 있다.
       지금은 시험 중이라 <i>다이아를 한 톨도 받지 않는다</i> — 열고 싶은 만큼 열어도 된다.<br>
       한 판에 한 번은 꼭 열어 보는 게 좋다. 덱이 두꺼워야 뒷막을 넘는다.`,
     warn: () => '30·60·100회에서는 확정 보너스가 붙는다. 100회에서 셈이 처음으로 돌아간다.',
@@ -15493,8 +15684,11 @@ function castMotion(card, d, target) {
   cel.classList.add('cast');
   if (into) cel.classList.add('into');
   setTimeout(() => cel.remove(), into ? 520 : 480);
+  /* 판 56 — 등급마다 한 단씩 (붓질 · 부적 종이 · 발밑 진 · 도장 · 빛살 · 컷인) */
+  let cut = false;
+  try { cut = castFlair(card, d, from, to, into); } catch (err) { console.error('부적 연출', err); }
 
-  if (!OPT.particles) return;
+  if (!OPT.particles) return cut;
   /* 혜성 꼬리 — 등급 빛깔에 돌연변이 빛깔이 섞인다. 높은 등급일수록 길고 굵다 */
   const hi = ['special', 'ssc', 'ssx', 'unknown', 'qx', 'qq', 'adm'].indexOf(d.rar) >= 0;
   const tyc = { attack: '#ff7a3a', skill: '#3fc8b4', power: '#ffcf5a' }[d.type] || '#ffcf5a';   /* 낮은 등급도 꼬리가 보이게 — 종류 빛깔을 섞는다 */
@@ -15527,6 +15721,95 @@ function castMotion(card, d, target) {
     sparkles(to.x, to.y, d.rar === 'basic' ? 3 : d.rar === 'common' ? 4 : 7, gc, 56);
   }, 190);
   FX.burst(from.x, from.y, d.rar === 'basic' ? 6 : 10, hexRgb(gc), 4, 34, 3.4);
+  return cut;
+}
+/* ══════════════════════════════════════════════════════════
+   부적을 낼 때 — 등급마다 한 단씩 쌓인다 (판 56)
+   ──────────────────────────────────────────────────────────
+     4·3등급 : 먹 붓질 한 획이 대상까지 그어지고, 닿는 자리에 등급 도장
+     2등급   : + 부적 종이 한 장이 빙글 돌며 날아가 터진다
+     1등급   : + 내 발밑에 금빛 진이 돈다
+     0등급   : + 서릿빛 육망진 · 닿는 자리에 빛살
+     S급     : + 화면을 가로지르는 이름 띠(컷인) — 붓글씨 이름 · 큰 글자 · 등급 문장
+     SSC급   : + 두 겹 고리가 엇갈려 돌고 · 청빛 번개 · 화면 가장자리 빛
+     SSX급   : + 붉은 컷인 · 집중선 · 위아래 먹 띠 · 큰 충격파
+     ?급 이상: 본디의 「빙빙 돌다 쾅」 뒤에 결마다 다른 컷인 (보랏빛 공허 · 금빛 실험 · 흰 이름 없음 · 초록 격자)
+   옷(스킨)을 입힌 부적은 그 빛깔로 물든다. 같은 큰 부적을 잇달아 내면 컷인은 한 번만(1.6초).
+   ══════════════════════════════════════════════════════════ */
+const CAST_TIER = { basic: 0, curse: 0, common: 0, uncommon: 1, rare: 2, boss: 3, zero: 3, special: 4, fused: 5, ssc: 5, ssx: 6, unknown: 7, qx: 7, qq: 7, adm: 8 };
+const castTier = r => CAST_TIER[r] == null ? 0 : CAST_TIER[r];
+const CAST_PAL = {   /* 컷인 빛깔 — [바탕, 빛, 결] */
+  special: ['#3a1206', '#ff8a3a', 'fire'], fused: ['#2a1438', '#e0a0ff', 'fuse'], ssc: ['#04242a', '#3fe0f0', 'ssc'], ssx: ['#2a0208', '#ff2d55', 'ssx'],
+  unknown: ['#16082e', '#b07bff', 'void'], qx: ['#2a2004', '#ffd84a', 'exp'], qq: ['#202430', '#f0f4ff', 'none'], adm: ['#021a10', '#00ffb0', 'adm']
+};
+const TYPE_N = { attack: '공격', skill: '기술', power: '심법' };
+let _ctCut = { id: '', at: 0 };
+function castFlair(card, d, from, to, into) {
+  const T = castTier(d.rar), G0 = GRADE[d.rar] || {}, gc = tint(G0.c || '#ffd76a'), gs = G0.s || '';
+  const app = $('#app'); if (!app) return false;
+  const lite = !OPT.particles;
+  /* ① 먹 붓질 — 낸 자리에서 대상까지 한 획 */
+  if (!lite && !into) {
+    const dx = to.x - from.x, dy = to.y - from.y, len = Math.hypot(dx, dy);
+    const s = el('div', 'ctbrush t' + Math.min(T, 6));
+    s.style.cssText = `left:${from.x}px;top:${from.y}px;width:${len}px;--a:${Math.atan2(dy, dx) * 180 / Math.PI}deg;--gc:${gc}`;
+    app.appendChild(s); setTimeout(() => s.remove(), 620);
+  }
+  /* ② 부적 종이가 날아간다 (2등급부터) */
+  if (!lite && T >= 1 && !into) {
+    const tl = el('div', 'cttalis t' + Math.min(T, 6), `<b>${d.g || '符'}</b>`);
+    tl.style.cssText = `left:${from.x}px;top:${from.y}px;--gc:${gc}`;
+    const dx = to.x - from.x, dy = to.y - from.y, sp = T >= 4 ? 900 : 540;
+    tl.animate([{ transform: 'translate(-50%,-50%) rotate(0) scale(.6)', opacity: 0 }, { opacity: 1, offset: .15 },
+      { transform: `translate(calc(-50% + ${dx * .5}px),calc(-50% + ${dy * .5 - 50}px)) rotate(${sp / 2}deg) scale(1.15)`, offset: .55 },
+      { transform: `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) rotate(${sp}deg) scale(.7)`, opacity: .9 }],
+      { duration: 320, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'forwards' });
+    app.appendChild(tl); setTimeout(() => tl.remove(), 340);
+  }
+  /* ③ 내 발밑의 진 (1등급부터) */
+  const pe = P() && P().el && (P().el.querySelector('.body') || P().el);
+  if (!lite && T >= 2 && pe) {
+    const c = centerOf(pe), ring = T >= 5 ? '破邪顯正退魔滅鬼' : T >= 3 ? '玄霜六合' : '金光符';
+    const sl = el('div', 'ctseal t' + Math.min(T, 8), `<svg viewBox="0 0 200 200"><g fill="none" stroke="${gc}"><circle cx="100" cy="100" r="94" stroke-width="2.5"/><circle cx="100" cy="100" r="78" stroke-width="1" stroke-dasharray="5 4"/>
+      ${T >= 3 ? '<path d="M100 14 L174 143 L26 143Z M100 186 L26 57 L174 57Z" stroke-width="1.6" opacity=".85"/>' : '<path d="M100 22 L100 178 M22 100 L178 100" stroke-width="1" opacity=".6"/>'}</g>
+      <g fill="${gc}" font-size="15" text-anchor="middle">${ring.split('').map((g, i, a) => { const t = i / a.length * Math.PI * 2; return `<text x="${(100 + Math.cos(t) * 86).toFixed(0)}" y="${(105 + Math.sin(t) * 86).toFixed(0)}">${g}</text>`; }).join('')}</g>
+      <text x="100" y="${gs.length > 2 ? 112 : 118}" font-size="${gs.length > 2 ? 30 : 46}" fill="${gc}" text-anchor="middle" font-weight="700" opacity=".9">${wEsc(gs)}</text></svg>${T >= 5 ? '<i></i>' : ''}`);
+    sl.style.cssText = `left:${c.x}px;top:${c.y}px;--gc:${gc}`;
+    app.appendChild(sl); setTimeout(() => sl.remove(), T >= 5 ? 1150 : 900);
+  }
+  /* ④ 닿는 자리 — 도장 · 빛살 */
+  setTimeout(() => {
+    if (!app.isConnected) return;
+    const st = el('div', 'ctstamp t' + Math.min(T, 8), `<b>${wEsc(gs || '符')}</b>${'<i></i>'.repeat(T >= 4 ? 8 : 4)}`);
+    st.style.cssText = `left:${to.x}px;top:${to.y - (into ? 70 : 0)}px;--gc:${gc}`;
+    app.appendChild(st); setTimeout(() => st.remove(), 760);
+    if (!lite && T >= 3) { const ry = el('div', 'ctrays t' + Math.min(T, 8)); ry.style.cssText = `left:${to.x}px;top:${to.y}px;--gc:${gc}`; app.appendChild(ry); setTimeout(() => ry.remove(), 760); }
+    if (T >= 5 && !lite) { try { shockRing(to.x, to.y, T >= 6 ? 380 : 280, gc); sparkles(to.x, to.y, T >= 6 ? 16 : 10, shade(gc, .4), T >= 6 ? 150 : 110); } catch (x) {} }
+    if (T >= 6) { try { FX.ink(to.x, to.y, 22); } catch (x) {} }
+  }, into ? 360 : 250);
+  /* ⑤ 화면 가장자리 빛 · 먹 띠 */
+  if (!lite && T >= 5) { const e2 = el('div', 'ctedge t' + T); e2.style.setProperty('--gc', gc); app.appendChild(e2); setTimeout(() => e2.remove(), 900); }
+  if (T >= 6 && OPT.shake !== false) { const bars = el('div', 'ctbars', '<i></i><i></i>'); app.appendChild(bars); setTimeout(() => bars.remove(), 900); }
+  /* ⑥ 컷인 — S급부터 (?급 이상은 「쾅」 뒤에 따로) */
+  if (T >= 4 && T < 7) return castCutin(card, d);
+  return false;
+}
+function castCutin(card, d) {
+  if (OPT.banner === false || !flairOn()) return false;
+  const now = Date.now();
+  if (_ctCut.id === card.id && now - _ctCut.at < 1600) return true;          /* 같은 부적을 잇달아 — 한 번만 */
+  if (typeof AUTO === 'object' && AUTO.on && OPT.autoPace === 'fast' && now - _ctCut.at < 3000) return false;
+  _ctCut = { id: card.id, at: now };
+  const T = castTier(d.rar), G0 = GRADE[d.rar] || {}, pal = CAST_PAL[d.rar] || CAST_PAL.special;
+  const gc = tint(pal[1]), bg = FX_TINT ? shade(FX_TINT, -.75) : pal[0];
+  const n = el('div', 'ctcut k-' + pal[2] + ' t' + T, `<div class="ctband"><div class="ctlines"></div><i class="ctglyph">${d.g || '符'}</i>
+      <div class="ctname"><small>${wEsc(G0.n || '')} · ${TYPE_N[d.type] || '부적'}</small><b>${wEsc(cname(card))}</b></div><em class="ctcrest"><span>${wEsc(G0.s || '')}</span></em></div>
+    <div class="ctflash"></div>`);
+  n.style.setProperty('--gc', gc); n.style.setProperty('--bg', bg);
+  ($('#app') || document.body).appendChild(n);
+  setTimeout(() => n.remove(), T >= 6 ? 1000 : 860);
+  try { SND.swoosh && SND.swoosh(); if (T >= 6) { SND.gong(); blink(.9); } else if (T >= 5) SND.blip(1320, { dur: .35, type: 'sine', vol: .05, to: 1980, rev: .6 }); } catch (x) {}
+  return true;
 }
 /* #rrggbb → "r,g,b" */
 function hexRgb(h) {
@@ -20133,7 +20416,7 @@ function showSkinPicker(cardId, after) {
   addTile(null);
   for (const id of ALL_SKINS) addTile(id);
   if (!mine.length) row.appendChild(el('div', 'skinnone',
-    `아직 <b>${d.n}</b>을 위한 옷이 없다 · 부적 뽑기(匣)의 <b>스킨 상자</b>에서 나온다`));
+    `아직 <b>${d.n}</b>을 위한 옷이 없다 · 상점(匣)의 <b>스킨 상자</b>에서 나온다`));
   draw();
   p.querySelector('#sk_close').onclick = closeTop;
 }
@@ -20190,7 +20473,7 @@ async function grantFusedRelics(n) {
 
 /* 환상(幻想)은 판 22 에서 뺐다 — 너무 후했다 */
 
-/* ══ 부적 뽑기 상점 ════════════════════════════════════════
+/* ══ 상점 — 일일상점 · 상자 뽑기 ═══════════════════════════
    배너를 고르고, 1회 / 10+1회 뽑는다. 누적이 쌓이면
    30·60·100회에서 확정 보너스를 준다 (100회에서 누적이 초기화).
    시험 기간이 끝나 원래 값을 받는다 (BOX_FREE = false).
@@ -20373,13 +20656,89 @@ function grantMilestones(before, after) {
   return got;
 }
 
+/* ══ 일일상점 · 할인권 (판 56) ═══════════════════════════════
+   하루(한국 시각 자정)에 한 번 새로 진열한다. 다이아로만 산다.
+     한 칸의 등급 — S급 6% · 0등급 8% · 1등급 22% · 2등급 30% · 나머지 3등급
+                    그리고 아주 드물게 ?X급 (0.01%)
+     새로 진열 — 하루 한 번 공짜, 그다음은 玉 30
+   할인권(券)은 10 · 30 · 50% 세 가지. 백야가 퍼뜨리거나 우편·비밀 코드·바퀴로 받는다.
+   한 번 살 때 한 장 — 일일상점과 상자(뽑기)의 다이아 값에 쓴다.
+   관리자가 「오늘의 특가」를 걸면 일일상점 값이 더 내려간다.
+   ══════════════════════════════════════════════════════════ */
+const DSHOP_N = 6, DSHOP_RR = 30;
+const DSHOP_ODDS = [['qx', .0001], ['special', .06], ['zero', .08], ['rare', .22], ['uncommon', .30]];
+const DSHOP_PRICE = { common: 80, uncommon: 150, rare: 300, zero: 600, special: 1500, qx: 4000 };
+const CPN = { c10: { p: 10, n: '10% 할인권', c: '#9fe0ff' }, c30: { p: 30, n: '30% 할인권', c: '#ffb0d0' }, c50: { p: 50, n: '50% 할인권', c: '#ffd76a' } };
+const CPN_KS = Object.keys(CPN);
+const cpnHave = k => Math.max(0, +((META.cpn || {})[k]) || 0);
+const cpnTotal = () => CPN_KS.reduce((a, k) => a + cpnHave(k), 0);
+const cpnCost = (cost, k) => k && CPN[k] ? Math.max(1, Math.ceil(cost * (100 - CPN[k].p) / 100)) : cost;
+function cpnAdd(ks) {
+  const got = [];
+  for (const k of CPN_KS) { const n = Math.max(0, Math.min(99, parseInt((ks || {})[k], 10) || 0)); if (!n) continue;
+    META.cpn = META.cpn || {}; META.cpn[k] = cpnHave(k) + n; got.push(CPN[k].n + (n > 1 ? ' ×' + n : '')); }
+  return got.join(' · ');
+}
+function cpnUse(k) { if (!k || !cpnHave(k)) return false; META.cpn[k] = cpnHave(k) - 1; saveMeta(); return true; }
+/* 백야가 퍼뜨린 할인권 — 퍼진 동안 들어와 있으면 한 번만 받는다 */
+function cpnTick() {
+  const c = LIVE.cpn; if (!c || !c.id || !acctOn() || srvNow() > (+c.until || 0)) return;
+  META.cpnGot = META.cpnGot || {};
+  if (META.cpnGot[c.id]) return;
+  META.cpnGot[c.id] = Date.now();
+  for (const k of Object.keys(META.cpnGot)) if (Date.now() - META.cpnGot[k] > 14 * 86400000) delete META.cpnGot[k];
+  const what = cpnAdd(c.ks); saveMeta();
+  if (!what) return;
+  toast(`券 ${c.say ? wEsc(c.say) + ' — ' : ''}${what}을 받았다 · 상점에서 쓴다`);
+  try { SND.unlock(); SND.coin(); stampWord('券', '#ff8ab8'); sparkles(innerWidth / 2, innerHeight * .4, 16, '#ffc6de', 140); } catch (e) {}
+  try { const t = $('#boxbtn'); if (t) { t.classList.add('cpnew'); setTimeout(() => t.classList.remove('cpnew'), 6000); } } catch (e) {}
+}
+const saleNow = () => { const s = LIVE.sale; return s && +s.pct > 0 && srvNow() < (+s.until || 0) ? s : null; };
+function dshopGrade() { const r = Math.random(); let a = 0; for (const [g, p] of DSHOP_ODDS) { a += p; if (r < a) return g; } return 'common'; }
+function dshopRoll() {
+  const out = [], seen = new Set();
+  for (let i = 0; i < DSHOP_N; i++) {
+    const g = dshopGrade(); let id = '', t = 0;
+    const pool = g === 'qx' ? QX_IDS() : (POOL[g] || GRADE_POOL[g] || []).filter(x => !CARDS[x].evOnly);
+    if (!pool.length) { i--; continue; }
+    do id = pool[Math.floor(Math.random() * pool.length)]; while (seen.has(id) && ++t < 10);
+    seen.add(id); out.push({ id, g, up: g !== 'qx' && Math.random() < .15, sold: 0 });
+  }
+  return out.sort((a, b) => dshopRank(b.g) - dshopRank(a.g));
+}
+const dshopRank = g => g === 'qx' ? 99 : GRADE_ORDER.indexOf(g);
+function dshopGet(reroll) {
+  const day = qDay(); let D = META.dshop;
+  if (!D || D.day !== day || !Array.isArray(D.items) || reroll) {
+    D = META.dshop = { day, rr: D && D.day === day ? (D.rr || 0) + (reroll ? 1 : 0) : 0, items: dshopRoll() };
+    if (D.items.some(x => x.g === 'qx')) D.qxAt = Date.now();
+    saveMeta();
+  }
+  return D;
+}
+const dshopBase = it => Math.round(DSHOP_PRICE[it.g] * (it.up ? 1.3 : 1));
+const dshopPrice = (it, k) => { const s = saleNow(); let c = dshopBase(it); if (s) c = Math.max(1, Math.ceil(c * (100 - s.pct) / 100)); return cpnCost(c, k); };
+const dshopLeft = () => { const ms = (qDay() + 1) * 86400000 - 9 * 3600000 - srvNow(); const s = Math.max(0, Math.floor(ms / 1000));
+  return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':'); };
+/* 할인권 고르기 줄 — 고른 것을 cb 로 알린다 */
+function cpnBarFill(host, sel, cb) {
+  if (!host) return;
+  host.innerHTML = '<span>券 할인권</span>';
+  const mk = (k, label, n) => { const b = el('button', sel === k ? 'on' : '', label + (k ? `<i>${n}</i>` : ''));
+    b.disabled = !!k && !n; b.onclick = () => { SND.ui(); cb(sel === k ? '' : k); }; host.appendChild(b); };
+  mk('', '안 쓴다', 0);
+  for (const k of CPN_KS) mk(k, CPN[k].n, cpnHave(k));
+  if (!cpnTotal()) host.appendChild(el('em', '', '<small style="color:#7a7263;margin-left:6px">— 퍼뜨리기·우편·비밀 코드·바퀴로 받는다</small>'));
+}
+
 function showSpecialShop(refill) {
   G.scene = 'special';
   const run = G.run;
   if (run.summons == null) run.summons = 0;
   if (run.banner == null) run.banner = 3;
   if (refill) run.banner = 3;
-  let tabGrade = 'all';
+  let tabGrade = 'all', cpnSel = '';
+  let onDaily = !refill && run.shopTab !== 'box';
 
   function draw() {
     const bi = run.banner, B = BANNERS[bi];
@@ -20395,8 +20754,9 @@ function showSpecialShop(refill) {
     const p = overlay(`<div class="gacha">
       <div class="ghead">
         <button class="gback" id="g_back">←</button>
-        <h2>부적 뽑기</h2>
+        <h2>상점</h2>
         <div class="gcur">
+          <span class="cpn" title="할인권 — 10% ${cpnHave('c10')} · 30% ${cpnHave('c30')} · 50% ${cpnHave('c50')}"><i>券</i>${cpnTotal()}</span>
           <span class="dia"><i>玉</i>${run.dia || 0}</span>
           <span class="gold"><i>金</i>${run.gold}</span>
         </div>
@@ -20413,11 +20773,12 @@ function showSpecialShop(refill) {
             <div class="bh">Bonus <span style="color:#bba98a">뽑기 누적</span> <b>${cur} / 100</b></div>
             <div class="gbar"><i style="width:${cur}%"></i></div>
           </div>
+          ${B.skin || B.vip ? '' : '<div class="cpnbar" id="g_cpn"></div>'}
           <div class="gbtns">
             <button class="gsummon" id="g_one">1회 뽑기
-              <span class="cost">${B.skin ? ((META.owedSkins || 0) >= 1 ? `남은 ${META.owedSkins}회` : won(KRW.skin)) : '玉' + B.price}</span></button>
+              <span class="cost">${B.skin ? ((META.owedSkins || 0) >= 1 ? `남은 ${META.owedSkins}회` : won(KRW.skin)) : gCost(B.price)}</span></button>
             <button class="gsummon ten" id="g_ten">${B.ten ? B.ten + '회 뽑기' : '10+1회 뽑기 <em class="save">한 번 덤</em>'}
-              <span class="cost">${B.skin ? ((META.owedSkins || 0) >= 11 ? `남은 ${META.owedSkins}회` : won(KRW.skin * 9)) : '玉' + (B.ten ? B.price * B.ten : B.price * 9)}</span></button>
+              <span class="cost">${B.skin ? ((META.owedSkins || 0) >= 11 ? `남은 ${META.owedSkins}회` : won(KRW.skin * 9)) : gCost(B.ten ? B.price * B.ten : B.price * 9)}</span></button>
           </div>
         </div>
         <div class="gart">
@@ -20427,24 +20788,34 @@ function showSpecialShop(refill) {
             <path d="M72,24 A40,40 0 1 0 79,44" fill="none" stroke="#ffe1a0" stroke-width="2"
               stroke-linecap="round" opacity=".5" transform="scale(1.06) translate(-3,-3)"/>
           </svg>
-          <div class="glyph">${B.g}</div>
+          <div class="glyph">${onDaily ? '市' : B.g}</div>
           <div class="sub">符 籙 抽 籤</div>
         </div>
       </div>
     </div>`, 'gachapanel');
 
-    /* 배너 목록 */
+    /* 배너 목록 — 맨 위는 일일상점 */
     const nav = p.querySelector('.gnav');
+    nav.appendChild(el('div', 'gsec', '오 늘'));
+    const DD = dshopGet(), left = DD.items.filter(x => !x.sold).length;
+    const dn = el('button', 'gbanner daily' + (onDaily ? ' on' : ''),
+      `<div class="bg">市</div><div class="bn"><b>일일상점</b><small>${left ? `남은 ${left}칸 · 다이아` : '오늘은 다 팔렸다'}</small></div>
+       ${DD.items.some(x => x.g === 'qx' && !x.sold) ? '<div class="tag" style="background:#c99a10">?X</div>' : saleNow() ? `<div class="tag">−${saleNow().pct}%</div>` : '<div class="tag">日</div>'}`);
+    dn.onclick = () => { if (onDaily) return; onDaily = true; run.shopTab = 'daily'; SND.ui(); draw(); };
+    nav.appendChild(dn);
+    nav.appendChild(el('div', 'gsec', '뽑 기'));
     BANNERS.forEach((b, i) => {
-      const n = el('button', 'gbanner' + (b.hot ? ' hot' : '') + (i === bi ? ' on' : ''),
+      const n = el('button', 'gbanner' + (b.hot ? ' hot' : '') + (i === bi && !onDaily ? ' on' : ''),
         `<div class="bg">${b.g}</div><div class="bn"><b>${b.n}</b><small>${b.sub}</small></div>
          ${b.hot ? '<div class="tag">HOT</div>' : ''}`);
-      n.onclick = () => { if (i === bi) return; run.banner = i; tabGrade = 'all'; SND.ui(); draw(); };
+      n.onclick = () => { if (i === bi && !onDaily) return; onDaily = false; run.shopTab = 'box'; run.banner = i; tabGrade = 'all'; SND.ui(); draw(); };
       if (b.vip) n.classList.add('vipnav');
       nav.appendChild(n);
     });
 
+    if (onDaily) { renderDaily(p); return; }
     if (B.vip) { renderVip(p); return; }
+    cpnBarFill(p.querySelector('#g_cpn'), cpnSel, k => { cpnSel = k; draw(); });
 
     /* 등급 탭 */
     const tabs = p.querySelector('.gtabs');
@@ -20517,6 +20888,68 @@ function showSpecialShop(refill) {
 
     renderBonus(p, cur);
   }
+  /* 할인권을 고르면 값 앞에 원래 값을 그어 보인다 */
+  function gCost(n) { const c = cpnCost(n, cpnHave(cpnSel) ? cpnSel : ''); return c < n ? `<s>玉${n}</s>玉${c}` : '玉' + n; }
+  /* ── 일일상점 ───────────────────────────────────────── */
+  function renderDaily(p) {
+    const D = dshopGet(), sale = saleNow();
+    if (cpnSel && !cpnHave(cpnSel)) cpnSel = '';
+    const main = p.querySelector('.gmain');
+    const odds = DSHOP_ODDS.filter(([g]) => g !== 'qx').map(([g, v]) => `${GRADE[g].n} ${+(v * 100).toFixed(2)}%`).join(' · ') + ' · 나머지 3등급';
+    main.innerHTML = `<div class="dshead"><div class="dstitle">일일상점<small>날마다 자정(한국 시각)에 새로 진열 · 다이아로만 산다</small></div>
+        <div class="dsclock">새 진열까지<b id="ds_clk">${dshopLeft()}</b></div></div>
+      ${sale ? `<div class="dssale"><b>오늘의 특가 −${sale.pct}%</b><span>${wEsc(sale.by || '백야')}이 걸었다 · 일일상점 값에 먼저 붙는다</span></div>` : ''}
+      <div class="cpnbar" id="ds_cpn"></div>
+      <div class="dsgrid"></div>
+      <div class="dsfoot"><button class="dsrr" id="ds_rr">↻ 새로 진열 ${D.rr ? '· 玉' + DSHOP_RR : '· 오늘 한 번 공짜'}</button>
+        <span>한 칸마다 ${odds} · <b class="qx">그리고 아주 드물게 ?X급 0.01%</b></span></div>`;
+    cpnBarFill(main.querySelector('#ds_cpn'), cpnSel, k => { cpnSel = k; renderDaily(p); });
+    const grid = main.querySelector('.dsgrid');
+    D.items.forEach((it, i) => {
+      const d = CARDS[it.id]; if (!d) return;
+      const gc = GRADE[it.g] ? GRADE[it.g].c : '#c8a860', price = dshopPrice(it, cpnSel), base = dshopBase(it);
+      const s = el('div', 'dsitem r-' + it.g + (it.sold ? ' sold' : ''),
+        `<span class="dsb" style="--gc:${gc}">${GRADE[it.g].n}</span>${it.up ? '<span class="dsup">강화+</span>' : ''}
+         <div class="dsg">${d.g}</div><div class="dsn">${d.n}${it.up ? '+' : ''}</div>
+         <div class="dsd">${d.txt(d.v(it.up), it.up).replace(/<[^>]+>/g, '')}</div>
+         ${it.sold ? '' : `<button class="dsbuy${(run.dia || 0) < price ? ' poor' : ''}">${price < base ? `<s>玉${base}</s>` : ''}玉${price}</button>`}`);
+      s.style.setProperty('--gc', gc); s.style.animationDelay = (i * .06) + 's';
+      bindTip(s.querySelector('.dsg'), () => `<b>${d.n}${it.up ? '+' : ''}</b> · ${GRADE[it.g].n} ${TYPE_NAME[d.type]}<br>${d.txt(d.v(it.up), it.up)}<br><span style="color:#8f846d">눌러서 자세히 보기</span>`);
+      s.querySelector('.dsg').onclick = () => { tipHide(); showCardDetail(it.id); };
+      const b = s.querySelector('.dsbuy'); if (b) b.onclick = () => dshopBuy(i, p);
+      grid.appendChild(s);
+    });
+    main.querySelector('#ds_rr').onclick = () => {
+      if (D.items.some(x => x.g === 'qx' && !x.sold) && !confirm('?X급이 진열되어 있다 — 정말 새로 진열할까?')) return;
+      if (D.rr) { if ((run.dia || 0) < DSHOP_RR) { SND.err(); toast('다이아가 모자란다'); return; } run.dia -= DSHOP_RR; saveRun(); renderTop(); }
+      dshopGet(true); SND.shuffle ? SND.shuffle() : SND.ui(); draw();
+    };
+    const clk = setInterval(() => { const c = $('#ds_clk'); if (!c || !c.isConnected) { clearInterval(clk); return; }
+      if (META.dshop && META.dshop.day !== qDay()) { clearInterval(clk); toast('일일상점이 새로 진열되었다'); draw(); return; } c.textContent = dshopLeft(); }, 1000);
+    p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
+    if (D.items.some(x => x.g === 'qx' && !x.sold) && !D.qxSeen) { D.qxSeen = 1; saveMeta();
+      setTimeout(() => { try { SND.gong(); stampWord('?X 급', '#ffd84a'); screenFlash('radial-gradient(circle,rgba(255,240,180,.8),rgba(200,140,20,.4))', 900); } catch (e) {} }, 300); }
+  }
+  async function dshopBuy(i, p) {
+    const D = dshopGet(), it = D.items[i]; if (!it || it.sold) return;
+    const k = cpnHave(cpnSel) ? cpnSel : '', price = dshopPrice(it, k);
+    if ((run.dia || 0) < price) { SND.err(); toast(`다이아가 모자란다 — 玉${price} 필요`); return; }
+    run.dia -= price; if (k) cpnUse(k);
+    it.sold = Date.now(); saveMeta();
+    const card = mkCard(it.id, !!it.up); run.deck.push(card); run.stats.cards++; dexAdd('cards', it.id);
+    saveRun(); renderTop();
+    try { stAdd('dshop'); } catch (e) {}
+    const d = CARDS[it.id], gc = GRADE[it.g].c;
+    try {
+      const sl = p.querySelectorAll('.dsitem')[i], c = sl ? centerOf(sl) : { x: innerWidth / 2, y: innerHeight / 2 };
+      SND.coin(); FX.gold(c.x, c.y, it.g === 'qx' ? 60 : 24); sparkles(c.x, c.y, 14, gc, 120);
+      if (it.g === 'qx') { SND.gong(); SND.thunder(); blink(1.4); stampWord('?X 급', '#ffd84a'); screenFlash('radial-gradient(circle,rgba(255,255,255,.95),rgba(220,160,20,.7))', 1000); shake(true); }
+      else if (it.g === 'special') { SND.power(); lightBeam(c.x, 'rgba(255,150,80,.55)', 120); screenFlash('rgba(255,140,60,.3)', 500); }
+    } catch (e) {}
+    toast(`${d.n}${it.up ? '+' : ''}을 샀다 — 玉${price}${k ? ' · ' + CPN[k].n + ' 사용' : ''}`);
+    if (cpnSel && !cpnHave(cpnSel)) cpnSel = '';
+    setTimeout(() => draw(), it.g === 'qx' ? 900 : 260);
+  }
   /* ── VIP 패키지 ─────────────────────────────────────── */
   function renderVip(p) {
     const owned = vipOn();
@@ -20563,7 +20996,7 @@ function showSpecialShop(refill) {
       fb.disabled = !!left;
       fb.onclick = () => {
         META.vip.freeBoxAt = Date.now(); saveMeta();
-        SND.bell(); doSummon(BANNERS[3], 1);
+        SND.bell(); doSummon(BANNERS[3], 1, true);
       };
       buy.appendChild(fb);
       const t = el('button', 'vipbtn ghost2', `2배속 ${OPT.turbo ? '켜짐' : '꺼짐'}`);
@@ -20605,7 +21038,7 @@ function showSpecialShop(refill) {
     p.querySelector('#g_ten').onclick = () => doSummon(B, B.ten || 11);
   }
 
-  async function doSummon(B, times) {
+  async function doSummon(B, times, free) {
     /* 스킨은 원화로만 판다. 치러 둔 것이 있으면 그것으로 열고,
        없으면 값을 묻는다 — 어느 쪽이든 다이아는 건드리지 않는다. */
     let owed = false;
@@ -20615,10 +21048,13 @@ function showSpecialShop(refill) {
         times === 11 ? '10+1회' : '1회'); return; }
     }
     /* 10+1 은 아홉 값 · 특대급은 열 개에 열 값(덤 없음) */
-    const cost = (BOX_FREE || owed) ? 0 : B.price * (times === 11 ? 9 : times);
+    let cost = (BOX_FREE || owed || free) ? 0 : B.price * (times === 11 ? 9 : times);
+    const ck = cost && !B.skin && cpnHave(cpnSel) ? cpnSel : '';     /* 할인권 — 다이아 값에만 */
+    if (ck) cost = cpnCost(cost, ck);
     if (cost && (run.dia || 0) < cost) { SND.err(); toast('다이아가 모자란다'); return; }
     /* 되돌아갈 일이 없어진 뒤에 깎는다 — 그러지 않으면 치른 값이 날아간다 */
     if (owed) { META.owedSkins -= times; saveMeta(); }
+    if (ck) { cpnUse(ck); toast(CPN[ck].n + '을 썼다'); if (!cpnHave(cpnSel)) cpnSel = ''; }
     run.dia = (run.dia || 0) - cost;
     const before = run.summons;
     const items = [];
@@ -21969,7 +22405,7 @@ function cutLiveCheck() {
 const CMK_MAX = 40000, CMK_SC = 12, CMK_SAVE = 'baekgwi_cutmk', CMK_DRAFT = 'baekgwi_cutmk_draft';
 function cutMkMiss() {
   const c = META.codes || {}, miss = [];
-  if (!c[ADMIN_H]) miss.push('관리자');
+  if (!c[ADMIN_H] && !baeksaOn()) miss.push('관리자');
   if (!caster()) miss.push('퍼뜨리기');
   if (!c[ADMHACK_H]) miss.push('어드민 핵');
   return miss;
@@ -24705,6 +25141,7 @@ function grantBundle(b) {
   const gold = Math.max(0, +b.gold || 0), dia = Math.max(0, +b.dia || 0), jp = Math.max(0, +b.jp || 0);
   META.jp = (META.jp || 0) + jp; META.jpTotal = (META.jpTotal || 0) + jp;
   const mats = []; for (const k in (b.mats || {})) if (MAT_DEF[k] && +b.mats[k] > 0) { META.mat = META.mat || {}; META.mat[k] = matHave(k) + (+b.mats[k]); mats.push(MAT_DEF[k].n + ' ' + b.mats[k]); }
+  if (b.cpn) { const c = cpnAdd(b.cpn); if (c) mats.push(c); }
   if (G.run) {
     for (const id of cards) { G.run.deck.push(mkCard(id, false)); dexAdd('cards', id); }
     G.run.gold += gold; G.run.dia = (G.run.dia || 0) + dia; saveRun(); renderTop();
@@ -24718,7 +25155,8 @@ function grantBundle(b) {
 const mailChips = m => [m.gold ? `<span class="mch g"><i>金</i>${m.gold.toLocaleString()}</span>` : '', m.dia ? `<span class="mch d"><i>玉</i>${m.dia.toLocaleString()}</span>` : '',
   m.jp ? `<span class="mch j"><i>精</i>${m.jp.toLocaleString()}</span>` : '',
   ...Object.keys(m.mats || {}).filter(k => MAT_DEF[k] && m.mats[k] > 0).map(k => `<span class="mch c" style="--gc:${MAT_DEF[k].c}"><i>${MAT_DEF[k].g}</i>${MAT_DEF[k].n} ×${m.mats[k]}</span>`),
-  ...(m.cards || []).filter(id => CARDS[id]).map(id => `<span class="mch c" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}</span>`)].join('');
+  ...(m.cards || []).filter(id => CARDS[id]).map(id => `<span class="mch c" style="--gc:${GRADE[CARDS[id].rar].c}"><i>${CARDS[id].g}</i>${CARDS[id].n}</span>`),
+  ...CPN_KS.filter(k => m.cpn && +m.cpn[k] > 0).map(k => `<span class="mch c" style="--gc:${CPN[k].c}"><i>券</i>${CPN[k].n} ×${m.cpn[k]}</span>`)].join('');
 const mailLeft = m => { const ms = (+m.until || 0) - srvNow(); return ms > 86400000 ? Math.ceil(ms / 86400000) + '일 남음' : ms > 3600000 ? Math.ceil(ms / 3600000) + '시간 남음' : ms > 0 ? Math.ceil(ms / 60000) + '분 남음' : '기한 지남'; };
 async function mailClaim(id, quiet) {
   const r = await acctAsk('/mail/claim', { token: ACCT.token, id }, 12000);
@@ -25218,8 +25656,60 @@ const FEST = {
     [105, '치유의 비', { fx: { k: 'heal' } }]] },
   hunt: { n: '사냥 축제', d: '현상금 10분 + 부적의 힘 ×2·흡혈 버프 10분 + 슈팅 스타', steps: [
     [0, '현상금', { notice: '⚔ 사냥 축제 — 요괴를 잡으면 현상금!', fx: { k: 'bounty', sec: 600 }, buff: { ks: { pow: 2, drain: 1 }, min: 10 } }],
-    [5, '슈팅 스타', { event: 'star' }]] }
+    [5, '슈팅 스타', { event: 'star' }]] },
+  /* ── 판 56 — 원클릭 축제 더 ───────────────────────────
+     steps 가 함수면 누를 때마다 새로 짠다 (코드·바퀴처럼 매번 달라야 하는 것) */
+  shop: { n: '상점 축제', d: '30% 할인권 퍼뜨리기 → 일일상점 오늘의 특가 −20% 3시간 → 금화 소나기', steps: [
+    [0, '할인권', { notice: '🛍 상점 축제 — 할인권을 나눠 드립니다! 일일상점을 열어 보세요', cpn: { ks: { c30: 1 }, min: 15, say: '상점 축제' } }],
+    [3, '오늘의 특가', { sale: { pct: 20, min: 180, by: '상점 축제' } }],
+    [20, '금화 소나기', { fx: { k: 'coin', sec: 45 } }]] },
+  treasure: { n: '보물찾기 한마당', d: '비밀의 계란 12개(비밀 3) → 숨은 부적 15명 → 금화 소나기 · 약 10분', steps: [
+    [0, '계란', { notice: '🥚 보물찾기 한마당 — 지도를 샅샅이!', egg: { n: 12, s: 3, min: 10 } }],
+    [60, '숨은 부적', { hunt: { max: 15, min: 8, gold: 400, dia: 40, jp: 10, cards: [] } }],
+    [180, '금화 소나기', { fx: { k: 'coin', sec: 60 } }]] },
+  fate: { n: '운명의 밤', d: '운명의 바퀴(별·풍년·금화·부적의 힘·할인권·계란·코드·꽝) → 불꽃놀이', steps: () => [
+    [0, '운명의 바퀴', { notice: '🎡 운명의 밤 — 함성을 모아 바퀴를 돌리시오!', wheel: festWheel('운명의 밤', ['star', 'gold', 'coin', 'pow2', 'cpn', 'egg', 'scode', 'blank']) }],
+    [5, '불꽃놀이', { fx: { k: 'fire', sec: 40 } }]] },
+  relay: { n: '비밀 코드 릴레이', d: '2분마다 새 비밀 코드 셋 — 먼저 치는 사람이 임자 (金200 玉20씩)', steps: () => [
+    [0, '첫 코드', { notice: '🔑 비밀 코드 릴레이 — 화면 위 「秘」를 놓치지 마시오', scode: { code: scodeMake(), title: '릴레이 1', min: 2, show: true, gold: 200, dia: 20, max: 30 } }],
+    [125, '둘째 코드', { scode: { code: scodeMake(), title: '릴레이 2', min: 2, show: true, gold: 200, dia: 20, max: 30 } }],
+    [250, '셋째 코드', { scode: { code: scodeMake(), title: '릴레이 3 — 마지막', min: 2, show: true, gold: 300, dia: 30, max: 30 } }]] },
+  curse: { n: '저주의 밤 도전', d: '저주의 밤 + 불사조·결계 버프 10분 + 현상금 — 무섭지만 든든하게', steps: [
+    [0, '저주의 밤', { notice: '🌑 저주의 밤 도전 — 버프를 두르고 버티시오', event: 'night', buff: { ks: { undying: 1, ward: 1 }, min: 10 } }],
+    [5, '현상금', { fx: { k: 'bounty', sec: 600 } }]] },
+  aurora: { n: '극광 축제', d: '극광의 밤 + 기운·감로 버프 10분 → 부적비', steps: [
+    [0, '극광의 밤', { notice: '🌌 극광 축제 — 하늘이 열린다', event: 'aurora', buff: { ks: { qi: 1, regen: 1 }, min: 10 } }],
+    [90, '부적비', { fx: { k: 'talis', sec: 45 } }]] },
+  parade: { n: '백귀야행 대행진', d: '카운트다운 10초 → 백귀야행 150마리 + 부적의 힘 ×2 버프', steps: [
+    [0, '카운트다운', { notice: '👹 백귀야행 대행진이 다가온다!', count: { sec: 10, label: '백귀야행', then: { march: { goal: 150, min: 12 } } } }],
+    [12, '버프', { buff: { ks: { pow: 2 }, min: 12 } }]] },
+  raid: { n: '그림자 습격', d: '그림자 침공 + 일섬·가시 갑주 버프 10분', steps: [
+    [0, '그림자 침공', { notice: '🗡 그림자 습격 — 칼을 갈아라', shadow: { min: 10 }, buff: { ks: { crit: 1, thorn: 1 }, min: 10 } }]] },
+  party: { n: '혼돈 파티', d: '긍정 혼란 → 혼돈 → 불꽃놀이 · 약 3분', steps: [
+    [0, '긍정 혼란', { notice: '🎉 혼돈 파티!', event: 'joy' }],
+    [70, '혼돈', { event: 'chaos' }],
+    [140, '불꽃놀이', { fx: { k: 'fire', sec: 40 } }]] },
+  gift: { n: '선물 폭탄', d: '모두에게 우편(玉100 · 10% 할인권) → 금화 소나기 → 황금비 버프 10분', steps: [
+    [0, '선물 우편', { notice: '🎁 선물 폭탄 — 우편함을 열어 보세요', mail: { title: '선물 폭탄', say: '백야가 모두에게 보내는 깜짝 선물.', dia: 100, days: 3, cpn: { c10: 1 } } }],
+    [15, '금화 소나기', { fx: { k: 'coin', sec: 50 } }],
+    [70, '황금비', { buff: { ks: { gold: 1 }, min: 10 } }]] },
+  rush: { n: '러시 아워', d: '부적의 힘 ×3 · 천수 · 기운 10분 + 슈팅 스타 — 짧고 굵게', steps: [
+    [0, '러시', { notice: '⚡ 러시 아워 — 10분 동안 몰아치시오', buff: { ks: { pow: 3, hand: 1, qi: 1 }, min: 10 } }],
+    [3, '슈팅 스타', { event: 'star' }]] },
+  bombp: { n: '폭탄 파티', d: '폭탄 돌리기(살아남으면 玉100) + 불꽃놀이', steps: [
+    [0, '폭탄 돌리기', { notice: '💣 폭탄 파티 — 손에 쥐면 바로 넘기시오', bomb: { pay: 100 } }],
+    [8, '불꽃놀이', { fx: { k: 'fire', sec: 40 } }]] }
 };
+/* 축제 한 판의 장면 — 첫 장면에 알림을 얹는다 */
+function festSteps(k, hype) {
+  const f = FEST[k], raw = typeof f.steps === 'function' ? f.steps() : f.steps;
+  return raw.map(([after, label, patch], i) => ({ after, label, patch: i === 0 && hype ? hype(f.n, Object.assign({}, patch)) : patch }));
+}
+/* 축제용 바퀴 — 칸은 WHEEL_OPTS 에서, 함성 목표는 접속 수에 맞추지 않고 작게 */
+function festWheel(title, ks) {
+  return { title, lead: 30, spin: 8, goal: 20, bonus: { gold: 200, dia: 20, jp: 0 },
+    slices: ks.filter(k => WHEEL_OPTS[k]).map(k => ({ n: WHEEL_OPTS[k].n, g: WHEEL_OPTS[k].g, c: WHEEL_OPTS[k].c, w: 1, patch: WHEEL_OPTS[k].p() })) };
+}
 const NTPL_KEY = 'baekgwi_ntpl';
 const NTPL_BASE = ['잠시 후 서버 점검이 있습니다. 진행 중인 판을 마무리해 주세요.', '이벤트가 곧 시작됩니다! 접속해 계신 분들 모두 함께해요.', '접속해 주셔서 고맙습니다 — 백야', '오늘 밤 아홉 시, 특별한 일이 일어납니다.'];
 const ntplGet = () => { try { const v = JSON.parse(localStorage.getItem(NTPL_KEY) || 'null'); return Array.isArray(v) ? v : NTPL_BASE.slice(); } catch (e) { return NTPL_BASE.slice(); } };
@@ -25229,7 +25719,8 @@ const ntplSet = v => { try { localStorage.setItem(NTPL_KEY, JSON.stringify(v.sli
    받는 이: 모두(서버 live.mails) · 한 사람(아이디·닉네임). 옆에 받는 쪽에서 보일 모습을 그대로 미리 보여 준다.
    ══════════════════════════════════════════════════════════ */
 function drawMailCompose(grid) {
-  const D = drawMailCompose.d = drawMailCompose.d || { to: 'all', who: '', title: '', say: '', gold: 0, dia: 0, jp: 0, cards: '', days: 7, mats: {} };
+  const D = drawMailCompose.d = drawMailCompose.d || { to: 'all', who: '', title: '', say: '', gold: 0, dia: 0, jp: 0, cards: '', days: 7, mats: {}, cpn: {} };
+  D.cpn = D.cpn || {};
   grid.innerHTML = `<div class="mcomp">
     <div class="dashhead"><b>郵 우편함 작성</b><span>쓴 그대로 — 제목·내용·보상이 받는 이의 우편함에 간다 · 기한 안에 아무 때나 받는다 · 두 번 받지 못한다</span></div>
     <div class="mcgrid">
@@ -25245,6 +25736,7 @@ function drawMailCompose(grid) {
           <label><i style="color:#6fd0e8">玉</i>다이아<input id="mc_dia" type="number" min="0" max="100000" value="${D.dia}"></label>
           <label><i style="color:#c9a8ff">精</i>정진<input id="mc_jp" type="number" min="0" max="100000" value="${D.jp}"></label>
           ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-mat="${k}" type="number" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
+          ${CPN_KS.map(k => `<label><i style="color:${CPN[k].c}">券</i>${CPN[k].n}<input data-cpn="${k}" type="number" min="0" max="99" value="${D.cpn[k] || 0}"></label>`).join('')}
         </div>
         <label class="mcf">부적 (쉼표로 · 여덟 장까지)<input id="mc_cards" placeholder="이름을 치면 고를 수 있다" value="${wEsc(D.cards)}"></label>
         <div class="mcrow"><label class="mcf sm">기한<select id="mc_days">${[1, 3, 7, 14, 30].map(d => `<option value="${d}"${+D.days === d ? ' selected' : ''}>${d}일</option>`).join('')}</select></label>
@@ -25261,9 +25753,10 @@ function drawMailCompose(grid) {
     D.gold = Math.max(0, Math.floor(+q('#mc_gold').value || 0)); D.dia = Math.max(0, Math.floor(+q('#mc_dia').value || 0)); D.jp = Math.max(0, Math.floor(+q('#mc_jp').value || 0));
     D.cards = q('#mc_cards').value; D.days = +q('#mc_days').value || 7;
     D.mats = {}; grid.querySelectorAll('[data-mat]').forEach(i => { const n = Math.max(0, Math.min(99, Math.floor(+i.value || 0))); if (n) D.mats[i.dataset.mat] = n; });
+    D.cpn = {}; grid.querySelectorAll('[data-cpn]').forEach(i => { const n = Math.max(0, Math.min(99, Math.floor(+i.value || 0))); if (n) D.cpn[i.dataset.cpn] = n; });
   };
   const cardsOf = () => D.cards.split(',').map(x => x.trim()).filter(id => CARDS[id]).slice(0, 8);
-  const mailOf = () => ({ id: 'preview', title: D.title || '(제목 없음)', say: D.say, from: '백야', gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats,
+  const mailOf = () => ({ id: 'preview', title: D.title || '(제목 없음)', say: D.say, from: admName(), gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats, cpn: D.cpn,
     at: Date.now(), until: srvNow() + D.days * 86400000, mine: D.to === 'one' });
   const paint = () => {
     read();
@@ -25271,7 +25764,7 @@ function drawMailCompose(grid) {
     q('#mc_who').disabled = D.to !== 'one';
     const m = mailOf();
     q('#mc_pv').innerHTML = `<div class="mrow${m.mine ? ' mine' : ''}"><div class="mseal2">${m.mine ? '私' : '郵'}</div>
-      <div class="mbody"><b>${wEsc(m.title)}</b><small>백야 · ${D.days}일 남음${D.to === 'one' && D.who ? ' · ' + wEsc(D.who) + ' 에게만' : D.to === 'all' ? ' · 모든 유저' : ''}</small>
+      <div class="mbody"><b>${wEsc(m.title)}</b><small>${admName()} · ${D.days}일 남음${D.to === 'one' && D.who ? ' · ' + wEsc(D.who) + ' 에게만' : D.to === 'all' ? ' · 모든 유저' : ''}</small>
         ${m.say ? `<p>${wEsc(m.say)}</p>` : ''}<div class="mchips">${mailChips(m) || '<span class="mch">보상 없음 — 글만 간다</span>'}</div></div>
       <button class="brush-btn gold mget" disabled>받기</button></div>`;
     const bad = D.cards.split(',').map(x => x.trim()).filter(x => x && !CARDS[x]);
@@ -25295,7 +25788,7 @@ function drawMailCompose(grid) {
     const cards = cardsOf();
     if (!D.title) { q('#mc_log').innerHTML = '<span style="color:#ff9a9a">제목을 적으시오</span>'; return; }
     if (D.to === 'one' && !D.who) { q('#mc_log').innerHTML = '<span style="color:#ff9a9a">받는 이를 적으시오</span>'; return; }
-    const body = { title: D.title, say: D.say, gold: D.gold, dia: D.dia, jp: D.jp, cards, mats: D.mats, days: D.days, from: '백야' };
+    const body = { title: D.title, say: D.say, gold: D.gold, dia: D.dia, jp: D.jp, cards, mats: D.mats, cpn: D.cpn, days: D.days, from: admName() };
     const what = D.to === 'all' ? '모든 유저' : D.who;
     if (!confirm(`「${D.title}」을(를) ${what}의 우편함에 보낼까?`)) return;
     q('#mc_send').disabled = true; q('#mc_log').textContent = '보내는 중…';
@@ -25412,6 +25905,95 @@ function showScodeBox() {
   if (!got) setTimeout(() => inp.focus(), 60);
 }
 /* 관리자 창 — 秘 비밀 코드 탭 */
+/* ══════════════════════════════════════════════════════════
+   守 관리 봇 — 관리자 창 탭 (판 56)
+   백야(·백사)가 자리를 비워도, 켜 두면 서버가 정한 때와 테두리 안에서 스스로 일을 연다.
+   설정은 서버(live.bot)에 실리고, 무엇을 했는지는 기록(botLog)으로 돌아온다 — 둘 다 /live 로는 나가지 않는다.
+   ══════════════════════════════════════════════════════════ */
+const BOT_ACT_N = { ev: ['天', '하늘의 이벤트', '슈팅 스타·풍년·혼돈·긍정 혼란·극광 가운데 하나'], fx: ['花', '한바탕', '금화 소나기·불꽃놀이·부적비·치유의 비'],
+  wheel: ['運', '운명의 바퀴', '여섯 칸 바퀴 — 함성 30'], scode: ['秘', '비밀 코드', '열린 코드 10분 · 보상은 한도 안'], cpn: ['券', '할인권', '한도에서 고른 할인권 한 장'],
+  egg: ['卵', '비밀의 계란', '6개(비밀 1) · 10분'], buff: ['力', '버프 10분', '부적의 힘 ×2 · 황금비 · 감로+결계'], hunt: ['探', '숨은 부적', '10명 · 5분 · 보상은 한도 안'] };
+const BOT_DEF_C = { on: false, from: 18, to: 24, every: 120, maxDay: 4, minOn: 1, acts: { ev: 1, fx: 1, wheel: 1, scode: 1, cpn: 1, egg: 1, buff: 1, hunt: 0 },
+  caps: { gold: 500, dia: 50, jp: 20, cpn: 'c10' }, greet: 1, msgs: [], msgEvery: 180, daily: [], weekly: 0, sale: 0 };
+async function drawBot(grid) {
+  grid.innerHTML = '<div class="dashload">관리 봇을 깨우는 중…</div>';
+  const r = await castSend({});
+  if (!grid.isConnected) return;
+  if (!r.ok) { grid.innerHTML = `<div class="dashnone">서버에 닿지 못했다 — ${wEsc(r.why || '')}</div>`; return; }
+  const B = JSON.parse(JSON.stringify(Object.assign({}, BOT_DEF_C, LIVE.bot || {})));
+  B.acts = Object.assign({}, BOT_DEF_C.acts, B.acts || {}); B.caps = Object.assign({}, BOT_DEF_C.caps, B.caps || {});
+  B.daily = Array.isArray(B.daily) ? B.daily : []; B.msgs = Array.isArray(B.msgs) ? B.msgs : [];
+  const st = LIVE.botSt || {}, log = (LIVE.botLog || []).slice().reverse();
+  const hrs = (id, v) => `<select id="${id}">${Array.from({ length: 25 }, (_, h) => `<option value="${h}"${+v === h ? ' selected' : ''}>${h}시</option>`).join('')}</select>`;
+  const actSel = (v, cls) => `<select class="${cls || ''}">${Object.keys(BOT_ACT_N).map(k => `<option value="${k}"${v === k ? ' selected' : ''}>${BOT_ACT_N[k][0]} ${BOT_ACT_N[k][1]}</option>`).join('')}</select>`;
+  grid.innerHTML = `<div class="botwrap">
+    <div class="dashhead"><b>守 관리 봇</b><span>${admName()}가 자리를 비워도, 켜 두면 정한 때·테두리 안에서 스스로 이벤트·공지·선물을 연다 · 시각은 모두 한국 시각</span></div>
+    <div class="botsw${B.on ? ' on' : ''}" id="bt_sw"><div class="botface"><i>守</i></div>
+      <div><b>${B.on ? '깨어 있다' : '잠들어 있다'}</b><small>${B.on ? `오늘 연 일 ${st.n || 0} / ${B.maxDay} · 마지막 ${st.last ? wTime(Math.max(0, srvNow() - st.last)) + ' 전' : '아직'}` : '켜면 아래 설정대로 움직인다'}</small></div>
+      <button class="brush-btn ${B.on ? 'ghost' : 'gold'}" id="bt_on"${B.on ? ' style="color:#e9dfc9;border-color:#8a7f68"' : ''}>${B.on ? '재운다' : '깨운다'}</button></div>
+    <div class="botgrid">
+      <div class="castsec"><b>때와 테두리</b>
+        <div class="botrow"><label>활동 시간 ${hrs('bt_from', B.from)} ~ ${hrs('bt_to', B.to)}</label><span class="casthint">같으면 하루 내내 · 거꾸로면 밤을 넘긴다</span></div>
+        <div class="botrow"><label>간격 <input id="bt_every" type="number" min="15" max="1440" value="${B.every}">분마다</label>
+          <label>하루 <input id="bt_max" type="number" min="0" max="24" value="${B.maxDay}">번까지</label>
+          <label>접속 <input id="bt_min" type="number" min="0" max="500" value="${B.minOn}">명 이상일 때</label></div>
+        <div class="casthint">다른 일(이벤트·바퀴·카운트다운·모두의 적·백귀야행·한바탕·코드·계란·숨은 부적)이 걸려 있으면 기다린다.</div>
+      </div>
+      <div class="castsec"><b>허락하는 일</b>
+        <div class="botacts">${Object.keys(BOT_ACT_N).map(k => `<label class="botact${B.acts[k] ? ' on' : ''}"><input type="checkbox" data-act="${k}"${B.acts[k] ? ' checked' : ''}><i>${BOT_ACT_N[k][0]}</i><b>${BOT_ACT_N[k][1]}</b><small>${BOT_ACT_N[k][2]}</small></label>`).join('')}</div>
+      </div>
+      <div class="castsec"><b>보상 한도 — 봇은 이보다 많이 주지 않는다</b>
+        <div class="botrow"><label><i style="color:#ffd76a">金</i> <input id="bt_gold" type="number" min="0" max="5000" value="${B.caps.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i> <input id="bt_dia" type="number" min="0" max="500" value="${B.caps.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i> <input id="bt_jp" type="number" min="0" max="200" value="${B.caps.jp}"></label>
+          <label>券 <select id="bt_cpn">${CPN_KS.map(k => `<option value="${k}"${B.caps.cpn === k ? ' selected' : ''}>${CPN[k].n}</option>`).join('')}</select></label></div>
+      </div>
+      <div class="castsec"><b>정시 일정 — 날마다 그 시각에 (15분 안에 한 번)</b>
+        <div class="botdaily" id="bt_daily">${B.daily.map(d => `<div class="botd"><input type="time" value="${wEsc(d.t.padStart(5, '0'))}">${actSel(d.act)}<button class="botx" title="뺀다">✕</button></div>`).join('')}</div>
+        <button class="brush-btn ghost" id="bt_dadd" style="color:#e9dfc9;border-color:#8a7f68;font-size:12.5px;padding:6px 14px;width:auto">＋ 일정 하나 더</button>
+      </div>
+      <div class="castsec"><b>말 — 인사 · 공지 돌림</b>
+        <label class="botchk"><input type="checkbox" id="bt_greet"${B.greet ? ' checked' : ''}> 아침 9시 · 밤 9시 인사</label>
+        <textarea id="bt_msgs" rows="4" maxlength="1300" placeholder="활동 시간 안에 차례로 돌릴 공지 — 한 줄에 하나 (열 줄까지)">${wEsc(B.msgs.join('\n'))}</textarea>
+        <div class="botrow"><label><input id="bt_mev" type="number" min="30" max="1440" value="${B.msgEvery}">분마다 한 줄씩</label></div>
+      </div>
+      <div class="castsec"><b>선물 · 특가</b>
+        <div class="botrow"><label>월요일 주간 우편 玉 <input id="bt_week" type="number" min="0" max="500" value="${B.weekly}"></label><span class="casthint">0 이면 보내지 않는다 · 할인권 한 장이 따라간다</span></div>
+        <div class="botrow"><label>오늘의 특가 최대 <input id="bt_sale" type="number" min="0" max="30" value="${B.sale}">%</label><span class="casthint">0 이면 걸지 않는다 · 하루 한 번 일일상점 값을 내린다</span></div>
+      </div>
+    </div>
+    <div class="castbtnrow"><button class="brush-btn gold" id="bt_save">설정을 싣는다</button>
+      <span class="botnow">${actSel('ev', 'bt_runk')}<button class="brush-btn ghost" id="bt_run" style="color:#e9dfc9;border-color:#8a7f68">지금 한 번 돌려 본다</button></span>
+      <span class="casthint" id="bt_say"></span></div>
+    <div class="castsec"><b>錄 봇이 한 일 <em style="font-style:normal;color:#8a7f68;font-size:11px">최근 40</em></b>
+      <div class="botlog">${log.length ? log.map(x => `<div><em>${new Date(x.at).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</em>${wEsc(x.what)}</div>`).join('') : '<div class="dashnone">아직 한 일이 없다</div>'}</div>
+    </div>
+  </div>`;
+  const q = s => grid.querySelector(s), say = (t, ok) => { const e = q('#bt_say'); if (e) e.innerHTML = `<span style="color:${ok ? '#7fe6cf' : '#ff9a9a'}">${wEsc(t)}</span>`; };
+  grid.querySelectorAll('.botact input').forEach(i => i.onchange = () => i.closest('.botact').classList.toggle('on', i.checked));
+  const bindX = () => grid.querySelectorAll('.botx').forEach(b => b.onclick = () => b.closest('.botd').remove());
+  bindX();
+  q('#bt_dadd').onclick = () => { const box = q('#bt_daily'); if (box.children.length >= 12) { toast('일정은 열둘까지'); return; }
+    box.insertAdjacentHTML('beforeend', `<div class="botd"><input type="time" value="21:00">${actSel('wheel')}<button class="botx" title="뺀다">✕</button></div>`); bindX(); };
+  const read = on => ({ on, from: +q('#bt_from').value, to: +q('#bt_to').value, every: +q('#bt_every').value || 120, maxDay: +q('#bt_max').value, minOn: +q('#bt_min').value,
+    acts: Object.fromEntries([...grid.querySelectorAll('[data-act]')].map(i => [i.dataset.act, i.checked ? 1 : 0])),
+    caps: { gold: +q('#bt_gold').value || 0, dia: +q('#bt_dia').value || 0, jp: +q('#bt_jp').value || 0, cpn: q('#bt_cpn').value },
+    greet: q('#bt_greet').checked ? 1 : 0, msgs: q('#bt_msgs').value.split('\n').map(x => x.trim()).filter(Boolean).slice(0, 10), msgEvery: +q('#bt_mev').value || 180,
+    daily: [...grid.querySelectorAll('.botd')].map(d => ({ t: d.querySelector('input').value, act: d.querySelector('select').value })).filter(d => /^\d{2}:\d{2}$/.test(d.t)),
+    weekly: +q('#bt_week').value || 0, sale: +q('#bt_sale').value || 0 });
+  const put = async (on, what) => { const r2 = await castSend({ bot: read(on) });
+    if (!r2.ok) { say('못 실었다 — ' + r2.why, false); return; }
+    try { logNote('bot', what); SND.bell(); } catch (e) {}
+    drawBot(grid); };
+  q('#bt_on').onclick = () => put(!B.on, B.on ? '관리 봇을 재웠다' : '관리 봇을 깨웠다');
+  q('#bt_save').onclick = () => put(B.on, '관리 봇 설정을 바꿨다');
+  q('#bt_run').onclick = async () => {
+    const k = q('.bt_runk').value; if (!confirm(`관리 봇에게 「${BOT_ACT_N[k][1]}」을(를) 지금 한 번 시킬까? (보상은 한도 안)`)) return;
+    const r2 = await castSend({ botRun: k });
+    if (!r2.ok) { say('못 했다 — ' + r2.why, false); return; }
+    say(BOT_ACT_N[k][1] + ' — 봇이 열었다', true); setTimeout(() => { if (grid.isConnected) drawBot(grid); }, 600);
+  };
+}
 function drawScode(grid) {
   const D = drawScode.d = drawScode.d || { code: '', title: '백야의 비밀 코드', hint: '', min: 30, max: 0, show: false, hype: true, cd: false,
     gold: 500, dia: 50, jp: 0, cards: '', mats: {}, when: 'now', at: '' };
@@ -25493,7 +26075,7 @@ function drawScode(grid) {
     if (!okCode(D.code)) { q('#sd_log').innerHTML = '<span style="color:#ff9a9a">코드는 3~24자 — 한글·영문·숫자·- · _ 만</span>'; return; }
     const body = { code: D.code, title: D.title || '비밀 코드', hint: D.hint, min: D.min, max: D.max, show: D.show, gold: D.gold, dia: D.dia, jp: D.jp, cards: cardsOf(), mats: D.mats };
     let patch = { scode: body };
-    if (D.hype) Object.assign(patch, { notice: `${DEV_NAME}가 비밀 코드를 풀었다! — ${body.title}${D.show ? ' · 秘 를 누르면 코드가 보인다' : ' · 코드를 찾아라'}`, noticeAt: Date.now() });
+    if (D.hype) Object.assign(patch, { notice: `${admName()}가 비밀 코드를 풀었다! — ${body.title}${D.show ? ' · 秘 를 누르면 코드가 보인다' : ' · 코드를 찾아라'}`, noticeAt: Date.now() });
     if (D.cd) patch = { count: { sec: 10, label: '비밀 코드', then: patch } };
     let at = 0;
     if (D.when === 'at') { at = new Date(D.at).getTime(); if (!at || at < Date.now() + 30000) { q('#sd_log').innerHTML = '<span style="color:#ff9a9a">예약 때를 고르시오 (지금보다 뒤)</span>'; return; } }
@@ -25538,6 +26120,8 @@ const WHEEL_OPTS = {
   egg:    { n: '비밀의 계란', g: '卵', c: '#f4e6c0', p: () => ({ egg: { n: 8, s: 2, min: 10 } }) },
   hunt:   { n: '숨은 부적', g: '探', c: '#c8a8ff', p: () => ({ hunt: { max: 10, min: 5, gold: 500, dia: 50, jp: 0, cards: [] } }) },
   scode:  { n: '비밀 코드', g: '秘', c: '#e8c86a', p: () => ({ scode: { code: scodeMake(), title: '바퀴가 고른 코드', min: 10, show: true, gold: 300, dia: 30, jp: 20 } }) },
+  cpn:    { n: '할인권', g: '券', c: '#ffb0d0', p: () => ({ cpn: { ks: { c10: 1 }, min: 10, say: '바퀴가 할인권을 골랐다' } }) },
+  sale:   { n: '오늘의 특가', g: '價', c: '#ff7aa8', p: () => ({ sale: { pct: 20, min: 180, by: '운명의 바퀴' } }) },
   mail:   { n: '선물 우편', g: '郵', c: '#f2d9a0', p: () => ({ mail: { title: '운명의 선물', say: '운명의 바퀴가 골랐다.', gold: 500, dia: 50, days: 3, from: '백야' } }) },
   shadow: { n: '그림자 침공', g: '影', c: '#8a7aa8', p: () => ({ shadow: { min: 10 } }) },
   march:  { n: '백귀야행', g: '行', c: '#d84a4a', p: () => ({ march: { goal: 100, min: 10 } }) },
@@ -25756,7 +26340,7 @@ function showWheelMaker() {
     const wheel = { title: D.title, lead: D.lead, spin: D.spin, goal: D.goal, bonus: { gold: D.gold, dia: D.dia, jp: D.jp },
       slices: D.pick.map(k => ({ n: WHEEL_OPTS[k].n, g: WHEEL_OPTS[k].g, c: WHEEL_OPTS[k].c, w: D.w[k] || 1, patch: WHEEL_OPTS[k].p() })) };
     q('#wm_go').disabled = true; q('#wm_log').textContent = '보내는 중…';
-    const r = await castSend({ wheel, notice: `${DEV_NAME}가 운명의 바퀴를 돌린다! — 함성을 모으시오`, noticeAt: Date.now() });
+    const r = await castSend({ wheel, notice: `${admName()}가 운명의 바퀴를 돌린다! — 함성을 모으시오`, noticeAt: Date.now() });
     q('#wm_go').disabled = false;
     if (!r.ok) { q('#wm_log').innerHTML = `<span style="color:#ff9a9a">못 했다 — ${wEsc(r.why)}</span>`; return; }
     try { logNote('wheel', `${D.title} — ${D.pick.map(k => WHEEL_OPTS[k].n).join(' · ')}`); } catch (e) {}
@@ -25775,7 +26359,7 @@ const choOf = s => String(s).replace(/[가-힣]/g, c => CHO[Math.floor((c.charCo
 function castQList() {
   const L = [];
   const hypeOn = () => { try { return localStorage.getItem('baekgwi_hypeauto') !== '0'; } catch (e) { return true; } };
-  const hype = (what, patch) => hypeOn() ? Object.assign(patch, { notice: HYPE_SAY + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
+  const hype = (what, patch) => hypeOn() ? Object.assign(patch, { notice: hypeSay() + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
   const ev = liveEvent();
   const add = o => L.push(o);
   const tab = t => () => { closeOverlay(); showAdmin(); setTimeout(() => { const b = $(`.adtab[data-t="${t}"]`); if (b) b.click(); }, 60); };
@@ -25786,10 +26370,18 @@ function castQList() {
     patch: () => hype('비밀 코드', { scode: { code: scodeMake(), title: '백야의 깜짝 코드', min: 10, show: true, gold: 300, dia: 30 } }) });
   add({ k: 'say', g: '白', n: '백야의 말', cat: '말', al: '공지 말 알림 notice 왼쪽alt', open: () => devSayPanel() });
   add({ k: 'mail', g: '郵', n: '우편함 작성', cat: '말', al: '우편 메일 선물 보상', open: tab('mail') });
+  add({ k: 'bot', g: '守', n: '관리 봇 — 설정 · 기록', cat: '창', al: '봇 자동 관리 bot 자리 비움', open: tab('bot') });
+  /* 할인권 · 특가 */
+  for (const k of CPN_KS) add({ k: 'cpn_' + k, g: '券', c: CPN[k].c, n: `할인권 퍼뜨리기 — ${CPN[k].n} · 10분 안에 들어온 사람`, cat: '할인권 · 특가', al: '할인권 쿠폰 할인 coupon ' + k,
+    on: () => !!(LIVE.cpn && srvNow() < LIVE.cpn.until && LIVE.cpn.ks && LIVE.cpn.ks[k]), patch: () => hype(CPN[k].n, { cpn: { ks: { [k]: 1 }, min: 10, say: admName() + '의 할인권' } }) });
+  add({ k: 'cpnoff', g: '止', n: '할인권 퍼뜨리기 거두기', cat: '할인권 · 특가', red: 1, patch: () => ({ cpn: null }) });
+  for (const pct of [10, 20, 30]) add({ k: 'sale' + pct, g: '價', c: '#ff7aa8', n: `오늘의 특가 −${pct}% — 일일상점 · 3시간`, cat: '할인권 · 특가', al: '특가 세일 할인 sale',
+    on: () => !!(saleNow() && saleNow().pct === pct), patch: () => hype('오늘의 특가 −' + pct + '%', { sale: { pct, min: 180, by: admName() } }) });
+  add({ k: 'saleoff', g: '止', n: '특가 내리기', cat: '할인권 · 특가', red: 1, patch: () => ({ sale: null }) });
   add({ k: 'plan', g: '曆', n: '이벤트 예약 · 달력', cat: '말', al: '예약 일정 달력 schedule', open: () => openPlanner() });
   if (cutMkOn()) add({ k: 'cutmk', g: '映', n: '컷씬 공방', cat: '컷씬', al: '컷씬 만들기 공방 편집', open: () => showCutMaker() });
   add({ k: 'admin', g: '管', n: '관리자 창 — 퍼뜨리기 탭', cat: '창', al: '관리자 어드민 퍼뜨리기 전부', open: tab('cast') });
-  add({ k: 'dash', g: '管', n: '대시보드', cat: '창', al: '통계 접속 대시보드', open: tab('dash') });
+  if (!isBaeksa()) add({ k: 'dash', g: '管', n: '대시보드', cat: '창', al: '통계 접속 대시보드', open: tab('dash') });
   /* 하늘의 이벤트 */
   for (const k of Object.keys(WORLD)) {
     const w = WORLD[k];
@@ -25824,7 +26416,7 @@ function castQList() {
   add({ k: 'cd10', g: '⏱', n: '카운트다운 10초', cat: '카운트다운 · 축제', al: '카운트다운 countdown 숫자', patch: () => ({ count: { sec: 10, label: '' } }) });
   add({ k: 'cdoff', g: '止', n: '카운트다운 멈춤', cat: '카운트다운 · 축제', red: 1, patch: () => ({ count: null }) });
   for (const k of Object.keys(FEST)) add({ k: 'fest_' + k, g: '祭', c: '#ff9a5a', n: FEST[k].n, cat: '카운트다운 · 축제', al: '축제 페스티벌 ' + FEST[k].d,
-    patch: () => ({ schedule: { at: Date.now() + 1500, label: FEST[k].n, steps: FEST[k].steps.map(([after, label, patch], i) => ({ after, label, patch: i === 0 ? hype(FEST[k].n, Object.assign({}, patch)) : patch })) } }) });
+    patch: () => ({ schedule: { at: Date.now() + 1500, label: FEST[k].n, steps: festSteps(k, hype) } }) });
   /* 컷씬 */
   for (const k of Object.keys(CUT_LIST)) add({ k: 'cut_' + k, g: '映', c: '#e8c86a', n: '컷씬 — ' + CUT_LIST[k].n, cat: '컷씬', al: '컷씬 영상 뿌리기 ' + k, patch: () => ({ cut: { k } }) });
   if (cutMkOn()) cmkSaves().forEach((x, i) => add({ k: 'cmk_' + (x.id || i), g: '映', c: '#ffd76a', n: '공방 컷씬 — ' + (x.n || '이름 없음'), cat: '컷씬', al: '공방 컷씬 내가 지은',
@@ -25836,7 +26428,7 @@ function castQList() {
   add({ k: 'autofree', g: '自', c: '#7fe6cf', n: '자동 플레이 맛보기 — 30분', cat: '노래', al: '자동 맛보기 오토', patch: () => hype('자동 플레이 맛보기 30분', { autofree: { min: 30 } }) });
   return L;
 }
-const CASTQ_FAV = ['wheel', 'scodeq', 'say', 'ev_star', 'ev_gold', 'fx_coin', 'bf_pow', 'fest_short'];
+const CASTQ_FAV = ['wheel', 'scodeq', 'say', 'ev_star', 'ev_gold', 'fx_coin', 'bf_pow', 'cpn_c10', 'fest_short', 'fest_shop'];
 function castQScore(x, q, qc) {
   const n = x.n.replace(/\s/g, '').toLowerCase(), al = (x.al || '').replace(/\s/g, '').toLowerCase(), all = n + al + x.cat;
   if (n.startsWith(q)) return 5;
@@ -25944,7 +26536,7 @@ function devSayPanel() {
   if (!caster()) return;
   const old = $('#devsay'); if (old) { old.classList.add('out'); setTimeout(() => old.remove(), 200); return; }
   const n = el('div', 'devsay'); n.id = 'devsay';
-  n.innerHTML = `<div class="dshead"><i>白</i><div><b>${DEV_NAME}의 말</b><span>모든 앱 맨 윗면에 걸린다 · 왼쪽 Alt 로 열고 닫는다 · Ctrl+Enter 퍼뜨리기</span></div><button class="dsx" title="닫기">✕</button></div>
+  n.innerHTML = `<div class="dshead"><i>白</i><div><b>${admName()}의 말</b><span>모든 앱 맨 윗면에 걸린다 · 왼쪽 Alt 로 열고 닫는다 · Ctrl+Enter 퍼뜨리기</span></div><button class="dsx" title="닫기">✕</button></div>
     <textarea id="ds_t" maxlength="300" rows="3" placeholder="이를테면 — 오늘 밤 아홉 시, 별이 쏟아집니다.">${wEsc(LIVE.notice || '')}</textarea>
     <div class="ntpl" id="ds_tpl"></div>
     <div class="dsrow"><span class="dsnow">${LIVE.notice ? '지금 걸린 말이 있다' : '지금 걸린 말이 없다'}</span>
@@ -25998,7 +26590,7 @@ const MENU_ITEMS = [
   { k: 'mp',    g: '對', n: '멀티플레이', tab: 'soc', al: '대전 멀티 pvp 랭크', show: () => inRun() && !G.b, run: () => showMulti() },
   { k: 'map',   g: '圖', n: '지도로', tab: 'adv', al: '지도 돌아가기', show: () => inRun() && !G.b && G.scene !== 'map', run: () => { closeOverlay(); saveRun(); showMap(); } },
   { k: 'yield', g: '退', n: '라운드 포기', tab: 'adv', al: '포기 항복 나가기', show: inFight, red: 1, sub: () => '갈림길로', run: () => askYield() },
-  { k: 'box',   g: '匣', n: '부적 뽑기', tab: 'col', al: '뽑기 가챠 상자', show: inRun, run: () => { markUsed('box'); openBoxes(); } },
+  { k: 'box',   g: '匣', n: '상점 · 뽑기', tab: 'col', al: '상점 일일상점 뽑기 가챠 상자 할인권', show: inRun, run: () => { markUsed('box'); openBoxes(); } },
   { k: 'pouch', g: '囊', n: '원료 주머니', tab: 'col', al: '재료 원료 돌연변이 주머니', show: inRun, dot: () => pouchCount(), run: () => showPouch() },
   { k: 'fuselab', g: '鎔', n: '합성소', tab: 'col', al: '합성 융합 합성소', show: inRun, run: () => showFuseLab() },
   { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션', run: () => showDex() },
@@ -26357,7 +26949,10 @@ const GUEST_H = 'cffe7c12f9320abde4796b97d3ff94ef9af325e1124ce5a234e688d1d2cbc40
 const CASTKEY = 'baekgwi_castkey';     /* 퍼뜨리는 열쇠 — 그 열쇠를 적은 기계에만 남는다 */
 const ADMHACK_H = '23fb64a9d0940168cd3f6508d73ce3e02a9835af90f7fdd3fdc32948ce23a3de';   /* 어드민 핵 — 지문만 (판 54 에 새로 바꿨다) */
 const CUTMK_H = 'ca91a20e0af77c5c05e2f8511242e64fc2ea314972cc59ed2e06f6ec641c8f02';     /* 컷씬 공방 — 지문만 */
-const CUTMK_KEY = 'baekgwi_cutkey';   /* 공방 열쇠 — 모두에게 틀 때 서버에 보여 준다. 적은 기계에만 남는다 */
+const CUTMK_KEY = 'baekgwi_cutkey';
+/* 백사 — 두 번째 관리자. 두 인(코드)을 한 기계에 다 적어야 선다. 둘째 인은 서버 열쇠를 겸한다 (지문만 둔다) */
+const BAEKSA_H1 = '75a09ef3965f361bba0d0b33bc07ae39fb93b57a3c8cf9dbf3931b72654e6475';
+const BAEKSA_H2 = 'ba272ca7cd49718de0e2fe6161ab4d08be7c8c2b779ef5021b4b8fee83bd3f50';   /* 공방 열쇠 — 모두에게 틀 때 서버에 보여 준다. 적은 기계에만 남는다 */
 
 /* ══════════════════════════════════════════════════════════
    코드 — 열쇠는 코드의 지문(codeKey)이다. 코드 자체는 적지 않는다.
@@ -26390,6 +26985,9 @@ const CODES = {
       setTimeout(() => { closeTop(); showCutMaker(); }, 200); return '映 컷씬 공방이 열렸다';
     }
   },
+  /* 백사 — 두 인을 다 적으면 백야 다음가는 관리자 (대시보드·로그만 없다) */
+  [BAEKSA_H1]: { n: '백사 — 첫째 인', d: '두 번째 관리자의 첫 열쇠', give: () => baeksaGive('둘째') },
+  [BAEKSA_H2]: { n: '백사 — 둘째 인', d: '두 번째 관리자의 둘째 열쇠 · 모든 앱에 퍼뜨리는 열쇠를 겸한다', give: () => baeksaGive('첫째') },
   /* 게스트 — 적으면 이름을 달아 청하고, 관리자가 허락해야 게스트가 된다 */
   [GUEST_H]: {
     n: '게스트',
@@ -26507,7 +27105,7 @@ const CODES = {
    인터넷이 없으면? 지난번에 읽어 둔 것을 그대로 쓴다. 소식이
    없다고 게임이 멈추지는 않는다 — 그것이 이 층의 규칙이다.
    ══════════════════════════════════════════════════════════ */
-const APP_VERSION = 55;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
+const APP_VERSION = 56;                /* 이 판의 나이. 소식의 version 이 더 크면 새것이 있다는 뜻 */
 const LIVE_URL = 'https://baekgwi-live.onrender.com/live';   /* 소식을 읽어 오는 자리 */
 /* 새 판을 받는 자리 — 관리자 창의 기본값으로 쓴다 */
 const APK_URL = 'https://github.com/elel99gg34-code/D/releases/download/phone/baekgwi.apk';
@@ -26518,6 +27116,8 @@ const NOTICE_MS  = 3000;              /* 개발자의 말은 셋 셈 보였다�
 /* 만든이의 이름 — 백귀야행의 줄임 */
 const DEV_NAME = '백야';
 const HYPE_SAY = DEV_NAME + '가 이벤트를 시작했습니다!';
+const hypeSay = () => admName() + '가 이벤트를 시작했습니다!';         /* 백사가 걸면 백사의 이름으로 */
+const HYPE_RE = /^(백야|백사)가 이벤트를 시작했습니다!/;
 const NOTICE_SEEN = 'baekgwi_notice_seen';  /* 이미 보인 말 — 다시 띄우지 않는다 */
 const LIVE_KEY = 'baekgwi_live';
 let LIVE = { notice: '', noticeAt: 0, event: '', eventAt: 0, eventUntil: 0, version: 0, apk: '', at: 0,
@@ -26638,6 +27238,9 @@ async function liveFetch() {
     LIVE.fx = d.fx && typeof d.fx === 'object' && d.fx.k ? d.fx : null;             /* 한바탕 */
     LIVE.scode = d.scode && typeof d.scode === 'object' && d.scode.id ? d.scode : null;   /* 비밀 코드 */
     LIVE.wheel = d.wheel && typeof d.wheel === 'object' && d.wheel.id ? d.wheel : null;   /* 운명의 바퀴 */
+    LIVE.cpn = d.cpn && typeof d.cpn === 'object' && d.cpn.id ? d.cpn : null;            /* 할인권 퍼뜨리기 */
+    LIVE.sale = d.sale && typeof d.sale === 'object' && +d.sale.pct > 0 ? d.sale : null;  /* 오늘의 특가 */
+    try { cpnTick(); } catch (e) {}
     LIVE.mailAt = +d.mailAt || 0;                                                     /* 우편 — 새로 오면 묻는다 */
     if (LIVE.mailAt !== MAIL.liveAt) { const first = !MAIL.liveAt; MAIL.liveAt = LIVE.mailAt; if (!first || !MAIL.at) mailFetch(true); }
     LIVE.hb = d.hb && typeof d.hb === 'object' && d.hb.slot ? d.hb : null;           /* 해킹 보스 (매시 정각 · 백야가 강제로) */
@@ -28406,6 +29009,89 @@ function whenSay(t) {
   if (n < 86400000) return Math.floor(n / 3600000) + '시간 전';
   return d.toLocaleDateString();
 }
+/* ══ 아이디 · 비밀번호 찾기 (판 56) ═══════════════════════════
+   설정 → 계정 → 「찾기 암호 설정」: 4~8자. 서버에는 갈아 둔 것만 남는다.
+   로그인 창 → 「아이디·비밀번호 찾기」: 닉네임 + 찾기 암호가 맞으면 그 계정으로 들어오고,
+   아이디를 알려 주며, 그 자리에서 새 비밀번호를 정할 수 있다. 틀리면 닉네임마다 다섯 번에서 잠긴다.
+   ══════════════════════════════════════════════════════════ */
+const RC_EASY = /^(.)\1+$|^(1234|12345|123456|1234567|12345678|0000|1111|abcd|qwer|asdf)$/i;
+async function showRcSet() {
+  if (!acctOn()) { toast('로그인해야 정한다'); return; }
+  const p = modal(`<h2>찾기 암호 설정</h2>
+    <div class="hint rchint">비밀번호나 아이디를 잊었을 때 — <b>닉네임 + 찾기 암호</b>로 다시 들어온다.<br>
+      <b>4~8자</b> · 같은 글자만 되풀이하거나 1234 같은 쉬운 것은 안 된다 · 비밀번호와 다르게 정하시오.</div>
+    <div class="rcstate" id="rc_st">알아보는 중…</div>
+    <div class="acctform rcform"><input id="rc_a" type="password" maxlength="8" placeholder="찾기 암호 (4~8자)" autocomplete="new-password">
+      <input id="rc_b" type="password" maxlength="8" placeholder="한 번 더" autocomplete="new-password"></div>
+    <div class="acctsay" id="rc_say"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="rc_go">정한다</button><button class="brush-btn" id="rc_x">닫기</button></div>`);
+  p.dataset.noauto = '1';
+  const q = s => p.querySelector(s), tell = (m, ok) => { q('#rc_say').textContent = m; q('#rc_say').style.color = ok ? '#7fe6cf' : '#e08a7a'; };
+  q('#rc_x').onclick = closeTop;
+  p.querySelectorAll('input').forEach(i => i.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') q('#rc_go').click(); });
+  acctAsk('/auth/rcinfo', { token: ACCT.token }).then(r => { const s = q('#rc_st'); if (!s) return;
+    s.innerHTML = !r.ok ? '<span style="color:#e08a7a">서버에 닿지 못했다</span>' : r.set ? `<b style="color:#7fe6cf">정해 두었다</b> · ${whenSay(r.at)} — 새로 적으면 바뀐다` : '<b style="color:#ffd76a">아직 정하지 않았다</b> — 정해 두지 않으면 찾을 수 없다'; });
+  q('#rc_go').onclick = async () => {
+    const a = q('#rc_a').value, b = q('#rc_b').value;
+    if (a.length < 4 || a.length > 8) { tell('찾기 암호는 4~8자', false); return; }
+    if (RC_EASY.test(a)) { tell('너무 쉽다 — 남이 맞히기 쉽다', false); return; }
+    if (a !== b) { tell('두 번 적은 것이 다르다', false); return; }
+    q('#rc_go').disabled = true; tell('정하는 중…', true);
+    const r = await acctAsk('/auth/rcset', { token: ACCT.token, code: a }, 30000);
+    q('#rc_go').disabled = false; q('#rc_a').value = q('#rc_b').value = '';
+    if (!r.ok) { tell(r.why, false); SND.err(); return; }
+    tell('정했다 — 이제 닉네임과 이 암호로 찾을 수 있다', true); SND.bell();
+    const s = q('#rc_st'); if (s) s.innerHTML = '<b style="color:#7fe6cf">정해 두었다</b> · 방금';
+  };
+  setTimeout(() => { const i = q('#rc_a'); if (i) i.focus(); }, 60);
+}
+function showRecover(after) {
+  const p = modal(`<h2>아이디 · 비밀번호 찾기</h2>
+    <div class="hint rchint">계정에서 <b>설정 → 계정 → 찾기 암호 설정</b>을 해 둔 사람만 찾을 수 있다.<br>닉네임과 찾기 암호가 맞으면 그 계정으로 곧바로 들어간다.</div>
+    <div class="acctform rcform"><input id="rv_n" maxlength="12" placeholder="닉네임" spellcheck="false" autocomplete="off">
+      <input id="rv_c" type="password" maxlength="8" placeholder="찾기 암호 (4~8자)" autocomplete="off"></div>
+    <div class="acctsay" id="rv_say"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="rv_go">찾는다</button><button class="brush-btn" id="rv_x">닫기</button></div>`);
+  p.dataset.noauto = '1';
+  const q = s => p.querySelector(s), tell = (m, ok) => { q('#rv_say').textContent = m; q('#rv_say').style.color = ok ? '#7fe6cf' : '#e08a7a'; };
+  q('#rv_x').onclick = closeTop;
+  p.querySelectorAll('input').forEach(i => i.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') q('#rv_go').click(); });
+  q('#rv_go').onclick = async () => {
+    const nick = q('#rv_n').value.trim(), code = q('#rv_c').value;
+    if (!nick || !code) { tell('닉네임과 찾기 암호를 적으시오', false); return; }
+    q('#rv_go').disabled = true; tell('찾는 중… (서버가 잠들어 있으면 깨는 데 1분쯤 걸린다)', true);
+    const r = await acctAsk('/auth/recover', { nick, code }, 70000);
+    q('#rv_go').disabled = false; q('#rv_c').value = '';
+    if (!r.ok) { tell(r.why, false); SND.err(); return; }
+    ACCT = { id: r.id, token: r.token, at: r.at || 0, nick: r.nick || '' }; acctSave();
+    SND.unlock(); try { SND.bell(); } catch (e) {}
+    p.innerHTML = `<h2>찾았다</h2>
+      <div class="rcfound"><i>鑰</i><div><small>그대의 아이디</small><b>${wEsc(r.id)}</b><small>닉네임 ${wEsc(r.nick || '')} · 지금 이 계정으로 들어왔다</small></div></div>
+      <div class="hint rchint">비밀번호도 잊었다면 여기서 새로 정하시오 (8자 이상 · 쉬운 것·아이디가 든 것은 안 된다). 아니면 그냥 「이어 간다」.</div>
+      <div class="acctform rcform"><input id="rv_p" type="password" maxlength="60" placeholder="새 비밀번호 (8자 이상)" autocomplete="new-password">
+        <input id="rv_p2" type="password" maxlength="60" placeholder="한 번 더" autocomplete="new-password"></div>
+      <div class="acctsay" id="rv_say2"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap"><button class="brush-btn gold" id="rv_pw">새 비밀번호로 바꾼다</button><button class="brush-btn" id="rv_ok">이어 간다</button></div>`;
+    const t2 = (m, ok) => { const e = p.querySelector('#rv_say2'); e.textContent = m; e.style.color = ok ? '#7fe6cf' : '#e08a7a'; };
+    p.querySelectorAll('input').forEach(i => i.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') p.querySelector('#rv_pw').click(); });
+    p.querySelector('#rv_pw').onclick = async () => {
+      const a = p.querySelector('#rv_p').value, b = p.querySelector('#rv_p2').value;
+      if (a.length < 8) { t2('비밀번호는 8자 이상', false); return; }
+      if (a !== b) { t2('두 번 적은 것이 다르다', false); return; }
+      p.querySelector('#rv_pw').disabled = true; t2('바꾸는 중…', true);
+      const r2 = await acctAsk('/auth/pwnew', { token: ACCT.token, pw: a }, 30000);
+      p.querySelector('#rv_pw').disabled = false; p.querySelector('#rv_p').value = p.querySelector('#rv_p2').value = '';
+      if (!r2.ok) { t2(r2.why, false); SND.err(); return; }
+      t2('바꿨다 — 다음부터 새 비밀번호로 들어온다', true); SND.bell();
+    };
+    p.querySelector('#rv_ok').onclick = async () => {
+      closeTop();
+      if (r.save) acctPick(r.save, r.at);
+      else { await acctPush().catch(() => {}); if (after) after(); if (typeof titleAcctPaint === 'function') titleAcctPaint(); }
+    };
+  };
+  setTimeout(() => { const i = q('#rv_n'); if (i) i.focus(); }, 60);
+}
 /* 설정 안의 계정 칸 */
 function drawAcct(n) {
   const has = acctOn();
@@ -28413,6 +29099,7 @@ function drawAcct(n) {
     ? `<div class="lb"><b>${wEsc(ACCT.nick || ACCT.id)} 님</b><small>아이디 ${wEsc(ACCT.id)} · 마지막 저장 — ${whenSay(ACCT.at)} · 바뀌면 스스로 저장된다</small></div>
        <div class="acctbtns">
          <button class="val" id="ac_nick">닉네임 바꾸기</button>
+         <button class="val" id="ac_rc">찾기 암호 설정</button>
          <button class="val" id="ac_push">지금 저장</button>
          <button class="val" id="ac_pull">불러오기</button>
          <button class="val ghost" id="ac_out">로그아웃</button>
@@ -28428,6 +29115,7 @@ function drawAcct(n) {
        <div class="acctbtns">
          <button class="val" id="ac_in">로그인</button>
          <button class="val" id="ac_new">회원가입</button>
+         <button class="val ghost acfind" id="ac_find">아이디·비밀번호 찾기</button>
        </div>
        <div class="acctsay" id="ac_say"></div>`;
 
@@ -28437,6 +29125,7 @@ function drawAcct(n) {
 
   if (has) {
     n.querySelector('#ac_nick').onclick = () => { SND.ui(); showNickSet(false, () => drawAcct(n)); };
+    n.querySelector('#ac_rc').onclick = () => { SND.ui(); showRcSet(); };
     n.querySelector('#ac_push').onclick = async () => {
       busy(true); tell('올리는 중…', true);
       const r = await acctPush(); busy(false);
@@ -28485,6 +29174,7 @@ function drawAcct(n) {
       }
     };
     n.querySelector('#ac_in').onclick = () => go('/auth/login', '로그인하는');
+    n.querySelector('#ac_find').onclick = () => { SND.ui(); showRecover(() => { if (n.isConnected) drawAcct(n); }); };
     n.querySelector('#ac_new').onclick = () => go('/auth/signup', '회원가입하는');
     n.querySelectorAll('input').forEach(i => i.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); go(i.id === 'ac_nk' ? '/auth/signup' : '/auth/login', i.id === 'ac_nk' ? '회원가입하는' : '로그인하는'); } });
   }
@@ -28582,10 +29272,12 @@ function noticeShow() {
   const n = el('div', 'notice');
   n.id = 'notice';
   const by = LIVE.noticeBy || '';                    /* 게스트의 말 — 그 이름으로 뜬다 */
-  const hype = !by && msg.indexOf(HYPE_SAY) === 0;   /* 이벤트 알림은 더 요란하게 */
+  const staff = by === '백사' ? '관리자' : by === '관리 봇' ? '자동' : '';     /* 백사 · 관리 봇은 게스트가 아니다 */
+  const hype = (!by || staff) && HYPE_RE.test(msg);   /* 이벤트 알림은 더 요란하게 */
   if (hype) n.classList.add('hype');
-  if (by) n.classList.add('guest');
-  n.innerHTML = `<i>${hype ? '祭' : by ? '客' : '言'}</i><div class="nt"><b>${by ? wEsc(by) + '<small>게스트</small>' : DEV_NAME}</b><span></span></div>`;
+  if (by && !staff) n.classList.add('guest');
+  if (staff) n.classList.add('staff');
+  n.innerHTML = `<i>${hype ? '祭' : by === '관리 봇' ? '守' : staff ? '管' : by ? '客' : '言'}</i><div class="nt"><b>${by ? wEsc(by) + `<small>${staff || '게스트'}</small>` : DEV_NAME}</b><span></span></div>`;
   n.querySelector('span').textContent = msg;
   document.body.appendChild(n);
   /* 소리 — 앱이 막 켜져 아직 한 번도 안 눌렀으면 기계가 소리를
@@ -29899,11 +30591,11 @@ function drawCast(grid) {
     </div>
     <div class="castquick"><small>빠른 길</small>
       <button data-q="pal"><i>播</i>퍼뜨리기 빠른 창<em>Tab</em></button><button data-q="wheel"><i>運</i>운명의 바퀴</button>
-      <button data-q="scode"><i>秘</i>비밀 코드</button>${cutMkOn() ? '<button data-q="cutmk"><i>映</i>컷씬 공방</button>' : ''}</div>
+      <button data-q="scode"><i>秘</i>비밀 코드</button><button data-q="bot"><i>守</i>관리 봇</button>${cutMkOn() ? '<button data-q="cutmk"><i>映</i>컷씬 공방</button>' : ''}</div>
     ${LIVE_URL ? '' : `<div class="castwarn">소식 자리(LIVE_URL)가 비어 있다 —
       아직 아무 데도 퍼지지 않는다. 서버를 세우고 그 주소를 적어야 한다.</div>`}
 
-    <div class="castsec"><b>「${HYPE_SAY}」</b>
+    <div class="castsec"><b>「${hypeSay()}」</b>
       <div class="casthint">모든 앱 윗면에 소리와 함께 붉게 떴다가 셋 셈 뒤 사라진다.</div>
       <div class="castbtnrow">
         <button class="brush-btn red" id="ct_hype">알림 띄우기</button>
@@ -29929,13 +30621,32 @@ function drawCast(grid) {
       <div class="sclist" id="sc_list"></div>
     </div>
 
-    <div class="castsec"><b>${DEV_NAME}의 말</b>
-      <div class="casthint">앱 맨 윗면에 「${DEV_NAME}」 이름으로 걸린다. 비우고 퍼뜨리면 내려간다.</div>
+    <div class="castsec"><b>${admName()}의 말</b>
+      <div class="casthint">앱 맨 윗면에 「${admName()}」 이름으로 걸린다. 비우고 퍼뜨리면 내려간다.</div>
       <textarea id="ct_notice" maxlength="300" rows="3"
         placeholder="이를테면 — 오늘 밤 아홉 시, 별이 쏟아집니다."></textarea>
       <div class="ntpl" id="ct_ntpl"></div>
       <div class="castbtnrow"><button class="brush-btn gold" id="ct_sendn">말 퍼뜨리기</button>
         <button class="brush-btn ghost" id="ct_ntsave" style="color:#e9dfc9;border-color:#8a7f68">＋ 지금 말을 틀로 적어 두기</button></div>
+    </div>
+
+    <div class="castsec cpnsec"><b>券 할인권 · 價 오늘의 특가</b>
+      <div class="casthint">할인권 — 퍼진 동안 들어와 있는(로그인한) 사람이 한 장씩 받는다. 일일상점과 상자 뽑기의 다이아 값에 한 번 살 때 한 장 쓴다.
+        특가 — 일일상점의 값을 정한 동안 내린다(할인권과 겹친다). 우편함 작성 탭에서도 할인권을 보낼 수 있다.</div>
+      <div class="castbtnrow">
+        <select id="ct_cpk">${CPN_KS.map(k => `<option value="${k}">${CPN[k].n}</option>`).join('')}</select>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">장수 <input id="ct_cpn" type="number" min="1" max="10" value="1" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_cpm" type="number" min="1" max="1440" value="10" style="width:64px"> 분</label>
+        <button class="brush-btn gold" id="ct_cpgo">할인권을 퍼뜨린다</button>
+        <button class="brush-btn ghost" id="ct_cpoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
+      </div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">특가 −<input id="ct_sap" type="number" min="5" max="50" value="20" style="width:56px">%</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_sah" type="number" min="1" max="48" value="3" style="width:56px"> 시간</label>
+        <button class="brush-btn gold" id="ct_sago">특가를 건다</button>
+        <button class="brush-btn ghost" id="ct_saoff" style="color:#e9dfc9;border-color:#8a7f68">내린다</button>
+      </div>
+      <div class="casthint" id="ct_cpnow"></div>
     </div>
 
     <div class="castsec festsec"><b>🎉 원클릭 축제</b>
@@ -30294,7 +31005,7 @@ function drawCast(grid) {
   grid.querySelectorAll('.castquick [data-q]').forEach(b => b.onclick = () => {
     const k = b.dataset.q;
     if (k === 'pal') { closeOverlay(); showCastPal(); } else if (k === 'wheel') showWheelMaker();
-    else if (k === 'cutmk') showCutMaker(); else { const t = $('.adtab[data-t="scode"]'); if (t) t.click(); }
+    else if (k === 'cutmk') showCutMaker(); else { const t = $(`.adtab[data-t="${k === 'bot' ? 'bot' : 'scode'}"]`); if (t) t.click(); }
   });
 
   const send = async (patch, what) => {
@@ -30313,10 +31024,27 @@ function drawCast(grid) {
   ntDraw();
   grid.querySelector('#ct_ntsave').onclick = () => { const v = grid.querySelector('#ct_notice').value.trim(); if (!v) { say('적어 둘 말이 비었다', false); return; }
     const l = ntplGet(); if (!l.includes(v)) { l.unshift(v); ntplSet(l); } ntDraw(); say('틀로 적어 두었다', true); };
+  /* 할인권 · 특가 */
+  const cpNow = () => { const e = grid.querySelector('#ct_cpnow'); if (!e) return; const c = LIVE.cpn && srvNow() < LIVE.cpn.until ? LIVE.cpn : null, s = saleNow();
+    e.innerHTML = [c ? `券 퍼지는 중 — ${CPN_KS.filter(k => c.ks && c.ks[k]).map(k => CPN[k].n + ' ×' + c.ks[k]).join(' · ')} · ${wTime(c.until - srvNow())} 남음` : '퍼지는 할인권 없음',
+      s ? `價 특가 −${s.pct}% · ${wEsc(s.by || '')} · ${wTime(s.until - srvNow())} 남음` : '특가 없음'].join(' &nbsp;|&nbsp; '); };
+  cpNow();
+  grid.querySelector('#ct_cpgo').onclick = () => {
+    const k = grid.querySelector('#ct_cpk').value, n = Math.max(1, Math.min(10, Math.floor(+grid.querySelector('#ct_cpn').value || 1))), min = Math.max(1, Math.min(1440, Math.floor(+grid.querySelector('#ct_cpm').value || 10)));
+    const patch = hype(CPN[k].n, { cpn: { ks: { [k]: n }, min, say: admName() + '의 할인권' } });
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: CPN[k].n, then: patch } }, `카운트다운 ${cds()}초 → ${CPN[k].n}`).then(cpNow);
+    send(patch, `${CPN[k].n} ×${n} · ${min}분`).then(cpNow);
+  };
+  grid.querySelector('#ct_cpoff').onclick = () => send({ cpn: null }, '할인권 거두기').then(cpNow);
+  grid.querySelector('#ct_sago').onclick = () => {
+    const pct = Math.max(5, Math.min(50, Math.floor(+grid.querySelector('#ct_sap').value || 20))), h = Math.max(1, Math.min(48, Math.floor(+grid.querySelector('#ct_sah').value || 3)));
+    send(hype('오늘의 특가 −' + pct + '%', { sale: { pct, min: h * 60, by: admName() } }), `오늘의 특가 −${pct}% · ${h}시간`).then(cpNow);
+  };
+  grid.querySelector('#ct_saoff').onclick = () => send({ sale: null }, '특가 내리기').then(cpNow);
   /* 원클릭 축제 */
   grid.querySelectorAll('[data-fest]').forEach(b => b.onclick = () => {
     const f = FEST[b.dataset.fest]; if (!confirm(`「${f.n}」을(를) 지금 시작할까?\n${f.d}`)) return;
-    const steps = f.steps.map(([after, label, patch], i) => ({ after, label, patch: i === 0 ? hype(f.n, Object.assign({}, patch)) : patch }));
+    const steps = festSteps(b.dataset.fest, hype);
     send({ schedule: { at: Date.now() + 1500, label: f.n, steps } }, f.n).then(r => { const lg = grid.querySelector('#ct_festlog'); if (lg) lg.innerHTML = r && r.ok ? `<b style="color:#7fe6cf">${f.n}</b> — 시작했다 · 예약 목록에 걸렸다` : ''; });
   });
   grid.querySelector('#ct_sendn').onclick = () => {
@@ -30328,8 +31056,8 @@ function drawCast(grid) {
   try { hypeBox.checked = localStorage.getItem('baekgwi_hypeauto') !== '0'; } catch (e) { hypeBox.checked = true; }
   hypeBox.onchange = () => { try { localStorage.setItem('baekgwi_hypeauto', hypeBox.checked ? '1' : '0'); } catch (e) {} };
   const hype = (what, patch) => hypeBox.checked
-    ? Object.assign(patch, { notice: HYPE_SAY + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
-  grid.querySelector('#ct_hype').onclick = () => send({ notice: HYPE_SAY, noticeAt: Date.now() }, '이벤트 알림');
+    ? Object.assign(patch, { notice: hypeSay() + (what ? ' — ' + what : ''), noticeAt: Date.now() }) : patch;
+  grid.querySelector('#ct_hype').onclick = () => send({ notice: hypeSay(), noticeAt: Date.now() }, '이벤트 알림');
   drawSched(grid, send);
   grid.querySelectorAll('.castev:not(.song):not(.fxc)').forEach(b => {
     b.onclick = () => {
@@ -30645,7 +31373,7 @@ function drawSched(grid, send) {
   /* 장면 추가 단추 */
   const add = $g('#sc_add');
   const kinds = [
-    ['notice', `+ ${DEV_NAME}의 말`], ['hype', '+ 이벤트 알림'],
+    ['notice', `+ ${admName()}의 말`], ['hype', '+ 이벤트 알림'],
     ...Object.keys(WORLD).map(k => ['ev:' + k, '+ ' + WORLD[k].n]),
     ['evoff', '+ 일 끄기'], ['boss', '+ 괴물 소환 (모두의 적)'], ['gift', '+ 선물 (부적·재화)'],
     ...Object.keys(SONGS).map(k => ['music:' + k, '+ 노래 「' + SONGS[k].n + '」']), ['musicoff', '+ 노래 끄기'],
@@ -30656,8 +31384,8 @@ function drawSched(grid, send) {
   function addStep(k) {
     const prev = steps.length ? steps[steps.length - 1].after : -5;
     const st = { kind: k, after: prev + 5, text: '' };
-    if (k === 'notice') { st.label = DEV_NAME + '의 말'; st.text = ($g('#ct_notice').value || '').trim(); }
-    else if (k === 'hype') st.label = HYPE_SAY;
+    if (k === 'notice') { st.label = admName() + '의 말'; st.text = ($g('#ct_notice').value || '').trim(); }
+    else if (k === 'hype') st.label = hypeSay();
     else if (k.startsWith('ev:')) { const w = WORLD[k.slice(3)]; st.label = w.g + ' ' + w.n; }
     else if (k === 'evoff') st.label = '일을 모두 끈다';
     else if (k === 'boss') {
@@ -30719,7 +31447,7 @@ function drawSched(grid, send) {
   drawSteps();
   const toPatch = st => {
     if (st.kind === 'notice') return { notice: st.text, noticeAt: Date.now() };
-    if (st.kind === 'hype') return { notice: HYPE_SAY, noticeAt: Date.now() };
+    if (st.kind === 'hype') return { notice: hypeSay(), noticeAt: Date.now() };
     if (st.kind.startsWith('ev:')) return { event: st.kind.slice(3), eventAt: Date.now() };
     if (st.kind === 'evoff') return { event: '', eventAt: Date.now() };
     if (st.kind === 'boss') return { boss: st.boss };
@@ -30737,7 +31465,7 @@ function drawSched(grid, send) {
     if (!t || t < Date.now() - 60000) { toast('앞으로 올 때를 고르시오'); SND.err(); return; }
     const calOnly = $g('#sc_calonly').checked, note = $g('#sc_note').value.trim();
     if (!steps.length && !calOnly) { toast('장면을 하나 넘게 쌓거나 「달력에만 알리기」를 켜시오'); SND.err(); return; }
-    if (steps.some(st => st.kind === 'notice' && !st.text.trim())) { toast(DEV_NAME + '의 말이 비었다'); SND.err(); return; }
+    if (steps.some(st => st.kind === 'notice' && !st.text.trim())) { toast(admName() + '의 말이 비었다'); SND.err(); return; }
     const label = $g('#sc_label').value.trim() || steps.map(st => st.label).join(' → ').slice(0, 60);
     if (!label) { toast('예약 이름을 적으시오'); SND.err(); return; }
     send({ schedule: { at: t, label, note, calOnly: calOnly && !steps.length, steps: steps.map(st => ({ after: st.after, label: st.label, patch: toPatch(st) })) } },
@@ -30873,7 +31601,7 @@ async function guestInbox(force) {
   try { SND.bell(); } catch (e) {}
   const p = modal(`<h2 style="color:#f0b8e8">客 게스트 초대</h2>
     <div class="hint" style="max-width:420px;margin-top:8px;line-height:1.9">
-      <b style="color:#e8c86a">${DEV_NAME}</b>가 그대를 <b style="color:#f0b8e8">게스트</b>로 초대했다.<br>
+      <b style="color:#e8c86a">${admName()}</b>가 그대를 <b style="color:#f0b8e8">게스트</b>로 초대했다.<br>
       게스트가 되면 — 말을 퍼뜨려 모든 앱 윗면에 제 이름으로 띄우고, 「혼돈」을 퍼뜨릴 수 있다.
       관리자가 따로 허락하면 이벤트 때 부적도 뿌린다.
     </div>
@@ -31918,16 +32646,25 @@ async function mpBotEnd(win) {
 
 /* 관리자 손잡이 — 개발용. 제출 전에 CODES 와 함께 지운다 */
 const ADMIN = { oneHit: false };
-function adminOn() { return !!(META.codes && (META.codes[ADMIN_H] || META.codes[CAST_H])); }
+function adminOn() { return !!(META.codes && (META.codes[ADMIN_H] || META.codes[CAST_H])) || baeksaOn(); }
 function castKey() { try { return localStorage.getItem(CASTKEY) || ''; } catch (e) { return ''; } }
-function caster() { return !!(META.codes && META.codes[CAST_H] && castKey()); }
+function caster() { return !!(META.codes && (META.codes[CAST_H] || baeksaOn()) && castKey()); }
+/* 백사 — 두 인을 다 적은 기계. 백야의 열쇠가 함께 있으면 백야로 본다 */
+function baeksaOn() { return !!(META.codes && META.codes[BAEKSA_H1] && META.codes[BAEKSA_H2]); }
+function isBaeksa() { return baeksaOn() && !(META.codes[CAST_H] || META.codes[ADMIN_H]); }
+function admName() { return isBaeksa() ? '백사' : DEV_NAME; }
+function baeksaGive(other) {
+  if (!baeksaOn()) return `${other} 인을 마저 적으면 백사가 된다`;
+  setTimeout(() => { closeTop(); showAdmin(); try { SND.unlock(); SND.gong(); stampWord('白 蛇', '#9fe8ff'); screenFlash('rgba(150,230,255,.35)', 700); } catch (e) {} }, 220);
+  return '백사 — 두 번째 관리자로 섰다';
+}
 function showAdmin() {
   const run = G.run;
   const p = overlay(`<div class="school admin">
     <div class="schead">
       <button class="gback" id="ad_back">←</button>
-      <h2>관리자</h2>
-      <div class="scnote">ADMIN</div>
+      <h2>${isBaeksa() ? '관리자 · 백사' : '관리자'}</h2>
+      <div class="scnote">${isBaeksa() ? 'ADMIN Ⅱ' : 'ADMIN'}</div>
     </div>
     <div class="scbody">
       <div class="scside">
@@ -31957,7 +32694,7 @@ function showAdmin() {
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
           <button class="adtab power" data-t="power">權 개발자의 권력</button>
-          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button><button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button><button class="adtab sctab" data-t="scode">秘 비밀 코드</button>' + (cutMkOn() ? '<button class="adtab cmktab" data-t="cutmk">映 컷씬 공방</button>' : '') + '<button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button>' + (isBaeksa() ? '' : '<button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button>') + '<button class="adtab sctab" data-t="scode">秘 비밀 코드</button>' + (cutMkOn() ? '<button class="adtab cmktab" data-t="cutmk">映 컷씬 공방</button>' : '') + '<button class="adtab bottab" data-t="bot">守 관리 봇</button><button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -31977,6 +32714,7 @@ function showAdmin() {
     if (tab === 'dash') { find.style.display = 'none'; drawDash(grid); return; }
     if (tab === 'log') { find.style.display = 'none'; drawLog(grid); return; }
     if (tab === 'mail') { find.style.display = 'none'; drawMailCompose(grid); return; }
+    if (tab === 'bot') { find.style.display = 'none'; drawBot(grid); return; }
     if (tab === 'scode') { find.style.display = 'none'; drawScode(grid); return; }
     if (tab === 'cutmk') { find.style.display = 'none'; drawCutMkTab(grid); return; }
     find.style.display = '';
@@ -32556,6 +33294,7 @@ function redeemCode(raw) {
   META.codes[k] = Date.now(); saveMeta();
   /* 퍼뜨리는 열쇠는 서버에 보여 줘야 하므로 이 기계에만 적어 둔다 */
   if (k === CAST_H) { try { localStorage.setItem(CASTKEY, plain.toLowerCase()); } catch (e) {} }
+  if (k === BAEKSA_H2 && !META.codes[CAST_H]) { try { localStorage.setItem(CASTKEY, plain.toLowerCase()); } catch (e) {} }   /* 백사의 둘째 인 — 백야의 열쇠를 덮지 않는다 */
   if (k === CUTMK_H) { try { localStorage.setItem(CUTMK_KEY, plain.toLowerCase()); } catch (e) {} }
   let got = c.give();
   saveMeta();
@@ -32817,16 +33556,17 @@ function showCardDetail(id) {
 }
 function showDex() {
   const byGrade = {};
-  for (const k of GRADE_ORDER.concat(['curse'])) byGrade[k] = [];
-  for (const id in CARDS) if (!CARDS[id].hackOnly && !CARDS[id].devOnly) byGrade[CARDS[id].rar].push(id);
+  const DEX_G = GRADE_ORDER.concat(['qx', 'curse']), dexOk = id => !CARDS[id].hackOnly && (!CARDS[id].devOnly || CARDS[id].rar === 'qx');
+  for (const k of DEX_G) byGrade[k] = [];
+  for (const id in CARDS) if (dexOk(id) && byGrade[CARDS[id].rar]) byGrade[CARDS[id].rar].push(id);
   const relicIds = Object.keys(RELICS).filter(id => !RELICS[id].eventOnly), enemyIds = Object.keys(ENEMIES).filter(id => !/^(hk|ev)_/.test(id));
-  const totalCards = Object.keys(CARDS).filter(id => !CARDS[id].hackOnly && !CARDS[id].devOnly).length;
+  const totalCards = Object.keys(CARDS).filter(dexOk).length;
 
   let secs = '';
-  for (const gk of GRADE_ORDER.concat(['curse'])) {
+  for (const gk of DEX_G) {
     if (!byGrade[gk].length) continue;
     const got = byGrade[gk].filter(id => META.dex.cards[id]).length;
-    const note = gk === 'unknown' ? '<em>특대급 상자에서 0.05% — 세상에 단 하나</em>'
+    const note = gk === 'qx' ? '<em>일일상점에 0.01% 확률로 흘러나온다 — 실험의 끝</em>' : gk === 'unknown' ? '<em>특대급 상자에서 0.05% — 세상에 단 하나</em>'
       : gk === 'ssx' ? '<em>특대급 상자에서 5%</em>'
       : gk === 'special' ? '<em>특별 상자에서만</em>' : '';
     secs += `<div class="dexsec"><h3><span class="gradechip" style="--gc:${GRADE[gk].c}">${GRADE[gk].s}</span> ${GRADE[gk].n}
@@ -32857,7 +33597,7 @@ function showDex() {
     </div>
     <button class="brush-btn" id="dx_close">닫기</button>`);
 
-  for (const gk of GRADE_ORDER.concat(['curse'])) {
+  for (const gk of DEX_G) {
     const box = p.querySelector(`.dexgrid[data-g="${gk}"]`);
     if (!box) continue;
     for (const id of byGrade[gk]) {
@@ -33268,7 +34008,7 @@ const GUIDE = {
     <div class="icoline"><b>祕</b><span>비기 장착 — 하나만, 전투당 한 번</span></div>
     <div class="icoline"><b>合</b><span>유물 조합 — 재료가 모이면 숫자가 뜬다</span></div>
     <div class="icoline"><b>商</b><span>상인에게 간다</span></div>
-    <div class="icoline"><b>匣</b><span>부적 뽑기. 곁의 숫자는 다음 누적 보너스까지 남은 횟수</span></div>
+    <div class="icoline"><b>匣</b><span>상점 — 일일상점과 부적 뽑기. 곁의 숫자는 다음 누적 보너스까지 남은 횟수</span></div>
     <div class="icoline"><b>덱</b><span>지금 내 덱 전부 보기</span></div>
     <div class="icoline"><b>≡</b><span>소리 · 진행 속도 · 도감 · 안내서</span></div>
     <h3>진행이 느리게 느껴지면</h3>
@@ -33332,7 +34072,7 @@ const TUTOR = [
         '<b>야영지</b>에서는 쉬거나 부적을 벼린다.',
         '쓰러져도 끝이 아니다. <b>그 갈림길로 돌아가</b> 다시 오를 수 있다.'] },
   { g: '匣', t: '뽑기와 터', c: '#6fd0e8',
-    b: '상단바 <b>匣</b>은 <b>부적 뽑기</b>, <b>場</b>은 <b>상점 · 대전투장 · 장기 · 저주의 서당</b>이 모인 자리다.',
+    b: '상단바 <b>匣</b>은 <b>상점(일일상점·부적 뽑기)</b>, <b>場</b>은 <b>상점 · 대전투장 · 장기 · 저주의 서당</b>이 모인 자리다.',
     s: ['뽑기는 다이아로 상자를 연다. 누적 <b>30 · 60 · 100회</b>마다 확정 보너스가 있다.',
         '<b>스킨 상자</b>는 부적의 겉모습만 바꾼다. 성능은 그대로다.',
         '<b>저주의 서당</b>은 이레에 한 번, 스무 판의 값을 받고 영구한 힘을 준다.'] },
