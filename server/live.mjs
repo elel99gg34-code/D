@@ -365,7 +365,7 @@ async function bkCollect() {
   const out = { v: 1, at: Date.now(), live, kv: {}, pg: null };
   const c = await store();
   if (c) {
-    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*', 'nkat:*', 'emo:*']) {
+    for (const pat of ['u:*', 't:*', 'pay:*', 'g:*', 'mp:*', 'mptop', 'nick:*', 'nk:*', 'bans', 'ud:*', 'um:*', 'clears', 'ht:*', 'hbw:*', 'ml:*', 'mlc:*', 'pf:*', 'fr:*', 'rk:*', 'rkv:*', 'scc:*', 'rc:*', 'nkat:*', 'emo:*', 'mpseason', 'mphall']) {
       for await (const k of c.scanIterator({ MATCH: pat, COUNT: 500 })) {
         const keys = Array.isArray(k) ? k : [k];
         for (const kk of keys) { const v = await c.get(kk); if (v != null) out.kv[kk] = v; }
@@ -593,7 +593,7 @@ function mailMake(m) {
   return { id: str(m.id, 40) || ('m' + now + Math.floor(Math.random() * 1000)), at: now, until: now + days * 86400000,
            title: str(m.title, 40) || '우편', say: str(m.say, 300), from: str(m.from, 20) || '백야',
            gold: num(m.gold, 1000000), dia: num(m.dia, 100000), jp: num(m.jp, 100000), cards, mats, cpn: cpnClean(m.cpn),
-           emo: Array.isArray(m.emo) ? m.emo.filter(x => EMO_PACKS.includes(x) && !EMO_FREE.includes(x)).slice(0, 4) : [] };
+           emo: Array.isArray(m.emo) ? m.emo.filter(x => EMO_PACKS.includes(x) && !EMO_FREE.includes(x)).slice(0, 4) : [], legend: num(m.legend, 5) };
 }
 function mailAdd(m) {
   const one = mailMake(m);
@@ -1144,7 +1144,7 @@ async function runSchedule(now) {
   } finally { _schedBusy = false; }
   return changed;
 }
-setInterval(() => { store().then(() => runSchedule(Date.now())).then(() => wheelStep(Date.now())).then(() => botStep(Date.now())).catch(() => {}); }, 1000);
+setInterval(() => { store().then(() => runSchedule(Date.now())).then(() => wheelStep(Date.now())).then(() => botStep(Date.now())).then(() => seasonStep(Date.now())).catch(() => {}); }, 1000);
 
 /* ══════════════════════════════════════════════════════════
    게스트 — 관리자가 허락한 손님
@@ -1313,7 +1313,38 @@ const mpTier = rp => { let t = MP_TIERS[0]; for (const x of MP_TIERS) if (rp >= 
 const MP_SHOP = { gold: 10, dia: 20, jp: 15, bigbox: 60, card_duel: 120, card_twin: 120, card_crown: 160, card_mirror: 160 };
 const MP_BOT_DAY = 10;                      /* 그림자와의 연습 — 하루 열 번까지만 토큰 */
 const mpBlank = () => ({ rp: 0, w: 0, l: 0, fw: 0, fl: 0, tok: 0, streak: 0, best: 0, day: '', botN: 0 });
-async function mpProf(id) { return Object.assign(mpBlank(), (await get('mp:' + id)) || {}); }
+/* ── 대전 시즌 — 한 달에 한 번 (한국 시각 달이 바뀔 때) · 판 57 ──────────────────
+   달이 바뀌면 지난 시즌 순위 1위에게 「레전드 로얄」 스킨권을 우편으로 보내고, 순위표를 새로 연다.
+   점수는 사람마다 처음 대전에 들 때 반으로 줄어든다(완전히 지우지는 않는다). 관리자는 순위에 들지 않는다. */
+const seasonOf = t => new Date(t + 9 * 3600e3).toISOString().slice(0, 7);
+const seasonEnd = t => { const d = new Date(t + 9 * 3600e3); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1) - 9 * 3600e3; };
+let _seasonAt = 0;
+async function seasonStep(now) {
+  if (now - _seasonAt < 60000) return false; _seasonAt = now;
+  const cur = seasonOf(now), st = (await get('mpseason')) || null;
+  if (!st) { await put('mpseason', { id: cur, at: now }); return false; }
+  if (st.id === cur) return false;
+  const top = ((await get('mptop')) || []).filter(x => x && x.nick && !NICK_BAN.test(x.nick));
+  const win = top[0];
+  const hall = (await get('mphall')) || [];
+  if (win) {
+    const box = ((await get('ml:' + win.id)) || []).filter(x => now <= x.until);
+    box.push(mailMake({ title: `${st.id} 시즌 1위 — 레전드 로얄`, say: `대전 ${st.id} 시즌 1위를 기린다. 레전드 로얄 스킨권 — 원하는 부적에 입힌다.`, from: '대전 마당', legend: 1, dia: 1000, days: 30 }));
+    await put('ml:' + win.id, box.slice(-MAIL_ONE_MAX));
+    hall.unshift({ id: st.id, nick: win.nick, rp: win.rp, at: now });
+    alog(win.id, `${st.id} 시즌 1위 — 레전드 로얄`).catch(() => {});
+  }
+  await put('mphall', hall.slice(0, 24));
+  await put('mptop', []);
+  await put('mpseason', { id: cur, at: now, last: win ? { id: st.id, nick: win.nick } : null });
+  console.log('대전 시즌이 바뀌었다:', st.id, '→', cur, win ? '· 1위 ' + win.nick : '');
+  return true;
+}
+async function mpProf(id) {
+  const p = Object.assign(mpBlank(), (await get('mp:' + id)) || {}), cur = seasonOf(Date.now());
+  if (p.season !== cur) { if (p.season) p.rp = Math.round((p.rp || 0) / 2); p.season = cur; p.sw = 0; p.sl = 0; await put('mp:' + id, p); }
+  return p;
+}
 async function mpPut(id, p) { await put('mp:' + id, p); }
 /* 순위표 — 점수가 바뀔 때마다 고쳐 둔다 (백 명까지) */
 async function mpTopSet(id, p) {
@@ -1473,12 +1504,12 @@ function mpMatchmake(now) {
 /* 판을 그 사람에게 보여 줄 모양 — since 뒤의 일만 */
 function mpView(m, acct, since) {
   return { id: m.id, mode: m.mode, ranked: m.ranked, me: acct, order: m.order,
-    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, deck: p.acct === acct ? undefined : p.deck.slice() })),
+    players: m.players.map(p => ({ acct: p.acct, name: p.name, team: p.team, rp: p.rp, tier: p.tier, lv: p.lv, plv: p.plv || 1, deck: p.acct === acct ? undefined : p.deck.slice() })),
     units: Object.fromEntries(Object.entries(m.units).map(([k, u]) => [k, mpUnitView(u)])),
     turn: { acct: m.turn.acct, no: m.turn.no, left: Math.max(0, m.turn.deadline - Date.now()) },
     seq: m.seq, ev: m.ev.filter(e => e.seq > (since || 0)), over: m.over, win: m.win, res: m.res ? m.res[acct] || null : null };
 }
-function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp), lv: x.lv, hp: x.hp })), queued: !!r.queued }; }
+function mpRoomView(r) { return r && { code: r.code, mode: r.mode, owner: r.owner, members: r.members.map(x => ({ acct: x.acct, name: x.name, team: x.team, rp: x.rp, tier: mpTier(x.rp), lv: x.lv, plv: x.plv || 1, hp: x.hp })), queued: !!r.queued }; }
 
 /* ── 주고받기 ───────────────────────────────────────────── */
 const CORS = {
@@ -2287,7 +2318,17 @@ const server = http.createServer(async (req, res) => {
     const dev = !!admRole(q.code);
     const acct = dev ? null : await tokWho(q.token);
     if (!dev && !acct) return send(res, 401, { ok: false, why: '로그인해야 한다' });
-    if (act === 'invite' || act === 'list' || act === 'gift' || act === 'guest') { if (!dev) return send(res, 403, { ok: false, why: '백야만 할 수 있다' }); }
+    if (act === 'invite' || act === 'list' || act === 'gift' || act === 'guest' || act === 'lvbomb') { if (!dev) return send(res, 403, { ok: false, why: '백야만 할 수 있다' }); }
+    /* 레벨업 폭탄 — 아이디·닉네임을 아는 이에게. 받는 쪽은 다음 소식에 곧바로 터진다 (판 57) */
+    if (act === 'lvbomb') {
+      let to = str(q.to, 20).trim();
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 아이디·닉네임이 없다' });
+      const n = Math.max(1, Math.min(20, parseInt(q.n, 10) || 1));
+      await put('lvb:' + to, { n, at: now, by: admRole(q.code) === 'baeksa' ? '백사' : '백야' });
+      alog(to, `레벨업 폭탄 +${n}`).catch(() => {});
+      return send(res, 200, { ok: true, to, nick: (await nickOf(to)) || to, n });
+    }
     if (act === 'invite') {
       let to = str(q.to, 20).trim();
       if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
@@ -2303,7 +2344,8 @@ const server = http.createServer(async (req, res) => {
     if (act === 'list') return send(res, 200, { ok: true, rooms: [...meetRooms.values()].map(r => ({ id: r.id, user: r.user, nick: r.nick, state: r.state, at: r.at })) });
     if (act === 'inbox') {
       const r = meetRooms.get(meetOf.get(acct));
-      return send(res, 200, { ok: true, room: r && r.state !== 'closed' ? meetView(r, r.seq) : null });
+      const lvb = await get('lvb:' + acct); if (lvb) await put('lvb:' + acct, null);     /* 레벨업 폭탄 — 한 번만 */
+      return send(res, 200, { ok: true, room: r && r.state !== 'closed' ? meetView(r, r.seq) : null, lvb: lvb || null });
     }
     const r = meetRooms.get(str(q.id, 20));
     if (!r || (!dev && r.user !== acct)) return send(res, 404, { ok: false, why: '그 면담 방이 없다' });
@@ -2368,10 +2410,15 @@ const server = http.createServer(async (req, res) => {
     const prof = await mpProf(acct);
     /* 인게임 멀티 — 지금 모험의 덱·최대 체력·막을 들고 온다 */
     const me = { acct, name: (await nickOf(acct)) || acct, ttl: str(((await get('pf:' + acct)) || {}).title, 14), rp: prof.rp, deck: mpDeck(q.deck), ver: parseInt(q.ver, 10) || 0,
-                 hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)) };
+                 hp: Math.max(30, Math.min(999, parseInt(q.hp, 10) || 0)), lv: Math.max(1, Math.min(40, parseInt(q.lv, 10) || 1)),
+                 plv: Math.max(1, Math.min(99, parseInt(q.plv, 10) || 1)) };
+    /* 대전은 레벨 2부터 (판 57) — 관리자는 매이지 않는다 */
+    const plvOk = me.plv >= 2 || !!admRole(q.code);
+    if (!plvOk && (act === 'queue' || act === 'room' || act === 'party')) return send(res, 403, { ok: false, why: '대전은 레벨 2부터 — 요괴를 몇 무리 더 쓰러뜨리고 오시오', lvlock: true });
     const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct });
 
-    if (act === 'me') return send(res, 200, { ok: true, prof: profView(), tiers: MP_TIERS, shop: MP_SHOP });
+    if (act === 'me') { const ss = (await get('mpseason')) || {}; return send(res, 200, { ok: true, prof: profView(), tiers: MP_TIERS, shop: MP_SHOP,
+      season: { id: seasonOf(now), ends: seasonEnd(now), last: ss.last || null, hall: ((await get('mphall')) || []).slice(0, 6) } }); }
     /* 묻기 — 줄·방·판·초대를 한꺼번에. 짝 짓기도 여기서 돈다 */
     if (act === 'poll') {
       mpMatchmake(now); mpTick(now);
