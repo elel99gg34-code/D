@@ -1805,6 +1805,29 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ══ 이야기 — 보스 뒤 막간 (판 57) ══ */
+.cut .stsub{position:absolute;left:50%;bottom:calc(10vh + 26px);transform:translate(-50%,8px);z-index:9;width:max-content;max-width:min(860px,90vw);text-align:center;color:#f3e9d2;
+  font-size:clamp(15px,2.1vw,22px);line-height:1.7;letter-spacing:.07em;text-shadow:0 2px 12px #000,0 0 30px #000,0 0 4px #000;opacity:0;transition:opacity .6s,transform .6s;pointer-events:none;word-break:keep-all;
+  padding:10px 34px;background:radial-gradient(ellipse at center,rgba(0,0,0,.5) 0%,rgba(0,0,0,.28) 55%,transparent 76%)}
+.cut .stsub.on{opacity:1;transform:translate(-50%,0)}
+.cut .stsub b{display:block;font-size:.66em;letter-spacing:.45em;color:#c8a94e;font-weight:400;margin-bottom:4px}
+.cut .stsub.dano b{color:#9fd0ff}.cut .stsub.dano span{color:#e2f1ff}
+@media (max-height:500px){.cut .stsub{font-size:13.5px;line-height:1.5;bottom:calc(10vh + 4px);padding:5px 22px;max-width:min(760px,84vw)}.cut .stsub b{margin-bottom:1px}.cut .sttap{display:none}}
+.cut .sttap{position:absolute;right:16px;bottom:calc(10vh + 8px);z-index:10;font-size:11.5px;letter-spacing:.2em;color:rgba(233,223,201,.45);pointer-events:none;animation:stTap 2.4s ease-in-out infinite}
+@keyframes stTap{0%,100%{opacity:.35}50%{opacity:.9}}
+.cut.c3.st:after{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.95),rgba(240,236,228,.7) 60%,rgba(220,214,204,.5));opacity:0;transition:opacity 1.4s}
+.cut.c3.st.stwhite:after{opacity:.62}
+.cut.c3.st.stwhite .stsub{color:#2a2018;text-shadow:0 0 14px #fff,0 0 30px #fff;background:radial-gradient(ellipse at center,rgba(255,255,255,.55) 0%,rgba(255,255,255,.25) 55%,transparent 76%)}
+.cut.c3.st.stwhite .stsub b{color:#8a5a20}
+.eggcine.st2 .ecline{white-space:normal;word-break:keep-all}
+.st2lan{animation:st2Lan 1.6s ease-in-out infinite alternate}
+@keyframes st2Lan{from{opacity:.45}to{opacity:1}}
+.st2fade{transform-box:fill-box;transform-origin:center;animation:st2Fade 2.4s ease-in 1.4s forwards}
+@keyframes st2Fade{to{opacity:0;transform:translateY(-24px) scale(1.12);filter:blur(6px)}}
+.st2tal{transform-box:fill-box;transform-origin:center;animation:st2Tal 3s ease-in-out infinite alternate}
+@keyframes st2Tal{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-8px) rotate(3deg)}}
+.st2tal.burn{animation:st2Burn 2.4s ease-in 1.2s forwards}
+@keyframes st2Burn{to{opacity:0;transform:translateY(-30px) rotate(40deg) scale(.6);filter:sepia(1) brightness(.4) blur(2px)}}
 /* ── 설정 (판 57) — 목차 · 찾기 · 갈래마다 한 장 ── */
 .panel.setp{padding:12px}
 .setwin{position:relative;width:min(900px,96vw);height:min(86vh,780px);display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
@@ -17521,6 +17544,11 @@ function friendBreak() {
   screenFlash('rgba(60,90,120,.4)', 800);
   /* 자동으로 돌 때는 창을 띄우지 않는다 — 스스로 닫지 못해 굳던 자리였다 */
   if (AUTO.on) { toast('통 부적이 끊겼다'); return; }
+  /* 무간 — 통 부적이 끊기는 그 자리를 이야기로 (끄면 예전 창) */
+  if (OPT.story !== 'off') {
+    storyPlay('mugan', true).then(() => { toast('통 부적이 재가 되었다 — 이제 훈수는 없다'); if (G.b) { setBg(); syncAll(); } });
+    return;
+  }
   const p = modal(`<h2>통(通) 부적이 끊겼다</h2>
     <div class="friendcut"><div class="fcg">${FRIEND.g}</div>
       <div class="fct">"…야. 여기 뭔가 이상해."<br>
@@ -18667,6 +18695,7 @@ function nextAct() {
   }
   noteClear(run.act);                       /* 이 막은 넘었다 — 오기는 여기서 걷힌다 */
   try { stAdd('act'); } catch (e) {}
+  const cleared = run.act, bp = run.bossPick;   /* 막을 넘기 전에 — 넘은 막과 고른 보스(3막은 갈림) */
   run.act++;
   run.floor = 0;
   setTimeout(checkUnlockToast, 900);
@@ -18677,6 +18706,8 @@ function nextAct() {
   saveRun();
   showMap();
   flash(`제 ${run.act}막 · ${ACT_NAME[run.act]}`);
+  /* 보스를 넘었다 — 그 막에서 있었던 일 · 단오의 흔적 · 다음 막으로 가는 길 (다음 막 지도 위에 덮어서) */
+  if (cleared >= 1 && !AUTO.on) try { storyAfterAct(cleared, bp); } catch (e) {}
 }
 
 function showMap() {
@@ -23867,6 +23898,7 @@ const CUT_LIST = { musou: { n: '무쌍 — 백귀야행', make: () => cutMusou()
 for (let a = 1; a <= 25; a++) CUT_LIST['boss' + a] = { n: `제${a}막 보스 — ${ACT_NAME[a]}`, make: () => cutBoss(a, (ENCOUNTERS[a] && ENCOUNTERS[a].boss[0]) || 'gumiho') };
 function cutByName(k) {
   const c = CUT_LIST[k]; if (!c) return Promise.resolve();
+  if (/^st_/.test(k)) return storyPlay(k.slice(3), true);
   const prev = G.scene; if (!G.b) G.scene = 'cutscene';
   return cutRun(k).then(() => { if (G.scene === 'cutscene') G.scene = prev; });
 }
@@ -26590,7 +26622,10 @@ function victory() {
   d.querySelector('#w_26').onclick = () => { SND.ui(); act26Trailer(); };
   d.querySelector('#w_26p').onclick = () => { SND.ui(); showAct26Preview(); };
   /* 처음 사신도를 넘었을 때 — 예고편이 저절로 한 번 */
-  if (!META.t26seen && OPT.cuts && !AUTO.on) setTimeout(() => { if (G.scene === 'win') act26Trailer(); }, 2600);
+  /* 사신도를 넘었다 — 단오의 손을 잡는 이야기, 그다음 예고편 */
+  if (!AUTO.on && storyWant('act25')) setTimeout(() => { if (G.scene !== 'win') return;
+    storyPlay('act25').then(() => { if (!META.t26seen && OPT.cuts && G.scene === 'win') setTimeout(() => { if (G.scene === 'win') act26Trailer(); }, 900); }); }, 1800);
+  else if (!META.t26seen && OPT.cuts && !AUTO.on) setTimeout(() => { if (G.scene === 'win') act26Trailer(); }, 2600);
 }
 /* 하늘을 가르는 것과 싸우는 동안에는 멈춤 창이 없다 — 나가려면 띠의 「나간다」 */
 const worldFighting = () => !!(G.b && G.b.kind === 'world' && !G.b.over);
@@ -26764,16 +26799,18 @@ function cutSeenSeed() {   /* 이 판 전에 넘은 막의 보스는 본 것으�
   if (META.t26seen) META.cutSeen.teaser26 = 1;
   META.cutSeenSeeded = 1; saveMeta();
 }
-const GALLERY_HINT = k => /^boss(\d+)$/.test(k) ? `제${k.slice(4)}막 보스 칸을 밟으면 열린다` : k === 'teaser26' ? '25막을 넘거나 예고를 보면 열린다'
+const GALLERY_HINT = k => /^st_/.test(k) && STORY57[k.slice(3)] ? (STORY57[k.slice(3)].pre ? `제${STORY57[k.slice(3)].act}막에 들어서면 열린다` : `제${STORY57[k.slice(3)].act}막 보스를 넘으면 열린다`)
+  : /^boss(\d+)$/.test(k) ? `제${k.slice(4)}막 보스 칸을 밟으면 열린다` : k === 'teaser26' ? '25막을 넘거나 예고를 보면 열린다'
   : k === 'tea' ? '백야와 면담하면 열린다' : /^(hack|hbblast)$/.test(k) ? '[해킹] 이벤트에서 열린다' : k === 'musou' ? '백야가 뿌리면 열린다' : '백야만 아는 장면';
 function showGallery() {
   cutSeenSeed();
-  const seen = META.cutSeen || {}, keys = Object.keys(CUT_LIST).filter(k => !/^dev/.test(k) || seen[k] || adminOn());
+  const seen = Object.assign({}, META.cutSeen || {}), keys = Object.keys(CUT_LIST).filter(k => !/^dev/.test(k) || seen[k] || adminOn());
+  for (const k of keys) if (/^st_/.test(k) && stGalOpen(k)) seen[k] = 1;
   const n = keys.filter(k => seen[k]).length;
   const p = modal(`<div class="galbox"><div class="mhead"><i>畵</i><div><h2>컷씬 다시보기</h2><span>본 장면 ${n} / ${keys.length}</span></div></div>
     <div class="galgrid">${keys.map(k => { const s = seen[k] || adminOn(); const bm = /^boss(\d+)$/.exec(k);
       const E = bm ? ENEMIES[(ENCOUNTERS[+bm[1]] && ENCOUNTERS[+bm[1]].boss[0]) || ''] : null;
-      const g = bm ? (E ? E.g : '魔') : { teaser26: '帝', tea: '茶', hack: '博', hbblast: '爆', musou: '無' }[k] || '幕';
+      const g = bm ? (E ? E.g : '魔') : /^st_/.test(k) ? '話' : { teaser26: '帝', tea: '茶', hack: '博', hbblast: '爆', musou: '無' }[k] || '幕';
       return `<button class="galtile${s ? '' : ' lock'}" data-k="${k}"${s ? '' : ' disabled'}><i>${s ? g : '？'}</i><b>${s ? wEsc(CUT_LIST[k].n.replace(/^제(\d+)막 보스 — /, '$1막 · ')) : '???'}</b><small>${s ? '▶ 다시 보기' : GALLERY_HINT(k)}</small></button>`; }).join('')}</div>
     <button class="brush-btn ghost" id="gal_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 'galp');
   p.dataset.noauto = '1';
@@ -34907,6 +34944,388 @@ function showSecrets() {
   });
 }
 
+/* ══ 이야기 — 보스 뒤 막간 · 단오의 길 (판 57) ═══════════════════════════
+   판 9에서 글 이야기(만화)를 3D 보스 등장으로 바꾸며 말이 빠졌다. 보스를 넘고 다음 막으로 갈 때
+   「무슨 일이 있었는지」가 사라졌고, 6막에서 끊긴 단오의 이야기가 25막까지 이어지지 않았다.
+   그래서 — 막마다 그 막의 3D 무대에서 보스의 마지막 말 · 그 뒤의 일 · 단오의 흔적 · 다음 막으로 가는 길.
+     · 단오의 끈: 3막까지 통(通) 부적으로 들리는 목소리 → 5막 지지직 → 6막 끊김(무간) → 7~24막 흔적
+       (위로 튕긴 획 끝 · 손금의 通 · 재의 온기 · 거꾸로 붙인 벽사부 · "먼저 간다") → 25막 그림을 찢어 손을 잡는다 → 26막 예고
+   · 막을 넘을 때(다음 막 지도 위에 덮여) 한 번 — 설정 「보스 뒤 이야기」로 매번 · 처음 한 번 · 끄기
+   · 3D 가 안 되는 기계는 평면 컷씬으로. 컷씬 다시보기에 모인다. 누르면 다음 줄로 넘어간다.
+   sc 꼬리표: boss(보스가 말한다) · fade(보스가 스러진다) · dano(단오가 비친다, faint 는 흐릿하게) · tal(통 부적) · burn(부적이 재가 된다)
+             ash · lantern · dawn · white · void · fall · gate · light · moon
+   ══════════════════════════════════════════════════════════════ */
+const STORY57 = {
+  opening: { act: 1, n: '서막 — 백 년에 한 번', pre: true, lines: [
+    { t: '백 년에 한 번, 산이 문을 연다.', sc: 'moon' },
+    { t: '그 밤이면 온갖 것들이 줄을 지어 내려온다.\n사람들은 그 행렬을 백귀야행이라 불렀다.', sc: 'lantern' },
+    { t: '올해는 문이 닫히지 않았다.\n세 마을이 하룻밤에 사라졌다. 비명을 들은 사람은 없었다.', sc: 'ash' },
+    { who: '스승', t: '"문은 산꼭대기에 있다. 누군가 안에서 열어 두었어."', sc: 'gate' },
+    { t: '이레 뒤, 돌아온 것은 부적 열 장뿐이었다.\n참격 다섯, 호신 넷, 벽사부 하나.', sc: 'tal' },
+    { t: '남은 퇴마사는 둘. 나와, 같은 날 스승을 잃은 단오(丹午).', sc: 'dano' },
+    { who: '단오', t: '"산 어귀에서 길이 갈려. 네가 왼쪽, 내가 오른쪽. 위에서 만나자."', sc: 'dano' },
+    { t: '단오가 부적 한 장을 반으로 갈라 건넸다. 通 — 통할 통.\n"이게 붙어 있는 동안은 서로 목소리가 들려."', sc: 'tal dano' },
+    { t: '부적 열 장과 통 부적 반쪽을 품고, 산을 오른다.', sc: 'moon' }
+  ] },
+  act1: { act: 1, n: '제1막 그 뒤 — 꼬리 아홉', lines: [
+    { who: '구미호', t: '"…어리구나. 네 스승보다도."', sc: 'boss' },
+    { who: '구미호', t: '"우리가 문을 연 게 아니다. 우리도 위에서 쫓겨 내려온 것뿐."', sc: 'boss fade' },
+    { t: '여우가 재로 흩어진 자리에 안개가 밀려 내려왔다.', sc: 'ash' },
+    { who: '단오', t: '"야, 봤어? 꼬리 아홉 개. 나 쪽엔 꼬리 하나짜리만 잔뜩이야."', sc: 'tal' },
+    { t: '귓가의 웃음소리를 길잡이 삼아, 안개 봉우리로 오른다.', sc: 'moon' }
+  ] },
+  act2: { act: 2, n: '제2막 그 뒤 — 문지기', lines: [
+    { who: '산군', t: '"나는 이 산의 문지기였다. 천 년을 지켰다."', sc: 'boss' },
+    { who: '산군', t: '"위에서 부르는 소리를 견디지 못했다. …너는 견딜 수 있겠느냐."', sc: 'boss fade' },
+    { who: '단오', t: '"호랑이? 나 쪽 문지기는 곰이었어. 덩치만 컸지."\n"…근데 위에서 뭐가 부른다는 거, 나도 들려."', sc: 'tal' },
+    { t: '봉우리 너머로 구천의 벼랑이 드러났다. 문은 아직 열려 있다.', sc: 'gate' }
+  ] },
+  act3_blackdragon: { act: 3, boss: 'blackdragon', n: '제3막 그 뒤 — 흑룡', lines: [
+    { who: '흑룡', t: '"문을 연 것은 내가 아니다. 나도 이 아래에서 쫓겨 올라온 것뿐."', sc: 'boss fade' },
+    { t: '비늘이 비처럼 흩어진 자리에 또 하나의 문. 이번에는 아래로 나 있었다.', sc: 'gate' },
+    { who: '단오', t: '"아래로 가는 문? 나 쪽에도 열렸어. 명계라던데."\n"…무섭냐? 난 하나도 안 무섭다."', sc: 'tal' },
+    { t: '목소리가 반 박자 늦게 들렸다. 웃음 끝이 조금 떨렸다.', sc: 'void' }
+  ] },
+  act3_yeomra: { act: 3, boss: 'yeomra', n: '제3막 그 뒤 — 염라', lines: [
+    { who: '염라', t: '"명부에 네 이름이 없구나."', sc: 'boss' },
+    { who: '염라', t: '"위에서 무언가가 명부를 찢고 있다. …네가 대신 가겠느냐."', sc: 'boss fade' },
+    { t: '염라가 붓을 내려놓자 벼랑 끝에 아래로 가는 문이 열렸다.', sc: 'gate' },
+    { who: '단오', t: '"아래로 가는 문? 나 쪽에도 열렸어. 명계라던데."\n"…무섭냐? 난 하나도 안 무섭다."', sc: 'tal' },
+    { t: '목소리가 반 박자 늦게 들렸다. 웃음 끝이 조금 떨렸다.', sc: 'void' }
+  ] },
+  act4: { act: 4, n: '제4막 그 뒤 — 지워진 이름', lines: [
+    { who: '강림도령', t: '"명부에 네 이름이 세 번 적혔다가 세 번 지워졌다. 누가 지운 줄 아느냐."', sc: 'boss fade' },
+    { t: '저승사자가 흩어지자 명계의 천장이 갈라지며 빛이 쏟아졌다.', sc: 'light' },
+    { who: '단오', t: '"명부 봤어? 내 이름도 없더라."\n"…없는 게 좋은 거지? 아직 안 죽었다는 거잖아."', sc: 'tal' },
+    { t: '위로, 더 위로 가야 한다.', sc: 'moon' }
+  ] },
+  act5: { act: 5, n: '제5막 그 뒤 — 지지직', lines: [
+    { who: '단오', t: '"야, 나 여기 좀 이상해. 위로 갈수록 부적이 지지직거려. 네 목소리도 끊겨."', sc: 'tal' },
+    { who: '치우천왕', t: '"하늘도 저것을 막지 못했다."', sc: 'boss' },
+    { who: '치우천왕', t: '"문 너머에는 아무것도 없다. 아무것도 없는 것이 있다. — 그것이 네 이름을 지웠다."', sc: 'boss fade' },
+    { t: '구천의 끝, 무간(無間)의 입구가 열렸다. 소리도, 빛도, 냄새도 없다.', sc: 'void' }
+  ] },
+  mugan: { act: 6, n: '무간 — 통 부적이 끊기다', pre: true, lines: [
+    { t: '무간에 들어서자 소리가 한 겹씩 벗겨졌다. 발소리가 먼저, 그다음엔 숨소리가.', sc: 'void' },
+    { t: '남은 소리는 하나뿐 — 귀 뒤에 붙여 둔 통(通) 부적.\n그 안에서 단오가 아직 걷고 있었다.', sc: 'tal' },
+    { who: '단오', t: '"야. 너 아직 거기 있냐? …나는 네 대답이 안 들려. 한참 전부터."', sc: 'dano faint' },
+    { who: '단오', t: '"괜찮아, 나 혼자 떠들면 되지 뭐. 원래 내가 말 더 많았잖아."', sc: 'dano faint' },
+    { who: '단오', t: '"근데 여기 뭔가 이상해. 엘리트가 아니야. 이건— 아무것도 아니야."', sc: 'dano faint void' },
+    { who: '단오', t: '"…야, 내 이름이 뭐였지. 불러 줘. 빨리."', sc: 'dano faint' },
+    { t: '입을 열었다. 소리가 나가지 않았다. 무간이 먼저 그것을 가져갔다.', sc: 'void' },
+    { t: '통 부적이 손 안에서 뜨거워졌다. 通 자가 한 획씩 지워졌다.', sc: 'tal burn' },
+    { t: '"단오야!" — 그제야 소리가 나왔다. 부적은 이미 재였다.', sc: 'ash' }
+  ] },
+  act6: { act: 6, n: '제6막 그 뒤 — 혼자 떨어진 발자국', lines: [
+    { t: '무간을 걷는 데 며칠이 걸렸는지 모른다. 부적 한 장 붙일 때마다 하루로 셌다.', sc: 'void' },
+    { t: '열이레째, 단오가 지나간 자리를 찾았다. 다 쓴 부적이 스무 장쯤 흩어져 있었다.', sc: 'ash' },
+    { t: '획 끝을 꼭 위로 튕겨 올리는 버릇. 스승이 백 번을 고쳐도 안 고쳐지던 그 버릇.\n"…너 진짜 글씨 못 쓴다."', sc: 'tal' },
+    { t: '재가 된 통 부적을 없는 얼굴에 붙였다. 없는 것에게 처음으로 길이 났다.', sc: 'boss fade' },
+    { t: '무너진 자리에 발자국이 있었다. 한 사람 몫. 아래로 이어져 있었다.\n단오는 떨어진 것이다. 혼자.', sc: 'fall' }
+  ] },
+  act7: { act: 7, n: '제7막 그 뒤 — 손금의 한 획', lines: [
+    { t: '발자국을 따라 뛰어내렸다. 떨어지는 데 이레가 걸렸다.', sc: 'fall' },
+    { who: '무저', t: '"여기가 바닥이라 생각했느냐."', sc: 'boss fade' },
+    { t: '바닥이 갈라지고, 그 아래에서 빛이 올라왔다. 아래인데 빛이 올라왔다.', sc: 'light' },
+    { t: '쥐고 있던 손을 펴 보니 손금에 通 자 한 획이 눌려 있었다.\n재는 아직 식지 않았다.', sc: 'tal' }
+  ] },
+  act8: { act: 8, n: '제8막 그 뒤 — 처음 본 날', lines: [
+    { who: '태초', t: '"네가 지운 것이 나다. 내가 지운 것도 너다."', sc: 'boss' },
+    { t: '처음이 닫히기 직전, 태초가 한 장면을 보여 주었다.', sc: 'white' },
+    { t: '산 어귀, 열두 살의 단오가 부적을 거꾸로 붙이고 웃고 있었다.\n"거꾸로 붙여도 붙기만 하면 되는 거야."', sc: 'dano faint white' },
+    { t: '빛이 걷히자 낯익은 산이 서 있었다. 앞서 가는 뒷모습이 어쩐지 낯익었다.', sc: 'fade moon' }
+  ] },
+  act9: { act: 9, n: '제9막 그 뒤 — 거울 속의 나', lines: [
+    { who: '나', t: '"여기까지 온 것을 축하하네." — 돌아본 얼굴은 내 얼굴이었다.', sc: 'boss' },
+    { who: '나', t: '"단오를 찾나? 찾을 수 있을 걸세. 다만 자네가 아는 단오는 아닐지도."', sc: 'boss' },
+    { who: '나', t: '"백 년마다 하나가 오르고, 백 년마다 하나가 남네. 이번엔 누가 남을까."', sc: 'boss fade' },
+    { t: '거울이 깨진 자리에서 등불이 하나둘 켜지기 시작했다. 행렬이 돌아오고 있었다.', sc: 'lantern' }
+  ] },
+  act10: { act: 10, n: '제10막 그 뒤 — 꺼지지 않은 등', lines: [
+    { t: '수천의 등불이 산을 감았다. 노래는 없었다. 발소리뿐이었다.', sc: 'lantern' },
+    { t: '행렬의 맨 앞이 걸음을 멈추고, 뒤로 돌아섰다. 등불이 하나씩 꺼졌다.', sc: 'boss fade lantern' },
+    { t: '끝까지 꺼지지 않은 등 하나. 거기 붙은 부적의 획 끝이 위로 튕겨 있었다.', sc: 'tal' },
+    { t: '단오가 이 행렬을 지나갔다. 등불을 하나 밝혀 두고.', sc: 'dano faint' },
+    { t: '재만 남은 능선 위로 하늘 끝이 붉어지기 시작했다.', sc: 'dawn' }
+  ] },
+  act11: { act: 11, n: '제11막 그 뒤 — 미지근한 재', lines: [
+    { who: '여명', t: '"밤을 이겼다고 생각하나." — 해가 눈을 찔렀다. 밤보다 아팠다.', sc: 'boss fade dawn' },
+    { t: '해가 다 뜨자 산은 비어 있었다. 행렬은 산을 내려간 것이다.', sc: 'dawn' },
+    { t: '무간 이후 처음으로, 손바닥의 재가 미지근해졌다.', sc: 'tal' },
+    { t: '"…살아 있구나." 서둘러 산을 내려갔다.', sc: 'moon' }
+  ] },
+  act12: { act: 12, n: '제12막 그 뒤 — 거꾸로 붙은 벽사부', lines: [
+    { who: '마을', t: '"어서 오시게. 자네를 기다렸네." — 마을 사람 전부가 웃고 있었다. 한 사람도 빠짐없이.', sc: 'boss' },
+    { t: '우물에 비친 얼굴이 하나 더 많았다. 그 하나를 끌어내자 마을이 함께 탔다.', sc: 'boss fade ash' },
+    { t: '불탄 대문에 부적 한 장이 남아 있었다. 거꾸로 붙은 벽사부. 획 끝이 위로 튕겨 있었다.', sc: 'tal' },
+    { who: '아이', t: '"산에서 내려온 형이 붙여 줬어. …여섯 해 전에."', sc: 'dano faint' },
+    { t: '여섯 해. 산을 오른 지 한 철도 안 됐는데. 북쪽, 왕도로 가는 길이 나 있었다.', sc: 'gate' }
+  ] },
+  act13: { act: 13, n: '제13막 그 뒤 — 먼저 간다', lines: [
+    { who: '옥좌', t: '"백 년 전에도 하나가 올라왔지. 그자는 여기서 벼슬을 받았네."', sc: 'boss' },
+    { who: '옥좌', t: '"네 벗도 이 옥좌 앞을 지났다. 벼슬을 마다하고 위로 갔지. 어리석게도."', sc: 'boss fade' },
+    { t: '옥좌가 갈라지자 그 안에서 하늘로 난 계단이 나왔다.', sc: 'gate light' },
+    { t: '계단 첫 단에 쓰다 만 부적 하나. "먼저 간다. 늦지 마." — 획 끝이 위로 튕겨 있었다.', sc: 'tal' }
+  ] },
+  act14: { act: 14, n: '제14막 그 뒤 — 하늘보다 위', lines: [
+    { who: '천제', t: '"우리는 보고만 있었다. 보는 것도 하는 것이라 하겠느냐."', sc: 'boss' },
+    { who: '천제', t: '"네 벗은 하늘을 지나 더 위로 끌려갔다. 하늘보다 위에는 아무것도 없는데."', sc: 'boss fade' },
+    { t: '구름이 걷히자 구름 위에는 아무것도 없었다. 하늘조차 없었다.', sc: 'white' },
+    { t: '발밑이 사라졌다. 떨어질 아래가 없었다.', sc: 'fall' }
+  ] },
+  act15: { act: 15, n: '제15막 그 뒤 — 없음 속의 목소리', lines: [
+    { who: '무', t: '"여기까지 온 사람이 몇 있었다. 전부 여기 있다. 없는 채로."', sc: 'boss void' },
+    { t: '없음 속에서, 아주 작게 — "…야." 단오의 목소리였다. 통 부적도 없이.', sc: 'dano faint void' },
+    { t: '없음이 없어졌다. 눈을 뜨니 산 아래, 길 어귀에 낯익은 팻말이 서 있었다.', sc: 'fade moon' },
+    { t: '제1막, 요괴 숲. 다시 처음이었다.', sc: 'moon' }
+  ] },
+  act16: { act: 16, n: '제16막 그 뒤 — 발자국 없는 길', lines: [
+    { who: '되풀이', t: '"몇 번째인지 세지 말게. 세면 못 오르네."', sc: 'boss' },
+    { t: '두 번째로 오르는 산에서 요괴들이 나를 알아보았다. "또 왔구나."', sc: 'moon' },
+    { t: '갈림길에서 오른쪽 길을 보았다. 단오가 간 길. 발자국이 하나도 없었다 — 처음부터.', sc: 'dano faint' },
+    { t: '되풀이를 끊자, 지금껏 쓰러뜨린 것들이 전부 서서 나를 보고 있었다.', sc: 'boss fade lantern' }
+  ] },
+  act17: { act: 17, n: '제17막 그 뒤 — 없는 기억', lines: [
+    { who: '기억', t: '"너는 하나도 잊지 않았다. 우리도 하나도 잊지 않았다."', sc: 'boss' },
+    { t: '이름을 하나씩 불러 주었다. 이름이 없는 것에는 이름을 지어 주었다. 그러자 흩어졌다.', sc: 'boss fade' },
+    { t: '기억들 가운데 단오는 없었다. 없다는 것은 — 아직 죽지 않았다는 뜻이다.', sc: 'tal' },
+    { who: '기억', t: '"자네 스승도 여기 있었네."', sc: 'gate' }
+  ] },
+  act18: { act: 18, n: '제18막 그 뒤 — 둘이서', lines: [
+    { who: '스승', t: '"늦었구나." — 벽사부를 쥐여 주던 그 손이었다.', sc: 'boss' },
+    { who: '스승', t: '"백 년 전 문 앞에서 멈춘 것이 나였다. 단오는 나보다 먼저 문을 보았지."', sc: 'boss' },
+    { who: '스승', t: '"그 아이는 문 너머에 있다. 데려오너라. 둘이서 내려오너라."', sc: 'boss fade' },
+    { t: '스승이 흩어진 길 위에 사람이 서 있었다. 하나가 아니었다. 백 명이었다.', sc: 'lantern' }
+  ] },
+  act19: { act: 19, n: '제19막 그 뒤 — 백 명', lines: [
+    { who: '백년', t: '"백 년에 하나씩, 백 명이 올랐다. 아무도 넘지 못했다."', sc: 'boss' },
+    { t: '백 명의 얼굴을 하나씩 보았다. 단오는 그 안에 없었다.', sc: 'lantern' },
+    { t: '백 명이 길을 비켰다. 발자국은 전부 위를 향하고 있었다.', sc: 'boss fade' },
+    { t: '마지막 발자국 앞에 산이 통째로 서 있었다. 문을 연 것은 요괴가 아니었다.', sc: 'gate' }
+  ] },
+  act20: { act: 20, n: '제20막 그 뒤 — 재가 떨린다', lines: [
+    { who: '산', t: '"나는 백 년에 한 번 숨을 쉰다. 숨을 쉬면 문이 열린다. 그뿐이다."', sc: 'boss' },
+    { t: '산이 숨을 멈췄다. 문은 닫혔고, 백귀는 흩어졌다. — 그런데 아직 하나가 남았다.', sc: 'boss fade' },
+    { t: '그동안 한 번도 울리지 않던 것이 품 안에서 아주 약하게 떨렸다. 재가 된 통 부적이었다.', sc: 'tal' },
+    { who: '단오', t: '"…야. …들리냐."', sc: 'dano faint' }
+  ] },
+  act21: { act: 21, n: '제21막 그 뒤 — 지도에 없는 길', lines: [
+    { who: '사잇길', t: '"산은 끝났지. 하지만 길은 안 끝났네."', sc: 'boss fade' },
+    { t: '어느 지도에도 없는 길. 재가 된 부적이 그쪽으로 기울었다.', sc: 'tal' },
+    { t: '길 끝에 문이 있었다. 위로 나 있었다. 문 너머가 환했다.', sc: 'gate light' }
+  ] },
+  act22: { act: 22, n: '제22막 그 뒤 — 웃음소리', lines: [
+    { who: '천국의 문', t: '"네 이름은 명부에 없다. 산 사람은 못 들어간다."', sc: 'boss' },
+    { t: '문틈으로 들여다보았다. 하얗고 넓고 조용한 곳 — 어딘가에서 낯익은 웃음소리가 났다.', sc: 'white dano faint' },
+    { t: '문을 부수고 들어갔다. 퇴마사가 천국의 문을 부순 것은 아마 내가 처음일 것이다.', sc: 'boss fade light' }
+  ] },
+  act23: { act: 23, n: '제23막 그 뒤 — 빈자리', lines: [
+    { who: '천국', t: '"여기 있으면 아프지 않다. 네 벗도 그래서 남았다."', sc: 'boss' },
+    { t: '웃음소리는 자꾸 들리는데, 돌아보면 빈자리뿐이었다.', sc: 'dano faint white' },
+    { t: '천국의 하늘이 검게 갈라졌다. 갈라진 틈으로 낫이 먼저 들어왔다.', sc: 'boss fade ash' }
+  ] },
+  act24: { act: 24, n: '제24막 그 뒤 — 눈 없는 얼굴', lines: [
+    { who: '침공', t: '"천국은 오래 살찐 밭이다. 거둘 때가 됐다."', sc: 'boss' },
+    { t: '복 받은 것들이 줄줄이 거두어졌다. 비명도 없었다.', sc: 'boss fade ash' },
+    { t: '무너지는 천국의 끝에 낯익은 등이 하나 서 있었다. "…단오야?"', sc: 'dano' },
+    { t: '돌아본 얼굴에는 눈이 없었다. — 그림이었다.', sc: 'void' }
+  ] },
+  act25: { act: 25, n: '끝 — 둘이서 내려오다', lines: [
+    { who: '사신도', t: '"이 그림에 들어온 것은 나가지 못한다. 네 벗은 여기 여섯 해째 걸려 있다."', sc: 'boss' },
+    { t: '그림 속에서 단오가 이쪽을 보았다. 입 모양만으로 — "야. 너 판 보는 눈 여전히 없네."', sc: 'dano faint' },
+    { t: '남은 것은 재가 된 통 부적 한 조각. 그것을 그림에 붙였다. 通 — 통할 통.', sc: 'tal' },
+    { t: '그림이 찢어졌다. 찢어진 자리에서 손이 하나 나왔다. 잡았다. 따뜻했다.', sc: 'boss fade dano light' },
+    { who: '단오', t: '"…거 봐. 다시 오르면 그만이라고 했잖아."', sc: 'dano' },
+    { t: '둘이서 산을 내려왔다. 이번에는 길이 갈리지 않았다.', sc: 'dawn dano' },
+    { t: '— 그러나 산마루 너머, 아무도 그 이름을 모르는 황제가 기다리고 있었다.', sc: 'ash' }
+  ] }
+};
+const STORY_ORDER = ['opening', 'act1', 'act2', 'act3_blackdragon', 'act3_yeomra', 'act4', 'act5', 'mugan', 'act6', 'act7', 'act8', 'act9', 'act10', 'act11', 'act12', 'act13',
+  'act14', 'act15', 'act16', 'act17', 'act18', 'act19', 'act20', 'act21', 'act22', 'act23', 'act24', 'act25'];
+const storyDur = L => Math.max(3400, Math.min(8200, 1800 + L.t.length * 64));
+const storyHas = (L, k) => (' ' + (L.sc || '') + ' ').indexOf(' ' + k + ' ') >= 0;
+function storyWant(key) {
+  if (!STORY57[key] || OPT.story === 'off') return false;
+  if (OPT.story === 'always') return true;
+  return !(META.storySeen && META.storySeen[key]);
+}
+/* 자막 — 말한 이 · 두 줄까지 */
+function stSay(S, who, t) {
+  let n = S.root.querySelector('.stsub');
+  if (!n) { n = el('div', 'stsub', '<b></b><span></span>'); S.root.appendChild(n); }
+  n.classList.remove('on'); void n.offsetWidth;
+  n.querySelector('b').textContent = who || '';
+  n.querySelector('b').style.display = who ? '' : 'none';
+  n.querySelector('span').innerHTML = wEsc(t).replace(/\n/g, '<br>');
+  n.classList.toggle('dano', who === '단오');
+  n.classList.add('on');
+}
+/* ── 3D 막간 ── */
+function c3Story(key) {
+  const D = STORY57[key], act = D.act, TA = CUT_ACT[act] || CUT_ACT[1];
+  const bossId = D.boss || (ENCOUNTERS[act] && ENCOUNTERS[act].boss[0]);
+  const E = ENEMIES[bossId] || { g: '鬼', col: '#6a2a2a' }, col = E.col || '#6a2a2a';
+  const BZ = -9, BY = 4.4, light = /^#(e|f|d|c)/i.test(TA.sky[2]);
+  const ambMap = { leaf: 'leaf', rain: 'rain', ash: 'ash', ember: 'ember', soul: 'soul', gold: 'gold', snow: 'snow', petal: 'petal', star: 'mote', inkup: 'ink' };
+  const SH = {
+    wide: { p: [0, 3.4, 13], l: [0, 2.6, -4], fov: 46 }, man: { p: [-.5, 2.2, 6.6], l: [-1.6, 1.8, 3], fov: 44 },
+    over: { p: [-2.8, 2.5, 6.4], l: [0, 4, BZ], fov: 46 }, boss: { p: [1.2, 3.4, 4.2], l: [0, BY, BZ], fov: 42 },
+    dano: { p: [2.4, 2.1, 6.2], l: [1.6, 1.7, 2.2], fov: 44 }, two: { p: [0, 2.4, 8.6], l: [0, 1.7, 2.6], fov: 44 },
+    crane: { p: [0, 7, 15.5], l: [0, 1, -2], fov: 48 }, tal: { p: [.5, 2.35, 7.4], l: [-1.0, 1.85, 3.1], fov: 30 }
+  };
+  const cyc = ['wide', 'man', 'two', 'crane'];
+  let t = 1500; const starts = [], tl = [];
+  D.lines.forEach((L, i) => { starts.push(t); tl.push([t, S => c3StoryLine(S, L, i)]); t += storyDur(L); });
+  const len = t + 1600;
+  tl.push([0, S => { cutSfx(D.pre ? 'bell' : 'gong'); S.refs.act.classList.add('on'); }]);
+  tl.push([1300, S => S.refs.act.classList.remove('on')]);
+  tl.push([len - 1300, S => { cutFade(S, 1, 1100); const n = S.root.querySelector('.stsub'); if (n) n.classList.remove('on'); }]);
+  function c3StoryLine(S, L, i) {
+    stSay(S, L.who, L.t);
+    const sh = storyHas(L, 'tal') ? 'tal' : storyHas(L, 'dano') ? (i % 2 ? 'two' : 'dano') : storyHas(L, 'boss') ? (i % 2 ? 'over' : 'boss')
+      : storyHas(L, 'gate') || storyHas(L, 'lantern') || storyHas(L, 'dawn') ? 'crane' : cyc[i % cyc.length];
+    c3Cam(S, Object.assign({ roll: 0 }, SH[sh]), 1700, 'io');
+    const R = S.refs;
+    if (storyHas(L, 'boss') && R.boss) { R.boss.visible = true; c3Tw(S, 900, k => R.bl.intensity = 40 + k * 80); cutSfx('drum'); }
+    if (storyHas(L, 'fade') && R.boss && R.boss.visible) {
+      const at = c3World(R.glyph); setTimeout(() => { if (!S.alive) return; c3Burst(S, at, col, 1.4); c3Burst(S, at, '#ffffff', .6); cutSfx('shatter'); }, Math.min(2400, storyDur(L) * .55));
+      const dl = Math.min(2400, storyDur(L) * .55) / 1000;
+      S.upd.push((dt, tt) => { if (!R.f0) R.f0 = tt; if (tt - R.f0 < dl) return false; const k = Math.min(1, (tt - R.f0 - dl) / .9); R.boss.scale.setScalar(Math.max(.01, 1 - k)); R.bl.intensity = 120 * (1 - k); if (k >= 1) { R.boss.visible = false; R.f0 = 0; return true; } return false; });
+    }
+    if (storyHas(L, 'dano')) { const to = storyHas(L, 'faint') ? .48 : .96; const from = R.danoOp; c3Tw(S, 1100, k => c3StoryOp(R.dano, R.danoOp = from + (to - from) * k)); }
+    else if (R.danoOp > .05 && !storyHas(L, 'dano')) { const from = R.danoOp; c3Tw(S, 900, k => c3StoryOp(R.dano, R.danoOp = from * (1 - k))); }
+    if (storyHas(L, 'tal')) { R.tal.visible = true; R.tal.scale.setScalar(.01); c3Tw(S, 700, k => R.tal.scale.setScalar(Math.max(.01, k * 1.6)), 'back'); cutSfx('talismanS'); }
+    else if (R.tal.visible && !storyHas(L, 'burn')) c3Tw(S, 500, k => R.tal.scale.setScalar(Math.max(.01, 1.6 * (1 - k))));
+    if (storyHas(L, 'burn')) { setTimeout(() => { if (!S.alive) return; const at = c3World(R.tal); c3Burst(S, at, '#ff8a3a', .7); cutSfx('fire'); c3Tw(S, 1600, k => { R.tal.scale.setScalar(Math.max(.01, 1.6 * (1 - k))); R.tal.rotation.z = k * 2; }); c3Amb(S, 'ash', 200, '#9a9a9a'); }, 1400); }
+    if (storyHas(L, 'ash')) c3Amb(S, 'ash', 260, '#8a8a8a');
+    if (storyHas(L, 'lantern') && !R.lant) c3StoryLanterns(S);
+    if (storyHas(L, 'gate') && !R.gate) c3StoryGate(S);
+    if (storyHas(L, 'light')) { c3Pillar(S, new S.T.Vector3(0, 0, BZ + 2), '#fff2c8', 2.4, 40); cutFlash(S, 'rgba(255,245,220,.6)', 700); cutSfx('holyhit'); }
+    if (storyHas(L, 'dawn')) c3StoryDawn(S);
+    if (storyHas(L, 'white')) { S.root.classList.add('stwhite'); cutFlash(S, '#fff', 900, .8); } else S.root.classList.remove('stwhite');
+    S.root.classList.toggle('mono', storyHas(L, 'void'));
+    if (storyHas(L, 'fall')) { c3Shake(S, .7, 900); c3Cam(S, { p: [0, 14, 10], l: [0, -6, 0], fov: 60, roll: .3 }, 2200, 'in'); cutFade(S, 1, 1400); setTimeout(() => { if (S.alive) cutFade(S, 0, 900); }, 2300); cutSfx('swoosh'); }
+    if (storyHas(L, 'moon') && S.refs.moon) c3Tw(S, 1600, k => S.refs.moon.scale.setScalar(1 + k * .25));
+  }
+  return {
+    len, tl,
+    build(S) {
+      c3Env(S, { sky: TA.sky, fog: [TA.sky[2], light ? .012 : .02], stars: light ? 0 : 500,
+        moon: TA.moon ? { pos: [(TA.moon[0] - 800) / 3, 60 + (450 - TA.moon[1]) / 4, -300], r: TA.moon[2] / 3.2, col: TA.moon[3] || '#f4ead0' } : (D.act === 1 ? { pos: [80, 120, -300], r: 18, col: '#ffd8c8' } : null),
+        ridges: [[240, 80, TA.ridge[0], act * .7], [130, 26, TA.ridge[1], act * 1.3]], ground: TA.ridge[1],
+        grass: TA.motif === 'forest' || TA.motif === 'village' || TA.motif === 'century' ? '#2a2018' : null,
+        rocks: /cliff|peaks|mountain|abyss|war/.test(TA.motif) ? '#22222a' : null,
+        hemi: light ? ['#fff4e0', '#806a40'] : ['#6a6aa0', '#140a10'], hemiI: light ? 1.8 : 1.15, key: light ? '#fff0d0' : '#c8c0ff', keyI: light ? 3 : 2.2, rim: col, rimI: 1.2 });
+      try { c3Motif(S, TA.motif, col); } catch (e) {}
+      for (const a of TA.amb || []) { const ty = ambMap[a[0]]; if (ty) c3Amb(S, ty, ty === 'rain' ? 700 : 200, a[2] && a[2][0] === '#' ? a[2] : (ty === 'ember' ? '#ff9a50' : ty === 'soul' ? '#80b0ff' : ty === 'gold' ? '#ffd88a' : ty === 'ink' ? '#000000' : '#ffffff')); }
+      S.scene.traverse(o => { if (o.isHemisphereLight) S.refs.hemi = o; });
+      /* 두 사람에게 내리는 빛 — 어두운 막에서도 얼굴이 읽히게 */
+      const sp = new S.T.SpotLight(light ? '#fff6e6' : '#e8e0ff', light ? 30 : 90, 34, .55, .7, 1.4); sp.position.set(0, 10, 9); sp.target.position.set(0, 1, 2.6); S.scene.add(sp, sp.target);
+      /* 보스 — 쓰러진 뒤의 남은 기운 */
+      const boss = new S.T.Group(); boss.position.set(0, BY, BZ); boss.visible = !D.pre; S.scene.add(boss); S.refs.boss = boss;
+      const gl = c3Glyph(S, D.pre ? '師' : E.g, D.pre ? '#c8a050' : col, 6); boss.add(gl); S.refs.glyph = gl;
+      const bl = new S.T.PointLight(col, D.pre ? 0 : 40, 40, 1.6); bl.position.set(0, 0, 3); boss.add(bl); S.refs.bl = bl;
+      S.upd.push((dt, tt) => { gl.rotation.y = Math.sin(tt * .5) * .25; gl.position.y = Math.sin(tt * 1.1) * .15; });
+      /* 퇴마사와 단오 */
+      const man = c3Man(S); man.g.position.set(-1.6, 0, 3); man.g.rotation.y = Math.atan2(1.6, BZ - 3); S.scene.add(man.g); S.refs.man = man;
+      const dn = c3Man(S, '#1a2a3c', '#3a6a8a'); dn.g.position.set(1.6, 0, 2.2); dn.g.rotation.y = -.5; S.scene.add(dn.g); S.refs.dano = dn.g; S.refs.danoOp = 0;
+      dn.g.traverse(o => { if (o.material) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = 0; o.material.depthWrite = false; } });
+      const dg = c3Glow(S, '#80b8ff', 3.2, 0); dg.position.set(0, 1.1, -.2); dn.g.add(dg); S.refs.danoGlow = dg;
+      c3StoryOp(dn.g, 0);
+      /* 통 부적 — 손 앞에 */
+      const tal = c3Tal(S, '通', 1); tal.position.set(-1.05, 1.95, 3.15); tal.visible = false; S.scene.add(tal); S.refs.tal = tal;
+      S.upd.push((dt, tt) => { if (tal.visible) { tal.rotation.y = Math.sin(tt * 1.3) * .35; tal.position.y = 1.95 + Math.sin(tt * 2) * .05; } });
+      S.root.classList.add('st'); S.root.appendChild(el('div', 'sttap', '눌러서 다음 ▸'));
+      S.refs.act = el('div', 'cutact', `<small>${D.pre ? '序' : '第 ' + act + ' 幕 · 그 뒤'}</small><b>${wEsc(D.n.replace(/^.*— /, ''))}</b>`); S.root.appendChild(S.refs.act);
+      c3Cam(S, { p: [0, 2.6, 18], l: [0, 2.6, -4], fov: 46, roll: 0 }, 0);
+      c3Cam(S, SH.wide, 2600, 'io');
+      S.dark.style.opacity = 1; cutFade(S, 0, 1100);
+      /* 눌러서 다음 줄로 */
+      S.root.addEventListener('pointerdown', e => { if (e.target.closest('.cutskip')) return; const now = S.time * 1000, nx = starts.find(x => x > now + 60); if (nx != null) S.time = nx / 1000; else S.time = (len - 1200) / 1000; });
+    }
+  };
+}
+function c3StoryOp(g, op) {
+  g.traverse(o => { if (o.material && o.material.transparent) o.material.opacity = op * (o.material.blending === 2 ? .55 : 1); });
+  g.visible = op > .01;
+}
+function c3StoryLanterns(S) {
+  const T = S.T, grp = new T.Group(); S.scene.add(grp); S.refs.lant = grp;
+  const N = S.low ? 14 : 26;
+  for (let i = 0; i < N; i++) {
+    const l = new T.Group(); const b = new T.Mesh(new T.SphereGeometry(.18, 10, 8), c3Basic(S, '#ffb45a'));
+    l.add(b); l.add(c3Glow(S, '#ff9a3a', 1.6, .8)); l.userData.k = i / N; grp.add(l);
+  }
+  S.upd.push((dt, tt) => { grp.children.forEach(l => { const k = (l.userData.k + tt * .025) % 1, a = -1.2 + k * 2.4; l.position.set(Math.sin(a) * 16, 1.2 + Math.sin(k * 40 + tt) * .15, -12 + Math.cos(a) * 6); }); return !S.alive; });
+}
+function c3StoryGate(S) {
+  const T = S.T, g = new T.Group(), m = c3Std(S, '#8a1a1e', { emissive: '#5a0a0e', emissiveIntensity: .6 });
+  for (const x of [-3.4, 3.4]) { const p = new T.Mesh(new T.CylinderGeometry(.32, .38, 8, 14), m); p.position.set(x, 4, 0); p.castShadow = true; g.add(p); }
+  const top = new T.Mesh(new T.BoxGeometry(9.4, .5, .8), m); top.position.y = 8.1; g.add(top);
+  const top2 = new T.Mesh(new T.BoxGeometry(8, .3, .6), m); top2.position.y = 7.1; g.add(top2);
+  const glow = c3Glow(S, '#ffe2a0', 9, .55); glow.position.set(0, 4, -.5); g.add(glow);
+  g.position.set(0, 0, -15); g.scale.set(1, .01, 1); S.scene.add(g); S.refs.gate = g;
+  c3Tw(S, 1600, k => g.scale.y = Math.max(.01, k), 'back'); cutSfx('gong');
+}
+function c3StoryDawn(S) {
+  if (S.refs.sun) return;
+  const sun = c3Glow(S, '#ffb060', 160, 0); sun.position.set(0, -10, -320); S.scene.add(sun); S.refs.sun = sun;
+  const core = new S.T.Mesh(new S.T.SphereGeometry(14, 24, 12), new S.T.MeshBasicMaterial({ color: '#fff0c8', fog: false })); sun.add(core);
+  const h = S.refs.hemi, k0 = S.refs.key;
+  const c0 = h ? h.color.clone() : null, kc0 = k0 ? k0.color.clone() : null, warm = new S.T.Color('#ffd0a0');
+  c3Tw(S, 3200, k => { sun.position.y = -10 + k * 46; sun.material.opacity = k * .9; if (h) { h.color.copy(c0).lerp(warm, k * .7); h.intensity = 1.15 + k * .9; } if (k0) { k0.color.copy(kc0).lerp(warm, k); k0.intensity = 2.2 + k * 1.2; } }, 'out');
+  cutSfx('bell');
+}
+/* 갓 쓴 사람 — 도포 · 얼굴 · 갓 · 띠 */
+const stFig2 = (robe, sash) => `<path d="M80,60 q-46,16 -58,90 q-10,60 -6,110 l128,0 q4,-50 -6,-110 q-12,-74 -58,-90Z" fill="${robe}"/><path d="M80,64 l-14,70 l14,-8 l14,8Z" fill="#000" opacity=".25"/>
+  <circle cx="80" cy="46" r="21" fill="#d8c8b0"/><path d="M60,40 q20,-8 40,0" stroke="#2a2018" stroke-width="2" fill="none" opacity=".5"/>
+  <ellipse cx="80" cy="29" rx="54" ry="7" fill="#0a0806" opacity=".92"/><path d="M63,29 L65,3 Q80,-1 95,3 L97,29Z" fill="#0a0806"/><path d="M58,32 L72,70 M102,32 L88,70" stroke="#0a0806" stroke-width="1.4" opacity=".7"/>
+  <rect x="48" y="136" width="64" height="8" rx="2" fill="${sash}"/><path d="M98,144 l6,26 l-8,-2Z" fill="${sash}"/>`;
+/* ── 평면 막간 (3D 가 안 될 때) — 막의 빛깔로 그린 그림 위에 한 줄씩 ── */
+function storyArt2(D, L, E) {
+  const TA = CUT_ACT[D.act] || CUT_ACT[1], sky = TA.sky, rg = TA.ridge, col = E.col || '#6a2a2a';
+  const has = k => storyHas(L, k), white = has('white'), dawn = has('dawn');
+  return ecSvg(`<defs><linearGradient id="st2s" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${white ? '#f4f4f0' : sky[0]}"/><stop offset=".55" stop-color="${white ? '#e8e8e4' : sky[1]}"/><stop offset="1" stop-color="${white ? '#d8d8d4' : sky[2]}"/></linearGradient></defs>
+    <rect width="1000" height="600" fill="url(#st2s)"/>
+    ${dawn ? `<circle cx="500" cy="430" r="380" fill="url(#ecgw)"/><circle cx="500" cy="440" r="60" fill="#fff0c8"/>` : ''}
+    ${TA.moon && !white ? `<circle cx="${TA.moon[0] / 1.6}" cy="${TA.moon[1] / 1.5}" r="${TA.moon[2] / 1.6 * 3}" fill="url(#ecgw)" opacity=".5"/><circle cx="${TA.moon[0] / 1.6}" cy="${TA.moon[1] / 1.5}" r="${TA.moon[2] / 1.6}" fill="${TA.moon[3] || '#f4ead0'}"/>` : ''}
+    ${ecFog(220, 120, .45)}
+    <path fill="${rg[0]}" d="M0,430 L120,330 L230,380 L330,280 L430,360 L540,300 L660,370 L760,290 L880,360 L1000,320 L1000,600 L0,600Z" opacity="${white ? .25 : 1}"/>
+    <path fill="${rg[1]}" d="M0,500 L140,440 L260,480 L380,430 L500,470 L640,420 L780,480 L900,440 L1000,470 L1000,600 L0,600Z" opacity="${white ? .3 : 1}"/>
+    ${has('gate') ? '<g fill="#8a1a1e"><rect x="420" y="300" width="14" height="170"/><rect x="566" y="300" width="14" height="170"/><rect x="396" y="292" width="208" height="16"/><rect x="410" y="318" width="180" height="9"/></g><circle cx="500" cy="380" r="120" fill="url(#ecgw)" opacity=".5"/>' : ''}
+    ${has('lantern') ? Array.from({ length: 22 }, (_, i) => `<circle class="st2lan" cx="${40 + i * 44}" cy="${420 - Math.sin(i * .5) * 30}" r="5" fill="#ffb45a" style="animation-delay:${(i * .12).toFixed(2)}s"/><circle cx="${40 + i * 44}" cy="${420 - Math.sin(i * .5) * 30}" r="16" fill="url(#ectg)"/>`).join('') : ''}
+    ${has('boss') || (has('fade') && !D.pre) ? `<g class="${has('fade') ? 'st2fade' : ''}"><circle cx="500" cy="230" r="170" fill="${col}" opacity=".18"/><text x="500" y="300" font-size="190" text-anchor="middle" fill="#fff6e0" opacity=".9" style="filter:drop-shadow(0 0 18px ${col})">${E.g}</text></g>` : ''}
+    ${has('light') ? '<rect x="470" y="0" width="60" height="600" fill="#fff8e0" opacity=".35"/><circle cx="500" cy="320" r="160" fill="url(#ecgw)"/>' : ''}
+    <g transform="translate(330 360) scale(.62)">${stFig2('#17120d', '#a8272c')}</g>
+    ${has('dano') ? `<g opacity="${has('faint') ? .42 : .95}" transform="translate(560 360) scale(.62)"><circle cx="80" cy="120" r="96" fill="url(#ecvi)" opacity=".55"/>${stFig2('#1a2a3c', '#3a6a8a')}</g>` : ''}
+    ${has('tal') ? `<g class="st2tal${has('burn') ? ' burn' : ''}"><circle cx="470" cy="400" r="50" fill="url(#ectg)"/><rect x="454" y="368" width="32" height="64" fill="#f2e2b0" stroke="#a8272c" stroke-width="2"/><text x="470" y="410" font-size="26" text-anchor="middle" fill="#a8272c">通</text></g>` : ''}
+    ${has('ash') ? Array.from({ length: 30 }, (_, i) => `<circle cx="${(i * 37) % 1000}" cy="${(i * 53) % 600}" r="${1 + i % 3}" fill="#9a9a9a" opacity=".6"/>`).join('') : ''}`, sky[2]);
+}
+async function storyPlay(key, force) {
+  const D = STORY57[key]; if (!D) return;
+  if (!force && !storyWant(key)) return;
+  if (cutPlaying() || document.querySelector('.eggcine')) { await wait(800); if (cutPlaying()) return; }
+  META.storySeen = META.storySeen || {}; META.storySeen[key] = 1; saveMeta();
+  try { cutSeenMark('st_' + key); } catch (e) {}
+  const prev = G.scene; if (!G.b) G.scene = 'cutscene';
+  if (cut3On()) {
+    const ok = await Promise.race([threeLoad(), wait(3000).then(() => false)]);
+    if (ok) { try { await cutPlay3(c3Story(key)); if (G.scene === 'cutscene') G.scene = prev; return; } catch (e) { console.error('3D 이야기 — 평면으로', e); const r = document.querySelector('.cut.c3'); if (r) r.remove(); CUT.on = null; document.body.classList.remove('cutting'); } }
+  }
+  const E = ENEMIES[D.boss || (ENCOUNTERS[D.act] && ENCOUNTERS[D.act].boss[0])] || { g: '鬼', col: '#6a2a2a' };
+  await eggCine(D.lines.map(L => ({ art: storyArt2(D, L, E), cls: storyHas(L, 'fall') ? 'shake' : '', lines: [(L.who ? L.who + ' — ' : '') + L.t.replace(/\n/g, ' ')], hold: storyDur(L) - 600 })), 'st2');
+  if (G.scene === 'cutscene') G.scene = prev;
+}
+/* 막을 넘었다 — 그 막의 이야기 (다음 막 지도 위에 덮어서) */
+function storyAfterAct(a, bossId) {
+  const key = a === 3 && STORY57['act3_' + bossId] ? 'act3_' + bossId : 'act' + a;
+  if (!STORY57[key] || !storyWant(key)) return;
+  if (G.run && G.run._pvp) return;
+  setTimeout(() => storyPlay(key), 700);
+}
+for (const k of STORY_ORDER) if (STORY57[k]) CUT_LIST['st_' + k] = { n: '이야기 · ' + STORY57[k].n, make: () => null };
+/* 컷씬 다시보기 — 이 판 전에 넘은 막의 이야기도 열어 둔다 */
+const stGalOpen = k => { const D = STORY57[k.slice(3)]; return !!D && (k === 'st_opening' || (META.cleared || 0) >= (D.pre ? D.act - 1 : D.act)); };
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -36564,6 +36983,8 @@ function showSettings() {
   row('큰 이름 연출', '귀한 부적을 쓸 때 이름이 크게 지나간다', () => OPT.banner, v => { OPT.banner = v; });
   row('보스 컷씬', '막마다 보스가 나타날 때 카메라가 도는 장면을 튼다 (건너뛰기·Esc 로 넘긴다)', () => OPT.cuts, v => { OPT.cuts = v; });
   row('3D 컷씬', '컷씬을 진짜 3D 로 그린다 — 폰이 버거우면 끈다 (가벼운 평면 컷씬으로)', () => OPT.cut3d !== false, v => { OPT.cut3d = v; });
+  cycle('보스 뒤 이야기', '보스를 넘고 다음 막으로 갈 때 — 그 막에서 있었던 일 · 단오의 흔적 (누르면 다음 줄 · 컷씬 다시보기에 모인다)', ['once', 'always', 'off'],
+    { once: '처음 한 번', always: '매번', off: '끄기' }, () => OPT.story || 'once', v => { OPT.story = v; });
   row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
   row('배경 움직임', '산과 하늘이 은은하게 숨 쉰다 — 끄면 그림이 멈춰 폰 전지가 덜 닳는다', () => !OPT.bgStill, v => { OPT.bgStill = !v; optApply(); });
   row('부적 글씨 크게', '부적의 설명 글을 한 단 크게 — 작은 화면에서 읽기 쉽게', () => !!OPT.bigText, v => { OPT.bigText = v; optApply(); });
@@ -38442,7 +38863,8 @@ function showTitle() {
     return;
   }
   const tn = s.querySelector('#t_new');
-  if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; } newRun(0); };
+  if (tn) tn.onclick = () => { SND.init(); SND.gong(); if (hasSave()) { resumeRun(); return; }
+    if (storyWant('opening')) { tn.disabled = true; storyPlay('opening').then(() => { if (G.scene === 'title') newRun(0); }); } else newRun(0); };
   s.querySelector('#t_acct').onclick = () => { SND.init(); SND.ui(); showAcct(); };
   chatBadge();
   titleAcctPaint();
