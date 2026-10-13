@@ -13607,6 +13607,10 @@ function ghostOnPlay(card) {
    멀티 대전·하늘을 가르는 것에서는 건드리지 않는다.
    ═══════════════════════════════════════════════════════════ */
 const DECKX_N = { qx: '?X급', unknown: '?급' };
+/* 원래 덱 — 덱이 ?X급·?급으로 바뀌어 있는 동안 원료·관석은 잠깐 빌린 부적이 아니라 이 덱에 입힌다
+   (빌린 부적에 입히면 이벤트가 끝날 때 함께 사라졌다) */
+const ownDeck = run => run && run._deckx && Array.isArray(run._evOld) ? run._evOld.concat(run.deck.filter(c => !c._evx)) : (run ? run.deck : []);
+const ownHint = run => run && run._deckx ? ' · 덱 바꾸기 중이라 <b>원래 덱</b>의 부적에 입힌다' : '';
 const deckxLive = () => { const x = LIVE.deckx; return x && x.id && DECKX_N[x.k] && srvNow() < (+x.until || 0) ? x : null; };
 function deckxTick() {
   const run = G.run; if (!run || run._pvp || G.b || G.scene === 'title') return;
@@ -28706,8 +28710,8 @@ async function hkStoneUse() {
   const run = G.run;
   if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (관석은 그대로 남는다)'); SND.err(); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
-  const list = run.deck.filter(c => !c.mutH && CARDS[c.id] && CARDS[c.id].rar !== 'curse');
-  const c = await pickFromList(list, '汚 해킹 오염 — 부적을 고른다', { hint: '수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더 발동', cancel: true });
+  const list = ownDeck(run).filter(c => !c.mutH && CARDS[c.id] && CARDS[c.id].rar !== 'curse');
+  const c = await pickFromList(list, '汚 해킹 오염 — 부적을 고른다', { hint: '수치 1.4배 · 낼 때 25% 확률로 버그가 나 한 번 더 발동' + ownHint(run), cancel: true });
   if (!c) return;
   META.hkStone--; c.mutH = true; saveMeta(); saveRun();
   mutApplyFx(c, { cols: ['#2cff7a', '#2cff7a'], orbs: ['汚'], glyph: '汚', name: '해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더', strip: ['mutH'] });
@@ -29009,9 +29013,9 @@ async function devMatUse() {
   const run = G.run;
   if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (종결석은 그대로 남는다)'); SND.err(); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
-  const list = run.deck.filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c.mutZ);
+  const list = ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c.mutZ);
   if (!list.length) { toast('종결을 입힐 부적이 없다 (이미 깃든 것은 뺐다)'); SND.err(); return; }
-  const c = await pickFromList(list, `終 ${DEV_MAT.n} — 종결을 입힐 부적`, { hint: DEV_MAT.d, cancel: true });
+  const c = await pickFromList(list, `終 ${DEV_MAT.n} — 종결을 입힐 부적`, { hint: DEV_MAT.d + ownHint(run), cancel: true });
   if (!c) return;
   META.devMat = devMatHave() - 1; c.mutZ = true; saveMeta(); saveRun();
   mutApplyFx(c, { cols: ['#ffffff', '#ffd76a'], orbs: ['終', '白', '夜'], ocols: ['#ffffff', '#ffd76a', '#e8f4ff'], glyph: '終', name: DEV_MAT.mn + ' — ' + DEV_MAT.d, strip: ['mutZ'], dev: true });
@@ -29061,9 +29065,9 @@ async function matUse(k) {
   const run = G.run;
   if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (재료는 그대로 남는다)'); SND.err(); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
-  const list = run.deck.filter(c => CARDS[c.id] && MAT_SPLUS.indexOf(CARDS[c.id].rar) >= 0 && !c[m.mut]);
-  if (!list.length) { toast(`S급 이상 부적이 없다${run.deck.some(c => c[m.mut]) ? ' (이미 ' + m.mn + '이 깃든 것은 뺐다)' : ''}`); SND.err(); return; }
-  const c = await pickFromList(list, `${m.g} ${m.n} — ${m.mn}을(를) 입힐 부적`, { hint: m.d, cancel: true });
+  const list = ownDeck(run).filter(c => CARDS[c.id] && MAT_SPLUS.indexOf(CARDS[c.id].rar) >= 0 && !c[m.mut]);
+  if (!list.length) { toast(`S급 이상 부적이 없다${ownDeck(run).some(c => c[m.mut]) ? ' (이미 ' + m.mn + '이 깃든 것은 뺐다)' : ''}`); SND.err(); return; }
+  const c = await pickFromList(list, `${m.g} ${m.n} — ${m.mn}을(를) 입힐 부적`, { hint: m.d + ownHint(run), cancel: true });
   if (!c) return;
   META.mat[k] = matHave(k) - 1; c[m.mut] = true; saveMeta(); saveRun();
   mutApplyFx(c, { cols: [m.c, m.c], orbs: [m.g], glyph: m.mg, name: m.mn + ' — ' + m.d, strip: [m.mut] });
@@ -29158,9 +29162,9 @@ async function fuUse(k) {
   const run = G.run;
   if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (원료는 그대로 남는다)'); SND.err(); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
-  const list = run.deck.filter(c => CARDS[c.id] && MAT_SPLUS.indexOf(CARDS[c.id].rar) >= 0 && !c.mutFu);
+  const list = ownDeck(run).filter(c => CARDS[c.id] && MAT_SPLUS.indexOf(CARDS[c.id].rar) >= 0 && !c.mutFu);
   if (!list.length) { toast('S급 이상 부적이 없다 (이미 융합이 깃든 것은 뺐다)'); SND.err(); return; }
-  const c = await pickFromList(list, `合 ${fuName(k)} — 융합을 입힐 부적`, { hint: fuDesc(k), cancel: true });
+  const c = await pickFromList(list, `合 ${fuName(k)} — 융합을 입힐 부적`, { hint: fuDesc(k) + ownHint(run), cancel: true });
   if (!c) return;
   META.matFu[k] = fuHave(k) - 1; c.mutFu = k; saveMeta(); saveRun();
   const ps = fuParts(k), same = ps.length === 2 && ps[0] === ps[1];
