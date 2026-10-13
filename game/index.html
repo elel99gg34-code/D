@@ -1805,6 +1805,264 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ── 막마다 숨은 것 — 이스터에그 (판 57) ── */
+.eggl{position:absolute;inset:0;pointer-events:none;z-index:2;transform-origin:50% 100%}
+.eggl.sway{animation:bglSway 40s ease-in-out infinite alternate;--sx:5px;--sy:-2px}
+.eggl>span{position:absolute;width:0;height:0}
+/* 제10막 — 봉우리의 불씨 · 횃불 · 굴 */
+.etorch::before{content:'';position:absolute;left:-3px;top:-4px;width:6px;height:6px;border-radius:50%;background:#ff9a4a;box-shadow:0 0 8px 3px rgba(255,140,60,.35);animation:etEmber 3.2s ease-in-out infinite}
+.etorch:nth-child(2n)::before{animation-delay:-1.4s}.etorch:nth-child(3n)::before{animation-delay:-2.3s}
+.etorch i,.etorch b,.etorch u{display:none;position:absolute}
+.etorch.on::before{display:none}
+.etorch.on i{display:block;left:-2px;top:-24px;width:4px;height:25px;border-radius:2px;background:linear-gradient(#6a4a2a,#2a1a10)}
+.etorch.on b{display:block;left:-9px;top:-50px;width:18px;height:30px;border-radius:50% 50% 45% 45%/62% 62% 38% 38%;transform-origin:50% 100%;
+  background:radial-gradient(ellipse at 50% 78%,#fff6cc 0%,#ffbe55 30%,#ff6a2a 62%,rgba(255,80,30,0) 74%);filter:drop-shadow(0 0 9px #ff7a2a);animation:etFlick .16s ease-in-out infinite alternate}
+.etorch.on u{display:block;left:-70px;top:-104px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,150,60,.34),rgba(255,120,40,0) 66%);animation:etGlow 2.4s ease-in-out infinite alternate}
+@keyframes etEmber{0%,100%{opacity:.14;transform:scale(.6)}50%{opacity:.55;transform:scale(1.15)}}
+@keyframes etFlick{0%{transform:scale(1,1) skewX(-4deg)}100%{transform:scale(.9,1.1) skewX(5deg)}}
+@keyframes etGlow{0%{opacity:.65}100%{opacity:1}}
+.ecave{width:0;height:0}
+.ecave::before{content:'';position:absolute;left:-30px;top:-46px;width:60px;height:48px;border-radius:50% 50% 8% 8%/86% 86% 8% 8%;
+  background:radial-gradient(ellipse at 50% 100%,#000 45%,#1a0a10 80%);box-shadow:0 0 0 3px rgba(80,30,30,.65),0 0 26px rgba(255,60,80,.4)}
+.ecave i{position:absolute;top:-20px;width:4px;height:3px;border-radius:50%;background:#ff3a4a;box-shadow:7px 0 0 #ff3a4a,0 0 5px #ff3a4a;animation:cvBlink 4s infinite}
+.ecave i:first-child{left:-14px}.ecave i:last-child{left:4px;top:-28px;animation-delay:-2s}
+.ecave.lit::before{background:radial-gradient(ellipse at 50% 100%,#fff2c0 0%,#ffa040 34%,#5a1a10 78%);box-shadow:0 0 0 3px rgba(255,210,120,.8),0 0 46px 14px rgba(255,180,80,.6);animation:etGlow 1.6s ease-in-out infinite alternate}
+/* 제14막 — 해무리 */
+.esun{width:0;height:0}
+.esun s{position:absolute;border-radius:50%;border:2px solid rgba(232,200,96,.0);transition:border-color .4s,box-shadow .4s}
+.esun s:nth-child(1){left:-70px;top:-70px;width:140px;height:140px}.esun s:nth-child(2){left:-96px;top:-96px;width:192px;height:192px}.esun s:nth-child(3){left:-126px;top:-126px;width:252px;height:252px}
+.esun i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 18px 8px rgba(255,248,210,.8);opacity:0;animation:esGlint 7s ease-in-out infinite}
+@keyframes esGlint{0%,88%,100%{opacity:0;transform:scale(.4)}93%{opacity:1;transform:scale(1.4)}}
+.esun.hold s{animation:esSpin 3s linear infinite}
+.esun.h1 s:nth-child(1),.esun.h2 s:nth-child(2),.esun.h3 s:nth-child(3){border-color:rgba(255,226,120,.95);box-shadow:0 0 16px rgba(255,220,110,.8),inset 0 0 12px rgba(255,220,110,.5)}
+@keyframes esSpin{to{transform:rotate(360deg)}}
+/* 제17막 — 얼굴 없는 것의 눈 */
+.efig b{position:absolute;left:-9px;top:-6px;width:5px;height:3px;border-radius:50%;background:#f4e8ff;box-shadow:13px 0 0 #f4e8ff,0 0 6px 2px rgba(230,210,255,.8),13px 0 6px 2px rgba(230,210,255,.8);opacity:0;transform:scaleY(.1);transition:opacity .25s,transform .25s}
+.efig.open b{opacity:1;transform:scaleY(1)}
+.efig.caught b{opacity:1;transform:scale(1.6);background:#ffd76a;box-shadow:13px 0 0 #ffd76a,0 0 12px 4px #ffd76a,13px 0 12px 4px #ffd76a;transition:.15s}
+/* 제20막 — 봉우리의 눈 */
+.esnow::before{content:'✦';position:absolute;left:-8px;top:-10px;font-size:16px;color:#fff;text-shadow:0 0 10px #fff,0 0 18px #ffe9a8;animation:esGlint 5.5s ease-in-out infinite}
+/* 제25막 — 낙관 · 찢어질 자리 */
+.eseal::before{content:'';position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:6px;box-shadow:0 0 0 0 rgba(200,30,50,0);animation:esPulse 6s ease-in-out infinite}
+@keyframes esPulse{0%,80%,100%{box-shadow:0 0 0 0 rgba(200,30,50,0)}88%{box-shadow:0 0 14px 3px rgba(220,40,60,.45)}}
+.eseal.hit::before{animation:esHit .5s ease-out}
+@keyframes esHit{0%{box-shadow:0 0 0 0 rgba(255,40,60,.9)}100%{box-shadow:0 0 0 22px rgba(255,40,60,0)}}
+.eggl.seal .eseal::before{animation:none;box-shadow:0 0 22px 6px rgba(255,40,60,.7);background:rgba(160,20,40,.35)}
+.etear{left:50%!important;top:24%!important;width:2px!important;height:58%!important;margin-left:-1px;opacity:0;transition:opacity .6s;
+  background:repeating-linear-gradient(transparent 0 6px,rgba(255,90,100,.85) 6px 14px);box-shadow:0 0 10px rgba(255,60,80,.6)}
+.eggl.seal .etear{opacity:1;animation:etTear 1.2s ease-in-out infinite alternate}
+@keyframes etTear{0%{opacity:.35}100%{opacity:1}}
+.eggfloat{position:fixed;z-index:700;transform:translate(-50%,-50%);pointer-events:none;font-size:14px;letter-spacing:.08em;color:var(--c);white-space:nowrap;
+  text-shadow:0 0 8px rgba(0,0,0,.9),0 0 14px var(--c);animation:eggFloat 1.7s ease-out forwards}
+@keyframes eggFloat{0%{opacity:0;transform:translate(-50%,-30%) scale(.8)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-120%)}}
+/* 지도의 굴 띠 */
+.rpactbtn.cavepill{margin-left:6px;background:linear-gradient(100deg,rgba(60,14,26,.92),rgba(20,6,10,.92));border-color:rgba(255,120,90,.55);color:#ffd0c0}
+.cavepill i{font-style:normal;color:#ff6a5a}.cavepill em{font-style:normal;font-size:.9em;color:#c8a898;margin-left:2px}
+.cavepill.lit{box-shadow:0 0 12px rgba(255,150,70,.6)}.cavepill.lit i{color:#ffc06a;animation:etGlow 1.4s ease-in-out infinite alternate}
+/* 컷씬 */
+.eggcine{position:fixed;inset:0;z-index:900;background:#000;overflow:hidden;cursor:pointer;animation:ecIn .5s ease both}
+.eggcine.out{opacity:0;transition:opacity .45s}
+@keyframes ecIn{from{opacity:0}to{opacity:1}}
+.ecstage,.ecsc{position:absolute;inset:0}
+.ecsc{animation:ecScene 1s ease both}
+.ecsc>svg{position:absolute;inset:0;width:100%;height:100%;animation:ecZoom 9s ease-out both}
+@keyframes ecScene{from{opacity:0}to{opacity:1}}
+@keyframes ecZoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+.ecsc.shake>svg{animation:ecShake .14s linear 10,ecZoom 9s ease-out both}
+@keyframes ecShake{0%,100%{translate:0 0}25%{translate:-5px 3px}50%{translate:4px -3px}75%{translate:-3px -2px}}
+.ecbar{position:absolute;left:0;right:0;height:11%;background:#000;z-index:3;animation:ecBar .6s ease both}.ecbar.t{top:0}.ecbar.b{bottom:0}
+@keyframes ecBar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.ecline{position:absolute;left:50%;bottom:13%;z-index:4;transform:translateX(-50%);width:min(860px,88vw);text-align:center;font-size:clamp(15px,2.3vw,21px);line-height:1.7;letter-spacing:.06em;color:#fff;
+  text-shadow:0 0 6px #000,0 2px 10px #000}
+.ecline.in{animation:ecLine .35s ease both}
+@keyframes ecLine{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.ecskip{position:absolute;right:14px;top:calc(11% + 10px);z-index:5;font:inherit;font-size:12px;padding:5px 12px;border-radius:14px;cursor:pointer;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);color:#ddd}
+.ectorch{opacity:0;animation:ecTorch .6s ease-out forwards}
+.ectorch .fl{transform-box:fill-box;transform-origin:50% 100%;animation:etFlick .15s ease-in-out infinite alternate}
+@keyframes ecTorch{0%{opacity:0;transform-box:fill-box}60%{opacity:1}100%{opacity:1}}
+.eccrack{stroke-dasharray:260;stroke-dashoffset:260;animation:ecCrack 1.4s ease-in forwards .3s;filter:drop-shadow(0 0 6px #ff6a3a)}
+@keyframes ecCrack{to{stroke-dashoffset:0}}
+.ecrocks rect{animation:ecRock 1.6s ease-in infinite}
+@keyframes ecRock{0%{transform:translateY(0);opacity:1}100%{transform:translateY(140px);opacity:0}}
+.ecmaw{transform-box:fill-box;transform-origin:50% 100%;animation:ecMaw 2.2s cubic-bezier(.3,1.3,.5,1) both}
+@keyframes ecMaw{from{transform:scale(.05,.02)}to{transform:scale(1,1)}}
+.ecmaw.shut{animation:ecShut 2.2s ease-in forwards}
+@keyframes ecShut{from{transform:scale(1)}to{transform:scale(1,.02)}}
+.eceye{opacity:0;animation:ecEye 3s ease-in-out infinite}
+@keyframes ecEye{0%,100%{opacity:0}20%,70%{opacity:1}}
+.ecwind path{animation:ecWind 1.2s linear infinite}
+@keyframes ecWind{from{transform:translateX(-40px);opacity:0}50%{opacity:.6}to{transform:translateX(60px);opacity:0}}
+.ectitle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:radial-gradient(circle,#2a0a14,#000 70%)}
+.ectitle b{font-weight:400;font-size:clamp(56px,12vw,128px);letter-spacing:.2em;color:#ff4a5a;text-shadow:0 0 30px #ff2a3a,0 6px 0 #2a0006;animation:ecTitle 1.2s cubic-bezier(.2,1.4,.4,1) both}
+.ectitle span{font-size:clamp(14px,2.4vw,22px);letter-spacing:1em;color:#f2dccf;margin-right:-1em}
+.ectitle small{max-width:min(620px,86vw);margin-top:14px;text-align:center;font-size:clamp(12px,1.6vw,15px);line-height:1.7;color:#c8a898}
+@keyframes ecTitle{from{opacity:0;transform:scale(1.6);filter:blur(10px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+.ecring{transform-origin:500px 250px;animation:esSpin 9s linear infinite}
+.ecshelf{animation:ecDrift 6s ease-in-out infinite alternate}
+@keyframes ecDrift{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+.ecscroll{transform-box:fill-box;transform-origin:50% 50%;animation:ecUnroll 1.6s ease-out both}
+@keyframes ecUnroll{from{transform:scaleX(.04)}to{transform:scaleX(1)}}
+.ecglowline{animation:etGlow .8s ease-in-out infinite alternate;filter:drop-shadow(0 0 8px #ffd76a)}
+.ectal3 g{animation:ecFloat 2.4s ease-in-out infinite alternate}
+@keyframes ecFloat{from{translate:0 -6px}to{translate:0 6px}}
+.ecrays{animation:esSpin 60s linear infinite}
+.ecfogb{animation:ecFogM 16s ease-in-out infinite alternate}
+@keyframes ecFogM{from{translate:-120px 0}to{translate:120px 0}}
+.echood{opacity:0;animation:ecHoodIn 1.2s ease forwards}
+@keyframes ecHoodIn{from{opacity:0;translate:0 30px}to{opacity:1;translate:0 0}}
+.echeye{opacity:0;animation:ecEyeOpen .5s ease forwards}
+@keyframes ecEyeOpen{0%{opacity:0}60%{opacity:1}75%{opacity:.2}100%{opacity:1}}
+.ecflyscroll g{animation:ecFloat 2.6s ease-in-out infinite alternate}
+.ecframe{animation:ecHang 1s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes ecHang{from{transform:translateY(-260px)}to{transform:translateY(0)}}
+.ecproc text{animation:ecBow 2.4s ease-in-out both}
+@keyframes ecBow{0%{transform:translateY(0)}60%,100%{transform:translateY(30px);opacity:.75}}
+.ectal{animation:ecDescend 2.6s ease-out both}
+@keyframes ecDescend{from{transform:translateY(-260px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ecgod{animation:ecRise 1.3s ease-out both;filter:drop-shadow(0 12px 30px rgba(0,0,0,.45))}
+@keyframes ecRise{from{transform:translateY(120px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ectear{position:absolute;inset:0;background:#1a120c}
+.ectear>div{position:absolute;top:0;bottom:0;overflow:hidden;z-index:1}
+.ectear .ecl{left:0;right:50%;clip-path:polygon(0 0,100% 0,97% 7%,100% 15%,95% 24%,99% 33%,95% 44%,100% 55%,96% 66%,100% 77%,95% 88%,99% 100%,0 100%);animation:ecTearL 2.2s cubic-bezier(.6,0,.3,1) .5s forwards}
+.ectear .ecr{right:0;left:50%;clip-path:polygon(3% 0,100% 0,100% 100%,1% 100%,5% 88%,0 77%,4% 66%,0 55%,5% 44%,1% 33%,5% 24%,0 15%,3% 7%);animation:ecTearR 2.2s cubic-bezier(.6,0,.3,1) .5s forwards}
+.ectear .ecl svg{position:absolute;left:0;top:0;width:200%;height:100%}.ectear .ecr svg{position:absolute;right:0;top:0;width:200%;height:100%}
+.ectear .ecbehind{left:0;right:0;z-index:0;background:radial-gradient(circle at 50% 60%,#fff0c0 0%,#ffb45a 14%,#7a4a1a 38%,#1a120c 75%);animation:etGlow 1.2s ease-in-out infinite alternate}
+@keyframes ecTearL{to{transform:translateX(-62%) rotate(-6deg)}}
+@keyframes ecTearR{to{transform:translateX(62%) rotate(6deg)}}
+.eccandle path{transform-box:fill-box;transform-origin:50% 100%;animation:etFlick .2s ease-in-out infinite alternate}
+/* 바위 문 */
+.cvgate{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(#1a0810,#0a0306);color:#f2dccf}
+.cvgbg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 70%,rgba(255,60,80,.16),transparent 60%)}
+.cvgate .schead,.cvgbody{position:relative;z-index:1}
+.cvgbody{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.cvgart{width:min(720px,94vw);aspect-ratio:600/340;border-radius:14px;overflow:hidden;border:1px solid rgba(255,120,90,.3);box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.cvgart svg{width:100%;height:100%;display:block}
+.cvgart .cgglow{opacity:0;transition:opacity 1.2s}.cvgate.lit .cgglow{opacity:1;animation:etGlow 1.6s ease-in-out infinite alternate}
+.cvgate.lit .cgmouth{fill:#2a0a04}
+.cvgart .cgeyes g{animation:ecEye 3.4s ease-in-out infinite}
+.cvgart .tal{opacity:0;transition:opacity .5s}.cvgate.offer .tal,.cvgate.lit .tal{opacity:1}
+.cvgate.offer .tal rect{filter:drop-shadow(0 0 8px #ff8a3a)}
+.cvgtxt{max-width:min(640px,92vw);text-align:center;line-height:1.75;font-size:14px;color:#e8d4c8}
+.cvgtxt b{font-weight:400;font-size:16px;color:#ffd0b0}.cvgtxt p{margin:6px 0}.cvgtxt small{color:#c8a898}.cvgtxt i{color:#ffb45a;font-style:normal}
+.cvgbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cvgbtns .brush-btn.ghost{color:#e9dfc9;border-color:#8a7f68}
+/* 굴 지도 */
+.cavemap{position:absolute;left:0;right:0;bottom:0;top:var(--tbh,44px);z-index:15;display:flex;flex-direction:column;gap:8px;padding:10px 0 calc(12px + env(safe-area-inset-bottom,0px));color:#f2dccf;overflow-x:hidden;overflow-y:auto;
+  background:linear-gradient(#2a1220,#12060c 58%,#050206)}
+.cvbg,.cvpour{position:absolute;inset:0;pointer-events:none}
+.cvbg svg{position:absolute;inset:0;width:100%;height:100%}
+.cvpour{overflow:hidden}
+.cvpour span{position:absolute;top:-14%;font-size:var(--fs);line-height:1;color:#050206;text-shadow:0 0 8px rgba(255,60,80,.35);animation:cvFall var(--d) linear var(--dl) infinite;opacity:.92}
+.cvpour span::after{content:'';position:absolute;left:24%;top:30%;width:.13em;height:.08em;border-radius:50%;background:#ff3a4a;box-shadow:.3em 0 0 #ff3a4a,0 0 6px #ff3a4a}
+@keyframes cvFall{0%{transform:translate(0,0) rotate(-10deg)}100%{transform:translate(var(--dx),128vh) rotate(16deg)}}
+.cveye{position:absolute;width:5px;height:3px;border-radius:50%;background:#ff3a4a;box-shadow:9px 0 0 #ff3a4a,0 0 6px #ff3a4a;animation:cvBlink 5s infinite}
+@keyframes cvBlink{0%,40%,100%{opacity:0}48%,88%{opacity:.9}92%{opacity:0}95%{opacity:.9}}
+.cvhead,.cvsay,.cvscroll,.cvlore{position:relative;z-index:1}
+.cvhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:0 16px}
+.cvhead b{font-weight:400;font-size:18px;letter-spacing:.12em;color:#ff8a7a;text-shadow:0 0 12px rgba(255,60,80,.5)}
+.cvhead span{font-size:12.5px;color:#c8a898}.cvhead em{font-style:normal;color:#ffd0b0}
+.cvhead button{margin-left:auto;font:inherit;font-size:12.5px;padding:6px 14px;border-radius:5px;cursor:pointer;background:rgba(20,8,12,.85);border:1px solid #8a4a3a;color:#f2dccf}
+.cvsay{padding:0 16px;font-size:13px;color:#e8c8b8}
+.cvscroll{overflow-x:auto;overflow-y:hidden;flex:none;padding:6px 0;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.cvtrack{position:relative;margin:0 auto}
+.cvroad{position:absolute;left:0;top:0}
+.cvdone{filter:drop-shadow(0 0 6px #ff9a3a)}
+.cvnode{position:absolute;transform:translate(-50%,-50%);width:76px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;background:none;border:none;padding:0;cursor:default;color:#d8c0b0}
+.cvnode b{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-weight:400;font-size:22px;background:radial-gradient(circle at 50% 35%,#3a1a22,#120608);border:2px solid #5a2a2a;box-shadow:0 4px 12px rgba(0,0,0,.6)}
+.cvnode span{font-size:11.5px;white-space:nowrap}.cvnode em{font-style:normal;font-size:10px;color:#9a7a6a}
+.cvnode.done b{background:radial-gradient(circle at 50% 35%,#5a3a1a,#2a1608);border-color:#c88a3a;color:#ffd0a0}
+.cvnode.lock{opacity:.5}.cvnode.lock b{filter:grayscale(.6)}
+.cvnode.cur{cursor:pointer;color:#fff}.cvnode.cur b{border-color:#ffb45a;color:#fff2c0;box-shadow:0 0 0 4px rgba(255,180,90,.25),0 0 24px rgba(255,140,60,.7);animation:cvCur 1.2s ease-in-out infinite alternate}
+.cvnode.cur em{color:#ffd76a}
+@keyframes cvCur{from{transform:scale(1)}to{transform:scale(1.1)}}
+.cvnode.elite b{border-color:#a83a4a;width:56px;height:56px}.cvnode.rest b{background:radial-gradient(circle at 50% 35%,#1a3a4a,#06141a);color:#9ad8ff}
+.cvnode.boss b{width:66px;height:66px;font-size:28px;background:radial-gradient(circle,#000 55%,#3a0a14);border-color:#ff3a4a;color:#ff6a7a;box-shadow:0 0 30px rgba(255,40,60,.6)}
+.cvnode.boss.cur b{box-shadow:0 0 0 5px rgba(255,60,80,.3),0 0 40px rgba(255,40,60,.9)}
+.cvlore{display:flex;gap:12px;margin:0 16px;padding:12px 14px;border-radius:12px;background:rgba(10,4,6,.78);border:1px solid rgba(255,120,90,.2);max-width:900px;align-self:center}
+.cvlore>i{font-style:normal;font-size:30px;color:#ff6a5a;flex:none}.cvlore b{font-weight:400;color:#ffd0b0}
+.cvlore p{margin:5px 0 0;font-size:12.5px;line-height:1.7;color:#d8c0b0}.cvlore .cvhint{color:#c8a898}.cvlore .cvhint b{color:#ff8aa0}
+.cvwh{color:#ffb45a}.cvwh.lose{color:#ff6a7a}
+.cvrew{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.cvrew>div{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(255,180,90,.1);border:1px solid rgba(255,180,90,.3);font-size:13px;color:#f2e2c8}
+.cvrew b{font-weight:400;color:#ffd76a}
+#bg.cavebg .sky{background:linear-gradient(#2a1220,#12060c 58%,#050206)!important}
+#bg.cavebg .cvpour span{opacity:.55}
+/* 보상 */
+.eggrew{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;isolation:isolate}
+.eggrew h2{font-size:30px;letter-spacing:.2em;color:#ff4a6a;text-shadow:0 0 18px rgba(255,40,80,.6)}
+.eggrew.r20 h2{color:#b8e88a;text-shadow:0 0 18px rgba(160,230,110,.5)}
+.erglow{position:absolute;left:50%;top:40%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;z-index:-1;background:radial-gradient(circle,rgba(255,45,85,.35),transparent 65%);animation:etGlow 1.4s ease-in-out infinite alternate}
+.eggrew.r20 .erglow{background:radial-gradient(circle,rgba(160,230,110,.28),transparent 65%)}
+.ercard{margin:6px 0;justify-content:center;animation:ecDescend 1.2s ease-out both}
+.errelic{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:12px;background:rgba(160,230,110,.08);border:1px solid rgba(160,230,110,.35);text-align:left;max-width:420px}
+.errelic>b{width:46px;height:46px;flex:none;border-radius:10px;display:grid;place-items:center;font-weight:400;font-size:24px;background:linear-gradient(180deg,#e8f4c8,#8aa85a);color:#1a2a0a}
+.errelic span{display:block;color:#e8f4c8;font-size:15px}.errelic small{font-size:12px;color:#c8d4b0;line-height:1.5}
+/* 기억의 방 */
+.memroom{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse at 50% 80%,#4a3a5a,#1c1424 60%,#0c0810);color:#efe4f4}
+.mrbg{position:absolute;inset:0;pointer-events:none}
+.mrfig{position:absolute;bottom:4%;width:56px;height:120px;border-radius:50% 50% 30% 30%/40% 40% 20% 20%;background:linear-gradient(#3a2a44,#1a1220);opacity:.75;animation:mrSway 6s ease-in-out infinite alternate}
+@keyframes mrSway{from{transform:translateY(0) rotate(-1.5deg)}to{transform:translateY(-8px) rotate(1.5deg)}}
+.memroom .schead,.mrbody{position:relative;z-index:1}
+.mrbody{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.mrframes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;max-width:900px}
+.mrfr{position:relative;width:64px;height:84px;margin-top:22px;font:inherit;cursor:pointer;border-radius:4px;background:linear-gradient(160deg,#2a2032,#14101a);border:3px solid #cdbad8;color:#efe4f4;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform-origin:50% -22px;animation:mrHang 1s cubic-bezier(.3,1.5,.5,1) both,mrSwing 5s ease-in-out infinite alternate;box-shadow:0 6px 14px rgba(0,0,0,.5)}
+.mrfr i{position:absolute;left:50%;top:-24px;width:1px;height:22px;background:#cdbad8}
+.mrfr b{font-weight:400;font-size:26px}.mrfr small{font-size:10px;color:#b8a8c8}
+.mrfr.on{border-color:#ffd76a;box-shadow:0 0 18px rgba(255,215,106,.5)}
+@keyframes mrHang{from{transform:translateY(-140px)}to{transform:translateY(0)}}
+@keyframes mrSwing{from{rotate:var(--sw)}to{rotate:calc(var(--sw) * -1)}}
+.mrsay{min-height:1.8em;font-size:14px;color:#d8c8e8;text-align:center}.mrsay b{font-weight:400;color:#ffd76a}
+.mrpond{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;background:rgba(12,8,18,.7);border:1px solid rgba(205,186,216,.25);max-width:620px;width:100%;box-sizing:border-box}
+.mrwater{position:relative;width:min(360px,80vw);height:70px;border-radius:50%;background:radial-gradient(ellipse,#a8c8e8 0%,#4a6a8a 45%,#1a2a3a 80%);box-shadow:0 0 30px rgba(168,200,232,.4),inset 0 0 20px rgba(0,0,0,.5);overflow:hidden}
+.mrwater i{position:absolute;left:50%;top:50%;width:40px;height:14px;margin:-7px 0 0 -20px;border-radius:50%;border:1px solid rgba(255,255,255,.6);animation:mrRipple 3s ease-out infinite}
+.mrwater i:nth-child(2){animation-delay:1s}.mrwater i:nth-child(3){animation-delay:2s}
+@keyframes mrRipple{from{transform:scale(.3);opacity:1}to{transform:scale(6);opacity:0}}
+.mrstat{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:12.5px;color:#c8b8d8}.mrstat b{font-weight:400;color:#fff}
+.mrpond small{font-size:11.5px;color:#a898b8;text-align:center}
+/* 봉우리 오르기 */
+.eggclimb{position:fixed;inset:0;z-index:880;display:flex;flex-direction:column;align-items:center;color:#f6f2e4;background:linear-gradient(#e8e2cf,#9d9680 60%,#5c584a);animation:ecIn .5s ease both;touch-action:none;user-select:none}
+.eggclimb.out{opacity:0;transition:opacity .4s}
+.eggclimb.shake .eclmt{animation:ecShake .12s linear 4}
+.eclbg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 12%,rgba(255,246,216,.9),transparent 40%)}
+.eclhead{position:relative;z-index:1;display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;justify-content:center;text-align:center;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 6px;color:#2a2418;text-shadow:0 1px 0 rgba(255,250,235,.7)}
+.eclhead b{font-weight:400;font-size:18px;letter-spacing:.12em}.eclhead span{font-size:12.5px;color:#4a4030}
+.eclhead button{font:inherit;font-size:12.5px;padding:5px 12px;border-radius:5px;cursor:pointer;background:rgba(40,36,24,.8);border:1px solid #7a6a4a;color:#e9dfc9}
+.eclmt{position:relative;z-index:1;flex:1;width:min(92vw,74vh);max-height:calc(100vh - 110px);aspect-ratio:1;margin:4px auto 0}
+.eclmt svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
+.eclst{position:absolute;width:0;height:0}
+.eclst::before{content:'';position:absolute;left:-14px;top:-9px;width:28px;height:18px;border-radius:50%;background:#7a7262;border:2px solid #4a4538;opacity:.55}
+.eclst.past::before{background:#b8a878;opacity:.9}
+.eclst.on{z-index:2;cursor:pointer}
+.eclst.on::before{left:-22px;top:-15px;width:44px;height:30px;background:radial-gradient(#fff6c8,#ffd76a 60%,#c99a3a);border-color:#fff;opacity:1;box-shadow:0 0 22px #ffd76a}
+.eclst.on::after{content:'';position:absolute;left:-34px;top:-34px;width:68px;height:68px;border-radius:50%;border:3px solid #fff;box-sizing:border-box;pointer-events:none}
+.eclst.on.tick::after{animation:eclRing var(--w,1200ms) linear forwards}
+@keyframes eclRing{from{transform:scale(1.6);opacity:.3}to{transform:scale(.55);opacity:1;border-color:#ff6a5a}}
+.eclst.top::before{border-radius:4px}
+.eclst s{position:absolute;left:-36px;top:-36px;width:72px;height:72px;border-radius:50%}
+.eclme{position:absolute;z-index:3;transform:translate(-50%,-110%);font-weight:400;font-size:22px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  background:#2a2418;color:#ffd76a;border:2px solid #ffd76a;box-shadow:0 0 12px rgba(255,215,106,.6);transition:left .35s cubic-bezier(.3,1.4,.5,1),top .35s cubic-bezier(.3,1.4,.5,1);pointer-events:none}
+.eclcount{position:relative;z-index:1;padding:6px 0 calc(12px + env(safe-area-inset-bottom,0px));font-size:15px;letter-spacing:.1em;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+/* 그린 이의 방 */
+.paintroom{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse at 60% 70%,#4a3420,#1a120c 60%,#0a0604);color:#f2e6d0}
+.prbg{position:absolute;inset:0;pointer-events:none}
+.prcandle{position:absolute;right:12%;bottom:18%;width:180px;height:180px;margin:-90px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,90,.35),transparent 65%);animation:etGlow 1.8s ease-in-out infinite alternate}
+.paintroom .schead,.prbody{position:relative;z-index:1}
+.prbody{flex:1;min-height:0;overflow-y:auto;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:20px;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.preasel{width:min(250px,60vw);flex:none;filter:drop-shadow(0 10px 24px rgba(0,0,0,.7));animation:ecRise 1.2s ease-out both}
+.preasel svg{width:100%;display:block}
+.preyes{opacity:0;transition:opacity 1.2s}
+.paintroom.eyes .preyes{opacity:1;filter:drop-shadow(0 0 6px #ff2d3a);animation:etGlow .9s ease-in-out infinite alternate}
+.prletter{max-width:440px;padding:16px 18px;border-radius:6px;background:linear-gradient(#efe4c8,#d8c8a4);color:#2a1a0c;box-shadow:0 10px 30px rgba(0,0,0,.6);line-height:1.8;font-size:14px;animation:ecDescend 1s ease-out both}
+.prletter>b{display:block;text-align:center;font-weight:400;letter-spacing:.3em;color:#5a3a1a;margin-bottom:6px}
+.prletter p{margin:6px 0}.prletter p b{color:#8a1a22;font-weight:400}
+.prchoice{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.prc{font:inherit;text-align:left;cursor:pointer;padding:10px 14px;border-radius:8px;display:flex;flex-direction:column;gap:2px;border:1px solid}
+.prc b{font-weight:400;font-size:15px}.prc small{font-size:12px;opacity:.85}
+.prc.a{background:linear-gradient(100deg,#3a0a10,#1a0406);border-color:#a8273a;color:#ffd0d4}
+.prc.b{background:linear-gradient(100deg,#f8f2e2,#e2d6b8);border-color:#8a7a5a;color:#3a2a14}
+.prdone{padding:10px 12px;border-radius:8px;background:rgba(90,58,26,.15);color:#5a3a1a;font-size:13px}
+@media(max-width:640px){.cvnode{width:66px}.cvnode b{width:44px;height:44px;font-size:19px}.cvlore{margin:0 10px}.prletter{font-size:13px}}
 /* ── 길드 (판 57) ── */
 .guildwin{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(165deg,#141a14,#1e2418 45%,#0c100a)}
 .guildwin .gwbg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,120,.16),transparent 60%),
@@ -9278,6 +9536,14 @@ defCard({ id: 'ghostparade', n: '백귀야행', g: '百', type: 'attack', rar: '
   play: async c => { skillBanner('百 鬼 夜 行', true);
     for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break;
       atk(pick(a), c.v.d, { fx: 'petal' }); await wait(110); } } });
+/* ── 숨은 것의 부적 (판 57 · 제10막 백귀굴의 끝) — 도감에도, 상자에도, 보상에도 나오지 않는다 ── */
+defCard({ id: 'hyakki_true', n: '진 백귀야행', g: '夜', type: 'attack', rar: 'ssx', cost: 3, tgt: 'all', hackOnly: true, eggOnly: true,
+  v: u => ({ d: u ? 15 : 12, n: u ? 8 : 7 }),
+  txt: v => `백 귀가 뒤를 따른다 — 무작위 적에게 <em>${v.d}</em>의 피해를 ${v.n}번. 이 싸움에서 낼 때마다 행렬이 한 번씩 길어진다 (최대 +5). 적을 쓰러뜨릴 때마다 기 1.`,
+  play: async c => { const b = G.b, extra = Math.min(5, b._hyk || 0); b._hyk = extra + 1;
+    skillBanner('眞 · 百 鬼 夜 行', true); try { screenFlash('rgba(150,20,60,.45)', 500); } catch (e) {}
+    for (let i = 0; i < c.v.n + extra; i++) { const a = alive(); if (!a.length) break;
+      const t = pick(a), was = t.hp > 0; atk(t, c.v.d, { fx: 'petal' }); if (was && t.hp <= 0 && G.b) energy(1); await wait(90); } } });
 defCard({ id: 'soulcut', n: '단혼검', g: '斷', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
   v: u => ({ d: u ? 64 : 50 }),
   txt: v => `방어도를 무시하고 <em>${v.d}</em>의 피해를 준다. 대상의 <b>이로운 효과</b>를 모두 지운다. 소멸.`,
@@ -11747,6 +12013,27 @@ defEnemy({ id: 'nightqueen', n: '밤의 어미', g: '母', hp: [305, 336], col: 
   next: e => e.hist.length === 0 ? 'lull' : lastIs(e, 'tear') ? 'cradle'
            : rnd() < .48 ? 'tear' : rnd() < .8 ? 'cradle' : 'lull' });
 
+/* 백귀굴의 끝 — 굴의 아가리 (판 57 · 제10막 이스터에그) */
+defEnemy({ id: 'cavemaw', n: '굴의 아가리', g: '淵', hp: [880, 880], col: '#2a0a14', boss: true, big: true,
+  init: e => { e.s.regenP = 6; },
+  moves: { pour:    { t: 'attack', label: '요괴가 쏟아진다', d: 10, n: 4, fx: 'claw' },
+           swallow: { t: 'atkdeb', label: '삼킨다', d: 40, deb: { weak: 3, vuln: 3 }, fx: 'void' },
+           echo:    { t: 'buff', label: '굴이 울린다', blk: 50, self: { str: 6 } },
+           stare:   { t: 'debuff', label: '백 개의 눈', deb: { vuln: 4, curse: 4 } } },
+  onHalf: e => { st(e, 'str', 8); flash('굴이 더 깊어진다'); screenFlash('rgba(180,20,50,.45)', 700); },
+  next: e => e.hist.length === 0 ? 'stare' : lastIs(e, 'echo') ? 'pour'
+           : e.turnCount % 4 === 0 ? 'echo' : rnd() < .5 ? 'pour' : 'swallow' });
+/* 제20막 꼭대기 — 산신 (판 57 · 이스터에그) */
+defEnemy({ id: 'sanshin', n: '산신(山神)', g: '神', hp: [1300, 1300], col: '#3a4a2a', boss: true, big: true,
+  init: e => { e.s.thorns = 6; },
+  moves: { rock:  { t: 'attack', label: '바위 굴리기', d: 46, fx: 'blunt' },
+           quake: { t: 'attack', label: '산울림', d: 16, n: 3, fx: 'drum' },
+           root:  { t: 'atkdeb', label: '뿌리 얽기', d: 26, deb: { weak: 4, vuln: 4 }, fx: 'lance' },
+           peak:  { t: 'defend', label: '봉우리가 된다', blk: 90, self: { str: 6 } } },
+  onHalf: e => { st(e, 'str', 8); st(e, 'thorns', 6); flash('산이 노한다'); screenFlash('rgba(140,200,110,.4)', 700); },
+  next: e => e.hist.length === 0 ? 'peak' : lastIs(e, 'peak') ? 'rock'
+           : e.turnCount % 4 === 0 ? 'peak' : rnd() < .38 ? 'quake' : rnd() < .6 ? 'root' : 'rock' });
+
 /* 마지막 행렬 — 체력과 손이 다 같이 10% 눅었다 (1180→1062, 수도 한 단씩 아래로) */
 defEnemy({ id: 'hyakki', n: '백귀야행(百鬼夜行)', g: '百', hp: [1062, 1062], col: '#1a0e18', boss: true, big: true,
   init: e => { e.wave = 0; e.surge = 0; },
@@ -13173,12 +13460,12 @@ function startBattle(enemyIds, kind, opts) {
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind)) { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind) && !/^cave/.test(kind) && kind !== 'eggboss') { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
-  SND.bgm(true, kind === 'boss' || kind === 'world' ? 'boss' : 'battle');
-  if (kind === 'boss' || kind === 'world') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
+  SND.bgm(true, kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss' ? 'boss' : 'battle');
+  if (kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
   if (friendOn() && !mpK) setTimeout(() => friendSay(kind === 'boss' ? '"보스야. 천천히 가자."'
     : kind === 'elite' ? '"이건 굵다. 조심해."' : '"붙자."', 3000), 700);
   if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
@@ -14474,6 +14761,8 @@ async function checkOver() {
     else if (/^hack/.test(b.kind)) hackLose();      /* 해킹맵 — 밀려날 뿐 모험은 그대로 */
     else if (b.kind === 'devboss') devBossLose();   /* 백야의 시험 — 모험은 그대로, 다시 도전 */
     else if (b.kind === 'hbboss') hbBattleLose();   /* 매시 해킹 보스 — 모험은 그대로, 다시 도전 */
+    else if (/^cave/.test(b.kind)) caveLose();      /* 백귀굴 — 밀려날 뿐 모험은 그대로 (판 57) */
+    else if (b.kind === 'eggboss') eggBossLose();   /* 산신 — 굴러떨어질 뿐 */
     else if (b.replay) replayEnd(false);             /* 다시 하기 — 모험은 그대로 */
     else gameOver();
     return true;
@@ -14574,6 +14863,8 @@ function _winBattle() {
   if (/^hack/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = P().hp; SND.victory(); hackWin(b.kind); return; }
   if (b.kind === 'devboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); devBossWin(); return; }   /* 백야의 시험 */
   if (b.kind === 'hbboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); hbBattleWin(); return; }   /* 매시 해킹 보스 */
+  if (/^cave/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); caveWin(b.kind); return; }   /* 백귀굴 (판 57) */
+  if (b.kind === 'eggboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); eggBossWin(); return; }   /* 산신 */
   if (b.replay) { try { xpOnWin(b); } catch (e) {} replayEnd(true); return; }                       /* 다시 하기 — 경험치만 */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
@@ -14783,7 +15074,8 @@ function autoOverlay(panel) {
 }
 /* 지도에서 다음 갈림길을 고른다 */
 function autoMapStep() {
-  if (stageLock()) return;                      /* 잠긴 동안은 조용히 기다린다 */
+  if (stageLock()) return;
+  if (document.querySelector('#cavemap,.eggclimb,.eggcine')) return;   /* 굴·봉우리·숨은 컷씬 동안은 손대지 않는다 */                      /* 잠긴 동안은 조용히 기다린다 */
   const run = G.run, ids = availableNodes();
   if (!ids.length) {
     /* 갈 곳이 없다 — 보스를 넘고도 다음 막으로 못 넘어간 자리 */
@@ -14960,6 +15252,7 @@ function renderTop() {
   /* 콜로세움·대전투장은 제 배경이 따로 있다 */
   setBg(G.b && (G.b.kind === 'hbboss' || G.b.kind === 'hackboss') ? 'lab'          /* 박사와의 싸움 — 박사의 서버실 */
     : G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot') ? 'pvp'
+    : G.b && /^cave/.test(G.b.kind) ? 'cave'                                            /* 백귀굴 안 (판 57) */
     : G.b && (G.b.kind === 'colo' || G.b.kind === 'arena' || G.b.kind === 'world') ? G.b.kind : run.act);
 
   potWatch(run);
@@ -25682,6 +25975,7 @@ function askYield() {
   const b = G.b, run = G.run;
   if (!b || b.over || !run) { SND.err(); toast('싸우는 중이 아니다'); return; }
   if (b.kind === 'boss') { SND.err(); toast('보스 앞에서는 물러설 수 없다'); return; }
+  if (/^cave/.test(b.kind) || b.kind === 'eggboss') { closeOverlay(); b.over = true; if (b.kind === 'eggboss') eggBossLose(); else caveLose(); return; }   /* 굴·산신 — 물러나면 들어가기 전으로 */
   if (b.kind === 'arena' || b.kind === 'colo') { SND.err(); toast('여기서는 포기할 수 없다 — 나가기를 쓰시오'); return; }
   if (!G.cp) { SND.err(); toast('돌아갈 갈림길이 없다'); return; }
   const hp = Math.max(1, Math.round(run.maxHp * YIELD_HP));
@@ -31190,6 +31484,7 @@ function fxcKill(e) {
 function liveTick() {
   try { deckxTick(); } catch (e) { console.error('덱 바꾸기', e); }
   try { dspawnTick(); } catch (e) { console.error('백야의 진열', e); }
+  try { eggTick(); } catch (e) { console.error('숨은 것', e); }
   const k = liveEvent(), left = evLeft(), rn = liveRain();
   /* 몸에 이름표를 달아 둔다 — 그림은 CSS 가 맡는다 */
   for (const x of Object.keys(WORLD))
@@ -33084,6 +33379,732 @@ async function guildTop(host, pickName) {
 function guildFx(g, what) {
   try { SND.unlock(); SND.gong(); stampWord(g.glyph + ' 旗', '#ffd76a'); screenFlash('rgba(255,215,120,.35)', 700); FX.gold(innerWidth / 2, innerHeight / 2, 40); } catch (e) {}
   toast(`길드 「${g.name}」 — ${what}`);
+}
+
+/* ══ 막마다 숨은 것 — 이스터에그 (판 57) ═════════════════════════════
+   배경 그림의 한 곳을 「알아챈」 사람에게만 열린다. 막마다 찾는 법이 다르다.
+     제10막 백귀야행 — 산꼭대기 여섯 곳을 누르면 하나씩 횃불이 켜진다. 다 켜면 산이 입을 연다(컷씬).
+                      바위 문에 S급 부적 두 장을 바치면 굴이 빛을 드러내고, 안은 요괴가 쏟아지는 긴 굴(열세 구역).
+                      끝까지 가면 도감에 없는 「진 백귀야행」(SSX).
+     제14막 천계   — 해를 3초 동안 꾹 누르면 해무리 세 겹이 차례로 켜진다 → 「천계의 서고」 컷씬 → S급 셋 중 하나.
+     제17막 기억   — 하늘의 얼굴 없는 것들 가운데 하나가 가끔 눈을 뜬다. 눈 뜬 것을 세 번 붙잡으면 → 「기억의 방」.
+     제20막 산     — 큰 봉우리 꼭대기의 눈을 누르면 오르는 길이 열린다. 빛나는 디딤돌을 박자 맞춰 밟고 오르면 → 산신과 겨룬다.
+     제25막 사신도 — 낙관(冥)을 세 번 찍고, 그림을 위에서 아래로 그어 찢으면 → 그림 뒤 「그린 이의 방」.
+   보상은 모험마다 한 번. 처음 찾은 이에게는 다이아가 더 붙는다. 지도에서도 싸움에서도, 배경이 보이면 된다.
+   ══════════════════════════════════════════════════════════════ */
+const EGG = { dn: null, hold: null, eye: null, eyeNext: 0, eyeHit: 0, seal: { n: 0, at: 0, on: 0 }, node: 0, pend: 0 };
+const EGG_ACTS = [10, 14, 17, 20, 25];
+const EGG_FIRST = { 10: 500, 14: 200, 17: 200, 20: 300, 25: 500 };
+const PEAKS10 = [[90, 330], [230, 250], [380, 290], [560, 300], [720, 270], [880, 310]], CAVE10 = [232, 338];
+const FIG17 = Array.from({ length: 17 }, (_, i) => [40 + i * 58, 96 + (i % 4) * 42]);
+const eggM = () => META.egg || (META.egg = {});
+const eggR = () => G.run ? (G.run.egg || (G.run.egg = {})) : {};
+const eggBgAct = () => { const m = /^a(\d+)$/.exec(_bgKey || ''); return m ? +m[1] : 0; };
+/* 처음 찾은 이에게만 — 다이아 */
+function eggFirst(a) {
+  const M = eggM(); if (M['f' + a]) return 0;
+  M['f' + a] = 1; const d = EGG_FIRST[a] || 0;
+  if (G.run && d) G.run.dia = (G.run.dia || 0) + d;
+  saveMeta(); return d;
+}
+/* 누른 자리가 「배경」인가 — 단추·부적·칸·요괴·창 위는 아니다 */
+function eggFree(t) {
+  if (!G.run || G.run._pvp || !t || !t.closest || !t.closest('#scene,#bg')) return false;
+  if (t.closest('button,a,input,textarea,select,label,.card,.mapnode,.unit,#hand,.hackmap,.cavemap,#maplegend,.potion')) return false;
+  const o = $('#overlay'); if (o && o.style.display !== 'none' && o.querySelector('.panel')) return false;
+  if (cutPlaying() || document.querySelector('.eggcine,.eggclimb,.mpintro')) return false;
+  return true;
+}
+function eggV(x, y) { const b = $('#bg'), r = b ? b.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight }; return { vx: (x - r.left) / r.width * 1000, vy: (y - r.top) / r.height * 600 }; }
+function eggXY(vx, vy) { const b = $('#bg'), r = b ? b.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight }; return { x: r.left + vx / 1000 * r.width, y: r.top + vy / 600 * r.height }; }
+const eggNear = (x, y, vx, vy, rad) => { const q = eggXY(vx, vy); return Math.hypot(q.x - x, q.y - y) <= (rad || 30); };
+function eggFloat(x, y, t, c) {
+  const n = el('div', 'eggfloat', wEsc(t)); n.style.cssText = `left:${x}px;top:${y}px;--c:${c || '#ffd76a'}`;
+  document.body.appendChild(n); setTimeout(() => n.remove(), 1700);
+}
+/* ── 손가락 — 누르기 · 꾹 누르기 · 긋기 ── */
+document.addEventListener('pointerdown', e => {
+  EGG.dn = null;
+  if (e.button > 0) return;
+  const a = eggBgAct(); if (EGG_ACTS.indexOf(a) < 0 || !eggFree(e.target)) return;
+  EGG.dn = { x: e.clientX, y: e.clientY, t: performance.now(), a };
+  if (a === 14 && eggNear(e.clientX, e.clientY, 500, 126, 72)) egg14HoldStart(e.clientX, e.clientY);
+}, true);
+document.addEventListener('pointermove', e => { if (EGG.hold && Math.hypot(e.clientX - EGG.hold.x, e.clientY - EGG.hold.y) > 34) egg14HoldStop(); }, true);
+document.addEventListener('pointerup', e => {
+  const d = EGG.dn; EGG.dn = null;
+  if (EGG.hold) egg14HoldStop();
+  if (!d) return;
+  const dx = e.clientX - d.x, dy = e.clientY - d.y, ms = performance.now() - d.t;
+  if (Math.hypot(dx, dy) < 12 && ms < 650) {
+    if (d.a === 10) egg10Tap(e.clientX, e.clientY);
+    else if (d.a === 17) egg17Tap(e.clientX, e.clientY);
+    else if (d.a === 20) egg20Tap(e.clientX, e.clientY);
+    else if (d.a === 25) egg25Tap(e.clientX, e.clientY);
+  } else if (d.a === 25 && dy > 90 && Math.abs(dx) < dy * .7 && ms < 1400) egg25Swipe(d, e);
+}, true);
+document.addEventListener('pointercancel', () => { EGG.dn = null; if (EGG.hold) egg14HoldStop(); }, true);
+document.addEventListener('contextmenu', e => { if (EGG.hold) e.preventDefault(); }, true);
+
+/* ── 배경 위에 얹는 것 — 횃불 · 해무리 · 눈 · 봉우리의 눈 · 낙관 ── */
+function eggBg(a) {
+  const bg = $('#bg'); if (!bg) return;
+  const old = bg.querySelector('.eggl'); if (old) old.remove();
+  let h = '';
+  if (a === 10) {
+    const lit = eggM().t10 || 0;
+    h = PEAKS10.map(([x, y], i) => `<span class="etorch${lit & (1 << i) ? ' on' : ''}" style="left:${x / 10}%;top:${y / 6}%"><i></i><b></b><u></u></span>`).join('');
+    if (eggM().cave) h += `<span class="ecave${G.run && G.run.cave && G.run.cave.open ? ' lit' : ''}" style="left:${CAVE10[0] / 10}%;top:${CAVE10[1] / 6}%"><i></i><i></i></span>`;
+  } else if (a === 14) h = `<span class="esun" style="left:50%;top:${126 / 6}%"><s></s><s></s><s></s><i></i></span>`;
+  else if (a === 17) h = FIG17.map(([x, y], i) => `<span class="efig" data-i="${i}" style="left:${x / 10}%;top:${y / 6}%"><b></b></span>`).join('');
+  else if (a === 20) h = `<span class="esnow" style="left:50%;top:${68 / 6}%"></span>`;
+  else if (a === 25) h = `<span class="eseal" style="left:${43 / 10}%;top:${87 / 6}%"></span><span class="etear"></span>`;
+  if (!h) return;
+  bg.appendChild(el('div', 'eggl' + (a === 10 ? ' sway' : ''), h));
+}
+/* 일 초마다 — 굴 띠 · 기억의 눈 · 싸움 뒤로 미룬 것 */
+function eggTick() {
+  const run = G.run, M = eggM();
+  const onMap = run && !run._pvp && G.scene === 'map' && !G.b;
+  const want = onMap && run.act === 10 && M.cave && !$('#cavemap');
+  /* 지도 머리말 — 「지난 막 다시」 옆에 굴로 가는 단추 */
+  let pill = $('#cavepill');
+  const sub = $('#maphead .actsub');
+  if (!want || !sub) { if (pill) pill.remove(); }
+  else {
+    if (!pill || !sub.contains(pill)) { if (pill) pill.remove(); pill = el('button', 'rpactbtn cavepill', '<i>窟</i> 백귀굴 <em></em>'); pill.id = 'cavepill'; pill.onclick = e => { e.stopPropagation(); SND.ui(); caveGate(); }; sub.appendChild(pill); }
+    const cv = run.cave || {};
+    pill.classList.toggle('lit', !!(cv.open && !cv.done));
+    pill.querySelector('em').textContent = cv.done ? '고요' : cv.open ? `${Math.min(cv.step || 0, CAVE_NODES.length)}/${CAVE_NODES.length}` : '바위 문';
+  }
+  if (onMap && run.inCave && run.act === 10 && run.cave && run.cave.open && !$('#cavemap') && !($('#overlay') && $('#overlay').querySelector('.panel'))) showCaveMap();
+  if (eggBgAct() === 17 && !document.hidden) egg17Blink();
+  /* 싸움 중에 찾은 것은 싸움이 끝나고 지도에서 연다 */
+  if (EGG.pend && onMap && !($('#overlay') && $('#overlay').querySelector('.panel')) && !cutPlaying()) {
+    const k = EGG.pend; EGG.pend = 0;
+    if (k === 10) caveGate(); else if (k === 17) showMemRoom(); else if (k === 20) egg20Climb(); else if (k === 25) showPaintRoom();
+  }
+}
+
+/* ══ 컷씬 — 위아래 먹 띠 · 그림 · 한 줄씩 적히는 말 (누르면 넘어간다) ══ */
+function eggCine(scenes, cls) {
+  return new Promise(done => {
+    const n = el('div', 'eggcine' + (cls ? ' ' + cls : ''), `<div class="ecstage"></div><i class="ecbar t"></i><i class="ecbar b"></i>
+      <div class="ecline"></div><button class="ecskip">넘기기 ▸▸</button>`);
+    document.body.appendChild(n);
+    const stage = n.querySelector('.ecstage'), line = n.querySelector('.ecline');
+    let skip = false, cut = false;
+    n.querySelector('.ecskip').onclick = ev => { ev.stopPropagation(); skip = true; cut = true; };
+    n.onclick = () => { cut = true; };
+    const hold = async ms => { cut = false; const until = performance.now() + ms; while (!cut && !skip && performance.now() < until) await wait(40); };
+    (async () => {
+      try { SND.unlock(); } catch (e) {}
+      for (const s of scenes) {
+        if (skip) break;
+        stage.innerHTML = `<div class="ecsc ${s.cls || ''}">${s.art}</div>`;
+        try { if (s.sfx) s.sfx(n); } catch (e) {}
+        if (!(s.lines || []).length) { await hold(s.ms || 2000); continue; }
+        for (const t of s.lines) {
+          if (skip) break;
+          line.classList.remove('in'); void line.offsetWidth; line.classList.add('in');
+          cut = false;
+          for (let i = 1; i <= t.length && !cut && !skip; i++) { line.textContent = t.slice(0, i); if (i % 4 === 0) try { SND.blip(760, { dur: .015, vol: .015 }); } catch (e) {} await wait(30); }
+          line.textContent = t;
+          await hold(s.hold || 1900);
+        }
+      }
+      n.classList.add('out'); await wait(480); n.remove(); done();
+    })();
+  });
+}
+/* 그림 조각 */
+const ecMount = (c1, c2) => `<path fill="${c1}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600Z"/>
+  <path fill="${c2}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600Z"/>`;
+const ecSvg = (inner, bg) => `<svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">${EC_DEFS}<rect width="1000" height="600" fill="${bg || '#0a0408'}"/>${inner}</svg>`;
+const EC_DEFS = `<defs><radialGradient id="ectg"><stop offset="0" stop-color="#ffc06a" stop-opacity=".6"/><stop offset="1" stop-color="#ff7a2a" stop-opacity="0"/></radialGradient>
+  <radialGradient id="ecgw"><stop offset="0" stop-color="#fffaf0" stop-opacity=".95"/><stop offset=".35" stop-color="#ffd98a" stop-opacity=".5"/><stop offset="1" stop-color="#ffb04a" stop-opacity="0"/></radialGradient>
+  <radialGradient id="ecrd"><stop offset="0" stop-color="#ff5a6a" stop-opacity=".85"/><stop offset=".4" stop-color="#b8182a" stop-opacity=".38"/><stop offset="1" stop-color="#5a0010" stop-opacity="0"/></radialGradient>
+  <radialGradient id="ecgn"><stop offset="0" stop-color="#eaffc8" stop-opacity=".85"/><stop offset=".45" stop-color="#9ad86a" stop-opacity=".3"/><stop offset="1" stop-color="#4a7a2a" stop-opacity="0"/></radialGradient>
+  <radialGradient id="ecvi"><stop offset="0" stop-color="#f6ecff" stop-opacity=".85"/><stop offset=".45" stop-color="#b89ad8" stop-opacity=".3"/><stop offset="1" stop-color="#5a3a7a" stop-opacity="0"/></radialGradient>
+  <linearGradient id="ecfg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="ecpp" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#efe2c2"/><stop offset=".6" stop-color="#ddc9a0"/><stop offset="1" stop-color="#b89a6a"/></linearGradient></defs>`;
+/* 빛살 — 한가운데서 퍼지는 줄기 */
+const ecRays = (cx, cy, n, col, len) => `<g class="ecrays" style="transform-origin:${cx}px ${cy}px">${Array.from({ length: n }, (_, i) => { const a = i / n * Math.PI * 2, w = .045;
+  return `<path d="M${cx},${cy} L${(cx + Math.cos(a - w) * len).toFixed(0)},${(cy + Math.sin(a - w) * len).toFixed(0)} L${(cx + Math.cos(a + w) * len).toFixed(0)},${(cy + Math.sin(a + w) * len).toFixed(0)}Z" fill="${col}"/>`; }).join('')}</g>`;
+/* 안개 띠 */
+const ecFog = (y, h, op) => `<rect class="ecfogb" x="-200" y="${y}" width="1400" height="${h}" fill="url(#ecfg)" opacity="${op || 1}"/>`;
+/* 두건 쓴 얼굴 없는 형체 — eye 면 눈이 뜬다 */
+const ecHood = (x, y, k, eye, d) => `<g class="echood" transform="translate(${x} ${y}) scale(${k})" style="animation-delay:${d || 0}s"><path d="M0,-70 q-38,4 -44,52 q-14,60 -20,150 l128,0 q-6,-90 -20,-150 q-6,-48 -44,-52Z" fill="#2a1e34"/>
+  <ellipse cx="0" cy="-36" rx="24" ry="30" fill="#140e1c"/>${eye ? `<g class="echeye" style="animation-delay:${(d || 0) + .8}s"><circle cx="-9" cy="-38" r="3.2" fill="#f6ecff"/><circle cx="9" cy="-38" r="3.2" fill="#f6ecff"/><circle cx="0" cy="-38" r="20" fill="url(#ecvi)"/></g>` : ''}</g>`;
+const ecTorch = (x, y, i) => `<g class="ectorch" style="animation-delay:${(i * .28).toFixed(2)}s" transform="translate(${x} ${y})"><circle cy="-32" r="40" fill="url(#ectg)"/>
+  <path d="M0,0 L0,-24" stroke="#3a2418" stroke-width="4"/><path class="fl" d="M0,-22 q-11,-14 0,-36 q11,22 0,36Z" fill="#ffb45a"/><path d="M0,-24 q-5,-8 0,-18 q5,10 0,18Z" fill="#fff2c0"/></g>`;
+const ecEyes = (n, seed) => Array.from({ length: n }, (_, i) => { const x = 380 + ((i * 97 + seed) % 240), y = 330 + ((i * 53 + seed) % 150);
+  return `<g class="eceye" style="animation-delay:${((i * 37) % 23) / 10}s"><circle cx="${x}" cy="${y}" r="3.4" fill="#ff3a4a"/><circle cx="${x + 11}" cy="${y}" r="3.4" fill="#ff3a4a"/></g>`; }).join('');
+
+/* ══ 제10막 · 횃불과 백귀굴 ═════════════════════════════════════ */
+function egg10Tap(x, y) {
+  const M = eggM();
+  if (M.cave && eggNear(x, y, CAVE10[0], CAVE10[1], 40)) { SND.ui(); caveGate(); return; }
+  const i = PEAKS10.findIndex(([vx, vy]) => eggNear(x, y, vx, vy, 36)); if (i < 0) return;
+  if ((M.t10 || 0) & (1 << i)) { if (!M.cave && egg10Full()) egg10Open(); return; }
+  M.t10 = (M.t10 || 0) | (1 << i); saveMeta(); eggBg(10);
+  const n = PEAKS10.filter((_, k) => M.t10 & (1 << k)).length;
+  try { SND.unlock(); SND.fire(); SND.blip(300 + n * 90, { dur: .26, type: 'triangle', vol: .06, rev: .6 }); sparkles(x, y - 24, 16, '#ffb45a', 70); } catch (e) {}
+  eggFloat(x, y - 50, n < PEAKS10.length ? `횃불 ${n} / ${PEAKS10.length}` : '여섯 봉우리에 불이 붙었다', '#ffb45a');
+  if (n >= PEAKS10.length && !M.cave) setTimeout(egg10Open, 900);
+}
+const egg10Full = () => PEAKS10.every((_, i) => (eggM().t10 || 0) & (1 << i));
+async function egg10Open() {
+  if (document.querySelector('.eggcine')) return;
+  const M = eggM();
+  await eggCine([
+    { art: ecSvg(`<circle cx="700" cy="150" r="300" fill="url(#ecrd)"/><circle cx="700" cy="150" r="74" fill="#c8303c"/><circle cx="676" cy="134" r="14" fill="#a8202c" opacity=".6"/>${ecFog(250, 90, .5)}${ecMount('#2a0f1a', '#120610')}${PEAKS10.map(([x, y], i) => ecTorch(x, y, i)).join('')}`, '#14060c'),
+      sfx: () => { SND.fire(); setTimeout(() => SND.fire(), 700); }, lines: ['여섯 봉우리에 불이 붙었다.', '백귀야행의 밤 — 행렬이 지나간 산이, 낮게 울기 시작한다.'] },
+    { cls: 'shake', art: ecSvg(`<circle cx="700" cy="150" r="74" fill="#b8283a" opacity=".85"/>${ecMount('#2a0f1a', '#120610')}${PEAKS10.map(([x, y], i) => ecTorch(x, y, 0)).join('')}
+        <path class="eccrack" d="M230,250 L238,290 L224,318 L242,352 L228,392 L246,430" fill="none" stroke="#ff6a3a" stroke-width="4"/>
+        <g class="ecrocks">${Array.from({ length: 14 }, (_, i) => `<rect x="${200 + (i * 37) % 80}" y="${300 + (i * 23) % 90}" width="${6 + i % 5}" height="${5 + i % 4}" fill="#3a1a22" style="animation-delay:${(i % 7) * .12}s"/>`).join('')}</g>`, '#14060c'),
+      sfx: () => { SND.thunder(); SND.drum(); setTimeout(() => SND.drum(), 500); }, lines: ['…발밑에서 무언가가 깨어난다.'] },
+    { art: ecSvg(`${ecMount('#2a0f1a', '#120610')}<g class="ecmaw"><ellipse cx="500" cy="420" rx="200" ry="150" fill="#000"/><ellipse cx="500" cy="430" rx="210" ry="160" fill="none" stroke="#ff5a3a" stroke-width="3" opacity=".5"/></g>
+        ${ecEyes(18, 11)}<g class="ecwind">${Array.from({ length: 10 }, (_, i) => `<path d="M${500 + (i - 5) * 30},430 l${(i - 5) * 60},${-120 - (i % 3) * 30}" stroke="#ffb0a0" stroke-width="1.4" opacity=".4"/>`).join('')}</g>`, '#14060c'),
+      sfx: () => { SND.boss(); SND.hiss({ dur: 1.6, vol: .14, freq: 400, to: 80, filter: 'lowpass', rev: .6 }); }, lines: ['산이 입을 열었다.', '그 안에서 백 개의 눈이 이쪽을 본다.'] },
+    { cls: 'title', art: `<div class="ectitle"><b>百鬼窟</b><span>백 귀 굴</span><small>바위 문 양쪽에 부적 두 장이 들어갈 홈이 있다 — 불타는 부적 둘을 바치는 이에게 굴은 빛을 보인다</small></div>`,
+      sfx: () => SND.gong(), ms: 3200 }
+  ], 'c10');
+  M.cave = 1; saveMeta(); eggBg(10);
+  if (G.b) { EGG.pend = 10; toast('싸움이 끝나면 굴 앞에 선다 — 지도 왼쪽 아래 「백귀굴」'); }
+  else caveGate();
+}
+/* 바위 문 */
+function caveGateSvg(cv) {
+  return `<svg viewBox="0 0 600 340" preserveAspectRatio="xMidYMid meet">${EC_DEFS}
+    <defs><radialGradient id="cgl"><stop offset="0" stop-color="#fff2c0"/><stop offset=".4" stop-color="#ffb04a"/><stop offset="1" stop-color="#ff6a2a" stop-opacity="0"/></radialGradient></defs>
+    <path d="M0,340 L0,130 L60,92 L170,118 L240,70 L330,104 L420,62 L540,112 L600,90 L600,340Z" fill="#241016"/>
+    <path d="M0,340 L0,190 L90,150 L180,170 L260,120 L350,150 L440,110 L540,160 L600,140 L600,340Z" fill="#170a0f"/>
+    <g class="cgglow"><ellipse cx="300" cy="270" rx="150" ry="120" fill="url(#cgl)" opacity=".85"/></g>
+    <path class="cgmouth" d="M200,340 L200,250 Q200,150 300,150 Q400,150 400,250 L400,340Z" fill="#050204"/>
+    <g class="cgeyes">${Array.from({ length: 9 }, (_, i) => { const x = 240 + (i * 41) % 120, y = 220 + (i * 29) % 90; return `<g style="animation-delay:${(i % 5) * .5}s"><circle cx="${x}" cy="${y}" r="2.6" fill="#ff3a4a"/><circle cx="${x + 9}" cy="${y}" r="2.6" fill="#ff3a4a"/></g>`; }).join('')}</g>
+    <path d="M186,168 Q300,120 414,168" fill="none" stroke="#d8c08a" stroke-width="5"/>
+    ${Array.from({ length: 7 }, (_, i) => `<path d="M${214 + i * 29},${158 - Math.sin(i / 6 * Math.PI) * 26} l-5,18 l10,0 Z" fill="#f2ead2"/>`).join('')}
+    <g class="cgslot a"><rect x="128" y="200" width="40" height="72" rx="3" fill="#0e0608" stroke="#6a3a2a" stroke-width="2"/><g class="tal"><rect x="132" y="204" width="32" height="64" fill="#ff8a3a"/><text x="148" y="246" font-size="24" text-anchor="middle" fill="#3a1006">符</text></g></g>
+    <g class="cgslot b"><rect x="432" y="200" width="40" height="72" rx="3" fill="#0e0608" stroke="#6a3a2a" stroke-width="2"/><g class="tal"><rect x="436" y="204" width="32" height="64" fill="#ff8a3a"/><text x="452" y="246" font-size="24" text-anchor="middle" fill="#3a1006">符</text></g></g>
+    ${[[60, 92], [170, 118], [240, 70], [330, 104], [420, 62], [540, 112]].map(([x, y], i) => ecTorch(x, y, i)).join('')}
+  </svg>`;
+}
+function caveGate() {
+  const run = G.run; if (!run || run._pvp) return;
+  if (G.b) { EGG.pend = 10; toast('싸움이 끝나면 굴 앞에 선다'); return; }
+  if (run.act !== 10) { toast('백귀굴은 백귀야행의 밤(제10막)에만 문을 연다'); SND.err(); return; }
+  const p = overlay(`<div class="cvgate${run.cave && run.cave.open ? ' lit' : ''}"><div class="cvgbg"></div>
+      <div class="schead"><button class="gback" id="cg_back">←</button><h2>百鬼窟 · 백귀굴</h2><div class="scnote">제10막 · 숨은 굴</div></div>
+      <div class="cvgbody"><div class="cvgart">${caveGateSvg(run.cave || {})}</div><div class="cvgtxt" id="cg_txt"></div><div class="cvgbtns" id="cg_btns"></div></div></div>`, 'cavegatep');
+  p.dataset.noauto = '1';
+  p.querySelector('#cg_back').onclick = () => { closeOverlay(); showMap(); };
+  caveGateDraw(p);
+}
+function caveGateDraw(p) {
+  const run = G.run, cv = run.cave || {}, txt = p.querySelector('#cg_txt'), bt = p.querySelector('#cg_btns');
+  const S = ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar === 'special');
+  if (cv.done) {
+    txt.innerHTML = `<b>굴은 고요하다.</b><p>행렬은 너를 주인으로 받아들였다. 쏟아지던 발소리는 이제 네 뒤를 따른다.</p>`;
+    bt.innerHTML = `<button class="brush-btn" id="cg_map">굴 지도</button><button class="brush-btn ghost" id="cg_x">물러난다</button>`;
+  } else if (cv.open) {
+    txt.innerHTML = `<b>굴이 빛을 드러냈다.</b><p>안에서 행렬의 발소리가 끝없이 들린다 — 열세 구역, 끝에는 굴의 아가리.<br>
+      여기서는 <b>쓰러져도 모험이 끝나지 않는다</b>. 체력은 들어가기 전으로 돌아오고, 깬 구역은 그대로다.</p><small>깬 구역 ${Math.min(cv.step || 0, CAVE_NODES.length)} / ${CAVE_NODES.length}</small>`;
+    bt.innerHTML = `<button class="brush-btn gold" id="cg_map">들어간다</button><button class="brush-btn ghost" id="cg_x">물러난다</button>`;
+  } else {
+    txt.innerHTML = `<b>바위 문 양쪽에 홈이 둘 — 부적 한 장씩 들어갈 크기다.</b>
+      <p>홈 위에 새겨진 글 — 「<i>불타는 부적 둘을 바치는 이에게 굴은 빛을 보인다</i>」<br>바친 부적은 돌아오지 않는다. 대신 굴 끝에는 <b>도감에 없는 것</b>이 있다고 한다.</p>
+      <small>덱의 S급 부적 <b>${S.length}</b>장 ${S.length < 2 ? '— 두 장이 있어야 한다' : ''}</small>`;
+    bt.innerHTML = `<button class="brush-btn gold" id="cg_offer"${S.length < 2 ? ' disabled' : ''}>S급 부적 두 장을 바친다</button><button class="brush-btn ghost" id="cg_x">물러난다</button>`;
+  }
+  const q = s => p.querySelector(s);
+  if (q('#cg_x')) q('#cg_x').onclick = () => { closeOverlay(); showMap(); };
+  if (q('#cg_map')) q('#cg_map').onclick = () => { SND.ui(); closeOverlay(); showMap(); showCaveMap(); };
+  if (q('#cg_offer')) q('#cg_offer').onclick = () => caveOffer(p);
+}
+async function caveOffer(p) {
+  const run = G.run, pool = () => ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar === 'special');
+  if (pool().length < 2) { toast('S급 부적이 두 장 있어야 한다'); SND.err(); return; }
+  const a = await pickFromList(pool(), '첫째 홈 — 바칠 S급 부적', { hint: '바친 부적은 덱에서 사라진다', cancel: true }); if (!a) return;
+  const b = await pickFromList(pool().filter(c => c !== a), '둘째 홈 — 바칠 S급 부적', { hint: '하나 더 — 이것으로 굴이 열린다', cancel: true }); if (!b) return;
+  for (const x of [a, b]) { run.deck = run.deck.filter(c => c !== x); if (run._evOld) run._evOld = run._evOld.filter(c => c !== x); }
+  run.cave = { open: 1, step: 0, done: 0 }; saveRun();
+  const g = p.querySelector('.cvgate'); if (!g) return;
+  g.classList.add('offer');
+  try { SND.talismanS && SND.talismanS(); SND.fire(); } catch (e) {}
+  await wait(900);
+  g.classList.add('lit');
+  try { SND.gong(); SND.boss(); screenFlash('rgba(255,200,110,.55)', 900); stampWord('窟 開', '#ffb45a'); } catch (e) {}
+  eggBg(10);
+  await wait(900);
+  caveGateDraw(p);
+}
+
+/* 굴 안 — 열세 구역 */
+const CAVE_NODES = [
+  { n: '굴 어귀', g: '口', foes: ['lantern2', 'drummer'] },
+  { n: '젖은 벽', g: '壁', foes: ['palanquin'] },
+  { n: '눈 뜬 어둠', g: '目', foes: ['lantern2', 'lantern2'] },
+  { n: '굴 속 샘', g: '泉', rest: 1 },
+  { n: '북소리 굴', g: '鼓', foes: ['drummer', 'drummer'] },
+  { n: '행렬의 꼬리', g: '尾', foes: ['headmonk'], elite: 1 },
+  { n: '뼈무덤', g: '骨', foes: ['palanquin', 'lantern2'] },
+  { n: '쏟아지는 굴', g: '湧', foes: ['drummer', 'lantern2', 'lantern2'] },
+  { n: '굴 속 샘', g: '泉', rest: 1 },
+  { n: '밤의 품', g: '母', foes: ['nightqueen'], elite: 1 },
+  { n: '가마 행렬', g: '轎', foes: ['palanquin', 'drummer'] },
+  { n: '마지막 등불', g: '燈', foes: ['lantern2', 'drummer', 'lantern2'] },
+  { n: '굴의 아가리', g: '淵', foes: ['cavemaw'], boss: 1 }
+];
+const CAVE_GL = '鬼妖魅魍魎怪夜百';
+function cavePour(n, lite) {
+  return Array.from({ length: n }, (_, i) => {
+    const x = (i * 37 + 7) % 100, fs = 20 + (i * 13) % 34, d = 5 + (i * 7) % 7, dl = -((i * 1.7) % d), dx = ((i % 5) - 2) * 26;
+    return `<span style="left:${x}%;--fs:${fs}px;--d:${d}s;--dl:${dl.toFixed(1)}s;--dx:${dx}px">${CAVE_GL[i % CAVE_GL.length]}</span>`;
+  }).join('') + (lite ? '' : Array.from({ length: 16 }, (_, i) => `<i class="cveye" style="left:${(i * 61 + 13) % 96}%;top:${12 + (i * 37) % 70}%;animation-delay:${((i * 0.7) % 5).toFixed(1)}s"></i>`).join(''));
+}
+const caveWallSvg = () => `<svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+  <path d="M0,0 L1000,0 L1000,60 ${Array.from({ length: 21 }, (_, i) => `L${1000 - i * 50},${60 + (i % 2 ? 70 + (i * 17) % 60 : 10)}`).join(' ')} L0,60Z" fill="#050204"/>
+  <path d="M0,600 L0,520 ${Array.from({ length: 21 }, (_, i) => `L${i * 50},${520 - (i % 2 ? 40 + (i * 13) % 50 : 0)}`).join(' ')} L1000,520 L1000,600Z" fill="#050204"/>
+  <path d="M0,0 L0,600 L60,600 Q120,300 60,0Z M1000,0 L1000,600 L940,600 Q880,300 940,0Z" fill="#0a0408"/></svg>`;
+function showCaveMap() {
+  const run = G.run; if (!run || !run.cave || !run.cave.open) return;
+  if (run.act !== 10) { run.inCave = false; saveRun(); return; }
+  run.inCave = true; saveRun();
+  const old = $('#cavemap'); if (old) old.remove();
+  const cv = run.cave, N = CAVE_NODES.length, step = Math.min(cv.step || 0, N);
+  const pos = i => ({ x: 80 + i * 136, y: 120 + Math.round(Math.sin(i * 1.15) * 62) });
+  const W = pos(N - 1).x + 90, H = 240;
+  const seg = (i0, i1) => { let d = `M${pos(i0).x},${pos(i0).y}`; for (let i = i0 + 1; i <= i1; i++) { const a = pos(i - 1), b = pos(i); d += ` C${a.x + 68},${a.y} ${b.x - 68},${b.y} ${b.x},${b.y}`; } return d; };
+  const p = el('div', 'cavemap'); p.id = 'cavemap';
+  p.innerHTML = `<div class="cvbg">${caveWallSvg()}</div><div class="cvpour">${cavePour(34)}</div>
+    <div class="cvhead"><b>百鬼窟 · 백귀굴</b><span>깬 구역 <em>${step} / ${N}</em> · 체력 <em>${run.hp} / ${run.maxHp}</em></span><button id="cvm_out">굴 밖으로</button></div>
+    <div class="cvsay">${cv.done ? '굴의 아가리를 닫았다. 행렬은 이제 네 뒤를 따른다.' : '요괴가 끝없이 쏟아진다 — 여기서는 쓰러져도 모험이 끝나지 않는다. 체력은 들어가기 전으로, 깬 구역은 그대로.'}</div>
+    <div class="cvscroll" id="cvm_sc"><div class="cvtrack" style="width:${W}px;height:${H}px">
+      <svg width="${W}" height="${H}" class="cvroad"><path d="${seg(0, N - 1)}" fill="none" stroke="rgba(255,120,90,.18)" stroke-width="10" stroke-linecap="round"/>
+        <path d="${seg(0, N - 1)}" fill="none" stroke="rgba(255,190,160,.28)" stroke-width="2" stroke-dasharray="3 9" stroke-linecap="round"/>
+        ${step > 0 ? `<path d="${seg(0, Math.min(step, N - 1))}" fill="none" stroke="#ffb45a" stroke-width="3.2" stroke-linecap="round" class="cvdone"/>` : ''}</svg>
+      ${CAVE_NODES.map((x, i) => { const q = pos(i), st = i < step || cv.done ? 'done' : i === step ? 'cur' : 'lock';
+        return `<button class="cvnode ${st}${x.boss ? ' boss' : x.elite ? ' elite' : x.rest ? ' rest' : ''}" data-i="${i}" style="left:${q.x}px;top:${q.y}px">
+          <b>${x.g}</b><span>${wEsc(x.n)}</span><em>${st === 'done' ? '지나왔다' : st === 'cur' ? (x.rest ? '쉬어 간다' : '들어간다') : x.boss ? '???' : '어둠'}</em></button>`; }).join('')}
+    </div></div>
+    <div class="cvlore"><i>窟</i><div><b>백귀굴(百鬼窟)</b><p>백귀야행이 낮 동안 숨어드는 굴. 행렬은 끝이 없다 — 하나를 베면 둘이 쏟아져 나온다.
+      굴의 맨 끝, 아가리 안쪽에는 행렬의 주인만이 쥘 수 있다는 부적이 잠들어 있다.</p>
+      <p class="cvhint">窟 깬 구역마다 골드 · 샘은 체력 30% · 끝까지 가면 <b>도감에 없는 SSX 「진 백귀야행」</b></p></div></div>`;
+  ($('#app') || document.body).appendChild(p);
+  p.querySelector('#cvm_out').onclick = caveExit;
+  p.querySelectorAll('.cvnode.cur').forEach(b => b.onclick = () => caveEnter(+b.dataset.i));
+  p.querySelectorAll('.cvnode.lock').forEach(b => b.onclick = () => { SND.err(); toast('앞의 구역부터'); });
+  const sc = p.querySelector('#cvm_sc');
+  requestAnimationFrame(() => { sc.scrollLeft = Math.max(0, pos(Math.min(step, N - 1)).x - sc.clientWidth / 2); });
+  try { SND.drum(); } catch (e) {}
+}
+function caveExit() {
+  const run = G.run; if (run) { run.inCave = false; saveRun(); }
+  const m = $('#cavemap'); if (m) m.remove();
+  try { SND.ui(); } catch (e) {}
+  closeOverlay(); showMap();
+  toast('굴 밖으로 나왔다 — 지도 왼쪽 아래 「백귀굴」로 다시 들어간다');
+}
+function caveEnter(i) {
+  const run = G.run, cv = run && run.cave, x = CAVE_NODES[i]; if (!cv || cv.step !== i || cv.done) return;
+  const lock = !x.rest && stageLock(); if (lock) { toast(lock + ' — 굴은 그 뒤에'); SND.err(); return; }
+  if (x.rest) {
+    const h = Math.round(run.maxHp * .3); run.hp = Math.min(run.maxHp, run.hp + h); cv.step++; saveRun(); renderTop();
+    toast(`굴 속 샘 — 체력 +${h}`); try { SND.heal(); } catch (e) {}
+    showCaveMap(); return;
+  }
+  const m = $('#cavemap'); if (m) m.remove();
+  EGG.node = i;
+  startBattle(x.foes, x.boss ? 'caveboss' : 'cave', { hpMul: x.boss ? .82 : x.elite ? .92 : 1 });
+  setTimeout(() => { try { if (x.boss) { flash('굴 의 아 가 리'); SND.boss(); } else if (x.elite) SND.gong(); } catch (e) {} }, 320);
+}
+function caveWin(kind) {
+  const run = G.run, b = G.b, cv = run.cave || (run.cave = { open: 1, step: 0 }), x = CAVE_NODES[EGG.node || 0];
+  battleWatch(false); lowHpGlow(false);
+  try { xpOnWin(b); } catch (e) {}
+  G.b = null;
+  const gold = Math.round((x.boss ? 120 : x.elite ? 60 : 30) * lootGold(run.act || 10));
+  run.gold += gold; run.stats.gold += gold;
+  if (kind === 'caveboss') { cv.done = 1; cv.step = CAVE_NODES.length; } else cv.step = Math.max(cv.step || 0, (EGG.node || 0) + 1);
+  saveRun(); renderTop();
+  if (kind === 'caveboss') { caveReward(gold); return; }
+  const p = modal(`<h2 class="cvwh">${wEsc(x.n)} — 지나왔다</h2><div class="hint">행렬이 잠깐 물러났다. 굴 안쪽에서 또 발소리가 난다.</div>
+    <div class="cvrew"><div><b>金</b>골드 +${gold}</div><div><b>窟</b>${cv.step} / ${CAVE_NODES.length}</div></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="cw_in">굴 안으로</button><button class="brush-btn" id="cw_out">굴 밖으로</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#cw_in').onclick = () => { closeTop(); showMap(); showCaveMap(); };
+  p.querySelector('#cw_out').onclick = () => { closeTop(); caveExit(); };
+}
+function caveLose() {
+  const run = G.run, b = G.b;
+  battleWatch(false); lowHpGlow(false);
+  if (b && b.startHp) run.hp = Math.max(1, b.startHp);
+  G.b = null; saveRun();
+  const p = modal(`<h2 class="cvwh lose">굴에서 밀려났다</h2>
+    <div class="hint">행렬에 떠밀려 굴 어귀까지 나왔다 — 모험은 그대로다. 체력은 들어가기 전으로 돌아오고, 깬 구역은 그대로 남는다.</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="cl_in">다시 들어간다</button><button class="brush-btn" id="cl_out">굴 밖으로</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#cl_in').onclick = () => { closeTop(); showMap(); showCaveMap(); };
+  p.querySelector('#cl_out').onclick = () => { closeTop(); caveExit(); };
+}
+async function caveReward(gold) {
+  const run = G.run;
+  await eggCine([
+    { cls: 'shake', art: ecSvg(`<g class="ecmaw shut"><ellipse cx="500" cy="330" rx="260" ry="190" fill="#000"/></g>${ecEyes(22, 5)}`, '#1a0a10'),
+      sfx: () => { SND.thunder(); SND.boss(); }, lines: ['굴의 아가리가 닫힌다.'] },
+    { art: ecSvg(`<g class="ecproc">${Array.from({ length: 26 }, (_, i) => `<text x="${(i * 41) % 1000}" y="${430 + (i % 3) * 40}" font-size="${34 + (i % 4) * 8}" fill="#0a0408" style="animation-delay:${(i * .07).toFixed(2)}s">${CAVE_GL[i % CAVE_GL.length]}</text>`).join('')}</g>
+        <circle cx="500" cy="220" r="300" fill="url(#ecrd)"/>${ecRays(500, 210, 18, 'rgba(255,90,110,.12)', 520)}<g class="ectal"><rect x="470" y="150" width="60" height="120" fill="#ff2d55"/><text x="500" y="228" font-size="48" text-anchor="middle" fill="#2a0008">夜</text></g>`, '#2a0e18'),
+      sfx: () => { SND.gong(); setTimeout(() => SND.victory(), 600); }, lines: ['쏟아지던 행렬이 멈추고 — 고개를 숙인다.', '어둠 속에서 붉은 부적 한 장이 내려온다. 행렬의 주인만이 쥘 수 있다는 것.'] }
+  ], 'c10');
+  run.deck.push(mkCard('hyakki_true', false)); run.stats.cards++;
+  const M = eggM(); M.got10 = (M.got10 || 0) + 1; const d = eggFirst(10);
+  saveMeta(); saveRun(); renderTop();
+  const p = modal(`<div class="eggrew r10"><div class="erglow"></div><h2>眞 · 百鬼夜行</h2>
+    <div class="hint">행렬이 너를 주인으로 받아들였다 — <b>도감에 없는 SSX 부적</b>이 덱에 들어왔다</div>
+    <div class="cardgrid ercard" id="er_card"></div>
+    <div class="cvrew"><div><b>金</b>골드 +${gold}</div>${d ? `<div><b>◆</b>처음 찾은 이 — 다이아 +${d}</div>` : ''}</div>
+    <button class="brush-btn gold" id="er_ok">굴 밖으로</button></div>`, 'eggrewp');
+  p.dataset.noauto = '1';
+  p.querySelector('#er_card').appendChild(cardNode(mkCard('hyakki_true', false)));
+  try { SND.victory(); screenFlash('rgba(255,45,85,.45)', 900); } catch (e) {}
+  p.querySelector('#er_ok').onclick = () => { closeTop(); caveExit(); };
+}
+
+/* ══ 제14막 · 해무리를 붙든다 → 천계의 서고 ═════════════════════════ */
+function egg14HoldStart(x, y) {
+  if (EGG.hold) return;
+  const sun = document.querySelector('#bg .esun');
+  EGG.hold = { x, y, t0: performance.now(), k: 0 };
+  if (sun) sun.classList.add('hold');
+  try { SND.unlock(); } catch (e) {}
+  const step = () => {
+    const h = EGG.hold; if (!h) return;
+    const k = Math.min(3, Math.floor((performance.now() - h.t0) / 1000));
+    if (k > h.k) { h.k = k; if (sun) sun.classList.add('h' + k); try { SND.blip(520 + k * 260, { dur: .4, type: 'sine', vol: .05, rev: .8 }); } catch (e) {} }
+    if (k >= 3) { egg14HoldStop(true); egg14Open(); return; }
+    h.raf = requestAnimationFrame(step);
+  };
+  EGG.hold.raf = requestAnimationFrame(step);
+}
+function egg14HoldStop(done) {
+  const h = EGG.hold; EGG.hold = null; if (h && h.raf) cancelAnimationFrame(h.raf);
+  const sun = document.querySelector('#bg .esun');
+  if (sun) { if (done) setTimeout(() => sun.classList.remove('hold', 'h1', 'h2', 'h3'), 2500); else sun.classList.remove('hold', 'h1', 'h2', 'h3'); }
+}
+async function egg14Open() {
+  if (document.querySelector('.eggcine')) return;
+  eggM().s14 = 1; saveMeta();
+  const shelf = (y, d) => `<g class="ecshelf" style="animation-delay:${d}s">${Array.from({ length: 9 }, (_, i) => `<rect x="${60 + i * 100}" y="${y}" width="70" height="16" rx="8" fill="#f6e6b0" opacity=".75"/><circle cx="${60 + i * 100}" cy="${y + 8}" r="8" fill="#c8a83a"/><circle cx="${130 + i * 100}" cy="${y + 8}" r="8" fill="#c8a83a"/>`).join('')}</g>`;
+  await eggCine([
+    { art: ecSvg(`${ecRays(500, 250, 24, 'rgba(255,236,170,.32)', 700)}<circle cx="500" cy="250" r="380" fill="url(#ecgw)"/><circle cx="500" cy="250" r="90" fill="#fffdf4"/>
+        <g class="ecring" fill="none" stroke="#c8a83a"><circle cx="500" cy="250" r="130" stroke-width="3"/><circle cx="500" cy="250" r="175" stroke-width="2.2" stroke-dasharray="14 10"/><circle cx="500" cy="250" r="225" stroke-width="1.6"/></g>`, '#f6ecc4'),
+      sfx: () => { SND.bell(); setTimeout(() => SND.bell(), 600); }, lines: ['해무리 세 겹이 열린다.', '눈부신 틈 너머로 — 구름이 계단처럼 쌓여 있다.'] },
+    { art: ecSvg(`<rect width="1000" height="600" fill="#fdf6dc"/><circle cx="500" cy="80" r="420" fill="url(#ecgw)"/>${shelf(120, 0)}${shelf(210, .3)}${shelf(300, .6)}${shelf(390, .9)}
+        <g class="ecflyscroll">${Array.from({ length: 7 }, (_, i) => `<g style="animation-delay:${(i * .6).toFixed(1)}s"><rect x="${80 + i * 130}" y="${470 - (i % 3) * 30}" width="54" height="12" rx="6" fill="#f2e2a8"/><circle cx="${80 + i * 130}" cy="${476 - (i % 3) * 30}" r="7" fill="#b8902a"/></g>`).join('')}</g>${ecFog(430, 120, .9)}
+        <g opacity=".7" fill="#fff">${Array.from({ length: 6 }, (_, i) => `<ellipse cx="${100 + i * 170}" cy="${520 - (i % 2) * 20}" rx="150" ry="36"/>`).join('')}</g>`, '#fdf6dc'),
+      lines: ['끝이 보이지 않는 서고 — 천계는 모든 이의 이름을 두루마리에 적어 둔다.', '태어난 날, 죽는 날, 그 사이의 한 줄 한 줄을.'] },
+    { art: ecSvg(`<rect width="1000" height="600" fill="#f8efd0"/><g class="ecscroll"><rect x="120" y="170" width="760" height="260" fill="#fffaf0" stroke="#c8a83a" stroke-width="3"/>
+        ${Array.from({ length: 16 }, (_, i) => `<g opacity="${i === 9 ? 1 : .5}" font-size="22" fill="${i === 9 ? '#a8272c' : '#4a3a1a'}" text-anchor="middle">${Array.from({ length: 7 }, (_, k) => `<text x="${839 - i * 44}" y="${214 + k * 30}">${'天地玄黃宇宙洪荒日月盈昃辰宿列張寒來暑往秋收冬藏閏餘成歲律呂調陽雲騰致雨露結爲霜金生麗水玉出崑岡劍號巨闕珠稱夜光果珍李柰菜重芥薑海鹹河淡鱗潛羽翔龍師火帝鳥官人皇'[(i * 7 + k * 3) % 112]}</text>`).join('')}</g>`).join('')}
+        <rect x="${830 - 10 * 44 - 6}" y="186" width="30" height="230" fill="none" stroke="#ffd76a" stroke-width="3" class="ecglowline"/></g>
+        <rect x="100" y="160" width="24" height="280" rx="10" fill="#8a5a2a"/><rect x="876" y="160" width="24" height="280" rx="10" fill="#8a5a2a"/>`, '#f8efd0'),
+      lines: ['한 두루마리가 저절로 풀린다.', '…네 이름이 있다. 그 아래 줄은 아직 비어 있다.'] },
+    { art: ecSvg(`${ecRays(500, 150, 20, 'rgba(255,230,160,.3)', 600)}<circle cx="500" cy="170" r="300" fill="url(#ecgw)"/><circle cx="500" cy="150" r="70" fill="none" stroke="#e8c860" stroke-width="4"/>
+        <path d="M500,170 q-90,40 -110,190 q-10,90 0,240 l220,0 q10,-150 0,-240 q-20,-150 -110,-190Z" fill="#fffaf0" stroke="#d8c08a" stroke-width="3"/>
+        <circle cx="500" cy="150" r="40" fill="#fffaf0" stroke="#d8c08a" stroke-width="3"/>
+        <g class="ectal3">${[-80, 0, 80].map((dx, i) => `<g transform="translate(${500 + dx} 360) rotate(${dx / 8})"><rect x="-22" y="-44" width="44" height="88" fill="#e2622a"/><text y="12" font-size="32" text-anchor="middle" fill="#3a1006">${'天書命'[i]}</text></g>`).join('')}</g>`, '#f6ecc4'),
+      sfx: () => SND.gong(), lines: ['서고지기가 말한다 — 「빈 줄은 네가 채워라. 붓 대신, 이것을.」'] }
+  ], 'c14');
+  if (eggR()[14]) { toast('천계의 서고 — 이번 모험에서는 이미 한 장을 받았다'); return; }
+  const pool = Object.keys(CARDS).filter(id => { const c = CARDS[id]; return c.rar === 'special' && !c.hackOnly && !c.devOnly && !c.mpOnly && !c.evOnly; });
+  const three = []; while (three.length < 3 && pool.length) three.push(mkCard(pool.splice(Math.floor(Math.random() * pool.length), 1)[0], true));
+  const c = await pickFromList(three, '天 천계의 서고 — 빈 줄을 채울 부적 하나', { hint: '강화된 채로 덱에 들어간다 · 모험마다 한 번' });
+  if (!c || !G.run) return;
+  eggR()[14] = 1; G.run.deck.push(c); G.run.stats.cards++; dexAdd('cards', c.id);
+  const d = eggFirst(14); saveRun(); renderTop();
+  try { SND.power(); stampWord('天 書', '#e8c860'); } catch (e) {}
+  toast(`천계의 서고 — ${CARDS[c.id].n}+ 를 받았다${d ? ` · 처음 찾은 이 다이아 +${d}` : ''}`);
+}
+
+/* ══ 제17막 · 눈 뜬 것을 붙잡는다 → 기억의 방 ═══════════════════════ */
+function egg17Blink() {
+  const now = Date.now();
+  if (EGG.eye && now > EGG.eye.until) EGG.eye = null;
+  if (EGG.eye || now < EGG.eyeNext) return;
+  const i = Math.floor(Math.random() * FIG17.length), f = document.querySelector(`#bg .efig[data-i="${i}"]`); if (!f) return;
+  f.classList.add('open'); EGG.eye = { i, until: now + 1500 };
+  setTimeout(() => f.classList.remove('open'), 1500);
+  EGG.eyeNext = now + 4200 + Math.random() * 4200;
+}
+function egg17Tap(x, y) {
+  const e = EGG.eye; if (!e || Date.now() > e.until) return;
+  const [vx, vy] = FIG17[e.i]; if (!eggNear(x, y, vx, vy, 36)) return;
+  EGG.eye = null;
+  const f = document.querySelector(`#bg .efig[data-i="${e.i}"]`); if (f) { f.classList.remove('open'); f.classList.add('caught'); setTimeout(() => f.classList.remove('caught'), 1000); }
+  EGG.eyeHit++;
+  try { SND.unlock(); SND.blip(240 + EGG.eyeHit * 120, { dur: .5, type: 'sine', vol: .06, rev: .9 }); sparkles(x, y, 10, '#e0c8ff', 60); } catch (x2) {}
+  eggFloat(x, y - 40, EGG.eyeHit < 3 ? `…눈이 마주쳤다 (${EGG.eyeHit} / 3)` : '기억이 너를 부른다', '#e0c8ff');
+  if (EGG.eyeHit >= 3) { EGG.eyeHit = 0; setTimeout(egg17Open, 800); }
+}
+async function egg17Open() {
+  if (document.querySelector('.eggcine')) return;
+  eggM().s17 = 1; saveMeta();
+  const figs = n => Array.from({ length: n }, (_, i) => ecHood(70 + i * 96, 330 + (i % 3) * 34, .9 + (i % 3) * .12, true, +(i * .12).toFixed(2))).join('');
+  await eggCine([
+    { art: ecSvg(`<circle cx="500" cy="150" r="360" fill="url(#ecvi)"/>${ecFog(200, 110, .6)}${figs(10)}${ecFog(420, 140, .8)}`, '#5a4a6a'),
+      sfx: () => SND.bell(), lines: ['얼굴 없는 것들이 일제히 고개를 돌린다.', '「너는 우리를 잊었지만 — 우리는 너를 기억한다.」'] },
+    { art: ecSvg(`${Array.from({ length: 7 }, (_, i) => `<g class="ecframe" style="animation-delay:${(i * .2).toFixed(1)}s"><line x1="${110 + i * 130}" y1="0" x2="${110 + i * 130}" y2="${140 + (i % 2) * 40}" stroke="#d8c8e8" stroke-width="1.4"/>
+        <rect x="${70 + i * 130}" y="${140 + (i % 2) * 40}" width="80" height="100" fill="#2a2032" stroke="#d8c8e8" stroke-width="3"/><text x="${110 + i * 130}" y="${205 + (i % 2) * 40}" font-size="34" text-anchor="middle" fill="#e0d0e8">${'林霧崖門天無夜'[i]}</text></g>`).join('')}
+        <ellipse cx="500" cy="500" rx="300" ry="56" fill="#a8c8e8" opacity=".35"/><ellipse cx="500" cy="500" rx="180" ry="30" fill="#e8f4ff" opacity=".35"/>${ecFog(440, 120, .5)}`, '#2a2034'),
+      lines: ['문 하나가 열린다. 그 안에 — 네가 지나온 밤들이 걸려 있다.'] }
+  ], 'c17');
+  if (G.b) { EGG.pend = 17; toast('싸움이 끝나면 기억의 방이 열린다'); return; }
+  showMemRoom();
+}
+const MEM_LINE = ['처음으로 부적을 쥐었던 곳', '안개 속에서 길을 잃었던 곳', '무릎이 처음 꺾였던 곳', '죽은 이들의 문 앞', '하늘의 아래층', '단오가 사라진 곳', '바닥이 없던 곳', '모든 것의 처음',
+  '보이는 것을 믿지 않게 된 곳', '행렬이 지나간 밤', '날이 밝던 곳', '사람들 사이', '왕의 길', '하늘의 서고', '아무것도 없던 곳', '돌아온 곳'];
+function showMemRoom() {
+  const run = G.run; if (!run) return;
+  if (G.b) { EGG.pend = 17; return; }
+  const acts = Array.from({ length: Math.max(0, Math.min(16, (run.act || 17) - 1)) }, (_, i) => i + 1);
+  const got = !!eggR()[17], S = run.stats || {};
+  const p = overlay(`<div class="memroom"><div class="mrbg">${Array.from({ length: 9 }, (_, i) => `<i class="mrfig" style="left:${i < 5 ? 2 + i * 3 : 84 + (i - 5) * 4}%;animation-delay:${(i * .6).toFixed(1)}s"></i>`).join('')}</div>
+      <div class="schead"><button class="gback" id="mr_back">←</button><h2>기억의 방</h2><div class="scnote">제17막 · 숨은 방</div></div>
+      <div class="mrbody">
+        <div class="mrframes">${acts.map(a => `<button class="mrfr" data-a="${a}" style="--sw:${(a % 3) - 1}deg;animation-delay:${(a * .05).toFixed(2)}s,${(a * .05 + 1).toFixed(2)}s"><i></i><b>${wEsc((ACT_NAME[a] || '').slice(0, 1))}</b><small>제${a}막</small></button>`).join('')}</div>
+        <div class="mrsay" id="mr_say">걸린 기억을 누르면 그 밤이 속삭인다.</div>
+        <div class="mrpond"><div class="mrwater"><i></i><i></i><i></i></div>
+          <div class="mrstat"><span>싸움 <b>${S.battles || 0}</b></span><span>엘리트 <b>${S.elites || 0}</b></span><span>얻은 부적 <b>${S.cards || 0}</b></span><span>지나온 층 <b>${S.floors || 0}</b></span><span>덱 <b>${ownDeck(run).length}</b>장</span></div>
+          <button class="brush-btn gold" id="mr_take"${got ? ' disabled' : ''}>${got ? '이번 모험에서는 이미 건졌다' : '연못에서 기억 하나를 건진다'}</button>
+          <small>덱의 부적 하나를 골라 — 그 기억이 <b>강화된 채로 한 장 더</b> 덱에 들어온다 · 모험마다 한 번</small></div>
+      </div></div>`, 'memroomp');
+  p.dataset.noauto = '1';
+  p.querySelector('#mr_back').onclick = () => { closeOverlay(); showMap(); };
+  p.querySelectorAll('.mrfr').forEach(b => b.onclick = () => {
+    const a = +b.dataset.a; SND.blip(300 + a * 30, { dur: .3, type: 'sine', vol: .04, rev: .8 });
+    p.querySelectorAll('.mrfr').forEach(x => x.classList.toggle('on', x === b));
+    p.querySelector('#mr_say').innerHTML = `<b>제${a}막 ${wEsc(ACT_NAME[a] || '')}</b> — ${wEsc(MEM_LINE[a - 1] || '')}`;
+  });
+  p.querySelector('#mr_take').onclick = async () => {
+    if (eggR()[17]) return;
+    const list = ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c._evx);
+    const c = await pickFromList(list, '기억의 연못 — 건져 올릴 부적', { hint: '고른 부적이 강화된 채로 한 장 더 덱에 들어온다', cancel: true });
+    if (!c) return;
+    const cp = mkCard(c.id, true);
+    for (const k in c) if (/^mut/.test(k)) cp[k] = c[k];          /* 깃든 돌연변이도 함께 */
+    (run._deckx && run._evOld ? run._evOld : run.deck).push(cp);
+    eggR()[17] = 1; run.stats.cards++;
+    const d = eggFirst(17); saveRun(); renderTop();
+    try { SND.power(); screenFlash('rgba(200,180,255,.45)', 700); stampWord('記 憶', '#e0c8ff'); } catch (e) {}
+    toast(`기억을 건졌다 — ${CARDS[c.id].n}+ 한 장 더${d ? ` · 처음 찾은 이 다이아 +${d}` : ''}`);
+    const t = p.querySelector('#mr_take'); if (t) { t.disabled = true; t.textContent = '이번 모험에서는 이미 건졌다'; }
+  };
+  try { SND.bell(); } catch (e) {}
+}
+
+/* ══ 제20막 · 봉우리를 오른다 → 산신 ═══════════════════════════════ */
+function egg20Tap(x, y) {
+  const { vx, vy } = eggV(x, y);
+  if (vy < 52 || vy > 150) return;
+  if (Math.abs(vx - 500) > Math.max(20, (vy - 64) / 172 * 82 + 16)) return;
+  egg20Open();
+}
+function egg20Open() {
+  if (eggR()[20]) { toast('산신은 이미 길을 내주었다 (이번 모험)'); return; }
+  if (G.b) { EGG.pend = 20; toast('…봉우리의 눈이 반짝인다. 싸움이 끝나면 오를 수 있다'); return; }
+  egg20Climb();
+}
+const CLIMB = [[50, 88], [34, 79], [58, 71], [39, 62], [61, 53], [42, 44], [58, 35], [45, 26], [52, 17], [50, 8]];
+function egg20Climb() {
+  if (document.querySelector('.eggclimb') || !G.run) return;
+  eggM().s20 = 1; saveMeta();
+  const n = el('div', 'eggclimb', `<div class="eclbg"></div>
+    <div class="eclhead"><b>山 봉우리를 오른다</b><span>빛나는 디딤돌을 고리가 닫히기 전에 누르시오 — 놓치면 두 칸 미끄러진다</span><button id="ecl_x">내려간다</button></div>
+    <div class="eclmt"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,100 L50,2 L100,100Z" fill="#5a5446"/><path d="M18,100 L50,30 L82,100Z" fill="#4a4538" opacity=".7"/>
+      <path d="M41,20 L50,2 L59,20 L55,18 L50,23 L45,18Z" fill="#f6f2e4"/></svg>
+      ${CLIMB.map(([x, y], i) => `<i class="eclst${i === CLIMB.length - 1 ? ' top' : ''}" data-i="${i}" style="left:${x}%;top:${y}%"><s></s></i>`).join('')}
+      <b class="eclme" style="left:50%;top:97%">道</b></div><div class="eclcount" id="ecl_c">준비</div>`);
+  document.body.appendChild(n);
+  const stones = [...n.querySelectorAll('.eclst')], me = n.querySelector('.eclme'), cnt = n.querySelector('#ecl_c');
+  let cur = 0, timer = 0, alive = true, busy = true;
+  const moveMe = () => { const s = cur ? stones[cur - 1] : null; me.style.left = s ? s.style.left : '50%'; me.style.top = s ? s.style.top : '97%'; };
+  const light = () => {
+    if (!alive) return; busy = false;
+    stones.forEach((s, i) => { s.classList.toggle('on', i === cur); s.classList.toggle('past', i < cur); });
+    const win = Math.max(720, 1500 - cur * 85), s = stones[cur];
+    s.style.setProperty('--w', win + 'ms'); s.classList.remove('tick'); void s.offsetWidth; s.classList.add('tick');
+    cnt.textContent = `${cur} / ${CLIMB.length}`;
+    clearTimeout(timer); timer = setTimeout(slip, win);
+  };
+  const slip = () => {
+    if (!alive || busy) return; busy = true;
+    cur = Math.max(0, cur - 2); moveMe();
+    n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake');
+    try { SND.err(); } catch (e) {}
+    cnt.textContent = '미끄러졌다!';
+    setTimeout(light, 650);
+  };
+  const end = won => { alive = false; clearTimeout(timer); n.classList.add('out'); setTimeout(() => n.remove(), 450); if (won) setTimeout(egg20Summit, 480); };
+  stones.forEach((s, i) => s.onpointerdown = ev => {
+    ev.stopPropagation(); if (!alive || busy || i !== cur) return;
+    clearTimeout(timer); cur++; moveMe();
+    try { SND.blip(330 + cur * 70, { dur: .12, type: 'triangle', vol: .06 }); } catch (e) {}
+    s.classList.remove('on', 'tick'); s.classList.add('past');
+    if (cur >= CLIMB.length) { busy = true; cnt.textContent = '꼭대기!'; try { SND.gong(); } catch (e) {} setTimeout(() => end(true), 700); return; }
+    light();
+  });
+  n.querySelector('#ecl_x').onclick = () => { end(false); toast('산을 내려왔다 — 꼭대기의 눈은 그대로 반짝인다'); };
+  try { SND.unlock(); SND.drum(); } catch (e) {}
+  setTimeout(light, 1000);
+}
+async function egg20Summit() {
+  await eggCine([
+    { art: ecSvg(`<circle cx="500" cy="140" r="200" fill="#fff6d8" opacity=".35"/><path d="M0,600 L500,260 L1000,600Z" fill="#5a5446"/><path d="M420,330 L500,260 L580,330 L540,320 L500,340 L460,320Z" fill="#f6f2e4"/>
+        <g class="ecwind">${Array.from({ length: 12 }, (_, i) => `<path d="M${-100 + i * 40},${120 + (i * 37) % 260} q200,-30 400,0" stroke="#fff" stroke-width="1.5" fill="none" opacity=".35"/>`).join('')}</g>`, '#9d9680'),
+      sfx: () => SND.hiss({ dur: 2, vol: .12, freq: 1200, to: 400, filter: 'bandpass', q: .8, rev: .6 }), lines: ['꼭대기 — 바람밖에 없다.', '…아니, 바람이 말을 한다.'] },
+    { art: ecSvg(`<rect width="1000" height="600" fill="#8a9a74"/><circle cx="500" cy="200" r="420" fill="url(#ecgn)"/>${ecRays(500, 180, 22, 'rgba(240,255,210,.1)', 700)}${ecFog(120, 120, .6)}
+        <path d="M0,600 L0,560 Q200,520 330,548 L500,500 L670,548 Q800,520 1000,560 L1000,600Z" fill="#2a2a1e"/>
+        <g class="ecgod"><path d="M500,190 q-130,40 -170,240 q-14,90 -6,180 l352,0 q8,-90 -6,-180 q-40,-200 -170,-240Z" fill="#26341a"/>
+        <path d="M380,330 q60,30 120,10 q60,20 120,-10 M360,420 q70,34 140,12 q70,22 140,-12" stroke="#4a6a2a" stroke-width="8" fill="none" opacity=".7"/>
+        <path d="M454,122 q-34,-50 -16,-104 M446,96 q-40,-10 -60,-52 M436,64 q-26,-6 -40,-30 M546,122 q34,-50 16,-104 M554,96 q40,-10 60,-52 M564,64 q26,-6 40,-30" stroke="#d8c89a" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="500" cy="170" rx="50" ry="58" fill="#3a4a26"/><path d="M462,150 q38,-20 76,0" stroke="#1a220e" stroke-width="7" fill="none"/>
+        <circle cx="481" cy="166" r="20" fill="url(#ecgn)"/><circle cx="519" cy="166" r="20" fill="url(#ecgn)"/><circle cx="481" cy="166" r="5.5" fill="#f4ffd8"/><circle cx="519" cy="166" r="5.5" fill="#f4ffd8"/>
+        <path d="M466,192 q34,22 68,0 q-8,96 -34,150 q-26,-54 -34,-150Z" fill="#ece6d2"/><path d="M500,200 l0,128 M486,206 q4,60 10,100 M514,206 q-4,60 -10,100" stroke="#c8c0aa" stroke-width="2" fill="none"/>
+        <path d="M600,600 L612,180 M612,180 q-6,-30 10,-44 q16,14 6,44" stroke="#4a3418" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="616" cy="148" r="30" fill="url(#ecgn)"/></g>`, '#8a9a74'),
+      sfx: () => { SND.boss(); SND.drum(); }, lines: ['「여기까지 올라온 것은 백 년 만이로구나.」', '「산을 넘으려면 산을 이겨야 한다 — 와라, 작은 퇴마사.」'] }
+  ], 'c20');
+  if (!G.run) return;
+  EGG.node = 20;
+  startBattle(['sanshin'], 'eggboss', { hpMul: .8 });
+  setTimeout(() => { try { flash('山 神'); } catch (e) {} }, 320);
+}
+function eggBossWin() {
+  const run = G.run, b = G.b;
+  battleWatch(false); lowHpGlow(false);
+  try { xpOnWin(b); } catch (e) {}
+  G.b = null;
+  const gold = 300, rid = randomRelic('boss') || randomRelic('rare');
+  run.gold += gold; run.stats.gold += gold;
+  eggR()[20] = 1;
+  const d = eggFirst(20);
+  if (rid) gainRelic(rid, true);
+  saveRun(); renderTop();
+  const R = rid && RELICS[rid];
+  const p = modal(`<div class="eggrew r20"><div class="erglow"></div><h2>山 神 — 길을 내주다</h2>
+    <div class="hint">「…좋다. 산은 너를 기억할 것이다.」 산신이 지팡이 끝에서 무언가를 떼어 건넨다.</div>
+    ${R ? `<div class="errelic"><b>${R.g}</b><div><span>${wEsc(R.n)}</span><small>${R.d}</small></div></div>` : ''}
+    <div class="cvrew"><div><b>金</b>골드 +${gold}</div>${d ? `<div><b>◆</b>처음 찾은 이 — 다이아 +${d}</div>` : ''}</div>
+    <button class="brush-btn gold" id="er_ok">산을 내려간다</button></div>`, 'eggrewp');
+  p.dataset.noauto = '1';
+  try { SND.victory(); SND.power(); } catch (e) {}
+  p.querySelector('#er_ok').onclick = () => { closeTop(); showMap(); };
+}
+function eggBossLose() {
+  const run = G.run, b = G.b;
+  battleWatch(false); lowHpGlow(false);
+  if (b && b.startHp) run.hp = Math.max(1, b.startHp);
+  G.b = null; saveRun();
+  const p = modal(`<h2 class="cvwh lose">산에서 굴러떨어졌다</h2>
+    <div class="hint">「아직 멀었다.」 — 모험은 그대로다. 체력은 오르기 전으로 돌아온다.<br>꼭대기의 눈을 다시 누르면 또 오를 수 있다.</div>
+    <div style="display:flex;justify-content:center;margin-top:12px"><button class="brush-btn" id="eb_ok">지도로</button></div>`);
+  p.dataset.noauto = '1';
+  p.querySelector('#eb_ok').onclick = () => { closeTop(); showMap(); };
+}
+
+/* ══ 제25막 · 낙관 세 번 · 그림을 찢는다 → 그린 이의 방 ═══════════════ */
+function egg25Tap(x, y) {
+  if (!eggNear(x, y, 43, 87, 36)) return;
+  const S = EGG.seal, now = Date.now(), s = document.querySelector('#bg .eseal'), L = document.querySelector('#bg .eggl');
+  if (now - S.at > 4000) S.n = 0;
+  S.n++; S.at = now;
+  if (s) { s.classList.remove('hit'); void s.offsetWidth; s.classList.add('hit'); }
+  try { SND.unlock(); SND.blip(140 + S.n * 40, { dur: .3, type: 'sine', vol: .08, rev: .7 }); } catch (e) {}
+  if (S.n >= 3) {
+    S.n = 0; S.on = now + 9000;
+    if (L) L.classList.add('seal');
+    eggFloat(x + 70, y + 20, '낙관이 젖었다 — 그림이 얇아진다', '#ff6a7a');
+    try { SND.hiss({ dur: 1.2, vol: .08, freq: 600, to: 200, filter: 'lowpass', rev: .6 }); } catch (e) {}
+    setTimeout(() => { if (Date.now() >= EGG.seal.on && L) L.classList.remove('seal'); }, 9100);
+  }
+}
+function egg25Swipe(d, e) {
+  if (Date.now() > EGG.seal.on) return;
+  const s = eggV(d.x, d.y), t = eggV(e.clientX, e.clientY);
+  if (s.vx < 320 || s.vx > 680 || t.vx < 280 || t.vx > 720 || s.vy > 330 || t.vy < 360) return;
+  EGG.seal.on = 0;
+  const L = document.querySelector('#bg .eggl'); if (L) L.classList.remove('seal');
+  egg25Open();
+}
+/* 찢어지는 그림 — 삭은 종이에 눈 없는 사신 */
+const egg25Paint = () => ecSvg(`<rect width="1000" height="600" fill="url(#ecpp)"/>
+  <g opacity=".12" stroke="#6a5c48">${Array.from({ length: 9 }, (_, i) => `<path d="M${54 + i * 108},0 L${54 + i * 108},600"/>`).join('')}</g>
+  <path d="M500,120 q-110,44 -136,178 q-26,132 -12,302 l296,0 q14,-170 -12,-302 q-26,-134 -136,-178Z" fill="#0a0810"/>
+  <path d="M500,136 q-74,30 -88,112 q44,-48 88,-48 q44,0 88,48 q-14,-82 -88,-112Z" fill="#151020"/><path d="M500,172 q-54,10 -60,78 q-4,46 28,68 q32,-18 32,-72 q0,54 32,72 q32,-22 28,-68 q-6,-68 -60,-78Z" fill="#000"/>
+  <path d="M364,290 q-100,46 -134,166 q56,-76 138,-100Z M636,290 q100,46 134,166 q-56,-76 -138,-100Z" fill="#0a0810"/>
+  <path d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26" stroke="#8a1a2a" stroke-width="3" fill="none" opacity=".6"/>
+  <g transform="translate(24 68)"><rect width="38" height="38" rx="3" fill="#7a1622" opacity=".8"/><text x="19" y="28" text-anchor="middle" font-size="25" fill="#1a0a0c">冥</text></g>`, '#d8c8a0');
+async function egg25Open() {
+  if (document.querySelector('.eggcine')) return;
+  eggM().s25 = 1; saveMeta();
+  await eggCine([
+    { cls: 'tear', art: `<div class="ectear"><div class="ecbehind"></div><div class="ecl">${egg25Paint()}</div><div class="ecr">${egg25Paint()}</div></div>`,
+      sfx: () => { SND.hiss({ dur: .9, vol: .18, freq: 3000, to: 600, filter: 'bandpass', q: .7, rev: .4 }); SND.thunder(); }, lines: ['종이가 찢어진다.', '그림 뒤에 — 방이 하나 있었다.'] },
+    { art: ecSvg(`<rect x="0" y="420" width="1000" height="180" fill="#1a120c"/><rect x="640" y="60" width="200" height="240" fill="#1a1a2a" stroke="#3a2a1a" stroke-width="10"/><circle cx="740" cy="140" r="34" fill="#e8e0c8" opacity=".8"/>
+        <g><rect x="250" y="120" width="220" height="300" fill="#e8dcc0" stroke="#5a3a1a" stroke-width="6"/><path d="M360,170 q-50,22 -62,84 q-10,60 -4,140 l132,0 q6,-80 -4,-140 q-12,-62 -62,-84Z" fill="#0a0810"/>
+        <path d="M280,420 L250,560 M440,420 L470,560 M360,420 L360,560" stroke="#5a3a1a" stroke-width="8"/></g>
+        <g class="eccandle"><rect x="560" y="380" width="14" height="40" fill="#f2ead2"/><path d="M567,378 q-8,-12 0,-26 q8,14 0,26Z" fill="#ffb45a"/><circle cx="567" cy="366" r="40" fill="#ffb45a" opacity=".18"/></g>`, '#2a2016'),
+      sfx: () => SND.bell(), lines: ['붓, 벼루, 다 마른 먹. 그리고 이젤 위의 그림 — 사신도. 눈만 비어 있다.', '책상 위에 편지가 있다.'] }
+  ], 'c25');
+  if (G.b) { EGG.pend = 25; toast('싸움이 끝나면 그린 이의 방에 들어간다'); return; }
+  showPaintRoom();
+}
+function showPaintRoom() {
+  const run = G.run; if (!run) return;
+  if (G.b) { EGG.pend = 25; return; }
+  const got = eggR()[25];
+  const p = overlay(`<div class="paintroom"><div class="prbg"><i class="prcandle"></i></div>
+      <div class="schead"><button class="gback" id="pr_back">←</button><h2>그린 이의 방</h2><div class="scnote">제25막 · 그림 뒤</div></div>
+      <div class="prbody">
+        <div class="preasel"><svg viewBox="0 0 220 300"><rect x="4" y="4" width="212" height="292" fill="#e8dcc0" stroke="#5a3a1a" stroke-width="6"/>
+          <path d="M110,46 q-50,22 -62,84 q-10,60 -4,150 l132,0 q6,-90 -4,-150 q-12,-62 -62,-84Z" fill="#0a0810"/>
+          <path d="M110,58 q-30,8 -34,44 q16,-16 34,-16 q18,0 34,16 q-4,-36 -34,-44Z" fill="#000"/>
+          <g class="preyes"><circle cx="98" cy="96" r="4" fill="#ff2d3a"/><circle cx="122" cy="96" r="4" fill="#ff2d3a"/></g>
+          <rect x="10" y="10" width="26" height="26" rx="2" fill="#7a1622" opacity=".7"/><text x="23" y="30" font-size="18" text-anchor="middle" fill="#1a0a0c">冥</text></svg></div>
+        <div class="prletter"><b>— 편지 —</b>
+          <p>사신도는 내가 그렸다. 눈을 그려 넣지 않은 까닭은, 눈을 넣는 순간 그것이 그림 밖으로 걸어 나올까 두려워서였다.</p>
+          <p>그런데 그림을 다 마치지 못한 채로 나는 이 방을 떠나야 했다. 남은 것은 붓과 여백뿐이다.</p>
+          <p>만약 이 방에 닿은 이가 있다면 — 붓은 거기 있다. <b>네가 정하라.</b></p>
+          <div class="prchoice">${got ? '<div class="prdone">이번 모험에서는 이미 정했다 — 그림은 그대로 걸려 있다.</div>' : `
+            <button class="prc a" id="pr_eye"><b>點睛 · 눈을 그려 넣는다</b><small>최대 체력 +20 · 체력을 모두 채운다</small></button>
+            <button class="prc b" id="pr_blank"><b>餘白 · 여백으로 둔다</b><small>덱의 부적 두 장까지 지운다 · 골드 +300</small></button>`}</div></div>
+      </div></div>`, 'paintroomp');
+  p.dataset.noauto = '1';
+  p.querySelector('#pr_back').onclick = () => { closeOverlay(); showMap(); };
+  const done = (txt, d) => { eggR()[25] = 1; saveRun(); renderTop(); const c = p.querySelector('.prchoice'); if (c) c.innerHTML = `<div class="prdone">${txt}${d ? ` · 처음 찾은 이 다이아 +${d}` : ''}</div>`; };
+  const ey = p.querySelector('#pr_eye');
+  if (ey) ey.onclick = () => {
+    if (eggR()[25]) return;
+    run.maxHp += 20; run.hp = run.maxHp; const d = eggFirst(25);
+    p.querySelector('.paintroom').classList.add('eyes');
+    try { SND.boss(); screenFlash('rgba(255,40,60,.4)', 800); stampWord('點 睛', '#ff2d3a'); } catch (e) {}
+    done('붓끝이 닿자 — 그림 속 사신이 눈을 떴다. 「…보인다.」 최대 체력 +20, 체력을 모두 채웠다.', d);
+  };
+  const bl = p.querySelector('#pr_blank');
+  if (bl) bl.onclick = async () => {
+    if (eggR()[25]) return;
+    let rm = 0;
+    for (let k = 0; k < 2; k++) {
+      const list = ownDeck(run).filter(c => !c._evx);
+      if (list.length <= 5) break;
+      const c = await pickFromList(list, `餘白 — 지울 부적 (${k + 1} / 2)`, { hint: '지운 부적은 덱에서 사라진다 · 그만두면 거기까지', cancel: true });
+      if (!c) break;
+      run.deck = run.deck.filter(x => x !== c); if (run._evOld) run._evOld = run._evOld.filter(x => x !== c); rm++;
+    }
+    run.gold += 300; run.stats.gold += 300; const d = eggFirst(25);
+    try { SND.coin(); stampWord('餘 白', '#e8dcc0'); } catch (e) {}
+    done(`그림은 그대로 두었다. 비워 둔 자리만큼 손이 가벼워졌다 — 부적 ${rm}장을 지우고 골드 +300.`, d);
+  };
+  try { SND.bell(); } catch (e) {}
 }
 
 const CHAT_SEEN = 'baekgwi_chat_seen';
@@ -35616,9 +36637,10 @@ function setBg(act) {
   _bgKey = k;
   /* ── 겨루는 마당 — 막과는 다른 자리다 ─────────────────── */
   if (act === 'colo' || act === 'arena') { setArenaBg(act); return; }
-  { const bgEl = $('#bg'); if (bgEl) bgEl.classList.toggle('labbg', act === 'lab'); document.body.classList.toggle('labfight', act === 'lab'); }
+  { const bgEl = $('#bg'); if (bgEl) { bgEl.classList.toggle('labbg', act === 'lab'); bgEl.classList.toggle('cavebg', act === 'cave'); } document.body.classList.toggle('labfight', act === 'lab'); }
   if (act === 'world') { setWorldBg(); return; }
   if (act === 'lab') { setLabBg(); return; }
+  if (act === 'cave') { setCaveBg(); return; }
   if (act === 'pvp') { setMpBg($('#bg')); return; }
   const a = Math.min(LAST_ACT, Math.max(1, act || 1));
   const PAL = {
@@ -35659,7 +36681,7 @@ function setBg(act) {
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
                 25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
   const A = bgAtmos(a, PAL);
-  if (a !== 1) { $('#bg').innerHTML = bgLayers(a, A, SKY); return; }
+  if (a !== 1) { $('#bg').innerHTML = bgLayers(a, A, SKY); try { eggBg(a); } catch (e) {} return; }
   $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
      ${A.defs}
@@ -35839,6 +36861,11 @@ function setArenaBg(kind) {
    검푸른 연구실. 뒤로 코드가 비처럼 흐르고, 가운데 큰 화면에 「博」이 깨진 듯 떨린다.
    양옆 서버 선반의 불빛이 깜빡이고, 천장에서 굵은 줄이 늘어지고, 경보등이 붉게 돈다.
    바닥은 초록 격자가 저 멀리 한 점으로 모이고, 탁자 위 플라스크에서 거품이 오른다. */
+/* 백귀굴 안 — 굴 벽과 쏟아지는 요괴 (판 57) */
+function setCaveBg() {
+  const bg = $('#bg'); if (!bg) return;
+  bg.innerHTML = `<div class="sky"></div>${caveWallSvg()}<div class="cvpour">${cavePour(22, true)}</div>`;
+}
 function setLabBg() {
   const rain = Array.from({ length: 26 }, (_, i) => `<i style="left:${(i * 3.9 + (i * 7) % 3).toFixed(1)}%;animation-duration:${(6 + (i * 5) % 7).toFixed(1)}s;animation-delay:${(-(i * 1.7) % 9).toFixed(1)}s">${
     Array.from({ length: 24 }, (_, k) => '01博符ERR⌬汚0x'[(i * 7 + k * 3) % 12]).join('<br>')}</i>`).join('');
