@@ -1876,7 +1876,7 @@ body.bigtxt .card .txt{font-size:13px;line-height:1.5}
   opacity:0;transition:opacity 6s ease;filter:blur(6px);animation:e2Drift 22s ease-in-out infinite alternate}
 .eggl.e2.thick .e2fog{opacity:1}
 @keyframes e2Drift{from{transform:translateX(-4%)}to{transform:translateX(4%)}}
-.e2crane{position:fixed;left:108vw;z-index:460;width:96px;height:56px;padding:0;border:none;background:none;cursor:pointer;animation:e2Fly 9s linear forwards;-webkit-tap-highlight-color:transparent}
+.e2crane{position:fixed;left:108vw;z-index:460;width:clamp(96px,13vw,140px);aspect-ratio:120/70;height:auto;padding:0;border:none;background:none;cursor:pointer;animation:e2Fly 12s linear forwards;-webkit-tap-highlight-color:transparent}
 .e2crane>i{display:block;width:100%;height:100%;animation:e2Bob 1.2s ease-in-out infinite alternate;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
 .e2crane svg{width:100%;height:100%;overflow:visible}
 .e2wing{transform-box:fill-box;animation:e2Flap .9s ease-in-out infinite}
@@ -28120,8 +28120,9 @@ addEventListener('contextmenu', e => {
 { let lp = null;
   addEventListener('pointerdown', e => {
     if (e.pointerType !== 'touch' || !G.run || !radialSpot(e.target) || ($('#overlay') && $('#overlay').style.display === 'block')) return;
+    if (typeof EGG === 'object' && (EGG.hold || (EGG.dn && EGG.dn.hot))) return;      /* 숨은 것을 꾹 누르는 중 (판 57) */
     const x = e.clientX, y = e.clientY;
-    lp = { x, y, t: setTimeout(() => { lp = null; radialMenu(x, y); try { navigator.vibrate && navigator.vibrate(12); } catch (er) {} }, 560) };
+    lp = { x, y, t: setTimeout(() => { lp = null; if (typeof EGG === 'object' && EGG.hold) return; radialMenu(x, y); try { navigator.vibrate && navigator.vibrate(12); } catch (er) {} }, 560) };
   }, { passive: true });
   const cancel = e => { if (!lp) return; if (e.type === 'pointermove' && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) < 12) return; clearTimeout(lp.t); lp = null; };
   addEventListener('pointermove', cancel, { passive: true }); addEventListener('pointerup', cancel); addEventListener('pointercancel', cancel);
@@ -33653,6 +33654,23 @@ function eggFree(t) {
   if (cutPlaying() || document.querySelector('.eggcine,.eggclimb,.mpintro')) return false;
   return true;
 }
+/* 막힌 때 — 창·컷씬이 떠 있거나, 진짜 단추·부적 위 */
+function eggBlocked(t) {
+  if (!G.run || G.run._pvp || !t || !t.closest) return true;
+  const o = $('#overlay'); if (o && o.style.display !== 'none' && o.querySelector('.panel')) return true;
+  if (cutPlaying() || document.querySelector('.eggcine,.eggclimb,.mpintro,.e2go,#radmenu')) return true;
+  return !!t.closest('button,a,input,textarea,select,label,#topbar,#hand,.card,.hackmap,.cavemap,#maplegend,.potion,.cmdpal,#chatp');
+}
+/* 손끝이 숨은 자리 바로 위인가 — 지도 칸·요괴 터치 자리에 겹쳐 있어도 이것을 먼저 받는다 (폰) */
+function eggHot(a, x, y) {
+  const M = eggM();
+  if (a === 10) return PEAKS10.some(([vx, vy], i) => !((M.t10 || 0) & (1 << i)) && eggNear(x, y, vx, vy, 22));
+  if (a === 14) return eggNear(x, y, 500, 126, 40);
+  if (a === 17) return !!(EGG.eye && Date.now() < EGG.eye.until && eggNear(x, y, FIG17[EGG.eye.i][0], FIG17[EGG.eye.i][1], 24));
+  if (a === 20) return eggNear(x, y, 500, 84, 26);
+  if (a === 25) return eggNear(x, y, 43, 87, 26);
+  return false;
+}
 function eggV(x, y) { const b = $('#bg'), r = b ? b.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight }; return { vx: (x - r.left) / r.width * 1000, vy: (y - r.top) / r.height * 600 }; }
 function eggXY(vx, vy) { const b = $('#bg'), r = b ? b.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight }; return { x: r.left + vx / 1000 * r.width, y: r.top + vy / 600 * r.height }; }
 const eggNear = (x, y, vx, vy, rad) => { const q = eggXY(vx, vy); return Math.hypot(q.x - x, q.y - y) <= (rad || 30); };
@@ -33664,10 +33682,25 @@ function eggFloat(x, y, t, c) {
 document.addEventListener('pointerdown', e => {
   EGG.dn = null;
   if (e.button > 0) return;
-  const a = eggBgAct(); if (EGG_ACTS.indexOf(a) < 0 || !eggFree(e.target)) return;
-  EGG.dn = { x: e.clientX, y: e.clientY, t: performance.now(), a };
+  const a = eggBgAct(); if (EGG_ACTS.indexOf(a) < 0 || eggBlocked(e.target)) return;
+  const free = eggFree(e.target), hot = eggHot(a, e.clientX, e.clientY);
+  if (!free && !hot) return;
+  EGG.dn = { x: e.clientX, y: e.clientY, t: performance.now(), a, hot };
+  if (hot && !free) { e.stopPropagation(); EGG.eatClick = performance.now() + 900; }   /* 아래 지도 칸·요괴가 같이 눌리지 않게 */
   if (a === 14 && eggNear(e.clientX, e.clientY, 500, 126, 72)) egg14HoldStart(e.clientX, e.clientY);
 }, true);
+document.addEventListener('click', e => { if (EGG.eatClick && performance.now() < EGG.eatClick) { EGG.eatClick = 0; e.stopPropagation(); e.preventDefault(); } }, true);
+/* 폰 — 손가락으로 긋는 것은 브라우저가 쓸어 넘기기로 가져가 pointerup 이 오지 않는다. 터치로 따로 받는다 */
+document.addEventListener('touchstart', e => {
+  EGG.tsw = null;
+  if (e.touches.length !== 1 || eggBgAct() !== 25 || Date.now() > EGG.seal.on || eggBlocked(e.target)) return;
+  const t0 = e.touches[0]; EGG.tsw = { x: t0.clientX, y: t0.clientY, t: performance.now() };
+}, { capture: true, passive: true });
+document.addEventListener('touchend', e => {
+  const s0 = EGG.tsw; EGG.tsw = null; if (!s0 || !e.changedTouches.length) return;
+  const c = e.changedTouches[0], dx = c.clientX - s0.x, dy = c.clientY - s0.y, ms = performance.now() - s0.t;
+  if (dy > 90 && Math.abs(dx) < dy * .7 && ms < 1400) egg25Swipe({ x: s0.x, y: s0.y }, { clientX: c.clientX, clientY: c.clientY });
+}, { capture: true, passive: true });
 document.addEventListener('pointermove', e => { if (EGG.hold && Math.hypot(e.clientX - EGG.hold.x, e.clientY - EGG.hold.y) > 34) egg14HoldStop(); }, true);
 document.addEventListener('pointerup', e => {
   const d = EGG.dn; EGG.dn = null;
@@ -33682,7 +33715,7 @@ document.addEventListener('pointerup', e => {
   } else if (d.a === 25 && dy > 90 && Math.abs(dx) < dy * .7 && ms < 1400) egg25Swipe(d, e);
 }, true);
 document.addEventListener('pointercancel', () => { EGG.dn = null; if (EGG.hold) egg14HoldStop(); }, true);
-document.addEventListener('contextmenu', e => { if (EGG.hold) e.preventDefault(); }, true);
+document.addEventListener('contextmenu', e => { if (EGG.hold || (EGG.dn && EGG.dn.hot)) { e.preventDefault(); e.stopPropagation(); } }, true);   /* 길게 누르면 뜨는 원형 퀵메뉴를 막는다 */
 
 /* ── 배경 위에 얹는 것 — 횃불 · 해무리 · 눈 · 봉우리의 눈 · 낙관 ── */
 function eggBg(a) {
@@ -34349,8 +34382,8 @@ function showPaintRoom() {
 
 /* ══ 제2막 · 난가(爛柯) — 안개 속 신선의 바둑 (판 57 · 가장 깊이 숨긴 것) ═══════════
    「신선놀음에 도끼 자루 썩는 줄 모른다」 — 서두르는 이에게 안개는 걷히지 않는다.
-     ① 제2막에서 아무것도 누르지 않고 기다린다. 스무 초쯤 지나면 어디선가 「딱… 딱…」 돌 놓는 소리.
-     ② 마흔다섯 초를 버티면 안개가 짙어지고, 학 한 마리가 하늘을 가로지른다(9초). 그 학을 눌러 붙잡는다.
+     ① 제2막에서 아무것도 누르지 않고 기다린다. 열 초 남짓 지나면 어디선가 「딱… 딱…」 돌 놓는 소리.
+     ② 서른 초를 버티면 안개가 짙어지고, 학 한 마리가 하늘을 가로지른다(12초). 그 학을 눌러 붙잡는다. 제2막에 있는 동안 폰 화면은 꺼지지 않는다.
      ③ 봉우리 위 신선의 바둑 — 신선이 놓는 흰 돌의 차례를 외워 그대로 따라 둔다. 넷 · 여섯 · 여덟.
         셋째 판은 거울에 비친 듯 좌우를 뒤집어 둔다. 한 번이라도 틀리면 안개가 판을 덮는다 — 다시 기다려야 한다.
      ④ 「난가」 컷씬 — 돌 하나에 계절 하나. 내려다보니 쥐고 있던 붓자루가 썩어 있다.
@@ -34364,28 +34397,36 @@ const E2_CRANE = `<svg viewBox="0 0 120 70"><g class="e2wing up"><path d="M58,32
   <path d="M100,22 Q104,18 110,19 L104,22Z" fill="#141414"/><circle cx="106" cy="19.4" r="1.6" fill="#d8202a"/><path d="M40,36 L18,40 L40,40Z" fill="#141414"/>
   <path d="M66,42 L58,62 M72,42 L66,62" stroke="#2a2a2a" stroke-width="1.6"/>
   <g class="e2wing dn"><path d="M60,34 Q40,60 12,62 Q30,52 34,46 Q20,50 12,48 Q34,42 52,36Z" fill="#ececE6"/></g></svg>`;
+/* 폰은 30초쯤 손을 안 대면 화면이 어두워지거나 꺼진다 — 제2막에 있는 동안은 화면을 켜 둔다 */
+async function egg2Wake(on) {
+  try {
+    if (on && !EGG.wake && navigator.wakeLock && !document.hidden) { EGG.wake = 'wait'; EGG.wake = await navigator.wakeLock.request('screen'); EGG.wake.addEventListener('release', () => { EGG.wake = null; }); }
+    else if (!on && EGG.wake && EGG.wake !== 'wait') { const w = EGG.wake; EGG.wake = null; await w.release(); }
+  } catch (e) { EGG.wake = null; }
+}
 function egg2Tick() {
   const now = Date.now();
+  egg2Wake(eggBgAct() === 2 && !!G.run && !G.run._pvp);
   const busy = eggBgAct() !== 2 || document.hidden || !G.run || G.run._pvp || ($('#overlay') && $('#overlay').querySelector('.panel')) || cutPlaying() || document.querySelector('.eggcine,.e2go,.eggclimb');
   const L = document.querySelector('#bg .eggl.e2');
   if (busy) { EGG.lastIn = now; if (L) L.classList.remove('thick'); return; }
   const idle = now - EGG.lastIn;
-  if (L) L.classList.toggle('thick', idle > 30000);
-  if (idle > 20000 && now - EGG.knock > 3300 + Math.random() * 1400) { EGG.knock = now; egg2Knock(.6 + Math.min(1, (idle - 20000) / 25000) * .8); }
-  if (idle >= 45000 && !document.querySelector('.e2crane') && now >= EGG.craneNext) egg2Crane();
+  if (L) L.classList.toggle('thick', idle > 20000);
+  if (idle > 12000 && now - EGG.knock > 3300 + Math.random() * 1400) { EGG.knock = now; egg2Knock(.6 + Math.min(1, (idle - 12000) / 18000) * .8); }
+  if (idle >= 30000 && !document.querySelector('.e2crane') && now >= EGG.craneNext) egg2Crane();
 }
 /* 바둑돌 놓는 소리 — 딱 */
 function egg2Knock(v) {
   try { SND.unlock(); SND.hiss({ dur: .05, vol: .08 * (v || 1), freq: 3400, to: 1900, filter: 'bandpass', q: 6, rev: .8 }); SND.blip(1250, { dur: .035, type: 'triangle', vol: .03 * (v || 1), rev: .8 }); } catch (e) {}
 }
 function egg2Crane() {
-  EGG.craneNext = Date.now() + 40000;
-  const c = el('button', 'e2crane', `<i>${E2_CRANE}</i>`); c.style.top = (9 + Math.random() * 20).toFixed(1) + 'vh'; c.setAttribute('aria-label', '학');
+  EGG.craneNext = Date.now() + 30000;
+  const c = el('button', 'e2crane', `<i>${E2_CRANE}</i>`); c.style.top = (13 + Math.random() * 18).toFixed(1) + 'vh'; c.setAttribute('aria-label', '학');
   document.body.appendChild(c);
-  try { SND.hiss({ dur: 2.4, vol: .04, freq: 500, to: 260, filter: 'lowpass', rev: .9 }); } catch (e) {}
+  try { SND.hiss({ dur: 2.4, vol: .04, freq: 500, to: 260, filter: 'lowpass', rev: .9 }); SND.blip(1380, { dur: .3, type: 'sine', vol: .05, to: 1050, rev: .9 }); setTimeout(() => SND.blip(1240, { dur: .4, type: 'sine', vol: .04, to: 900, rev: .9 }), 320); } catch (e) {}
   let caught = false;
   c.onpointerdown = ev => { ev.stopPropagation(); ev.preventDefault(); if (caught) return; caught = true; egg2Catch(c); };
-  setTimeout(() => { if (!caught) c.remove(); }, 9300);
+  setTimeout(() => { if (!caught) c.remove(); }, 12300);
 }
 async function egg2Catch(c) {
   const r = c.getBoundingClientRect();
@@ -34567,7 +34608,7 @@ function egg2Reward() {
 const EGG_LIST = [
   { a: 2, g: '仙', n: '난가 — 신선의 바둑', cost: 300, found: () => !!eggM().f2,
     hint: '서두르는 이에게 안개는 걷히지 않는다. 가만히 — 돌 놓는 소리가 들릴 때까지. 그리고 하늘을 보라.',
-    clear: '제2막에서 아무것도 누르지 않고 45초를 기다리면 학이 하늘을 가로지른다 — 그 학을 누른다. 신선이 놓는 흰 돌의 차례를 외워 세 판(4·6·8수)을 따라 둔다. 셋째 판은 좌우를 뒤집어서.' },
+    clear: '제2막에서 아무것도 누르지 않고 30초를 기다리면 학이 하늘을 가로지른다 — 그 학을 누른다. 신선이 놓는 흰 돌의 차례를 외워 세 판(4·6·8수)을 따라 둔다. 셋째 판은 좌우를 뒤집어서.' },
   { a: 10, g: '窟', n: '백귀굴', cost: 100, found: () => !!eggM().cave,
     hint: '백귀야행의 밤, 여섯 봉우리가 불을 기다린다. 불을 다 밝힌 이에게 산은 입을 연다.',
     clear: '제10막 배경의 산꼭대기 여섯 곳(작은 불씨가 깜빡이는 자리)을 모두 누른다. 산이 열리면 S급 부적 두 장을 바치고 굴로 들어간다.' },
