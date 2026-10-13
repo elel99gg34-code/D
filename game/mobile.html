@@ -1805,6 +1805,72 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ── 설정 (판 57) — 목차 · 찾기 · 갈래마다 한 장 ── */
+.panel.setp{padding:12px}
+.setwin{position:relative;width:min(900px,96vw);height:min(86vh,780px);display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
+  background:linear-gradient(160deg,#1e1912,#141009 55%,#0e0b08);border:1px solid rgba(220,190,120,.32);box-shadow:0 24px 70px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,240,200,.04)}
+.setbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.setbg i{position:absolute;border-radius:50%;filter:blur(40px);opacity:.35}
+.setbg i:nth-child(1){left:-10%;top:-20%;width:50%;height:60%;background:radial-gradient(circle,rgba(200,150,60,.5),transparent 70%)}
+.setbg i:nth-child(2){right:-12%;bottom:-25%;width:55%;height:60%;background:radial-gradient(circle,rgba(168,39,44,.4),transparent 70%)}
+.sethead,.setmain,.setfoot{position:relative;z-index:1}
+.sethead{display:flex;align-items:center;gap:14px;padding:16px 20px 12px;border-bottom:1px solid rgba(220,190,120,.18);flex-wrap:wrap}
+.setseal{font-style:normal;width:46px;height:46px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:24px;color:#f6e2d8;
+  background:radial-gradient(circle at 35% 30%,#c8343a,#7a1418);box-shadow:0 0 0 2px rgba(255,220,200,.2),0 4px 14px rgba(120,10,20,.5);transform:rotate(-4deg)}
+.shtl{flex:1;min-width:160px;text-align:left}.shtl h2{margin:0;font-size:22px;letter-spacing:.3em;text-align:left}.shtl small{display:block;font-size:11.5px;color:#9d927b;margin-top:2px}
+.setq{flex:0 1 260px;min-width:160px;padding:8px 12px;border-radius:18px;font:inherit;font-size:13px;background:rgba(0,0,0,.35);border:1px solid rgba(220,190,120,.3);color:#f0e6cd}
+.setq:focus{outline:none;border-color:#c8a94e;box-shadow:0 0 12px rgba(200,160,60,.28)}
+.setmain{flex:1;min-height:0;display:flex}
+.setnav{flex:none;width:164px;display:flex;flex-direction:column;gap:4px;padding:12px 10px;border-right:1px solid rgba(220,190,120,.14);overflow-y:auto}
+.setnb{display:flex;align-items:center;gap:9px;white-space:nowrap;padding:8px 10px;border-radius:8px;font:inherit;font-size:13px;letter-spacing:.12em;cursor:pointer;background:none;border:1px solid transparent;color:#bfb39a;text-align:left;transition:.15s}
+.setnb i{font-style:normal;width:26px;height:26px;flex:none;border-radius:6px;display:grid;place-items:center;font-size:14px;background:rgba(255,255,255,.05);color:#c8a94e}
+.setnb:hover{background:rgba(255,240,200,.05);color:#f0e6cd}
+.setnb.on{background:linear-gradient(90deg,rgba(200,169,78,.18),rgba(200,169,78,.02));border-color:rgba(200,169,78,.4);color:#ffe9b0}
+.setnb.on i{background:#c8a94e;color:#1a1208}
+.setnb.dim{opacity:.35}
+.setwin .optlist{flex:1;width:auto;max-height:none;min-height:0;padding:10px 16px 18px;gap:12px;overflow-y:auto}
+.optsec{padding:6px 14px 4px;border-radius:12px;background:rgba(255,248,230,.03);border:1px solid rgba(220,190,120,.12)}
+.setwin .opthead{display:flex;align-items:center;gap:8px;margin:6px 0 2px;padding-bottom:8px;font-size:12.5px}
+.setwin .opthead i{font-style:normal;font-size:15px;color:#ffe2a0;text-shadow:0 0 8px rgba(255,200,100,.5)}
+.setwin .optrow{padding:10px 2px}.setwin .optsec .optrow:last-child{border-bottom:none}
+/* 켜짐·꺼짐 — 손잡이 달린 단추 */
+.setwin .optrow .val.tg.yes,.setwin .optrow .val.tg.no{position:relative;min-width:0;width:74px;height:30px;padding:0 0 0 11px;border-radius:15px;font-size:11.5px;letter-spacing:.06em;text-align:left;opacity:1}
+.setwin .optrow .val.tg.no{padding:0 0 0 32px;background:rgba(0,0,0,.35);border-color:#5a5040;color:#8a7f68}
+.setwin .optrow .val.tg.yes::after,.setwin .optrow .val.tg.no::after{content:'';position:absolute;top:3px;width:22px;height:22px;border-radius:50%;transition:left .18s}
+.setwin .optrow .val.tg.yes::after{left:46px;background:radial-gradient(circle at 35% 30%,#d8fff4,#4f9c8f);box-shadow:0 0 8px rgba(120,230,210,.6)}
+.setwin .optrow .val.tg.no::after{left:4px;background:radial-gradient(circle at 35% 30%,#9a8f78,#5a5040)}
+.setwin .optrow input[type=range]{width:170px}
+.setfoot{display:flex;gap:10px;justify-content:flex-end;padding:12px 18px;border-top:1px solid rgba(220,190,120,.14)}
+@media(max-width:700px){.setwin{height:92vh;width:98vw}.setmain{flex-direction:column}.setnav{width:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid rgba(220,190,120,.14);padding:8px}
+  .setnb{flex:none;padding:6px 9px}.setnb span{font-size:12px}.setq{flex:1 1 100%}.setwin .optlist{padding:8px 10px 14px}.optsec{padding:4px 10px}}
+/* 난이도 */
+.diffbox{display:flex;flex-direction:column;gap:10px;padding:6px 0 12px}
+.dfnow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:linear-gradient(100deg,rgba(0,0,0,.4),rgba(0,0,0,.15));border:1px solid var(--dc)}
+.dfnow i{font-style:normal;width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#1a1208;background:radial-gradient(circle at 35% 30%,#fff,var(--dc));box-shadow:0 0 16px var(--dc)}
+.dfnow b{display:block;font-weight:400;font-size:15px;color:#f6ecd0}.dfnow small{font-size:12px;color:#c8bca2}
+.dfwarn{font-size:12px;line-height:1.65;color:#d8ccb0;padding:8px 10px;border-radius:8px;background:rgba(168,39,44,.12);border-left:2px solid #c8343a}.dfwarn b{color:#ff9a9a;font-weight:400}.dfwarn small{color:#9d927b}
+.dfladder{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dfst{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px 26px;border-radius:10px;font:inherit;cursor:pointer;text-align:center;
+  background:linear-gradient(170deg,rgba(40,32,22,.9),rgba(14,10,8,.95));border:1px solid rgba(255,255,255,.1);color:#d8ccb0;transition:.15s;overflow:hidden}
+.dfst i{font-style:normal;font-size:24px;color:var(--dc);text-shadow:0 0 10px var(--dc)}
+.dfst b{font-weight:400;font-size:14px;color:#f0e6cd;letter-spacing:.1em}.dfst small{font-size:10.5px;line-height:1.45;color:#a89c84}.dfst em{font-style:normal;font-size:10.5px;color:#ffd76a}
+.dfst u{position:absolute;left:0;right:0;bottom:0;padding:4px 0;font-size:11px;text-decoration:none;letter-spacing:.12em;background:rgba(255,255,255,.05);color:#bfb39a}
+.dfst:not([disabled]):hover{border-color:var(--dc);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.4),0 0 14px color-mix(in srgb,var(--dc) 40%,transparent)}
+.dfst:not([disabled]) u{background:color-mix(in srgb,var(--dc) 30%,transparent);color:#fff}
+.dfst.past{opacity:.45;cursor:default}.dfst.cur{cursor:default;border-color:var(--dc);box-shadow:inset 0 0 18px color-mix(in srgb,var(--dc) 25%,transparent)}
+.dfst.cur u{background:var(--dc);color:#1a1208}
+.dfst.arm{border-color:#ff3a4a;animation:dfArm .5s ease-in-out infinite alternate}.dfst.arm u{background:#c8343a;color:#fff}
+@keyframes dfArm{from{box-shadow:0 0 0 rgba(255,60,70,0)}to{box-shadow:0 0 20px rgba(255,60,70,.6)}}
+#df_reset{align-self:flex-start}
+@media(max-width:700px){.dfladder{grid-template-columns:repeat(2,1fr)}}
+#maphead .diffbadge{display:inline-block;margin-right:10px;padding:1px 9px;border-radius:10px;font-style:normal;font-size:11.5px;letter-spacing:.12em;vertical-align:2px;
+  color:#1a1208;background:radial-gradient(circle at 35% 30%,#fff,var(--dc));box-shadow:0 0 10px var(--dc)}
+/* 시계 · 배경 멈춤 · 큰 글씨 */
+.clockpill{position:fixed;right:10px;top:calc(var(--tbh,44px) + 8px + env(safe-area-inset-top,0px));z-index:115;display:flex;align-items:baseline;gap:6px;padding:3px 10px;border-radius:12px;pointer-events:none;
+  background:rgba(18,14,10,.72);border:1px solid rgba(220,190,120,.3);color:#f0e6cd}
+.clockpill b{font-weight:400;font-size:13px;letter-spacing:.06em;font-variant-numeric:tabular-nums}.clockpill small{font-size:10.5px;color:#9d927b}
+body.bgstill #bg .bgl,body.bgstill #bg .eggl.sway{animation:none!important}
+body.bigtxt .card .txt{font-size:13px;line-height:1.5}
 /* ── 제2막 난가(爛柯) · 숨은 것 목록 (판 57) ── */
 .eggl.e2 .e2fog{position:absolute;left:-10%;right:-10%;top:12%;height:60%;width:auto;background:repeating-linear-gradient(180deg,transparent 0 40px,rgba(255,255,255,.18) 70px,transparent 110px);
   opacity:0;transition:opacity 6s ease;filter:blur(6px);animation:e2Drift 22s ease-in-out infinite alternate}
@@ -9248,6 +9314,7 @@ const FX = {
 };
 function centerOf(node) { const r = node.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
 function shake(big) {
+  if (OPT.vibrate && navigator.vibrate) { try { navigator.vibrate(big ? 60 : 25); } catch (e) {} }   /* 폰 — 손에 울림 (판 57) */
   if (!OPT.shake) return;
   const a = $('#app'); a.classList.remove('shake', 'shake-lg'); void a.offsetWidth;
   a.classList.add(big ? 'shake-lg' : 'shake');
@@ -13825,6 +13892,7 @@ function startBattle(enemyIds, kind, opts) {
   if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
   /* 저주의 밤 — 등반의 요괴만 사나워진다 (모두의 적·겨루는 마당은 그대로) */
   if (evOn('night') && (kind === 'normal' || kind === 'elite' || kind === 'boss')) sc = { hp: sc.hp * 1.3, dmg: sc.dmg * 1.2 };
+  if (diffOn(kind)) { const dd = diffOf(); sc = { hp: sc.hp * dd.hp, dmg: sc.dmg * dd.dmg }; }   /* 난이도 (판 57) */
   const boost = sc.hp;
   for (const id of enemyIds) {
     const d = ENEMIES[id];
@@ -13837,6 +13905,7 @@ function startBattle(enemyIds, kind, opts) {
     if (d.init) d.init(e);
     if (opts.str) e.s.str = (e.s.str || 0) + opts.str;
     if (opts.dex) e.s.dex = (e.s.dex || 0) + opts.dex;
+    if (diffOn(kind) && diffOf().str && (d.elite || d.boss || kind === 'elite' || kind === 'boss')) e.s.str = (e.s.str || 0) + diffOf().str;
     dexAdd('enemies', id);
     b.enemies.push(e);
   }
@@ -18634,7 +18703,7 @@ function showMap() {
   const doneRows = Math.max(0, run.floor);
   s.innerHTML = `<div id="map">
       <div class="mapmotes">${mapMotes()}</div>
-      <div id="maphead">제 ${run.act} 막<span class="actname"><s class="actsl"></s>${ACT_NAME[run.act] || '심산유곡'}<s class="actsl r"></s></span>
+      <div id="maphead">${diffLv() ? `<em class="diffbadge" style="--dc:${diffOf().c}" title="난이도 — ${diffOf().d}">${diffOf().g} ${diffOf().n}</em>` : ''}제 ${run.act} 막<span class="actname"><s class="actsl"></s>${ACT_NAME[run.act] || '심산유곡'}<s class="actsl r"></s></span>
         <div class="actbar"><i style="width:${Math.round(doneRows / rows * 100)}%"></i></div>
         <span class="actsub">${doneRows} / ${rows} 층 · ${run.act >= LAST_ACT ? '마지막 봉우리' : `제 ${run.act + 1} 막까지 ${rows - doneRows} 층`}${run.act > 1 ? ' · <button class="rpactbtn" id="rp_acts">再 지난 막 다시</button>' : ''}</span>
       </div>
@@ -19161,8 +19230,24 @@ const LOOT_G = 1.2075, LOOT_D = 1.08;
    뒷막에서 골드가 십만 넘게 남아돌았다. 골드 배수의 0.55 제곱(제25막 약 12배)만큼 오른다. */
 const shopMul = act => Math.pow(lootGold(act || 1), .55);
 const lootMul = (r, act) => Math.pow(r, Math.max(0, Math.min(25, act || 1) - 1));
-const lootGold = act => lootMul(LOOT_G, act);
-const lootDia = act => lootMul(LOOT_D, act);
+/* ══ 난이도(難) — 올리기만 한다 (판 57) ══════════════════════════════
+   설정에서 지금보다 높게만 고를 수 있다. 한 번 올리면 내릴 수 없다(계정 전체 · 백야만 되돌린다).
+   요괴의 체력·힘이 오르고, 대신 골드·다이아가 더 붙는다. 경험치는 요괴 체력을 따라 절로 오른다.
+   멀티 대전 · 모두의 적 · 대전투장 · 백야의 시험에는 듣지 않는다. */
+const DIFF = [
+  { n: '보통', g: '常', hp: 1, dmg: 1, gold: 1, dia: 1, rest: 1, str: 0, c: '#c8bca2', d: '처음 그대로의 산길' },
+  { n: '어려움', g: '難', hp: 1.2, dmg: 1.1, gold: 1.15, dia: 1.1, rest: 1, str: 0, c: '#e8c86a', d: '요괴 체력 +20% · 힘 +10%' },
+  { n: '매서움', g: '烈', hp: 1.4, dmg: 1.2, gold: 1.3, dia: 1.2, rest: .9, str: 0, c: '#ff9a4a', d: '요괴 체력 +40% · 힘 +20% · 야영지 회복 -10%' },
+  { n: '지옥', g: '獄', hp: 1.65, dmg: 1.35, gold: 1.5, dia: 1.35, rest: .75, str: 0, c: '#ff5a5a', d: '요괴 체력 +65% · 힘 +35% · 야영지 회복 -25%' },
+  { n: '무간', g: '間', hp: 2, dmg: 1.5, gold: 1.8, dia: 1.5, rest: .75, str: 3, c: '#c85aff', d: '요괴 체력 ×2 · 힘 +50% · 야영지 회복 -25% · 엘리트·보스 힘 +3' },
+  { n: '백귀', g: '鬼', hp: 2.5, dmg: 1.75, gold: 2.2, dia: 1.7, rest: .6, str: 5, c: '#ff2d55', d: '요괴 체력 ×2.5 · 힘 +75% · 야영지 회복 -40% · 엘리트·보스 힘 +5' }
+];
+const diffLv = () => Math.max(0, Math.min(DIFF.length - 1, +(META.diff || 0) || 0));
+const diffOf = () => DIFF[diffLv()];
+const DIFF_SKIP = ['pvp', 'mpbot', 'world', 'arena', 'colo', 'devboss'];
+const diffOn = kind => DIFF_SKIP.indexOf(kind || 'normal') < 0;
+const lootGold = act => lootMul(LOOT_G, act) * diffOf().gold;
+const lootDia = act => lootMul(LOOT_D, act) * diffOf().dia;
 
 function showRewards(kind) {
   G.scene = 'reward';
@@ -19395,7 +19480,7 @@ function showTreasure() {
 function showRest() {
   G.scene = 'rest';
   const run = G.run;
-  const healAmt = Math.ceil(run.maxHp * .38);
+  const healAmt = Math.ceil(run.maxHp * .38 * diffOf().rest);
   const canPurge = hasRelic('censer') || hasRelic('immortalpill');
   const p = overlay(`<h2>야 영 지</h2><div class="hint">모닥불이 타오른다. 하나만 할 수 있다.</div>
     <div class="restrow">
@@ -31881,6 +31966,7 @@ function liveTick() {
   try { deckxTick(); } catch (e) { console.error('덱 바꾸기', e); }
   try { dspawnTick(); } catch (e) { console.error('백야의 진열', e); }
   try { eggTick(); } catch (e) { console.error('숨은 것', e); }
+  try { if (OPT.clock) clockTick(); } catch (e) {}
   const k = liveEvent(), left = evLeft(), rn = liveRain();
   /* 몸에 이름표를 달아 둔다 — 그림은 CSS 가 맡는다 */
   for (const x of Object.keys(WORLD))
@@ -34751,7 +34837,7 @@ function eggHintTick() {
   const run = G.run; if (!run || run._pvp || G.scene !== 'map' || G.b) return;
   const M = eggM(); if ((M.reach || 0) < run.act) { M.reach = run.act; saveMeta(); }
   const x = EGG_LIST.find(e => e.a === run.act); if (!x || x.found()) return;
-  const R = eggR(); if (R['w' + x.a]) return;
+  const R = eggR(); if (R['w' + x.a] || OPT.noWhisper) return;
   R['w' + x.a] = 1; saveRun();
   setTimeout(() => { if (G.scene === 'map' && !G.b) eggWhisper(x.hint); }, 1600);
 }
@@ -36335,16 +36421,24 @@ function redeemCode(raw) {
   return { ok: true, msg: `${c.n} · ${got}` };
 }
 function showSettings() {
-  const p = modal(`<h2>설 정</h2>
-    <div class="hint">언제든 바꿀 수 있다 · 설정은 저장된다</div>
-    <div class="optlist" id="optl"></div>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="brush-btn ghost" id="op_reset" style="color:#e9dfc9;border-color:#8a7f68">기본값으로</button>
-      <button class="brush-btn" id="op_close">닫기</button>
-    </div>`);
+  /* 판 57 — 왼쪽 갈래(목차) · 찾기 · 갈래마다 한 장의 판 */
+  const p = modal(`<div class="setwin"><div class="setbg"><i></i><i></i></div>
+      <div class="sethead"><i class="setseal">設</i><div class="shtl"><h2>설 정</h2><small>언제든 바꿀 수 있다 · 설정은 저장된다${diffLv() ? ` · 난이도 <b style="color:${diffOf().c}">${diffOf().g} ${diffOf().n}</b>` : ''}</small></div>
+        <input id="op_q" class="setq" placeholder="⌕ 설정 찾기 — 소리 · 흔들림 · 난이도 …" autocomplete="off" spellcheck="false"></div>
+      <div class="setmain"><nav class="setnav" id="op_nav"></nav><div class="optlist" id="optl"></div></div>
+      <div class="setfoot"><button class="brush-btn ghost" id="op_reset" style="color:#e9dfc9;border-color:#8a7f68">기본값으로</button>
+        <button class="brush-btn" id="op_close">닫기</button></div></div>`, 'setp');
   p.dataset.noauto = '1';
-  const list = p.querySelector('#optl');
-  const head = t => list.appendChild(el('div', 'opthead', t));
+  const root = p.querySelector('#optl'), nav = p.querySelector('#op_nav');
+  let list = root;
+  const SEC_G = { '소 리': '音', '화 면': '畵', '편 의': '便', '난 이 도': '難', '자 동 플 레 이': '自', '안 내': '導', '기 록': '錄', '계 정': '名' };
+  const head = t => {
+    const g = SEC_G[t] || '設', sec = el('section', 'optsec', `<div class="opthead"><i>${g}</i><span>${t}</span></div>`);
+    sec.dataset.t = t; root.appendChild(sec); list = sec;
+    const nb = el('button', 'setnb', `<i>${g}</i><span>${t.replace(/ /g, '')}</span>`);
+    nb.onclick = () => { SND.ui(); root.scrollTo({ top: sec.offsetTop - root.offsetTop - 6, behavior: 'smooth' }); };
+    nav.appendChild(nb); sec._nb = nb;
+  };
   /* 켜고 끄는 줄 */
   const row = (label, desc, get, set) => {
     const n = el('div', 'optrow', `<div class="lb"><b>${label}</b><small>${desc}</small></div>`);
@@ -36352,7 +36446,7 @@ function showSettings() {
     const paint = () => {
       const v = get();
       btn.textContent = v ? '켜짐' : '꺼짐';
-      btn.className = 'val ' + (v ? 'yes' : 'no');
+      btn.className = 'val tg ' + (v ? 'yes' : 'no');
     };
     btn.onclick = () => { set(!get()); saveMeta(); SND.ui(); paint(); };
     paint(); n.appendChild(btn); list.appendChild(n); return n;
@@ -36430,16 +36524,44 @@ function showSettings() {
   row('보스 컷씬', '막마다 보스가 나타날 때 카메라가 도는 장면을 튼다 (건너뛰기·Esc 로 넘긴다)', () => OPT.cuts, v => { OPT.cuts = v; });
   row('3D 컷씬', '컷씬을 진짜 3D 로 그린다 — 폰이 버거우면 끈다 (가벼운 평면 컷씬으로)', () => OPT.cut3d !== false, v => { OPT.cut3d = v; });
   row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
+  row('배경 움직임', '산과 하늘이 은은하게 숨 쉰다 — 끄면 그림이 멈춰 폰 전지가 덜 닳는다', () => !OPT.bgStill, v => { OPT.bgStill = !v; optApply(); });
+  row('부적 글씨 크게', '부적의 설명 글을 한 단 크게 — 작은 화면에서 읽기 쉽게', () => !!OPT.bigText, v => { OPT.bigText = v; optApply(); });
   row('가볍게 모드', '먹물 파편 · 흔들림 · 간지 · 큰 이름 · 3D 컷씬을 한꺼번에 끄고, 풀면 그대로 돌려놓는다 (L)', () => liteOn(), v => { if (v !== liteOn()) { liteToggle(); setTimeout(() => { closeTop(); showSettings(); }, 50); } });
 
   head('편 의');
   row('차례 넘기기 확인', '기와 낼 부적이 남았는데 넘기려 하면 한 번 더 누르게 한다', () => OPT.endWarn !== false, v => { OPT.endWarn = v; });
   row('쉬어 가기 알림', '한 시간마다 잠깐 쉬라고 일러 준다', () => OPT.rest !== false, v => { OPT.rest = v; });
+  row('시계', '오른쪽 위에 지금 시각과 이번에 논 시간을 띄운다', () => !!OPT.clock, v => { OPT.clock = v; clockTick(); });
+  row('손에 울림 (폰)', '묵직한 일격을 맞으면 폰이 짧게 떤다', () => !!OPT.vibrate, v => { OPT.vibrate = v; if (v && navigator.vibrate) { try { navigator.vibrate(40); } catch (e) {} } });
+  row('숨은 것 속삭임', '막에 처음 들어설 때 바람이 그 막의 수수께끼를 들려준다', () => !OPT.noWhisper, v => { OPT.noWhisper = !v; });
   {
     const n = el('div', 'optrow', `<div class="lb"><b>단축키 · 알림 기록</b><small>? 또는 F1 — 단축키 한눈에 · N — 지나간 알림 · M 소리 · F 전체 화면 · H 화면 비우기</small></div>`);
     const b1 = el('button', 'val'); b1.textContent = '단축키'; b1.onclick = () => showKeys();
     const b2 = el('button', 'val'); b2.textContent = '알림 기록'; b2.onclick = () => showToastLog();
     const box = el('div', 'optbtns'); box.appendChild(b1); box.appendChild(b2); n.appendChild(box); list.appendChild(n);
+  }
+
+  head('난 이 도');
+  {
+    const cur = diffLv(), n = el('div', 'diffbox');
+    n.innerHTML = `<div class="dfnow" style="--dc:${diffOf().c}"><i>${diffOf().g}</i><div><b>지금 — ${diffOf().n}</b><small>${diffOf().d}${cur ? ` · 골드 ×${diffOf().gold} · 다이아 ×${diffOf().dia}` : ''}</small></div></div>
+      <div class="dfwarn">難 난이도는 <b>올리기만</b> 할 수 있다 — 한 번 올리면 되돌릴 수 없다. 대신 골드·다이아가 더 붙고, 요괴가 굵어진 만큼 경험치도 오른다.<br><small>멀티 대전 · 모두의 적 · 대전투장 · 백야의 시험에는 듣지 않는다</small></div>
+      <div class="dfladder">${DIFF.map((d, k) => `<button class="dfst${k < cur ? ' past' : k === cur ? ' cur' : ''}" data-k="${k}" style="--dc:${d.c}"${k <= cur ? ' disabled' : ''}>
+        <i>${d.g}</i><b>${d.n}</b><small>${d.d}</small><em>${k ? `골드 ×${d.gold} · 다이아 ×${d.dia}` : '보상 그대로'}</em><u>${k < cur ? '지나왔다' : k === cur ? '지금' : '올린다'}</u></button>`).join('')}</div>
+      ${caster() ? '<button class="val" id="df_reset">백야 — 보통으로 되돌리기</button>' : ''}`;
+    list.appendChild(n);
+    n.querySelectorAll('.dfst:not([disabled])').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k, d = DIFF[k];
+      if (b.dataset.arm !== '1') { n.querySelectorAll('.dfst').forEach(x => { x.dataset.arm = ''; x.classList.remove('arm'); });
+        b.dataset.arm = '1'; b.classList.add('arm'); b.querySelector('u').textContent = '한 번 더 — 되돌릴 수 없다'; SND.err(); return; }
+      META.diff = k; saveMeta();
+      try { SND.unlock(); SND.gong(); SND.boss(); stampWord(d.g + ' ' + d.n, d.c); screenFlash('rgba(0,0,0,.55)', 700); } catch (e) {}
+      toast(`난이도를 「${d.n}」(으)로 올렸다 — 다음 싸움부터`);
+      closeTop(); showSettings();
+      setTimeout(() => { const q = document.querySelector('.optsec[data-t="난 이 도"]'); const L = document.querySelector('#optl'); if (q && L) L.scrollTop = q.offsetTop - L.offsetTop - 6; }, 60);
+      if (G.scene === 'map' && G.run && !G.b) { try { showMap(); } catch (e) {} }
+    });
+    const rs = n.querySelector('#df_reset'); if (rs) rs.onclick = () => { META.diff = 0; saveMeta(); toast('백야 — 난이도를 보통으로 되돌렸다'); closeTop(); showSettings(); };
   }
 
   head('자 동 플 레 이');
@@ -36550,6 +36672,35 @@ function showSettings() {
     toast('기본값으로 되돌렸다');
   };
   p.querySelector('#op_close').onclick = closeTop;
+  /* 찾기 — 줄의 이름·설명에 든 말로 거른다 */
+  const q = p.querySelector('#op_q');
+  q.onkeydown = e => e.stopPropagation();
+  q.oninput = () => {
+    const w = q.value.trim().toLowerCase().replace(/\s+/g, '');
+    root.querySelectorAll('.optsec').forEach(sec => {
+      let any = false;
+      sec.querySelectorAll('.optrow,.diffbox').forEach(r => { const hit = !w || r.textContent.toLowerCase().replace(/\s+/g, '').includes(w) || sec.dataset.t.replace(/ /g, '').includes(w); r.style.display = hit ? '' : 'none'; if (hit) any = true; });
+      sec.style.display = any ? '' : 'none'; if (sec._nb) sec._nb.classList.toggle('dim', !any);
+    });
+  };
+  /* 지금 보는 갈래를 목차에 표시 */
+  const mark = () => { let on = null; root.querySelectorAll('.optsec').forEach(sec => { if (sec.style.display !== 'none' && sec.offsetTop - root.offsetTop - root.scrollTop < 60) on = sec; });
+    if (!on) on = root.querySelector('.optsec'); root.querySelectorAll('.optsec').forEach(sec => sec._nb && sec._nb.classList.toggle('on', sec === on)); };
+  root.addEventListener('scroll', mark, { passive: true }); mark();
+}
+/* 설정이 화면에 바로 드러나는 것들 (판 57) */
+function optApply() {
+  document.body.classList.toggle('bgstill', !!OPT.bgStill);
+  document.body.classList.toggle('bigtxt', !!OPT.bigText);
+  clockTick();
+}
+const CLOCK_T0 = Date.now();
+function clockTick() {
+  let c = $('#clockpill');
+  if (!OPT.clock) { if (c) c.remove(); return; }
+  if (!c) { c = el('div', 'clockpill'); c.id = 'clockpill'; document.body.appendChild(c); }
+  const d = new Date(), m = Math.floor((Date.now() - CLOCK_T0) / 60000);
+  c.innerHTML = `<b>${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</b><small>${m >= 60 ? Math.floor(m / 60) + '시간 ' : ''}${m % 60}분째</small>`;
 }
 /* ── 도감 화면 ───────────────────────────────────────────── */
 function dexTile(known, glyph, name, tipHtml, cls, onClick) {
@@ -38369,6 +38520,7 @@ function boot() {
   showTitle();                               /* 판을 먼저 띄운다 */
   banBoot().catch(() => {});                 /* 막힌 기기면 바로 덮는다 */
   syncAuto();
+  try { optApply(); } catch (e) {}           /* 배경 멈춤 · 큰 글씨 · 시계 (판 57) */
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
   try {
