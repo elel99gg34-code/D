@@ -6434,6 +6434,141 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 @keyframes bglMote{from{transform:translate(0,6px);opacity:.55}to{transform:translate(14px,-22px);opacity:1}}
 @keyframes bglMote2{0%{transform:translate(0,0);opacity:0}50%{opacity:1}100%{transform:translate(-12px,-30px);opacity:.2}}
 @media (prefers-reduced-motion:reduce){#bg .bgl,#bg .bgl-skyc{animation:none!important}}
+/* ══ 배경 새 단장 (판 58) ══ */
+#bg div.bgl{position:absolute;inset:0;pointer-events:none}
+#bg .bgl-astro,#bg .bgl-top,#bg .bgl-fx{will-change:auto}
+#bg .bgl-fx{overflow:hidden}
+/* 해 · 달 — 동그랗게 */
+.bgastro{position:absolute;width:calc(var(--r) * .2vmax);height:calc(var(--r) * .2vmax);margin:calc(var(--r) * -.1vmax) 0 0 calc(var(--r) * -.1vmax);opacity:var(--op)}
+.bgastro i,.bgastro b,.bgastro u{position:absolute;border-radius:50%}
+.bgastro i{inset:-150%;background:radial-gradient(circle,var(--g) 0,transparent 60%);opacity:.32;animation:astGlow 9s ease-in-out infinite alternate}
+.bgastro b{inset:0;background:radial-gradient(circle at 40% 36%,rgba(255,255,255,.55) 0,var(--c) 42%,var(--c) 100%)}
+.bgastro u{inset:0;opacity:0}
+.bgastro.moon u{opacity:.5;background:radial-gradient(circle at 70% 72%,rgba(0,0,0,.22),transparent 62%),radial-gradient(ellipse 30% 22% at 38% 60%,rgba(0,0,0,.08),transparent 80%)}
+.bgastro.sun b{background:radial-gradient(circle,#fff 0,var(--c) 55%,var(--c) 100%);box-shadow:0 0 calc(var(--r) * .06vmax) var(--g)}
+.bgastro.sun i{opacity:.5;animation-duration:6s}
+.bgastro.big i{inset:-220%}
+.bgastro.dawn i{inset:-260%;opacity:.6}
+.bgastro.pale b{background:radial-gradient(circle,rgba(255,255,255,.7) 0,var(--c) 60%)}
+.bgastro.blood b{background:radial-gradient(circle at 40% 38%,#ff7a6a 0,#d0303a 40%,#8a1020 78%,#5c0a16 100%)}
+.bgastro.blood u{opacity:.45;background:radial-gradient(ellipse 22% 16% at 36% 34%,#6d0c18,transparent 80%),radial-gradient(ellipse 18% 14% at 62% 64%,#6d0c18,transparent 80%),radial-gradient(circle at 72% 74%,rgba(40,0,8,.5),transparent 60%)}
+.bgastro.blood i{opacity:.6;inset:-190%}
+.bgastro.ecl b{background:var(--c);box-shadow:0 0 0 2px var(--g),0 0 calc(var(--r) * .05vmax) var(--g)}
+.bgastro.ecl i{opacity:.45}
+.bgastro.void b{animation:astRing 7s ease-in-out infinite alternate}
+.bgastro.dark b{background:radial-gradient(circle at 40% 36%,rgba(255,255,255,.08) 0,var(--c) 50%)}
+.bgastro.ghost u{opacity:.5;background:var(--c);transform:translate(26%,18%);animation:astGhost 10s ease-in-out infinite alternate}
+@keyframes astGlow{from{transform:scale(.94);opacity:calc(var(--o, .32) * .8)}to{transform:scale(1.06)}}
+@keyframes astRing{from{box-shadow:0 0 0 1px var(--g),0 0 calc(var(--r) * .03vmax) var(--g)}to{box-shadow:0 0 0 3px var(--g),0 0 calc(var(--r) * .09vmax) var(--g)}}
+@keyframes astGhost{from{transform:translate(18%,12%)}to{transform:translate(40%,26%)}}
+/* 흘러가는 구름 · 안개 덩이 — 가장자리가 없다 */
+.bgcloud{position:absolute;left:-40%;width:180%;height:13%;pointer-events:none;
+  background:radial-gradient(ellipse 13% 42% at 18% 50%,var(--c),transparent 72%),radial-gradient(ellipse 9% 34% at 26% 40%,var(--c),transparent 72%),
+    radial-gradient(ellipse 15% 46% at 55% 55%,var(--c),transparent 72%),radial-gradient(ellipse 11% 36% at 84% 46%,var(--c),transparent 72%);
+  animation:bgCloudMv var(--d) ease-in-out var(--w) infinite alternate}
+@keyframes bgCloudMv{from{transform:translateX(-14%)}to{transform:translateX(14%)}}
+.bgmist{position:absolute;left:-30%;width:160%;pointer-events:none;
+  background:radial-gradient(ellipse 30% 50% at 22% 50%,var(--c),transparent 72%),radial-gradient(ellipse 26% 46% at 58% 56%,var(--c),transparent 72%),radial-gradient(ellipse 22% 50% at 88% 46%,var(--c),transparent 72%);
+  animation:bgMistMv var(--d) ease-in-out infinite alternate}
+.bgmist.rev{animation-direction:alternate-reverse}
+@keyframes bgMistMv{from{transform:translateX(-11%)}to{transform:translateX(11%)}}
+/* 새 떼 */
+.bgflock{position:absolute;left:0;width:90px;height:40px;animation:bgFlockMv var(--d) linear var(--w) infinite}
+.bgflock i{position:absolute;left:var(--x);top:var(--y);width:14px;height:8px;animation:bgFlap .55s ease-in-out var(--k) infinite alternate}
+.bgflock i:before,.bgflock i:after{content:'';position:absolute;top:0;width:8px;height:8px;border-top:2px solid var(--c);border-radius:50%}
+.bgflock i:before{left:0;transform:rotate(-14deg)}.bgflock i:after{right:0;transform:rotate(14deg)}
+@keyframes bgFlockMv{from{transform:translateX(-140px)}to{transform:translateX(calc(100vw + 60px))}}
+@keyframes bgFlap{from{transform:scaleY(1)}to{transform:scaleY(.35) translateY(2px)}}
+/* 번개 (3막) */
+.bgbolt{position:absolute;left:70%;top:3%;width:4%;height:46%;opacity:0;animation:bgBolt 13s linear 4s infinite}
+.bgbolt svg{fill:#f8f8ff;filter:drop-shadow(0 0 6px #fff)}
+.bgflash{position:absolute;inset:0;background:#fff;opacity:0;animation:bgSkyFlash 13s linear 4s infinite}
+@keyframes bgBolt{0%,86%{opacity:0}87%{opacity:1}88%{opacity:.2}89.5%{opacity:.9}92%,100%{opacity:0}}
+@keyframes bgSkyFlash{0%,86%{opacity:0}87%{opacity:.28}88%{opacity:.05}89.5%{opacity:.2}92%,100%{opacity:0}}
+/* 그림 속 움직임 */
+#bg .bgflick{animation:bgFlick 1.7s ease-in-out var(--k, 0s) infinite alternate}
+@keyframes bgFlick{from{opacity:.5}to{opacity:1}}
+#bg .bgpulse{animation:bgPulse 7s ease-in-out infinite alternate}
+@keyframes bgPulse{from{opacity:.55}to{opacity:1}}
+#bg .bgspin{animation:bgSpin 140s linear infinite}
+#bg .bgspin.rev{animation-direction:reverse;animation-duration:200s}
+#bg .bgspin.slow{animation-duration:260s}
+@keyframes bgSpin{to{transform:rotate(360deg)}}
+#bg .bgripple{transform-box:fill-box;transform-origin:center;animation:bgRipple 6s ease-out infinite}
+#bg .bgripple.slow{animation-duration:11s}#bg .bgripple.d2{animation-delay:-5s}
+@keyframes bgRipple{from{transform:scale(.92);opacity:0}30%{opacity:.4}to{transform:scale(1.18);opacity:0}}
+#bg .bgfloat{animation:bgFloat 9s ease-in-out infinite alternate}
+@keyframes bgFloat{from{transform:translateY(4px)}to{transform:translateY(-8px)}}
+#bg .bgshim{animation:bgShim 3.6s ease-in-out infinite alternate}
+@keyframes bgShim{from{opacity:.08}to{opacity:.3}}
+#bg .bgwave{animation:bgWave 6s ease-in-out infinite alternate}
+@keyframes bgWave{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+#bg .bgdrift{animation:bgWave 22s ease-in-out infinite alternate}
+#bg .bgwander{animation:bgWander 18s ease-in-out infinite alternate}
+@keyframes bgWander{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+#bg .bgsway{animation:bgSway17 8s ease-in-out infinite alternate}
+@keyframes bgSway17{from{transform:translateY(-2px)}to{transform:translateY(3px)}}
+#bg .bgsmoke circle{transform-box:fill-box;transform-origin:center;animation:bgSmoke 7.5s ease-out infinite;animation-delay:calc(var(--n) * -2.5s - var(--k, 0s))}
+@keyframes bgSmoke{from{transform:translate(0,10px) scale(.5);opacity:0}20%{opacity:.55}to{transform:translate(18px,-70px) scale(2.2);opacity:0}}
+#bg .bgflag{animation:bgFlag 1.6s ease-in-out var(--k, 0s) infinite alternate}
+@keyframes bgFlag{from{transform:skewY(-4deg) scaleX(1)}to{transform:skewY(6deg) scaleX(.86)}}
+#bg .bgtal{animation:bgTal 5s ease-in-out infinite alternate}
+@keyframes bgTal{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+#bg .bgseam{animation:bgSeam 9s linear infinite}
+@keyframes bgSeam{to{stroke-dashoffset:-180}}
+#bg .bgrays{animation:bgPulse 5s ease-in-out infinite alternate}
+#bg .bgfire path{animation:bgFire .9s ease-in-out var(--k, 0s) infinite alternate}
+@keyframes bgFire{from{transform:scaleY(.82) skewX(-3deg)}to{transform:scaleY(1.12) skewX(4deg)}}
+#bg .bgreap{animation:bgReap 9s ease-in-out infinite alternate}
+@keyframes bgReap{from{transform:rotate(-.5deg)}to{transform:rotate(.6deg) translateY(-3px)}}
+#bg .bgsleeve{animation:bgSleeve 7s ease-in-out infinite alternate}#bg .bgsleeve.r{animation-delay:-3s}
+@keyframes bgSleeve{from{transform:rotate(-2deg)}to{transform:rotate(3deg)}}
+#bg .bgthread{animation:bgThread 8s ease-in-out infinite alternate}
+@keyframes bgThread{from{transform:translateY(-4px)}to{transform:translateY(6px)}}
+#bg .bgspindrift{animation:bgSpindrift 5s ease-in-out infinite}
+@keyframes bgSpindrift{from{transform:translateX(0);opacity:0}30%{opacity:1}to{transform:translateX(60px);opacity:0}}
+/* 떠다니는 것 */
+.bgfx i{position:absolute;top:-6%;display:block;will-change:transform}
+.fx-leaf i,.fx-petal i,.fx-leafup i{width:9px;height:5px;border-radius:0 80% 0 80%;background:var(--c);opacity:.75;animation:fxFall var(--d) linear var(--w) infinite}
+.fx-petal i{width:7px;height:6px;border-radius:60% 0 60% 0;opacity:.65}
+.fx-leafup i{top:auto;bottom:-6%;animation-name:fxLeafUp;opacity:.55}
+@keyframes fxFall{0%{transform:translate(0,0) rotate(var(--r)) scale(var(--s));opacity:0}6%{opacity:.8}
+  30%{transform:translate(calc(var(--dx) * .6),32vh) rotate(calc(var(--r) + 160deg)) scale(var(--s))}
+  60%{transform:translate(calc(var(--dx) * -.2),64vh) rotate(calc(var(--r) + 300deg)) scale(var(--s))}
+  90%{opacity:.7}100%{transform:translate(var(--dx),108vh) rotate(calc(var(--r) + 480deg)) scale(var(--s));opacity:0}}
+@keyframes fxLeafUp{0%{transform:translate(0,0) rotate(var(--r)) scale(var(--s));opacity:0}10%{opacity:.6}
+  50%{transform:translate(calc(var(--dx) * -.5),-52vh) rotate(calc(var(--r) - 220deg)) scale(var(--s))}
+  100%{transform:translate(var(--dx),-106vh) rotate(calc(var(--r) - 440deg)) scale(var(--s));opacity:0}}
+.fx-snow i{width:4px;height:4px;border-radius:50%;background:var(--c);opacity:.8;animation:fxSnow var(--d) linear var(--w) infinite}
+@keyframes fxSnow{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:.85}
+  50%{transform:translate(calc(var(--dx) * .5),55vh) scale(var(--s))}100%{transform:translate(var(--dx),108vh) scale(var(--s));opacity:.2}}
+.fx-ash i{width:3px;height:3px;border-radius:50%;background:var(--c);opacity:.6;animation:fxSnow var(--d) linear var(--w) infinite}
+.fx-rain i{width:1.2px;height:6vh;background:linear-gradient(transparent,var(--c));opacity:.45;animation:fxRain var(--d) linear var(--w) infinite}
+@keyframes fxRain{from{transform:translate(0,-8vh) rotate(14deg)}to{transform:translate(-30vh,112vh) rotate(14deg)}}
+.fx-spark i{width:2px;height:3vh;background:linear-gradient(transparent,var(--c));opacity:.7;animation:fxRain var(--d) linear var(--w) infinite}
+.fx-ember i,.fx-gold i{top:auto;bottom:-4%;width:4px;height:4px;border-radius:50%;background:radial-gradient(circle,#fff 0,var(--c) 45%,transparent 72%);animation:fxRise var(--d) ease-in var(--w) infinite}
+.fx-gold i{width:5px;height:5px;animation-timing-function:linear}
+@keyframes fxRise{0%{transform:translate(0,0) scale(var(--s));opacity:0}10%{opacity:1}
+  50%{transform:translate(calc(var(--dx) * .7),-50vh) scale(var(--s))}100%{transform:translate(var(--dx),-104vh) scale(calc(var(--s) * .6));opacity:0}}
+.fx-soul i{top:auto;bottom:-6%;width:10px;height:16px;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;background:radial-gradient(ellipse at 50% 62%,#fff 0,var(--c) 38%,transparent 72%);opacity:.7;animation:fxSoul var(--d) ease-in-out var(--w) infinite}
+@keyframes fxSoul{0%{transform:translate(0,0) scale(var(--s));opacity:0}15%{opacity:.75}
+  35%{transform:translate(calc(var(--dx) * .5),-30vh) scale(var(--s))}65%{transform:translate(calc(var(--dx) * -.4),-62vh) scale(var(--s))}
+  100%{transform:translate(var(--dx),-96vh) scale(calc(var(--s) * .5));opacity:0}}
+.fx-ink i{top:auto;bottom:-6%;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,var(--c) 0,transparent 70%);opacity:.3;animation:fxInk var(--d) ease-out var(--w) infinite}
+@keyframes fxInk{0%{transform:translate(0,0) scale(calc(var(--s) * .4));opacity:0}15%{opacity:.32}100%{transform:translate(var(--dx),-80vh) scale(calc(var(--s) * 2.6));opacity:0}}
+.fx-mote i,.fx-fox i{width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,var(--c) 0,transparent 70%);animation:fxMote var(--d) ease-in-out var(--w) infinite alternate}
+.fx-fox i{width:12px;height:12px;background:radial-gradient(circle,#fff 0,var(--c) 30%,transparent 70%);animation-name:fxFox}
+@keyframes fxMote{from{transform:translate(0,0) scale(var(--s));opacity:.1}50%{opacity:.8}to{transform:translate(var(--dx),-6vh) scale(var(--s));opacity:.2}}
+@keyframes fxFox{0%{transform:translate(0,0) scale(var(--s));opacity:0}25%{opacity:.9}50%{transform:translate(calc(var(--dx) * .6),-3vh) scale(calc(var(--s) * 1.2));opacity:.4}
+  75%{opacity:.9}100%{transform:translate(var(--dx),2vh) scale(var(--s));opacity:0}}
+.fx-lantern i{top:auto;bottom:-6%;width:8px;height:11px;border-radius:3px 3px 4px 4px;background:linear-gradient(#fff4d0,var(--c) 60%,#c86a2a);
+  box-shadow:0 0 10px 3px rgba(255,190,110,.45);animation:fxLantern var(--d) linear var(--w) infinite}
+@keyframes fxLantern{0%{transform:translate(0,0) scale(var(--s));opacity:0}8%{opacity:.95}
+  50%{transform:translate(calc(var(--dx) * .5),-55vh) scale(calc(var(--s) * .8))}100%{transform:translate(var(--dx),-108vh) scale(calc(var(--s) * .5));opacity:0}}
+/* 멈춰 두기 — 설정 「배경 움직임」을 끄거나, 움직임을 줄이라는 기계 */
+body.bgstill #bg .bgl *,body.bgstill #bg .bgmist{animation:none!important}
+body.bgstill #bg .bgfx{display:none}
+@media (prefers-reduced-motion:reduce){#bg .bgl *,#bg .bgmist{animation:none!important}#bg .bgfx{display:none}}
 #bg .beatglow{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .38s ease-out;
   background:radial-gradient(ellipse at 50% 35%,rgba(var(--bc),.28),rgba(var(--bc),0) 65%)}
 #bg .beatglow.small{opacity:.45;transition:none}
@@ -37916,6 +38051,511 @@ function showHelp(startTab) {
 /* ══════════════════════════════════════════════════════════
    14. 배경 · 타이틀 · 입력 · 부팅
    ══════════════════════════════════════════════════════════ */
+/* ══ 배경 새 단장 (판 58) — 제1막부터 제25막까지 ═══════════════════════
+   예전 배경은 막마다 같은 지그재그 삼각형 능선 셋 위에 점 · 타원 · 줄을 흩뿌린 것이라
+   멀리서 보면 지저분했고, 1~9막은 거의 같은 그림이었다.
+   · 능선은 봉우리마다 곡선으로 깎는다 — 막마다 산 모양이 다르다(바늘 봉 · 둥근 언덕 · 벼랑 · 모래 언덕)
+   · 능선 위는 옅고 아래는 짙게(안개), 능선 끝에 먹선 한 줄
+   · 능선 사이 안개는 띠가 아니라 천천히 흘러가는 안개 덩이(HTML · 가장자리가 없다)
+   · 해 · 달은 HTML 로 — 화면 비율이 바뀌어도 동그랗다
+   · 막의 특징 하나를 크게, 깔끔하게. 점 무더기 · 타원 무더기 · 자로 그은 줄은 지웠다
+   · 움직임: 겹마다 다른 빠르기로 숨 쉬고, 막마다 떠다니는 것(잎 · 여우불 · 비 · 넋 · 먹 · 재 · 금가루 ·
+     등 · 연기 · 깃발 · 눈보라 · 불티 …). 전부 transform · opacity 만 — 폰도 가볍다.
+     설정 「배경 움직임」을 끄면 멈춘다.
+   · 숨은 것(이스터에그)이 걸린 자리는 그대로 — 10막 봉우리 여섯과 굴, 14막 해, 17막 형체 열일곱, 20막 꼭대기, 25막 낙관
+   ══════════════════════════════════════════════════════════════════ */
+function bgRand(seed) {
+  let t = (seed * 2654435761) >>> 0;
+  return () => { t += 0x6D2B79F5; let r = Math.imul(t ^ (t >>> 15), 1 | t); r ^= r + Math.imul(r ^ (r >>> 7), 61 | r); return ((r ^ (r >>> 14)) >>> 0) / 4294967296; };
+}
+function bgMix(a, b, k) {
+  const A = hexRgb(a).split(',').map(Number), B = hexRgb(b).split(',').map(Number);
+  return '#' + A.map((v, i) => Math.max(0, Math.min(255, Math.round(v + (B[i] - v) * k))).toString(16).padStart(2, '0')).join('');
+}
+/* 봉우리들 [x, 꼭대기 y, 반너비, 모양(1 뾰족 ~ 2.6 둥긂)] → 능선의 점들 */
+function bgPeaks(pk, base, rough, seed) {
+  const R = bgRand(seed || 7), nz = [];
+  for (let i = 0; i < 6; i++) nz.push([R() * 6.28, .008 + R() * .045, .3 + R() * .7]);
+  const pts = [];
+  for (let x = -12; x <= 1012; x += 6) {
+    let h = 0, near = 0;
+    for (const [px, py, w, s] of pk) {
+      const t = Math.abs(x - px) / w;
+      if (t < 1) { const v = (base - py) * Math.pow(1 - Math.pow(t, s), 1.1 + .3 / s); if (v > h) { h = v; near = 1 - t; } }
+    }
+    let n = 0; for (const [ph, f, a] of nz) n += Math.sin(x * f + ph) * a;
+    pts.push([x, base - h - n * (rough == null ? 2 : rough) * (1 - near * near * .9)]);
+  }
+  return pts;
+}
+/* 봉우리를 흩어 놓는다 */
+function bgGenPk(seed, n, y0, y1, w0, w1, s0, s1) {
+  const R = bgRand(seed), out = [];
+  for (let i = 0; i < n; i++) out.push([(i + .2 + R() * .6) / n * 1080 - 40, y0 + R() * (y1 - y0), w0 + R() * (w1 - w0), s0 + R() * (s1 - s0)]);
+  return out;
+}
+const bgPtsD = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(0) + ',' + p[1].toFixed(1)).join('');
+/* 능선 한 겹 — 위는 안개빛, 아래는 제 빛. 꼭대기 선에 먹 한 줄 */
+function bgRidge(id, pts, col, mist, o) {
+  o = o || {};
+  const top = Math.min(...pts.map(p => p[1])), bot = Math.max(...pts.map(p => p[1])) + 40;
+  const lift = o.lift == null ? .5 : o.lift;
+  return `<defs><linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="${top.toFixed(0)}" x2="0" y2="${Math.min(600, bot + 60).toFixed(0)}">
+      <stop offset="0" stop-color="${bgMix(col, mist, lift)}"/><stop offset=".45" stop-color="${bgMix(col, mist, lift * .35)}"/><stop offset="1" stop-color="${o.foot || col}"/></linearGradient></defs>
+    <path d="${bgPtsD(pts)}L1012,600L-12,600Z" fill="url(#${id})" opacity="${o.op || 1}"/>
+    ${o.ink === 0 ? '' : `<path d="${bgPtsD(pts)}" fill="none" stroke="${o.ink || bgMix(col, '#000000', .35)}" stroke-width="${o.inkW || 1.4}" opacity="${o.inkOp || .35}" stroke-linejoin="round"/>`}`;
+}
+/* 능선 위 x 자리의 높이 */
+const bgYat = (pts, x) => { const i = Math.max(0, Math.min(pts.length - 1, Math.round((x + 12) / 6))); return pts[i][1]; };
+/* ── 그림 조각 ── */
+/* 전나무 — 요괴 숲 */
+function bgFir(x, y, h, c) {
+  let d = `M${x - h * .025},${y}L${x - h * .015},${y - h * .3}L${x + h * .015},${y - h * .3}L${x + h * .025},${y}Z`;
+  for (let k = 0; k < 4; k++) {
+    const ty = y - h * (.2 + k * .2), bw = h * (.3 - k * .055), th = h * .36;
+    d += `M${x},${ty - th}Q${x - bw * .28},${ty - th * .42} ${x - bw},${ty}Q${x},${ty - th * .16} ${x + bw},${ty}Q${x + bw * .28},${ty - th * .42} ${x},${ty - th}Z`;
+  }
+  return `<path d="${d}" fill="${c}"/>`;
+}
+/* 소나무 — 굽은 줄기와 납작한 솔잎 덩이 */
+function bgPine(x, y, h, c, f) {
+  f = f || 1;
+  const tx = x + f * h * .12;
+  let s = `<path d="M${x},${y}C${x + f * h * .14},${y - h * .35} ${x - f * h * .12},${y - h * .55} ${tx},${y - h * .92}" fill="none" stroke="${c}" stroke-width="${(h * .045).toFixed(1)}" stroke-linecap="round"/>`;
+  const pads = [[.02, .62, .42], [.26, .8, .34], [.14, .95, .3], [-.18, .74, .26]];
+  for (const [dx, dy, w] of pads) {
+    const cx = x + f * h * dx, cy = y - h * dy, rw = h * w, rh = h * .07;
+    s += `<path d="M${cx - rw},${cy}Q${cx - rw * .6},${cy - rh * 2} ${cx},${cy - rh * 1.6}Q${cx + rw * .6},${cy - rh * 2} ${cx + rw},${cy}Q${cx},${cy + rh * .9} ${cx - rw},${cy}Z" fill="${c}"/>`;
+  }
+  return s;
+}
+/* 기와지붕 — 처마 끝이 들린다 */
+function bgRoof(x, y, w, h, c) {
+  return `<path d="M${x - w * .56},${y}Q${x - w * .5},${y - h * .1} ${x - w * .44},${y - h * .22}L${x - w * .3},${y - h}L${x + w * .3},${y - h}L${x + w * .44},${y - h * .22}Q${x + w * .5},${y - h * .1} ${x + w * .56},${y}Q${x},${y - h * .3} ${x - w * .56},${y}Z" fill="${c}"/>`;
+}
+/* 전각 한 채 — 지붕 둘, 기둥 */
+function bgHall(x, y, w, c, dark) {
+  const h = w * .2;
+  return `<g>${bgRoof(x, y - h * 1.9, w * .78, h * .8, c)}<rect x="${x - w * .3}" y="${y - h * 1.95}" width="${w * .6}" height="${h * .55}" fill="${c}"/>
+    ${bgRoof(x, y - h * .95, w, h, c)}<rect x="${x - w * .4}" y="${y - h}" width="${w * .8}" height="${h}" fill="${c}"/>
+    ${rep(5, i => `<rect x="${x - w * .32 + i * w * .16 - 2}" y="${y - h * .85}" width="4" height="${h * .85}" fill="${dark}" opacity=".5"/>`)}</g>`;
+}
+/* 초가 — 둥근 짚 지붕 */
+function bgHut(x, y, w, c, dark) {
+  return `<g><rect x="${x - w * .36}" y="${y - w * .26}" width="${w * .72}" height="${w * .26}" fill="${dark}"/>
+    <path d="M${x - w * .52},${y - w * .22}Q${x - w * .44},${y - w * .6} ${x},${y - w * .6}Q${x + w * .44},${y - w * .6} ${x + w * .52},${y - w * .22}Q${x},${y - w * .32} ${x - w * .52},${y - w * .22}Z" fill="${c}"/>
+    <rect x="${x - w * .08}" y="${y - w * .18}" width="${w * .14}" height="${w * .18}" fill="${bgMix(dark, '#000000', .4)}"/></g>`;
+}
+/* 상서로운 구름(운문) — 말린 끝 */
+function bgAusp(x, y, s, c, op) {
+  return `<g opacity="${op}" fill="${c}"><path d="M${x - s * 1.6},${y}Q${x - s * 1.6},${y - s * .55} ${x - s * 1.05},${y - s * .55}Q${x - s * .9},${y - s * 1.15} ${x - s * .25},${y - s * 1.05}
+      Q${x + s * .2},${y - s * 1.5} ${x + s * .75},${y - s * 1.05}Q${x + s * 1.5},${y - s * 1.05} ${x + s * 1.55},${y - s * .4}Q${x + s * 2},${y - s * .3} ${x + s * 2},${y}Z"/>
+    <path d="M${x - s * .55},${y - s * .62}a${s * .32},${s * .32} 0 1 1 ${s * .5},${s * .24}" fill="none" stroke="${bgMix(c, '#ffffff', .5)}" stroke-width="${(s * .08).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
+    <path d="M${x + s * .55},${y - s * .7}a${s * .26},${s * .26} 0 1 0 -${s * .42},${s * .2}" fill="none" stroke="${bgMix(c, '#ffffff', .5)}" stroke-width="${(s * .07).toFixed(1)}" stroke-linecap="round" opacity=".6"/></g>`;
+}
+/* 찢긴 하늘 — 한 줄기 틈. 가장자리는 불빛, 안은 검다 */
+function bgTear(x0, y0, x1, y1, w, seed) {
+  const R = bgRand(seed), L = [], Rr = [], n = 18;
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, cx = x0 + (x1 - x0) * t + Math.sin(t * 9) * 18, cy = y0 + (y1 - y0) * t, ww = Math.sin(Math.PI * Math.min(1, t * 1.15)) * w * (.55 + R() * .7);
+    const nx = -(y1 - y0), ny = (x1 - x0), nl = Math.hypot(nx, ny);
+    L.push([cx + nx / nl * ww, cy + ny / nl * ww]); Rr.push([cx - nx / nl * ww * (.6 + R() * .5), cy - ny / nl * ww * (.6 + R() * .5)]);
+  }
+  const P = p => p.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(0) + ',' + q[1].toFixed(0)).join('');
+  const all = P(L) + Rr.slice().reverse().map(q => 'L' + q[0].toFixed(0) + ',' + q[1].toFixed(0)).join('') + 'Z';
+  return `<path d="${all}" fill="#ff8a4a" opacity=".5" transform="translate(0 0) scale(1)" style="filter:none"/>
+    <path d="${all}" fill="#120207" transform="translate(${((x0 + x1) / 2 * .06).toFixed(0)} ${((y0 + y1) / 2 * .06).toFixed(0)}) scale(.94)"/>
+    <path class="bgflick" style="--k:.2s" d="${P(L)}" fill="none" stroke="#ffd08a" stroke-width="2.2" opacity=".85"/>
+    <path class="bgflick" style="--k:.8s" d="${P(Rr)}" fill="none" stroke="#ff8a4a" stroke-width="2" opacity=".75"/>`;
+}
+/* 두건 쓴 형체 — 얼굴 자리가 (x,y) */
+function bgHood(x, y, h, c, op) {
+  return `<path d="M${x},${y - h * .34}Q${x - h * .26},${y - h * .3} ${x - h * .24},${y + h * .05}Q${x - h * .32},${y + h * .5} ${x - h * .3},${y + h}L${x + h * .3},${y + h}Q${x + h * .32},${y + h * .5} ${x + h * .24},${y + h * .05}Q${x + h * .26},${y - h * .3} ${x},${y - h * .34}Z" fill="${c}" opacity="${op}"/>
+    <ellipse cx="${x}" cy="${y}" rx="${h * .13}" ry="${h * .16}" fill="${bgMix(c, '#000000', .6)}" opacity="${op}"/>`;
+}
+/* 새 떼 — 무리 하나 (HTML 로 날려 보낸다) */
+const bgFlock = (n, y, col, d, w) => `<div class="bgflock" style="top:${y}%;--d:${d}s;--w:${w}s">${rep(n, i => `<i style="--x:${(i * 17) % 60}px;--y:${(i * 23) % 26 - 12}px;--k:${(i * .13).toFixed(2)}s;--c:${col}"></i>`)}</div>`;
+/* 안개 덩이 — 흘러간다 */
+const bgMistDiv = (top, h, col, op, d, rev) => `<div class="bgmist${rev ? ' rev' : ''}" style="top:${top}%;height:${h}%;--c:${rgba(col, op)};--d:${d}s"></div>`;
+/* 해 · 달 — HTML */
+function bgAstro(o) {
+  /* o: { x, y(0~600 자리), r, col, glow, k: 'moon'|'sun'|'blood'|'ecl'|'ring'|'ghost', cls } */
+  return `<div class="bgastro ${o.k || 'moon'} ${o.cls || ''}" style="left:${o.x / 10}%;top:${o.y / 6}%;--r:${o.r};--c:${o.col};--g:${o.glow || o.col};--op:${o.op == null ? 1 : o.op}"><i></i><b></b><u></u></div>`;
+}
+/* 떠다니는 것 — 종류 · 수 · 빛깔 */
+function bgFx(type, n, col, seed, o) {
+  const R = bgRand(seed || 11); o = o || {};
+  const fl = /^(mote|fox)$/.test(type), top = o.top != null ? o.top : fl ? 8 : null, hh = o.h || (fl ? 72 : 20);
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = (i + R() * .9) / n * 100, d = (o.d || 14) * (.7 + R() * .6), w = -R() * d, sc = (o.s || 1) * (.6 + R() * .8);
+    s += `<i style="left:${x.toFixed(1)}%;${top != null ? `top:${(top + R() * hh).toFixed(1)}%;` : ''}--d:${d.toFixed(1)}s;--w:${w.toFixed(1)}s;--s:${sc.toFixed(2)};--dx:${((R() - .5) * (o.dx || 80)).toFixed(0)}px;--r:${(R() * 360).toFixed(0)}deg"></i>`;
+  }
+  return `<div class="bgfx fx-${type}" style="--c:${col}">${s}</div>`;
+}
+/* ══ 막마다 ══ */
+function bgScene(a, PAL, SKY) {
+  const [far, mid, near] = PAL;
+  const sky = SKY || '#f2e9d5 0%,#e6dac0 55%,#d9caa9 100%';
+  const skyTop = (sky.match(/#[0-9a-f]{3,6}/gi) || ['#e6dac0'])[0];
+  const skyLow = (sky.match(/#[0-9a-f]{3,6}/gi) || []).slice(-2)[0] || far;
+  const mist = (skyLow.length === 4 ? '#' + skyLow.slice(1).split('').map(c => c + c).join('') : skyLow);
+  const S = { sky, astro: '', art: '', far: '', mid: '', near: '', mist: [], fx: '', top: '', floor: .5 };
+  const R1 = (seed, base, n, y0, y1, w0, w1, s0, s1, rough) => bgPeaks(bgGenPk(seed, n, y0, y1, w0, w1, s0, s1), base, rough, seed);
+  const ridge3 = (seed, f, m, nr, op) => {   /* 기본 세 겹 */
+    const pf = R1(seed, f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8]), pm = R1(seed + 1, m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]), pn = R1(seed + 2, nr[0], nr[1], nr[2], nr[3], nr[4], nr[5], nr[6], nr[7], nr[8]);
+    S.far = bgRidge('rf' + a, pf, far, mist, { lift: .62, op: op ? op[0] : .9 }) + S.far;
+    S.mid = bgRidge('rm' + a, pm, mid, mist, { lift: .45, op: op ? op[1] : .95 }) + S.mid;
+    S.near = bgRidge('rn' + a, pn, near, mist, { lift: .22 }) + S.near;
+    return [pf, pm, pn];
+  };
+  switch (a) {
+    case 1: {   /* 요괴 숲 — 붉은 달, 전나무 숲, 지는 붉은 잎과 여우불 */
+      S.astro = bgAstro({ x: 118, y: 92, r: 40, col: '#d4626a', glow: '#e8908a', k: 'moon', op: .62 });
+      S.art = `${bgCloud(220, 120, 120, 16, '#c8a898', .22)}`;
+      S.top = `<div class="bgcloud" style="top:12%;--d:90s;--w:-30s;--c:${rgba('#c9a89a', .28)}"></div>`;
+      const [pf, pm, pn] = ridge3(101, [440, 7, 290, 360, 110, 190, 1.8, 2.6, 1.6], [500, 9, 380, 440, 90, 150, 1.8, 2.4, 1.6], [568, 10, 500, 540, 80, 130, 2, 2.6, 1.2]);
+      S.mid += `<g opacity=".55">${rep(34, i => { const x = i * 31 + (i * 13) % 17; return bgFir(x, bgYat(pm, x) + 10, 40 + (i * 7) % 22, bgMix(mid, '#000000', .12)); })}</g>`;
+      S.near += `<g>${rep(22, i => { const x = i * 48 + (i * 29) % 30 - 10; return bgFir(x, bgYat(pn, x) + 30, 74 + (i * 11) % 40, bgMix(near, '#000000', .25)); })}</g>
+        <g opacity=".9">${rep(5, i => { const x = 70 + i * 220 + (i % 2) * 40; return `<circle cx="${x}" cy="${bgYat(pn, x) - 48}" r="3.2" fill="#a8272c" opacity=".55"/>`; })}</g>`;
+      S.mist = [[60, 14, mist, .55, 70], [74, 12, '#ffffff', .35, 54, 1]];
+      S.fx = bgFx('leaf', 14, '#a8322c', 1, { d: 16 }) + bgFx('fox', 5, '#ff9a5a', 2, { d: 12, top: 62, h: 22 });
+      break;
+    }
+    case 2: {   /* 안개 봉우리 — 바늘 같은 봉, 벼랑의 소나무, 짙게 흐르는 안개 */
+      S.astro = bgAstro({ x: 150, y: 96, r: 34, col: '#f2ead6', glow: '#fff6e0', k: 'moon', op: .7 });
+      const pf = bgPeaks(bgGenPk(201, 11, 150, 260, 40, 70, 1.1, 1.5), 470, 1.4, 201);
+      const pm = bgPeaks(bgGenPk(202, 8, 240, 330, 46, 80, 1.1, 1.4), 520, 1.6, 202);
+      const pn = bgPeaks(bgGenPk(203, 6, 430, 480, 70, 120, 1.4, 2), 580, 1.4, 203);
+      S.far = bgRidge('rf2', pf, far, mist, { lift: .7, op: .85 });
+      S.mid = bgRidge('rm2', pm, mid, mist, { lift: .5 }) + `<g>${rep(5, i => { const x = 90 + i * 205; const y = bgYat(pm, x); return bgPine(x, y + 6, 46, bgMix(mid, '#000000', .35), i % 2 ? -1 : 1); })}</g>`;
+      S.near = bgRidge('rn2', pn, near, mist, { lift: .25 }) + bgPine(80, bgYat(pn, 80) + 8, 110, bgMix(near, '#000000', .3), 1) + bgPine(930, bgYat(pn, 930) + 8, 96, bgMix(near, '#000000', .3), -1);
+      S.mist = [[40, 18, '#ffffff', .5, 80], [55, 16, mist, .6, 60, 1], [70, 14, '#ffffff', .45, 46]];
+      S.fx = bgFx('mote', 10, '#fff8e8', 3, { d: 20 });
+      break;
+    }
+    case 3: {   /* 구천 벼랑 — 깎아지른 벼랑, 비스듬한 비, 이따금 번개 */
+      S.astro = bgAstro({ x: 128, y: 82, r: 34, col: '#dfe2f0', glow: '#cfd4ea', k: 'ecl', op: .55 });
+      S.top = `<div class="bgcloud" style="top:8%;--d:70s;--w:-12s;--c:${rgba('#8a8498', .2)}"></div><div class="bgbolt"><svg viewBox="0 0 100 300" preserveAspectRatio="none"><path d="M60,0L42,110L58,110L30,300L70,140L52,140L72,0Z"/></svg></div>`;
+      const pf = bgPeaks([[120, 230, 90, 1.05], [330, 260, 70, 1.1], [520, 210, 100, 1], [760, 240, 80, 1.1], [930, 200, 90, 1]], 470, 3, 301);
+      const pm = bgPeaks([[40, 300, 120, 1.1], [300, 350, 110, 1.3], [640, 320, 120, 1.05], [900, 280, 110, 1.1]], 520, 3, 302);
+      const pn = bgPeaks([[-20, 380, 170, 1.2], [1020, 360, 180, 1.15], [500, 520, 220, 1.6]], 600, 2.4, 303);
+      S.far = bgRidge('rf3', pf, far, mist, { lift: .55, op: .85 });
+      S.mid = bgRidge('rm3', pm, mid, mist, { lift: .4 });
+      S.near = bgRidge('rn3', pn, near, mist, { lift: .15 });
+      S.mist = [[52, 14, mist, .5, 50]];
+      S.fx = bgFx('rain', 46, '#e8ecf6', 4, { d: .9 });
+      break;
+    }
+    case 4: {   /* 명계 관문 — 검은 문과 보랏빛 문틈, 오르는 넋, 테두리 빛나는 검은 해 */
+      S.astro = bgAstro({ x: 118, y: 80, r: 46, col: '#2a2438', glow: '#9a6be8', k: 'ecl dark', op: .9 });
+      const [pf, pm] = ridge3(401, [450, 7, 320, 380, 110, 170, 1.6, 2.2, 1.6], [520, 8, 410, 460, 100, 150, 1.8, 2.4, 1.4], [575, 9, 520, 550, 90, 140, 2, 2.6, 1]);
+      const gy = bgYat(pm, 500) + 26, gc = bgMix(mid, '#000000', .5);
+      S.mid += `<g><rect x="452" y="${gy - 130}" width="96" height="130" fill="url(#mgate4)"/>
+        <defs><linearGradient id="mgate4" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#c8a8ff" stop-opacity=".9"/><stop offset="1" stop-color="#5a3a9a" stop-opacity=".25"/></linearGradient></defs>
+        <rect x="430" y="${gy - 150}" width="22" height="150" fill="${gc}"/><rect x="548" y="${gy - 150}" width="22" height="150" fill="${gc}"/>
+        ${bgRoof(500, gy - 150, 210, 40, gc)}<rect x="440" y="${gy - 112}" width="120" height="8" fill="${gc}"/>
+        <rect x="486" y="${gy - 104}" width="28" height="20" fill="${gc}"/></g>`;
+      S.art = `<ellipse class="bgpulse" cx="500" cy="${gy - 70}" rx="140" ry="120" fill="url(#gl4)"/><defs><radialGradient id="gl4"><stop offset="0" stop-color="#b98cff" stop-opacity=".45"/><stop offset="1" stop-color="#b98cff" stop-opacity="0"/></radialGradient></defs>`;
+      S.mist = [[58, 14, '#b9a8e0', .35, 64], [72, 12, mist, .4, 48, 1]];
+      S.fx = bgFx('soul', 12, '#b8c8ff', 5, { d: 13 });
+      break;
+    }
+    case 5: {   /* 구천 상계 — 구름 바다 위로 솟은 봉우리, 밝은 해, 흐르는 운해 */
+      S.astro = bgAstro({ x: 820, y: 110, r: 50, col: '#fff6d4', glow: '#fff2c0', k: 'sun', op: .9 });
+      const pf = bgPeaks([[150, 250, 80, 1.2], [300, 300, 60, 1.3], [620, 230, 90, 1.15], [880, 290, 70, 1.3]], 420, 1.6, 501);
+      const pm = bgPeaks([[60, 330, 110, 1.4], [440, 300, 100, 1.3], [780, 340, 110, 1.4]], 480, 1.6, 502);
+      S.far = bgRidge('rf5', pf, far, mist, { lift: .6, op: .9 });
+      S.mid = bgRidge('rm5', pm, mid, mist, { lift: .45 }) + `<g opacity=".7">${bgAusp(170, 360, 34, '#ffffff', .8)}${bgAusp(640, 330, 28, '#ffffff', .7)}</g>`;
+      S.near = `<g opacity=".95">${rep(9, i => bgCloud(i * 130 - 30, 560 + (i % 2) * 18, 120, 24, '#f4f8ff', .9))}</g>`;
+      S.mist = [[52, 20, '#ffffff', .75, 90], [66, 18, '#ffffff', .7, 64, 1], [78, 16, '#eef4ff', .8, 50]];
+      S.fx = bgFx('mote', 10, '#ffffff', 6, { d: 22 });
+      S.floor = .25;
+      break;
+    }
+    case 6: {   /* 무간 — 소리 없는 검은 해, 천천히 도는 고리, 떠 있는 바위, 위로 오르는 먹 */
+      S.astro = bgAstro({ x: 500, y: 150, r: 86, col: '#0d0b12', glow: '#b98cff', k: 'ecl void', op: .75 });
+      S.art = `<g class="bgspin" style="transform-origin:500px 150px"><circle cx="500" cy="150" r="128" fill="none" stroke="#b98cff" stroke-width="1.2" stroke-dasharray="2 14" opacity=".45"/></g>
+        <g class="bgspin rev" style="transform-origin:500px 150px"><circle cx="500" cy="150" r="170" fill="none" stroke="#8a7aa8" stroke-width="1" stroke-dasharray="40 26" opacity=".25"/></g>`;
+      const pf = bgPeaks([[200, 400, 220, 2.4], [760, 390, 240, 2.4]], 450, 1, 601);
+      S.far = bgRidge('rf6', pf, far, mist, { lift: .5, op: .8 });
+      S.mid = `<g class="bgfloat">${[[180, 300, 60], [380, 360, 34], [690, 320, 48], [860, 380, 30]].map(([x, y, s]) => `<path d="M${x - s},${y}L${x - s * .6},${y - s * .3}L${x + s * .5},${y - s * .35}L${x + s},${y}L${x + s * .3},${y + s * .7}L${x - s * .2},${y + s * .5}Z" fill="${mid}" opacity=".8"/>`).join('')}</g>`;
+      const pn = bgPeaks([[500, 530, 600, 2.6]], 600, .6, 603);
+      S.near = bgRidge('rn6', pn, near, mist, { lift: .2 });
+      S.mist = [[64, 14, '#c6c2ce', .35, 70]];
+      S.fx = bgFx('ink', 7, '#1a1622', 7, { d: 18 });
+      break;
+    }
+    case 7: {   /* 무저갱 — 양쪽 벼랑 사이로 끝없는 구멍, 아래서 새는 빛, 빨려 드는 재 */
+      S.art = `<defs><radialGradient id="pit7" cx="50%" cy="100%" r="60%"><stop offset="0" stop-color="#8f7ab8" stop-opacity=".5"/><stop offset=".5" stop-color="#3a2a50" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
+        <ellipse class="bgpulse" cx="500" cy="600" rx="420" ry="300" fill="url(#pit7)"/>`;
+      const pf = bgPeaks([[60, 160, 200, 1.1], [940, 170, 200, 1.1], [250, 300, 120, 1.2], [760, 290, 120, 1.2]], 600, 3, 701);
+      const pm = bgPeaks([[-30, 220, 260, 1.05], [1030, 230, 260, 1.05]], 600, 3.5, 702);
+      const pn = bgPeaks([[-60, 300, 230, 1.2], [1060, 300, 230, 1.2]], 600, 2.6, 703);
+      S.far = bgRidge('rf7', pf, far, mist, { lift: .4, op: .8, foot: bgMix(far, '#000000', .5) });
+      S.mid = bgRidge('rm7', pm, mid, mist, { lift: .3, foot: bgMix(mid, '#000000', .5) });
+      S.near = bgRidge('rn7', pn, near, mist, { lift: .1, foot: '#06050a' });
+      S.mist = [[70, 16, '#8f7ab8', .25, 60]];
+      S.fx = bgFx('ash', 22, '#7a6a8a', 8, { d: 18 });
+      S.floor = 0;
+      break;
+    }
+    case 8: {   /* 태초 — 처음의 빛, 도는 빛살, 고운 모래 언덕, 오르는 금가루 */
+      S.astro = bgAstro({ x: 500, y: 140, r: 96, col: '#fff6d8', glow: '#ffe89a', k: 'sun big', op: .9 });
+      S.art = `<g class="bgspin slow" style="transform-origin:500px 140px" opacity=".22" fill="#fff0c0">${rep(16, i => { const a1 = i * 22.5 * Math.PI / 180, a2 = a1 + .07; return `<path d="M500,140L${500 + Math.cos(a1) * 700},${140 + Math.sin(a1) * 700}L${500 + Math.cos(a2) * 700},${140 + Math.sin(a2) * 700}Z"/>`; })}</g>`;
+      const pf = bgPeaks(bgGenPk(801, 5, 330, 380, 160, 260, 2.4, 2.8), 440, 1, 801);
+      const pm = bgPeaks(bgGenPk(802, 4, 420, 460, 180, 280, 2.4, 2.8), 500, 1, 802);
+      const pn = bgPeaks(bgGenPk(803, 4, 520, 545, 200, 300, 2.4, 2.8), 580, .8, 803);
+      S.far = bgRidge('rf8', pf, far, mist, { lift: .55, op: .85, ink: 0 });
+      S.mid = bgRidge('rm8', pm, mid, mist, { lift: .4, ink: 0 });
+      S.near = bgRidge('rn8', pn, near, mist, { lift: .2, inkOp: .2 });
+      S.mist = [[60, 14, '#fff8e4', .45, 80]];
+      S.fx = bgFx('gold', 18, '#ffd86a', 9, { d: 16 });
+      break;
+    }
+    case 9: {   /* 환영 — 거울 같은 물. 산과 달이 거꾸로 한 번 더, 물결이 번진다 */
+      S.astro = bgAstro({ x: 500, y: 150, r: 60, col: '#f6f2e8', glow: '#ffffff', k: 'moon', op: .7 });
+      S.art = `<g fill="none" stroke="#fff" opacity=".35"><circle cx="500" cy="150" r="96" stroke-width="1.4"/><circle class="bgripple" cx="500" cy="150" r="130" stroke-width="1"/></g>`;
+      const pf = bgPeaks(bgGenPk(901, 6, 250, 320, 80, 140, 1.4, 2), 390, 1.4, 901);
+      const mir = pf.map(([x, y]) => [x, 780 - y]);
+      S.far = bgRidge('rf9', pf, far, mist, { lift: .45, op: .9 }) +
+        `<defs><linearGradient id="wt9" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${bgMix(far, mist, .5)}" stop-opacity=".55"/><stop offset="1" stop-color="${near}" stop-opacity=".1"/></linearGradient></defs>
+        <path d="M-12,390${mir.map(p => 'L' + p[0] + ',' + p[1].toFixed(1)).join('')}L1012,390Z" fill="url(#wt9)"/>
+        <rect x="0" y="388" width="1000" height="2" fill="#fff" opacity=".35"/>`;
+      S.mid = `<ellipse cx="500" cy="${780 - 150}" rx="40" ry="26" fill="#fff" opacity=".18" class="bgshim"/>
+        <g class="bgwave" stroke="#fff" fill="none" opacity=".28">${rep(6, i => `<path d="M${120 + i * 140},${420 + i * 26} q40,-6 80,0" stroke-width="1.4"/>`)}</g>`;
+      const pn = bgPeaks([[-40, 520, 220, 1.8], [1040, 510, 230, 1.8]], 600, 1.4, 903);
+      S.near = bgRidge('rn9', pn, near, mist, { lift: .2 });
+      S.mist = [[58, 10, '#ffffff', .4, 70]];
+      S.floor = .3;
+      break;
+    }
+    case 10: {   /* 백귀야행 — 핏빛 달, 달을 가르는 구름, 봉우리를 넘는 등불 행렬 */
+      S.astro = bgAstro({ x: 500, y: 128, r: 82, col: '#c8303a', glow: '#c8203a', k: 'blood', op: 1 });
+      S.top = `<div class="bgcloud dark" style="top:18%;--d:60s;--w:-20s;--c:${rgba('#160709', .55)}"></div><div class="bgcloud dark" style="top:30%;--d:84s;--w:-50s;--c:${rgba('#160709', .4)}"></div>`;
+      /* 숨은 것 — 봉우리 여섯(PEAKS10)에 꼭대기가 오도록 */
+      const pf = bgPeaks(PEAKS10.map(([x, y], i) => [x, y, [90, 120, 90, 110, 100, 100][i], 1.25]), 440, 1.2, 1001);
+      S.far = bgRidge('rf10', pf, '#3a1e2a', '#5a2a3a', { lift: .3, op: .95 });
+      S.far += `<g class="bgmarch">${rep(22, i => { const x = 20 + i * 46; return `<circle class="bgflick" style="--k:${(i * .37 % 2).toFixed(2)}s" cx="${x}" cy="${bgYat(pf, x) + 10}" r="3" fill="#ffb45a"/>`; })}</g>`;
+      const pm = bgPeaks(bgGenPk(1002, 6, 420, 460, 120, 180, 1.8, 2.4), 520, 1.4, 1002);
+      S.mid = bgRidge('rm10', pm, '#26121c', '#4a1a2a', { lift: .25 }) +
+        `${rep(4, i => bgGate(150 + i * 235, bgYat(pm, 150 + i * 235) + 30, 104, 92, '#5a1420', .7))}
+        <g>${rep(14, i => { const x = 40 + i * 70; const y = bgYat(pm, x); return `<g class="bgflick" style="--k:${(i * .29 % 1.6).toFixed(2)}s">${bgLantern(x, y - 14, 6, '#ffa23a', .85)}</g>`; })}</g>`;
+      const pn = bgPeaks(bgGenPk(1003, 5, 530, 556, 140, 220, 2, 2.6), 600, 1, 1003);
+      S.near = bgRidge('rn10', pn, '#140a10', '#2a1018', { lift: .15 }) +
+        `<g>${rep(6, i => { const x = 80 + i * 170, y = bgYat(pn, x) + 34; return bgHood(x, y - 70, 62, '#0b0407', .85) + `<g class="bgflick" style="--k:${(i * .41).toFixed(2)}s">${bgLantern(x + 26, y - 74, 9, '#ff9e3a', .9)}</g>`; })}</g>`;
+      S.mist = [[56, 12, '#5a1a2a', .45, 56]];
+      S.fx = bgFx('ember', 20, '#ffab4a', 10, { d: 12 });
+      S.floor = .35;
+      break;
+    }
+    case 11: {   /* 새벽 — 지평선 아래서 오르는 해, 부챗살 빛, 날아가는 새 */
+      S.astro = bgAstro({ x: 500, y: 340, r: 96, col: '#fff2c4', glow: '#ffcf72', k: 'sun dawn', op: 1 });
+      S.art = `<g class="bgspin slow" style="transform-origin:500px 340px" opacity=".2" fill="#fff0c0">${rep(14, i => { const a1 = (i * 26 - 182) * Math.PI / 180, a2 = a1 + .06; return `<path d="M500,340L${500 + Math.cos(a1) * 760},${340 + Math.sin(a1) * 760}L${500 + Math.cos(a2) * 760},${340 + Math.sin(a2) * 760}Z"/>`; })}</g>
+        ${bgCloud(250, 178, 130, 24, '#e0946a', .4)}${bgCloud(760, 140, 150, 20, '#e8a070', .34)}`;
+      S.top = bgFlock(7, 18, '#6a3a24', 46, -8) + bgFlock(5, 26, '#7a4a30', 62, -34);
+      ridge3(1101, [420, 6, 320, 370, 140, 220, 2, 2.6, 1.4], [500, 7, 420, 460, 130, 200, 2, 2.6, 1.4], [570, 8, 520, 550, 110, 170, 2, 2.6, 1]);
+      S.mist = [[62, 12, '#ffd9a0', .4, 60]];
+      S.fx = bgFx('gold', 12, '#ffe0a0', 12, { d: 18 });
+      break;
+    }
+    case 12: {   /* 인간계 — 초가 마을, 굴뚝 연기, 까마귀 떼, 낮은 해 */
+      S.astro = bgAstro({ x: 806, y: 96, r: 42, col: '#f8f2d0', glow: '#f4eec8', k: 'sun pale', op: .8 });
+      S.top = bgFlock(9, 16, '#2e3428', 52, -14);
+      const [pf, pm, pn] = ridge3(1201, [430, 7, 320, 370, 120, 190, 1.8, 2.4, 1.6], [500, 6, 430, 460, 140, 220, 2.2, 2.8, 1.2], [575, 7, 540, 560, 140, 200, 2.4, 2.8, .8]);
+      const hut = bgMix(mid, '#e8e0b0', .35), wall = bgMix(mid, '#000000', .35);
+      const huts = [[140, 1], [250, .78], [410, 1.12], [545, .82], [690, 1.02], [840, .9]];
+      S.mid += `<g>${huts.map(([x, s]) => bgHut(x, bgYat(pm, x) + 14, 96 * s, hut, wall)).join('')}</g>
+        <g class="bgsmoke">${[[140, 1], [410, 1.12], [690, 1.02]].map(([x, s], i) => `<g style="--k:${i * 1.3}s">${rep(3, k => `<circle cx="${x + 18 * s}" cy="${bgYat(pm, x) - 50 * s}" r="${9 + k * 2}" fill="#f2f4ea" opacity=".45" style="--n:${k}"/>`)}</g>`).join('')}</g>`;
+      S.near += `<g opacity=".7">${rep(5, i => { const x = 60 + i * 230; return bgPine(x, bgYat(pn, x) + 10, 70 + (i % 2) * 20, bgMix(near, '#000000', .3), i % 2 ? -1 : 1); })}</g>`;
+      S.mist = [[60, 12, '#ffffff', .4, 70]];
+      break;
+    }
+    case 13: {   /* 왕도 — 바위산을 등진 궁궐 정문, 성벽, 나부끼는 깃발 */
+      S.astro = bgAstro({ x: 176, y: 96, r: 44, col: '#f2f4fb', glow: '#eef1fa', k: 'moon', op: .45 });
+      const pf = bgPeaks([[220, 230, 130, 1.2], [420, 190, 110, 1.15], [640, 250, 130, 1.3], [860, 210, 140, 1.2]], 440, 3, 1301);
+      S.far = bgRidge('rf13', pf, far, mist, { lift: .55, op: .85 });
+      const wy = 470, wc = bgMix(mid, '#000000', .2);
+      S.mid = `<rect x="0" y="${wy}" width="1000" height="130" fill="${wc}"/>${rep(40, i => `<rect x="${i * 25 + 4}" y="${wy - 10}" width="16" height="10" fill="${wc}"/>`)}
+        <rect x="0" y="${wy}" width="1000" height="3" fill="${bgMix(wc, '#ffffff', .2)}"/>
+        <rect x="340" y="${wy - 40}" width="320" height="70" fill="${bgMix(wc, '#000000', .1)}"/>
+        ${rep(3, i => `<path d="M${398 + i * 82},${wy + 30}v-34a22,22 0 0 1 44,0v34Z" fill="${bgMix(wc, '#000000', .55)}"/>`)}
+        ${bgHall(500, wy - 40, 300, bgMix(wc, '#000000', .25), '#000000')}
+        ${[320, 680].map((x, i) => `<rect x="${x}" y="${wy - 120}" width="3" height="120" fill="${wc}"/><path class="bgflag" style="--k:${i * .6}s;transform-origin:${x + 3}px ${wy - 118}px" d="M${x + 3},${wy - 118}q16,4 34,0q-4,10 0,22q-18,4 -34,0Z" fill="#a8272c" opacity=".85"/>`).join('')}`;
+      S.near = bgRidge('rn13', bgPeaks([[-30, 548, 300, 2.6], [1030, 548, 300, 2.6]], 600, .6, 1303), near, mist, { lift: .1 });
+      S.mist = [[56, 12, '#ffffff', .35, 70]];
+      S.fx = bgFx('petal', 8, '#f4dce4', 13, { d: 18 });
+      break;
+    }
+    case 14: {   /* 천계 — 도는 해무리, 상서로운 구름, 구름 위 문 */
+      S.astro = bgAstro({ x: 500, y: 126, r: 70, col: '#fffbe4', glow: '#fff2b0', k: 'sun', op: .95 });
+      S.art = `<g fill="none" stroke="#c8a83a" opacity=".38"><g class="bgspin" style="transform-origin:500px 126px"><circle cx="500" cy="126" r="112" stroke-width="1.6" stroke-dasharray="3 9"/></g>
+        <g class="bgspin rev" style="transform-origin:500px 126px"><circle cx="500" cy="126" r="152" stroke-width="1.1" stroke-dasharray="26 14"/></g><circle cx="500" cy="126" r="196" stroke-width=".8"/></g>
+        <g class="bgdrift">${bgAusp(170, 220, 30, '#fff6d8', .75)}${bgAusp(820, 250, 34, '#fff6d8', .7)}</g>`;
+      const pf = bgPeaks(bgGenPk(1401, 5, 340, 380, 150, 230, 2.2, 2.8), 430, 1, 1401);
+      S.far = bgRidge('rf14', pf, far, mist, { lift: .6, op: .7, ink: 0 }) + `${rep(5, i => bgGate(110 + i * 195, bgYat(pf, 110 + i * 195) + 20, 64, 56, '#c8a858', .5))}`;
+      S.mid = `<g opacity=".9">${rep(8, i => bgCloud(i * 140 - 20, 480 + (i % 3) * 14, 120, 22, '#fbf4d8', .85))}</g>`;
+      S.near = `<g>${rep(7, i => bgCloud(i * 170 - 40, 566 + (i % 2) * 14, 150, 26, '#fffaea', .95))}</g>`;
+      S.mist = [[60, 18, '#fff8e0', .6, 80], [76, 14, '#ffffff', .6, 56, 1]];
+      S.fx = bgFx('gold', 16, '#ffe9a0', 14, { d: 18 });
+      S.floor = .15;
+      break;
+    }
+    case 15: {   /* 무 — 아무것도 없다. 없음의 가장자리만 아주 희미하게 숨 쉰다 */
+      S.art = `<g fill="none" stroke="#6a6a80"><circle class="bgripple slow" cx="500" cy="180" r="130" stroke-width=".8" opacity=".25"/><circle class="bgripple slow d2" cx="500" cy="180" r="196" stroke-width=".5" opacity=".18"/></g>`;
+      S.far = `<rect x="0" y="418" width="1000" height="1" fill="#8a8aa0" opacity=".25"/><defs><linearGradient id="hz15" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1a1a22" stop-opacity="0"/><stop offset="1" stop-color="#1a1a22" stop-opacity=".8"/></linearGradient></defs><rect x="0" y="380" width="1000" height="40" fill="url(#hz15)"/>`;
+      S.fx = bgFx('mote', 8, '#9a9ab0', 15, { d: 30 });
+      S.floor = .6;
+      break;
+    }
+    case 16: {   /* 회귀 — 처음 그 숲이 빛바래 서 있다. 해가 둘로 겹치고, 잎은 위로 돌아간다 */
+      S.astro = bgAstro({ x: 118, y: 80, r: 38, col: '#c9585c', glow: '#e8a090', k: 'moon ghost', op: .5 });
+      const [pf, pm, pn] = ridge3(101, [440, 7, 290, 360, 110, 190, 1.8, 2.6, 1.6], [500, 9, 380, 440, 90, 150, 1.8, 2.4, 1.6], [568, 10, 500, 540, 80, 130, 2, 2.6, 1.2], [.6, .7]);
+      S.mid += `<g opacity=".35">${rep(34, i => { const x = i * 31 + (i * 13) % 17; return bgFir(x, bgYat(pm, x) + 10, 40 + (i * 7) % 22, bgMix(mid, '#000000', .1)); })}</g>`;
+      S.near += `<g opacity=".6">${rep(22, i => { const x = i * 48 + (i * 29) % 30 - 10; return bgFir(x, bgYat(pn, x) + 30, 74 + (i * 11) % 40, bgMix(near, '#000000', .2)); })}</g>
+        <g opacity=".5" fill="${bgMix(near, '#000000', .2)}">${rep(6, i => `<rect x="${330 + i * 56}" y="${586 - i * 7}" width="50" height="${10 + i}" rx="2"/>`)}</g>`;
+      S.mist = [[58, 14, '#f0e6cc', .55, 70], [74, 12, '#ffffff', .3, 54, 1]];
+      S.fx = bgFx('leafup', 12, '#a87a5a', 16, { d: 18 });
+      break;
+    }
+    case 17: {   /* 기억 — 얼굴 없는 형체들이 하늘에 걸려 흔들린다. 비석들 */
+      S.astro = bgAstro({ x: 500, y: 140, r: 86, col: '#e0d0e8', glow: '#cfc0d6', k: 'moon pale', op: .45 });
+      S.art = `<g class="bgsway">${FIG17.map(([x, y], i) => `<line x1="${x}" y1="0" x2="${x}" y2="${y - 22}" stroke="#4a3a52" stroke-width=".8" opacity=".25"/>${bgHood(x, y, 34, '#4a3a52', .34)}`).join('')}</g>`;
+      const [pf, pm, pn] = ridge3(1701, [440, 6, 330, 380, 130, 200, 2, 2.6, 1.2], [500, 7, 420, 460, 120, 180, 2, 2.6, 1.2], [570, 7, 530, 555, 120, 170, 2.2, 2.8, 1]);
+      S.mid += `<g fill="${bgMix(mid, '#000000', .35)}" opacity=".75">${rep(9, i => { const x = 60 + i * 110 + (i % 2) * 20; const y = bgYat(pm, x) + 14; return `<path d="M${x - 9},${y}v-${34 + (i % 3) * 10}a9,9 0 0 1 18,0v${34 + (i % 3) * 10}Z"/>`; })}</g>`;
+      S.mist = [[56, 14, '#e0d0e8', .4, 70], [72, 12, mist, .45, 50, 1]];
+      S.fx = bgFx('mote', 12, '#f0e4f6', 17, { d: 22 });
+      break;
+    }
+    case 18: {   /* 스승 — 안개 속 빈 절, 굽은 소나무, 하늘에 흔들리는 부적 한 장, 내리는 눈 */
+      S.astro = bgAstro({ x: 820, y: 98, r: 46, col: '#f4f8fc', glow: '#eef3f8', k: 'moon', op: .6 });
+      S.art = `<g class="bgtal" style="transform-origin:250px 60px"><line x1="250" y1="60" x2="250" y2="116" stroke="#5c6874" stroke-width="1" opacity=".5"/>
+        <rect x="236" y="116" width="28" height="48" rx="2" fill="#f0e2b0" opacity=".8"/><rect x="239" y="119" width="22" height="42" fill="none" stroke="#a8272c" stroke-width="1.4" opacity=".8"/>
+        <text x="250" y="148" text-anchor="middle" font-size="20" font-family="serif" fill="#a8272c" opacity=".85">師</text></g>`;
+      const [pf, pm, pn] = ridge3(1801, [430, 6, 260, 330, 110, 170, 1.4, 2, 2], [500, 6, 380, 430, 120, 180, 1.6, 2.2, 1.6], [575, 7, 530, 555, 120, 170, 2, 2.6, 1]);
+      S.mid += bgHall(500, bgYat(pm, 500) + 30, 260, bgMix(mid, '#000000', .3), '#000000') + bgPine(330, bgYat(pm, 330) + 20, 90, bgMix(mid, '#000000', .35), -1) + bgPine(680, bgYat(pm, 680) + 20, 80, bgMix(mid, '#000000', .35), 1);
+      S.near += bgPine(70, bgYat(pn, 70) + 10, 130, bgMix(near, '#000000', .3), 1) + bgPine(940, bgYat(pn, 940) + 10, 116, bgMix(near, '#000000', .3), -1);
+      S.mist = [[50, 16, '#ffffff', .5, 80], [66, 14, mist, .55, 56, 1]];
+      S.fx = bgFx('snow', 26, '#ffffff', 18, { d: 16 });
+      break;
+    }
+    case 19: {   /* 백년 — 하늘로 오르는 셀 수 없는 등, 앞서 간 이들의 그림자 */
+      S.astro = bgAstro({ x: 500, y: 136, r: 70, col: '#e8dcf4', glow: '#d8cce8', k: 'moon pale', op: .5 });
+      const [pf, pm, pn] = ridge3(1901, [440, 6, 320, 370, 130, 200, 1.8, 2.4, 1.4], [505, 7, 420, 460, 120, 190, 2, 2.6, 1.2], [575, 7, 530, 555, 120, 170, 2.2, 2.8, 1]);
+      S.mid += `<g>${rep(12, i => { const x = 40 + i * 84; return bgHood(x, bgYat(pm, x) - 18, 26, bgMix(mid, '#000000', .45), .7); })}</g>`;
+      S.near += `<g>${rep(5, i => { const x = 90 + i * 205; return `<g class="bgflick" style="--k:${(i * .5).toFixed(1)}s">${bgLantern(x, bgYat(pn, x) - 26, 11, '#c8a0ff', .85)}</g>`; })}</g>`;
+      S.mist = [[60, 14, '#c8bcd8', .4, 70]];
+      S.fx = bgFx('lantern', 16, '#ffc87a', 19, { d: 26 });
+      break;
+    }
+    case 20: {   /* 산 — 하늘을 가린 큰 봉우리 하나, 꼭대기에서 날리는 눈보라, 허리를 감는 구름 */
+      S.astro = bgAstro({ x: 790, y: 110, r: 44, col: '#fff6d8', glow: '#fff0c0', k: 'sun pale', op: .7 });
+      const big = bgPeaks([[500, 64, 400, 1.08]], 600, 2.4, 2001);
+      S.art = bgRidge('rb20', big, '#6a6454', mist, { lift: .55, op: .55, inkOp: .25 }) +
+        `<path d="M432,210L500,64L566,206L540,196L518,214L500,196L482,216L460,198Z" fill="#f8f6ee" opacity=".75"/>
+        <g class="bgspindrift"><path d="M500,66q60,-12 140,-2q-70,10 -140,8Z" fill="#ffffff" opacity=".5"/></g>`;
+      const [pf, pm, pn] = ridge3(2001, [460, 7, 360, 400, 100, 160, 1.4, 2, 1.6], [520, 7, 430, 470, 110, 170, 1.6, 2.2, 1.4], [580, 8, 530, 555, 110, 160, 2, 2.6, 1]);
+      S.top = `<div class="bgcloud" style="top:34%;--d:70s;--w:-10s;--c:${rgba('#ffffff', .45)}"></div><div class="bgcloud" style="top:44%;--d:96s;--w:-60s;--c:${rgba('#f4f0e4', .4)}"></div>` + bgFlock(6, 30, '#5c5648', 58, -20);
+      S.mist = [[56, 14, '#ffffff', .4, 70]];
+      S.fx = bgFx('snow', 14, '#ffffff', 20, { d: 20 });
+      break;
+    }
+    case 21: {   /* 사잇길 — 밝은 달과 검은 달, 하늘의 이음매, 둘로 갈리는 길, 서성이는 것들 */
+      S.astro = bgAstro({ x: 330, y: 128, r: 52, col: '#ecebf4', glow: '#e8e4f0', k: 'moon', op: .6 }) + bgAstro({ x: 392, y: 140, r: 48, col: '#4a4658', glow: '#4a4658', k: 'moon dark', op: .75 });
+      S.art = `<path d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#8f88b0" stroke-width="10" opacity=".14"/>
+        <path class="bgseam" d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#f0eeff" stroke-width="2" stroke-dasharray="60 30" opacity=".5"/>`;
+      const [pf, pm, pn] = ridge3(2101, [440, 7, 320, 370, 120, 190, 1.6, 2.2, 1.4], [505, 7, 420, 460, 120, 180, 2, 2.6, 1.2], [578, 6, 540, 560, 130, 180, 2.4, 2.8, .8]);
+      S.mid += `<g class="bgwander">${rep(7, i => { const x = 70 + i * 140; return bgHood(x, bgYat(pm, x) - 18, 24, '#4a4a5c', .45); })}</g>`;
+      S.near += `<g opacity=".35" fill="none" stroke="#e6e2f4" stroke-width="3" stroke-linecap="round"><path d="M500,600 Q480,540 390,${bgYat(pn, 390) + 6}"/><path d="M500,600 Q520,540 612,${bgYat(pn, 612) + 6}"/></g>`;
+      S.mist = [[56, 14, '#cfcbe0', .45, 70], [74, 12, '#cfcbe0', .4, 50, 1]];
+      S.fx = bgFx('soul', 8, '#dcd8f4', 21, { d: 18 });
+      break;
+    }
+    case 22: {   /* 천국 문 — 하늘을 다 채운 문, 문틈의 빛살, 오르는 층계, 줄 선 넋 */
+      S.astro = bgAstro({ x: 500, y: 250, r: 120, col: '#fffbe8', glow: '#ffeeb4', k: 'sun big', op: .7 });
+      const gc = '#b8a878';
+      S.art = `<g class="bgrays" opacity=".22" fill="#fff4c8">${rep(9, i => `<path d="M${380 + i * 30},150L${200 + i * 75},600L${230 + i * 75},600Z"/>`)}</g>
+        <g fill="${gc}" opacity=".55"><rect x="292" y="130" width="24" height="470"/><rect x="684" y="130" width="24" height="470"/>
+        ${bgRoof(500, 128, 560, 80, gc)}<rect x="270" y="150" width="460" height="16"/>${bgRoof(500, 196, 470, 46, gc)}
+        ${rep(8, i => `<rect x="${340 + i * 45}" y="196" width="6" height="${30 + (i % 2) * 12}"/>`)}</g>`;
+      ridge3(2201, [450, 6, 360, 400, 130, 200, 2.2, 2.8, 1], [510, 7, 450, 480, 130, 190, 2.4, 2.8, 1], [580, 6, 550, 565, 130, 180, 2.4, 2.8, .6], [.6, .8]);
+      S.mid += `<g fill="${bgMix(mid, '#000000', .1)}" opacity=".7">${rep(6, i => `<rect x="${320 + i * 30}" y="${470 + i * 18}" width="${360 - i * 60}" height="12" rx="2"/>`)}</g>
+        <g>${rep(10, i => { const x = 60 + i * 30 + (i > 4 ? 560 : 0); return bgHood(x, 486 + (i % 2) * 6, 18, bgMix(mid, '#000000', .3), .5); })}</g>`;
+      S.mist = [[64, 16, '#fffbe8', .6, 80]];
+      S.fx = bgFx('gold', 16, '#fff4c8', 22, { d: 20 });
+      break;
+    }
+    case 23: {   /* 천국 — 층층이 흐르는 구름 바다, 구름 위 누각, 나는 학 */
+      S.astro = bgAstro({ x: 500, y: 118, r: 90, col: '#fffdf4', glow: '#eef6ff', k: 'sun', op: .85 });
+      S.art = `<g fill="none" stroke="#fff" opacity=".3"><circle class="bgripple slow" cx="500" cy="118" r="140" stroke-width="1.2"/><circle class="bgripple slow d2" cx="500" cy="118" r="190" stroke-width="1"/></g>`;
+      S.top = `<div class="bgcloud" style="top:30%;--d:80s;--w:-30s;--c:${rgba('#ffffff', .7)}"></div>` + bgFlock(4, 24, '#7a8aa8', 70, -30);
+      S.far = `<g opacity=".55">${[[200, 330, 180], [520, 300, 220], [830, 340, 170]].map(([x, y, w]) => bgHall(x, y, w, '#a8bad2', '#6e86a8')).join('')}</g>
+        <g opacity=".9">${rep(9, i => bgCloud(i * 125 - 20, 360 + (i % 3) * 12, 120, 22, '#ffffff', .9))}</g>`;
+      S.mid = `<g opacity=".95">${rep(8, i => bgCloud(i * 140 - 40, 470 + (i % 2) * 18, 140, 26, '#f6faff', .95))}</g>`;
+      S.near = `<g>${rep(7, i => bgCloud(i * 170 - 60, 570 + (i % 2) * 14, 170, 30, '#ffffff', 1))}</g>`;
+      S.mist = [[46, 18, '#ffffff', .6, 90], [62, 18, '#ffffff', .65, 64, 1], [78, 16, '#ffffff', .7, 50]];
+      S.fx = bgFx('petal', 10, '#ffffff', 23, { d: 22 });
+      S.floor = .1;
+      break;
+    }
+    case 24: {   /* 침공 — 찢어진 하늘의 틈, 불타는 누각, 쏟아지는 불티, 그림자 군세 */
+      S.art = `<defs><radialGradient id="rift24"><stop offset="0" stop-color="#ffcf8a" stop-opacity=".9"/><stop offset=".35" stop-color="#ff6a3a" stop-opacity=".55"/><stop offset="1" stop-color="#3a0a12" stop-opacity="0"/></radialGradient></defs>
+        <ellipse class="bgpulse" cx="500" cy="150" rx="360" ry="190" fill="url(#rift24)" opacity=".7"/>
+        ${bgTear(330, -10, 640, 330, 46, 2402)}`;
+      const [pf, pm, pn] = ridge3(2401, [440, 7, 320, 370, 110, 180, 1.4, 2, 1.8], [505, 7, 420, 460, 110, 170, 1.6, 2.2, 1.6], [575, 7, 530, 555, 120, 170, 2, 2.6, 1]);
+      const hx = 460, hy = bgYat(pf, hx) + 40;
+      S.far += `<g transform="rotate(-6 ${hx} ${hy})" opacity=".8">${bgHall(hx, hy, 200, '#3a1418', '#000000')}</g>`;
+      S.mid += `<g class="bgfire">${rep(12, i => { const x = 30 + i * 86, y = bgYat(pm, x) + 6; return `<path style="--k:${(i * .23 % 1.2).toFixed(2)}s;transform-origin:${x}px ${y}px" d="M${x - 14},${y}q4,-30 12,-46q2,18 10,22q6,-14 4,-28q14,22 2,52Z" fill="#ff7a3a" opacity=".55"/>`; })}</g>`;
+      S.near += `<g>${rep(7, i => { const x = 70 + i * 150; return bgHood(x, bgYat(pn, x) - 30, 54, '#120305', .8); })}</g>`;
+      S.mist = [[60, 14, '#8a2a30', .35, 50]];
+      S.fx = bgFx('ember', 22, '#ffb45a', 24, { d: 10 }) + bgFx('spark', 10, '#ffcf8a', 25, { d: 4 });
+      break;
+    }
+    case 25: {   /* 사신도 — 삭은 종이 위의 그림. 눈 없는 사신, 붉은 실, 번진 낙관 */
+      S.art = `<defs><radialGradient id="sdhalo"><stop offset="0%" stop-color="#2a0a12" stop-opacity=".9"/><stop offset="100%" stop-color="#2a0a12" stop-opacity="0"/></radialGradient>
+          <linearGradient id="paper25" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3a2e24" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>
+        <rect width="1000" height="600" fill="url(#paper25)"/>
+        <g opacity=".1" stroke="#6a5c48" stroke-width="1">${rep(4, i => `<path d="M${200 + i * 200},0V600"/>`)}</g>
+        <ellipse class="bgpulse" cx="500" cy="250" rx="440" ry="300" fill="url(#sdhalo)"/>
+        <circle cx="500" cy="120" r="74" fill="none" stroke="#3a2a24" stroke-width="3" opacity=".4"/>
+        <circle cx="500" cy="120" r="58" fill="#1a0e0c" opacity=".55"/>
+        <g class="bgreap" style="transform-origin:500px 600px">
+          <path d="M500,150 q-104,44 -128,168 q-24,124 -12,254 q4,28 30,28 l220,0 q26,0 30,-28 q12,-130 -12,-254 q-24,-124 -128,-168 Z" fill="#050407"/>
+          <path d="M500,146 q-70,30 -84,110 q42,-46 84,-46 q42,0 84,46 q-14,-80 -84,-110 Z" fill="#0b0810"/>
+          <path d="M500,178 q-52,10 -58,74 q-4,44 26,66 q32,-18 32,-70 q0,52 32,70 q30,-22 26,-66 q-6,-64 -58,-74 Z" fill="#000"/>
+          <path class="bgsleeve" style="transform-origin:394px 262px" d="M394,262 q-96,44 -128,158 q54,-72 132,-96 Z" fill="#050407"/>
+          <path class="bgsleeve r" style="transform-origin:606px 262px" d="M606,262 q96,44 128,158 q-54,-72 -132,-96 Z" fill="#050407"/>
+          <g opacity=".45" stroke="#15101c" stroke-width="2.5" fill="none" stroke-linecap="round">${rep(6, i => `<path d="M${432 + i * 28},300 q${-6 + i * 2.4},96 ${-14 + i * 5.6},296"/>`)}</g>
+          <ellipse cx="500" cy="600" rx="180" ry="34" fill="#050407" opacity=".8"/></g>
+        <path class="bgthread" d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26" fill="none" stroke="#8a1a2a" stroke-width="2.4" stroke-linecap="round" opacity=".6"/>
+        <g opacity=".32" transform="translate(24 68)"><rect width="38" height="38" rx="3" fill="#7a1622"/><rect width="38" height="38" rx="3" fill="none" stroke="#a82230" stroke-width="1.5"/>
+          <text x="19" y="28" text-anchor="middle" font-size="25" font-family="serif" fill="#1a0a0c">冥</text></g>
+        <g opacity=".1" fill="#6a5c48" font-family="serif" font-size="27" text-anchor="middle">${rep(6, i => `<text x="960" y="${188 + i * 40}" opacity="${(1 - i * .13).toFixed(2)}">${'死生無間不還'[i]}</text>`)}</g>`;
+      /* 먹으로 친 산 — 붓 한 번에 */
+      const pf = bgPeaks([[80, 370, 210, 1.3], [250, 450, 140, 1.5], [770, 440, 150, 1.4], [940, 360, 210, 1.3]], 610, 2, 2501);
+      S.far = bgRidge('rf25', pf, '#1e1814', '#3a3228', { lift: .25, op: .7, ink: '#000000', inkOp: .55, inkW: 2.4 });
+      S.near = `<g opacity=".6" fill="#2a2420"><path d="M0,566 L60,552 L120,572 L200,548 L270,570 L350,546 L430,568 L510,544 L590,566 L670,542 L750,564 L830,540 L910,562 L1000,548 L1000,600 L0,600 Z"/></g>`;
+      S.fx = bgFx('ash', 14, '#7a2a34', 26, { d: 22 });
+      S.floor = .4;
+      break;
+    }
+  }
+  return S;
+}
+/* 그린다 */
+function bgPaint(a, PAL, SKY) {
+  const S = bgScene(a, PAL, SKY);
+  const L = (cls, inner) => inner ? `<svg class="bgl ${cls}" viewBox="0 0 1000 600" preserveAspectRatio="none">${inner}</svg>` : '';
+  const [, , near] = PAL;
+  return `<div class="sky bgl-skyc" style="background:linear-gradient(${S.sky})"></div>` +
+    `<div class="bgl bgl-astro">${S.astro}</div>` +
+    L('bgl-art', S.art) + (S.top ? `<div class="bgl bgl-top">${S.top}</div>` : '') +
+    L('bgl-far', S.far) + (S.mist[0] ? bgMistDiv(...S.mist[0]) : '') +
+    L('bgl-mid', S.mid) + S.mist.slice(1).map(m => bgMistDiv(...m)).join('') +
+    L('bgl-near', S.near) +
+    (S.fx ? `<div class="bgl bgl-fx">${S.fx}</div>` : '') +
+    (S.floor ? L('bgl-floor', `<defs><linearGradient id="fl58" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${near}" stop-opacity="0"/><stop offset="1" stop-color="${near}" stop-opacity="${S.floor}"/></linearGradient></defs><rect x="0" y="470" width="1000" height="130" fill="url(#fl58)"/>`) : '');
+}
 let _bgKey = '';
 function setBg(act) {
   const k = 'a' + act;
@@ -37966,130 +38606,8 @@ function setBg(act) {
                 23: '#f6faff 0%,#dbe8f8 50%,#b4c8e4 100%',
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
                 25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
-  const A = bgAtmos(a, PAL);
-  if (a !== 1) { $('#bg').innerHTML = bgLayers(a, A, SKY); try { eggBg(a); } catch (e) {} return; }
-  $('#bg').innerHTML = `<div class="sky"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>
-   <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
-     ${A.defs}
-     ${A.glow}
-     ${bgSkyArt(a)}
-     ${A.ridge}
-     <g opacity="${A.op('far')}">
-       <path fill="${A.g('far')}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/>
-     </g>
-     ${bgFarArt(a)}
-     <g opacity="${A.op('mid')}">
-       <path fill="${A.g('mid')}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600 Z"/>
-     </g>
-     ${bgMidArt(a)}
-     <g opacity="${A.op('near')}">
-       <path fill="${A.g('near')}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/>
-     </g>
-     ${bgNearArt(a)}
-     ${A.motes}
-     ${A.floor}
-   </svg>`;
-}
-/* 은은하게 숨 쉬는 배경 — 제2막부터.
-   한 장이던 그림을 겹(하늘·먼 산·가운데 산·앞산·티끌)으로 나눠
-   겹마다 다른 빠르기로 아주 조금 흔들린다. 겹 하나하나가 통째로
-   움직이므로(transform·opacity 만) 그림을 새로 그리지 않는다 — 폰도 가볍다.
-   제1막은 여전히 한 장 그대로다. */
-function bgLayers(a, A, SKY) {
-  const L = (cls, inner) => `<svg class="bgl ${cls}" viewBox="0 0 1000 600" preserveAspectRatio="none">${inner}</svg>`;
-  return `<div class="sky bgl-skyc"${SKY ? ` style="background:linear-gradient(${SKY})"` : ''}></div>` +
-    L('bgl-glow', A.defs + A.glow) +
-    L('bgl-art', bgSkyArt(a)) +
-    L('bgl-far', `${A.ridge}<g opacity="${A.op('far')}"><path fill="${A.g('far')}" d="M0,430 L90,330 L150,380 L230,250 L300,350 L380,290 L470,400 L560,300 L640,370 L720,270 L800,360 L880,310 L1000,410 L1000,600 L0,600 Z"/></g>${bgFarArt(a)}`) +
-    L('bgl-mid', `<g opacity="${A.op('mid')}"><path fill="${A.g('mid')}" d="M0,500 L120,420 L200,470 L280,380 L360,460 L450,400 L540,480 L620,410 L700,470 L790,390 L880,460 L1000,420 L1000,600 L0,600 Z"/></g>${bgMidArt(a)}`) +
-    L('bgl-near', `<g opacity="${A.op('near')}"><path fill="${A.g('near')}" d="M0,560 L100,520 L190,555 L300,505 L400,550 L500,515 L610,558 L700,520 L810,556 L920,518 L1000,548 L1000,600 L0,600 Z"/></g>${bgNearArt(a)}`) +
-    L('bgl-motes', A.motes) + L('bgl-motes m2', A.motes2 || '') +
-    L('bgl-floor', A.floor);
-}
-/* ══════════════════════════════════════════════════════════
-   배경의 공기(氣) — 어느 막에나 같은 방식으로 깔린다
-   ──────────────────────────────────────────────────────────
-   제10막이 예쁜 까닭은 색이 아니라 「깊이」에 있었다. 하늘에
-   빛나는 것이 하나 있고, 능선과 능선 사이에 안개가 끼고,
-   티끌이 떠다니고, 발치가 어두워 앞판이 얹힐 자리가 있다.
-   나머지 막에는 그 셋이 전부 없어 색칠한 삼각형 셋으로 보였다.
-   여기서 한꺼번에 깔아 준다. 그림은 막이 바뀔 때 한 번만
-   만들어지므로 돌아가는 값은 늘지 않는다.
-   제1막만은 손대지 않는다 — 그대로가 좋다는 말을 들었다.
-   ══════════════════════════════════════════════════════════ */
-const BG_NONE = { defs: '', glow: '', ridge: '', motes: '', floor: '', g: () => '', op: () => '1' };
-/* 빛깔의 밝기 — 0(검정)에서 1(흰빛) */
-function bgLum(c) {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c || '');
-  if (!m) return .5;
-  return (parseInt(m[1], 16) * .3 + parseInt(m[2], 16) * .59 + parseInt(m[3], 16) * .11) / 255;
-}
-/* 막마다 하늘에 걸리는 빛의 빛깔과 자리 */
-const BG_GLOW = {
-  2: ['#fff2d0', 180, 120, .18], 3: ['#e8e4f2', 150, 110, .2], 4: ['#b9a8e0', 150, 100, .24],
-  5: ['#dff0ff', 760, 130, .22], 6: ['#c0aae8', 500, 120, .26], 7: ['#8f7ab8', 500, 150, .3],
-  8: ['#fff0c0', 500, 130, .3], 9: ['#fff4d8', 500, 140, .22], 10:['#ff4a5a', 700, 150, .3],
-  11:['#ffd9a0', 500, 190, .34], 12:['#e6f0cf', 220, 120, .2], 13:['#dfe2ee', 500, 130, .22],
-  14:['#fff8d0', 500, 140, .34], 15:['#6a6a80', 500, 200, .16],
-  16:['#ffeec8', 200, 120, .24], 17:['#e0cbe8', 500, 130, .24], 18:['#e6f2ff', 780, 120, .22],
-  19:['#cbb8ea', 500, 140, .26], 20:['#fff0cc', 500, 150, .26],
-  21:['#cdd4e8', 500, 130, .22], 22:['#fffbe0', 500, 160, .34], 23:['#ffffff', 500, 150, .38],
-  24:['#ff8a5a', 500, 150, .34], 25:['#7a1a28', 500, 160, .22]
-};
-function bgAtmos(a, PAL) {
-  /* 제1막은 손대지 않는다 — 단색 능선과 예전 투명도 그대로 */
-  if (a === 1) return Object.assign({}, BG_NONE, {
-    g: k => ({ far: PAL[0], mid: PAL[1], near: PAL[2] }[k]),
-    op: k => ({ far: '.55', mid: '.6', near: '.75' }[k])
-  });
-  const g = BG_GLOW[a] || ['#ffffff', 500, 130, .2];
-  const [gc, gx, gy, go] = g;
-  const far = PAL[0], mid = PAL[1], near = PAL[2];
-  /* 안개 — 능선 위에 얇게 깔려 뒤와 앞을 갈라 놓는다 */
-  /* 능선마다 「위는 옅고 아래는 짙게」 — 이것이 곧 안개다.
-     전에는 가로 띠를 깔았는데, 띠의 위아래 가장자리가 자로 그은
-     줄처럼 보였다. 산 자체를 옅게 물들이면 줄이 생길 자리가 없다. */
-  const grad = k => `url(#at${a}${k})`;
-  /* 하나 더 놓는 아주 먼 능선 — 깊이가 한 겹 는다 */
-  const ridge = `<g opacity=".3"><path fill="${far}"
-    d="M0,392 L120,318 L210,362 L320,286 L430,352 L520,300 L620,358 L720,296 L830,350 L920,312 L1000,368 L1000,600 L0,600 Z"/></g>`;
-  /* 떠다니는 티끌 — 깊이마다 크기를 달리한다 */
-  let motes = '';
-  for (let i = 0; i < 26; i++) {
-    const x = (i * 173 + a * 37) % 1000, y = 120 + (i * 211 + a * 53) % 380;
-    const r = (i % 4) * .5 + .7;
-    motes += `<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${gc}" opacity="${(.1 + (i % 5) * .05).toFixed(2)}"/>`;
-  }
-  let motes2 = '';                                /* 한 벌 더 — 엇박으로 깜빡이며 떠오른다 */
-  for (let i = 0; i < 14; i++) {
-    const x = (i * 311 + a * 71) % 1000, y = 160 + (i * 137 + a * 29) % 360;
-    motes2 += `<circle cx="${x}" cy="${y}" r="${((i % 3) * .5 + .9).toFixed(1)}" fill="${gc}" opacity="${(.12 + (i % 4) * .05).toFixed(2)}"/>`;
-  }
-  return {
-    defs: `<defs>
-      <radialGradient id="gl${a}"><stop offset="0" stop-color="${gc}" stop-opacity="${go}"/>
-        <stop offset="60%" stop-color="${gc}" stop-opacity="${(go * .3).toFixed(3)}"/>
-        <stop offset="100%" stop-color="${gc}" stop-opacity="0"/></radialGradient>
-      ${[['far', far, .55, 250, 600], ['mid', mid, .38, 330, 600], ['near', near, .22, 430, 600]]
-        .map(([k, c, lift, y0, y1]) => {
-          /* 안개는 어두운 것을 하늘빛으로 끌어올린다. 이미 밝은 능선은
-             끌어올릴 것이 없다 — 그대로 밀면 온통 하얘진다(제23막) */
-          const L = lift * (1 - bgLum(c) * .85);
-          return `<linearGradient id="at${a}${k}"
-          gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}">
-          <stop offset="0" stop-color="${shade(c, L)}"/>
-          <stop offset="55%" stop-color="${shade(c, L * .35)}"/>
-          <stop offset="100%" stop-color="${c}"/></linearGradient>`;
-        }).join('')}
-      <linearGradient id="fl${a}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="${near}" stop-opacity="0"/>
-        <stop offset="100%" stop-color="${near}" stop-opacity=".55"/></linearGradient>
-    </defs>`,
-    glow: `<ellipse cx="${gx}" cy="${gy}" rx="420" ry="300" fill="url(#gl${a})"/>`,
-    ridge, motes: `<g>${motes}</g>`, motes2: `<g>${motes2}</g>`, g: grad,
-    op: k => ({ far: '.62', mid: '.68', near: '.82' }[k]),
-    floor: `<rect x="0" y="470" width="1000" height="130" fill="url(#fl${a})"/>`
-  };
+  $('#bg').innerHTML = bgPaint(a, PAL, SKY);
+  try { eggBg(a); } catch (e) {}
 }
 /* ══════════════════════════════════════════════════════════
    겨루는 마당의 배경
@@ -38321,491 +38839,6 @@ function bgGate(x, y, w, h, col, op) {
     ${rep(7, i => `<rect x="${x - w * .5 + i * w * .155}" y="${y - h}" width="${w * .022}" height="${h * .2}"/>`)}
   </g>`;
 }
-function bgSkyArt(a) {
-  if (a === 10) {
-    /* 핏빛 달과, 달을 가로지르는 구름과, 별 하나 없는 하늘 */
-    return `<defs>
-        <radialGradient id="bmoon"><stop offset="0%" stop-color="#e8484a"/><stop offset="62%" stop-color="#9a1424"/>
-          <stop offset="100%" stop-color="#5c0a16"/></radialGradient>
-        <radialGradient id="bhalo"><stop offset="0%" stop-color="#c8203a" stop-opacity=".5"/>
-          <stop offset="100%" stop-color="#c8203a" stop-opacity="0"/></radialGradient>
-      </defs>
-      <circle cx="500" cy="128" r="240" fill="url(#bhalo)"/>
-      <circle cx="500" cy="128" r="82" fill="url(#bmoon)"/>
-      <circle cx="472" cy="106" r="17" fill="#6d0c18" opacity=".55"/>
-      <circle cx="524" cy="150" r="12" fill="#6d0c18" opacity=".45"/>
-      <circle cx="516" cy="100" r="8" fill="#6d0c18" opacity=".4"/>
-      ${bgCloud(430, 152, 150, 30, '#160709', .42)}
-      ${bgCloud(690, 196, 190, 26, '#160709', .32)}
-      ${bgCloud(240, 108, 120, 22, '#160709', .26)}
-      <g opacity=".7">${rep(9, i => bgBird(70 + i * 106, 236 + (i % 3) * 18, 9, '#3d0f1a', .8))}</g>`;
-  }
-  if (a === 11) {
-    /* 새벽 — 해가 지평선 아래에서 올라오는 중. 빛살이 부챗살로 퍼진다 */
-    return `<defs><radialGradient id="dsun"><stop offset="0%" stop-color="#fff8e0"/>
-        <stop offset="55%" stop-color="#ffcf72"/><stop offset="100%" stop-color="#f29a4a" stop-opacity="0"/></radialGradient></defs>
-      <circle cx="500" cy="330" r="300" fill="url(#dsun)" opacity=".55"/>
-      <circle cx="500" cy="330" r="96" fill="#fff2c4" opacity=".92"/>
-      <g opacity=".22" fill="#fff0c0">${rep(13, i =>
-        `<path d="M500,330 L${500 + Math.cos((i * 27 - 180) * Math.PI / 180) * 720},${330 + Math.sin((i * 27 - 180) * Math.PI / 180) * 720} L${500 + Math.cos((i * 27 - 176) * Math.PI / 180) * 720},${330 + Math.sin((i * 27 - 176) * Math.PI / 180) * 720} Z"/>`)}</g>
-      ${bgCloud(250, 178, 130, 26, '#c97a4a', .38)}
-      ${bgCloud(740, 132, 150, 22, '#d88a5a', .32)}
-      <g>${rep(7, i => bgBird(170 + i * 112, 100 + (i % 3) * 26, 10, '#7a4a30', .55))}</g>`;
-
-  }
-  if (a === 12) {
-    /* 인간계 — 낮은 해, 굴뚝 연기, 까마귀 떼 */
-    return `<circle cx="806" cy="96" r="42" fill="#f4eec8" opacity=".55"/>
-      <circle cx="806" cy="96" r="80" fill="#f4eec8" opacity=".14"/>
-      <g>${rep(10, i => bgBird(110 + i * 92, 118 + (i % 4) * 28, 9, '#3d4436', .55))}</g>`;
-  }
-  if (a === 13) {
-    /* 왕도 — 옅은 낮달과, 멀리 낮게 깔린 도성 실루엣과 깃발 */
-    const W = [64, 44, 88, 52, 72, 40, 96, 56, 68, 46, 80];
-    let x = 10, roofs = '';
-    for (let i = 0; i < W.length; i++) {
-      const w = W[i], h = 26 + (i % 3) * 12, y = 316 - h * .2;
-      roofs += `<path d="M${x},${y} l${w * .18},-${h * .62} l${w * .64},0 l${w * .18},${h * .62} Z"/>` +
-               `<rect x="${x + w * .1}" y="${y}" width="${w * .8}" height="${h + 24}"/>`;
-      x += w + 24;
-    }
-    return `<circle cx="176" cy="96" r="44" fill="#eef1fa" opacity=".38"/>
-      <circle cx="176" cy="96" r="72" fill="#eef1fa" opacity=".12"/>
-      <g opacity=".3">${rep(30, i => `<circle cx="${(i * 167) % 990}" cy="${30 + (i * 71) % 190}" r="1" fill="#fff"/>`)}</g>
-      <g opacity=".26" fill="#4b5170">${roofs}</g>
-      <g opacity=".4" fill="#7a3a4a">${rep(5, i =>
-        `<rect x="${150 + i * 180}" y="212" width="2.4" height="86"/><path d="M${152 + i * 180},214 l32,11 l-32,11 Z"/>`)}</g>`;
-  }
-  if (a === 14) {
-    /* 천계 — 겹구름 층과 도는 해무리, 흩날리는 광점 */
-    return `<defs><radialGradient id="hglow"><stop offset="0%" stop-color="#fff8d0"/>
-        <stop offset="100%" stop-color="#fff2b0" stop-opacity="0"/></radialGradient></defs>
-      <circle cx="500" cy="126" r="250" fill="url(#hglow)" opacity=".7"/>
-      <circle cx="500" cy="126" r="70" fill="#fffbe4" opacity=".9"/>
-      <g opacity=".35" fill="none" stroke="#c8a83a">
-        <circle cx="500" cy="126" r="112" stroke-width="1.6"/><circle cx="500" cy="126" r="150" stroke-width="1.1"/>
-        <circle cx="500" cy="126" r="196" stroke-width=".8"/></g>
-      <g opacity=".42" fill="#efe6c0">
-        <path d="M60,196 Q180,172 300,192 Q420,212 540,190 L540,214 Q410,238 290,216 Q170,196 60,218 Z"/>
-        <path d="M460,264 Q600,240 740,260 Q860,278 960,258 L960,282 Q850,304 730,284 Q610,266 460,288 Z"/></g>
-      <g opacity=".65">${rep(18, i => `<circle cx="${40 + i * 54}" cy="${70 + (i * 37) % 190}" r="${1 + (i % 3)}" fill="#fff6cc"/>`)}</g>`;
-  }
-  if (a === 15) {
-    /* 무 — 아무것도 없다. 다만 없음의 가장자리가 아주 희미하게 있다 */
-    return `<defs><radialGradient id="nvoid"><stop offset="0%" stop-color="#000"/>
-        <stop offset="72%" stop-color="#0a0a10"/><stop offset="100%" stop-color="#1a1a22"/></radialGradient></defs>
-      <rect x="0" y="0" width="1000" height="600" fill="url(#nvoid)"/>
-      <g opacity=".2" fill="none" stroke="#6a6a80">
-        <circle cx="500" cy="180" r="130" stroke-width=".8"/><circle cx="500" cy="180" r="196" stroke-width=".5"/></g>
-      <g opacity=".35">${rep(26, i => `<circle cx="${(i * 173) % 1000}" cy="${(i * 97) % 340}" r="${.6 + (i % 3) * .4}" fill="#9a9ab0"/>`)}</g>`;
-  }
-  if (a === 16) {
-    /* 회귀 — 처음 그 하늘인데, 해가 두 개 겹쳐 보인다 */
-    return `<circle cx="112" cy="74" r="38" fill="#c9585c" opacity=".26"/>
-      <circle cx="132" cy="88" r="38" fill="#c9585c" opacity=".14"/>
-      ${bgCloud(320, 150, 120, 22, '#a89474', .3)}
-      ${bgCloud(760, 122, 140, 20, '#a89474', .24)}
-      <g>${rep(6, i => bgBird(210 + i * 128, 104 + (i % 3) * 24, 9, '#6a5a44', .45))}</g>
-      <g opacity=".16" fill="none" stroke="#7b6f58">${rep(4, i =>
-        `<path d="M0,${196 + i * 26} Q250,${184 + i * 26} 500,${196 + i * 26} Q750,${208 + i * 26} 1000,${196 + i * 26}"/>`)}</g>`;
-  }
-  if (a === 17) {
-    /* 기억 — 얼굴 없는 형체들이 하늘에 걸려 있다 */
-    return `<circle cx="500" cy="140" r="86" fill="#cfc0d6" opacity=".3"/>
-      <circle cx="500" cy="140" r="130" fill="#cfc0d6" opacity=".1"/>
-      <g opacity=".22" fill="#4a3a52">${rep(17, i =>
-        `<ellipse cx="${40 + i * 58}" cy="${96 + (i % 4) * 42}" rx="13" ry="19"/>`)}</g>
-      <g opacity=".3">${rep(24, i => `<circle cx="${(i * 149) % 990}" cy="${40 + (i * 83) % 220}" r="${.8 + (i % 3) * .5}" fill="#e0d0e8"/>`)}</g>`;
-  }
-  if (a === 18) {
-    /* 스승 — 빈 절의 처마와, 하늘에 걸린 부적 한 장 */
-    return `<circle cx="820" cy="98" r="46" fill="#eef3f8" opacity=".4"/>
-      ${bgCloud(280, 168, 140, 24, '#98a5b2', .3)}
-      <g opacity=".4" fill="#a8272c">
-        <rect x="486" y="96" width="28" height="42" rx="2"/>
-        <rect x="490" y="102" width="20" height="2"/><rect x="490" y="110" width="20" height="2"/>
-        <rect x="490" y="118" width="20" height="2"/><rect x="499" y="102" width="2" height="28"/></g>
-      <!-- 처마 넷. 예전에는 폭 242에 간격 240이라 서로 맞붙어
-           화면을 가로지르는 한 줄로 보였다. 벌리고 높이를 엇갈렸다. -->
-      <g opacity=".26" fill="#5c6874">${rep(4, i =>
-        `<path d="M${104 + i * 236},${300 + (i % 2) * 16} l40,-30 l112,0 l40,30 Z"/>`)}</g>
-      <g>${rep(7, i => bgBird(150 + i * 118, 200 + (i % 3) * 22, 8, '#5c6874', .4))}</g>`;
-  }
-  if (a === 19) {
-    /* 백년 — 셀 수 없이 많은 등불이 층층이 걸려 있다 */
-    return `<circle cx="500" cy="136" r="76" fill="#d8cce8" opacity=".28"/>
-      <g opacity=".5">${rep(30, i => bgLantern(24 + (i % 15) * 68, 84 + ((i / 15) | 0) * 62, 4, '#c8a8e8', .7))}</g>
-      <g opacity=".3" fill="none" stroke="#8a7aa8" stroke-width="1">${rep(3, i =>
-        `<path d="M0,${210 + i * 34} L1000,${196 + i * 34}"/>`)}</g>`;
-  }
-  if (a === 20) {
-    /* 산 — 아주 큰 봉우리 하나가 하늘을 가린다 */
-    return `<circle cx="500" cy="120" r="66" fill="#fff6d8" opacity=".55"/>
-      <circle cx="500" cy="120" r="120" fill="#fff0c0" opacity=".16"/>
-      <path d="M120,600 L500,64 L880,600 Z" fill="#6a6454" opacity=".2"/>
-      <path d="M330,600 L500,160 L670,600 Z" fill="#5a5446" opacity=".16"/>
-      <path d="M418,236 L500,64 L582,236 L546,220 L500,246 L454,220 Z" fill="#f6f2e4" opacity=".5"/>
-      ${bgCloud(300, 300, 160, 26, '#9d9680', .26)}
-      ${bgCloud(760, 268, 150, 22, '#9d9680', .2)}
-      <g>${rep(8, i => bgBird(140 + i * 106, 172 + (i % 3) * 26, 9, '#5c5648', .4))}</g>`;
-  }
-  if (a === 21) {
-    /* 사잇길 — 이승과 저승 사이. 달이 둘, 하늘 한가운데 이음매가 갈라져 있다 */
-    return `<circle cx="330" cy="128" r="52" fill="#e8e4f0" opacity=".4"/>
-      <circle cx="392" cy="140" r="48" fill="#4a4658" opacity=".45"/>
-      <path d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#e6e2f4" stroke-width="2.4" opacity=".38"/>
-      <path d="M0,196 Q250,168 500,204 Q750,240 1000,190" fill="none" stroke="#8f88b0" stroke-width="8" opacity=".14"/>
-      ${bgCloud(690, 132, 150, 22, '#b6b2c8', .3)}
-      ${bgCloud(180, 262, 130, 18, '#a8a4bc', .22)}
-      <g opacity=".34">${rep(7, i => bgBird(120 + i * 122, 250 + (i % 3) * 30, 8, '#5c5870', .9))}</g>`;
-  }
-  if (a === 22) {
-    /* 천국 문 — 구름 위로 문 하나가 하늘을 다 채운다 */
-    return `<circle cx="500" cy="230" r="150" fill="#fff8dc" opacity=".5"/>
-      <circle cx="500" cy="230" r="230" fill="#ffeeb4" opacity=".16"/>
-      <g opacity=".3" fill="#a89a70">
-        <rect x="292" y="120" width="26" height="480"/><rect x="682" y="120" width="26" height="480"/>
-        <path d="M244,120 L500,44 L756,120 L756,150 L244,150 Z"/>
-        <path d="M270,178 L500,116 L730,178 L730,200 L270,200 Z" opacity=".8"/>
-        ${rep(9, i => `<rect x="${332 + i * 38}" y="200" width="7" height="${34 + (i % 3) * 14}"/>`)}
-      </g>
-      ${bgCloud(210, 300, 170, 26, '#f2e8c8', .42)}
-      ${bgCloud(820, 268, 160, 24, '#f2e8c8', .36)}
-      <g opacity=".38">${rep(22, i =>
-        `<circle cx="${(i * 149) % 1000}" cy="${60 + (i * 71) % 300}" r="${.9 + (i % 3) * .8}" fill="#fff4c8"/>`)}</g>`;
-  }
-  if (a === 23) {
-    /* 천국 — 구름 층층, 그 위에 뜬 누각들 */
-    return `<circle cx="500" cy="118" r="96" fill="#fffdf4" opacity=".62"/>
-      <circle cx="500" cy="118" r="160" fill="#eef6ff" opacity=".2"/>
-      <g opacity=".28" fill="none" stroke="#fff" stroke-width="1.4">${rep(4, i =>
-        `<circle cx="500" cy="118" r="${118 + i * 40}"/>`)}</g>
-      <g opacity=".3" fill="#c8d6e8">${rep(5, i =>
-        `<path d="M${120 + i * 186},${252 + (i % 3) * 26} l40,-30 l84,0 l40,30 Z"/>
-         <rect x="${160 + i * 186}" y="${252 + (i % 3) * 26}" width="84" height="26"/>`)}</g>
-      ${bgCloud(160, 200, 160, 24, '#ffffff', .44)}
-      ${bgCloud(540, 172, 150, 20, '#ffffff', .34)}
-      ${bgCloud(880, 226, 170, 26, '#ffffff', .4)}
-      <g opacity=".3">${rep(9, i => bgBird(90 + i * 104, 316 + (i % 4) * 22, 9, '#8fa0b8', .9))}</g>`;
-  }
-  if (a === 24) {
-    /* 침공 — 하늘이 찢어지고 그 틈으로 불티가 쏟아진다 */
-    return `<defs><radialGradient id="brift"><stop offset="0%" stop-color="#000" stop-opacity=".92"/>
-        <stop offset="100%" stop-color="#3a0a12" stop-opacity="0"/></radialGradient></defs>
-      <circle cx="500" cy="150" r="118" fill="#2a0a10" opacity=".5"/>
-      <circle cx="500" cy="150" r="126" fill="none" stroke="#ff7a4a" stroke-width="3" opacity=".55"/>
-      <ellipse cx="500" cy="150" rx="330" ry="150" fill="url(#brift)" opacity=".7"/>
-      <path d="M120,70 L360,150 L250,168 L520,268 L400,278 L640,372 L470,352 L700,470"
-        fill="none" stroke="#0a0206" stroke-width="14" stroke-linejoin="round" opacity=".55"/>
-      <path d="M120,70 L360,150 L250,168 L520,268 L400,278 L640,372 L470,352 L700,470"
-        fill="none" stroke="#ff8a4a" stroke-width="2" stroke-linejoin="round" opacity=".5"/>
-      <g opacity=".5">${rep(34, i =>
-        `<circle cx="${(i * 173) % 1000}" cy="${40 + (i * 97) % 420}" r="${.8 + (i % 4) * .8}" fill="#ffab4a"/>`)}</g>
-      ${bgCloud(240, 300, 160, 24, '#5e2020', .34)}
-      ${bgCloud(800, 262, 150, 22, '#5e2020', .28)}`;
-  }
-  if (a === 25) {
-    /* 사신도 — 찢어진 그림 속에서 그것이 이쪽을 본다.
-       종이는 삭았고, 낙관은 피처럼 번졌고, 사신은 눈이 없다. */
-    return `<defs>
-        <radialGradient id="sdhalo"><stop offset="0%" stop-color="#2a0a12" stop-opacity=".9"/>
-          <stop offset="100%" stop-color="#2a0a12" stop-opacity="0"/></radialGradient>
-      </defs>
-      <g opacity=".13" stroke="#6a5c48" stroke-width="1" fill="none">${rep(9, i =>
-        `<path d="M${54 + i * 108},0 L${54 + i * 108},600"/>`)}</g>
-      <ellipse cx="500" cy="250" rx="440" ry="300" fill="url(#sdhalo)"/>
-      <circle cx="500" cy="120" r="74" fill="none" stroke="#3a2a24" stroke-width="3" opacity=".4"/>
-      <circle cx="500" cy="120" r="58" fill="#1a0e0c" opacity=".55"/>
-      <g opacity=".95">
-        <!-- 망토 — 어깨에서 발치까지 한 자락으로 흘러내린다 -->
-        <path d="M500,150 q-104,44 -128,168 q-24,124 -12,254 q4,28 30,28 l220,0
-                 q26,0 30,-28 q12,-130 -12,-254 q-24,-124 -128,-168 Z" fill="#050407"/>
-        <!-- 두건 — 안은 비어 있다 -->
-        <path d="M500,146 q-70,30 -84,110 q42,-46 84,-46 q42,0 84,46 q-14,-80 -84,-110 Z" fill="#0b0810"/>
-        <path d="M500,178 q-52,10 -58,74 q-4,44 26,66 q32,-18 32,-70 q0,52 32,70
-                 q30,-22 26,-66 q-6,-64 -58,-74 Z" fill="#000"/>
-        <!-- 소매 — 양쪽으로 늘어진다 -->
-        <path d="M394,262 q-96,44 -128,158 q54,-72 132,-96 Z" fill="#050407"/>
-        <path d="M606,262 q96,44 128,158 q-54,-72 -132,-96 Z" fill="#050407"/>
-        <!-- 옷자락의 결 -->
-        <g opacity=".45" stroke="#15101c" stroke-width="2.5" fill="none" stroke-linecap="round">
-          ${rep(6, i => `<path d="M${432 + i * 28},300 q${-6 + i * 2.4},96 ${-14 + i * 5.6},296"/>`)}
-        </g>
-        <!-- 발치에 고이는 어둠 -->
-        <ellipse cx="500" cy="600" rx="180" ry="34" fill="#050407" opacity=".8"/>
-      </g>
-      <g opacity=".55" stroke="#8a1a2a" stroke-width="2.4" fill="none" stroke-linecap="round">
-        <path d="M0,86 q140,-40 280,8 q150,52 300,-14 q160,-70 420,26"/></g>
-      <!-- 낙관(落款) — 그린 이의 도장. 예전에는 빈 네모에 줄 셋이라
-           그림이 아니라 깨진 단추처럼 보였다. 속을 채우고 글자를 팠다.
-           오른쪽 위는 단추들이 앉는 자리라 왼쪽으로 옮겼다. -->
-      <g opacity=".3" transform="translate(24 68)">
-        <rect width="38" height="38" rx="3" fill="#7a1622"/>
-        <rect width="38" height="38" rx="3" fill="none" stroke="#a82230" stroke-width="1.5"/>
-        <text x="19" y="28" text-anchor="middle" font-size="25" font-family="serif"
-          fill="#1a0a0c">冥</text>
-      </g>
-      <g opacity=".34">${rep(20, i =>
-        `<circle cx="${(i * 149) % 1000}" cy="${40 + (i * 83) % 320}" r="${.8 + (i % 3) * .6}" fill="#7a2a34"/>`)}</g>
-    `;
-  }
-  if (a === 9) return `<g opacity=".4"><circle cx="500" cy="150" r="92" fill="none" stroke="#fff" stroke-width="2"/>
-      <circle cx="500" cy="150" r="120" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>
-      <circle cx="500" cy="150" r="150" fill="none" stroke="#fff" stroke-width="1" opacity=".3"/></g>`;
-  if (a === 8) return `<g opacity=".55"><circle cx="500" cy="140" r="102" fill="#fff6d8"/>
-      <circle cx="500" cy="140" r="150" fill="#ffeeb0" opacity=".22"/><circle cx="500" cy="140" r="200" fill="#ffe89a" opacity=".1"/></g>`;
-  if (a === 7) return `<g opacity=".45"><ellipse cx="500" cy="600" rx="330" ry="130" fill="#0a0810"/>
-      <ellipse cx="500" cy="600" rx="240" ry="96" fill="#05040a"/></g>`;
-  if (a === 6) return `<g opacity=".4"><circle cx="500" cy="150" r="86" fill="#0d0b12"/>
-      <circle cx="500" cy="150" r="96" fill="none" stroke="#b98cff" stroke-width="2" opacity=".6"/></g>`;
-  if (a === 5) return `<g opacity=".5"><circle cx="820" cy="110" r="54" fill="#fff4c8"/>
-      <circle cx="820" cy="110" r="96" fill="#fff4c8" opacity=".18"/></g>`;
-  if (a === 4) return `<g opacity=".42"><circle cx="118" cy="80" r="46" fill="#2a2438"/>
-      <circle cx="118" cy="80" r="52" fill="none" stroke="#7b4bd8" stroke-width="2"/></g>`;
-  if (a === 3) return `<g opacity=".34"><circle cx="118" cy="76" r="44" fill="#cfd6ea"/>
-      <circle cx="136" cy="66" r="40" fill="#9d95a8"/></g>`;
-  if (a === 2) return `<g opacity=".3"><circle cx="118" cy="78" r="42" fill="#efe6d0"/></g>`;
-  return `<g opacity=".22"><circle cx="112" cy="74" r="38" fill="#c9585c"/></g>`;
-}
-/* 먼 산 바로 뒤 */
-function bgFarArt(a) {
-  if (a === 10)
-    /* 능선을 타고 넘어가는 행렬 — 멀어서 점처럼 보인다 */
-    return `<g opacity=".55">${rep(22, i => bgLantern(24 + i * 45, 300 - Math.abs(Math.sin(i * .7)) * 58 + (i % 2) * 8, 3.4, '#e2a13a', .9))}</g>`;
-  if (a === 11)
-    return `<g opacity=".3" fill="#8a5636">${rep(16, i => `<path d="M${30 + i * 62},${300 + (i % 3) * 10} l7,-16 l7,16 Z"/>`)}</g>`;
-  if (a === 12)
-    /* 마을 — 초가 지붕들과 굴뚝 연기 */
-    return `<g opacity=".42" fill="#5a5a42">${rep(9, i =>
-      `<ellipse cx="${90 + i * 100}" cy="${406 + (i % 3) * 8}" rx="34" ry="17"/>
-       <rect x="${72 + i * 100}" y="${404 + (i % 3) * 8}" width="36" height="24"/>`)}</g>
-      <g opacity=".3" stroke="#6e7a5c" fill="none" stroke-width="2">${rep(5, i =>
-      `<path d="M${104 + i * 190},396 q-10,-26 4,-46 q14,-20 2,-42"/>`)}</g>`;
-  if (a === 13)
-    /* 광화문 — 하나만 크게 */
-    return `<g opacity=".42" fill="#3f4562">
-      <path d="M330,404 l44,-40 l252,0 l44,40 Z"/><rect x="374" y="404" width="252" height="46"/>
-      <path d="M358,364 l34,-30 l216,0 l34,30 Z" opacity=".85"/>
-      <rect x="464" y="416" width="72" height="40" fill="#262b40"/>
-      <path d="M464,416 a36,26 0 0 1 72,0 Z" fill="#262b40"/></g>`;
-  if (a === 14)
-    return `<g opacity=".3" fill="#d8c88a">${rep(6, i => bgGate(110 + i * 158, 396, 74, 62, '#d8c88a', .8))}</g>`;
-  if (a === 15)
-    return `<g opacity=".18">${rep(9, i => `<rect x="${(i * 121) % 940}" y="${300 + (i * 53) % 90}" width="${8 + (i % 4) * 9}" height="1" fill="#8a8aa0"/>`)}</g>`;
-  if (a === 16)
-    /* 회귀 — 처음 그 숲의 나무들이 그대로 서 있다 */
-    return `<g opacity=".26" fill="#7b6f58">${rep(19, i =>
-      `<path d="M${24 + i * 52},${360 + (i % 3) * 12} l9,-22 l9,22 Z"/><rect x="${31 + i * 52}" y="${358 + (i % 3) * 12}" width="4" height="18"/>`)}</g>`;
-  if (a === 17)
-    /* 기억 — 비석들 */
-    return `<g opacity=".3" fill="#4a3e50">${rep(15, i =>
-      `<rect x="${34 + i * 64}" y="${372 + (i % 4) * 14}" width="18" height="${34 + (i % 3) * 12}" rx="9"/>`)}</g>`;
-  if (a === 18)
-    /* 스승 — 절 하나 */
-    return `<g opacity=".34" fill="#4c5660">
-      <path d="M352,392 l44,-38 l208,0 l44,38 Z"/><rect x="396" y="392" width="208" height="52"/>
-      <path d="M382,356 l32,-28 l168,0 l32,28 Z" opacity=".85"/>
-      <rect x="462" y="404" width="76" height="40" fill="#2f3841"/></g>`;
-  if (a === 19)
-    /* 백년 — 앞서 간 사람들의 그림자가 줄지어 있다 */
-    return `<g opacity=".26" fill="#3f3552">${rep(21, i =>
-      `<ellipse cx="${24 + i * 48}" cy="${374 + (i % 4) * 13}" rx="9" ry="21"/>`)}</g>`;
-  if (a === 20)
-    return `<g opacity=".22" fill="#5c5648">${rep(13, i =>
-      `<path d="M${20 + i * 78},${372 + (i % 3) * 14} l16,-30 l16,30 Z"/>`)}</g>`;
-  if (a === 21)
-    /* 사잇길 — 길 잃은 것들이 능선을 따라 서성인다 */
-    return `<g opacity=".26" fill="#4a4a5c">${rep(17, i =>
-      `<ellipse cx="${30 + i * 58}" cy="${376 + (i % 4) * 15}" rx="8" ry="19"/>`)}</g>
-      <g opacity=".2" fill="none" stroke="#8a8fa8" stroke-width="1">${rep(3, i =>
-      `<path d="M0,${348 + i * 26} Q500,${330 + i * 26} 1000,${352 + i * 26}"/>`)}</g>`;
-  if (a === 22)
-    /* 천국 문 — 문 앞에 늘어선 줄 */
-    return `<g opacity=".3" fill="#9a8e68">${rep(20, i =>
-      `<ellipse cx="${26 + i * 50}" cy="${390 + (i % 3) * 12}" rx="7" ry="18"/>`)}</g>
-      <g opacity=".26">${rep(8, i => bgLantern(70 + i * 122, 356 + (i % 2) * 16, 5, '#ffe9a8', .8))}</g>`;
-  if (a === 23)
-    /* 천국 — 누각과 다리가 구름 위에 걸쳐 있다 */
-    return `<g opacity=".34" fill="#9fb2ca">
-      <path d="M300,404 l46,-42 l208,0 l46,42 Z"/><rect x="346" y="404" width="208" height="50"/>
-      <path d="M334,362 l34,-30 l172,0 l34,30 Z" opacity=".85"/>
-      <path d="M0,430 Q160,388 330,424" fill="none" stroke="#9fb2ca" stroke-width="7"/>
-      <path d="M620,420 Q800,384 1000,418" fill="none" stroke="#9fb2ca" stroke-width="7"/></g>
-      <g opacity=".26">${rep(6, i => bgCloud(80 + i * 180, 400 + (i % 3) * 16, 80, 12, '#ffffff', 1))}</g>`;
-  if (a === 24)
-    /* 침공 — 무너지는 누각과 기울어진 깃대 */
-    return `<g opacity=".38" fill="#4a2020">
-      <path d="M300,406 l46,-44 l208,0 l46,44 Z" transform="rotate(-7 450 400)"/>
-      <rect x="346" y="406" width="208" height="52" transform="rotate(-7 450 400)"/>
-      ${rep(6, i => `<rect x="${70 + i * 152}" y="${348 + (i % 3) * 16}" width="4" height="80"
-        transform="rotate(${-14 + i * 5} ${72 + i * 152} 400)"/>`)}</g>
-      <g opacity=".3" fill="#1a0a0c">${rep(16, i =>
-      `<ellipse cx="${34 + i * 62}" cy="${392 + (i % 4) * 14}" rx="9" ry="21"/>`)}</g>`;
-  if (a === 25)
-    /* 사신도 — 먹으로 친 산과, 반쯤 지워진 글자 */
-    return `<g opacity=".22" fill="none" stroke="#3a3228" stroke-width="3" stroke-linecap="round">
-      <path d="M0,404 q90,-64 168,-6 q64,48 132,-26 q78,-84 160,-2 q70,70 148,-14 q76,-82 168,10 q88,88 224,22"/></g>
-      <!-- 화제(畵題) — 그림 옆에 내려쓴 글. 예전에는 빈 네모 넷이라
-           글이 아니라 깨진 칸처럼 보였다. 진짜 글자를 반쯤 지워 넣는다. -->
-      <g opacity=".1" fill="#3a3228" font-family="serif" font-size="27" text-anchor="middle">
-        ${rep(6, i => `<text x="26" y="${188 + i * 40}" opacity="${(1 - i * .13).toFixed(2)}"
-          >${'死生無間不還'[i]}</text>`)}</g>`;
-  return '';
-}
-/* 가운데 능선 뒤 */
-function bgMidArt(a) {
-  if (a === 10)
-    /* 행렬 본대 — 등롱이 커지고, 사이사이 홍살문이 선다 */
-    return `${rep(4, i => bgGate(150 + i * 235, 496, 108, 96, '#5a1420', .5))}
-      <g>${rep(15, i => bgLantern(40 + i * 68, 452 - Math.abs(Math.cos(i * .9)) * 26, 6.5, '#e2a13a', .78))}</g>
-      <g opacity=".34" fill="#3a0e18">${rep(15, i =>
-        `<ellipse cx="${40 + i * 68}" cy="${492 - Math.abs(Math.cos(i * .9)) * 20}" rx="7" ry="15"/>`)}</g>`;
-  if (a === 11)
-    return `<g opacity=".28" fill="#7a4a30">${rep(24, i =>
-      `<circle cx="${(i * 83) % 990}" cy="${400 + (i * 61) % 140}" r="${1.4 + (i % 3) * .9}"/>`)}</g>`;
-  if (a === 12)
-    return `<g opacity=".4" fill="#434b38">${rep(13, i =>
-      `<rect x="${52 + i * 74}" y="${470 + (i % 3) * 6}" width="3" height="34"/>
-       <path d="M${44 + i * 74},${470 + (i % 3) * 6} l11,-13 l11,13 Z"/>`)}</g>`;
-  if (a === 13)
-    return `<g opacity=".45" fill="#3b405a">
-      <path d="M330,486 l52,-46 l236,0 l52,46 Z"/><rect x="382" y="486" width="236" height="66"/>
-      <path d="M370,442 l40,-34 l180,0 l40,34 Z" opacity=".8"/>
-      <rect x="470" y="500" width="60" height="52" fill="#22263a"/></g>`;
-  if (a === 14)
-    return `<g opacity=".34" fill="#efe6c0">
-      <path d="M0,470 Q140,442 280,466 Q420,490 560,464 Q700,440 840,464 Q930,478 1000,462 L1000,510 Q900,528 800,510 Q660,486 520,510 Q380,534 240,510 Q120,490 0,512 Z"/></g>`;
-  if (a === 15)
-    return `<g opacity=".22" fill="none" stroke="#7a7a92" stroke-width="1">
-      ${rep(5, i => `<path d="M0,${430 + i * 32} Q250,${418 + i * 32} 500,${430 + i * 32} Q750,${442 + i * 32} 1000,${430 + i * 32}"/>`)}</g>`;
-  if (a === 16)
-    return `<g opacity=".3" fill="#6a6050">${rep(25, i =>
-      `<path d="M${16 + i * 40},${460 + (i % 4) * 14} l7,-18 l7,18 Z"/>`)}</g>`;
-  if (a === 17)
-    return `<g opacity=".34" fill="#332a38">${rep(19, i =>
-      `<rect x="${22 + i * 52}" y="${470 + (i % 3) * 12}" width="20" height="${40 + (i % 4) * 14}" rx="10"/>`)}</g>`;
-  if (a === 18)
-    return `<g opacity=".3" fill="#3c454e">${rep(9, i =>
-      `<rect x="${68 + i * 106}" y="${462 + (i % 2) * 10}" width="8" height="56"/>
-       <rect x="${58 + i * 106}" y="${456 + (i % 2) * 10}" width="28" height="7"/>`)}</g>`;
-  if (a === 19)
-    return `<g opacity=".4">${rep(16, i => bgLantern(30 + i * 64, 462 + (i % 3) * 18, 6, '#b490e0', .7))}</g>`;
-  if (a === 20)
-    return `<g opacity=".3" fill="#33302a">${rep(11, i =>
-      `<ellipse cx="${44 + i * 92}" cy="${478 + (i % 3) * 16}" rx="26" ry="14"/>`)}</g>`;
-  if (a === 21)
-    /* 사잇길 — 갈림돌이 줄지어 서고, 길이 둘로 갈린다 */
-    return `<g opacity=".34" fill="#3c4050">${rep(13, i =>
-      `<rect x="${28 + i * 76}" y="${470 + (i % 3) * 14}" width="15" height="${36 + (i % 4) * 12}" rx="7"/>`)}</g>
-      <g opacity=".22" fill="none" stroke="#c8c4dc" stroke-width="2">
-        <path d="M500,600 Q470,520 380,470"/><path d="M500,600 Q530,520 622,470"/></g>`;
-  if (a === 22)
-    /* 천국 문 — 문으로 오르는 층계 */
-    return `<g opacity=".34" fill="#8e8466">${rep(7, i =>
-      `<rect x="${310 + i * 26}" y="${462 + i * 20}" width="${380 - i * 52}" height="16"/>`)}</g>
-      <g opacity=".28">${rep(5, i => bgLantern(90 + i * 200, 486 + (i % 2) * 18, 8, '#ffe9a8', .8))}</g>`;
-  if (a === 23)
-    /* 천국 — 구름이 땅을 대신한다 */
-    return `<g opacity=".4">${rep(7, i => bgCloud(50 + i * 160, 486 + (i % 3) * 20, 110, 16, '#ffffff', 1))}</g>
-      <g opacity=".22" fill="#8c9eb8">${rep(11, i =>
-      `<rect x="${40 + i * 88}" y="${500 + (i % 3) * 12}" width="5" height="46"/>
-       <rect x="${30 + i * 88}" y="${494 + (i % 3) * 12}" width="25" height="7"/>`)}</g>`;
-  if (a === 24)
-    /* 침공 — 불길이 능선을 타고 번진다 */
-    return `<g opacity=".42" fill="#8a2a1a">${rep(15, i =>
-      `<path d="M${24 + i * 68},${520 + (i % 3) * 12} q12,-40 2,-58 q22,20 30,-2 q12,34 -4,60 Z"/>`)}</g>
-      <g opacity=".3" fill="#3e1e20">${rep(9, i =>
-      `<ellipse cx="${56 + i * 112}" cy="${498 + (i % 3) * 14}" rx="24" ry="13"/>`)}</g>`;
-  if (a === 25)
-    /* 사신도 — 종이 위에 번진 먹 */
-    return `<g opacity=".26" fill="#3a3228">
-      <path d="M0,486 q140,-44 280,-2 q140,44 280,-10 q150,-58 300,8 q80,32 140,10 L1000,600 L0,600 Z"/></g>
-      <g opacity=".16" fill="#2a2420">${rep(9, i =>
-      `<ellipse cx="${(i * 227) % 1000}" cy="${500 + (i * 53) % 80}" rx="${14 + (i % 4) * 10}" ry="${5 + (i % 3) * 3}"/>`)}</g>`;
-  return '';
-}
-/* 맨 앞 */
-function bgNearArt(a) {
-  if (a === 10)
-    /* 코앞을 지나가는 것들 — 크고 어둡고 흐릿하게, 그리고 불티 */
-    return `<g opacity=".9">${rep(7, i => bgLantern(60 + i * 156, 556 - (i % 2) * 14, 11, '#ff9e3a', .82))}</g>
-      <g opacity=".55" fill="#0d0508">${rep(7, i =>
-        `<ellipse cx="${60 + i * 156}" cy="${600 - (i % 2) * 10}" rx="26" ry="46"/>`)}</g>
-      <g opacity=".45">${rep(30, i =>
-        `<circle cx="${(i * 167) % 1000}" cy="${300 + (i * 89) % 290}" r="${.8 + (i % 4) * .7}" fill="#ffab4a"/>`)}</g>
-      <g opacity=".3" fill="#8a1a2a">${rep(4, i =>
-        `<rect x="${110 + i * 250}" y="440" width="3" height="160"/>
-         <path d="M${113 + i * 250},444 q28,10 0,20 Z"/>`)}</g>`;
-  if (a === 11)
-    return `<g opacity=".4" fill="#3d281c">${rep(5, i =>
-      `<path d="M${-20 + i * 240},600 q26,-70 8,-124 q30,34 44,4 q10,54 -12,120 Z"/>`)}</g>`;
-  if (a === 12)
-    return `<g opacity=".5" fill="#2f3628">
-      <rect x="0" y="556" width="1000" height="6"/>
-      ${rep(21, i => `<rect x="${18 + i * 48}" y="${524 + (i % 2) * 6}" width="5" height="40"/>`)}</g>`;
-  if (a === 13)
-    return `<g opacity=".55" fill="#22263a">
-      <rect x="0" y="552" width="1000" height="48"/>
-      ${rep(15, i => `<rect x="${16 + i * 68}" y="${524 + (i % 3) * 8}" width="30" height="${30 - (i % 3) * 8}"/>`)}</g>`;
-  if (a === 14)
-    return `<g opacity=".38" fill="#efe6c0">
-      <path d="M0,530 Q160,506 320,528 Q480,550 640,526 Q800,502 1000,524 L1000,600 L0,600 Z"/></g>`;
-  if (a === 15)
-    return `<g opacity=".5"><rect x="0" y="520" width="1000" height="80" fill="#000"/>
-      <g opacity=".3">${rep(11, i => `<circle cx="${(i * 211) % 1000}" cy="${540 + (i * 41) % 50}" r=".9" fill="#8a8aa0"/>`)}</g></g>`;
-  if (a === 16)
-    /* 처음 오르던 그 산길의 돌계단 */
-    return `<g opacity=".4" fill="#4e463a">${rep(9, i =>
-      `<rect x="${100 + i * 96}" y="${588 - i * 6}" width="86" height="${9 + i}"/>`)}</g>`;
-  if (a === 17)
-    return `<g opacity=".45" fill="#241d28">
-      <path d="M0,556 Q140,534 300,552 Q460,570 620,548 Q790,526 1000,548 L1000,600 L0,600 Z"/>
-      <g opacity=".5">${rep(13, i => `<rect x="${26 + i * 76}" y="${540 + (i % 3) * 10}" width="14" height="30" rx="7" fill="#150f18"/>`)}</g></g>`;
-  if (a === 18)
-    return `<g opacity=".45" fill="#2b3239">
-      <path d="M0,552 L1000,552 L1000,600 L0,600 Z"/>
-      ${rep(19, i => `<rect x="${14 + i * 53}" y="${528 + (i % 2) * 8}" width="30" height="26"/>`)}</g>`;
-  if (a === 19)
-    return `<g opacity=".55">${rep(6, i => bgLantern(70 + i * 176, 548 - (i % 2) * 14, 12, '#c8a0ff', .78))}</g>
-      <g opacity=".42" fill="#1c1526">${rep(6, i =>
-        `<ellipse cx="${70 + i * 176}" cy="${600 - (i % 2) * 10}" rx="26" ry="46"/>`)}</g>`;
-  if (a === 20)
-    return `<g opacity=".5" fill="#2a2620">
-      <path d="M0,566 Q160,540 340,562 Q520,584 700,556 Q860,532 1000,558 L1000,600 L0,600 Z"/>
-      ${rep(7, i => `<path d="M${60 + i * 142},600 q22,-58 6,-104 q26,30 38,4 q10,48 -10,100 Z"/>`)}</g>`;
-  if (a === 21)
-    /* 사잇길 — 발밑의 길이 반은 흙, 반은 안개 */
-    return `<g opacity=".5" fill="#2c3040">
-      <path d="M0,558 Q180,536 360,556 Q540,576 720,550 Q870,528 1000,552 L1000,600 L0,600 Z"/></g>
-      <g opacity=".26" fill="#cfcbe0">${rep(5, i =>
-      `<ellipse cx="${100 + i * 210}" cy="${572 + (i % 2) * 12}" rx="${70 + i * 8}" ry="14"/>`)}</g>`;
-  if (a === 22)
-    /* 천국 문 — 문턱의 돌과, 문 안에서 새어 나오는 빛 */
-    return `<g opacity=".5" fill="#7e7454"><rect x="0" y="558" width="1000" height="42"/>
-      ${rep(13, i => `<rect x="${18 + i * 78}" y="${532 + (i % 2) * 8}" width="42" height="30"/>`)}</g>
-      <g opacity=".22" fill="#fff4c8">${rep(9, i =>
-      `<path d="M${500 - 200 + i * 50},600 L${500 - 60 + i * 15},300 L${500 - 40 + i * 15},300 Z"/>`)}</g>`;
-  if (a === 23)
-    /* 천국 — 발밑까지 구름 */
-    return `<g opacity=".55">${rep(6, i => bgCloud(40 + i * 190, 566 + (i % 2) * 16, 130, 20, '#ffffff', 1))}</g>
-      <g opacity=".3">${rep(5, i => bgLantern(110 + i * 200, 540 - (i % 2) * 12, 11, '#fff0c0', .72))}</g>`;
-  if (a === 24)
-    /* 침공 — 코앞까지 온 불과, 그림자로만 보이는 것들 */
-    return `<g opacity=".9">${rep(6, i => bgLantern(70 + i * 178, 552 - (i % 2) * 14, 12, '#ff7a3a', .84))}</g>
-      <g opacity=".6" fill="#140406">${rep(6, i =>
-      `<ellipse cx="${70 + i * 178}" cy="${600 - (i % 2) * 10}" rx="27" ry="48"/>`)}</g>
-      <g opacity=".5">${rep(26, i =>
-      `<circle cx="${(i * 191) % 1000}" cy="${330 + (i * 83) % 260}" r="${.9 + (i % 4) * .8}" fill="#ffb45a"/>`)}</g>`;
-  if (a === 25)
-    /* 사신도 — 그림의 아래 끝. 종이가 찢어져 있다 */
-    return `<g opacity=".55" fill="#3a3228">
-      <path d="M0,566 L60,552 L120,572 L200,548 L270,570 L350,546 L430,568 L510,544
-               L590,566 L670,542 L750,564 L830,540 L910,562 L1000,548 L1000,600 L0,600 Z"/></g>
-      <g opacity=".3" stroke="#8a1a2a" stroke-width="2" fill="none">
-        <path d="M0,584 Q250,572 500,586 Q750,600 1000,580"/></g>`;
-  return '';
-}
-
 /* --- 타이틀 --- */
 /* three.js 를 한가할 때 미리 받아 둔다 — 컷씬이 기다리지 않게 */
 let _threePre = false;
