@@ -6630,6 +6630,8 @@ body.cutting #chatfab,body.cutting .evpill,body.cutting .toast{visibility:hidden
 #bg .bgsleeve{animation:bgSleeve 7s ease-in-out infinite alternate}#bg .bgsleeve.r{animation-delay:-3s}
 @keyframes bgSleeve{from{transform:rotate(-2deg)}to{transform:rotate(3deg)}}
 #bg .bgthread{animation:bgThread 8s ease-in-out infinite alternate}
+#bg .bgbead{animation:bgBead 4.6s ease-in-out var(--k, 0s) infinite alternate}
+@keyframes bgBead{from{transform:rotate(-2.4deg)}to{transform:rotate(2.4deg)}}
 @keyframes bgThread{from{transform:translateY(-4px)}to{transform:translateY(6px)}}
 #bg .bgspindrift{animation:bgSpindrift 5s ease-in-out infinite}
 @keyframes bgSpindrift{from{transform:translateX(0);opacity:0}30%{opacity:1}to{transform:translateX(60px);opacity:0}}
@@ -8648,7 +8650,7 @@ const SND = {
   MODE_G: [0, 3, 5, 7, 10],
   MODE_P: [0, 2, 5, 7, 9],
   bgmSet(act) {
-    const a = Math.min(25, Math.max(1, act || 1));
+    const a = Math.min(26, Math.max(1, act || 1));
     /* [으뜸음, 조, 한 박(ms), 대금, 장구] */
     const T = [
       [196, 'P', 620, .5, .0],   /* 1 요괴 숲 — 낮고 성기게 */
@@ -8675,7 +8677,8 @@ const SND = {
       [330, 'P', 620, .8, .1],   /* 22 천국 문 — 높고 맑다 */
       [392, 'P', 680, .9, .0],   /* 23 천국 */
       [104, 'G', 440, .6, .65],  /* 24 침공 — 장구가 몰아친다 */
-      [87,  'G', 560, 1.0, .35]  /* 25 사신도 */
+      [87,  'G', 560, 1.0, .35], /* 25 사신도 */
+      [92,  'G', 500, .9, .5]    /* 26 무명궁 — 장중하게 */
     ][a - 1];
     return { root: T[0], scale: T[1] === 'G' ? this.MODE_G : this.MODE_P,
              beat: T[2], daeg: T[3], jang: T[4] };
@@ -13450,6 +13453,124 @@ defEnemy({ id: 'sasindo', n: '사신도(死神圖)', g: '死', hp: [3800, 3800],
     if (lastIs(e, 'ink2', 2)) return 'frame';
     const r = rnd(); return r < .4 ? 'ink2' : r < .72 ? 'portrait' : 'frame'; } });
 
+/* ══ 제26막 · 무명궁(無名宮) — 기초 (판 58) ═══════════════════
+   사신도를 찢고 단오를 되찾았다. 산마루 너머, 아무도 이름을 모르는 황제가 칙령을 내리자
+   땅 밑의 요괴들이 일어난다. — 아직 모두에게 열지 않는다. 개발자(백야 · 백사)만 들어간다.
+   · 들어가는 길: 승천 화면의 「第26幕 들어가기」 · 개발자의 권력 「막 건너뛰기」(25막에서) ·
+     관리 창 「막」 26 · 첫 화면 26막 미리보기의 「개발자 · 바로 들어가기」
+   · 요괴 넷(친위 · 능지기 · 구슬발 그림자 · 살아 있는 칙서) · 엘리트 둘(금위대장 · 옥새) · 보스 「이름 모를 황제」
+   · 황제는 칙령으로 친위를 불러 세우고(최대 셋), 「이름을 지운다」를 모아 크게 친다. 반피에 구슬발이 걷힌다
+   · 배경 · 음악 · 3D 보스 등장 무대도 막 하나 몫으로. 수치는 25막보다 조금 위 — 다듬는 것은 다음에
+   · 26막 보스를 넘으면 다시 승천 화면 (완주 명단에는 적지 않는다 — 시험이다)
+   ══════════════════════════════════════════════════════════ */
+const act26Open = () => { try { return adminOn(); } catch (e) { return false; } };
+/* 싸움 도중에 요괴 하나를 불러 세운다 — 부른 자의 배율을 따라, 조금 약하게 */
+function foeAdd(id, from, mul) {
+  const b = G.b, d = ENEMIES[id];
+  if (!b || b.over || !d || alive().length >= 4) return null;
+  const ref = from || b.enemies[0], avg = r => (r.hp[0] + r.hp[1]) / 2;
+  const ratio = ref && ref.def && ref.def.hp ? ref.maxHp / avg(ref.def) : 1;
+  const hp = Math.max(1, Math.round(avg(d) * Math.min(ratio, 2) * (mul || .55)));
+  const e = { uid: 'e' + (Date.now() % 1e7) + '_' + b.enemies.length, id, def: d, n: d.n, g: d.g, hp, maxHp: hp, block: 0, s: {},
+    dmgMul: ref ? ref.dmgMul || 1 : 1, blkMul: ref ? ref.blkMul || 1 : 1, hist: [], turnCount: 0, mv: null, mvKey: null, el: null, dead: false, halfDone: false, summoned: true };
+  if (d.init) d.init(e);
+  b.enemies.push(e);
+  const side = $('#eside');
+  if (side) {
+    const i = b.enemies.length - 1;
+    const u = el('div', 'unit' + (d.big ? ' big' : '') + ' au-elite summoned');
+    u.innerHTML = `<div class="intent"></div><div class="prev"></div>
+      <div class="body"><div class="uaura"><i></i><i></i><i></i></div>${enso(d.col, i * 3 + 5)}<span class="glyph">${e.g}</span><div class="blockbadge hide"></div></div>
+      <div class="nm">${elemBadge(id)}${e.n}</div><div class="ebar"><i></i><b></b></div><div class="stats"></div>`;
+    u.querySelector('.body').onclick = () => onEnemyClick(e);
+    side.appendChild(u); e.el = u;
+    try { const c = centerOf(u); shockRing(c.x, c.y, 160, '#ffd27a'); sparkles(c.x, c.y, 14, '#ffd27a', 90); } catch (x) {}
+  }
+  try { dexAdd('enemies', id); } catch (x) {}
+  try { pickIntent(e); } catch (x) {}
+  syncAll();
+  return e;
+}
+/* ── 요괴 ── */
+defEnemy({ id: 'imguard', n: '황제의 친위', g: '衛', hp: [508, 562], col: '#5a3a1a',
+  moves: { spear26: { t: 'attack', label: '창을 겨눈다', d: 46, n: 2, fx: 'lance' },
+           oath:    { t: 'atkdeb', label: '충성을 외친다', d: 72, deb: { weak: 13 }, fx: 'blunt' },
+           rank:    { t: 'defend', label: '줄을 맞춘다', blk: 132, self: { thorns: 12 } } },
+  next: e => e.hist.length === 0 ? 'rank' : lastIs(e, 'spear26', 2) ? 'rank'
+           : rnd() < .55 ? 'spear26' : rnd() < .8 ? 'oath' : 'rank' });
+defEnemy({ id: 'tombkeep', n: '능을 지키던 것', g: '陵', hp: [548, 606], col: '#3a3a2a',
+  moves: { slab:  { t: 'attack', label: '비석을 내리친다', d: 98, fx: 'blunt' },
+           dust26:{ t: 'atkdeb', label: '천 년의 먼지', d: 60, deb: { weak: 13, vuln: 13 }, fx: 'void' },
+           seal26:{ t: 'defend', label: '능을 닫는다', blk: 142, self: { regenP: 20 } } },
+  next: e => e.hist.length === 0 ? 'seal26' : lastIs(e, 'slab') ? 'dust26'
+           : rnd() < .5 ? 'slab' : rnd() < .78 ? 'dust26' : 'seal26' });
+defEnemy({ id: 'beadshadow', n: '구슬발 그림자', g: '旒', hp: [476, 526], col: '#2a1a2a',
+  init: e => { e.s.dex = 10; },
+  moves: { veil:  { t: 'attack', label: '구슬이 할퀸다', d: 32, n: 4, fx: 'slash2' },
+           gaze:  { t: 'atkdeb', label: '얼굴을 본 자의 끝', d: 80, deb: { curse: 13 }, fx: 'void' },
+           sway26:{ t: 'defend', label: '발이 흔들린다', blk: 120, self: { dex: 12 } } },
+  next: e => e.hist.length === 0 ? 'gaze' : lastIs(e, 'veil') ? 'sway26'
+           : rnd() < .52 ? 'veil' : rnd() < .82 ? 'gaze' : 'sway26' });
+defEnemy({ id: 'liveedict', n: '살아 있는 칙서', g: '勅', hp: [500, 556], col: '#6a4a1a',
+  moves: { read26: { t: 'atkdeb', label: '읽는 순간 굳는다', d: 66, deb: { weak: 13, vuln: 13 }, fx: 'void' },
+           unroll: { t: 'attack', label: '두루마리가 펼쳐진다', d: 38, n: 3, fx: 'lance' },
+           stamp:  { t: 'buff', label: '어보를 찍는다', blk: 104, self: { str: 14 } } },
+  next: e => e.hist.length === 0 ? 'read26' : lastIs(e, 'stamp') ? 'unroll'
+           : e.turnCount % 4 === 0 ? 'stamp' : rnd() < .55 ? 'unroll' : 'read26' });
+defEnemy({ id: 'goldgen', n: '금위대장', g: '將', hp: [1010, 1116], col: '#7a5a1a', elite: true, big: true,
+  init: e => { e.s.rage = 12; e.s.dex = 12; },
+  moves: { halberd: { t: 'attack', label: '월도를 휘두른다', d: 58, n: 2, fx: 'slash2' },
+           order:   { t: 'buff', label: '친위를 부른다', blk: 120, self: { str: 10 },
+                      extra: e => { foeAdd('imguard', e, .7); flash('친위가 줄을 선다'); SND.drum(); } },
+           cleave26:{ t: 'atkdeb', label: '목을 친다', d: 92, deb: { vuln: 14 }, fx: 'slash' } },
+  next: e => e.hist.length === 0 ? 'order' : e.turnCount % 4 === 0 && alive().length < 3 ? 'order'
+           : lastIs(e, 'halberd') ? 'cleave26' : rnd() < .6 ? 'halberd' : 'cleave26' });
+defEnemy({ id: 'jadeseal', n: '옥새(玉璽)', g: '璽', hp: [980, 1084], col: '#3a6a5a', elite: true, big: true,
+  init: e => { e.s.thorns = 18; e.s.regenP = 20; },
+  moves: { press:  { t: 'attack', label: '옥새가 짓누른다', d: 108, fx: 'blunt' },
+           decree2:{ t: 'atkdeb', label: '어명이다', d: 70, deb: { weak: 14, curse: 14 }, fx: 'void' },
+           box26:  { t: 'defend', label: '보함에 든다', blk: 150, self: { thorns: 12 } } },
+  next: e => e.hist.length === 0 ? 'decree2' : lastIs(e, 'press') ? 'box26'
+           : rnd() < .5 ? 'press' : rnd() < .8 ? 'decree2' : 'box26' });
+/* 보스 — 이름 모를 황제 */
+defEnemy({ id: 'emperor26', n: '이름 모를 황제', g: '帝', hp: [4200, 4200], col: '#8a6a1a', boss: true, big: true,
+  init: e => { e.erase = 0; e.s.dex = 12; },
+  moves: {
+    edict:   { t: 'buff', label: '칙령을 내린다', blk: 120, self: { str: 12 },
+               extra: e => { const n = Math.min(2, 4 - alive().length); for (let i = 0; i < n; i++) foeAdd(i ? 'liveedict' : 'imguard', e, .85);
+                             flash('칙령 — 땅 밑의 것들이 일어난다'); SND.boss(); screenFlash('rgba(200,150,40,.5)', 900); } },
+    beads:   { t: 'attack', label: '구슬발이 흔들린다', d: 42, n: 3, fx: 'void' },
+    verdict: { t: 'atkdeb', label: '천명을 거둔다', d: 88, deb: { weak: 13, vuln: 13, curse: 13 }, fx: 'void' },
+    throne:  { t: 'defend', label: '옥좌에 앉는다', blk: 152, self: { thorns: 22, regenP: 25 } },
+    erase:   { t: 'buff', label: '네 이름을 적는다', blk: 110, self: { str: 20 },
+               extra: e => { e.erase = 1; flash('황제가 붓을 든다 — 네 이름이 적힌다'); SND.drum(); screenFlash('rgba(40,20,10,.7)', 1100); } },
+    unname:  { t: 'attack', label: '이 름 을 지 운 다', d: 176, fx: 'void',
+               extra: e => { e.erase = 0; st(P(), 'weak', 13); st(P(), 'curse', 13); shake(true); SND.gong(); SND.thunder(); } }
+  },
+  onHalf: e => { st(e, 'str', 22); st(e, 'rage', 4); st(e, 'regenP', 26);
+                 flash('구슬발이 걷힌다 — 얼굴이 없다'); screenFlash('rgba(255,210,120,.6)', 1200); SND.boss();
+                 foeAdd('imguard', e, .85); foeAdd('beadshadow', e, .85); },
+  next: e => { if (e.erase) return 'unname';
+    if (e.hist.length === 0) return 'edict';
+    if (e.turnCount % 6 === 0) return 'erase';
+    if (e.turnCount % 4 === 0 && alive().length < 3) return 'edict';
+    if (lastIs(e, 'beads', 2)) return 'throne';
+    const r = rnd(); return r < .42 ? 'beads' : r < .74 ? 'verdict' : 'throne'; } });
+/* ── 들어간다 ── */
+function enterAct26() {
+  if (!act26Open()) { SND.err(); toast('제26막은 아직 열리지 않았다'); return; }
+  let run = G.run;
+  if (!run) { newRun(0); run = G.run; if (!run) return; }
+  closeOverlay();
+  const w = document.querySelector('.endscreen'); if (w) w.remove();
+  run.act = 26; run.floor = 0; run.map = genMap(26);
+  run.mapCur = -1; run.mapDone = []; run.bossPick = null; run.shop = null;
+  healRun(Math.ceil(run.maxHp * .34));
+  saveRun(); showMap();
+  try { SND.gong(); SND.boss(); } catch (e) {}
+  flash(`제 26막 · ${ACT_NAME[26]} — 개발자 시험`);
+}
+
 /* ---------- 모두의 적 — 온 세상이 함께 치는 것 ----------
    이름과 글자는 관리자가 정한다(싸움을 열 때 덮어쓴다). 체력은 이 판
    몫의 것이고, 여기에 넣은 피해가 그대로 서버의 큰 체력에서 깎인다. */
@@ -13669,6 +13790,14 @@ const ENCOUNTERS = {
              ['blackdog', 'namelist'], ['ferryman', 'reaper2'], ['namelist', 'reaperlord']],
     elite:  [['judgehell'], ['reapergen'], ['judgehell', 'blackdog'], ['reapergen', 'namelist']],
     boss:   ['sasindo']
+  },
+  /* 제26막 · 무명궁 — 개발자만 (판 58 기초) */
+  26: {
+    weak:   [['imguard'], ['beadshadow'], ['liveedict']],
+    normal: [['imguard', 'imguard'], ['tombkeep', 'liveedict'], ['beadshadow', 'imguard'], ['tombkeep', 'beadshadow'],
+             ['liveedict', 'liveedict', 'imguard'], ['imguard', 'tombkeep'], ['beadshadow', 'beadshadow'], ['liveedict', 'tombkeep']],
+    elite:  [['goldgen'], ['jadeseal'], ['goldgen', 'liveedict'], ['jadeseal', 'imguard']],
+    boss:   ['emperor26']
   }
 };
 
@@ -14707,6 +14836,7 @@ function devPwDo(k) {
   }
   if (k === 'leap') {
     if (b || G.scene !== 'map') { toast('지도에서만'); return; }
+    if (run.act === LAST_ACT && act26Open()) { closeOverlay(); devPwFx('躍', '#ffd27a'); enterAct26(); return; }
     if (run.act >= LAST_ACT) { toast('마지막 막이다 — 더 건너뛸 곳이 없다'); return; }
     const m = run.map, last = m && m.nodes && m.nodes[m.nodes.length - 1]; if (!last) return;
     closeOverlay(); run.mapCur = last.id; devPwFx('躍', '#9fd8ff'); nextAct(); return;
@@ -18474,8 +18604,9 @@ const ACT_NAME = { 1: '요괴 숲', 2: '안개 봉우리', 3: '구천 벼랑',
                    7: '무저갱', 8: '태초', 9: '환영', 10: '백귀야행',
                    11: '새벽', 12: '인간계', 13: '왕도', 14: '천계', 15: '무',
                    16: '회귀', 17: '기억', 18: '스승', 19: '백년', 20: '산',
-                   21: '사잇길', 22: '천국 문', 23: '천국', 24: '침공', 25: '사신도' };
+                   21: '사잇길', 22: '천국 문', 23: '천국', 24: '침공', 25: '사신도', 26: '무명궁' };
 const LAST_ACT = 25;
+const ACT_MAX = 26;                     /* 제26막은 개발자만 — 모두의 마지막은 여전히 25 */
 /* ── 막마다 요괴가 굵어진다 ────────────────────────────────
    위로 갈수록 체력이 붙고 손이 매워진다. 체력은 가파르게,
    공격력은 완만하게 — 오래 버티되 한 방에 죽지는 않도록.
@@ -18533,11 +18664,12 @@ const ACT_SCALE = {
   22:{ hp: 1.70, dmg: 0.928 },
   23:{ hp: 1.71, dmg: 0.933 },
   24:{ hp: 1.72, dmg: 0.937 },
-  25:{ hp: 1.73, dmg: 0.940 }
+  25:{ hp: 1.73, dmg: 0.940 },
+  26:{ hp: 1.80, dmg: 0.960 }
 };
 /* 막 배율 × 오기(약자 보정). 같은 막에서 거듭 무너진 사람에게는 요괴가 눅는다 */
 function actScale(act) {
-  const a = Math.min(LAST_ACT, Math.max(1, act || 1));
+  const a = Math.min(ACT_MAX, Math.max(1, act || 1));
   const base = ACT_SCALE[a] || ACT_SCALE[1];
   const m = mercyMul(a);
   return m === 1 ? base : { hp: base.hp * m, dmg: base.dmg * m };
@@ -18580,7 +18712,7 @@ function lateSoft(act, kind) {
    ────────────────────────────────────────────────────────── */
 const FINAL_SOFT = { hp: 0.80, dmg: 0.84 };
 function finalSoft(act, kind) {
-  return (act >= LAST_ACT && kind === 'boss') ? FINAL_SOFT : { hp: 1, dmg: 1 };
+  return (act === LAST_ACT && kind === 'boss') ? FINAL_SOFT : { hp: 1, dmg: 1 };
 }
 /* ── 마지막 세 막 ─────────────────────────────────────────
    제23~25막을 통째로 37% 눅인다 — 체력도, 치는 힘도, 막는 힘도.
@@ -18589,7 +18721,7 @@ function finalSoft(act, kind) {
    ────────────────────────────────────────────────────────── */
 const END_SOFT_FROM = 23, END_SOFT_CUT = 0.37;
 function endSoft(act) {
-  return (act || 1) >= END_SOFT_FROM ? 1 - END_SOFT_CUT : 1;
+  return (act || 1) >= END_SOFT_FROM && (act || 1) <= LAST_ACT ? 1 - END_SOFT_CUT : 1;
 }
 /* 환생은 없앴다 (판 44) — 예전 모험에 남은 run.asc 는 아무 힘도 쓰지 않는다. 셈하는 자리는 그대로 두고 값만 1(또는 0)로 */
 const ASC = { gold: () => 1, dia: () => 1, card: () => 1, forge: () => 0, foe: () => 1, hpCut: () => 0 };
@@ -23516,7 +23648,8 @@ const CUT_ACT = {
   22: { sky: ['#2a2410', '#8a7a4a', '#e8dcaa'], ridge: ['#6a5a30', '#4a3e20'], amb: [['gold', .4]], motif: 'heavengate', ent: 'split', path: 'dolly', sfx: 'gong' },
   23: { sky: ['#d8d0b0', '#f0e8d0', '#fffaf0'], moon: [800, 200, 130, '#fff'], ridge: ['#e0d8c0', '#d0c8b0'], amb: [['petal', .35, '#fff4e0'], ['gold', .2]], motif: 'heaven', ent: 'glow', path: 'crane', sfx: 'unlock' },
   24: { sky: ['#140404', '#3a0a0a', '#7a2a10'], ridge: ['#200606', '#140404'], amb: [['ember', 1.1], ['ash', .4, '#3a2a2a']], motif: 'invasion', ent: 'crowd', path: 'whip', sfx: 'boss' },
-  25: { sky: ['#0a0a0e', '#16161e', '#22222c'], ridge: ['#141418', '#0c0c10'], amb: [['inkup', .06], ['ash', .2]], motif: 'scroll', ent: 'scroll', path: 'dolly', sfx: 'gong' }
+  25: { sky: ['#0a0a0e', '#16161e', '#22222c'], ridge: ['#141418', '#0c0c10'], amb: [['inkup', .06], ['ash', .2]], motif: 'scroll', ent: 'scroll', path: 'dolly', sfx: 'gong' },
+  26: { sky: ['#14060a', '#3a0e12', '#8a4a1a'], moon: [800, 520, 110, '#ffcf6a'], ridge: ['#2a140c', '#140a06'], amb: [['gold', .3, '#ffd88a'], ['ember', .2]], motif: 'heavengate', ent: 'descend', path: 'crane', sp: 'weapons', sfx: 'gong' }
 };
 /* 막의 모양 — 가운데 층에 깐다 */
 function cutMotif(k, bc) {
@@ -23854,11 +23987,12 @@ function showAct26Preview() {
     <div class="t26pboss"><i>帝</i><div><b>${ACT26.boss}</b><span>${ACT26.bh} · 보스 · 체력 ???</span></div></div>
     <div class="t26pfoes">${foes.map((f, i) => `<div class="t26pfoe" style="--d:${(i * .12).toFixed(2)}s"><div class="t26psil">${cutYokaiSvg((i % 4) + 1, '#12060c')}<b>?</b></div><b>${f.g}</b><span>${f.n}</span><em>${f.d}</em></div>`).join('')}</div>
     <div class="t26pnote">단오가 다시 곁에 선다 · 새 요괴 · 새 보스 — <b>제26막은 아직 열리지 않았다</b></div>
-    <div class="t26pbtns"><button class="brush-btn red" id="t26_play">▶ 예고편 보기</button><button class="brush-btn ghost" id="t26_close" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 't26prev');
+    <div class="t26pbtns">${act26Open() ? '<button class="brush-btn gold" id="t26_go">개발자 · 바로 들어가기</button>' : ''}<button class="brush-btn red" id="t26_play">▶ 예고편 보기</button><button class="brush-btn ghost" id="t26_close" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>`, 't26prev');
   p.dataset.noauto = '1';
   const shut = () => closeTop();
   p.querySelector('#t26_x').onclick = shut; p.querySelector('#t26_close').onclick = shut;
   p.querySelector('#t26_play').onclick = () => { SND.ui(); closeTop(); act26Trailer(); };
+  { const g = p.querySelector('#t26_go'); if (g) g.onclick = () => { SND.ui(); closeOverlay(); enterAct26(); }; }
   try { SND.gong(); } catch (e) {}
   return p;
 }
@@ -26655,7 +26789,7 @@ function victory() {
   autoStop(); SND.victory(); setTimeout(() => SND.gong(), 400);
   META.wins++; META.best = Math.max(META.best, 30); saveMeta();
   jpGain(G.run, true); noteClear(LAST_ACT);
-  clearReport(G.run);                         /* 마지막 막을 깼다 — 백야에게 알린다 */
+  if ((G.run.act || 0) <= LAST_ACT) clearReport(G.run);   /* 마지막 막을 깼다 — 백야에게 알린다 (26막 시험은 빼고) */
   G.scene = 'win';
   const s = $('#scene');
   const d = el('div', 'endscreen win');
@@ -26666,12 +26800,14 @@ function victory() {
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       <button class="brush-btn t26btn" id="w_26">第26幕 예고편<em>NEW</em></button>
       <button class="brush-btn ghost" id="w_26p" style="color:#e9dfc9;border-color:#8a7f68">미리보기</button>
+      ${act26Open() ? '<button class="brush-btn gold" id="w_26go" title="개발자만">第26幕 들어가기 · 개발자</button>' : ''}
       <button class="brush-btn gold" id="w_title">처음으로</button>
     </div>`;
   s.appendChild(d);
   d.querySelector('#w_title').onclick = () => { clearSave(); G.run = null; d.remove(); showTitle(); };
   d.querySelector('#w_26').onclick = () => { SND.ui(); act26Trailer(); };
   d.querySelector('#w_26p').onclick = () => { SND.ui(); showAct26Preview(); };
+  { const g = d.querySelector('#w_26go'); if (g) g.onclick = () => { SND.ui(); enterAct26(); }; }
   /* 처음 사신도를 넘었을 때 — 예고편이 저절로 한 번 */
   /* 사신도를 넘었다 — 단오의 손을 잡는 이야기, 그다음 예고편 */
   if (!AUTO.on && storyWant('act25')) setTimeout(() => { if (G.scene !== 'win') return;
@@ -36682,7 +36818,7 @@ function showAdmin() {
           여기서 한 것은 그대로 저장된다.<br>
           <span style="color:#8a7f68">선물하기는 아직 없다.</span>
         </p></div>
-        <div class="adrow"><b>막</b><input id="ad_act" type="number" min="1" max="${LAST_ACT}" value="${run ? run.act : 1}"><button class="val" id="ad_go">건너뛴다</button></div>
+        <div class="adrow"><b>막</b><input id="ad_act" type="number" min="1" max="${act26Open() ? ACT_MAX : LAST_ACT}" value="${run ? run.act : 1}"><button class="val" id="ad_go">건너뛴다</button></div>
         <div class="adrow"><b>골드</b><button class="val" id="ad_gold">+99999</button></div>
         <div class="adrow"><b>다이아</b><button class="val" id="ad_dia">+99999</button></div>
         <div class="adrow"><b>정진</b><button class="val" id="ad_jp">+99999</button></div>
@@ -36772,7 +36908,8 @@ function showAdmin() {
   });
   p.querySelector('#ad_go').onclick = () => {
     if (!run) { toast('모험 중에만'); return; }
-    const a = Math.max(1, Math.min(LAST_ACT, +p.querySelector('#ad_act').value || 1));
+    const a = Math.max(1, Math.min(act26Open() ? ACT_MAX : LAST_ACT, +p.querySelector('#ad_act').value || 1));
+    if (a === 26) { closeOverlay(); enterAct26(); return; }
     run.act = a; noteClear(a - 1);
     run.map = genMap(a); run.mapCur = -1; run.mapDone = []; run.floor = 0; run.bossPick = null;
     saveRun(); closeOverlay(); toast(`제${a}막으로`); showMap();
@@ -38834,6 +38971,31 @@ function bgScene(a, PAL, SKY) {
       S.floor = .4;
       break;
     }
+    case 26: {   /* 무명궁 — 황금빛 노을 아래 끝없는 전각, 하늘에 드리운 구슬발(旒), 줄 선 친위, 오르는 금가루 */
+      S.astro = bgAstro({ x: 500, y: 300, r: 130, col: '#ffcf6a', glow: '#ff9a3a', k: 'sun big', op: .55 });
+      S.art = `<g>${rep(19, i => { const x = 30 + i * 52, len = 70 + (i % 3) * 24 + (i % 2) * 10;
+          return `<g class="bgbead" style="transform-origin:${x}px 0px;--k:${(-i * .37).toFixed(2)}s"><line x1="${x}" y1="0" x2="${x}" y2="${len}" stroke="#c8a040" stroke-width="1.2" opacity=".55"/>${rep(5, k => `<circle cx="${x}" cy="${12 + k * (len - 14) / 4}" r="3.4" fill="${['#e0b850', '#b8322a', '#5ab88a'][(i + k) % 3]}" opacity=".75"/>`)}</g>`; })}</g>`;
+      const pf = bgPeaks(bgGenPk(2601, 7, 300, 360, 110, 170, 1.4, 2), 420, 1.6, 2601);
+      const pc = '#1e0c08', gold = '#ffcf6a';
+      S.far = bgRidge('rf26', pf, '#3a1a10', '#8a4a1a', { lift: .45, op: .85 }) +
+        `<g fill="${pc}" opacity=".92">${bgHall(500, 400, 380, pc, '#000000')}${bgHall(500, 318, 250, pc, '#000000')}${bgHall(500, 252, 150, pc, '#000000')}
+          ${bgHall(210, 410, 170, pc, '#000000')}${bgHall(790, 410, 170, pc, '#000000')}</g>
+        <g class="bgflick" style="--k:.4s">${rep(6, i => `<rect x="${404 + i * 34}" y="370" width="10" height="16" fill="${gold}" opacity=".55"/>`)}${rep(4, i => `<rect x="${448 + i * 30}" y="296" width="8" height="12" fill="${gold}" opacity=".5"/>`)}</g>`;
+      const wy = 470, wc = '#2a120a';
+      S.mid = `<rect x="0" y="${wy}" width="1000" height="130" fill="${wc}"/>${rep(40, i => `<rect x="${i * 25 + 4}" y="${wy - 9}" width="16" height="9" fill="${wc}"/>`)}
+        <rect x="0" y="${wy}" width="1000" height="3" fill="${gold}" opacity=".25"/>
+        <rect x="400" y="${wy - 30}" width="200" height="60" fill="#160806"/><path d="M466,${wy + 30}v-34a34,34 0 0 1 68,0v34Z" fill="#000" opacity=".8"/>
+        ${bgRoof(500, wy - 30, 250, 40, '#160806')}
+        ${[300, 700].map((x, i) => `<rect x="${x}" y="${wy - 150}" width="3" height="150" fill="${wc}"/><path class="bgflag" style="--k:${i * .7}s;transform-origin:${x + 3}px ${wy - 148}px" d="M${x + 3},${wy - 148}q22,6 46,0q-6,16 0,34q-24,6 -46,0Z" fill="#a8272c" opacity=".9"/><text x="${x + 24}" y="${wy - 124}" text-anchor="middle" font-size="14" font-family="serif" fill="${gold}" opacity=".85">龍</text>`).join('')}`;
+      S.near = `<defs><linearGradient id="yd26" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3a1a0c"/><stop offset="1" stop-color="#0c0604"/></linearGradient></defs>
+        <rect x="0" y="540" width="1000" height="60" fill="url(#yd26)"/>
+        <g>${rep(8, i => { const x = 60 + i * 126; return bgHood(x, 512, 40, '#0c0604', .9) + `<line x1="${x + 16}" y1="470" x2="${x + 16}" y2="590" stroke="#0c0604" stroke-width="3"/><path d="M${x + 12},470l4,-14l4,14Z" fill="#c8a040" opacity=".7"/>`; })}</g>
+        <g>${[150, 850].map((x, i) => `<g class="bgflick" style="--k:${i * .6}s">${bgLantern(x, 520, 10, '#ffb45a', .9)}</g>`).join('')}</g>`;
+      S.mist = [[58, 14, '#c8902a', .3, 70]];
+      S.fx = bgFx('gold', 18, '#ffd86a', 2602, { d: 16 }) + bgFx('ember', 8, '#ff9a4a', 2603, { d: 12 });
+      S.floor = .3;
+      break;
+    }
   }
   return S;
 }
@@ -38863,7 +39025,7 @@ function setBg(act) {
   if (act === 'lab') { setLabBg(); return; }
   if (act === 'cave') { setCaveBg(); return; }
   if (act === 'pvp') { setMpBg($('#bg')); return; }
-  const a = Math.min(LAST_ACT, Math.max(1, act || 1));
+  const a = Math.min(ACT_MAX, Math.max(1, act || 1));
   const PAL = {
     1: ['#c3b79d', '#a89c82', '#7b7260'], 2: ['#b9ac92', '#9c9078', '#6d6555'],
     3: ['#9d95a8', '#7d7488', '#4e4857'], 4: ['#7f7a8e', '#5f5a70', '#38344a'],
@@ -38878,7 +39040,7 @@ function setBg(act) {
     20: ['#7e7a6a', '#5c584a', '#33302a'],
     21: ['#8a8fa0', '#666b7e', '#3c4050'], 22: ['#e2dcc0', '#c2b898', '#8e8466'],
     23: ['#cfdcec', '#a4b9d6', '#6e86a8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
-    25: ['#4a4038', '#2e2620', '#140f0c']
+    25: ['#4a4038', '#2e2620', '#140f0c'], 26: ['#6a4a24', '#3a2414', '#1a0e08']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
   const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
@@ -38900,7 +39062,8 @@ function setBg(act) {
                 22: '#fffbe8 0%,#f4ead0 46%,#dcceac 100%',
                 23: '#f6faff 0%,#dbe8f8 50%,#b4c8e4 100%',
                 24: '#ffd0a0 0%,#e0705a 34%,#8a2a30 68%,#2a0e14 100%',
-                25: '#1a1512 0%,#0e0a08 46%,#000 100%' }[a];
+                25: '#1a1512 0%,#0e0a08 46%,#000 100%',
+                26: '#14060a 0%,#3a0e12 38%,#8a4a1a 74%,#c8902a 100%' }[a];
   $('#bg').innerHTML = bgPaint(a, PAL, SKY);
   try { eggBg(a); } catch (e) {}
 }
