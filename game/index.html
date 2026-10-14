@@ -14941,6 +14941,7 @@ async function doMove(e, m) {
   const b = G.b;
   if (!b || b.over) return;                 /* 도중에 전투가 사라졌을 수 있다 */
   logAdd('hurt', `${e.n} — ${m.label}`, 0);
+  try { SND.cry(e, m.d ? 'atk' : 'buff'); } catch (x) {}      /* 요괴마다 제 목소리 */
   /* 콜로세움 — 상대가 내는 부적을 눈에 보이게 띄운다 */
   /* 판 55 — 수의 이름을 읽어 갈래를 정하고, 그 갈래의 이름패 · 날아가는 것 · 맞는 그림으로 친다 */
   const th = eatkTheme(e, m), dmg0 = m.d && P() ? calcAtk(e, P(), m.d) : 0;
@@ -14970,7 +14971,7 @@ async function doMove(e, m) {
       if (r.hp >= 14) { rushVignette('rgba(190,30,30,.5)'); hitstop(r.hp >= 26); }
       if (r.hp >= 22) { rgbSplit(); zoomPunch();
         lightBeam(pc.x, 'rgba(255,90,90,.45)', 150); }
-      SND.hit(dmg > 14 ? 2 : 1); shake(dmg > 14);
+      SND.hit(dmg > 14 ? 2 : 1, -.35); shake(dmg > 14);
       if ((EATK[th] || {}).proj) lunge(e);                  /* 몸으로 치는 수는 이미 달려들었다 */
       if (P().s.thorns) pure(e, P().s.thorns);
       syncAll();
@@ -16799,7 +16800,7 @@ function hitFx(ent, hpDmg, blocked, splash) {
     $('#app').appendChild(n); setTimeout(() => n.remove(), 1000);
     ent.el.classList.remove('hurt'); void ent.el.offsetWidth; ent.el.classList.add('hurt');
     if (splash) {
-      FX.blood(cx, cy, Math.min(26, 8 + hpDmg)); SND.hit(hpDmg > 12 ? 2 : 1);
+      FX.blood(cx, cy, Math.min(26, 8 + hpDmg)); SND.hit(hpDmg > 12 ? 2 : 1, ent.isPlayer ? -.35 : .35);
       /* 옷을 입은 부적이 때리면 그 빛깔의 불티가 함께 튄다 */
       if (FX_TINT && !ent.isPlayer)
         FX.burst(cx, cy, Math.min(16, 5 + (hpDmg >> 1)), hexRgb(shade(FX_TINT, .2)), 5, 38, 3.8);
@@ -17273,7 +17274,7 @@ function killFx(e) {
     m.style.left = c.x + 'px'; m.style.top = c.y + 'px';
     $('#app').appendChild(m); setTimeout(() => m.remove(), 1000);
   }
-  SND.death();
+  SND.death(e);
   hitstop(big || over);
   if (over) { SND.crit(); screenFlash('rgba(255,190,90,.34)', 420); }
   if (big) { screenFlash('rgba(255,210,120,.42)', 520); SND.gong(); shake(true); }
@@ -35217,6 +35218,385 @@ function storyAfterAct(a, bossId) {
 for (const k of STORY_ORDER) if (STORY57[k]) CUT_LIST['st_' + k] = { n: '이야기 · ' + STORY57[k].n, make: () => null };
 /* 컷씬 다시보기 — 이 판 전에 넘은 막의 이야기도 열어 둔다 */
 const stGalOpen = k => { const D = STORY57[k.slice(3)]; return !!D && (k === 'st_opening' || (META.cleared || 0) >= (D.pre ? D.act - 1 : D.act)); };
+/* ══ 소리 더 다양하게 (판 58) ═══════════════════════════════════════
+   예전 효과음은 대부분 사인파 하나 · 잡음 하나라서, 누르는 소리 · 틀린 소리 · 징 · 열림이
+   매번 거의 같은 높이 같은 결로 들렸다(가장 많이 나는 소리 넷이 600번 넘게 불린다).
+   · 악기를 새로 지었다 — 목탁(나무) · 편종(쇠, FM) · 가야금 뜯기(배음) · 대금 숨 · 바라 · 나각(소라 나팔)
+   · 막마다 악기 빛깔이 다르다: 누르는 소리가 1~5막은 나무, 6~9막은 놋그릇, 10~15막은 방울,
+     16~20막은 가야금, 21~25막은 유리 같은 종. 높이는 그 막의 다섯 음(계면조 · 평조) 안에서
+     한 걸음씩 걸어 다녀 누를 때마다 가락이 된다
+   · 징 · 종 · 열림 · 이김 · 짐 · 틀림 · 큰 것 등장에 갈래를 여럿 — 잇달아 같은 것이 안 나온다
+   · 요괴마다 제 울음 — 이름으로 높이 · 목청(으르렁 · 울부짖음 · 찢는 소리 · 쉭 · 딱딱 · 신음 · 포효)을
+     정해 칠 때 · 힘 모을 때 · 쓰러질 때 운다. 같은 요괴는 언제나 같은 목소리
+   · 좌우: 내가 맞으면 왼쪽, 요괴가 맞으면 오른쪽에서 들린다
+   ══════════════════════════════════════════════════════════════ */
+Object.assign(SND, {
+  /* 소리를 내보낸다 — 좌우(pan) · 잔향(rev) */
+  _out(g, o) {
+    const c = this.ctx;
+    if (o && o.pan && c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, o.pan)); g.connect(p); p.connect(this.master); }
+    else g.connect(this.master);
+    if (o && o.rev) { const r = c.createGain(); r.gain.value = o.rev; g.connect(r); r.connect(this.revSend); }
+  },
+  blip(freq, o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0);
+    const dur = this.vary(o.dur || .2, .06);
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(this.vary(freq, o.jit == null ? .02 : o.jit), t0);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(Math.max(18, o.to), t0 + dur);
+    if (o.detune) osc.detune.setValueAtTime(o.detune, t0);
+    const vol = (o.vol == null ? .14 : o.vol);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + (o.atk || .006));
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(g); this._out(g, o);
+    osc.start(t0); osc.stop(t0 + dur + .06);
+  },
+  hiss(o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0);
+    const dur = this.vary(o.dur || .18, .08);
+    const s = c.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true;
+    s.playbackRate.value = this.vary(1, .2);
+    const f = c.createBiquadFilter();
+    f.type = o.filter || 'lowpass'; f.Q.value = o.q || 1;
+    f.frequency.setValueAtTime(this.vary(o.freq || 1400, .1), t0);
+    if (o.to) f.frequency.exponentialRampToValueAtTime(Math.max(80, o.to), t0 + dur);
+    const g = c.createGain(), vol = (o.vol == null ? .14 : o.vol);
+    g.gain.setValueAtTime(.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + (o.atk || .004));
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    s.connect(f).connect(g); this._out(g, o);
+    s.start(t0); s.stop(t0 + dur + .06);
+  },
+  /* ── 새 악기 ── */
+  /* FM — 쇠붙이 · 종 · 놋그릇. ratio 가 어긋날수록 쇳소리, idx 가 클수록 밝게 터진다 */
+  fm(f, o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0), dur = this.vary(o.dur || 1, .05);
+    const car = c.createOscillator(), mod = c.createOscillator(), mg = c.createGain(), g = c.createGain();
+    const ff = this.vary(f, o.jit == null ? .012 : o.jit);
+    car.frequency.setValueAtTime(ff, t0); mod.frequency.setValueAtTime(ff * (o.ratio || 3.5), t0);
+    if (o.to) car.frequency.exponentialRampToValueAtTime(Math.max(20, o.to), t0 + dur);
+    const idx = ff * (o.idx == null ? 3 : o.idx);
+    mg.gain.setValueAtTime(idx, t0); mg.gain.exponentialRampToValueAtTime(Math.max(1, idx * .04), t0 + dur * (o.bright || .5));
+    mod.connect(mg).connect(car.frequency);
+    const vol = o.vol == null ? .08 : o.vol;
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + (o.atk || .004)); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    car.connect(g); this._out(g, o);
+    car.start(t0); mod.start(t0); car.stop(t0 + dur + .05); mod.stop(t0 + dur + .05);
+  },
+  /* 목탁 · 박 — 짧게 똑 */
+  wood(f, o) {
+    o = o || {};
+    this.blip(f, { dur: o.dur || .08, type: 'sine', vol: (o.vol || .1), to: f * .82, pan: o.pan, delay: o.delay, rev: o.rev == null ? .18 : o.rev });
+    this.blip(f * 2.71, { dur: .028, type: 'sine', vol: (o.vol || .1) * .45, pan: o.pan, delay: o.delay });
+    this.hiss({ dur: .018, vol: (o.vol || .1) * .5, freq: f * 6, filter: 'bandpass', q: 3, pan: o.pan, delay: o.delay });
+  },
+  /* 가야금 뜯기 — 배음이 높을수록 빨리 사그라든다, 처음에 살짝 눌러 올린다 */
+  pluck(f, o) {
+    o = o || {};
+    const v = o.vol || .07, d = o.dur || 1.1;
+    [[1, 1], [2, .5], [3, .3], [4, .18], [5, .1]].forEach(([n, a]) =>
+      this.blip(f * n * (n > 1 ? 1.002 : 1), { dur: d / Math.sqrt(n), type: n === 1 ? 'triangle' : 'sine', vol: v * a, pan: o.pan, delay: o.delay, rev: o.rev == null ? .45 : o.rev, jit: .003 }));
+    this.hiss({ dur: .03, vol: v * .7, freq: f * 4, filter: 'bandpass', q: 2.5, pan: o.pan, delay: o.delay });
+    if (o.bend) this.blip(f * .97, { dur: .14, type: 'sine', vol: v * .4, to: f * 1.03, pan: o.pan, delay: (o.delay || 0) + .02 });
+  },
+  /* 대금 한 숨 — 효과음용 (음악 버스가 아니다) */
+  flute(f, o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0), dur = o.dur || .8, vol = o.vol || .06;
+    const osc = c.createOscillator(), g = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(f * .985, t0); osc.frequency.exponentialRampToValueAtTime(o.to || f, t0 + Math.min(.12, dur * .3));
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t0 + dur);
+    lfo.frequency.value = 5.2; lg.gain.value = f * .01; lfo.connect(lg).connect(osc.frequency);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + dur * .25); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(g); this._out(g, Object.assign({ rev: .6 }, o));
+    osc.start(t0); lfo.start(t0); osc.stop(t0 + dur + .05); lfo.stop(t0 + dur + .05);
+    this.hiss({ dur: dur * .9, vol: vol * .4, freq: f * 3, filter: 'bandpass', q: 1.8, atk: dur * .2, pan: o.pan, delay: o.delay, rev: .4 });
+  },
+  /* 나각 — 소라 나팔. 낮고 길게, 거칠게 */
+  horn(f, o) {
+    if (!this.ok()) return;
+    o = o || {};
+    const c = this.ctx, t0 = c.currentTime + (o.delay || 0), dur = o.dur || 1.6, vol = o.vol || .07;
+    const osc = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(f * .94, t0); osc.frequency.linearRampToValueAtTime(f, t0 + .25);
+    osc.frequency.setValueAtTime(f, t0 + dur * .8); osc.frequency.exponentialRampToValueAtTime(f * .9, t0 + dur);
+    lp.type = 'lowpass'; lp.Q.value = 4; lp.frequency.setValueAtTime(f * 2, t0); lp.frequency.linearRampToValueAtTime(f * 5, t0 + .3); lp.frequency.exponentialRampToValueAtTime(f * 2.2, t0 + dur);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + .22); g.gain.setValueAtTime(vol, t0 + dur * .75); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(lp).connect(g); this._out(g, Object.assign({ rev: .7 }, o));
+    osc.start(t0); osc.stop(t0 + dur + .05);
+  },
+  /* 바라 — 쇳조각이 부딪는 긴 울림 */
+  cymbal(o) {
+    o = o || {};
+    this.hiss({ dur: o.dur || 1.4, vol: o.vol || .07, freq: 7000, to: 3000, filter: 'highpass', rev: .6, pan: o.pan, delay: o.delay });
+    [3170, 4730, 6210].forEach((f, i) => this.fm(f, { dur: (o.dur || 1.4) * .7, ratio: 1.41, idx: 2, vol: (o.vol || .07) * .25, delay: (o.delay || 0) + i * .005, pan: o.pan, rev: .5 }));
+  },
+  /* ── 막의 빛깔 ── */
+  actNo() { return (this.music && this.music.act) || (typeof G === 'object' && G.run && G.run.act) || 1; },
+  /* 그 막의 다섯 음 안에서 한 걸음씩 — 누를 때마다 가락이 된다 */
+  _walk: 0,
+  walkNote(key, oct) {
+    const S = this.bgmSet(this.actNo()), L = S.scale.length;
+    const st = [-2, -1, 1, 1, 2, -1, 1][(Math.random() * 7) | 0];
+    this._walk = Math.max(0, Math.min(L * 2, this._walk + st));
+    const deg = this._walk, n = S.scale[deg % L] + 12 * Math.floor(deg / L);
+    let f = S.root * Math.pow(2, (n + 12 * (oct == null ? 2 : oct)) / 12);
+    while (f > 2400) f /= 2; while (f < 400) f *= 2;
+    return f;
+  },
+  actVoice() { const a = this.actNo(); return a <= 5 ? 'wood' : a <= 9 ? 'bowl' : a <= 15 ? 'bell' : a <= 20 ? 'pluck' : 'glass'; },
+  /* 그 막의 악기로 음 하나 */
+  actTone(f, o) {
+    o = o || {};
+    const v = o.voice || this.actVoice(), vol = o.vol || .06;
+    if (v === 'wood') this.wood(f * .5, { vol: vol * 1.3, pan: o.pan, delay: o.delay });
+    else if (v === 'bowl') this.fm(f * .5, { ratio: 2.76, idx: 1.2, dur: .55, vol: vol, pan: o.pan, delay: o.delay, rev: .5 });
+    else if (v === 'bell') this.fm(f, { ratio: 3.5, idx: 1.6, dur: .32, vol: vol * .8, pan: o.pan, delay: o.delay, rev: .4 });
+    else if (v === 'pluck') this.pluck(f * .5, { vol: vol, dur: .5, pan: o.pan, delay: o.delay, rev: .3 });
+    else this.fm(f, { ratio: 1.0, idx: .6, dur: .4, vol: vol * .9, pan: o.pan, delay: o.delay, rev: .55 });
+  },
+  /* ── 자주 나는 소리 — 갈래를 늘린다 ── */
+  ui() {
+    const f = this.walkNote('ui');
+    this.actTone(f, { vol: .055 });
+    this.hiss({ dur: .02, vol: .03, freq: 5200, filter: 'highpass' });
+  },
+  select() {
+    const f = this.walkNote('ui');
+    this.actTone(f, { vol: .05 }); this.actTone(f * 1.5, { vol: .035, delay: .05 });
+    this.hiss({ dur: .05, vol: .05, freq: 2600, filter: 'bandpass', q: 2 });
+  },
+  err() {
+    switch (this.pickVar('err', 4)) {
+      case 0: this.wood(196, { vol: .12 }); this.wood(185, { vol: .1, delay: .09 }); break;                    /* 목탁 두 번 — 아니다 */
+      case 1: this.pluck(147, { vol: .08, dur: .5 }); this.blip(147, { dur: .3, type: 'sine', vol: .05, to: 118, delay: .05 }); break;  /* 줄이 처진다 */
+      case 2: this.fm(233, { ratio: 1.41, idx: 2.2, dur: .32, vol: .07, to: 196 }); this.hiss({ dur: .08, vol: .05, freq: 500 }); break;  /* 둔한 쇠 */
+      default: this.blip(140, { dur: .16, type: 'square', vol: .08, to: 96 }); this.hiss({ dur: .1, vol: .06, freq: 420 });
+    }
+  },
+  /* 징 · 편종 · 바라 · 범종 */
+  gong() {
+    switch (this.pickVar('gong', 4)) {
+      case 0: {
+        const f = this.vary(96, .05);
+        [[1, .2], [1.48, .1], [2.37, .07], [3.9, .04], [6.1, .022]].forEach(([m, v]) =>
+          this.blip(f * m * this.vary(1, .01), { dur: 2.6 / Math.pow(m, .35), type: 'sine', vol: v, rev: 1, jit: .005 }));
+        this.hiss({ dur: 1.1, vol: .09, freq: 900, to: 160, rev: .9 }); break;
+      }
+      case 1: {   /* 편종 — 맑은 쇠 */
+        const f = [262, 294, 220][this.pickVar('pj', 3)];
+        this.fm(f, { ratio: 2.76, idx: 3, dur: 2.2, vol: .1, rev: .9, bright: .3 });
+        this.fm(f * 2, { ratio: 3.1, idx: 1.5, dur: 1.2, vol: .04, rev: .7, delay: .01 });
+        this.blip(f / 2, { dur: 1.6, type: 'sine', vol: .08, rev: .8 }); break;
+      }
+      case 2: {   /* 범종 — 아주 낮게, 맥놀이 */
+        const f = this.vary(72, .04);
+        this.fm(f, { ratio: 2.4, idx: 2.4, dur: 3.4, vol: .14, rev: 1, bright: .25 });
+        this.blip(f * 1.01, { dur: 3.2, type: 'sine', vol: .1, rev: 1 });
+        this.blip(f * 2.03, { dur: 2.2, type: 'sine', vol: .05, rev: .9 }); break;
+      }
+      default: {  /* 징에 바라를 얹는다 */
+        const f = this.vary(110, .04);
+        [[1, .17], [1.52, .08], [2.4, .05]].forEach(([m, v]) => this.blip(f * m, { dur: 2 / Math.pow(m, .3), type: 'sine', vol: v, rev: 1 }));
+        this.cymbal({ dur: 1.2, vol: .06, delay: .01 });
+      }
+    }
+  },
+  /* 종 · 풍경 · 방울 */
+  bell() {
+    switch (this.pickVar('bell', 4)) {
+      case 0: {
+        const f = this.vary([740, 622, 880][this.pickVar('bellf', 3)], .02);
+        [[1, .12], [2.76, .05], [5.4, .028], [8.9, .015]].forEach(([m, v]) => this.blip(f * m, { dur: 1.5 / Math.sqrt(m), type: 'sine', vol: v, rev: .9, jit: .004 })); break;
+      }
+      case 1:   /* 풍경 — 바람에 서넛이 엇갈려 */
+        for (let i = 0; i < 4; i++) this.fm(this.walkNote('bell', 3), { ratio: 3.5, idx: 1.4, dur: .9, vol: .045, delay: i * (.07 + Math.random() * .08), rev: .8, pan: (Math.random() - .5) * .8 });
+        break;
+      case 2:   /* 방울 — 잘게 흔들린다 */
+        for (let i = 0; i < 7; i++) this.fm(this.vary(2200, .06), { ratio: 1.6, idx: 1.2, dur: .12, vol: .03, delay: i * .035, rev: .4, pan: (i % 2 ? .3 : -.3) });
+        break;
+      default:  /* 놋그릇 — 길게 우는 하나 */
+        this.fm(this.vary(523, .03), { ratio: 2.76, idx: 1, dur: 2.4, vol: .08, rev: .9, bright: .2 });
+    }
+  },
+  /* 열렸다 — 가야금 훑기 · 종 쏟아짐 · 대금 오름 · 예전 것 */
+  unlock() {
+    const S = this.bgmSet(this.actNo()), note = (d, o) => S.root * Math.pow(2, (S.scale[d % 5] + 12 * (Math.floor(d / 5) + (o || 1))) / 12);
+    switch (this.pickVar('unlock', 4)) {
+      case 0: for (let i = 0; i < 7; i++) this.pluck(note(i + 2, 1), { vol: .055, dur: .9, delay: i * .045 }); break;
+      case 1: for (let i = 0; i < 6; i++) this.fm(note(12 - i, 1), { ratio: 3.5, idx: 1.5, dur: .9, vol: .05, delay: i * .06, rev: .8 });
+              this.hiss({ dur: .6, vol: .05, freq: 3000, to: 9000, filter: 'bandpass', q: 1.4, rev: .7 }); break;
+      case 2: this.flute(note(5, 1), { dur: .35, vol: .05 }); this.flute(note(7, 1), { dur: .35, vol: .05, delay: .2 }); this.flute(note(10, 1), { dur: .9, vol: .06, delay: .4 });
+              this.fm(note(10, 2), { ratio: 3.5, idx: 1, dur: 1, vol: .03, delay: .45, rev: .8 }); break;
+      default:
+        [392, 523, 659, 880, 1174].forEach((f, i) => this.blip(f, { dur: .7, type: 'triangle', vol: .09, delay: i * .07, rev: .85 }));
+        this.hiss({ dur: .5, vol: .07, freq: 2200, to: 7000, filter: 'bandpass', q: 1.4, rev: .7 });
+    }
+  },
+  /* 엽전 — 놋쇠 결로 */
+  coin() {
+    const k = 2 + this.pickVar('coinN', 3), base = [1250, 1080, 1420, 1640][this.pickVar('coin', 4)], fmV = Math.random() < .5;
+    for (let i = 0; i < k; i++) {
+      const f = this.vary(base + i * 260, .07), d = i * (.035 + Math.random() * .03), pan = (Math.random() - .5) * .5;
+      if (fmV) this.fm(f, { ratio: 2.1, idx: 1.4, dur: .14, vol: .045, delay: d, rev: .35, pan });
+      else this.blip(f, { dur: .1, type: 'square', vol: .045, delay: d, rev: .35, pan });
+    }
+  },
+  heal() {
+    const v = this.pickVar('heal', 4);
+    if (v === 3) { const S = this.bgmSet(this.actNo()); [0, 2, 4, 7].forEach((d, i) => this.flute(S.root * 2 * Math.pow(2, S.scale[d % 5] / 12) * (d >= 5 ? 2 : 1), { dur: .5, vol: .045, delay: i * .1 })); return; }
+    const CH = [[523, 659, 784, 1046], [440, 554, 659, 880], [587, 740, 880, 1174]];
+    CH[v].forEach((f, i) => this.blip(f, { dur: .55, type: 'sine', vol: .08, delay: i * .055, rev: .7 }));
+    this.fm(CH[v][3] * 2, { ratio: 3.5, idx: .8, dur: .6, vol: .02, delay: .2, rev: .8 });
+  },
+  power() {
+    switch (this.pickVar('power', 3)) {
+      case 0:
+        [196, 294, 392, 587].forEach((f, i) => this.blip(f, { dur: .75, type: 'triangle', vol: .07, to: f * 1.5, delay: i * .05, rev: .8 }));
+        this.hiss({ dur: .5, vol: .05, freq: 600, to: 5000, filter: 'bandpass', q: 1.2, rev: .5 }); break;
+      case 1:   /* 기가 모여 솟는다 — 낮은 쇠 + 오르는 숨 */
+        this.fm(147, { ratio: 2, idx: 4, dur: 1.1, vol: .08, to: 294, rev: .8 });
+        this.hiss({ dur: .7, vol: .06, freq: 400, to: 6000, filter: 'bandpass', q: 2, rev: .6 }); break;
+      default:  /* 장구 한 장단 위로 화음 */
+        this.blip(96, { dur: .3, type: 'sine', vol: .14, to: 50 }); this.hiss({ dur: .06, vol: .08, freq: 2400, filter: 'bandpass', q: 2, delay: .12 });
+        [392, 494, 587].forEach((f, i) => this.pluck(f, { vol: .045, dur: .8, delay: .14 + i * .04 }));
+    }
+  },
+  charge() {
+    switch (this.pickVar('charge', 3)) {
+      case 0:
+        this.blip(90, { dur: .9, type: 'sawtooth', vol: .09, to: 340, rev: .6 });
+        this.hiss({ dur: .8, vol: .07, freq: 300, to: 3000, filter: 'bandpass', q: 1.1, rev: .6 }); break;
+      case 1:   /* 바람이 말려 든다 */
+        this.hiss({ dur: 1, vol: .09, freq: 5000, to: 300, filter: 'bandpass', q: 3, rev: .6 });
+        this.fm(70, { ratio: 1.5, idx: 5, dur: 1, vol: .07, to: 150, rev: .5 }); break;
+      default:  /* 낮은 울림이 차오른다 */
+        this.horn(73, { dur: 1, vol: .06 }); this.hiss({ dur: .9, vol: .05, freq: 200, to: 1800, filter: 'lowpass', rev: .6 });
+    }
+  },
+  /* 큰 것이 나타난다 — 징 + 나각 / 큰북 굴림 / 범종 */
+  boss() {
+    switch (this.pickVar('boss', 3)) {
+      case 0: this.gong(); this.blip(48, { dur: 2.4, type: 'sine', vol: .15, to: 34, rev: .7 }); this.hiss({ dur: 1.8, vol: .06, freq: 260, to: 70, rev: .8, delay: .1 }); break;
+      case 1: this.horn(98, { dur: 2, vol: .08 }); this.horn(147, { dur: 1.6, vol: .04, delay: .3 }); this.blip(49, { dur: 2, type: 'sine', vol: .14, to: 36, rev: .8 }); break;
+      default:
+        for (let i = 0; i < 8; i++) this.blip(this.vary(70 + (i % 2) * 8, .04), { dur: .26, type: 'sine', vol: .07 + i * .012, to: 40, delay: i * .085 });
+        this.fm(65, { ratio: 2.4, idx: 3, dur: 3, vol: .12, delay: .7, rev: 1, bright: .3 });
+    }
+  },
+  victory() {
+    const S = this.bgmSet(this.actNo()), n = (d, o) => S.root * Math.pow(2, (S.scale[d % 5] + 12 * (Math.floor(d / 5) + o)) / 12);
+    switch (this.pickVar('victory', 3)) {
+      case 0:
+        [523, 659, 784, 1046, 1318].forEach((f, i) => this.blip(f, { dur: .9, type: 'sine', vol: .09, delay: i * .1, rev: .85 }));
+        this.blip(261, { dur: 2, type: 'triangle', vol: .07, delay: .1, rev: .9 }); break;
+      case 1:   /* 장구 덩 — 가야금이 달려 오른다 */
+        this.blip(96, { dur: .35, type: 'sine', vol: .16, to: 50 }); this.hiss({ dur: .08, vol: .1, freq: 2400, filter: 'bandpass', q: 2 });
+        for (let i = 0; i < 8; i++) this.pluck(n(i + 3, 1), { vol: .05, dur: i === 7 ? 1.6 : .7, delay: .12 + i * .07 });
+        this.fm(n(10, 1), { ratio: 3.5, idx: 1.2, dur: 1.6, vol: .04, delay: .7, rev: .9 }); break;
+      default:  /* 종 셋에 대금 가락 */
+        [0, 2, 4].forEach((d, i) => this.fm(n(d + 5, 1), { ratio: 2.76, idx: 1.4, dur: 1.8, vol: .05, delay: i * .12, rev: .9 }));
+        [5, 7, 9, 10].forEach((d, i) => this.flute(n(d, 1), { dur: i === 3 ? 1.2 : .32, vol: .05, delay: .35 + i * .22 }));
+    }
+  },
+  lose() {
+    switch (this.pickVar('lose', 3)) {
+      case 0:
+        [392, 349, 294, 196].forEach((f, i) => this.blip(f, { dur: 1.1, type: 'triangle', vol: .09, delay: i * .22, rev: .8 }));
+        this.blip(65, { dur: 3, type: 'sine', vol: .09, delay: .3, rev: .9 }); break;
+      case 1:   /* 대금이 꺾여 내려간다 */
+        this.flute(392, { dur: 1.2, vol: .06, to: 330 }); this.flute(294, { dur: 1.6, vol: .055, delay: 1.1, to: 262 });
+        this.fm(55, { ratio: 2.4, idx: 2, dur: 3.2, vol: .1, delay: .4, rev: 1, bright: .2 }); break;
+      default:  /* 줄이 하나씩 끊긴다 */
+        [330, 294, 247, 196, 147].forEach((f, i) => this.pluck(f, { vol: .06, dur: 1.2, delay: i * .3, bend: true }));
+        this.gong();
+    }
+  },
+  thunder() {
+    const v = this.pickVar('thunder', 2);
+    this.hiss({ dur: .1, vol: .22, freq: 9000, to: 2000, filter: 'highpass', rev: .3 });
+    this.blip(this.vary(v ? 54 : 70), { dur: v ? 1.6 : 1.1, type: 'sine', vol: .2, to: 30, rev: .8 });
+    this.hiss({ dur: v ? 1.4 : .8, vol: .1, freq: v ? 900 : 1600, to: 160, delay: .05, rev: .8 });
+    if (v) for (let i = 0; i < 3; i++) this.hiss({ dur: .2, vol: .06, freq: 600, to: 200, delay: .3 + i * .22, rev: .7 });
+  },
+  /* 맞는 소리 — 좌우를 받는다(내가 맞으면 왼쪽) */
+  hit(power, pan) {
+    const p = power || 1, pn = pan == null ? 0 : pan;
+    const v = this.pickVar('hit', 4);
+    const lo = [165, 138, 196, 120][v], mid = [1500, 1050, 2100, 1300][v];
+    this.blip(this.vary(lo - 34 * p, .08), { dur: .17 + .05 * p, type: v === 2 ? 'sawtooth' : 'triangle', vol: .17, to: 42, rev: .2, pan: pn });
+    this.hiss({ dur: .1 + .05 * p, vol: .17, freq: mid + 500 * p, to: 260, filter: v === 1 ? 'lowpass' : 'bandpass', q: 1, rev: .25, pan: pn });
+    this.blip(this.vary(60, .1), { dur: .22, type: 'sine', vol: .13 + .05 * p, to: 30, pan: pn * .5 });
+    if (v === 3) this.fm(this.vary(420), { ratio: 1.41, idx: 3, dur: .16, vol: .05, pan: pn });
+    if (p > 1.5) this.hiss({ dur: .3, vol: .08, freq: 700, to: 150, rev: .6, delay: .02, pan: pn });
+  },
+  /* ── 요괴의 목소리 ── */
+  _cryAt: 0,
+  cryOf(e) {
+    const id = (e && (e.id || (e.def && e.def.id) || e.n)) || 'x';
+    let h = 2166136261; for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619); }
+    h >>>= 0;
+    const boss = !!(e && (e.boss || (e.def && e.def.boss))), elite = !!(e && (e.elite || (e.def && e.def.elite)));
+    const kinds = ['growl', 'howl', 'screech', 'hiss', 'chitter', 'moan', 'roar'];
+    const VOW = [[800, 1150], [450, 800], [325, 700], [400, 1600], [300, 2300], [600, 1000]];
+    return { kind: kinds[h % kinds.length], f0: (boss ? 55 : elite ? 85 : 120) * Math.pow(2, ((h >>> 3) % 24) / 12), vow: VOW[(h >>> 8) % VOW.length], vib: 3 + (h >>> 12) % 7, boss, elite };
+  },
+  /* 칠 때(atk) · 힘 모을 때(buff) · 쓰러질 때(die) */
+  cry(e, what) {
+    if (!this.ok()) return;
+    const now = performance.now(); if (what !== 'die' && now - this._cryAt < 260) return; this._cryAt = now;
+    const V = this.cryOf(e), c = this.ctx, t0 = c.currentTime;
+    const dur = what === 'die' ? (V.boss ? 1.8 : 1.05) : what === 'buff' ? .7 : (V.boss ? .75 : .45);
+    const vol = (V.boss ? .11 : V.elite ? .085 : .065) * (what === 'die' ? 1.1 : 1);
+    const pan = .38 + Math.random() * .2;
+    const f0 = V.f0 * (what === 'buff' ? 1.1 : 1) * this.vary(1, .04);
+    const fEnd = what === 'die' ? f0 * .45 : what === 'buff' ? f0 * 1.35 : f0 * .82;
+    if (V.kind === 'hiss') { this.hiss({ dur, vol: vol * 1.4, freq: V.vow[1] * 2, to: what === 'die' ? 500 : V.vow[1] * 3, filter: 'bandpass', q: 3, pan, rev: .3 }); return; }
+    if (V.kind === 'chitter') {
+      for (let i = 0; i < (what === 'die' ? 9 : 5); i++) this.blip(this.vary(f0 * 6, .1) * (what === 'die' ? 1 - i * .06 : 1), { dur: .035, type: 'square', vol: vol * .6, delay: i * .055, pan });
+      return;
+    }
+    /* 목청 — 톱니파를 두 모음 울림(포먼트)으로 거른다 */
+    const osc = c.createOscillator(), lfo = c.createOscillator(), lg = c.createGain();
+    osc.type = V.kind === 'howl' || V.kind === 'moan' ? 'triangle' : 'sawtooth';
+    osc.frequency.setValueAtTime(f0, t0);
+    if (V.kind === 'howl') { osc.frequency.exponentialRampToValueAtTime(f0 * 1.6, t0 + dur * .45); osc.frequency.exponentialRampToValueAtTime(fEnd, t0 + dur); }
+    else osc.frequency.exponentialRampToValueAtTime(Math.max(30, fEnd), t0 + dur);
+    lfo.frequency.value = V.kind === 'screech' ? 18 : V.vib; lg.gain.value = f0 * (V.kind === 'screech' ? .08 : V.kind === 'growl' || V.kind === 'roar' ? .05 : .025);
+    lfo.connect(lg).connect(osc.frequency);
+    const out = c.createGain(); out.gain.setValueAtTime(.0001, t0); out.gain.exponentialRampToValueAtTime(vol, t0 + (V.kind === 'moan' ? dur * .3 : .03)); out.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    const mult = V.kind === 'screech' ? 2.2 : 1;
+    V.vow.forEach((F, i) => { const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 7; bp.frequency.setValueAtTime(F * mult, t0); if (what === 'die') bp.frequency.exponentialRampToValueAtTime(F * mult * .6, t0 + dur);
+      const fg = c.createGain(); fg.gain.value = i ? 1.6 : 2.6; osc.connect(bp).connect(fg).connect(out); });
+    this._out(out, { pan, rev: V.boss ? .7 : .35 });
+    osc.start(t0); lfo.start(t0); osc.stop(t0 + dur + .05); lfo.stop(t0 + dur + .05);
+    /* 거친 숨 — 으르렁 · 포효 */
+    if (V.kind === 'growl' || V.kind === 'roar') this.hiss({ dur: dur * .9, vol: vol * (V.kind === 'roar' ? 1.2 : .7), freq: V.vow[0], to: V.vow[0] * .6, filter: 'bandpass', q: 1.2, pan, rev: .3 });
+  },
+  death(e) {
+    if (e) this.cry(e, 'die');
+    switch (this.pickVar('death', 3)) {
+      case 0:
+        this.blip(this.vary(300), { dur: .6, type: 'sawtooth', vol: .09, to: 52, rev: .5, pan: .4 });
+        this.hiss({ dur: .5, vol: .11, freq: 1100, to: 140, rev: .5, pan: .4 }); break;
+      case 1:   /* 재로 흩어진다 — 잡음이 위로 날린다 */
+        this.hiss({ dur: .8, vol: .09, freq: 600, to: 7000, filter: 'bandpass', q: 1.6, rev: .7, pan: .4 });
+        this.fm(this.vary(880), { ratio: 3.5, idx: 1, dur: .7, vol: .03, delay: .2, rev: .8, pan: .4 }); break;
+      default:  /* 쿵 쓰러진다 */
+        this.blip(this.vary(70), { dur: .5, type: 'sine', vol: .16, to: 32, delay: .08, pan: .3 });
+        this.hiss({ dur: .25, vol: .1, freq: 700, to: 150, delay: .08, rev: .4, pan: .3 });
+    }
+  }
+});
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
