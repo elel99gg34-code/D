@@ -55,6 +55,7 @@ function expire(now) {
   if (live.wheel && live.wheel.done && now > live.wheel.landAt + 25000) { live.wheel = null; live.wheelP = null; changed = true; }
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
+  if (live.ndForce && now > live.ndForce.until) { live.ndForce = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
   if (live.shadow && live.shadow.done && now - (live.shadow.end || now) > 5 * 60000) { live.shadow = null; changed = true; }
@@ -517,7 +518,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -526,6 +527,17 @@ const HB_EVERY = 3600000, HB_OPEN = 10 * 60000, HB_PAY = 5, HB_MIN_FIGHT = 3000,
 const HB_SHOP = { stone: 30, box: 20, qi: 25, dia: 8, hp: 6, gold: 5 };      /* 해킹상점 값(토큰) — 앱과 같아야 한다 */
 const hbSess = new Map();                                                    /* 아이디 → 지금 싸우는 판 */
 const hbRoom = new Map();                 /* 백야의 방에 든 사람 — 열 분 동안 반값 */
+/* ── 자연재해 (판 62) — 한 시간에 한 번, 그 시간의 아무 분(5~54분)에 3분 동안. 무엇이 오는지는 앱이 제 막에 맞춰 고른다.
+   서버는 씨앗(seed)과 흉 · 길(sign)만 준다. 백야 · 백사는 /cast {nd:{k,sign}} 로 지금 일으킨다 ── */
+const ND_EVERY = 3600000, ND_OPEN = 3 * 60000;
+function ndHash(n) { let h = (n * 2654435761) >>> 0; h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; return (h ^ (h >>> 16)) >>> 0; }
+function ndWin(now) {
+  const f = live.ndForce;
+  if (f && now < f.until) return { id: 'f' + f.id, at: f.at, until: f.until, seed: f.seed, sign: f.sign, k: f.k || '', forced: true };
+  const hr = Math.floor(now / ND_EVERY), h = ndHash(hr), at = hr * ND_EVERY + (5 + h % 50) * 60000;
+  if (now >= at && now < at + ND_OPEN) return { id: 'h' + hr, at, until: at + ND_OPEN, seed: h, sign: (h >>> 9) % 2 ? 1 : -1, k: '', forced: false };
+  return null;
+}
 function hbWin(now) {
   const f = live.hbForce;
   if (f && now < f.until) return { slot: 'f' + f.id, at: f.at, until: f.until, forced: true, cut: !!f.cut };
@@ -980,6 +992,12 @@ async function applyCast(q) {
     if (!q.shadow) { if (live.shadow && !live.shadow.done) Object.assign(live.shadow, { done: true, end: now, until: now }); }
     else { live.shadow = { id: now, at: now, until: now + Math.max(1, Math.min(60, parseInt(q.shadow.min, 10) || 10)) * 60000, n: 0, ppl: 0, top: [], done: false, end: 0 };
       shadowWho = new Map(); }
+  }
+  /* 자연재해 — 백야 · 백사가 지금 일으킨다. k 를 주면 그 재해, sign(1 길 · -1 흉)만 주면 그 결에서 막에 맞는 것 */
+  if ('nd' in q) {
+    const now = Date.now(), d = q.nd;
+    live.ndForce = d ? { id: now, at: now, until: now + ND_OPEN, seed: crypto.randomBytes(4).readUInt32BE(0),
+      sign: +d.sign === 1 ? 1 : +d.sign === -1 ? -1 : (Math.random() < .5 ? 1 : -1), k: str(d.k, 16).replace(/[^a-z]/g, '') } : null;
   }
   /* 해킹 보스 — 백야가 강제로 연다(정각을 기다리지 않고) */
   if ('hb' in q) {
@@ -1602,7 +1620,7 @@ const server = http.createServer(async (req, res) => {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined }));
   }
 
   /* ── 채팅 — 읽기 ── */
