@@ -1805,6 +1805,19 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 모험 끝 기록 카드 (판 59) */
+.recbox{position:relative;padding:16px 20px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px;width:min(960px,96vw);
+  background:radial-gradient(ellipse at 50% 0%,rgba(232,200,106,.12),transparent 55%),linear-gradient(180deg,rgba(38,30,21,.95),rgba(15,11,8,.97));
+  border:1px solid rgba(232,200,106,.3);box-shadow:0 24px 70px rgba(0,0,0,.6);animation:winIn .38s cubic-bezier(.2,.9,.3,1.15)}
+.recbox .mhead{display:flex;align-items:center;gap:12px;align-self:stretch}
+.recbox .mhead>i{font-style:normal;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#fff3d6;background:radial-gradient(circle at 35% 30%,#c8a040,#5a3a0c);border:2px solid #e8c86a}
+.recbox .mhead h2{margin:0;text-align:left;font-size:22px}.recbox .mhead span{display:block;margin-top:4px;font-size:12px;color:#b3a68c}
+.recimg{width:100%;max-height:calc(100vh - 220px);object-fit:contain;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.recbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.recsay{min-height:16px;font-size:12.5px;color:#9fe0b8}.recsay.bad{color:#ff9a8a}
+.recmsg{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:linear-gradient(120deg,rgba(232,200,106,.22),rgba(168,39,44,.18));border:1px solid rgba(232,200,106,.5)}
+.recmsg i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#2a1a08;background:#e8c86a;flex:none}
+.recmsg b{color:#ffe6a8;font-weight:400}.recmsg small{color:#d8ccb0;font-size:11.5px}
 /* 대상 자동 선택 — 과녁 (판 59) */
 body.autolite #bg .bgfx{display:none}
 body.autolite #bg .bgl,body.autolite #bg .bgl *,body.autolite #bg .bgmist,body.autolite #bg .bgcloud{animation:none!important}
@@ -26660,6 +26673,7 @@ function logAdd(kind, text, n) {
   b.log.push({ t: b.turn || 0, k: kind, s: text, n: n || 0 });
   if (b.log.length > LOG_MAX) b.log.shift();
   const d = b.tally = b.tally || { dealt: 0, taken: 0, blocked: 0, healed: 0, cards: 0 };
+  try { recTally(kind, text, n); } catch (e) {}          /* 모험 끝 기록 카드 (판 59) */
   if (kind === 'hit') d.dealt += n || 0;
   else if (kind === 'hurt') d.taken += n || 0;
   else if (kind === 'block') d.blocked += n || 0;
@@ -26810,6 +26824,7 @@ function gameOver() {
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       ${canReturn ? '<button class="brush-btn red" id="ov_back">그 갈림길로 돌아간다</button>' : ''}
       <button class="brush-btn gold" id="ov_train">수행터로 간다 (精 ${META.jp})</button>
+      <button class="brush-btn ghost" id="ov_rec" style="color:#ffe6a8;border-color:#c8a94e">記 기록 카드</button>
       <button class="brush-btn ghost" id="ov_title" style="color:#e9dfc9;border-color:#7a6f5c">처음으로</button>
     </div>
     ${canReturn ? `<div style="color:#7d7261;font-size:12.5px;margin-top:4px">돌아가면 그 길에 들어서기 직전으로 되돌아가고,
@@ -26834,6 +26849,7 @@ function gameOver() {
     saveRun(); showMap();
   };
   d.querySelector('#ov_train').onclick = () => showTraining();
+  d.querySelector('#ov_rec').onclick = () => { SND.ui(); showRecCard(false); };
   d.querySelector('#ov_title').onclick = () => { d.remove(); closeOverlay(); G.run = null; showTitle(); };
 }
 function victory() {
@@ -26852,12 +26868,14 @@ function victory() {
       <button class="brush-btn t26btn" id="w_26">第26幕 예고편<em>NEW</em></button>
       <button class="brush-btn ghost" id="w_26p" style="color:#e9dfc9;border-color:#8a7f68">미리보기</button>
       ${act26Open() ? '<button class="brush-btn gold" id="w_26go" title="개발자만">第26幕 들어가기 · 개발자</button>' : ''}
+      <button class="brush-btn ghost" id="w_rec" style="color:#ffe6a8;border-color:#c8a94e">記 기록 카드</button>
       <button class="brush-btn gold" id="w_title">처음으로</button>
     </div>`;
   s.appendChild(d);
   d.querySelector('#w_title').onclick = () => { clearSave(); G.run = null; d.remove(); showTitle(); };
   d.querySelector('#w_26').onclick = () => { SND.ui(); act26Trailer(); };
   d.querySelector('#w_26p').onclick = () => { SND.ui(); showAct26Preview(); };
+  d.querySelector('#w_rec').onclick = () => { SND.ui(); showRecCard(true); };
   { const g = d.querySelector('#w_26go'); if (g) g.onclick = () => { SND.ui(); enterAct26(); }; }
   /* 처음 사신도를 넘었을 때 — 예고편이 저절로 한 번 */
   /* 사신도를 넘었다 — 단오의 손을 잡는 이야기, 그다음 예고편 */
@@ -35949,6 +35967,123 @@ Object.assign(SND, {
     }
   }
 });
+/* ══ 모험 끝 기록 카드 (판 59) ════════════════════════════════
+   승천하거나 쓰러지면 그 모험을 한 장의 그림으로 — 덱 · 유물 · 가장 센 한 방 · 걸린 시간.
+   「그림 저장」(폰은 나누기 창) · 「채팅에 자랑」(채팅에는 금빛 기록 쪽지로 뜬다).
+   무한의 탑에서 끝나도 같은 카드 — 「탑 n층」이 찍힌다.
+   ══════════════════════════════════════════════════════════ */
+/* 싸움 셈을 모험 전체로 모은다 — 준 피해 · 가장 센 한 방 */
+function recTally(kind, text, n) {
+  const r = G.run; if (!r || !r.stats || !n) return;
+  if (kind === 'hit') {
+    r.stats.dealt = (r.stats.dealt || 0) + n;
+    if (n > (r.stats.maxHit || 0)) { r.stats.maxHit = n; r.stats.maxHitBy = String(text || '').split(' → ')[0].slice(0, 12); }
+  } else if (kind === 'hurt') r.stats.taken = (r.stats.taken || 0) + n;
+}
+const REC_RAR = ['qq', 'qx', 'ssx', 'ssc', 'special', 'zero', 'rare', 'uncommon', 'common', 'basic'];
+function recData(win) {
+  const r = G.run, st = r.stats || {};
+  const deck = r.deck.slice().sort((a, b) => REC_RAR.indexOf((CARDS[a.id] || {}).rar) - REC_RAR.indexOf((CARDS[b.id] || {}).rar));
+  return {
+    win, act: r.act, floor: r.floor || 0, tower: r.tower ? r.tower.floor : 0,
+    mins: Math.max(1, Math.round((Date.now() - (r.startedAt || Date.now())) / 60000)),
+    who: (typeof ACCT === 'object' && ACCT.id) ? (ACCT.nick || ACCT.id) : '퇴마사',
+    battles: st.battles || 0, elites: st.elites || 0, revives: st.revives || 0,
+    maxHit: st.maxHit || 0, maxHitBy: st.maxHitBy || '', dealt: st.dealt || 0,
+    deck: deck.map(c => ({ g: (CARDS[c.id] || {}).g || '?', rar: (CARDS[c.id] || {}).rar || 'common', up: !!c.up })),
+    relics: r.relics.map(x => ({ g: (RELICS[x.id] || {}).g || '?', gr: rgrade(x.id) }))
+  };
+}
+const REC_COL = { basic: '#8a7f68', common: '#c8bca0', uncommon: '#5aa0c8', rare: '#e2bd63', zero: '#cfe6ee', special: '#ff8a4a', ssc: '#3ad6e6', ssx: '#ff4a6a', qx: '#b07aff', qq: '#e8eaf4' };
+/* 그린다 — 1200 × 675 */
+function recDraw(D) {
+  const W = 1200, H = 675, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const TA = CUT_ACT[Math.min(26, D.act)] || CUT_ACT[1];
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, TA.sky[0]); g.addColorStop(.55, TA.sky[1]); g.addColorStop(1, TA.sky[2]); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  /* 먹산 두 겹 */
+  const ridge = (base, amp, col, seed) => { x.fillStyle = col; x.beginPath(); x.moveTo(0, H);
+    for (let i = 0; i <= 60; i++) { const px = i / 60 * W, k = Math.sin(i * .37 + seed) * .5 + Math.sin(i * .11 + seed * 2) * .5; x.lineTo(px, base - Math.abs(k) * amp); } x.lineTo(W, H); x.closePath(); x.fill(); };
+  ridge(560, 150, 'rgba(0,0,0,.28)', 1); ridge(630, 90, 'rgba(0,0,0,.45)', 4);
+  /* 종이 판 */
+  x.fillStyle = 'rgba(14,10,8,.78)'; x.strokeStyle = 'rgba(232,200,106,.55)'; x.lineWidth = 2;
+  const rr = (X, Y, w, h, r) => { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); };
+  rr(40, 40, W - 80, H - 80, 22); x.fill(); x.stroke();
+  const F = (s, w) => `${w || 400} ${s}px "Noto Serif KR","Nanum Myeongjo",serif`;
+  /* 머리 */
+  x.fillStyle = '#c8a94e'; x.font = F(18); x.fillText('百 鬼 夜 行 · 퇴 마 사 의 등 산', 80, 92);
+  x.fillStyle = D.win ? '#ffe6a8' : '#e8b0a8'; x.font = F(54);
+  x.fillText(D.tower ? `무한의 탑 ${D.tower}층` : D.win ? '승 천' : '쓰 러 졌 다', 80, 160);
+  x.fillStyle = '#e9dfc9'; x.font = F(22);
+  x.fillText(`${D.who} · ${D.tower ? '탑' : `제 ${D.act}막 ${ACT_NAME[D.act] || ''}`}${D.win || D.tower ? '' : ` ${D.floor}층`} · ${new Date().toLocaleDateString('ko-KR')}`, 82, 198);
+  /* 낙관 */
+  x.save(); x.translate(W - 150, 80); x.rotate(-.06); x.fillStyle = D.win ? '#a8272c' : '#4a4a52'; rr(0, 0, 72, 72, 8); x.fill();
+  x.fillStyle = '#fff3e8'; x.font = F(26); x.textAlign = 'center'; x.fillText(D.win ? '昇' : '倒', 36, 30); x.fillText(D.win ? '天' : '地', 36, 62); x.restore();
+  /* 수 */
+  const stats = [['걸린 시간', D.mins + '분'], ['물리친 무리', D.battles], ['엘리트', D.elites], ['가장 센 한 방', D.maxHit ? `${D.maxHit}` : '-'], ['준 피해 합', D.dealt.toLocaleString()], ['다시 선 횟수', D.revives]];
+  stats.forEach(([k, v], i) => { const X = 80 + (i % 3) * 210, Y = 250 + Math.floor(i / 3) * 86;
+    x.fillStyle = 'rgba(255,240,200,.06)'; rr(X, Y, 196, 72, 10); x.fill();
+    x.fillStyle = '#b3a68c'; x.font = F(15); x.textAlign = 'left'; x.fillText(k, X + 14, Y + 26);
+    x.fillStyle = i === 3 ? '#ffd76a' : '#f2e9d3'; x.font = F(28); x.fillText(String(v), X + 14, Y + 60);
+    if (i === 3 && D.maxHitBy) { x.fillStyle = '#c8a94e'; x.font = F(14); x.fillText(D.maxHitBy, X + 14 + x.measureText(String(v)).width + 40, Y + 58); } });
+  /* 덱 */
+  x.fillStyle = '#c8a94e'; x.font = F(16); x.fillText(`덱 ${D.deck.length}장`, 80, 445);
+  D.deck.slice(0, 20).forEach((d, i) => { const X = 80 + (i % 10) * 54, Y = 458 + Math.floor(i / 10) * 64;
+    x.fillStyle = '#efe4cb'; rr(X, Y, 46, 56, 6); x.fill(); x.strokeStyle = REC_COL[d.rar] || '#8a7f68'; x.lineWidth = d.rar === 'basic' || d.rar === 'common' ? 1.5 : 3; rr(X, Y, 46, 56, 6); x.stroke();
+    x.fillStyle = '#22190f'; x.font = F(26); x.textAlign = 'center'; x.fillText(d.g, X + 23, Y + 38); x.textAlign = 'left';
+    if (d.up) { x.fillStyle = '#4ac08a'; x.font = F(12); x.fillText('+', X + 36, Y + 14); } });
+  if (D.deck.length > 20) { x.fillStyle = '#8a7f68'; x.font = F(14); x.fillText(`외 ${D.deck.length - 20}장`, 80 + 10 * 54 + 4, 580); }
+  /* 유물 */
+  x.fillStyle = '#c8a94e'; x.font = F(16); x.fillText(`유물 ${D.relics.length}개`, 760, 250);
+  D.relics.slice(0, 15).forEach((d, i) => { const X = 760 + (i % 5) * 70, Y = 264 + Math.floor(i / 5) * 70;
+    x.fillStyle = 'rgba(239,228,203,.92)'; x.beginPath(); x.arc(X + 28, Y + 28, 27, 0, 7); x.fill();
+    x.strokeStyle = (GRADE[d.gr] && GRADE[d.gr].c) || '#8a7f68'; x.lineWidth = 3; x.stroke();
+    x.fillStyle = '#22190f'; x.font = F(26); x.textAlign = 'center'; x.fillText(d.g, X + 28, Y + 38); x.textAlign = 'left'; });
+  /* 바닥 글 */
+  x.fillStyle = 'rgba(233,223,201,.45)'; x.font = F(14); x.fillText('수묵 로그라이크 · 백귀야행', W - 300, H - 62);
+  return c;
+}
+/* 창 */
+function showRecCard(win) {
+  if (!G.run) return;
+  const D = recData(win), cv = recDraw(D), url = cv.toDataURL('image/png');
+  const p = modal(`<div class="recbox"><div class="mhead"><i>記</i><div><h2>기록 카드</h2><span>이번 모험을 한 장으로 — 저장하거나 채팅에 자랑한다</span></div></div>
+      <img class="recimg" src="${url}" alt="기록 카드">
+      <div class="recbtns"><button class="brush-btn gold" id="rc_save">그림 저장</button><button class="brush-btn red" id="rc_chat">채팅에 자랑</button><button class="brush-btn ghost" id="rc_x">닫기</button></div>
+      <div class="recsay"></div></div>`, 'recp');
+  p.dataset.noauto = '1';
+  const say = (t, bad) => { const s = p.querySelector('.recsay'); s.textContent = t; s.classList.toggle('bad', !!bad); };
+  p.querySelector('#rc_x').onclick = closeTop;
+  p.querySelector('#rc_save').onclick = async () => {
+    SND.ui();
+    const name = `백귀야행_기록_${new Date().toISOString().slice(0, 10)}.png`;
+    try {
+      if (navigator.canShare && navigator.share) {
+        const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+        const file = new File([blob], name, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: '백귀야행 기록' }); say('나누기 창을 열었다'); return; }
+      }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    say('그림을 받았다 — 받은 파일함을 보시오');
+  };
+  p.querySelector('#rc_chat').onclick = async () => {
+    if (!acctOn()) { say('로그인해야 채팅에 올릴 수 있다', true); return; }
+    const t = recChatText(D);
+    const r = await acctAsk('/chat/send', { token: ACCT.token, text: t }, 15000);
+    if (r && r.ok) { SND.unlock(); say('채팅에 올렸다'); try { chatPull(); } catch (e) {} } else { SND.err(); say((r && r.why) || '올리지 못했다', true); }
+  };
+}
+/* 채팅 한 줄 — 「【기록】」으로 시작하면 채팅에서 금빛 쪽지로 그린다 */
+function recChatText(D) {
+  return `【기록】${D.tower ? `무한의 탑 ${D.tower}층` : D.win ? `제${D.act}막 승천` : `제${D.act}막 ${D.floor}층에서 쓰러짐`} · ${D.mins}분 · 한 방 ${D.maxHit}${D.maxHitBy ? `(${D.maxHitBy})` : ''} · 덱 ${D.deck.length} · 유물 ${D.relics.length}`;
+}
+function recChatHtml(t) {
+  const m = /^【기록】(.+)$/.exec(t || ''); if (!m) return '';
+  const parts = m[1].split(' · ');
+  return `<span class="recmsg"><i>記</i><b>${wEsc(parts[0])}</b><small>${parts.slice(1).map(wEsc).join(' · ')}</small></span>`;
+}
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -36083,7 +36218,7 @@ function chatDraw() {
     const d = new Date(m.at), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
     const mine = !m.k && m.n === ACCT.id;
     return `<div class="cm ${m.k || ''}${mine ? ' me' : ''}" data-id="${m.id}"><b data-pn="${m.k ? '' : wEsc(m.n)}">${m.ttl ? `<em class="cttl">${wEsc(m.ttl)}</em>` : ''}${wEsc(m.n)}${m.k === 'dev' ? '<i>개발자</i>' : m.k === 'guest' ? '<i>게스트</i>' : ''}</b>` +
-      `<span>${stkHtml(m.t) || wEsc(m.t)}</span><time>${hm}</time>` +
+      `<span>${stkHtml(m.t) || recChatHtml(m.t) || wEsc(m.t)}</span><time>${hm}</time>` +
       (dev && m.k !== 'dev' ? '<u class="cmd" title="이 말을 지운다">지우기</u><u class="cmm" title="10분 동안 말을 막고 그 사람의 말을 걷는다">입막기</u>' +
         (!m.k ? '<u class="cmi" title="이 사람을 게스트로 초대한다">초대</u>' : '') : '') + '</div>';
   }).join('');
