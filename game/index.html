@@ -1805,6 +1805,14 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 대상 자동 선택 — 과녁 (판 59) */
+body.autolite #bg .bgfx{display:none}
+body.autolite #bg .bgl,body.autolite #bg .bgl *,body.autolite #bg .bgmist,body.autolite #bg .bgcloud{animation:none!important}
+.tgtping{position:fixed;z-index:60;width:0;height:0;pointer-events:none}
+.tgtping i{position:absolute;left:-34px;top:-34px;width:68px;height:68px;border-radius:50%;border:2px solid #ffd76a;box-shadow:0 0 14px rgba(255,215,106,.7),inset 0 0 10px rgba(255,215,106,.5);animation:tgtPing .7s ease-out forwards}
+.tgtping b{position:absolute;left:-10px;top:-46px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:400;color:#2a1a08;background:#ffd76a;animation:tgtPingB .7s ease-out forwards}
+@keyframes tgtPing{from{transform:scale(1.6);opacity:0}30%{opacity:1}to{transform:scale(.8);opacity:0}}
+@keyframes tgtPingB{from{transform:translateY(6px);opacity:0}30%{opacity:1}to{transform:translateY(-6px);opacity:0}}
 /* ══ 모든 창에 같은 옷 · 유물 조합 (판 58) ══ */
 :is(.mbox,.fzbox){position:relative;padding:16px 20px 16px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:16px;
   max-width:min(1200px,96vw);min-width:min(440px,92vw);
@@ -16971,8 +16979,50 @@ function onCardClick(c) {
   if (d.tgt === 'enemy') {
     const a = alive();
     if (a.length === 1) { playCard(c, a[0]); return; }
+    /* 자동 선택 (판 59) — 누르기만 하면 가장 알맞은 요괴에게 (자동 플레이와 같은 눈: 마무리 일격 · 때리려는 놈부터) */
+    if (OPT.autoTgt && a.length) { const t = autoTarget(c); if (t) { tgtPing(t); playCard(c, t); return; } }
     b.sel = c; b.potSel = null; SND.select(); showArrow(); syncHand(); syncEnemies(); showPreview(c);
   } else playCard(c, null);
+}
+/* ── 느린 기계면 알아서 가볍게 (판 59) ─────────────────────
+   켜고 나서 지도나 싸움이 펼쳐진 동안 4초 남짓 그림 수를 센다. 초당 34장이 안 되면(또는 램 2GB 이하)
+   배경의 떠다니는 것과 흐르는 안개를 멈춘다. 한 번 정하면 이 기계에 적어 둔다 — 설정에서 끌 수 있다. */
+let _perfDone = false;
+function perfProbe(force) {
+  if (OPT.autoLite === false) return;
+  if (META.perfLite === 1 && !force) { document.body.classList.add('autolite'); return; }
+  if (META.perfLite === 0 && !force) return;
+  if (_perfDone && !force) return; _perfDone = true;
+  if (navigator.deviceMemory && navigator.deviceMemory <= 2) { META.perfLite = 1; saveMeta(); document.body.classList.add('autolite'); return; }
+  const go = () => {
+    if (document.hidden || !(G.scene === 'map' || G.scene === 'battle')) { setTimeout(go, 3000); return; }
+    const ts = []; let last = performance.now();
+    const step = now => { ts.push(now - last); last = now; if (ts.length < 150) requestAnimationFrame(step); else done(); };
+    const done = () => {
+      ts.sort((a, z) => a - z); const med = ts[ts.length >> 1], fps = 1000 / Math.max(1, med);
+      const slow = fps < 34;
+      META.perfLite = slow ? 1 : 0; saveMeta();
+      document.body.classList.toggle('autolite', slow);
+      if (slow) toast('기계가 버거워해 배경 움직임을 줄였다 — 설정 「느린 기계면 알아서 가볍게」');
+    };
+    requestAnimationFrame(t => { last = t; requestAnimationFrame(step); });
+  };
+  setTimeout(go, force ? 300 : 6000);
+}
+/* 자동 선택이 고르는 요괴 — 마무리할 수 있으면 그놈, 아니면 가장 많이 깎이는 놈 (때리려는 놈 · 보스 조금 더) */
+function autoTarget(c) {
+  const foes = alive(); if (!foes.length) return null;
+  try { const s = autoScore(c); if (s && s.target && s.target.hp > 0) return s.target; } catch (e) {}
+  const by = foes.slice().sort((x, z) => ((z.mv && z.mv.d ? 1 : 0) - (x.mv && x.mv.d ? 1 : 0)) || (x.hp + x.block) - (z.hp + z.block));
+  return by[0];
+}
+/* 어디로 갔는지 보이게 — 고른 요괴 위에 과녁이 잠깐 */
+function tgtPing(e) {
+  if (!e || !e.el) return;
+  const r = e.el.querySelector('.body') ? e.el.querySelector('.body').getBoundingClientRect() : e.el.getBoundingClientRect();
+  const n = el('div', 'tgtping', '<i></i><b>自</b>');
+  n.style.left = (r.left + r.width / 2) + 'px'; n.style.top = (r.top + r.height / 2) + 'px';
+  document.body.appendChild(n); setTimeout(() => n.remove(), 700);
 }
 function onEnemyClick(e) {
   const b = G.b; if (!b || b.busy || b.over || e.hp <= 0) return;
@@ -16982,6 +17032,7 @@ function onEnemyClick(e) {
 function startPotionTargeting(i) {
   const a = alive();
   if (a.length === 1) { usePotion(i, a[0]); return; }
+  if (OPT.autoTgt && a.length) { const t = a.slice().sort((x, z) => (x.hp + x.block) - (z.hp + z.block))[0]; tgtPing(t); usePotion(i, t); return; }
   G.b.potSel = i; G.b.sel = null; showArrow(); syncEnemies(); toast('대상을 고르시오');
 }
 let arrowOn = false, mouseXY = { x: 0, y: 0 };
@@ -35527,11 +35578,17 @@ const stGalOpen = k => { const D = STORY57[k.slice(3)]; return !!D && (k === 'st
    ══════════════════════════════════════════════════════════════ */
 Object.assign(SND, {
   /* 소리를 내보낸다 — 좌우(pan) · 잔향(rev) */
+  /* 효과음만 따로 — 설정 「효과음 음량」 (판 59). 음악은 제 버스로 간다 */
+  sfxBus() {
+    if (this._sfx && this._sfx.context === this.ctx) return this._sfx;
+    this._sfx = this.ctx.createGain(); this._sfx.gain.value = OPT.sfxVol == null ? 1 : OPT.sfxVol; this._sfx.connect(this.master);
+    return this._sfx;
+  },
   _out(g, o) {
-    const c = this.ctx;
-    if (o && o.pan && c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, o.pan)); g.connect(p); p.connect(this.master); }
-    else g.connect(this.master);
-    if (o && o.rev) { const r = c.createGain(); r.gain.value = o.rev; g.connect(r); r.connect(this.revSend); }
+    const c = this.ctx, bus = this.sfxBus(), sv = OPT.sfxVol == null ? 1 : OPT.sfxVol;
+    if (o && o.pan && c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, o.pan)); g.connect(p); p.connect(bus); }
+    else g.connect(bus);
+    if (o && o.rev && sv > 0) { const r = c.createGain(); r.gain.value = o.rev * sv; g.connect(r); r.connect(this.revSend); }
   },
   blip(freq, o) {
     if (!this.ok()) return;
@@ -35847,7 +35904,7 @@ Object.assign(SND, {
   },
   /* 칠 때(atk) · 힘 모을 때(buff) · 쓰러질 때(die) */
   cry(e, what) {
-    if (!this.ok()) return;
+    if (!this.ok() || OPT.noCry) return;
     const now = performance.now(); if (what !== 'die' && now - this._cryAt < 260) return; this._cryAt = now;
     const V = this.cryOf(e), c = this.ctx, t0 = c.currentTime;
     const dur = what === 'die' ? (V.boss ? 1.8 : 1.05) : what === 'buff' ? .7 : (V.boss ? .75 : .45);
@@ -37527,6 +37584,16 @@ function showSettings() {
     sl.onchange = () => saveMeta();
     n.appendChild(sl); list.appendChild(n);
   }
+  {
+    const sv = () => Math.round((OPT.sfxVol == null ? 1 : OPT.sfxVol) * 100);
+    const n = el('div', 'optrow', `<div class="lb"><b>효과음 음량</b><small>부적 · 맞는 소리 · 누르는 소리 · 요괴 울음 — 지금 <span id="op_sfv">${sv()}</span>%</small></div>`);
+    const sl = el('input'); sl.type = 'range'; sl.min = '0'; sl.max = '100'; sl.step = '5'; sl.value = String(sv());
+    sl.oninput = () => { OPT.sfxVol = +sl.value / 100; n.querySelector('#op_sfv').textContent = sl.value;
+      if (SND._sfx && SND.ctx) SND._sfx.gain.linearRampToValueAtTime(Math.max(.0001, OPT.sfxVol), SND.ctx.currentTime + .1); };
+    sl.onchange = () => { saveMeta(); if (SND.on) SND.ui(); };
+    n.appendChild(sl); list.appendChild(n);
+  }
+  row('요괴 울음', '요괴마다 제 목소리로 운다 — 칠 때 · 힘 모을 때 · 쓰러질 때', () => !OPT.noCry, v => { OPT.noCry = !v; if (v) { try { SND.init(); SND._cryAt = 0; SND.cry({ id: 'gumiho', def: ENEMIES.gumiho }, 'atk'); } catch (e) {} } });
 
   head('화 면');
   cycle('진행 속도', '전투 연출이 흐르는 빠르기', ['1', '0.62', '0.38'],
@@ -37554,10 +37621,12 @@ function showSettings() {
     { once: '처음 한 번', always: '매번', off: '끄기' }, () => OPT.story || 'once', v => { OPT.story = v; });
   row('설명 풍선', '마우스를 올리면 뜨는 설명', () => OPT.tips, v => { OPT.tips = v; if (!v) tipHide(); });
   row('배경 움직임', '산과 하늘이 은은하게 숨 쉰다 — 끄면 그림이 멈춰 폰 전지가 덜 닳는다', () => !OPT.bgStill, v => { OPT.bgStill = !v; optApply(); });
+  row('느린 기계면 알아서 가볍게', '화면이 버벅이면 배경의 떠다니는 것 · 흐르는 안개를 스스로 멈춘다 (켜 두면 처음 몇 초 재 본다)', () => OPT.autoLite !== false, v => { OPT.autoLite = v; if (!v) document.body.classList.remove('autolite'); else perfProbe(true); });
   row('부적 글씨 크게', '부적의 설명 글을 한 단 크게 — 작은 화면에서 읽기 쉽게', () => !!OPT.bigText, v => { OPT.bigText = v; optApply(); });
   row('가볍게 모드', '먹물 파편 · 흔들림 · 간지 · 큰 이름 · 3D 컷씬을 한꺼번에 끄고, 풀면 그대로 돌려놓는다 (L)', () => liteOn(), v => { if (v !== liteOn()) { liteToggle(); setTimeout(() => { closeTop(); showSettings(); }, 50); } });
 
   head('편 의');
+  row('대상 자동 선택', '참격처럼 요괴를 골라야 하는 부적 · 물약 — 누르기만 하면 알맞은 요괴에게 바로 쓴다 (마무리할 수 있는 놈 → 때리려는 놈 → 가장 약한 놈). 끄면 예전처럼 요괴를 눌러 고른다', () => !!OPT.autoTgt, v => { OPT.autoTgt = v; });
   row('차례 넘기기 확인', '기와 낼 부적이 남았는데 넘기려 하면 한 번 더 누르게 한다', () => OPT.endWarn !== false, v => { OPT.endWarn = v; });
   row('쉬어 가기 알림', '한 시간마다 잠깐 쉬라고 일러 준다', () => OPT.rest !== false, v => { OPT.rest = v; });
   row('시계', '오른쪽 위에 지금 시각과 이번에 논 시간을 띄운다', () => !!OPT.clock, v => { OPT.clock = v; clockTick(); });
@@ -39475,6 +39544,7 @@ function boot() {
   banBoot().catch(() => {});                 /* 막힌 기기면 바로 덮는다 */
   syncAuto();
   try { optApply(); } catch (e) {}           /* 배경 멈춤 · 큰 글씨 · 시계 (판 57) */
+  try { perfProbe(); } catch (e) {}          /* 느린 기계면 알아서 가볍게 (판 59) */
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
   try {
