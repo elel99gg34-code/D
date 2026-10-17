@@ -1805,6 +1805,108 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ══ 비기 새 단장 (판 60) ══ */
+/* 새 등급의 빛 */
+@keyframes jeolGlow{0%,100%{box-shadow:0 0 18px 3px rgba(255,154,42,.7),0 0 40px 8px rgba(255,80,40,.3)}50%{box-shadow:0 0 34px 9px rgba(255,190,80,1),0 0 70px 16px rgba(255,90,40,.5)}}
+@keyframes sinGlow{0%,100%{box-shadow:0 0 22px 4px rgba(255,255,255,.85),0 0 48px 10px rgba(255,220,140,.45),0 0 80px 18px rgba(180,200,255,.25)}
+  50%{box-shadow:0 0 40px 12px #fff,0 0 80px 20px rgba(255,230,160,.7),0 0 120px 30px rgba(180,200,255,.45)}}
+#skillbtn.sg-jeol.ready{animation:jeolGlow 1.3s ease-in-out infinite}
+#skillbtn.sg-sin.ready{animation:sinGlow 1.6s ease-in-out infinite}
+#skillbtn.sg-sin{background:linear-gradient(160deg,#3a3448,#0e0c14)}
+#skillbtn em{position:absolute;top:-8px;right:-8px;font-style:normal;font-size:9.5px;line-height:1;padding:3px 5px;border-radius:6px;background:var(--sc);color:#140c0e;border:1px solid rgba(255,255,255,.6);letter-spacing:0;font-weight:700}
+#skillbtn.sg-sin em,#skillbtn.sg-qq em{color:#2a2010}
+#skillbtn i.skring{position:absolute;inset:-7px;border-radius:16px;border:1.5px dashed var(--sc);opacity:.65;animation:auSpin 9s linear infinite;pointer-events:none}
+#skillbtn.used i.skring,#skillbtn.none i.skring{display:none}
+/* 쓸 때 — 먹물 · 막 · 결 · 낙관 · 금 · 비 */
+.skaura .skink{position:absolute;left:50%;top:46%;width:130vmax;height:130vmax;margin:-65vmax 0 0 -65vmax;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--ac) 38%,transparent) 0,rgba(10,6,8,.55) 38%,transparent 70%);animation:skInk 1.1s ease-out forwards}
+@keyframes skInk{from{transform:scale(.05);opacity:0}25%{opacity:1}to{transform:scale(1);opacity:0}}
+.skaura .skbars u{position:absolute;left:0;right:0;height:11vh;background:#000;z-index:3;animation:skBar 1.7s ease-in-out forwards}
+.skaura .skbars u:first-child{top:0;transform-origin:top}.skaura .skbars u:last-child{bottom:0;transform-origin:bottom}
+@keyframes skBar{0%{transform:scaleY(0)}18%,78%{transform:scaleY(1)}100%{transform:scaleY(0)}}
+.skaura .sksl{position:absolute;left:-10%;width:120%;height:4px;border-radius:3px;background:linear-gradient(90deg,transparent,#fff 40%,var(--ac) 70%,transparent);
+  box-shadow:0 0 18px var(--ac);opacity:0;animation:skSlash .5s ease-out forwards}
+.skaura .sksl.s1{top:38%;transform:rotate(-14deg);animation-delay:.18s}.skaura .sksl.s2{top:52%;transform:rotate(9deg);animation-delay:.3s}.skaura .sksl.s3{top:45%;transform:rotate(-3deg);animation-delay:.42s;height:6px}
+@keyframes skSlash{0%{opacity:0;clip-path:inset(0 100% 0 0)}30%{opacity:1}100%{opacity:0;clip-path:inset(0 0 0 0)}}
+.skaura .skhex{position:absolute;left:50%;top:46%;width:300px;height:300px;margin:-150px 0 0 -150px;
+  clip-path:polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%);background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 55%,transparent),transparent 70%);
+  outline:0;animation:skHex 1.1s ease-out forwards;opacity:0}
+.skaura .skhex.h2{width:420px;height:420px;margin:-210px 0 0 -210px;animation-delay:.12s;opacity:0;background:linear-gradient(200deg,color-mix(in srgb,var(--ac) 35%,transparent),transparent 65%)}
+@keyframes skHex{0%{transform:scale(.3) rotate(-30deg);opacity:0}35%{opacity:.85}100%{transform:scale(1.1) rotate(0);opacity:0}}
+.skaura .skpil{position:absolute;bottom:0;left:var(--x);width:6px;height:70vh;transform-origin:bottom;background:linear-gradient(transparent,var(--ac) 60%,#fff);
+  box-shadow:0 0 16px var(--ac);opacity:0;animation:skPil .9s ease-out var(--k) forwards}
+@keyframes skPil{0%{transform:scaleY(0);opacity:0}30%{opacity:.9}100%{transform:scaleY(1);opacity:0}}
+.skaura .skgrade{position:absolute;top:calc(50% + clamp(56px,8.5vw,108px));display:flex;align-items:center;gap:8px;font-size:clamp(12px,1.4vw,15px);letter-spacing:.4em;
+  color:var(--ac);text-shadow:0 0 12px var(--ac);opacity:0;animation:skGr 1.25s ease-out .1s forwards;margin-left:.4em}
+.skaura .skgrade em{font-style:normal;letter-spacing:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--ac);color:#140c0e;font-size:13px;text-shadow:none}
+@keyframes skGr{0%{opacity:0;transform:translateY(8px)}20%,80%{opacity:1;transform:none}100%{opacity:0}}
+.skaura .skname span{position:relative;display:inline-block;padding:0 .3em}
+.skaura .skname span::before{content:'';position:absolute;left:-8%;right:-8%;top:18%;bottom:10%;z-index:-1;border-radius:4px 40% 40% 4px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 75%,#000),color-mix(in srgb,var(--ac) 30%,transparent) 70%,transparent);transform-origin:left;animation:brushIn .5s ease-out .15s backwards;opacity:.8}
+.skaura .glyphbig s{position:absolute;inset:0;text-decoration:none;mix-blend-mode:screen;opacity:.7}
+.skaura .glyphbig s:nth-child(1){color:#ff4a6a;animation:skSplitA 1.2s ease-out forwards}.skaura .glyphbig s:nth-child(2){color:#4ad8ff;animation:skSplitB 1.2s ease-out forwards}
+@keyframes skSplitA{0%,40%{transform:none}60%{transform:translate(-14px,4px)}100%{transform:translate(-4px,0);opacity:0}}
+@keyframes skSplitB{0%,40%{transform:none}60%{transform:translate(14px,-4px)}100%{transform:translate(4px,0);opacity:0}}
+.skaura .skseal{position:absolute;left:calc(50% + clamp(70px,11vw,140px));top:calc(46% - clamp(90px,13vw,160px));font-style:normal;width:62px;height:62px;border-radius:8px;display:grid;place-items:center;
+  font-size:22px;color:#fff3e8;background:#a8272c;border:2px solid #ffd0c0;box-shadow:0 0 24px rgba(255,80,60,.7);transform:rotate(-8deg);opacity:0;animation:skSeal 1.4s ease-out .38s forwards}
+.skaura.r-sin .skseal{background:#f4f0ff;color:#3a2a10;border-color:#ffd76a;box-shadow:0 0 30px #fff}
+@keyframes skSeal{0%{opacity:0;transform:scale(3) rotate(-30deg)}14%{opacity:1;transform:scale(.9) rotate(-8deg)}22%{transform:scale(1.05) rotate(-8deg)}85%{opacity:1}100%{opacity:0;transform:scale(1) rotate(-8deg)}}
+.skaura .skcrack{position:absolute;inset:0;background:repeating-conic-gradient(from 7deg at 50% 46%,transparent 0 13deg,rgba(255,220,140,.85) 13deg 13.4deg,transparent 13.4deg 29deg);
+  -webkit-mask:radial-gradient(circle at 50% 46%,transparent 8%,#000 9%,#000 60%,transparent 75%);mask:radial-gradient(circle at 50% 46%,transparent 8%,#000 9%,#000 60%,transparent 75%);opacity:0;animation:skCrack 1.6s ease-out .45s forwards}
+@keyframes skCrack{0%{opacity:0;transform:scale(.6)}15%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
+.skaura .skinv{position:absolute;inset:0;background:#fff;mix-blend-mode:difference;opacity:0;animation:skInv .5s steps(2) .5s forwards}
+@keyframes skInv{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.skaura .skrain{position:absolute;inset:0;overflow:hidden}
+.skaura .skrain i{position:absolute;top:-8%;font-style:normal;font-size:clamp(18px,2.4vw,30px);color:var(--ac);text-shadow:0 0 12px var(--ac);opacity:0;animation:skRain 1.5s ease-in var(--k) forwards}
+@keyframes skRain{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(110vh) rotate(25deg)}}
+.skaura.r-sin .glyphbig{color:#fff;text-shadow:0 0 30px #fff,0 0 70px #ffe6a8,0 0 140px #b8c8ff}
+.skaura.r-jeol .glyphbig{text-shadow:0 0 30px #ff9a2a,0 0 80px #ff5a2a,0 6px 20px rgba(0,0,0,.6)}
+/* 비기 창 */
+.panel.skp{justify-content:safe center}
+.skbox{position:relative;display:flex;flex-direction:column;gap:12px;width:min(1000px,96vw);padding:16px 20px;border-radius:16px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(176,128,255,.14),transparent 55%),linear-gradient(180deg,rgba(34,26,30,.96),rgba(12,9,10,.97));
+  border:1px solid rgba(200,170,255,.3);box-shadow:0 24px 70px rgba(0,0,0,.6);animation:winIn .38s cubic-bezier(.2,.9,.3,1.15)}
+.skbox .mhead{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid rgba(200,170,255,.16)}
+.skbox .mhead>i{font-style:normal;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#fff3d6;flex:none;position:relative;
+  background:radial-gradient(circle at 35% 30%,#7a5ab8,#1e1030);border:2px solid #d8c0ff;box-shadow:0 0 18px rgba(160,110,255,.45)}
+.skbox .mhead>i::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px dashed rgba(220,200,255,.55);animation:auSpin 14s linear infinite}
+.skbox .mhead h2{margin:0;font-size:22px;text-align:left;letter-spacing:.18em}.skbox .mhead span{display:block;margin-top:5px;font-size:12px;color:#b3a68c}
+.skleg{display:flex;flex-wrap:wrap;gap:6px}
+.skleg span{display:flex;align-items:center;gap:5px;padding:3px 9px 3px 4px;border-radius:12px;font-size:11px;color:#8a7f88;border:1px solid color-mix(in srgb,var(--gc) 35%,transparent);background:rgba(0,0,0,.25)}
+.skleg span b{font-weight:700;font-size:10px;padding:2px 5px;border-radius:7px;background:var(--gc);color:#140c0e;min-width:14px;text-align:center}
+.skleg span.got{color:#efe4ff;border-color:var(--gc)}
+.sklist{display:flex;flex-direction:column;gap:14px;max-height:max(260px,calc(100vh - 260px));overflow-y:auto;padding-right:4px}
+.skgh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-left:8px;border-left:3px solid var(--gc)}
+.skgh b{font-weight:400;font-size:15px;color:var(--gc);letter-spacing:.12em;text-shadow:0 0 10px color-mix(in srgb,var(--gc) 40%,transparent)}.skgh small{font-size:11px;color:#8a7f78}
+.skg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.sk2{font:inherit;position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;cursor:pointer;text-align:left;color:#efe4cb;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--gc) 16%,#1c1418),#120c0e 80%);border:1px solid color-mix(in srgb,var(--gc) 55%,transparent);transition:.15s;animation:mmIn .3s ease backwards}
+.sk2:hover:not(.lock){transform:translateY(-2px);box-shadow:0 0 18px color-mix(in srgb,var(--gc) 45%,transparent)}
+.sk2seal{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--gc) 70%,#fff),color-mix(in srgb,var(--gc) 60%,#000));box-shadow:0 0 14px color-mix(in srgb,var(--gc) 60%,transparent),inset 0 0 0 2px rgba(255,255,255,.25)}
+.sk2seal i{font-style:normal;font-size:24px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.sk2.h3 .sk2seal::after,.sk2.h4 .sk2seal::after,.sk2.h5 .sk2seal::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px dashed var(--gc);animation:auSpin 8s linear infinite}
+.sk2.h4{animation:mmIn .3s ease backwards,jeolGlow 2.2s ease-in-out infinite}.sk2.g-sin{animation:mmIn .3s ease backwards,sinGlow 2.4s ease-in-out infinite;background:linear-gradient(150deg,#2a2638,#0e0c14 80%)}
+.sk2.g-ssx.h3{box-shadow:0 0 14px rgba(255,45,85,.35)}
+.sk2txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sk2txt>b{font-weight:400;font-size:15px;letter-spacing:.06em}
+.sk2meta{display:flex;gap:6px;align-items:center}.sk2meta em{font-style:normal;font-size:10px;padding:1px 6px;border-radius:6px;background:var(--gc);color:#140c0e;font-weight:700}
+.sk2meta u{text-decoration:none;font-size:10.5px;color:#a89a9a}
+.sk2txt small{font-size:11.5px;color:#b8ad98;line-height:1.5;word-break:keep-all}
+.sk2txt small b,.sk2txt small em,.sk2txt small i{font-style:normal;font-weight:700}.sk2txt small em{color:#ff8a7a}.sk2txt small b{color:#ffd0a0}.sk2txt small i{color:#8ad0ff}
+.sk2.lock{cursor:default;filter:saturate(.35);opacity:.5}.sk2.lock .sk2seal{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--gc) 50%,transparent)}
+.sk2.on{outline:2px solid #7fe6a8;outline-offset:2px}
+.sk2on{position:absolute;top:-8px;right:10px;font-size:10px;letter-spacing:.1em;padding:2px 8px;border-radius:8px;background:#1e6a48;color:#dfffee}
+.skfoot{display:flex;justify-content:center}
+.skbox.pick{width:min(900px,96vw)}
+.skpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.sk2.big{flex-direction:column;text-align:center;padding:18px 14px;gap:10px;animation:skFlip .5s cubic-bezier(.2,1.2,.4,1) backwards}
+.sk2.big.h4{animation:skFlip .5s cubic-bezier(.2,1.2,.4,1) backwards,jeolGlow 2.2s ease-in-out .5s infinite}
+.sk2.big.g-sin{animation:skFlip .5s cubic-bezier(.2,1.2,.4,1) backwards,sinGlow 2.4s ease-in-out .5s infinite}
+.sk2.g-unknown.h4{animation:mmIn .3s ease backwards,unknownGlow 1.8s ease-in-out infinite}
+.sk2.big .sk2seal{width:74px;height:74px}.sk2.big .sk2seal i{font-size:34px}.sk2.big .sk2txt{align-items:center}.sk2.big .sk2meta{justify-content:center}
+@keyframes skFlip{from{opacity:0;transform:perspective(600px) rotateY(80deg) translateY(10px)}}
+@media (max-width:640px),(max-height:440px){.skg{grid-template-columns:1fr}.sk2seal{width:42px;height:42px}.sk2seal i{font-size:20px}.skbox{padding:12px}.sklist{max-height:none;overflow:visible}}
 /* 모험 끝 기록 카드 (판 59) */
 /* 무한의 탑 (판 59) */
 .panel.twp{justify-content:center}
@@ -8858,8 +8960,10 @@ const SND = {
   skillSting(rar) {
     if (!this.ok()) return;
     const S = this.bgmSet(this.music.act || 1);
-    const hi = rar === 'unknown' ? 4 : rar === 'ssx' ? 3 : rar === 'ssc' ? 2 : rar === 'special' ? 1 : 0;
-    this.duck(1400 + hi * 400, .22);
+    const hi5 = skHi(rar), hi = Math.min(4, hi5);
+    this.duck(1400 + hi5 * 400, .22);
+    if (hi5 >= 4 && this.horn) setTimeout(() => { try { this.horn(rar === 'sin' ? 131 : 98, { dur: 1.6, vol: .07 }); this.cymbal({ dur: 1.4, vol: .06 }); } catch (e) {} }, 120);
+    if (hi5 >= 5 && this.fm) for (let i = 0; i < 6; i++) setTimeout(() => { try { this.fm(this.bgmNote(i * 2, 2), { ratio: 3.5, idx: 1.4, dur: 1.2, vol: .045, rev: .9 }); } catch (e) {} }, 300 + i * 70);
     /* 징 한 번, 그리고 다섯 음이 차오른다 */
     this.gong();
     const deg = [0, 2, 4, 6, 8].slice(0, 3 + hi);
@@ -10907,6 +11011,8 @@ const GRADE = {
   unknown:  { n: '?급',   s: '?', c: '#7b4bd8', desc: '전해지지 않는 등급. 특대급 상자에서 0.05% 확률로만 모습을 드러낸다.' },
   qx:       { n: '?X급',  s: '?X', c: '#e8b820', desc: '실험 중인 등급. 개발자의 손에서 태어났고, 일일상점에 아주 드물게(0.01%) 흘러나온다.' },
   qq:       { n: '??급',  s: '??', c: '#d0d4e0', desc: '이름조차 붙지 않은 등급. 신호가 깨져 읽히지 않는다 — 개발자만 쥘 수 있다.' },
+  jeol:     { n: '절기',  s: '絶', c: '#ff9a2a', desc: '비기만의 등급 — 한 문파가 대를 이어 숨겨 온 한 수. SSX 위' },
+  sin:      { n: '신기',  s: '神', c: '#f4f0ff', desc: '비기만의 가장 높은 등급 — 사람이 쓸 수 있는 수가 아니다' },
   adm:      { n: '어드민급', s: 'ADMIN', c: '#00ffb0', desc: '세계 최강. 세상의 규칙 위에 선 등급 — 백야만 쥘 수 있다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
@@ -11654,7 +11760,57 @@ defSkill({ id: 'returnlight', n: '회광반조', g: '廻', rar: 'unknown',
     energy(2); syncAll();
   } });
 
-const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], zero: [], special: [], ssc: [], ssx: [], unknown: [] };
+/* ══ 비기 더 — 0등급 · 절기(絶) · 신기(神) (판 60) ═══════════════════
+   비기에는 0등급이 하나도 없었고, 가장 높은 것이 SSX · ?급뿐이었다.
+   · 0등급 둘 — 1등급과 S급 사이
+   · 절기(絶技) 셋 — 비기만의 등급. SSX 위. 한 문파가 대를 이어 숨겨 온 한 수 (제15막부터 · 비기 상자 2%)
+   · 신기(神技) 둘 — 비기만의 가장 높은 등급. ?급 위. 사람이 쓸 수 있는 수가 아니다 (제21막부터 · 비기 상자 0.1%)
+   비기마다 결(攻 치기 · 守 막기 · 氣 기운)을 적어 두고, 쓸 때 결에 맞는 연출이 붙는다. */
+defSkill({ id: 'frostedge', n: '서리칼날', g: '霜', rar: 'zero', kind: 'atk',
+  d: '모든 적에게 <em>8</em>의 피해를 주고 <b>약화</b> 1을 부여한다.',
+  use: async () => { SND.slashS(); for (const e of alive()) { atk(e, 8, { fx: 'slash' }); st(e, 'weak', 1); } } });
+defSkill({ id: 'clotblood', n: '응혈', g: '凝', rar: 'zero', kind: 'def',
+  d: '체력을 <b>6</b> 회복하고 <i>10</i>의 방어도와 <b>가시</b> 2를 얻는다.',
+  use: async () => { heal(6); blk(10, true); st(P(), 'thorns', 2); SND.heal(); } });
+/* 절기 */
+defSkill({ id: 'heavenbreak', n: '파천검', g: '破', rar: 'jeol', kind: 'atk',
+  d: '가장 체력이 많은 요괴의 <b>방어도를 부수고</b> <em>32</em>의 피해를 준다.',
+  use: async () => { const a = alive(); if (!a.length) return;
+    const t = a.slice().sort((x, y) => y.hp - x.hp)[0];
+    skillBanner('破 天 劍', true); t.block = 0; syncAll(); await wait(120);
+    impact('slash', t); atk(t, 32, { fx: 'slash2' }); shake(true); SND.crit(); } });
+defSkill({ id: 'ghostgate', n: '귀문봉쇄', g: '門', rar: 'jeol', kind: 'def',
+  d: '모든 적을 <b>1턴 무력</b>하게 만들고 <b>약화</b> 2 · <b>취약</b> 2를 부여한다.',
+  use: async () => { skillBanner('鬼 門 封 鎖', true); SND.gong();
+    for (const e of alive()) { st(e, 'stun', 1); st(e, 'weak', 2); st(e, 'vuln', 2); impact('void', e); await wait(70); } syncAll(); } });
+defSkill({ id: 'swordreturn', n: '만검귀종', g: '劍', rar: 'jeol', kind: 'atk',
+  d: '무작위 요괴에게 <em>7</em>의 피해를 <b>(손패의 공격 부적 수 + 4)번</b> 준다.',
+  use: async () => { const k = G.b.hand.filter(c => cdef(c).type === 'attack').length + 4;
+    skillBanner('萬 劍 歸 宗', true);
+    for (let i = 0; i < k; i++) { const a = alive(); if (!a.length) break; atk(pick(a), 7, { fx: 'lance' }); await wait(70); } } });
+/* 신기 */
+defSkill({ id: 'creation', n: '천지개벽', g: '闢', rar: 'sin', kind: 'atk',
+  d: '모든 적의 <b>현재 체력의 18%</b>를 없애고, <i>30</i>의 방어도와 기 <b>2</b>를 얻는다.',
+  use: async () => { skillBanner('天 地 開 闢', true); SND.voidhit(); SND.thunder();
+    for (const e of alive()) { impact('void', e); pure(e, Math.ceil(e.hp * .18)); await wait(90); }
+    blk(30, true); energy(2); shake(true); syncAll(); } });
+defSkill({ id: 'samsara', n: '윤회', g: '輪', rar: 'sin', kind: 'buf',
+  d: '버린 더미를 뽑을 더미에 섞어 넣고, 손패를 <b>7장</b>으로 채우며 기 <b>3</b>을 얻고 체력을 <b>15</b> 회복한다.',
+  use: async () => { const b = G.b; skillBanner('輪 廻', true); SND.heal();
+    b.drawPile = shuffle(b.drawPile.concat(b.discardPile)); b.discardPile = [];
+    const need = Math.max(0, 7 - b.hand.length); if (need) drawCards(need);
+    energy(3); heal(15); syncAll(); } });
+/* 결 — 따로 적지 않은 옛 비기는 뜻으로 가른다 */
+const SK_KIND = { shout: 'atk', guardqi: 'def', gatherqi: 'buf', chainhand: 'buf', qiwave: 'atk', ironwall: 'def', rush: 'buf', burial: 'atk',
+  nomind: 'buf', defy: 'atk', stomp2: 'atk', catchbreath: 'def', quickdraw: 'buf', saltline: 'def', twinfang: 'atk', sootscreen: 'def',
+  boneneedle: 'atk', skyfall: 'atk', bloodpact: 'buf', ghostwalk: 'def', ninetail: 'atk', stonelock: 'def', bluetide: 'atk', frostvow: 'def',
+  soulreap: 'atk', thousandhand: 'buf', returnlight: 'buf' };
+const skKind = d => (d && (d.kind || SK_KIND[d.id])) || 'buf';
+const SK_KIND_G = { atk: ['攻', '치기'], def: ['守', '막기'], buf: ['氣', '기운'] };
+/* 등급의 무게 — 연출의 크기 */
+const SK_ORDER = ['basic', 'common', 'uncommon', 'rare', 'zero', 'special', 'ssc', 'ssx', 'jeol', 'unknown', 'sin'];
+const skHi = r => ({ rare: 1, zero: 1, special: 1, ssc: 2, ssx: 3, jeol: 4, unknown: 4, sin: 5 })[r] || 0;
+const SKILL_POOL = { basic: [], common: [], uncommon: [], rare: [], zero: [], special: [], ssc: [], ssx: [], jeol: [], unknown: [], sin: [] };
 for (const k in SKILLS) SKILL_POOL[SKILLS[k].rar].push(k);
 const ALL_SKILLS = Object.keys(SKILLS);
 function randomSkill(rar) {
@@ -18186,6 +18342,8 @@ function syncSkill() {
   const id = G.run.skill, d = id && SKILLS[id];
   btn.querySelector('b').textContent = d ? d.g : '—';
   btn.querySelector('small').textContent = d ? d.n : '비기 없음';
+  { let em = btn.querySelector('em'); if (!em) { em = el('em'); btn.appendChild(em); } em.textContent = d ? GRADE[d.rar].s : ''; em.style.display = d ? '' : 'none';
+    let rg = btn.querySelector('i.skring'); const big = d && skHi(d.rar) >= 3; if (big && !rg) btn.appendChild(el('i', 'skring')); else if (!big && rg) rg.remove(); }
   btn.className = (d ? 'sg-' + d.rar + ' ' : '') + (!d ? 'none' : G.b.skillUsed ? 'used' : 'ready');
   btn.style.setProperty('--sc', d ? GRADE[d.rar].c : '#7d7568');
   btn.disabled = !d || G.b.skillUsed || G.b.busy || G.b.over;
@@ -18201,31 +18359,89 @@ function syncSkill() {
    기를 쓰지 않는 한 수다. 나갈 때만은 화면을 통째로 쓴다.
    등급이 높을수록 오래 끌고, 빛이 세고, 음악이 더 깊이 눕는다.
    ────────────────────────────────────────────────────── */
+/* ══ 비기 연출 · 창 새 단장 (판 60) ═══════════════════════════════
+   쓸 때: 먹물이 번지고(등급 빛) → 고리 · 빛살 → 큰 글자 → 「○○급 비기」 패와 붓 자국 위의 이름.
+   결마다 덧붙인다 — 攻 화면을 가르는 참격 셋 · 守 육각 방벽 · 氣 솟는 기둥.
+   SSX 이상은 위아래가 검게 닫히고 이름 글자가 비처럼 내린다. 절기 · ?급은 낙관이 쾅 찍히고 글자가 갈라진다.
+   신기는 하얗게 뒤집혔다가 금빛 금이 사방으로 간다. */
 function skillAura(d) {
-  const c = GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a';
-  const hi = d.rar === 'unknown' ? 4 : d.rar === 'ssx' ? 3 : d.rar === 'ssc' ? 2 : d.rar === 'special' ? 1 : 0;
-  const n = el('div', 'skaura g' + hi);
+  const c = GRADE[d.rar] ? GRADE[d.rar].c : '#ffd76a', hi = skHi(d.rar), kind = skKind(d);
+  const n = el('div', `skaura g${Math.min(hi, 4)} k-${kind} r-${d.rar}`);
   n.style.setProperty('--ac', c);
-  n.innerHTML = `<i class="ring"></i><i class="ring r2"></i><i class="ring r3"></i>
-    <div class="glyphbig">${d.g}</div>
-    <div class="skname">${d.n}</div>
-    ${[...Array(10 + hi * 4)].map((_, i) =>
-      `<b class="ray" style="--a:${(360 / (10 + hi * 4)) * i}deg;animation-delay:${i * .018}s"></b>`).join('')}`;
+  const nRay = 10 + hi * 4;
+  n.innerHTML = `<i class="skink"></i>${hi >= 3 ? '<i class="skbars"><u></u><u></u></i>' : ''}
+    <i class="ring"></i><i class="ring r2"></i><i class="ring r3"></i>
+    ${kind === 'atk' ? '<i class="sksl s1"></i><i class="sksl s2"></i><i class="sksl s3"></i>' : kind === 'def' ? '<i class="skhex"></i><i class="skhex h2"></i>' : rep(6, i => `<i class="skpil" style="--x:${12 + i * 15}%;--k:${(i * .06).toFixed(2)}s"></i>`)}
+    ${hi >= 5 ? '<i class="skcrack"></i><i class="skinv"></i>' : ''}
+    <div class="glyphbig">${d.g}${hi >= 4 ? `<s>${d.g}</s><s>${d.g}</s>` : ''}</div>
+    ${hi >= 4 ? `<i class="skseal">${GRADE[d.rar].s}</i>` : ''}
+    <div class="skgrade"><em>${SK_KIND_G[kind][0]}</em>${GRADE[d.rar].n} 비기</div>
+    <div class="skname"><span>${d.n}</span></div>
+    ${rep(nRay, i => `<b class="ray" style="--a:${(360 / nRay) * i}deg;animation-delay:${i * .018}s"></b>`)}
+    ${hi >= 3 ? `<div class="skrain">${rep(14, i => `<i style="left:${(i * 7.3 + 3) % 100}%;--k:${(i * .07).toFixed(2)}s">${d.n[i % d.n.length]}</i>`)}</div>` : ''}`;
   $('#app').appendChild(n);
-  setTimeout(() => n.remove(), 1300 + hi * 200);
+  setTimeout(() => n.remove(), 1350 + hi * 260);
   if (!OPT.particles) return;
   sparkles(innerWidth / 2, innerHeight * .46, 14 + hi * 6, c, 130 + hi * 40);
   FX.burst(innerWidth / 2, innerHeight * .46, 18 + hi * 8, hexRgb(c), 6, 54, 5);
   lightBeam(innerWidth * .5, rgba(c, .5), 150 + hi * 40);
   if (hi >= 1) setTimeout(() => lightBeam(innerWidth * .3, rgba(c, .38), 130), 90);
   if (hi >= 2) setTimeout(() => lightBeam(innerWidth * .7, rgba(c, .38), 130), 160);
+  if (hi >= 4) setTimeout(() => { try { shockRing(innerWidth / 2, innerHeight * .46, 520, c); } catch (e) {} }, 380);
+  if (hi >= 5) setTimeout(() => { try { screenFlash('rgba(255,255,255,.9)', 500); shockRing(innerWidth / 2, innerHeight * .46, 900, '#ffe6a8'); } catch (e) {} }, 520);
+}
+/* ── 비기 창 — 등급마다 묶고, 위 등급이 위로 ── */
+function skTile(id, own, on, extra, delay) {
+  const d = SKILLS[id], G0 = GRADE[d.rar], k = skKind(d), hi = skHi(d.rar);
+  return `<button class="sk2 g-${d.rar} h${Math.min(hi, 5)}${own ? '' : ' lock'}${on ? ' on' : ''}${extra ? ' ' + extra : ''}" data-id="${id}" style="--gc:${G0.c}${delay ? `;animation-delay:${delay}s` : ''}"${own ? '' : ' disabled'}>
+    <div class="sk2seal"><i>${own ? d.g : '?'}</i></div>
+    <div class="sk2txt"><b>${own ? d.n : '???'}</b><span class="sk2meta"><em>${G0.n}</em><u>${SK_KIND_G[k][0]} ${SK_KIND_G[k][1]}</u></span>
+      <small>${own ? d.d.replace(/<br>\s*/g, ' ') : '아직 익히지 못했다'}</small></div>
+    ${on ? '<div class="sk2on">裝 장착 중</div>' : ''}</button>`;
+}
+function showSkills() {
+  const run = G.run;
+  run.skills = run.skills || [];
+  const own = new Set(run.skills);
+  const groups = SK_ORDER.slice().reverse().filter(r => ALL_SKILLS.some(id => SKILLS[id].rar === r));
+  const p = modal(`<div class="skbox">
+      <div class="mhead"><i>祕</i><div><h2>비기</h2><span>기를 쓰지 않는 한 수 · 하나만 장착 · 전투당 한 번 · 익힌 비기 <b>${run.skills.length} / ${ALL_SKILLS.length}</b></span></div></div>
+      <div class="skleg">${SK_ORDER.filter(r => ALL_SKILLS.some(id => SKILLS[id].rar === r)).map(r => { const all = ALL_SKILLS.filter(id => SKILLS[id].rar === r), h = all.filter(id => own.has(id)).length;
+        return `<span style="--gc:${GRADE[r].c}" class="${h ? 'got' : ''}"><b>${GRADE[r].s}</b>${h}/${all.length}</span>`; }).join('')}</div>
+      <div class="sklist">${groups.map(r => { const ids = ALL_SKILLS.filter(id => SKILLS[id].rar === r).sort((a, z) => (own.has(z) ? 1 : 0) - (own.has(a) ? 1 : 0));
+        return `<div class="skgrp" style="--gc:${GRADE[r].c}"><div class="skgh"><b>${GRADE[r].n}</b><small>${GRADE[r].desc || ''}</small></div>
+          <div class="skg">${ids.map(id => skTile(id, own.has(id), run.skill === id)).join('')}</div></div>`; }).join('')}</div>
+      <div class="skfoot"><button class="brush-btn ghost" id="sk_close">닫기</button></div></div>`, 'skp');
+  p.querySelectorAll('.sk2:not(.lock)').forEach(b => b.onclick = () => { const id = b.dataset.id; run.skill = id; SND.power(); toast(`${SKILLS[id].n} 장착`); saveRun(); closeTop(); showSkills(); });
+  p.querySelector('#sk_close').onclick = closeTop;
+}
+/* 보스가 내어 주는 비기 — 막에 따라 등급이 열린다 (절기 제15막 · 신기 제21막) */
+async function pickSkill() {
+  const act = (G.run && G.run.act) || 1;
+  const good = Object.keys(SKILL_GATE).filter(r => act >= SKILL_GATE[r]);
+  let pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0 && good.indexOf(SKILLS[id].rar) >= 0);
+  if (!pool.length) pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0);
+  /* 신기 · 절기는 열려 있어도 드물게 — 셋 중에 끼는 몫을 줄인다 */
+  pool = pool.filter(id => SKILLS[id].rar !== 'sin' || rnd() < .25).filter(id => SKILLS[id].rar !== 'jeol' || rnd() < .55);
+  const cand = sample(pool, 3);
+  if (!cand.length) { G.run.dia = (G.run.dia || 0) + 300; toast('다이아 300을 얻었다'); return; }
+  return new Promise(res => {
+    const p = modal(`<div class="skbox pick">
+        <div class="mhead"><i>傳</i><div><h2>비기 전수</h2><span>셋 중 하나만 익힌다 · 지금 열린 등급 ${good.map(r => `<b style="color:${GRADE[r].c}">${GRADE[r].s}</b>`).join(' ')}</span></div></div>
+        <div class="skpick">${cand.map((id, i) => skTile(id, true, false, 'big', i * .12)).join('')}</div></div>`, 'skp');
+    p._esc = () => res();
+    p.querySelectorAll('.sk2').forEach(b => b.onclick = () => {
+      const id = b.dataset.id; p._esc = null; gainSkill(id); G.run.skill = id;
+      try { if (skHi(SKILLS[id].rar) >= 3) { SND.unlock(); screenFlash(rgba(GRADE[SKILLS[id].rar].c, .45), 600); } } catch (e) {}
+      closePanel(p); renderTop(); res(); });
+  });
 }
 async function useSkill() {
   const b = G.b; if (!b || b.busy || b.over || b.skillUsed) return;
   const id = G.run.skill, d = id && SKILLS[id];
   if (!d) { SND.err(); toast('장착한 비기가 없다'); return; }
   b.skillUsed = true; b.busy = true; b.sel = null; hideArrow(); clearPreview(); syncAll();
-  const hi = d.rar === 'unknown' ? 4 : d.rar === 'ssx' ? 3 : d.rar === 'ssc' ? 2 : d.rar === 'special' ? 1 : 0;
+  const hi = Math.min(4, skHi(d.rar));
   /* 단추에서 기운이 솟는다 */
   const btn = $('#skillbtn');
   if (btn) { btn.classList.remove('fire'); void btn.offsetWidth; btn.classList.add('fire');
@@ -18237,7 +18453,7 @@ async function useSkill() {
   if (hi >= 2) { rgbSplit(); rushVignette(rgba(GRADE[d.rar].c, .3)); }
   hitstop(hi >= 2);
   try {
-    await wait(hi >= 2 ? 420 : 300);
+    await wait(skHi(d.rar) >= 5 ? 700 : hi >= 4 ? 560 : hi >= 2 ? 420 : 300);
     try { await d.use(); } catch (e) { console.error('비기 오류', id, e); }
     await checkDeaths();
   } catch (e) { console.error('비기 뒤처리 오류', id, e); }
@@ -19678,31 +19894,7 @@ function showRewards(kind) {
 }
 /* 보스가 내어 주는 비기 — 막에 따라 등급이 열린다.
    ?급 회광반조는 제10막을 넘어선 사람에게만 나온다. */
-const SKILL_GATE = { basic: 1, common: 1, uncommon: 2, rare: 4, zero: 5, special: 7, ssc: 10, ssx: 13, unknown: 17 };
-async function pickSkill() {
-  const act = (G.run && G.run.act) || 1;
-  const good = Object.keys(SKILL_GATE).filter(r => act >= SKILL_GATE[r]);
-  let pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0 && good.indexOf(SKILLS[id].rar) >= 0);
-  if (!pool.length) pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0 && good.indexOf(SKILLS[id].rar) >= 0);
-  if (!pool.length) pool = ALL_SKILLS.filter(id => (G.run.skills || []).indexOf(id) < 0);
-  const cand = sample(pool, 3);
-  if (!cand.length) { G.run.dia = (G.run.dia || 0) + 300; toast('다이아 300을 얻었다'); return; }
-  return new Promise(res => {
-    const p = modal(`<h2>비기 전수</h2><div class="hint">하나만 익힐 수 있다 ·
-      지금 열린 등급 ${good.map(r => GRADE[r].n).join(' · ')}</div>
-      <div class="skillgrid"></div>`);
-    p._esc = () => res();
-    const g = p.querySelector('.skillgrid');
-    for (const id of cand) {
-      const d = SKILLS[id];
-      const n = el('div', 'stile g-' + d.rar,
-        `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div><b>${d.g}</b>
-         <div class="sn">${d.n}</div><div class="sd">${d.d.replace(/<br>\s*/g, ' ')}</div>`);
-      n.onclick = () => { p._esc = null; gainSkill(id); G.run.skill = id; closePanel(p); renderTop(); res(); };
-      g.appendChild(n);
-    }
-  });
-}
+const SKILL_GATE = { basic: 1, common: 1, uncommon: 2, rare: 4, zero: 5, special: 7, ssc: 10, ssx: 13, jeol: 15, unknown: 17, sin: 21 };
 async function pickBossRelic() {
   const owned = new Set(G.run.relics.map(r => r.id));
   const cand = RELIC_POOL.boss.filter(id => !owned.has(id));
@@ -19774,34 +19966,6 @@ function openSkills() {
   if (G.b) { SND.err(); toast('싸우는 중에는 바꿀 수 없다'); return; }
   SND.ui(); showSkills();
 }
-function showSkills() {
-  const run = G.run;
-  run.skills = run.skills || [];
-  const p = modal(`<h2>비 기</h2>
-    <div class="hint">기를 쓰지 않는 한 수 · <b>하나만 장착</b>할 수 있고 <b>전투당 한 번</b> 쓴다
-      · 익힌 비기 <b>${run.skills.length} / ${ALL_SKILLS.length}</b></div>
-    <div class="skillgrid" id="sk_mine"></div>
-    <div class="hint" style="margin-top:8px">아직 익히지 못한 것</div>
-    <div class="skillgrid" id="sk_rest"></div>
-    <button class="brush-btn" id="sk_close">닫기</button>`);
-  const mine = p.querySelector('#sk_mine'), rest = p.querySelector('#sk_rest');
-  if (!run.skills.length) mine.innerHTML = '<div style="color:#8f846d">아직 익힌 비기가 없다 — 보스를 잡거나 비기 상자에서 얻는다</div>';
-  for (const id of ALL_SKILLS) {
-    const d = SKILLS[id], own = run.skills.indexOf(id) >= 0, on = run.skill === id;
-    const n = el('div', 'stile g-' + d.rar + (on ? ' on' : '') + (own ? '' : ' dim'),
-      `<div class="sg" style="--gc:${GRADE[d.rar].c}">${GRADE[d.rar].n}</div>
-       <b>${own ? d.g : '?'}</b>
-       <div class="sn">${own ? d.n : '???'}</div>
-       <div class="sd">${own ? d.d.replace(/<br>\s*/g, ' ') : '아직 익히지 못했다'}</div>
-       ${on ? '<div class="eq">장 착 중</div>' : ''}`);
-    if (own) n.onclick = () => { run.skill = id; SND.power(); toast(`${d.n} 장착`); saveRun(); closeTop(); showSkills(); };
-    else { n.style.opacity = '.45'; n.style.cursor = 'default'; }
-    (own ? mine : rest).appendChild(n);
-  }
-  if (!rest.children.length) rest.innerHTML = '<div style="color:#8f846d">전부 익혔다</div>';
-  p.querySelector('#sk_close').onclick = closeTop;
-}
-
 /* ══ 장기 상점 ═════════════════════════════════════════════
    장기판 위에 말이 놓여 있고, 말 하나가 물건 하나를 판다.
    물건은 아래 표만 채우면 된다 — todo:true 인 자리는 '준비 중'.
@@ -22213,7 +22377,7 @@ const MILESTONES = [
   { at: 60,  grade: 'special', s: 'S',   label: '[S급] 보너스' },
   { at: 100, grade: 'ssx',     s: 'SSX', label: '[SSX급] 보너스', ssx: true }
 ];
-const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, zero: 5, special: 6, ssc: 7, ssx: 8, unknown: 9 };
+const GRADE_STARS = { basic: 1, common: 2, uncommon: 3, rare: 4, zero: 5, special: 6, ssc: 7, ssx: 8, jeol: 9, unknown: 9, sin: 10 };
 const stars = rar => '★'.repeat(GRADE_STARS[rar] || 1);
 
 /* 상자 하나에서 나오는 것 */
@@ -22224,8 +22388,8 @@ function boxLoot(tier) {
   /* 비기 상자 */
   if (tier === 5) {
     const r = rnd();
-    const grade = r < .005 ? 'unknown' : r < .05 ? 'ssx' : r < .13 ? 'ssc' : r < .30 ? 'special'
-                : r < .50 ? 'rare' : r < .73 ? 'uncommon' : 'common';
+    const grade = r < .001 ? 'sin' : r < .006 ? 'unknown' : r < .026 ? 'jeol' : r < .07 ? 'ssx' : r < .14 ? 'ssc' : r < .30 ? 'special'
+                : r < .38 ? 'zero' : r < .52 ? 'rare' : r < .74 ? 'uncommon' : 'common';
     let id = randomSkill(grade) || randomSkill();
     if (!id) { const g = ri(200, 320); return { g: '金', n: `골드 ${g}`, d: '더 배울 비기가 없다', take: () => { run.gold += g; } }; }
     const sd = SKILLS[id];
