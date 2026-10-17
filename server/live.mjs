@@ -772,6 +772,7 @@ async function botStep(now) {
 async function rankBump(key, id, val, mode) {
   let v = val;
   if (mode === 'add') { v = ((+(await get(`rkv:${key}:${id}`))) || 0) + val; await put(`rkv:${key}:${id}`, v); }
+  else if (mode === 'max') { const old = await get(`rkv:${key}:${id}`); if (old != null && +old >= val) return; await put(`rkv:${key}:${id}`, v); }
   else { const old = await get(`rkv:${key}:${id}`); if (old != null && +old <= val) return; await put(`rkv:${key}:${id}`, v); }
   const top = (await get('rk:' + key)) || [], i = top.findIndex(x => x.id === id);
   const row = { id, nick: (await nickOf(id)) || id, v, at: Date.now() };
@@ -1705,7 +1706,7 @@ const server = http.createServer(async (req, res) => {
     const shown = x => x && x.nick !== '백야' && x.nick !== '백사' && !/백야|baekya|백사|baeksa|admin|관리자|운영/i.test(String(x.id || '')) && !gs.has(x.id);
     const pick = async k => ((await get('rk:' + k)) || []).filter(shown).slice(0, 50).map(x => ({ nick: x.nick, v: x.v }));
     const mp = ((await get('mptop')) || []).filter(shown).slice(0, 50).map(x => ({ nick: x.nick, v: x.rp, tier: x.tier, w: x.w, l: x.l }));
-    return send(res, 200, { ok: true, mp, sh: await pick('sh'), hb: await pick('hb'), sp: await pick('sp'), now: Date.now() });
+    return send(res, 200, { ok: true, mp, sh: await pick('sh'), hb: await pick('hb'), sp: await pick('sp'), tw: await pick('tw'), now: Date.now() });
   }
   /* ── 프로필 · 벗 — /pf/set 내 것을 적는다 · /pf/get 남의 것을 본다 · /fr/list · /fr/add · /fr/del ── */
   if ((url.pathname.startsWith('/pf/') || url.pathname.startsWith('/fr/')) && req.method === 'POST') {
@@ -1847,6 +1848,20 @@ const server = http.createServer(async (req, res) => {
   }
 
   /* ── 마지막 막(25막)을 깼다 — 로그인한 사람만 적는다. 백야의 앱이 clearAt 을 보고 명단을 받아 간다 ── */
+  /* 무한의 탑 (판 59) — 오른 층의 최고만 적는다 */
+  if (url.pathname === '/tower/submit' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 적힌다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const fl = Math.max(0, Math.min(999, parseInt(q.floor, 10) || 0));
+    if (!fl) return send(res, 400, { ok: false, why: '층이 없다' });
+    await rankBump('tw', id, fl, 'max').catch(() => {});
+    return send(res, 200, { ok: true });
+  }
   if (url.pathname === '/clear/final' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }

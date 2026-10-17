@@ -1806,6 +1806,40 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
 /* 모험 끝 기록 카드 (판 59) */
+/* 무한의 탑 (판 59) */
+.panel.twp{justify-content:center}
+.twbox{position:relative;display:flex;align-items:center;gap:26px;padding:22px 28px;border-radius:16px;width:min(760px,94vw);
+  background:radial-gradient(ellipse at 30% 0%,rgba(232,200,106,.14),transparent 60%),linear-gradient(180deg,rgba(30,22,16,.95),rgba(10,7,5,.97));
+  border:1px solid rgba(232,200,106,.35);box-shadow:0 24px 70px rgba(0,0,0,.6);animation:winIn .38s cubic-bezier(.2,.9,.3,1.15)}
+.twbox.win,.twbox.home{justify-content:center}
+.twspire{flex:none;display:flex;flex-direction:column-reverse;align-items:center;gap:3px}
+.twspire i{font-style:normal;display:grid;place-items:center;height:24px;font-size:11px;color:#8a7f68;border:1px solid rgba(232,200,106,.2);border-radius:3px;background:rgba(255,240,200,.03);
+  clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);width:calc(54px + (8 - var(--i)) * 7px)}
+.twspire i.now{height:34px;font-size:16px;color:#2a1a08;background:linear-gradient(#ffe6a8,#c8a040);border-color:#fff0c8;animation:twNow 1.6s ease-in-out infinite}
+@keyframes twNow{50%{filter:brightness(1.25)}}
+.twmain{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.twbox.win .twmain,.twbox.home .twmain{align-items:center;text-align:center}
+.twmain>small{font-size:12px;letter-spacing:.6em;color:#c8a94e}
+.twmain h2{margin:0;font-size:26px;font-weight:400;letter-spacing:.12em;color:#f2e9d3;text-align:left}
+.twbox.win .twmain h2,.twbox.home .twmain h2{text-align:center}
+.twmain h2 b{font-size:34px;color:#ffe6a8;font-weight:400}
+.twmain h2 em{font-style:normal;font-size:12px;letter-spacing:.1em;padding:3px 9px;border-radius:10px;vertical-align:middle}
+.twmain h2 .twboss{background:#a8272c;color:#fff}.twmain h2 .twelite{background:#7a4ac8;color:#fff}
+.twsub{font-size:13px;color:#b3a68c}.twnew{color:#7fe6a8}
+.twfoes{display:flex;gap:10px;flex-wrap:wrap}
+.twfoe{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(232,200,106,.2)}
+.twfoe i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:#fff3e8;background:var(--c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+.twfoe span{font-size:13px;color:#e9dfc9}
+.twnote{font-size:12px;color:#8f846d;line-height:1.6}
+.twbtns{display:flex;gap:10px;flex-wrap:wrap}
+.twbox.win .twbtns,.twbox.home .twbtns{justify-content:center}
+.twpick{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.twpick button{font:inherit;cursor:pointer;width:170px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 10px;border-radius:12px;color:#efe4cb;
+  background:linear-gradient(160deg,rgba(60,46,30,.85),rgba(24,18,12,.9));border:1px solid rgba(232,200,106,.35);transition:.15s}
+.twpick button:hover:not(:disabled){transform:translateY(-3px);border-color:#ffd76a;box-shadow:0 0 18px rgba(255,210,110,.35)}
+.twpick button i{font-style:normal;font-size:26px;color:#ffe6a8}.twpick button b{font-weight:400;font-size:15px}.twpick button small{font-size:11.5px;color:#a89a80}
+@media (max-width:640px),(max-height:440px){.twspire{display:none}.twbox{padding:14px 16px}.twmain h2{font-size:20px}.twmain h2 b{font-size:26px}.twpick button{width:140px;padding:10px 6px}}
+/* 모험 끝 기록 카드 (판 59) — 창 */
 .recbox{position:relative;padding:16px 20px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px;width:min(960px,96vw);
   background:radial-gradient(ellipse at 50% 0%,rgba(232,200,106,.12),transparent 55%),linear-gradient(180deg,rgba(38,30,21,.95),rgba(15,11,8,.97));
   border:1px solid rgba(232,200,106,.3);box-shadow:0 24px 70px rgba(0,0,0,.6);animation:winIn .38s cubic-bezier(.2,.9,.3,1.15)}
@@ -14290,6 +14324,10 @@ function startBattle(enemyIds, kind, opts) {
   const mpK = kind === 'pvp' || kind === 'mpbot';      /* 멀티플레이 — 막의 배율도 가호도 없이 맨몸으로 */
   let sc = kind === 'arena' || mpK || kind === 'devboss' ? { hp: 1, dmg: 1 } : kind === 'world' ? worldScale(run.act)
          : kind === 'colo' && COLO_EARLY[run.act] ? Object.assign({}, COLO_EARLY[run.act]) : actScale(run.act);
+  /* 무한의 탑 (판 59) — 그 요괴가 나온 막의 배율에 층마다 체력 +7% · 힘 +4% */
+  if (/^tower/.test(kind)) { const ta = opts.tAct || 25, fl = opts.tFloor || 1, base = actScale(ta), e2 = endSoft(ta);
+    sc = { hp: base.hp * e2 * (1 + .07 * (fl - 1)), dmg: base.dmg * e2 * (1 + .04 * (fl - 1)) };
+    if (kind === 'towerboss') { sc.hp *= BOSS_SOFT.hp; sc.dmg *= BOSS_SOFT.dmg; } else if (kind === 'towerelite') { sc.hp *= ELITE_SOFT.hp; sc.dmg *= ELITE_SOFT.dmg; } }
   /* ── 보스가 너무 셌다 ──────────────────────────────────
      특별 상자를 까지 않으면 못 넘을 지경이라는 말을 들었다.
      보스만 따로 눅인다. 엘리트는 그보다 덜.
@@ -14302,7 +14340,7 @@ function startBattle(enemyIds, kind, opts) {
   if (kind === 'boss') sc = { hp: sc.hp * bs.hp * ls.hp * fs.hp, dmg: sc.dmg * bs.dmg * ls.dmg * fs.dmg };
   else if (kind === 'elite') sc = { hp: sc.hp * ELITE_SOFT.hp * ls.hp, dmg: sc.dmg * ELITE_SOFT.dmg * ls.dmg };
   /* 마지막 세 막은 통째로 눅인다 — 체력·치는 힘·막는 힘 모두 */
-  const es = kind === 'arena' || kind === 'world' || mpK || kind === 'devboss' ? 1 : endSoft(run.act);
+  const es = kind === 'arena' || kind === 'world' || mpK || kind === 'devboss' || /^tower/.test(kind) ? 1 : endSoft(run.act);
   if (es !== 1) sc = { hp: sc.hp * es, dmg: sc.dmg * es };
   /* 저주의 밤 — 등반의 요괴만 사나워진다 (모두의 적·겨루는 마당은 그대로) */
   if (evOn('night') && (kind === 'normal' || kind === 'elite' || kind === 'boss')) sc = { hp: sc.hp * 1.3, dmg: sc.dmg * 1.2 };
@@ -14332,12 +14370,12 @@ function startBattle(enemyIds, kind, opts) {
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind) && !/^cave/.test(kind) && kind !== 'eggboss') { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind) && !/^cave/.test(kind) && !/^tower/.test(kind) && kind !== 'eggboss') { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
-  SND.bgm(true, kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss' ? 'boss' : 'battle');
-  if (kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss') SND.boss(); else if (kind === 'elite') SND.gong(); else SND.drum();
+  SND.bgm(true, kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss' || kind === 'towerboss' ? 'boss' : 'battle');
+  if (kind === 'boss' || kind === 'world' || kind === 'caveboss' || kind === 'eggboss' || kind === 'towerboss') SND.boss(); else if (kind === 'elite' || kind === 'towerelite') SND.gong(); else SND.drum();
   if (friendOn() && !mpK) setTimeout(() => friendSay(kind === 'boss' ? '"보스야. 천천히 가자."'
     : kind === 'elite' ? '"이건 굵다. 조심해."' : '"붙자."', 3000), 700);
   if (hasBoon('str5')) { st(b.p, 'str', 4); st(b.p, 'dex', 4); }
@@ -15637,6 +15675,7 @@ async function checkOver() {
     else if (b.kind === 'hbboss') hbBattleLose();   /* 매시 해킹 보스 — 모험은 그대로, 다시 도전 */
     else if (/^cave/.test(b.kind)) caveLose();      /* 백귀굴 — 밀려날 뿐 모험은 그대로 (판 57) */
     else if (b.kind === 'eggboss') eggBossLose();   /* 산신 — 굴러떨어질 뿐 */
+    else if (/^tower/.test(b.kind)) towerLose();     /* 무한의 탑 — 탑이 끝난다 (판 59) */
     else if (b.replay) replayEnd(false);             /* 다시 하기 — 모험은 그대로 */
     else gameOver();
     return true;
@@ -15739,6 +15778,7 @@ function _winBattle() {
   if (b.kind === 'hbboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); hbBattleWin(); return; }   /* 매시 해킹 보스 */
   if (/^cave/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); caveWin(b.kind); return; }   /* 백귀굴 (판 57) */
   if (b.kind === 'eggboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); eggBossWin(); return; }   /* 산신 */
+  if (/^tower/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); run.stats.battles++; try { xpOnWin(b); } catch (e) {} SND.victory(); towerWin(b.kind); return; }   /* 무한의 탑 (판 59) */
   if (b.replay) { try { xpOnWin(b); } catch (e) {} replayEnd(true); return; }                       /* 다시 하기 — 경험치만 */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
@@ -27112,6 +27152,7 @@ function victory() {
       <button class="brush-btn t26btn" id="w_26">第26幕 예고편<em>NEW</em></button>
       <button class="brush-btn ghost" id="w_26p" style="color:#e9dfc9;border-color:#8a7f68">미리보기</button>
       ${act26Open() ? '<button class="brush-btn gold" id="w_26go" title="개발자만">第26幕 들어가기 · 개발자</button>' : ''}
+      <button class="brush-btn red" id="w_tower" title="이 덱 · 유물 · 체력 그대로">塔 무한의 탑으로</button>
       <button class="brush-btn ghost" id="w_rec" style="color:#ffe6a8;border-color:#c8a94e">記 기록 카드</button>
       <button class="brush-btn gold" id="w_title">처음으로</button>
     </div>`;
@@ -27120,6 +27161,7 @@ function victory() {
   d.querySelector('#w_26').onclick = () => { SND.ui(); act26Trailer(); };
   d.querySelector('#w_26p').onclick = () => { SND.ui(); showAct26Preview(); };
   d.querySelector('#w_rec').onclick = () => { SND.ui(); showRecCard(true); };
+  d.querySelector('#w_tower').onclick = () => { SND.ui(); towerStart(); };
   { const g = d.querySelector('#w_26go'); if (g) g.onclick = () => { SND.ui(); enterAct26(); }; }
   /* 처음 사신도를 넘었을 때 — 예고편이 저절로 한 번 */
   /* 사신도를 넘었다 — 단오의 손을 잡는 이야기, 그다음 예고편 */
@@ -27537,7 +27579,7 @@ async function showProfile(who) {
    ══════════════════════════════════════════════════════════ */
 async function showRanks(tab) {
   tab = tab || 'mp';
-  const TABS = [['mp', '대전 랭크', '對'], ['sh', '그림자 처치', '影'], ['hb', '해킹 보스', '博'], ['sp', '최단 25막', '天']];
+  const TABS = [['mp', '대전 랭크', '對'], ['sh', '그림자 처치', '影'], ['hb', '해킹 보스', '博'], ['sp', '최단 25막', '天'], ['tw', '무한의 탑', '塔']];
   const p = modal(`<div class="rkbox"><div class="mhead"><i>榜</i><div><h2>순위</h2><span>위 쉰 명 · 이름을 누르면 프로필</span></div></div>
     <div class="mmtabs rktabs">${TABS.map(([k, n, g]) => `<button class="mmtab${k === tab ? ' on' : ''}" data-t="${k}"><i>${g}</i>${n}</button>`).join('')}</div>
     <div class="rklist">불러오는 중…</div>
@@ -27549,7 +27591,7 @@ async function showRanks(tab) {
     p.querySelectorAll('.rktabs .mmtab').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
     if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
     const rows = r[tab] || [], myNick = ACCT && (ACCT.nick || ACCT.id);
-    const val = x => tab === 'mp' ? `${mpEmblem(x.v, 'sm')} ${x.v}<small>RP</small>` : tab === 'sp' ? `${x.v}<small>분</small>` : `${x.v.toLocaleString()}<small>${tab === 'sh' ? '마리' : '번'}</small>`;
+    const val = x => tab === 'mp' ? `${mpEmblem(x.v, 'sm')} ${x.v}<small>RP</small>` : tab === 'sp' ? `${x.v}<small>분</small>` : tab === 'tw' ? `${x.v}<small>층</small>` : `${x.v.toLocaleString()}<small>${tab === 'sh' ? '마리' : '번'}</small>`;
     L.innerHTML = rows.length ? rows.map((x, i) => `<div class="rkrow${x.nick === myNick ? ' me' : ''}${i < 3 ? ' top' + (i + 1) : ''}"><em>${i + 1}</em><b data-n="${wEsc(x.nick)}">${wEsc(x.nick)}</b><span>${val(x)}</span></div>`).join('')
       : '<div class="mempty">아직 아무도 없다 — 첫 이름이 되어 보시오</div>';
     L.querySelectorAll('[data-n]').forEach(b => b.onclick = () => showProfile(b.dataset.n));
@@ -36328,6 +36370,153 @@ function recChatHtml(t) {
   const parts = m[1].split(' · ');
   return `<span class="recmsg"><i>記</i><b>${wEsc(parts[0])}</b><small>${parts.slice(1).map(wEsc).join(' · ')}</small></span>`;
 }
+/* ══ 무한의 탑(塔) (판 59) ══════════════════════════════════════
+   제25막을 넘은 사람만. 승천한 그 덱 · 그 유물 · 그 체력으로 끝없는 층을 오른다.
+   · 층마다 한 판. 다섯 층마다 엘리트, 열 층마다 보스. 요괴는 10~25막에서 섞여 나오고(높이 오를수록 뒷막),
+     층마다 체력 +7% · 힘 +4% 씩 붙는다
+   · 이기면 골드와 셋 중 하나: 숨 고르기(체력 25%) · 부적 한 장(셋 중) · 담금질(무작위 한 장 강화).
+     보스 층은 유물도 하나
+   · 쓰러지면 탑이 끝난다 — 최고 층은 이 기계와 서버 순위(「무한의 탑」)에 적히고, 기록 카드에 「탑 n층」
+   · 언제든 「내려간다」로 그만둘 수 있다(그 층까지 적힌다). 도중에 꺼도 그 층 앞에서 이어진다
+   ══════════════════════════════════════════════════════════ */
+const towerOpen = () => (META.cleared || 0) >= LAST_ACT || (META.wins || 0) > 0 || (() => { try { return adminOn(); } catch (e) { return false; } })();
+const towerOn = () => !!(G.run && G.run.tower && !G.run.tower.done);
+/* 이 층의 상대 */
+function towerPlan(fl) {
+  const kind = fl % 10 === 0 ? 'towerboss' : fl % 5 === 0 ? 'towerelite' : 'tower';
+  const lo = Math.min(25, 10 + Math.floor(fl / 4)), hi = Math.min(25, 14 + Math.floor(fl / 2));
+  const ta = lo + Math.floor(rnd() * (hi - lo + 1));
+  const E = ENCOUNTERS[ta] || ENCOUNTERS[25];
+  const ids = kind === 'towerboss' ? [pick(E.boss)] : kind === 'towerelite' ? pick(E.elite).slice() : pick(E.normal).slice();
+  return { kind, ta, ids };
+}
+/* 탑에 들어선다 — 승천 화면에서 (이 덱으로) */
+function towerStart() {
+  if (!G.run) { toast('이어 갈 모험이 없다'); return; }
+  if (!towerOpen()) { SND.err(); toast('제25막을 넘은 자만 오른다'); return; }
+  const w = document.querySelector('.endscreen'); if (w) w.remove();
+  closeOverlay(); try { autoStop(); } catch (e) {}
+  const run = G.run;
+  run.tower = { floor: 0, best: 0, at: Date.now() };
+  run.hp = Math.max(run.hp, Math.ceil(run.maxHp * .6));
+  saveRun();
+  try { SND.gong(); SND.unlock(); } catch (e) {}
+  towerFloor();
+}
+/* 층 앞 — 다음 상대를 보여 주고 오를지 묻는다 */
+function towerFloor() {
+  const run = G.run; if (!towerOn()) return;
+  G.scene = 'tower'; G.b = null;
+  { const sc = $('#scene'); if (sc) sc.innerHTML = ''; }
+  const t = run.tower, fl = t.floor + 1;
+  if (!t.next || t.next.fl !== fl) { t.next = Object.assign({ fl }, towerPlan(fl)); saveRun(); }
+  const N = t.next, best = Math.max(META.towerBest || 0, t.best || 0);
+  try { setBg(N.ta); } catch (e) {}
+  renderTop();
+  const foes = N.ids.map(id => ENEMIES[id]).filter(Boolean);
+  const tag = N.kind === 'towerboss' ? '<em class="twboss">보스 층</em>' : N.kind === 'towerelite' ? '<em class="twelite">엘리트 층</em>' : '';
+  const p = overlay(`<div class="twbox">
+      <div class="twspire">${rep(9, i => `<i style="--i:${i}"${i === 4 ? ' class="now"' : ''}>${i === 4 ? fl : i < 4 ? fl + (4 - i) : Math.max(0, fl - (i - 4)) || ''}</i>`)}</div>
+      <div class="twmain">
+        <small>無 限 之 塔</small>
+        <h2>무한의 탑 <b>${fl}</b>층 ${tag}</h2>
+        <div class="twsub">최고 ${best}층 · 체력 ${run.hp} / ${run.maxHp} · 덱 ${run.deck.length}장 · 유물 ${run.relics.length}개</div>
+        <div class="twfoes">${foes.map(d => `<div class="twfoe"><i style="--c:${d.col || '#6a2a2a'}">${d.g}</i><span>${wEsc(d.n)}</span></div>`).join('')}</div>
+        <div class="twnote">제${N.ta}막의 것들 · 이 층 요괴 체력 +${Math.round(7 * (fl - 1))}% · 힘 +${Math.round(4 * (fl - 1))}%</div>
+        <div class="twbtns"><button class="brush-btn red" id="tw_go">오른다</button><button class="brush-btn ghost" id="tw_rank" style="color:#e9dfc9;border-color:#8a7f68">순위</button><button class="brush-btn ghost" id="tw_quit" style="color:#e9dfc9;border-color:#8a7f68">내려간다</button></div>
+      </div></div>`, 'twp');
+  p.dataset.noesc = '1';
+  p.querySelector('#tw_go').onclick = () => { SND.ui(); closeOverlay(); startBattle(N.ids, N.kind, { tAct: N.ta, tFloor: fl }); };
+  p.querySelector('#tw_rank').onclick = () => { SND.ui(); showRanks('tw'); };
+  p.querySelector('#tw_quit').onclick = () => {
+    const b = p.querySelector('#tw_quit');
+    if (b.dataset.ask !== '1') { b.dataset.ask = '1'; b.textContent = '정말 내려간다'; setTimeout(() => { b.dataset.ask = ''; b.textContent = '내려간다'; }, 2500); return; }
+    towerEnd(false);
+  };
+}
+/* 이겼다 */
+function towerWin(kind) {
+  const run = G.run, t = run.tower; G.b = null;
+  t.floor++; t.best = Math.max(t.best || 0, t.floor); t.next = null;
+  if (t.floor > (META.towerBest || 0)) { META.towerBest = t.floor; saveMeta(); }
+  const gold = Math.round(lootGold(25) * (kind === 'towerboss' ? 30 : kind === 'towerelite' ? 18 : 10) * (1 + t.floor * .03));
+  run.gold += gold;
+  saveRun(); renderTop();
+  if (t.floor % 5 === 0) towerSubmit(t.floor);
+  const p = overlay(`<div class="twbox win"><div class="twmain">
+      <small>無 限 之 塔</small><h2><b>${t.floor}</b>층을 넘었다</h2>
+      <div class="twsub">골드 +${gold.toLocaleString()} · 체력 ${run.hp} / ${run.maxHp}${t.floor >= (META.towerBest || 0) ? ' · <b class="twnew">최고 기록</b>' : ''}</div>
+      <div class="twpick">
+        <button data-k="rest"><i>息</i><b>숨 고르기</b><small>체력 ${Math.ceil(run.maxHp * .25)} 회복</small></button>
+        <button data-k="card"><i>牌</i><b>부적 한 장</b><small>세 장 중 하나 · 높은 등급</small></button>
+        <button data-k="forge"><i>鍛</i><b>담금질</b><small>강화 안 된 부적 하나를 강화</small></button>
+      </div>
+      ${kind === 'towerboss' ? '<div class="twnote">보스 층 — 유물을 하나 더 고른다</div>' : ''}
+    </div></div>`, 'twp');
+  p.dataset.noesc = '1';
+  const after = async () => { if (kind === 'towerboss') { try { await pickBossRelic(); } catch (e) {} } saveRun(); towerFloor(); };
+  p.querySelectorAll('.twpick button').forEach(b => b.onclick = async () => {
+    SND.ui(); p.querySelectorAll('.twpick button').forEach(x => x.disabled = true);
+    const k = b.dataset.k;
+    if (k === 'rest') { healRun(Math.ceil(run.maxHp * .25)); toast('숨을 골랐다'); }
+    else if (k === 'card') {
+      const cards = rewardCards(3, 'elite');
+      const c = await pickFromList(cards, '한 장을 고르시오', { cancel: true, hint: '건너뛰어도 좋다' });
+      if (c) { run.deck.push(mkCard(c.id, c.up)); run.stats.cards++; dexAdd('cards', c.id); toast(`${cname(c)} 획득`); }
+    } else {
+      const can = run.deck.filter(c => !c.up && CARDS[c.id] && CARDS[c.id].rar !== 'curse' && CARDS[c.id].type !== 'curse');
+      if (can.length) { const c = pick(can); c.up = true; toast(`${cname(c)} — 담금질했다`); SND.unlock(); } else toast('담금질할 부적이 없다');
+    }
+    closeOverlay(); after();
+  });
+}
+/* 쓰러졌다 · 내려간다 */
+function towerLose() { towerEnd(true); }
+function towerEnd(fell) {
+  const run = G.run, t = run && run.tower; if (!t) return;
+  G.b = null; t.done = true;
+  const fl = t.floor || 0;
+  if (fl > (META.towerBest || 0)) { META.towerBest = fl; saveMeta(); }
+  towerSubmit(fl);
+  try { if (fell) SND.lose(); else SND.bell(); } catch (e) {}
+  closeOverlay();
+  G.scene = 'over';
+  const s = $('#scene'); s.innerHTML = '';
+  const d = el('div', 'endscreen' + (fell ? '' : ' win'));
+  d.innerHTML = `<div class="big">${fell ? '탑 에 서 쓰 러 졌 다' : '탑 을 내 려 왔 다'}</div>
+    <div style="color:#c3b79c;letter-spacing:.2em">무한의 탑 <b style="color:#ffe6a8">${fl}층</b> · 최고 ${META.towerBest || fl}층</div>
+    <div class="stats">${runStatsHtml()}</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <button class="brush-btn ghost" id="te_rec" style="color:#ffe6a8;border-color:#c8a94e">記 기록 카드</button>
+      <button class="brush-btn ghost" id="te_rank" style="color:#e9dfc9;border-color:#8a7f68">탑 순위</button>
+      <button class="brush-btn gold" id="te_title">처음으로</button>
+    </div>`;
+  s.appendChild(d);
+  d.querySelector('#te_rec').onclick = () => { SND.ui(); showRecCard(!fell); };
+  d.querySelector('#te_rank').onclick = () => { SND.ui(); showRanks('tw'); };
+  d.querySelector('#te_title').onclick = () => { clearSave(); G.run = null; d.remove(); showTitle(); };
+  saveRun();
+}
+/* 서버 순위 — 로그인한 사람만 */
+function towerSubmit(fl) {
+  if (!fl || !acctOn() || (G.run && G.run._pvp)) return;
+  acctAsk('/tower/submit', { token: ACCT.token, floor: fl, deck: G.run ? G.run.deck.length : 0 }, 12000).catch(() => {});
+}
+/* 첫 화면의 탑 — 이어 오르기 · 순위 · 들어가는 법 */
+function showTowerHome() {
+  let saved = null;
+  try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.run && d.run.tower && !d.run.tower.done) saved = d.run; } catch (e) {}
+  const p = modal(`<div class="twbox home"><div class="twmain">
+      <small>無 限 之 塔</small><h2>무한의 탑</h2>
+      <div class="twsub">제25막을 넘은 덱으로 끝없는 층을 오른다 · 이 기계의 최고 <b style="color:#ffe6a8">${META.towerBest || 0}층</b></div>
+      <div class="twnote">승천 화면의 「塔 무한의 탑으로」를 누르면 그 덱 · 유물 · 체력 그대로 들어선다.<br>다섯 층마다 엘리트, 열 층마다 보스 · 층마다 요괴가 세진다 · 쓰러지면 끝</div>
+      <div class="twbtns">${saved ? `<button class="brush-btn red" id="twh_go">이어 오르기 · ${saved.tower.floor + 1}층</button>` : ''}<button class="brush-btn gold" id="twh_rank">순위</button><button class="brush-btn ghost" id="twh_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div>
+    </div></div>`, 'twp');
+  p.querySelector('#twh_x').onclick = closeTop;
+  p.querySelector('#twh_rank').onclick = () => { SND.ui(); showRanks('tw'); };
+  const go = p.querySelector('#twh_go');
+  if (go) go.onclick = () => { SND.ui(); closeOverlay(); try { adoptRun(saved); } catch (e) { toast('기록을 읽을 수 없다'); return; } towerFloor(); };
+}
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -39779,6 +39968,7 @@ function showTitle() {
                     : '<button class="brush-btn red" id="t_new">모험 시작</button>'}
         <button class="brush-btn ghost" id="t_acct"></button>
         <button class="brush-btn gold" id="t_train">수행터${META.jp ? ` · 精 ${META.jp}` : ''}</button>
+        ${towerOpen() ? `<button class="brush-btn ghost" id="t_tower" style="color:#ffe6a8;border-color:#c8a94e">塔 무한의 탑${META.towerBest ? ` · 최고 ${META.towerBest}층` : ''}</button>` : ''}
         <button class="brush-btn ghost" id="t_news">공지사항${newsUnread() ? ` <b style="color:#ff6a5a">${newsUnread()}</b>` : ''}</button>
         <button class="brush-btn ghost" id="t_dex">도감</button>
         <button class="brush-btn ghost" id="t_tutor">첫걸음 (처음이라면)</button>
@@ -39814,6 +40004,7 @@ function showTitle() {
   }, 900);
   s.querySelector('#t_dex').onclick = () => { SND.init(); SND.ui(); showDex(); };
   s.querySelector('#t_train').onclick = () => { SND.init(); SND.ui(); showTraining(); };
+  { const tw = s.querySelector('#t_tower'); if (tw) tw.onclick = () => { SND.init(); SND.ui(); showTowerHome(); }; }
   s.querySelector('#t_26').onclick = () => { SND.init(); SND.ui(); showAct26Preview(); };
   s.querySelector('#t_tutor').onclick = () => { SND.init(); SND.ui(); showTutorial(true); };
   const c = s.querySelector('#t_cont');
@@ -39852,6 +40043,7 @@ function resumeRun() {
       G.cp = d.cp || null;
     }
     giftUnpack();
+    if (G.run.tower && !G.run.tower.done) { towerFloor(); return; }   /* 무한의 탑에서 멈췄다 — 그 층 앞으로 */
     showMap();
   } catch (e) { console.error(e); toast('저장된 기록을 읽을 수 없다'); }
 }
