@@ -1805,6 +1805,50 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* ══ SSSSS급 — 진주빛 판에 무지개 테, 다섯 별 (판 61) ══ */
+.card.g-s5 .face{border:2px solid #ffb0f0;background:radial-gradient(circle at 50% 30%,#fff6fd,#ffe0f6 45%,#f0d6ff 80%);
+  box-shadow:inset 0 0 0 1px #fff,inset 0 0 22px rgba(255,140,230,.45)}
+.card.g-s5 .cname{color:#b0127a!important;font-weight:700;letter-spacing:.1em;text-shadow:0 0 8px rgba(255,140,230,.6)}
+.card.g-s5 .grade{background:linear-gradient(90deg,#ff7ad8,#ffd36a,#7ae0ff,#b88aff,#ff7ad8)!important;background-size:200% 100%!important;color:#2a0820!important;
+  font-weight:800;font-size:8px!important;letter-spacing:.02em;animation:s5Grade 2.4s linear infinite}
+@keyframes s5Grade{to{background-position:200% 0}}
+.card.g-s5 .art .g{color:#fff!important;text-shadow:0 0 10px #ff7ad8,0 0 24px #ff7ad8,0 0 40px #b88aff}
+.card.g-s5 .art .ring{border-color:#ff9ae8!important;box-shadow:0 0 14px rgba(255,140,230,.7)}
+.card.g-s5 .txt,.card.g-s5 .txt *{color:#4a1840}
+.card.g-s5 .txt b,.card.g-s5 .txt em{color:#c0127e!important}
+.card.g-s5::before{content:'';position:absolute;inset:-9px;border-radius:14px;z-index:0;
+  background:conic-gradient(from 0deg,#ffd0f4,#ff7ad8,#ffd36a,#fff,#7ae0ff,#b88aff,#ffd0f4);filter:blur(7px);opacity:.95;animation:qxSpin 2.2s linear infinite}
+.card.g-s5::after{content:'★★★★★';position:absolute;left:50%;top:-14px;transform:translateX(-50%);z-index:3;font-size:10px;letter-spacing:1px;color:#fff;
+  text-shadow:0 0 6px #ff7ad8,0 0 12px #ffd36a;pointer-events:none;animation:s5Stars 1.8s ease-in-out infinite}
+@keyframes s5Stars{50%{text-shadow:0 0 10px #ff7ad8,0 0 20px #7ae0ff;transform:translateX(-50%) translateY(-2px)}}
+.card.g-s5 .cfx{--sc:#ff8ae8}
+/* 낼 때 */
+.s5bl{position:fixed;inset:0;z-index:70;pointer-events:none}
+.s5bl .s5veil{position:absolute;inset:0;background:radial-gradient(circle at var(--cx) var(--cy),rgba(255,200,245,.25),rgba(20,4,24,.55) 60%);animation:fadeIn .25s}
+.s5bl .s5prism{position:absolute;left:var(--cx);top:var(--cy);width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(255,122,216,.0),rgba(255,122,216,.35),rgba(255,211,106,.35),rgba(122,224,255,.35),rgba(184,138,255,.35),rgba(255,122,216,0));
+  -webkit-mask:radial-gradient(circle,transparent 30%,#000 32%,#000 60%,transparent 70%);mask:radial-gradient(circle,transparent 30%,#000 32%,#000 60%,transparent 70%);animation:qxSpin 1.4s linear infinite}
+.s5bl .s5pent{position:absolute;left:var(--cx);top:var(--cy);width:0;height:0;animation:qxSpin 1.1s linear infinite}
+.s5bl .s5pent b{position:absolute;left:-18px;top:-18px;width:36px;height:36px;display:grid;place-items:center;font-size:30px;color:#fff;
+  text-shadow:0 0 10px #ff7ad8,0 0 22px #ffd36a;transform:rotate(calc(var(--i) * 72deg)) translateY(-150px);transition:transform .3s cubic-bezier(.6,0,.9,.4)}
+.s5bl.go .s5pent b{transform:rotate(calc(var(--i) * 72deg)) translateY(0) scale(.4)}
+.s5bl .s5core{position:absolute;left:var(--cx);top:var(--cy);width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle,#fff,#ffd0f4 50%,transparent 72%);opacity:0;transform:scale(.3)}
+.s5bl .s5core span{font-size:58px;color:#b0127a;text-shadow:0 0 12px #fff}
+.s5bl.go .s5core{opacity:1;transform:scale(1);transition:.3s}
+.s5bl.boom .s5core{transform:scale(3.2);opacity:0;transition:.6s ease-out}
+.s5bl .s5stamp{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%) scale(2.6) rotate(-6deg);opacity:0;padding:8px 18px;border:4px solid #ff4ab8;border-radius:10px;
+  font-size:clamp(28px,5vw,56px);font-weight:900;letter-spacing:.06em;color:#ff4ab8;background:rgba(255,240,250,.9);text-shadow:0 0 10px #fff;white-space:nowrap}
+.s5bl.boom .s5stamp{animation:s5Stamp 1.4s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes s5Stamp{0%{opacity:0;transform:translate(-50%,-50%) scale(2.6) rotate(-6deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(.95) rotate(-6deg)}
+  26%{transform:translate(-50%,-50%) scale(1.04) rotate(-6deg)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1) rotate(-6deg)}}
+.s5bl .s5name{position:absolute;left:50%;top:calc(30% + clamp(44px,6vw,74px));transform:translateX(-50%);opacity:0;font-size:clamp(16px,2.2vw,24px);letter-spacing:.4em;color:#fff;text-shadow:0 0 14px #ff7ad8;white-space:nowrap}
+.s5bl.boom .s5name{animation:skGr 1.4s ease-out .1s forwards}
+.dpowbig.s5{background:linear-gradient(135deg,#ffe0f6,#ff8ae8 45%,#b88aff);border-color:#fff;color:#3a0830}
+.dpowbig.s5 small{color:#5a1048}
+.dpowsub.s5{color:#ff9ae8}
+.dpowclone.s5 button{border-color:#ff9ae8;background:linear-gradient(160deg,#3a1034,#1c0a1a)}
+.dpowclone.s5 button i{color:#ffd0f4;text-shadow:0 0 10px #ff7ad8}
 /* ══ 비기 새 단장 (판 60) ══ */
 /* 새 등급의 빛 */
 @keyframes jeolGlow{0%,100%{box-shadow:0 0 18px 3px rgba(255,154,42,.7),0 0 40px 8px rgba(255,80,40,.3)}50%{box-shadow:0 0 34px 9px rgba(255,190,80,1),0 0 70px 16px rgba(255,90,40,.5)}}
@@ -11257,6 +11301,7 @@ const GRADE = {
   qq:       { n: '??급',  s: '??', c: '#d0d4e0', desc: '이름조차 붙지 않은 등급. 신호가 깨져 읽히지 않는다 — 개발자만 쥘 수 있다.' },
   jeol:     { n: '절기',  s: '絶', c: '#ff9a2a', desc: '비기만의 등급 — 한 문파가 대를 이어 숨겨 온 한 수. SSX 위' },
   sin:      { n: '신기',  s: '神', c: '#f4f0ff', desc: '비기만의 가장 높은 등급 — 사람이 쓸 수 있는 수가 아니다' },
+  s5:       { n: 'SSSSS급', s: 'SSSSS', c: '#ff7ad8', desc: '다섯 겹의 S — 백사만 쥘 수 있는 등급. 도감·보상·선물 어디에도 없다' },
   adm:      { n: '어드민급', s: 'ADMIN', c: '#00ffb0', desc: '세계 최강. 세상의 규칙 위에 선 등급 — 백야만 쥘 수 있다.' },
   curse:    { n: '저주',  s: '呪', c: '#5b3b6b', desc: '덱을 좀먹는다' }
 };
@@ -11266,7 +11311,7 @@ for (const k in GRADE) RARITY_NAME[k] = GRADE[k].n;
 const isQ = r => r === 'unknown' || r === 'qx' || r === 'qq' || r === 'adm';   /* ?급 갈래 — ?급 · ?X급 · ??급 */
 const auraClass = rar => rar === 'ssx' ? ' g-ssx' : rar === 'ssc' ? ' g-ssc'
   : rar === 'special' ? ' g-s' : rar === 'unknown' ? ' g-unknown'
-  : rar === 'zero' ? ' g-zero' : rar === 'qx' ? ' g-qx' : rar === 'qq' ? ' g-qq' : rar === 'adm' ? ' g-adm' : '';
+  : rar === 'zero' ? ' g-zero' : rar === 'qx' ? ' g-qx' : rar === 'qq' ? ' g-qq' : rar === 'adm' ? ' g-adm' : rar === 's5' ? ' g-s5' : '';
 const TYPE_NAME = { attack: '공격', skill: '기술', power: '심법', curse: '저주' };
 /* ── 새 부적 (판 7) — 3등급부터 S급까지, 비어 있던 자리를 메운다 ── */
 defCard({ id: 'palmstrike', n: '쌍장타', g: '拍', type: 'attack', rar: 'common', cost: 1, tgt: 'enemy',
@@ -11392,6 +11437,39 @@ defCard({ id: 'adm_god', n: '신권', g: '神', type: 'power', rar: 'adm', cost:
   play: c => { const p = P(); skillBanner('ROOT ACCESS · 神權', true);
     if (!p.s.godmode) st(p, 'godmode', 1); energy(c.v.e); drawCards(5); heal(p.maxHp);
     try { SND.gong(); SND.power && SND.power(); screenFlash('rgba(0,255,176,.45)', 600); } catch (e) {} } });
+
+/* ── SSSSS급 — 다섯 겹의 S. 백사만 (개발자의 권력 탭의 백사 칸 · 도감·보상·상자·상점·선물·맛보기 어디에도 없다) (판 61) ──
+   백사가 아닌 사람의 손에 들어가도 쓰이지 않는다. */
+defCard({ id: 's5_crown', n: '오성관', g: '冠', type: 'power', rar: 's5', cost: 0, devOnly: true, b5Only: true,
+  v: u => ({ s: u ? 7 : 5, e: u ? 4 : 3, c: u ? 4 : 3 }),
+  txt: v => `<b>다섯 별의 관</b>을 쓴다 — <b>힘</b> ${v.s} · <b>민첩</b> ${v.s} · <b>가시</b> ${v.s}를 얻고, 기 ${v.e}를 얻고 부적 ${v.c}장을 뽑는다.`,
+  play: c => { const p = P(); skillBanner('五 星 冠', true);
+    st(p, 'str', c.v.s); st(p, 'dex', c.v.s); st(p, 'thorns', c.v.s); energy(c.v.e); drawCards(c.v.c);
+    try { SND.gong(); SND.unlock(); } catch (e) {} } });
+defCard({ id: 's5_star', n: '오성낙하', g: '星', type: 'attack', rar: 's5', cost: 1, tgt: 'all', devOnly: true, b5Only: true,
+  v: u => ({ d: u ? 22 : 15, n: 5 }),
+  txt: v => `별 다섯이 떨어진다 — 무작위 적에게 <em>${v.d}</em>의 피해를 <b>${v.n}번</b>.`,
+  play: async c => { skillBanner('五 星 落 下', true);
+    for (let i = 0; i < c.v.n; i++) { const a = alive(); if (!a.length) break; const t = pick(a);
+      if (t.el) { const q = centerOf(t.el); try { lightBeam(q.x, 'rgba(255,170,240,.75)', 120); sparkles(q.x, q.y, 14, '#ffd0f4', 110); } catch (x) {} }
+      atk(t, c.v.d, { fx: 'holy' }); try { SND.holyhit(); } catch (e) {} await wait(110); } } });
+defCard({ id: 's5_seal', n: '오방봉인', g: '封', type: 'skill', rar: 's5', cost: 1, tgt: 'all', exhaust: true, devOnly: true, b5Only: true,
+  v: u => ({ t: u ? 3 : 2 }),
+  txt: v => `다섯 방위를 닫는다 — 모든 적의 <b>방어도와 이로운 효과</b>를 지우고 <b>${v.t}턴 무력</b>하게 만든다. 소멸.`,
+  play: async c => { skillBanner('五 方 封 印', true);
+    for (const e of alive()) { e.block = 0; for (const k in e.s) if (STATUS[k] && STATUS[k].kind === 'buff') delete e.s[k]; st(e, 'stun', c.v.t); impact('void', e); await wait(70); }
+    try { SND.gong(); } catch (e) {} syncAll(); } });
+defCard({ id: 's5_mirror', n: '오색반사', g: '鏡', type: 'skill', rar: 's5', cost: 1, devOnly: true, b5Only: true,
+  v: u => ({ b: u ? 70 : 50, th: u ? 14 : 10 }),
+  txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.th}를 얻고, 이번 턴 받는 피해가 <b>절반</b>이 된다.`,
+  play: c => { blk(c.v.b, true); st(P(), 'thorns', c.v.th); G.b.halved = true; skillBanner('五 色 反 射', true);
+    try { SND.block(); SND.holyhit(); } catch (e) {} syncAll(); } });
+defCard({ id: 's5_sunder', n: '오행단절', g: '斷', type: 'attack', rar: 's5', cost: 2, tgt: 'enemy', devOnly: true, b5Only: true,
+  v: u => ({ p: u ? 65 : 50, d: u ? 35 : 25 }),
+  txt: v => `다섯 기운을 끊는다 — 적의 <b>현재 체력의 ${v.p}%</b>를 없애고 <em>${v.d}</em>의 피해를 준다.`,
+  play: async c => { const t = c.t; if (!t || t.hp <= 0) return; skillBanner('五 行 斷 絶', true);
+    impact('slash', t); pure(t, Math.ceil(t.hp * c.v.p / 100)); await wait(160); atk(t, c.v.d, { fx: 'slash2' });
+    try { SND.crit(); shake(true); } catch (e) {} } });
 
 /* ── 버프 「천변」의 한정 부적 — 버프가 걸린 동안 싸움마다 첫 손에 한 장 (도감·보상·상자·상점·선물 어디에도 없다) ── */
 defCard({ id: 'ev_morph', n: '천변만화', g: '變', type: 'skill', rar: 'unknown', cost: 0, exhaust: true, devOnly: true, evOnly: true,
@@ -15197,6 +15275,44 @@ const UNKNOWN_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'unk
 const QX_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'qx');
 const QQ_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'qq');
 const ADM_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 'adm');
+/* ── SSSSS급을 낼 때 — 별 다섯이 오각으로 둘러서서 돌다가 한 점으로 모여 「SSSSS」 낙관이 찍힌다 (판 61) ── */
+const S5_IDS = () => Object.keys(CARDS).filter(id => CARDS[id].rar === 's5');
+const b5Ok = () => { try { return baeksaOn(); } catch (e) { return false; } };
+function s5Blast(card, target) {
+  return new Promise(done => {
+    const d = CARDS[card.id];
+    const tg = target && target.el ? target.el.getBoundingClientRect() : null;
+    const cx = tg ? tg.left + tg.width / 2 : innerWidth / 2, cy = tg ? tg.top + tg.height / 2 : innerHeight * .42;
+    const n = el('div', 's5bl');
+    n.style.setProperty('--cx', cx + 'px'); n.style.setProperty('--cy', cy + 'px');
+    n.innerHTML = `<i class="s5veil"></i><i class="s5prism"></i>
+      <div class="s5pent">${rep(5, i => `<b style="--i:${i}">★</b>`)}</div>
+      <div class="s5core"><span>${d.g}</span></div>
+      <div class="s5stamp">S S S S S</div><div class="s5name">${wEsc(d.n)}</div>`;
+    ($('#app') || document.body).appendChild(n);
+    try { SND.charge(); SND.fm && SND.fm(1046, { ratio: 3.5, idx: 1.5, dur: 1, vol: .05, rev: .9 }); } catch (e) {}
+    setTimeout(() => n.classList.add('go'), 650);
+    setTimeout(() => {
+      n.classList.add('boom');
+      try { SND.gong(); SND.thunder(); SND.unlock(); screenFlash('rgba(255,200,245,.75)', 560); shake(true); } catch (e) {}
+      try { FX.burst(cx, cy, 70, '255,170,240', 9, 60, 6); FX.burst(cx, cy, 50, '255,255,255', 6, 50, 4); FX.burst(cx, cy, 40, '170,220,255', 7, 55, 5); } catch (e) {}
+      done();
+    }, 950);
+    setTimeout(() => n.remove(), 2500);
+  });
+}
+function devS5Deck() {
+  const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
+  if (!b5Ok()) { SND.err(); toast('백사만 쥘 수 있다'); return; }
+  if (!run._devOld) run._devOld = run.deck.map(c => ({ id: c.id, up: c.up, fg: c.fg || 0 }));
+  const ids = S5_IDS(), n = Math.max(15, run.deck.length);
+  run.deck = Array.from({ length: n }, (_, i) => mkCard(ids[i % ids.length], true));
+  if (run.plan) run.plan = [];
+  saveRun(); renderTop();
+  try { SND.unlock(); SND.gong(); screenFlash('rgba(255,170,240,.55)', 800); stampWord('S S S S S', '#ff8ae8'); } catch (e) {}
+  toast(`SSSSS급 — 덱 ${n}장을 도배했다`);
+}
+
 /* 어드민급으로 도배 — 원래 덱은 ?급 도배와 같은 자리에 적어 둔다 */
 function devAdmDeck() {
   const run = G.run; if (!run || run._pvp) { toast('모험 중에만'); return; }
@@ -15225,6 +15341,7 @@ function devPowerUndo() {
 }
 function devClone(id) {
   const run = G.run; if (!run) { toast('모험 중에만'); return; }
+  if (CARDS[id] && CARDS[id].b5Only && !b5Ok()) { SND.err(); toast('백사만 쥘 수 있다'); return; }
   const c = mkCard(id, true);
   run.deck.push(c);
   if (G.b && !G.b.over) { const cc = Object.assign({}, c, { bonus: 0 }); if (G.b.hand.length < 10) G.b.hand.push(cc); else G.b.drawPile.push(cc); syncAll(); }
@@ -15332,6 +15449,9 @@ function drawPower(grid) {
       <button class="dpowbtn devz" id="dp_zuse"><b>지금 입힌다</b><small>${devMatHave() ? '부적을 고른다' : '종결석이 없다'}</small></button></div>` : ''}
     <div class="dpowsub pw10">열 가지 권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
     <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && META.devPw && META.devPw[x.k] ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (META.devPw && META.devPw[x.k] ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
+    ${b5Ok() ? `<button class="dpowbig s5" id="dp_s5"><b>덱을 모두 SSSSS급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → SSSSS급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
+    <div class="dpowsub s5">SSSSS급 — 다섯 겹의 S · 백사만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
+    <div class="dpowclone s5">${S5_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>` : ''}
     <div class="dpowsub qq">??급 — 이름 없는 등급 · 개발자만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone qq">${QQ_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
@@ -15341,6 +15461,7 @@ function drawPower(grid) {
     if (z5) z5.onclick = () => { devMatGive(5); drawPower(grid); };
     if (zu) zu.onclick = () => { closeOverlay(); devMatUse(); }; }
   grid.querySelector('#dp_adm').onclick = () => { devAdmDeck(); drawPower(grid); };
+  { const s5 = grid.querySelector('#dp_s5'); if (s5) s5.onclick = () => { devS5Deck(); drawPower(grid); }; }
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
   grid.querySelector('#dp_inf').onclick = () => { META.devInf = !META.devInf; saveMeta(); try { SND.unlock(); } catch (e) {} if (G.b) syncAll(); toast(META.devInf ? '?급 무한 — 켜짐' : '?급 무한 — 꺼짐'); drawPower(grid); };
   grid.querySelectorAll('.dpowclone button').forEach(b => b.onclick = () => { devClone(b.dataset.id); drawPower(grid); });
@@ -15352,6 +15473,7 @@ async function playCard(card, target) {
   if (b.busy || b.over) return;
   const d = cdef(card), cost = ecost(card);
   if (cost === -2) { SND.err(); toast('사용할 수 없는 카드다'); return; }
+  if (d.b5Only && !b5Ok()) { SND.err(); toast('백사만 쓸 수 있다'); return; }
   const isX = cost === -1;
   const need = isX ? 1 : cost;
   if (b.energy < need) { SND.err(); toast('기가 부족하다'); return; }
@@ -15373,6 +15495,7 @@ async function playCard(card, target) {
 
   b.curCard = card;
   try { stAdd('play'); if (isQ(d.rar)) stAdd('qplay'); } catch (e) {}
+  if (d.rar === 's5') { await s5Blast(card, target); try { castCutin(card, d); } catch (err) {} }   /* SSSSS급 — 다섯 별이 모여 쾅 (판 61) */
   if (b.kind === 'pvp') mpSendPlay(card, target);          /* 상대 앱에 「이 부적을 냈다」를 띄운다 */
   if (worthBanner(card) && !cutin) skillBanner(cname(card), d.rar === 'ssx');
   if (isQ(d.rar)) { await unknownBlast(card, target, d.rar === 'qx' ? 'x' : d.rar === 'qq' ? 'qq' : d.rar === 'adm' ? 'adm' : '');   /* ?급 — 부적이 빙빙 돌다 쾅! */
@@ -15985,6 +16108,7 @@ function autoScore(c) {
   if (!b || !d || d.rar === 'curse' || d.type === 'curse') return null;
   const cost = ecost(c);
   if (cost === -2) return null;
+  if (d.b5Only && !b5Ok()) return null;
   const need = cost === -1 ? 1 : cost;
   if (need > b.energy) return null;
   const foes = alive();
@@ -17620,7 +17744,7 @@ function castMotion(card, d, target) {
 
   if (!OPT.particles) return cut;
   /* 혜성 꼬리 — 등급 빛깔에 돌연변이 빛깔이 섞인다. 높은 등급일수록 길고 굵다 */
-  const hi = ['special', 'ssc', 'ssx', 'unknown', 'qx', 'qq', 'adm'].indexOf(d.rar) >= 0;
+  const hi = ['special', 'ssc', 'ssx', 'unknown', 'qx', 'qq', 'adm', 's5'].indexOf(d.rar) >= 0;
   const tyc = { attack: '#ff7a3a', skill: '#3fc8b4', power: '#ffcf5a' }[d.type] || '#ffcf5a';   /* 낮은 등급도 꼬리가 보이게 — 종류 빛깔을 섞는다 */
   const tcols = [hexRgb(gc), hexRgb(tyc), hi ? '255,250,235' : hexRgb(shade(tyc, .5))];
   for (const k of ['star', 'chaos', 'gold', 'aurora']) if (card[MUT_KEY[k]] || (card.mutFu && card.mutFu.indexOf(k) >= 0)) tcols.push(hexRgb(MUT_COL[k]));
@@ -17666,11 +17790,11 @@ function castMotion(card, d, target) {
      ?급 이상: 본디의 「빙빙 돌다 쾅」 뒤에 결마다 다른 컷인 (보랏빛 공허 · 금빛 실험 · 흰 이름 없음 · 초록 격자)
    옷(스킨)을 입힌 부적은 그 빛깔로 물든다. 같은 큰 부적을 잇달아 내면 컷인은 한 번만(1.6초).
    ══════════════════════════════════════════════════════════ */
-const CAST_TIER = { basic: 0, curse: 0, common: 0, uncommon: 1, rare: 2, boss: 3, zero: 3, special: 4, fused: 5, ssc: 5, ssx: 6, unknown: 7, qx: 7, qq: 7, adm: 8 };
+const CAST_TIER = { basic: 0, curse: 0, common: 0, uncommon: 1, rare: 2, boss: 3, zero: 3, special: 4, fused: 5, ssc: 5, ssx: 6, unknown: 7, qx: 7, qq: 7, adm: 8, s5: 8 };
 const castTier = r => CAST_TIER[r] == null ? 0 : CAST_TIER[r];
 const CAST_PAL = {   /* 컷인 빛깔 — [바탕, 빛, 결] */
   special: ['#3a1206', '#ff8a3a', 'fire'], fused: ['#2a1438', '#e0a0ff', 'fuse'], ssc: ['#04242a', '#3fe0f0', 'ssc'], ssx: ['#2a0208', '#ff2d55', 'ssx'],
-  unknown: ['#16082e', '#b07bff', 'void'], qx: ['#2a2004', '#ffd84a', 'exp'], qq: ['#202430', '#f0f4ff', 'none'], adm: ['#021a10', '#00ffb0', 'adm']
+  unknown: ['#16082e', '#b07bff', 'void'], qx: ['#2a2004', '#ffd84a', 'exp'], qq: ['#202430', '#f0f4ff', 'none'], adm: ['#021a10', '#00ffb0', 'adm'], s5: ['#2a0a26', '#ff8ae8', 'none']
 };
 const TYPE_N = { attack: '공격', skill: '기술', power: '심법' };
 let _ctCut = { id: '', at: 0 };
@@ -36430,7 +36554,7 @@ function recTally(kind, text, n) {
     if (n > (r.stats.maxHit || 0)) { r.stats.maxHit = n; r.stats.maxHitBy = String(text || '').split(' → ')[0].slice(0, 12); }
   } else if (kind === 'hurt') r.stats.taken = (r.stats.taken || 0) + n;
 }
-const REC_RAR = ['qq', 'qx', 'ssx', 'ssc', 'special', 'zero', 'rare', 'uncommon', 'common', 'basic'];
+const REC_RAR = ['s5', 'qq', 'qx', 'ssx', 'ssc', 'special', 'zero', 'rare', 'uncommon', 'common', 'basic'];
 function recData(win) {
   const r = G.run, st = r.stats || {};
   const deck = r.deck.slice().sort((a, b) => REC_RAR.indexOf((CARDS[a.id] || {}).rar) - REC_RAR.indexOf((CARDS[b.id] || {}).rar));
@@ -36444,7 +36568,7 @@ function recData(win) {
     relics: r.relics.map(x => ({ g: (RELICS[x.id] || {}).g || '?', gr: rgrade(x.id) }))
   };
 }
-const REC_COL = { basic: '#8a7f68', common: '#c8bca0', uncommon: '#5aa0c8', rare: '#e2bd63', zero: '#cfe6ee', special: '#ff8a4a', ssc: '#3ad6e6', ssx: '#ff4a6a', qx: '#b07aff', qq: '#e8eaf4' };
+const REC_COL = { basic: '#8a7f68', common: '#c8bca0', uncommon: '#5aa0c8', rare: '#e2bd63', zero: '#cfe6ee', special: '#ff8a4a', ssc: '#3ad6e6', ssx: '#ff4a6a', qx: '#b07aff', qq: '#e8eaf4', s5: '#ff7ad8' };
 /* 그린다 — 1200 × 675 */
 function recDraw(D) {
   const W = 1200, H = 675, c = document.createElement('canvas'); c.width = W; c.height = H;
@@ -37659,6 +37783,7 @@ function showAdmin() {
     if (tab === 'card') {
       for (const id in CARDS) { const d = CARDS[id];
         if (d.rar === 'curse') continue;
+        if (d.b5Only && !b5Ok()) continue;      /* SSSSS급은 백사의 창에만 */
         if (q && d.n.indexOf(q) < 0) continue;
         add(d.g, d.n, GRADE[d.rar].n, GRADE[d.rar].c, () => {
           if (!run) return; run.deck.push(mkCard(id, false)); run.stats.cards++; dexAdd('cards', id);
