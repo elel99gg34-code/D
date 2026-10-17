@@ -1568,6 +1568,16 @@ function same(a, b) {
   return d === 0;
 }
 const str = (v, n) => String(v == null ? '' : v).slice(0, n);
+/* admin 레벨(백야 · 백사 · 허락받은 게스트)은 토큰이 줄지 않는다 (판 61b) — 열쇠나 게스트 인으로 가린다 */
+const INF_TOK = 999999;
+async function infOk(q) {
+  if (!q) return false;
+  if (admRole(q.code)) return true;
+  const sec = String(q.sec || '');
+  if (!/^[0-9a-f]{32}$/.test(sec)) return false;
+  const me = (await guestsGet())[sha(sec)];
+  return !!(me && me.state === 'ok');
+}
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
@@ -2142,7 +2152,8 @@ const server = http.createServer(async (req, res) => {
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
     { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
-    const w = hbWin(now), bal = async () => +(await get('ht:' + id)) || 0;
+    const inf = await infOk(q);
+    const w = hbWin(now), bal = async () => inf ? INF_TOK : +(await get('ht:' + id)) || 0;
     const won = async () => !!(w && (await get('hbw:' + id)) === w.slot);
     if (url.pathname === '/hb/me') return send(res, 200, { ok: true, tok: await bal(), won: await won(), hb: w, now });
     if (url.pathname === '/hb/start') {
@@ -2159,7 +2170,7 @@ const server = http.createServer(async (req, res) => {
       hbSess.delete(id);
       if ((await get('hbw:' + id)) === se.slot) return send(res, 200, { ok: true, pay: 0, tok: await bal(), slot: se.slot });
       await put('hbw:' + id, se.slot);
-      const tok = (await bal()) + HB_PAY; await put('ht:' + id, tok);
+      const tok = (await bal()) + (inf ? 0 : HB_PAY); if (!inf) await put('ht:' + id, tok);
       console.log('해킹 보스를 쓰러뜨렸다:', id, '· 토큰', tok);
       await rankBump('hb', id, 1, 'add').catch(() => {});
       statAdd('hb').catch(() => {}); alog(id, `해킹 보스 격파 — 토큰 +${HB_PAY}`).catch(() => {});
@@ -2171,6 +2182,7 @@ const server = http.createServer(async (req, res) => {
       const k = String(q.k || ''), half = !!q.room && now - (hbRoom.get(id) || 0) < 10 * 60000, price = HB_SHOP[k] && (half ? Math.ceil(HB_SHOP[k] / 2) : HB_SHOP[k]);
       if (!price) return send(res, 400, { ok: false, why: '없는 물건' });
       const have = await bal();
+      if (inf) return send(res, 200, { ok: true, k, tok: INF_TOK });
       if (have < price) return send(res, 409, { ok: false, why: `해킹 토큰이 ${price - have} 모자라다`, tok: have });
       await put('ht:' + id, have - price);
       return send(res, 200, { ok: true, k, tok: have - price });
@@ -2529,7 +2541,8 @@ const server = http.createServer(async (req, res) => {
     /* 대전은 레벨 2부터 (판 57) — 관리자는 매이지 않는다 */
     const plvOk = me.plv >= 2 || !!admRole(q.code);
     if (!plvOk && (act === 'queue' || act === 'room' || act === 'party')) return send(res, 403, { ok: false, why: '대전은 레벨 2부터 — 요괴를 몇 무리 더 쓰러뜨리고 오시오', lvlock: true });
-    const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct });
+    const inf = await infOk(q);
+    const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct }, inf ? { tok: INF_TOK } : {});
 
     if (act === 'me') { const ss = (await get('mpseason')) || {}; return send(res, 200, { ok: true, prof: profView(), tiers: MP_TIERS, shop: MP_SHOP,
       season: { id: seasonOf(now), ends: seasonEnd(now), last: ss.last || null, hall: ((await get('mphall')) || []).slice(0, 6) } }); }
@@ -2687,8 +2700,8 @@ const server = http.createServer(async (req, res) => {
     if (act === 'shop') {
       const price = MP_SHOP[q.item];
       if (!price) return send(res, 400, { ok: false, why: '없는 물건' });
-      if (prof.tok < price) return send(res, 409, { ok: false, why: `토큰이 ${price - prof.tok}개 모자란다` });
-      prof.tok -= price; await mpPut(acct, prof);
+      if (!inf && prof.tok < price) return send(res, 409, { ok: false, why: `토큰이 ${price - prof.tok}개 모자란다` });
+      if (!inf) { prof.tok -= price; await mpPut(acct, prof); }
       console.log('교환소:', acct, q.item);
       return send(res, 200, { ok: true, item: q.item, prof: profView() });
     }

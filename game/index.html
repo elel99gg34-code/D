@@ -15731,6 +15731,34 @@ function lvState() { META.lv = META.lv && typeof META.lv === 'object' ? META.lv 
 const lvAdmin = () => caster() || adminOn() || (typeof guestOn === 'function' && guestOn());
 const lvLabel = () => lvAdmin() ? 'ADMIN' : 'Lv ' + lvState().lv;
 const lvNow = () => lvAdmin() ? 99 : lvState().lv;
+/* ══ admin 레벨 — 재화가 마르지 않는다 (판 61b) ══════════════════
+   레벨이 「ADMIN」인 사람(백야 · 백사 · 게스트)은 골드 · 다이아 · 정진 · 이벤트 재료 · 해킹 칩이 무한 —
+   써도 곧바로 다시 차오르고 윗줄에는 ∞. 해킹 토큰 · 멀티 토큰은 서버가 열쇠(게스트는 게스트 인)를 보고 깎지 않는다 */
+const INF_N = 9999999, INF_TOK = 999999;
+const infOn = () => { try { return lvAdmin(); } catch (e) { return false; } };
+function infAuth() {
+  const o = {};
+  try { if (caster()) o.code = castKey(); if (guestOn() && guestGet().state === 'ok') o.sec = guestSec(); } catch (e) {}
+  return o;
+}
+const tokTxt = n => n != null && n >= INF_TOK ? '∞' : n;
+const infTxt = n => infOn() ? '∞' : n;
+function infFill() {
+  if (!infOn()) return false;
+  const r = G.run;
+  if (r && !r._pvp) { if (!(r.gold >= INF_N)) r.gold = INF_N; if (!(r.dia >= INF_N)) r.dia = INF_N; }
+  if (!(META.jp >= INF_N)) META.jp = INF_N;
+  try { META.mat = META.mat || {}; for (const k in MAT_DEF) if (!(META.mat[k] >= 999)) META.mat[k] = 999; } catch (e) {}
+  if (!(META.hackChip >= 999)) META.hackChip = 999;
+  return true;
+}
+setInterval(() => {
+  if (!infFill()) return;
+  const t = $('#topbar'); if (!t) return;
+  const g = t.querySelector('#goldv'), d = t.querySelector('#diav');
+  if (g && g.textContent !== '∞') g.textContent = '∞';
+  if (d && d.textContent !== '∞') d.textContent = '∞';
+}, 1200);
 function xpGain(n, why) {
   n = Math.max(0, Math.round(n)); if (!n) return 0;
   const L = lvState(); let ups = 0, dia = 0;
@@ -16321,9 +16349,10 @@ function renderTop() {
   }
   t.querySelector('.hpbar i').style.width = (run.hp / run.maxHp * 100) + '%';
   t.querySelector('.hpbar span').textContent = run.hp + ' / ' + run.maxHp;
-  t.querySelector('#goldv').textContent = run.gold;
+  const inf = infFill();
+  t.querySelector('#goldv').textContent = inf ? '∞' : run.gold;
   try { lvPaint(); } catch (e) {}
-  t.querySelector('#diav').textContent = run.dia || 0;
+  t.querySelector('#diav').textContent = inf ? '∞' : run.dia || 0;
   t.querySelector('#floorv').textContent = run.act + '-' + run.floor;
   t.querySelector('#deckbtn').textContent = '덱 ' + run.deck.length;
   { const pe = t.querySelector('#pouchbtn em'); if (pe) { const pc = pouchCount(); if (pe.textContent !== String(pc || '')) pe.textContent = pc || ''; } }
@@ -20353,7 +20382,7 @@ function showJanggi(fresh) {
     <div class="jhead">
       <button class="gback" id="jg_back">←</button>
       <h2>장기 — 노인과 한 판</h2>
-      <div class="jcur"><span class="gold"><i>金</i>${run.gold}</span><span class="dia"><i>玉</i>${run.dia || 0}</span></div>
+      <div class="jcur"><span class="gold"><i>金</i>${infTxt(run.gold)}</span><span class="dia"><i>玉</i>${infTxt(run.dia || 0)}</span></div>
     </div>
     <div class="jbody">
       <div class="jside">
@@ -20657,7 +20686,7 @@ function showArena(tab) {
     <div class="ahead">
       <button class="gback" id="ar_back">←</button>
       <h2>대전투장</h2>
-      <div class="acur"><span><i>玉</i>${run.dia || 0}</span></div>
+      <div class="acur"><span><i>玉</i>${infTxt(run.dia || 0)}</span></div>
     </div>
     <div class="abody">
       <div class="anav"></div>
@@ -20744,7 +20773,7 @@ function showArena(tab) {
   } else if (tab === '교환소') {
     main.innerHTML = `<div class="atitle">교 환 소</div>
       <div class="asub">피로 번 다이아다. 여기서만 바꿀 수 있는 것들이 있다.
-        지금 지닌 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
+        지금 지닌 다이아 <b style="color:#6fd0e8">${infTxt(run.dia || 0)}</b></div>
       <div class="exgrid" id="ar_ex"></div>`;
     const g = main.querySelector('#ar_ex');
     for (const it of EXCHANGE) {
@@ -21325,8 +21354,8 @@ function showShop() {
         <div class="msay">${line}<span class="mtag">${m.mul < 1 ? '값이 싸다' : m.mul > 1 ? '값이 비싸다' : '보통 값'}
           · 만난 횟수 ${met + 1}${snub ? ` · <b style="color:#ff8a9a">빈손으로 지나친 값 +${Math.round((snubMul(run, m.id) - 1) * 100)}%</b>` : ''}</span></div>
       </div>
-      <div class="hint">보유 골드 <b style="color:#e8c86a">${run.gold}</b>
-        · 다이아 <b style="color:#6fd0e8">${run.dia || 0}</b></div>
+      <div class="hint">보유 골드 <b style="color:#e8c86a">${infTxt(run.gold)}</b>
+        · 다이아 <b style="color:#6fd0e8">${infTxt(run.dia || 0)}</b></div>
       <div class="shopgrid">
         <div class="shopcol"><h3>부 적</h3><div class="cardgrid" style="max-width:640px;max-height:min(46vh,340px)"></div></div>
         <div class="shopcol"><h3>물 건</h3><div class="rewardrow" style="width:330px;max-height:min(46vh,340px);overflow-y:auto"></div></div>
@@ -22017,7 +22046,7 @@ function showColosseum() {
         <button class="brush-btn gold" id="co_tour">토너먼트 (참가비 ${COL_FEE * 3})</button>
       </div>
       <div class="scmain">
-        <div class="schint">겨룰 상대를 고른다 · 지닌 골드 <b style="color:#e8c86a">${run.gold}</b>
+        <div class="schint">겨룰 상대를 고른다 · 지닌 골드 <b style="color:#e8c86a">${infTxt(run.gold)}</b>
           · 체력 <b>${run.hp} / ${run.maxHp}</b></div>
         <div class="trgrid" id="co_grid"></div>
       </div>
@@ -22801,8 +22830,8 @@ function showSpecialShop(refill) {
         <h2>상점</h2>
         <div class="gcur">
           <span class="cpn" title="할인권 — 10% ${cpnHave('c10')} · 30% ${cpnHave('c30')} · 50% ${cpnHave('c50')}"><i>券</i>${cpnTotal()}</span>
-          <span class="dia"><i>玉</i>${run.dia || 0}</span>
-          <span class="gold"><i>金</i>${run.gold}</span>
+          <span class="dia"><i>玉</i>${infTxt(run.dia || 0)}</span>
+          <span class="gold"><i>金</i>${infTxt(run.gold)}</span>
         </div>
       </div>
       <div class="gbody">
@@ -29800,7 +29829,7 @@ const hbWonNow = () => !!(LIVE.hb && META.hbWon === LIVE.hb.slot);
 let _hbSeen = '', HB_TOK = null;
 async function hbMe() {
   if (!acctOn()) return null;
-  const r = await acctAsk('/hb/me', { token: ACCT.token }, 8000);
+  const r = await acctAsk('/hb/me', Object.assign({ token: ACCT.token }, infAuth()), 8000);
   if (!r.ok) return null;
   HB_TOK = r.tok; if (r.won && r.hb) { META.hbWon = r.hb.slot; saveMeta(); }
   return r;
@@ -29841,7 +29870,7 @@ async function hbBattleWin() {
   const run = G.run, h = LIVE.hb;
   battleWatch(false); G.b = null;
   const cut = !!(h && h.forced && h.cut);
-  const x = await acctAsk('/hb/win', { token: ACCT.token }, 10000);
+  const x = await acctAsk('/hb/win', Object.assign({ token: ACCT.token }, infAuth()), 10000);
   if (x.ok) { META.hbWon = x.slot || (h && h.slot) || META.hbWon; HB_TOK = x.tok; if (x.pay) try { stAdd('hb'); } catch (e) {} }
   saveMeta(); if (run) saveRun();
   try { SND.victory(); screenFlash('rgba(44,255,122,.5)', 600); } catch (e) {}
@@ -29903,7 +29932,7 @@ async function showHackTokShop() {
       b.innerHTML = `다음 해킹 보스 <b>${String(t.getHours()).padStart(2, '0')}:00</b> · 잡으면 토큰 +${HB_PAY_C}`; }
   };
   const draw = () => {
-    p.querySelector('#ht_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : HB_TOK) : '로그인';
+    p.querySelector('#ht_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : tokTxt(HB_TOK)) : '로그인';
     p.querySelector('#ht_stone').innerHTML = `<i>汚</i>관석 쓰기 <b>${META.hkStone || 0}</b>`;
     p.querySelector('#ht_box').innerHTML = `<i>匣</i>해킹 상자 열기 <b>${META.hackBox || 0}</b>`;
     bossLine();
@@ -29917,7 +29946,7 @@ async function showHackTokShop() {
         if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
         if (HB_TOK != null && HB_TOK < it.p) { say('토큰이 모자라군. 정각에 내 분신을 잡아 와라.'); SND.err(); return; }
         b.disabled = true;
-        const r = await acctAsk('/hb/buy', { token: ACCT.token, k: it.k }, 10000);
+        const r = await acctAsk('/hb/buy', Object.assign({ token: ACCT.token, k: it.k }, infAuth()), 10000);
         b.disabled = false;
         if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; say('…거래가 끊겼다. ' + r.why); SND.err(); draw(); return; }
         HB_TOK = r.tok; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
@@ -30037,7 +30066,7 @@ async function hkRoomEnter(p) {
   try { SND.unlock(); SND.thunder(); SND.blip(120, { dur: .6, type: 'sawtooth', vol: .07, to: 1800 }); rgbSplit(); blink(1.4); shake(true); } catch (e) {}
   p.classList.add('hkbreak');
   try { stampWord('ACCESS · 白夜', '#e8f4ff'); } catch (e) {}
-  if (acctOn()) acctAsk('/hb/room', { token: ACCT.token }, 10000).then(r => { if (r.ok && r.tok != null) HB_TOK = r.tok; }).catch(() => {});
+  if (acctOn()) acctAsk('/hb/room', Object.assign({ token: ACCT.token }, infAuth()), 10000).then(r => { if (r.ok && r.tok != null) HB_TOK = r.tok; }).catch(() => {});
   await wait(950);
   p.classList.remove('hkbreak');
   p.classList.add('bkroomm');
@@ -30051,7 +30080,7 @@ async function hkRoomEnter(p) {
   const tell = t => { const b = q('#bk_say'); if (b) { b.textContent = t; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } };
   tell('…들어왔군. 박사의 얼굴을 그렇게 누르는 녀석은 처음이다.');
   const draw = () => {
-    q('#bk_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : HB_TOK) : '로그인';
+    q('#bk_tok').textContent = acctOn() ? (HB_TOK == null ? '…' : tokTxt(HB_TOK)) : '로그인';
     const g = q('#bk_grid'); g.innerHTML = '';
     for (const it of HB_SHOP) {
       const half = Math.ceil(it.p / 2), can = HB_TOK != null && HB_TOK >= half;
@@ -30061,7 +30090,7 @@ async function hkRoomEnter(p) {
         if (it.run && (!G.run || G.run._pvp)) { toast('모험 중에만'); SND.err(); return; }
         if (HB_TOK != null && HB_TOK < half) { tell('토큰이 모자라다. 박사의 분신부터 잡아 와라.'); SND.err(); return; }
         b.disabled = true;
-        const r = await acctAsk('/hb/buy', { token: ACCT.token, k: it.k, room: true }, 10000);
+        const r = await acctAsk('/hb/buy', Object.assign({ token: ACCT.token, k: it.k, room: true }, infAuth()), 10000);
         b.disabled = false;
         if (!r.ok) { if (r.tok != null) HB_TOK = r.tok; tell('…끊겼다. ' + r.why); SND.err(); draw(); return; }
         HB_TOK = r.tok; it.go(); saveMeta(); if (G.run) { saveRun(); renderTop(); }
@@ -36820,7 +36849,7 @@ function mpEmblem(rp, size) {
   const k = mpTierOf(rp || 0), t = MP_TIER_INFO[k];
   return `<span class="mpemb t-${k}${size ? ' ' + size : ''}" title="${t.n}"><i>${t.g}</i></span>`;
 }
-const mpAsk = (path, body) => acctAsk('/mp/' + path, Object.assign({ token: ACCT.token, ver: APP_VERSION, plv: lvNow(), code: caster() ? castKey() : undefined },
+const mpAsk = (path, body) => acctAsk('/mp/' + path, Object.assign({ token: ACCT.token, ver: APP_VERSION, plv: lvNow(), code: caster() ? castKey() : undefined }, infAuth(),
   body && body.deck ? { hp: mpHpOf(), lv: mpLvOf() } : {}, body || {}), 15000);
 /* ── 덱 ─────────────────────────────────────────────────── */
 function mpOwned() {
@@ -36983,7 +37012,7 @@ function mpPaintLobby() {
       <div class="mpmi"><b style="color:${t.c}">${mpTierName(pr.rp)}</b><span>${wEsc(pr.nick || ACCT.nick || pr.id)}</span>
         <div class="mprp"><i style="width:${pct}%;background:${t.c}"></i></div>
         <small>${pr.rp} 점${t.next ? ` · 다음 랭크까지 ${t.next - pr.rp}` : ' · 꼭대기'} · 랭크 ${pr.w}승 ${pr.l}패${pr.streak > 1 ? ` · <b style="color:#ff9a5a">${pr.streak}연승</b>` : ''} · 친선 ${pr.fw}승 ${pr.fl}패</small></div>
-      <div class="mptok"><i>幣</i><b>${pr.tok}</b><small>멀티 토큰</small></div>`;
+      <div class="mptok"><i>幣</i><b>${tokTxt(pr.tok)}</b><small>멀티 토큰</small></div>`;
   }
   /* 줄 · 방 */
   const stt = box.querySelector('#mp_status');
@@ -37067,7 +37096,7 @@ function showMpShop() {
   p.dataset.noauto = '1';
   const price = k => (MP.shop || {})[k] || { gold: 10, dia: 20, jp: 15, bigbox: 60, card_duel: 120, card_twin: 120, card_crown: 160, card_mirror: 160 }[k];
   const draw = () => {
-    p.querySelector('#ms_tok').innerHTML = `<i>幣</i><b>${MP.prof ? MP.prof.tok : '…'}</b><span>멀티 토큰</span>`;
+    p.querySelector('#ms_tok').innerHTML = `<i>幣</i><b>${MP.prof ? tokTxt(MP.prof.tok) : '…'}</b><span>멀티 토큰</span>`;
     const g = p.querySelector('#ms_grid'); g.innerHTML = '';
     for (const it of MP_SHOP_ITEMS) {
       const c = it.card && CARDS[it.card];
