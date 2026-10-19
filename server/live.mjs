@@ -538,6 +538,9 @@ function ndWin(now) {
   if (now >= at && now < at + ND_OPEN) return { id: 'h' + hr, at, until: at + ND_OPEN, seed: h, sign: (h >>> 9) % 2 ? 1 : -1, k: '', forced: false };
   return null;
 }
+/* ── 낮과 밤 (판 64) — 서버의 시계로 5분마다. 짝수 칸 낮 · 홀수 칸 밤. 앱은 every 와 서버 시각으로 같은 때에 바꾼다 ── */
+const DN_EVERY = 5 * 60000;
+function dnNow(now) { const slot = Math.floor(now / DN_EVERY); return { night: slot % 2 === 1, at: slot * DN_EVERY, until: (slot + 1) * DN_EVERY, every: DN_EVERY }; }
 function hbWin(now) {
   const f = live.hbForce;
   if (f && now < f.until) return { slot: 'f' + f.id, at: f.at, until: f.until, forced: true, cut: !!f.cut };
@@ -548,7 +551,7 @@ function hbWin(now) {
 /* ── 합성소 — 둘이 돌연변이 재료를 하나씩 놓고 합친다 ──
    방: invite(초대) → pick(재료를 고른다) → fuse(합성 — fuseAt 에 두 앱이 함께 연출) / gone(누가 나갔다)
    재료는 앱에 있다 — 서버는 무엇을 놓았는지와 준비만 맞춘다. 결과는 두 재료를 이름순으로 묶은 것(star+chaos …) */
-const FUSE_MATS = ['star', 'chaos', 'gold', 'aurora'];
+const FUSE_MATS = ['star', 'chaos', 'gold', 'aurora', 'moon'];
 /* 놓을 수 있는 것 — 홑 재료, 또는 이미 합친 융합 원료(두 갈래). 융합 원료 + 다른 재료 = 세 갈래(서로 다른 셋) */
 const fuseOk = m => m.split('+').length <= 2 && m.split('+').every(x => FUSE_MATS.indexOf(x) >= 0);
 const fuseRooms = new Map(), fuseInbox = new Map();
@@ -1620,7 +1623,7 @@ const server = http.createServer(async (req, res) => {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
   }
 
   /* ── 채팅 — 읽기 ── */
