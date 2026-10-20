@@ -1889,6 +1889,7 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .gwdq{display:flex;flex-wrap:wrap;gap:5px}
 .gwdq .val,.gwapp u{font:inherit;font-size:11.5px;padding:4px 9px;border-radius:5px;cursor:pointer;background:rgba(40,36,24,.9);border:1px solid #7a6a4a;color:#e9dfc9;text-decoration:none}
 .gwbuf{display:flex;flex-direction:column;gap:4px}
+.mpflee{margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12.5px;line-height:1.6;color:#ffd0c8;background:rgba(120,20,20,.35);border:1px solid rgba(255,110,100,.5)}.mpflee b{font-weight:400;color:#ff8a7a;margin-right:6px}.mpflee em{font-style:normal;color:#ffb0a0}
 .gwbuf>div{display:flex;gap:10px;align-items:center;font-size:12.5px;color:#8a7f68;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.03)}
 .gwbuf>div em{font-style:normal;width:62px;flex:none;font-size:11px}
 .gwbuf>div.on{color:#efe4cb;background:rgba(255,215,120,.1)}.gwbuf>div.on em{color:#ffd76a}
@@ -35088,7 +35089,7 @@ function mpSayShow(acct, t) {
    길드 점수 — 길드원이 랭크 대전에서 이기면 +3. 서로 다른 길드원끼리 맞붙으면 「길드전」: 이긴 길드 +10 · 진 길드 -3.
    ══════════════════════════════════════════════════════════════ */
 const GUILD = { g: null, rank: 0, chat: [], last: 0, timer: 0, tab: 'home' };
-const guildAsk = (path, body) => acctAsk('/guild/' + path, Object.assign({ token: ACCT.token, code: caster() ? castKey() : undefined }, body || {}), 15000);
+const guildAsk = (path, body) => acctAsk('/guild/' + path, Object.assign({ token: ACCT.token, code: caster() ? castKey() : undefined, plv: lvNow() }, body || {}), 15000);
 async function showGuild() {
   if (!acctOn()) { toast('로그인해야 길드를 쓸 수 있다'); SND.err(); return; }
   const p = overlay(`<div class="guildwin"><div class="gwbg"></div>
@@ -37876,7 +37877,7 @@ function guildGiveDraw(p, host) {
   host.innerHTML = `<div class="gwgrid">
     <div class="gwbox"><h3>參 출석</h3><div class="casthint">하루에 한 번 — 길드 경험 +30 · 길드 주화 +15</div>
       <button class="brush-btn gold" id="gw_chk"${me.chk ? ' disabled' : ''}>${me.chk ? '오늘은 얼굴을 비쳤다' : '얼굴을 비친다'}</button>
-      <h3 style="margin-top:14px">獻 기부</h3><div class="casthint">골드 150 · 다이아 15마다 길드 경험 1 · 경험 4마다 주화 1 · 한 사람 하루 경험 ${me.donCap || 400}까지 (오늘 <b>${me.don || 0}</b>)</div>
+      <h3 style="margin-top:14px">獻 기부</h3><div class="casthint">골드 150 · 다이아 15마다 길드 경험 1 · 경험 4마다 주화 1 · 그대는 하루 경험 <b>${me.donCap || 400}</b>까지 (오늘 <b>${me.don || 0}</b>)${(me.donCap || 400) < 400 ? ' — 새로 온 이는 100까지 · 계정 사흘 · 레벨 5부터 400' : ''}</div>
       <div class="gwdon"><label>金 골드 <input id="gw_dg" type="number" min="0" step="150" value="0"></label><label>玉 다이아 <input id="gw_dd" type="number" min="0" step="15" value="0"></label></div>
       <div class="gwdq">${[1500, 7500, 15000].map(v => `<button class="val" data-g="${v}">金 ${v.toLocaleString()}</button>`).join('')}${[150, 750, 1500].map(v => `<button class="val" data-d="${v}">玉 ${v.toLocaleString()}</button>`).join('')}</div>
       <button class="brush-btn" id="gw_don">기부한다</button><div class="casthint">${run && !run._pvp ? `지금 金 ${infTxt(run.gold)} · 玉 ${infTxt(run.dia || 0)}` : '골드 · 다이아는 모험 중에만 낸다'}</div></div>
@@ -38842,7 +38843,8 @@ function mpResult(mv) {
         ${mv.ranked ? `<em class="${r.dRp >= 0 ? 'plus' : 'minus'}">${r.dRp >= 0 ? '+' : ''}${r.dRp} 점</em><small>${r.rp} 점</small>` : '<small>친선전은 점수에 들지 않는다</small>'}
         ${up ? `<div class="mptierup">랭크가 올랐다 — ${MP_TIER_INFO[r.tier].n}!</div>` : down ? `<div class="mptierdn">랭크가 내려갔다</div>` : ''}
       </div></div>
-      ${r.tok ? `<div class="mptokgain"><i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>(모두 ${r.tokAll})</small></div>` : ''}` : '<div class="hint">셈을 기다리는 중…</div>'}
+      ${r.tok ? `<div class="mptokgain"><i>幣</i> 멀티 토큰 <b>+${r.tok}</b> <small>(모두 ${r.tokAll})</small></div>` : ''}
+      ${r.fled ? `<div class="mpflee"><b>逃 탈주 벌칙</b> 판이 끝나기 전에 떠났다 — 점수 -15 더 · 토큰 없음 · 오늘 ${r.fleeN}번째${r.fleeLock > Date.now() ? ` · <em>${Math.ceil((r.fleeLock - Date.now()) / 60000)}분 동안 줄을 서지 못한다</em>` : r.fleeN >= 2 ? ' · 한 번 더 버리면 10분 동안 줄을 서지 못한다' : ''}</div>` : ''}` : '<div class="hint">셈을 기다리는 중…</div>'}
     <div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button class="brush-btn gold" id="mr_ok">한 판 더</button><button class="brush-btn" id="mr_map">지도로</button></div>`);
   p.dataset.noauto = '1';
   if (up) { try { stampWord(MP_TIER_INFO[r.tier].n.split('').join(' '), MP_TIER_INFO[r.tier].c); SND.unlock(); } catch (e) {} }

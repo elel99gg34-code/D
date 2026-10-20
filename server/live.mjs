@@ -1434,6 +1434,26 @@ function mpStart(mode, teams, ranked) {
   return m;
 }
 const mpSayAt = new Map();
+/* ── 룰 (판 67) ──────────────────────────────────────────────
+   ① 길드를 떠나거나 내보내지면 하루(24시간) 동안 다른 길드에 들지 못한다 (같은 길드로 돌아가는 것은 된다)
+   ② 랭크 대전 탈주 — 판이 끝나기 전에 나가거나 오래 비우면 진 점수에 -15 더, 토큰 없음.
+      하루 안에 두 번 넘게 탈주하면 10분 동안 줄을 서지 못한다
+   ③ 도배 막기 — 같은 말은 30초 안에 다시 못 한다. 20초에 여섯 마디를 넘기면 30초 동안 입이 묶인다 (관리자는 빼고)
+   ④ 신규 보호 — 만든 지 사흘이 안 된 계정이나 레벨 5 아래는 길드 기부가 하루 경험 100까지 */
+const G_REJOIN_MS = 24 * 3600000, FLEE_RP = 15, FLEE_LOCK_MS = 10 * 60000, NEW_ACCT_MS = 72 * 3600000, NEW_LV = 5, G_DONATE_NEW = 100;
+const spamLog = new Map();
+function spamWhy(key, t, now, staff) {
+  if (staff) return '';
+  const s = spamLog.get(key) || { last: '', lastAt: 0, at: [], mute: 0 };
+  if (now < s.mute) return `말이 너무 잦았다 — ${Math.ceil((s.mute - now) / 1000)}초 뒤에 말할 수 있다`;
+  const norm = String(t || '').replace(/\s+/g, '').toLowerCase();
+  if (norm && norm === s.last && now - s.lastAt < 30000) return '같은 말을 거듭할 수 없다 — 30초 뒤에';
+  s.at = s.at.filter(x => now - x < 20000); s.at.push(now);
+  if (s.at.length > 6) { s.mute = now + 30000; s.at = []; spamLog.set(key, s); return '말이 너무 잦다 — 30초 동안 쉬었다 말하시오'; }
+  s.last = norm; s.lastAt = now; spamLog.set(key, s); if (spamLog.size > 20000) spamLog.clear();
+  return '';
+}
+const fleeMark = (m, acct) => { if (m && m.ranked && !m.over) { m.fled = m.fled || {}; m.fled[acct] = true; } };
 /* 길드 — 채팅은 기억에만 */
 const GUILD_MAX = 20, gChat = new Map(), gSayAt = new Map();
 let _gSeq = 0;
@@ -1458,7 +1478,19 @@ const G_DONATE_DAY = 400;
 const G_SHOP = { dia: 60, gold: 40, pot: 25, mat: 150, scard: 300, frame: 400 };
 const GR_NODES = { o1: [0, 2], o2: [0, 2], o3: [0, 2], f1: [1, 3], f2: [1, 3], f3: [1, 3], g1: [2, 4], g2: [2, 4], B: [3, 0] };
 const GR_NAME = { o1: '동쪽 전초', o2: '가운데 전초', o3: '서쪽 전초', f1: '바위 요새', f2: '물가 요새', f3: '숲 요새', g1: '해의 관문', g2: '달의 관문', B: '영지의 대요괴' };
-const gRaidSess = new Map(), GR_TURNS = 6;          /* 대요괴는 한 번에 여섯 차례까지 */
+const gRaidSess = new Map(), GR_TURNS = 6;
+/* 떠난 지 하루가 안 됐으면 다른 길드에 못 든다 (판 67) */
+async function donCapOf(id, q, now) {
+  if (admRole(q && q.code)) return G_DONATE_DAY;
+  const soul = await soulGet(id), plv = Math.max(1, Math.min(99, parseInt(q && q.plv, 10) || 1));
+  return (!soul || now - (soul.made || 0) < NEW_ACCT_MS || plv < NEW_LV) ? G_DONATE_NEW : G_DONATE_DAY;
+}
+async function gLeftWhy(id, gid, now) {
+  const lf = await get('gleft:' + id); if (!lf || !lf.at || lf.gid === gid) return '';
+  const left = G_REJOIN_MS - (now - lf.at); if (left <= 0) return '';
+  const mins = Math.ceil(left / 60000);
+  return `길드를 떠난 지 하루가 지나야 다른 길드에 든다 — ${Math.floor(mins / 60)}시간 ${mins % 60}분 남았다`;
+}          /* 대요괴는 한 번에 여섯 차례까지 */
 const kstWeek = now => Math.floor((Math.floor((now + 9 * 3600000) / 864e5) - 4) / 7);
 const gWeekEnd = now => ((kstWeek(now) + 1) * 7 + 4) * 864e5 - 9 * 3600000;
 function gRaid(g, now) {
@@ -1518,12 +1550,17 @@ async function mpSettle(m) {
       if (won) { dRp = Math.max(12, Math.min(40, 25 + Math.round((opp - before) / 40))) + Math.min(10, prof.streak * 2); prof.streak++; prof.w++; }
       else { dRp = -Math.max(8, Math.min(30, 18 + Math.round((before - opp) / 40))); if (tierBefore === 'bronze') dRp = Math.round(dRp * .5); prof.streak = 0; prof.l++; }
       tok = won ? (m.mode === '2v2' ? 16 : 20) : (m.mode === '2v2' ? 5 : 6);
+      if (!won && m.fled && m.fled[p.acct]) {                 /* 탈주 (판 67) */
+        dRp -= FLEE_RP; tok = 0;
+        const now2 = Date.now(); prof.flee = (prof.flee || []).filter(t => now2 - t < 864e5).concat(now2);
+        if (prof.flee.length > 2) prof.fleeLock = now2 + FLEE_LOCK_MS;
+      }
       prof.rp = Math.max(0, before + dRp); prof.best = Math.max(prof.best || 0, prof.rp);
     } else { if (won) prof.fw++; else prof.fl++; }
     prof.tok += tok;
     await mpPut(p.acct, prof);
     if (m.ranked) await mpTopSet(p.acct, prof);
-    res[p.acct] = { won, dRp, rp: prof.rp, tok, tokAll: prof.tok, tier: mpTier(prof.rp), tierBefore };
+    res[p.acct] = { won, dRp, rp: prof.rp, tok, tokAll: prof.tok, tier: mpTier(prof.rp), tierBefore, fled: !!(m.fled && m.fled[p.acct]), fleeN: (prof.flee || []).length, fleeLock: prof.fleeLock || 0 };
   }
   m.res = res;
   await guildSettle(m).catch(e => console.error('길드 셈', e.message));
@@ -1535,13 +1572,13 @@ function mpTick(now) {
   for (const [id, m] of mpMatches) {
     if (m.over) { if (now - m.turn.deadline > 10 * 60 * 1000) { mpMatches.delete(id); for (const p of m.players) if (mpOf.get(p.acct) === id) mpOf.delete(p.acct); } continue; }
     for (const p of m.players) if (m.units[p.acct].hp > 0 && now - (m.seen[p.acct] || 0) > MP_GONE_MS) {
-      m.units[p.acct].hp = 0; mpEv(m, { kind: 'gone', acct: p.acct });
+      fleeMark(m, p.acct); m.units[p.acct].hp = 0; mpEv(m, { kind: 'gone', acct: p.acct });
       if (m.turn.acct === p.acct) mpNext(m, now); else mpCheckOver(m);
     }
     if (!m.over && now > m.turn.deadline) {
       const a = m.turn.acct; m.to[a] = (m.to[a] || 0) + 1;
       mpEv(m, { kind: 'timeout', acct: a });
-      if (m.to[a] >= 3) { m.units[a].hp = 0; mpEv(m, { kind: 'gone', acct: a }); }
+      if (m.to[a] >= 3) { fleeMark(m, a); m.units[a].hp = 0; mpEv(m, { kind: 'gone', acct: a }); }
       mpNext(m, now);
     }
   }
@@ -2393,6 +2430,7 @@ const server = http.createServer(async (req, res) => {
     if (now - (chatLast.get(id) || 0) < CHAT_GAP || tooMany(ip)) return send(res, 429, { ok: false, why: '너무 빠르다 — 잠시 뒤에' });
     const t = chatClean(q.text);
     if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+    { const sw = spamWhy('c:' + id, t, now, isDev); if (sw) return send(res, 429, { ok: false, why: sw }); }
     let n = (await nickOf(id)) || id, k = '';
     if (isDev) { n = admRole(q.code) === 'baeksa' ? '백사' : '백야'; k = 'dev'; }
     else if (/^[0-9a-f]{32}$/.test(String(q.gsec || ''))) {
@@ -2436,7 +2474,7 @@ const server = http.createServer(async (req, res) => {
       apply: await Promise.all((g.apply || []).map(async a => ({ id: a.id, nick: (await nickOf(a.id)) || a.id, at: a.at, lv: a.lv || 1 }))),
       members: await Promise.all(g.members.map(async m => ({ id: m, nick: (await nickOf(m)) || m, own: m === g.owner, off: (g.officers || []).includes(m), rp: ((await get('mp:' + m)) || {}).rp || 0, give: (g.contrib || {})[m] || 0 }))) };
     const mine = async g => { if (!g) return {}; const d = kstDay(now);
-      return { coins: +(await get('gc:' + id)) || 0, chk: !!(g.daily && g.daily.d === d && g.daily.ids.includes(id)), don: (g.don && g.don.d === d && g.don.by[id]) || 0, donCap: G_DONATE_DAY }; };
+      return { coins: +(await get('gc:' + id)) || 0, chk: !!(g.daily && g.daily.d === d && g.daily.ids.includes(id)), don: (g.don && g.don.d === d && g.don.by[id]) || 0, donCap: await donCapOf(id, q, now) }; };
     const rankOf = async g => { if (!g) return 0; const ids = (await get('gdlist')) || []; let r = 1; for (const x of ids) { if (x === g.id) continue; const o = await get('gd:' + x); if (o && (o.pts || 0) > (g.pts || 0)) r++; } return r; };
     if (act === 'me') return send(res, 200, { ok: true, g: await view(my), rank: await rankOf(my), chat: (gChat.get(myGid) || []).slice(-40), me: await mine(my), cost: G_COST, shop: G_SHOP });
     if (act === 'create') {
@@ -2459,6 +2497,7 @@ const server = http.createServer(async (req, res) => {
       if (my) return send(res, 409, { ok: false, why: '이미 길드에 들어 있다 — 먼저 나오시오' });
       const gid = await get('gname:' + str(q.name, 12).trim().toLowerCase()) || str(q.gid, 20), g = gid && await get('gd:' + gid);
       if (!g) return send(res, 404, { ok: false, why: '그런 길드가 없다' });
+      { const lf = await gLeftWhy(id, g.id, now); if (lf && !admRole(q.code)) return send(res, 409, { ok: false, why: lf }); }
       if (g.members.length >= gCap(g)) return send(res, 409, { ok: false, why: `길드가 가득 찼다 (${gCap(g)}명)` });
       const ru = g.rules || {}, plv = Math.max(1, Math.min(99, parseInt(q.plv, 10) || 1));
       if (ru.minLv > 1 && plv < ru.minLv && !admRole(q.code)) return send(res, 403, { ok: false, why: `이 길드는 레벨 ${ru.minLv}부터 받는다` });
@@ -2473,7 +2512,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (!my) return send(res, 404, { ok: false, why: '길드에 들어 있지 않다' });
     if (act === 'leave') {
-      my.members = my.members.filter(m => m !== id); await put('gm:' + id, null);
+      my.members = my.members.filter(m => m !== id); await put('gm:' + id, null); await put('gleft:' + id, { at: now, gid: my.id });
       if (!my.members.length) { await put('gd:' + my.id, null); await put('gname:' + my.name.toLowerCase(), null); await put('gdlist', ((await get('gdlist')) || []).filter(x => x !== my.id)); gChat.delete(my.id); }
       else { my.officers = (my.officers || []).filter(x => x !== id);
         if (my.owner === id) { my.owner = my.officers[0] || my.members[0]; my.officers = my.officers.filter(x => x !== my.owner); }
@@ -2485,7 +2524,7 @@ const server = http.createServer(async (req, res) => {
       if (my.owner !== id && !offK) return send(res, 403, { ok: false, why: '길드장 · 부길드장만 내보낼 수 있다' });
       const who = str(q.who, 20); if (who === id || !my.members.includes(who)) return send(res, 404, { ok: false, why: '그런 길드원이 없다' });
       if (who === my.owner || (my.owner !== id && (my.officers || []).includes(who))) return send(res, 403, { ok: false, why: '그 길드원은 내보낼 수 없다' });
-      my.members = my.members.filter(m => m !== who); my.officers = (my.officers || []).filter(x => x !== who); await put('gd:' + my.id, my); await put('gm:' + who, null);
+      my.members = my.members.filter(m => m !== who); my.officers = (my.officers || []).filter(x => x !== who); await put('gd:' + my.id, my); await put('gm:' + who, null); await put('gleft:' + who, { at: now, gid: my.id });
       gSay(my.id, null, `${(await nickOf(who)) || who} 님을 내보냈다`, now);
       return send(res, 200, { ok: true, g: await view(my) });
     }
@@ -2497,6 +2536,7 @@ const server = http.createServer(async (req, res) => {
     if (act === 'say') {
       if (now - (gSayAt.get(id) || 0) < 1500) return send(res, 429, { ok: false, why: '너무 빠르다' });
       const t = chatClean(q.text); if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+      { const sw = spamWhy('g:' + id, t, now, !!admRole(q.code)); if (sw) return send(res, 429, { ok: false, why: sw }); }
       { const st = STK_RE.exec(t); if (st && !(await emoHas(id, st[1])) && !admRole(q.code)) return send(res, 403, { ok: false, why: '아직 없는 이모티콘이다' }); }
       gSayAt.set(id, now); if (gSayAt.size > 20000) gSayAt.clear();
       const x = gSay(my.id, id, t, now, (await nickOf(id)) || id);
@@ -2526,6 +2566,7 @@ const server = http.createServer(async (req, res) => {
       my.apply = my.apply.filter(x => x.id !== who);
       if (act === 'accept') {
         if (await get('gm:' + who)) { await put('gd:' + my.id, my); return send(res, 409, { ok: false, why: '그 사람은 이미 다른 길드에 들었다', g: await view(my) }); }
+        { const lf = await gLeftWhy(who, my.id, now); if (lf) { await put('gd:' + my.id, my); return send(res, 409, { ok: false, why: '그 사람은 ' + lf, g: await view(my) }); } }
         if (my.members.length >= gCap(my)) { await put('gd:' + my.id, my); return send(res, 409, { ok: false, why: '길드가 가득 찼다' }); }
         my.members.push(who); await put('gm:' + who, my.id); gSay(my.id, null, `${(await nickOf(who)) || who} 님을 받아들였다`, now);
       }
@@ -2559,8 +2600,9 @@ const server = http.createServer(async (req, res) => {
       const want = Math.floor(gold / 150) + Math.floor(dia / 15);
       if (want < 1) return send(res, 400, { ok: false, why: '골드 150 또는 다이아 15부터 길드 경험 1' });
       const d = kstDay(now); if (!my.don || my.don.d !== d) my.don = { d, by: {} };
-      const left = G_DONATE_DAY - (my.don.by[id] || 0);
-      if (left <= 0) return send(res, 409, { ok: false, why: `오늘 기부로 쌓을 수 있는 경험(${G_DONATE_DAY})을 다 쌓았다` });
+      const cap = await donCapOf(id, q, now);
+      const left = cap - (my.don.by[id] || 0);
+      if (left <= 0) return send(res, 409, { ok: false, why: `오늘 기부로 쌓을 수 있는 경험(${cap})을 다 쌓았다${cap < G_DONATE_DAY ? ' — 새로 온 이는 하루 100까지 (계정 사흘 · 레벨 5부터 400)' : ''}` });
       const give = Math.min(want, left), k = give / want;
       my.don.by[id] = (my.don.by[id] || 0) + give; xpAdd(give); my.contrib = my.contrib || {}; my.contrib[id] = (my.contrib[id] || 0) + give;
       await put('gd:' + my.id, my); const c = await coinAdd(Math.floor(give / 4));
@@ -2733,6 +2775,7 @@ const server = http.createServer(async (req, res) => {
     /* 대전은 레벨 2부터 (판 57) — 관리자는 매이지 않는다 */
     const plvOk = me.plv >= 2 || !!admRole(q.code);
     if (!plvOk && (act === 'queue' || act === 'room' || act === 'party')) return send(res, 403, { ok: false, why: '대전은 레벨 2부터 — 요괴를 몇 무리 더 쓰러뜨리고 오시오', lvlock: true });
+    if ((prof.fleeLock || 0) > now && act === 'queue' && !admRole(q.code)) return send(res, 403, { ok: false, why: `탈주 벌칙 — 하루에 세 번 판을 버렸다. ${Math.ceil((prof.fleeLock - now) / 60000)}분 뒤에 다시 줄을 선다`, fleelock: true });
     const inf = await infOk(q);
     const profView = () => Object.assign({}, prof, { tier: mpTier(prof.rp), id: acct }, inf ? { tok: INF_TOK } : {});
 
@@ -2842,6 +2885,7 @@ const server = http.createServer(async (req, res) => {
       if (now - (mpSayAt.get(acct) || 0) < 1500) return send(res, 429, { ok: false, why: '너무 빠르다' });
       const t = chatClean(String(q.text || '').slice(0, 80));
       if (!t) return send(res, 400, { ok: false, why: '할 말이 비었다' });
+      { const sw = spamWhy('m:' + acct, t, now, !!admRole(q.code)); if (sw) return send(res, 429, { ok: false, why: sw }); }
       { const st = STK_RE.exec(t); if (st && !(await emoHas(acct, st[1])) && !admRole(q.code)) return send(res, 403, { ok: false, why: '아직 없는 이모티콘이다' }); }
       mpSayAt.set(acct, now); if (mpSayAt.size > 5000) mpSayAt.clear();
       mpEv(m, { kind: 'say', acct, say: t });
@@ -2852,7 +2896,7 @@ const server = http.createServer(async (req, res) => {
       m.seen[acct] = now;
       if (act === 'leave') {
         /* 진행 중이면 항복 — 판에는 남겨 두어 결과를 보게 한다. 끝난 판이면 그제야 떠난다 */
-        if (!m.over) { m.units[acct].hp = 0; mpEv(m, { kind: 'gone', acct });
+        if (!m.over) { fleeMark(m, acct); m.units[acct].hp = 0; mpEv(m, { kind: 'gone', acct });
           if (m.turn.acct === acct) mpNext(m, now); else mpCheckOver(m); }
         else mpOf.delete(acct);
         return send(res, 200, { ok: true });
