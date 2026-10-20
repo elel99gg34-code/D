@@ -1217,6 +1217,7 @@ const SEEN_MS = 90 * 1000;
 const seen = new Map();                   /* who → { at, s, ip } */
 let seenPeak = 0, seenPeakAt = 0, seenDay = '', seenToday = new Set();
 const kstDay = t => new Date(t + 9 * 3600e3).toISOString().slice(0, 10);
+const HM_SLOTS = ['roof', 'wall', 'yard', 'lamp', 'deco'];   /* 암자의 자리 (판 68) */
 function seenMark(who, scene, now) {
   if (!/^[\w-]{4,64}$/.test(who || '')) return;
   if (seen.size > 20000) for (const [k, v] of seen) if (now - v.at > SEEN_MS) seen.delete(k);
@@ -1856,6 +1857,48 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { ok: true, pf: await pfView(uid) });
     }
     if (url.pathname === '/fr/del') { await put('fr:' + id, fr.filter(x => x !== str(q.id, 20))); return send(res, 200, { ok: true }); }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+
+  /* ── 암자(庵) — /hm/get 남의 암자 · /hm/set 내 암자 · /hm/sign 방명록 한 줄(집마다 하루 한 번) · /hm/del 내 방명록 지우기 (판 68)
+     hm:아이디 = { s: { roof, wall, yard, lamp, deco }, msg, at, v(놀러 온 수) } · hg:아이디 = [{ id, nick, t, at }] 쉰 줄까지 ── */
+  if (url.pathname.startsWith('/hm/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false }); }
+    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now();
+    const whoOf = async w => { w = str(w, 20); if (!w) return ''; if (await get('u:' + w)) return w; const n = await get('nk:' + w.toLowerCase()); return n || ''; };
+    if (url.pathname === '/hm/get') {
+      const uid = await whoOf(q.who); if (!uid) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
+      return send(res, 200, { ok: true, id: uid, nick: (await nickOf(uid)) || uid, hm: (await get('hm:' + uid)) || null, gb: ((await get('hg:' + uid)) || []).slice(-30) });
+    }
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    if (url.pathname === '/hm/set') {
+      const h0 = q.hm || {}, prev = (await get('hm:' + id)) || {}, sl = {};
+      for (const k of HM_SLOTS) sl[k] = str(h0[k], 12);
+      await put('hm:' + id, { s: sl, msg: censor(str(h0.msg, 8)), at: now, v: prev.v || 0 });
+      return send(res, 200, { ok: true });
+    }
+    if (url.pathname === '/hm/sign') {
+      const uid = await whoOf(q.who); if (!uid) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
+      if (uid === id) return send(res, 400, { ok: false, why: '내 암자다' });
+      const t = censor(str(q.t, 60)).trim(); if (!t) return send(res, 400, { ok: false, why: '빈 말이다' });
+      { const why = spamWhy('hg:' + id, t, now, false); if (why) return send(res, 429, { ok: false, why }); }
+      const gb = (await get('hg:' + uid)) || [];
+      if (gb.some(x => x.id === id && kstDay(x.at) === kstDay(now))) return send(res, 409, { ok: false, why: '이 집 방명록에는 오늘 이미 적었다' });
+      gb.push({ id, nick: (await nickOf(id)) || id, t, at: now });
+      await put('hg:' + uid, gb.slice(-50));
+      const hm = (await get('hm:' + uid)) || { s: {}, msg: '', at: 0, v: 0 }; hm.v = (hm.v || 0) + 1; await put('hm:' + uid, hm);
+      return send(res, 200, { ok: true, gb: gb.slice(-30) });
+    }
+    if (url.pathname === '/hm/del') {
+      const at = Number(q.at) || 0, gb = (await get('hg:' + id)) || [];
+      await put('hg:' + id, gb.filter(x => x.at !== at));
+      return send(res, 200, { ok: true });
+    }
     return send(res, 404, { ok: false, why: '없는 자리' });
   }
 

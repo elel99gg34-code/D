@@ -1805,6 +1805,82 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 팻 성장 · 내 암자 · 백귀 통행증 · 복귀 보상 (판 68) */
+.petlvpop{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:46;pointer-events:none;display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:12px;
+  background:linear-gradient(160deg,#1a2a24,#0a120e);border:1.5px solid #8fe6d0;box-shadow:0 0 30px rgba(140,230,200,.4),0 10px 26px rgba(0,0,0,.6);animation:dexpIn .45s cubic-bezier(.2,1.4,.4,1)}
+.petlvpop.out{opacity:0;transition:.5s}
+.petlvpop>i{font-style:normal;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff;background:radial-gradient(circle at 35% 30%,var(--pc),#0a120e);border:2px solid #8fe6d0}
+.petlvpop>div{display:flex;flex-direction:column}.petlvpop small{font-size:10.5px;color:#8fe6d0;letter-spacing:.2em}.petlvpop b{font-weight:400;font-size:18px;color:#effffb}.petlvpop em{font-style:normal;font-size:12px;color:#bfe8dc}
+.petlvpop u{text-decoration:none;color:#ffd76a}
+.petlv{display:flex;align-items:center;gap:6px;margin:3px 0}.petlv b{font-weight:400;font-size:12px;color:#8fe6d0;flex:none}
+.petxp{position:relative;flex:1;height:10px;border-radius:5px;background:rgba(0,0,0,.4);border:1px solid rgba(140,230,200,.35);overflow:hidden}
+.petxp s{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#3a8a74,#8fe6d0)}
+.petxp em{position:relative;display:block;font-style:normal;font-size:8.5px;line-height:9px;text-align:center;color:#fff;text-shadow:0 1px 2px #000}
+.petsk{display:flex;gap:3px;justify-content:center;margin:2px 0}
+.petsk u{text-decoration:none;display:flex;flex-direction:column;align-items:center;width:38px;padding:2px 0;border-radius:6px;font-size:13px;color:#5a5448;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08)}
+.petsk u small{font-size:8.5px;color:#6a6458;white-space:nowrap}
+.petsk u.on{color:#2a1a04;background:linear-gradient(180deg,#bff0e2,#5ab8a0);border-color:#8fe6d0}.petsk u.on small{color:#0a2a22}
+/* 암자 */
+.hmbox{width:min(900px,94vw);display:flex;flex-direction:column;gap:10px}
+.hmtabs{display:flex;gap:6px;flex-wrap:wrap}
+.hmwrap{display:grid;grid-template-columns:1fr 300px;gap:12px;align-items:start}
+.hmview{border-radius:12px;overflow:hidden;border:1px solid rgba(255,215,120,.35);box-shadow:0 8px 24px rgba(0,0,0,.5);aspect-ratio:600/340}
+.hmsvg{display:block;width:100%;height:100%}
+.hmside{display:flex;flex-direction:column;gap:7px;max-height:62vh;overflow-y:auto;padding-right:4px}
+.hmname{display:flex;align-items:center;gap:8px;font-size:13px;color:#ffe9b0}
+.hmname input,.hmsign input{flex:1;min-width:0;font:inherit;font-size:13px;padding:6px 10px;border-radius:6px;background:rgba(0,0,0,.45);border:1px solid #6a5a3a;color:#efe4cb}
+.hmjp{font-size:12.5px;color:#d8ccb0}.hmjp b{color:#ffd76a;font-weight:400}.hmjp em{font-style:normal;color:#9fe0a8}
+.hmpart>b{display:flex;align-items:center;gap:6px;font-weight:400;font-size:12.5px;color:#c8bda3;margin-bottom:4px}.hmpart>b i{font-style:normal;color:#ffd76a}
+.hmpart>div{display:flex;flex-wrap:wrap;gap:4px}
+.hmv{font:inherit;font-size:12px;padding:4px 9px;border-radius:14px;cursor:pointer;background:rgba(40,36,24,.9);border:1px solid #6a5a3a;color:#efe4cb;display:flex;align-items:center;gap:4px}
+.hmv small{font-size:10px;color:#ffd76a}.hmv.buy{opacity:.75;border-style:dashed}
+.hmv.on{background:linear-gradient(180deg,#6a5420,#3a2e10);border-color:#ffd76a;color:#fff3d6;box-shadow:0 0 10px rgba(255,215,120,.3)}
+.hmvisit{display:flex;flex-direction:column;gap:8px}
+.hmnote{font-size:12px;color:#a89c82}
+.hmfr{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;max-height:50vh;overflow-y:auto}
+.hmfr h4{grid-column:1/-1;margin:6px 0 0;font-weight:400;font-size:12.5px;color:#ffe9b0;letter-spacing:.12em}
+.hmfrow{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto auto;column-gap:8px;text-align:left;padding:8px 10px;border-radius:10px;cursor:pointer;font:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#efe4cb}
+.hmfrow:hover{border-color:#c9a24a}
+.hmfrow i{grid-row:1/3;font-style:normal;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:#5a4818;color:#ffe9b0}
+.hmfrow b{font-weight:400;font-size:13px}.hmfrow small{font-size:10.5px;color:#9a8d74}
+.hmbook{display:flex;flex-direction:column;gap:5px;max-height:56vh;overflow-y:auto}.hmbook.sm{max-height:30vh}
+.hmgb{position:relative;display:flex;flex-direction:column;gap:2px;padding:7px 28px 7px 10px;border-radius:8px;background:rgba(255,240,200,.05);border-left:3px solid #c9a24a}
+.hmgb b{font-weight:400;font-size:12px;color:#ffd76a}.hmgb span{font-size:13px;color:#efe4cb;line-height:1.5;word-break:break-all}.hmgb small{font-size:10px;color:#8a7f68}
+.hmgb u{position:absolute;right:8px;top:6px;text-decoration:none;color:#ff9a9a;cursor:pointer;font-size:12px}
+.hmsign{display:flex;gap:6px}
+/* 통행증 */
+.passbox{width:min(860px,94vw);display:flex;flex-direction:column;gap:10px}
+.passlv{display:flex;align-items:center;gap:12px}
+.passlv>i{font-style:normal;width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font-size:28px;color:#2a1a04;background:linear-gradient(160deg,#ffe9a8,#c99a3a);box-shadow:0 0 18px rgba(255,215,120,.4)}
+.passlv b{font-weight:400;font-size:17px;color:#fff3d6;letter-spacing:.06em;display:block}.passlv small{font-size:11.5px;color:#a89c82}
+.passbar{position:relative;height:14px;border-radius:7px;background:rgba(0,0,0,.5);border:1px solid rgba(255,215,120,.35);overflow:hidden;margin-top:6px}
+.passbar s{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#c99a3a,#ffe9a8)}
+.passbar em{position:relative;display:block;font-style:normal;font-size:10px;line-height:13px;text-align:center;color:#fff6e0;text-shadow:0 1px 2px #000}
+.passtrack{display:flex;gap:8px;overflow-x:auto;padding:10px 4px 12px;scroll-behavior:smooth}
+.passn{flex:none;position:relative;width:96px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px 8px;border-radius:10px;cursor:pointer;font:inherit;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#8a7f68}
+.passn u{text-decoration:none;position:absolute;left:6px;top:4px;font-size:10px}
+.passn i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:#1a160e;border:1.5px solid #4e4532}
+.passn small{font-size:10.5px;line-height:1.35;text-align:center;min-height:28px}
+.passn.ready{border-color:#ffd76a;color:#fff3d6;background:linear-gradient(160deg,rgba(90,72,24,.7),rgba(20,16,8,.8));box-shadow:0 0 14px rgba(255,215,120,.3)}
+.passn.ready i{color:#2a1a04;background:radial-gradient(circle at 40% 35%,#fff3d6,#ffd76a 60%,#b6821c);border-color:#fff3d6;animation:dxrPulse 1.4s ease-in-out infinite}
+.passn.got{color:#9a8d74}.passn.got i{color:#ffe9b0;background:#5a4818;border-color:#c9a24a}.passn.got::after{content:'✓';position:absolute;right:6px;top:4px;color:#9fe0a8;font-size:12px}
+.passn.ten{width:110px}.passn.ten i{width:46px;height:46px;font-size:22px}
+.passn.big{width:130px}.passn.big i{width:54px;height:54px;font-size:26px;box-shadow:0 0 18px rgba(255,140,100,.5)}
+.passn.big.ready i{background:radial-gradient(circle at 40% 35%,#fff,#ff9a7a 50%,#a8272c);color:#fff}
+.passsrc{font-size:11.5px;color:#a89c82;line-height:1.6}.passsrc small{color:#7a7060}
+.pfcard.fr-pass{border-color:#ffb06a;--fc:#ffb06a;background:linear-gradient(160deg,#3a1e08,#120802),repeating-linear-gradient(-45deg,rgba(255,176,106,.07) 0 8px,transparent 8px 16px)}
+/* 복귀 */
+.backbox{width:min(520px,92vw);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.backink i{font-style:normal;display:grid;place-items:center;width:88px;height:88px;border-radius:50%;font-size:46px;color:#2a1a04;
+  background:radial-gradient(circle at 40% 35%,#fff3d6,#ffd76a 55%,#a8722a);box-shadow:0 0 40px rgba(255,215,120,.55);animation:backPulse 2.4s ease-in-out infinite}
+@keyframes backPulse{50%{box-shadow:0 0 60px rgba(255,215,120,.85);transform:scale(1.04)}}
+.backbox p{margin:0;font-size:14px;line-height:1.8;color:#efe4cb}.backbox p b{color:#ffd76a;font-weight:400}
+.backpay{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.backpay span{display:flex;align-items:center;gap:6px;font-size:13px;padding:6px 12px;border-radius:16px;background:rgba(255,215,120,.08);border:1px solid rgba(255,215,120,.35);color:#fff3d6}
+.backpay span i{font-style:normal;color:#ffd76a}.backpay span.wide{flex-basis:100%;justify-content:center;background:rgba(140,230,200,.08);border-color:rgba(140,230,200,.4)}
+@media (max-width:760px),(max-height:500px){.hmwrap{grid-template-columns:1fr}.hmside{max-height:none}.hmview{max-height:42vh}.passn{width:84px}.passn.big{width:110px}.petlvpop{top:14%}}
+
 /* 도감 수집 보상 · 요괴 이야기 · 덱 보관함 (판 68) */
 .dxrw{align-self:stretch;margin:4px 0 10px;padding:10px 14px 12px;border-radius:12px;background:linear-gradient(160deg,rgba(60,46,16,.55),rgba(14,12,8,.7));border:1px solid rgba(255,215,120,.35)}
 .dxrhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -15107,6 +15183,7 @@ function startBattle(enemyIds, kind, opts) {
   if (G.run) G.run._dnWin = false;
   try { dnBattleStart(b, b.kind); } catch (e) { console.error('낮과 밤', e); }     /* 밤의 요괴 (판 64) */
   try { gBufBattleStart(b, b.kind); gRaidBattleStart(b, b.kind); } catch (e) { console.error('길드', e); }   /* 길드 가호 · 영지 토벌 (판 65) */
+  try { petBattleStart(b); } catch (e) { console.error('팻 성장', e); }   /* 감싸기 · 울부짖음 (판 68) */
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
   syncAll();
@@ -15680,6 +15757,7 @@ async function _startPlayerTurn(b) {
   if (b.pet) b.pet.used = false;
   const p = P();
   if (!p.s.barricade) p.block = 0;
+  if (b._petGuard && b.turn === 1 && PET()) blk(b._petGuard, true);   /* 팻 「감싸기」 (판 68) */
   b.energy = b.maxEnergy + (p.s.focus || 0);
   if (b._mpSecond && b.turn === 1) {                   /* 대전 — 뒤에 두는 쪽의 첫 차례 */
     const f = b._mpSecond; b.energy += f.qi; if (f.blk) blk(f.blk, true);
@@ -16593,6 +16671,7 @@ function _winBattle() {
   if (P()) run.hp = P().hp;
   run.stats.battles++;
   try { xpOnWin(b); } catch (e) { console.error('경험치', e); }              /* 판 57 — 레벨 */
+  try { petXpWin(b); } catch (e) { console.error('팻 경험치', e); }          /* 팻 성장 (판 68) */
   try { stAdd('battle'); if (b.kind === 'elite') stAdd('elite'); if (b.kind === 'boss') stAdd('boss'); } catch (e) {}
   incenseBurn();                                 /* 향초가 한 자루 탄다 */
   if (b.kind === 'elite') {
@@ -18875,7 +18954,7 @@ const PET_HP_GAP = 30;                        /* 주인보다 이만큼 낮다 *
 const PET_DMG = 0.35;
 /* 진화한 팻은 그만큼 더 낸다 */
 function petMul() { const pt = G.b && G.b.pet; return PET_DMG * ((pt && pt.evoMul) || 1); }
-function petMulOf(id) { return PET_DMG * (1 + petEvo(id) * PET_EVO_DMG); }
+function petMulOf(id) { return PET_DMG * (1 + petEvo(id) * PET_EVO_DMG) * (1 + (petLv(id) - 1) * PET_LV_DMG); }   /* 레벨 (판 68) */
 const PET_REVIVE_ELITES = 5;                  /* 되살리는 데 드는 엘리트 수 */
 /* 힘이 중간쯤인 것들만 — 잡졸도 보스도 아니다 */
 const PET_POOL = Object.keys(ENEMIES).filter(id => {
@@ -18959,7 +19038,7 @@ function petFeed() {
   if (r.evo >= PET_EVO_MAX) {
     const to = petMorphTo(id);
     if (to && !META.pets.own[to]) {
-      META.pets.own[to] = { dead: false, need: 0, at: Date.now(), evo: PET_EVO_MAX, fed: 0, from: id };
+      META.pets.own[to] = { dead: false, need: 0, at: Date.now(), evo: PET_EVO_MAX, fed: 0, from: id, lv: r.lv, xp: r.xp };   /* 레벨은 그대로 (판 68) */
       META.pets.active = to;
       delete META.pets.own[id];
       saveMeta();
@@ -18999,16 +19078,16 @@ function makePet() {
   if (!id || !petAlive() || !G.run) return null;
   const d = ENEMIES[id];
   const lv = petEvo(id);
-  const mx = Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP);
-  return { id, def: d, n: petEvoName(id), g: d.g, col: d.col, isPet: true, evo: lv,
-    evoMul: 1 + lv * PET_EVO_DMG,
+  const plv = petLv(id), mx = Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP + (plv - 1) * PET_LV_HP);   /* 레벨마다 체력 (판 68) */
+  return { id, def: d, n: petEvoName(id), g: d.g, col: d.col, isPet: true, evo: lv, plv,
+    evoMul: (1 + lv * PET_EVO_DMG) * (1 + (plv - 1) * PET_LV_DMG),
     hp: mx, maxHp: mx, block: 0, s: {}, el: null, used: false };
 }
 function PET() { return G.b && G.b.pet && G.b.pet.hp > 0 ? G.b.pet : null; }
 /* 주인이 맞으면 팻도 그만큼 나눠 맞는다 */
 function petShare(dmg) {
   const pt = PET(); if (!pt || dmg <= 0) return;
-  const d = Math.max(1, Math.round(dmg * .25));
+  const d = Math.max(1, Math.round(dmg * petShareRate(pt)));   /* 한마음 — 15% (판 68) */
   pt.hp = Math.max(0, pt.hp - d);
   if (pt.el) { pt.el.classList.remove('hurt'); void pt.el.offsetWidth; pt.el.classList.add('hurt'); }
   floatText(pt, '-' + d, '');
@@ -19017,6 +19096,7 @@ function petShare(dmg) {
 }
 function petFalls() {
   const pt = G.b && G.b.pet; if (!pt || pt.fell) return;
+  if (petBondSave(pt)) return;                  /* 한마음 — 한 번 버틴다 (판 68) */
   pt.fell = true;
   META.pets.own[pt.id].dead = true;
   META.pets.own[pt.id].need = PET_REVIVE_ELITES;
@@ -19055,6 +19135,7 @@ async function petUse(key) {
   try { await petAct(b, pt, m); }             /* 안에서 터져도 자물쇠는 아래에서 푼다 */
   catch (e) { console.error('팻 오류', key, e); }
   finally { b.busy = false; }
+  try { petInstinct(pt); } catch (e) {}           /* 본능 — 25% 한 번 더 (판 68) */
   syncAll();
   await checkOver();
 }
@@ -19089,7 +19170,7 @@ function buildPet() {
   const u = el('div', 'unit petunit');
   u.innerHTML = `<div class="body" style="--pc:${pt.col}">
       <span class="glyph">${pt.g}</span><div class="blockbadge hide"></div></div>
-    <div class="nm">${pt.n} <em>팻</em></div>
+    <div class="nm">${pt.n} <em>팻 Lv${pt.plv || 1}</em></div>
     <div class="ebar pet"><i></i><b></b></div>`;
   side.appendChild(u);
   pt.el = u;
@@ -19191,13 +19272,13 @@ function showPets() {
       const d = ENEMIES[id], rec = META.pets.own[id];
       const on = activePet() === id;
       const lv = petEvo(id), fed = petFed(id), maxed = lv >= PET_EVO_MAX;
-      const mx = G.run ? Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP) : '—';
+      const mx = G.run ? Math.max(10, G.run.maxHp - PET_HP_GAP + lv * PET_EVO_HP + (petLv(id) - 1) * PET_LV_HP) : '—';
       const pips = Array.from({ length: PET_EVO_MAX }, (_, i) =>
         `<i class="${i < lv ? 'on' : ''}"></i>`).join('');
       const t = el('div', 'trtile pettile' + (on ? ' can' : '') + (rec.dead ? ' done' : '') + (lv ? ' evo' + lv : ''),
         `<div class="tg" style="background:radial-gradient(circle at 35% 28%,${d.col},#1c1508);color:#f6efdd">${d.g}</div>
          <div class="tn">${petEvoName(id)}${d.elite ? ' <em style="color:#e08a7a;font-style:normal;font-size:11px">엘리트</em>' : ''}</div>
-         <div class="petbar" title="진화">${pips}</div>
+         <div class="petbar" title="진화">${pips}</div>${petLvHtml(id)}
          <div class="tv">체력 <b>${mx}</b> (주인 -${PET_HP_GAP}${lv ? ` +${lv * PET_EVO_HP}` : ''})
            · 힘 <b>${Math.round(petMulOf(id) * 100)}%</b><br>
            ${Object.keys(d.moves).map(k => d.moves[k].label).join(' · ')}</div>
@@ -20654,8 +20735,8 @@ function showRewards(kind) {
      건드리지 않는다. 남의 판을 흔드는 일이니 더해 주기만 한다. */
   const em = (evOn('gold') || evOn('night') ? 2 : 1) * (buffV('gold') ? 2 : 1) * (run._dnWin ? DN_LOOT : 1);   /* 풍년 · 저주의 밤 · 버프 「황금비」 — 곱절 · 밤의 전리품 1.5배 */
   if (run._dnWin) setTimeout(() => toast('夜 밤의 전리품 — 골드 · 다이아 1.5배 · 고를 부적 한 장 더, 한 단 위'), 350);
-  const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act) * (1 + gBuf('gold'));   /* 환생할수록, 막이 오를수록 두둑하다 · 길드 가호 */
-  const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act) * (1 + gBuf('dia'));
+  const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act) * (1 + gBuf('gold') + backBuf());   /* 환생할수록, 막이 오를수록 두둑하다 · 길드 가호 */
+  const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act) * (1 + gBuf('dia') + backBuf());
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * dm);
   const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
@@ -28194,6 +28275,7 @@ function stAdd(k, n = 1) {
   if (!n || (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot') && k !== 'mpw' && k !== 'mpplay')) return;
   META.st = META.st || {}; META.st[k] = (META.st[k] || 0) + n;
   try { questBump(k, n); } catch (e) {}
+  try { passOnSt(k, n); } catch (e) {}              /* 백귀 통행증 (판 68) */
   clearTimeout(_stT); _stT = setTimeout(() => { saveMeta(); try { achCheck(); } catch (e) {} }, 500);
 }
 /* ══════════════════════════════════════════════════════════
@@ -28232,7 +28314,7 @@ const ACH = [
   { id: 'qst7',  g: '課', n: '임무 일곱',      t: '성실한 퇴마사', k: 'quest', need: 7,    dia: 50 },
   { id: 'qst50', g: '課', n: '임무 쉰',        t: '산의 일꾼',     k: 'quest', need: 50,   dia: 200, frame: 'jade' }
 ];
-const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥', guild: '길드 깃발', dex: '백귀록' };
+const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥', guild: '길드 깃발', dex: '백귀록', pass: '통행증' };
 const achCur = a => a.f ? a.f() : stV(a.k);
 const achHas = id => !!(META.ach && META.ach[id]);
 const achTitles = () => ACH.filter(a => achHas(a.id)).map(a => a.t).concat(xTitles());   /* 도감 100% 「백귀록」 (판 68) */
@@ -28440,13 +28522,14 @@ async function showFriends() {
     if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
     L.innerHTML = r.list.length ? r.list.map(f => `<div class="frrow${f.on ? ' on' : ''}"><s></s><div class="frnm" data-n="${wEsc(f.id)}"><b>${f.title ? `<em class="pfttl">${wEsc(f.title)}</em>` : ''}${wEsc(f.nick)}${f.back ? ' <u title="서로 벗">⇄</u>' : ''}</b>
         <small>${mpTierName(f.rp || 0)} · 최고 ${f.best}막 · ${f.on ? '접속 중' : '쉬는 중'}</small></div>
-        <button class="frb" data-a="fuse" data-n="${wEsc(f.nick)}" title="합성소로 부른다">鎔</button><button class="frb" data-a="mp" data-n="${wEsc(f.nick)}" title="대전으로 부른다">對</button>
+        <button class="frb" data-a="home" data-n="${wEsc(f.id)}" title="암자에 놀러 간다">庵</button><button class="frb" data-a="fuse" data-n="${wEsc(f.nick)}" title="합성소로 부른다">鎔</button><button class="frb" data-a="mp" data-n="${wEsc(f.nick)}" title="대전으로 부른다">對</button>
         <button class="frb del" data-a="del" data-id="${wEsc(f.id)}" title="지운다">✕</button></div>`).join('')
       : '<div class="mempty"><i>友</i>아직 적은 벗이 없다 — 채팅이나 순위에서 이름을 눌러 프로필을 보고 적을 수도 있다</div>';
     L.querySelectorAll('.frnm').forEach(b => b.onclick = () => showProfile(b.dataset.n));
     L.querySelectorAll('.frb').forEach(b => b.onclick = async () => {
       const a = b.dataset.a;
       if (a === 'del') { if (!confirm('이 벗을 지울까?')) return; await acctAsk('/fr/del', { token: ACCT.token, id: b.dataset.id }, 10000); load(); return; }
+      if (a === 'home') { hmVisit(b.dataset.n); return; }                 /* 암자 (판 68) */
       if (!G.run) { toast('모험 중에만 부를 수 있다'); return; }
       closeOverlay();
       if (a === 'fuse') { showFuseLab(); setTimeout(() => { const i = $('#fl_to'), c = $('#fl_call'); if (i && c) { i.value = b.dataset.n; c.click(); } }, 500); }
@@ -29482,7 +29565,7 @@ function devSayPanel() {
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
 const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['soc', '교류', '社'], ['set', '설정', '設']];
-const MENU_NEW = { lore: 1, deckbox: 1, help: 1, cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_NEW = { home: 1, pass: 1, lore: 1, deckbox: 1, help: 1, cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
   { k: 'help', g: '典', n: '도움말 백과', tab: 'set', al: '도움말 백과 사전 설명 낱말 상태이상 키워드 help', run: () => showHelpBook() },
@@ -29509,6 +29592,7 @@ const MENU_ITEMS = [
   { k: 'ach',   g: '功', n: '업적 · 칭호', tab: 'col', al: '업적 칭호 도전과제', sub: () => ACH.filter(a => achHas(a.id)).length + ' / ' + ACH.length, run: () => showAch() },
   { k: 'secret', g: '秘', n: '숨은 것', tab: 'col', al: '이스터에그 숨은것 비밀 힌트 수수께끼', sub: () => EGG_LIST.filter(x => x.found()).length + ' / ' + EGG_LIST.length, run: () => showSecrets() },
   { k: 'gallery', g: '畵', n: '컷씬 다시보기', tab: 'col', al: '컷씬 다시보기 갤러리 영상 장면', run: () => showGallery() },
+  { k: 'pass', g: '券', n: '백귀 통행증', tab: 'ev', al: '통행증 패스 배틀패스 시즌 보상', dot: () => passReady(), sub: () => passLv() + ' / ' + PASS_LV, run: () => showPass() },
   { k: 'htok',  g: '⌬', n: '해킹상점', tab: 'ev', al: '해킹 토큰 상점 박사', show: inRun, badge: '한정',
     dot: () => hbOpenNow() && !hbWonNow() ? '!' : 0, sub: () => hbOpenNow() && !hbWonNow() ? '보스 출현!' : '', run: () => showHackTokShop() },
   { k: 'hshop', g: '⌬', n: '이벤트 해킹상점', tab: 'ev', al: '해킹 칩 상점', show: () => inRun() && hackShopOn(), run: () => showHackShop() },
@@ -29519,6 +29603,7 @@ const MENU_ITEMS = [
   { k: 't26',   g: '帝', n: '26막 예고', tab: 'ev', al: '26막 예고편 무명궁 황제 미리보기', show: () => !G.b, run: () => showAct26Preview() },
   { k: 'guest', g: '客', n: '게스트 창', tab: 'ev', al: '게스트', show: () => guestOn(), run: () => showGuest() },
   { k: 'profile', g: '名', n: '프로필', tab: 'soc', al: '프로필 칭호 테두리 내정보', show: () => acctOn(), run: () => showProfile() },
+  { k: 'home', g: '庵', n: '내 암자', tab: 'soc', al: '암자 집 꾸미기 하우징 방명록 놀러가기 방문', run: () => showHome() },
   { k: 'guild', g: '旗', n: '길드', tab: 'soc', al: '길드 클랜 길드채팅 길드전 길드순위', show: () => acctOn() && !G.b, run: () => showGuild() },
   { k: 'friends', g: '友', n: '벗', tab: 'soc', al: '친구 벗 초대', show: () => acctOn(), run: () => showFriends() },
   { k: 'rank',  g: '榜', n: '순위', tab: 'soc', al: '순위 랭킹 랭크 리더보드', run: () => showRanks() },
@@ -38030,7 +38115,7 @@ function guildGiveDraw(p, host) {
       <div class="casthint">가호는 길드원 모두에게 — 모험의 싸움(대전 빼고)과 전리품에 붙는다</div></div></div>`;
   const q = s => host.querySelector(s);
   q('#gw_chk').onclick = async () => { const r = await guildAsk('checkin'); if (!r.ok) { toast(r.why); return; }
-    GUILD.g = r.g; GUILD.me = r.me; gCoinSet(r.coins); try { SND.unlock(); stampWord('參', '#ffd76a'); } catch (e) {} toast('출석 — 길드 경험 +30 · 주화 +15'); guildDraw(p); };
+    GUILD.g = r.g; GUILD.me = r.me; gCoinSet(r.coins); try { SND.unlock(); stampWord('參', '#ffd76a'); } catch (e) {} try { passAdd(PASS_XP.gchk, 'gchk'); } catch (e) {} toast('출석 — 길드 경험 +30 · 주화 +15 · 통행증 +' + PASS_XP.gchk); guildDraw(p); };
   host.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { q('#gw_dg').value = (+q('#gw_dg').value || 0) + +b.dataset.g; });
   host.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { q('#gw_dd').value = (+q('#gw_dd').value || 0) + +b.dataset.d; });
   q('#gw_don').onclick = async () => {
@@ -38512,6 +38597,342 @@ function showDeckBox() {
   p.querySelector('#db_imp').onclick = imp;
   p.querySelector('#db_code').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') imp(); };
   p.querySelector('#db_x').onclick = closeTop;
+}
+
+/* ══ 팻 성장 · 내 암자 · 백귀 통행증 · 복귀 보상 (판 68) ═══════════════
+   · 팻 성장 — 팻을 데리고 이기면 경험치(잡졸 10 · 엘리트 25 · 보스 60). 레벨 최대 20 · 레벨마다 체력 +2 · 손 +1.5%
+       레벨 5 감싸기 · 10 울부짖음 · 15 본능 · 20 한마음 — 엘리트를 먹이는 진화(단 · 탈바꿈)는 그대로 겹친다
+   · 내 암자(庵) — 지붕 · 벽 · 마당 · 등 · 곁들이를 정진으로 들여 꾸민다. 현판에 이름. 서버에 적어 벗이 놀러 온다
+       벗의 암자에 놀러 가 방명록에 한 줄(하루 한 번) · 하루 다섯 집까지 처음 들르면 정진 +3
+   · 백귀 통행증(券) — 달마다 새로. 무료 줄 30칸 · 칸마다 경험치 100
+       싸움 이기기 10 (엘리트 +15 · 보스 +45) · 임무 30 · 길드 출석 20 · 그날 처음 들어오기 20
+   · 복귀 보상(復) — 이레 넘게 오지 않다가 돌아오면 딱 한 번(계정에 한 번뿐): 다이아 · 정진 · 원료 + 사흘 동안 전리품 +20%
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ═══ 팻 성장 ═══ */
+const PET_LV_MAX = 20, PET_XP = { normal: 10, elite: 25, boss: 60 }, PET_LV_HP = 2, PET_LV_DMG = 0.015;
+const petLvNeed = lv => 50 * lv;
+const PET_SK = [
+  { lv: 5,  k: 'guard', g: '護', n: '감싸기', d: lv => `싸움을 시작할 때 주인에게 방어도 ${4 + Math.floor(lv / 2)}` },
+  { lv: 10, k: 'howl',  g: '吼', n: '울부짖음', d: () => '싸움을 시작할 때 모든 적에게 약화 1' },
+  { lv: 15, k: 'inst',  g: '本', n: '본능', d: () => '수를 쓴 뒤 25% — 그 차례에 한 번 더 쓸 수 있다' },
+  { lv: 20, k: 'bond',  g: '絆', n: '한마음', d: () => '나눠 맞는 몫 25% → 15% · 쓰러질 피해를 한 번 체력 1로 버틴다' }
+];
+const petLv = id => { const r = petRec(id); return r ? Math.max(1, Math.min(PET_LV_MAX, r.lv || 1)) : 1; };
+const petXpOf = id => { const r = petRec(id); return r ? (r.xp || 0) : 0; };
+const petSk = (id, k) => { const s = PET_SK.find(x => x.k === k); return !!(s && id && petLv(id) >= s.lv); };
+function petXpWin(b) {
+  const run = G.run; if (!b || !run || run._pvp) return;
+  const kind = /boss$/.test(b.kind || '') ? 'boss' : /elite$/.test(b.kind || '') ? 'elite' : b.kind === 'normal' || /^tower/.test(b.kind || '') ? 'normal' : null;
+  if (!kind) return;
+  const id = activePet(); if (!id || !petAlive()) return;
+  const r = petRec(id); r.lv = petLv(id); r.xp = r.xp || 0;
+  if (r.lv >= PET_LV_MAX) return;
+  r.xp += PET_XP[kind];
+  const ups = [];
+  while (r.lv < PET_LV_MAX && r.xp >= petLvNeed(r.lv)) { r.xp -= petLvNeed(r.lv); r.lv++; ups.push(r.lv); }
+  if (r.lv >= PET_LV_MAX) r.xp = 0;
+  saveMeta();
+  if (ups.length) setTimeout(() => petLvFx(id, r.lv, PET_SK.filter(s => ups.includes(s.lv))), 900);
+}
+function petLvFx(id, lv, sks) {
+  const d = ENEMIES[id]; if (!d) return;
+  const n = el('div', 'petlvpop', `<i style="--pc:${d.col}">${d.g}</i><div><small>獸 팻 성장</small><b>${petEvoName(id)} — Lv ${lv}</b>
+    <em>체력 +${PET_LV_HP} · 손 +${(PET_LV_DMG * 100).toFixed(1)}%${sks.map(s => ` · <u>${s.g} ${s.n}</u> 깨침`).join('')}</em></div>`);
+  document.body.appendChild(n); setTimeout(() => n.classList.add('out'), 3600); setTimeout(() => n.remove(), 4200);
+  try { SND.unlock(); if (sks.length) SND.gong(); } catch (e) {}
+}
+/* 싸움을 시작할 때 — 감싸기 · 울부짖음 */
+function petBattleStart(b) {
+  const pt = b && b.pet; if (!pt || pt.hp <= 0) return;
+  const lv = petLv(pt.id), got = [];
+  if (petSk(pt.id, 'guard')) { b._petGuard = 4 + Math.floor(lv / 2); got.push('護 감싸기'); }   /* 첫 차례에 — 차례가 열리며 방어도가 비워지므로 */
+  if (petSk(pt.id, 'howl')) { for (const e of alive()) st(e, 'weak', 1); got.push('吼 울부짖음'); }
+  if (got.length) setTimeout(() => { try { floatText(pt, got.join(' · '), 'blk'); } catch (e) {} }, 700);
+}
+/* 본능 — 수를 쓴 뒤 25% */
+function petInstinct(pt) {
+  if (!pt || pt.hp <= 0 || !petSk(pt.id, 'inst') || pt._inst) return false;
+  if (rnd() >= .25) return false;
+  pt._inst = true; pt.used = false;
+  try { floatText(pt, '本 본능!', 'blk'); SND.charge(); } catch (e) {}
+  return true;
+}
+const petShareRate = pt => pt && petSk(pt.id, 'bond') ? .15 : .25;
+/* 한마음 — 쓰러질 피해를 한 번 버틴다 */
+function petBondSave(pt) {
+  if (!pt || pt._bond || !petSk(pt.id, 'bond')) return false;
+  pt._bond = true; pt.hp = 1; pt.fell = false;
+  try { floatText(pt, '絆 한마음 — 버텼다', 'blk'); screenFlash('rgba(255,200,160,.35)', 500); } catch (e) {}
+  syncPet(); return true;
+}
+function petLvHtml(id) {
+  const lv = petLv(id), xp = petXpOf(id), need = petLvNeed(lv), mx = lv >= PET_LV_MAX;
+  return `<div class="petlv"><b>Lv ${lv}</b><span class="petxp"><s style="width:${mx ? 100 : Math.min(100, xp / need * 100).toFixed(1)}%"></s><em>${mx ? '다 자랐다' : `${xp} / ${need}`}</em></span></div>
+    <div class="petsk">${PET_SK.map(s => `<u class="${lv >= s.lv ? 'on' : ''}" title="${s.n} — ${s.d(lv)}">${s.g}<small>${lv >= s.lv ? s.n : 'Lv' + s.lv}</small></u>`).join('')}</div>`;
+}
+
+/* ═══ 내 암자 ═══ */
+const HM_PART = {
+  roof: { n: '지붕', g: '屋', v: [['straw', '초가', 0], ['tile', '기와', 80], ['gold', '금빛 기와', 240]] },
+  wall: { n: '벽', g: '壁', v: [['mud', '흙벽', 0], ['wood', '나무 벽', 60], ['white', '회벽', 150]] },
+  yard: { n: '마당', g: '庭', v: [['moss', '이끼 마당', 0], ['sand', '모래 정원', 90], ['stone', '돌길', 120]] },
+  lamp: { n: '등', g: '燈', v: [['none', '없음', 0], ['stone', '석등', 70], ['paper', '등롱', 110], ['moon', '달 등', 260]] },
+  deco: { n: '곁들이', g: '景', v: [['none', '없음', 0], ['pine', '소나무', 60], ['plum', '매화', 100], ['pond', '연못', 140], ['crane', '학', 200], ['pagoda', '석탑', 300]] }
+};
+const HM_KEYS = Object.keys(HM_PART), HM_VISIT_JP = 3, HM_VISIT_MAX = 5;
+const hmMine = () => { const h = META.home = META.home || {}; h.own = h.own || {}; h.s = h.s || {}; for (const k of HM_KEYS) if (!h.s[k]) h.s[k] = HM_PART[k].v[0][0]; return h; };
+const hmOwn = (k, v) => { const pv = HM_PART[k].v.find(x => x[0] === v); return !!(pv && (pv[2] === 0 || hmMine().own[k + ':' + v])); };
+/* 그림 — 먹으로 그린 암자 한 채 */
+function hmScene(s, name, night) {
+  s = s || {}; const R = s.roof || 'straw', W0 = s.wall || 'mud', Y = s.yard || 'moss', L = s.lamp || 'none', D = s.deco || 'none';
+  const sky = night ? ['#141a30', '#2a2c48'] : ['#e9e1cc', '#d7cdb2'];
+  const wallC = { mud: '#a8875a', wood: '#7a5634', white: '#efe9dc' }[W0] || '#a8875a';
+  const roofC = { straw: '#b39a5a', tile: '#3a3f4a', gold: '#c99a3a' }[R] || '#b39a5a';
+  const yardC = { moss: '#6f8a4e', sand: '#d8c9a0', stone: '#9a968a' }[Y] || '#6f8a4e';
+  const roof = R === 'straw'
+    ? `<path d="M206,150 Q300,92 394,150 L380,162 Q300,112 220,162 Z" fill="${roofC}"/><path d="M216,158 Q300,104 384,158" stroke="#7a6436" stroke-width="3" fill="none" opacity=".6"/>`
+    : `<path d="M190,156 Q210,150 222,130 L378,130 Q390,150 410,156 Q380,160 300,160 Q220,160 190,156 Z" fill="${roofC}"/>
+       <path d="M222,130 L300,104 L378,130 Z" fill="${roofC}"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${232 + i * 20},128 L${232 + i * 20},158" stroke="${R === 'gold' ? '#ffe9a8' : '#5a6070'}" stroke-width="2" opacity=".55"/>`).join('')}
+       ${R === 'gold' ? '<path d="M222,130 L300,104 L378,130" stroke="#fff3c0" stroke-width="2.5" fill="none" opacity=".8"/>' : ''}`;
+  const yard = Y === 'sand' ? `${[0, 1, 2, 3, 4].map(i => `<path d="M30,${262 + i * 14} Q300,${252 + i * 14} 570,${262 + i * 14}" stroke="#b8a678" stroke-width="1.5" fill="none" opacity=".7"/>`).join('')}`
+    : Y === 'stone' ? [[270, 250], [292, 268], [262, 288], [290, 308], [266, 326]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="18" ry="7" fill="#c8c2b2" stroke="#6a665a"/>`).join('')
+    : `${[60, 120, 470, 530, 180, 420].map((x, i) => `<ellipse cx="${x}" cy="${266 + (i % 3) * 18}" rx="${22 + i * 3}" ry="6" fill="#4f6a36" opacity=".55"/>`).join('')}`;
+  const lamp = L === 'stone' ? `<g transform="translate(430,214)"><rect x="-5" y="20" width="10" height="34" fill="#8a867a"/><rect x="-14" y="6" width="28" height="16" fill="#9a968a"/><path d="M-18,6 L0,-8 L18,6 Z" fill="#7a766a"/><rect x="-6" y="10" width="12" height="8" fill="${night ? '#ffd27a' : '#5a564a'}"/>${night ? '<circle r="40" cy="14" fill="#ffd27a" opacity=".15"/>' : ''}</g>`
+    : L === 'paper' ? `<g transform="translate(398,170)"><path d="M0,-10 L0,0" stroke="#3a2a14"/><ellipse cy="14" rx="11" ry="15" fill="#e8483a"/><path d="M-11,14 L11,14 M-9,6 L9,6 M-9,22 L9,22" stroke="#a82a20" stroke-width="1"/>${night ? '<circle r="34" cy="14" fill="#ff8a5a" opacity=".2"/>' : ''}</g>`
+    : L === 'moon' ? `<g transform="translate(440,206)"><rect x="-3" y="10" width="6" height="48" fill="#5a564a"/><circle r="15" fill="#fff6d8"/><circle r="15" fill="#fff6d8" opacity=".5"><animate attributeName="r" values="15;24;15" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".5;0;.5" dur="3s" repeatCount="indefinite"/></circle><circle r="${night ? 60 : 30}" fill="#fff0b0" opacity="${night ? .18 : .1}"/></g>` : '';
+  const deco = D === 'pine' ? `<g transform="translate(120,150)"><rect x="-5" y="40" width="10" height="70" fill="#4a3424"/>${[0, 1, 2].map(i => `<ellipse cx="${-6 + i * 8}" cy="${40 - i * 26}" rx="${46 - i * 10}" ry="14" fill="#2f4a32"/>`).join('')}</g>`
+    : D === 'plum' ? `<g transform="translate(115,170)"><path d="M0,90 Q-6,50 10,20 Q20,0 6,-24 M10,20 Q34,8 48,-8 M4,50 Q-24,36 -36,14" stroke="#3a2618" stroke-width="5" fill="none" stroke-linecap="round"/>${[[6, -24], [48, -8], [-36, 14], [26, 4], [-14, 30], [14, -6], [36, -18], [-26, 4]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" fill="#f2a6b8"/><circle cx="${x}" cy="${y}" r="2" fill="#c8384a"/>`).join('')}</g>`
+    : D === 'pond' ? `<g transform="translate(130,286)"><ellipse rx="74" ry="20" fill="#3f6f86" opacity=".85"/><ellipse rx="74" ry="20" fill="none" stroke="#2a4a5a" stroke-width="2"/><ellipse cx="-20" cy="-2" rx="10" ry="4" fill="#5a8a4e"/><circle cx="-18" cy="-4" r="3" fill="#f2b6c8"/><ellipse cx="22" cy="4" rx="8" ry="3" fill="#5a8a4e"/></g>`
+    : D === 'crane' ? `<g transform="translate(120,236)"><path d="M0,0 Q-14,-30 -4,-52 Q4,-62 12,-56" stroke="#efe9dc" stroke-width="5" fill="none"/><ellipse cx="-4" cy="6" rx="22" ry="12" fill="#efe9dc"/><path d="M-22,4 L-40,-4 L-26,10 Z" fill="#1a1a1a"/><circle cx="12" cy="-56" r="3" fill="#c8283a"/><path d="M14,-56 L26,-52" stroke="#3a2a14" stroke-width="2"/><path d="M-6,16 L-8,40 M4,16 L6,40" stroke="#3a2a14" stroke-width="2"/></g>`
+    : D === 'pagoda' ? `<g transform="translate(118,150)">${[0, 1, 2, 3, 4].map(i => `<rect x="${-20 + i * 3}" y="${100 - i * 24}" width="${40 - i * 6}" height="16" fill="#9a968a" stroke="#5a564a"/><path d="M${-28 + i * 3},${100 - i * 24} L${28 - i * 3},${100 - i * 24} L${20 - i * 3},${94 - i * 24} L${-20 + i * 3},${94 - i * 24} Z" fill="#7a766a"/>`).join('')}<rect x="-2" y="-30" width="4" height="22" fill="#5a564a"/></g>` : '';
+  const stars = night ? Array.from({ length: 22 }, (_, i) => `<circle cx="${(i * 97) % 600}" cy="${(i * 53) % 110}" r="${i % 4 ? 1 : 1.6}" fill="#fff" opacity=".7"/>`).join('') + '<circle cx="520" cy="46" r="18" fill="#fff6d8"/><circle cx="512" cy="40" r="18" fill="#141a30"/>' : '<circle cx="500" cy="54" r="26" fill="#f2c26a" opacity=".55"/>';
+  const nm = wEsc(String(name || '이름 없는 암자').slice(0, 8));
+  return `<svg class="hmsvg" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice">
+    <defs><linearGradient id="hmsky${night ? 'n' : 'd'}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient></defs>
+    <rect width="600" height="340" fill="url(#hmsky${night ? 'n' : 'd'})"/>${stars}
+    <path d="M0,200 L80,120 L150,170 L240,96 L330,160 L420,110 L520,170 L600,130 L600,240 L0,240 Z" fill="${night ? '#22263a' : '#b8b09a'}" opacity=".7"/>
+    <path d="M0,230 L110,170 L210,214 L320,176 L440,210 L600,180 L600,250 L0,250 Z" fill="${night ? '#1a1e2c' : '#9a927c'}" opacity=".7"/>
+    <rect y="238" width="600" height="102" fill="${yardC}"/>${yard}${night ? '<rect y="238" width="600" height="102" fill="#0a1028" opacity=".5"/>' : ''}
+    <ellipse cx="300" cy="246" rx="130" ry="10" fill="#000" opacity=".22"/>
+    <rect x="218" y="156" width="164" height="88" fill="${wallC}" stroke="#3a2a14" stroke-width="2"/>
+    ${W0 === 'wood' ? [0, 1, 2, 3, 4, 5, 6].map(i => `<path d="M${226 + i * 24},158 L${226 + i * 24},242" stroke="#4a3220" stroke-width="2" opacity=".6"/>`).join('') : ''}
+    ${W0 === 'white' ? '<path d="M218,200 L382,200" stroke="#3a2a14" stroke-width="3"/><path d="M218,166 L382,166" stroke="#3a2a14" stroke-width="2"/>' : ''}
+    <rect x="282" y="190" width="36" height="54" fill="${night ? '#ffd27a' : '#4a3424'}" stroke="#2a1a0a" stroke-width="2"/>
+    <path d="M300,190 L300,244 M282,212 L318,212" stroke="#2a1a0a" stroke-width="1.5"/>
+    <rect x="236" y="190" width="30" height="26" fill="${night ? '#ffe2a0' : '#d8ccb0'}" stroke="#2a1a0a" stroke-width="2"/><rect x="334" y="190" width="30" height="26" fill="${night ? '#ffe2a0' : '#d8ccb0'}" stroke="#2a1a0a" stroke-width="2"/>
+    ${roof}
+    <g transform="translate(300,170)"><rect x="-44" y="-11" width="88" height="20" rx="2" fill="#3a2414" stroke="#c9a24a" stroke-width="1.5"/><text y="4" text-anchor="middle" font-size="12" fill="#ffe9b0" letter-spacing="3">${nm}</text></g>
+    <rect x="200" y="242" width="200" height="8" fill="#5a4a34"/>
+    ${deco}${lamp}
+  </svg>`;
+}
+async function hmPush() {
+  if (!acctOn()) return;
+  const h = hmMine();
+  try { await acctAsk('/hm/set', { token: ACCT.token, hm: Object.assign({ msg: h.name || '' }, h.s) }, 10000); } catch (e) {}
+}
+function showHome(tab0) {
+  let tab = tab0 || 'deco';
+  const p = modal(`<h2>庵 내 암자</h2><div class="hmbox">
+      <div class="hmtabs" id="hm_tabs"></div>
+      <div class="hmbody" id="hm_body"></div>
+      <div class="lorefoot"><button class="brush-btn" id="hm_x">닫기</button></div></div>`, 'hm-m');
+  p.dataset.noauto = '1';
+  p.querySelector('#hm_x').onclick = closeTop;
+  const night = (() => { try { return dnNight(); } catch (e) { return false; } })();
+  const body = p.querySelector('#hm_body');
+  const tabs = () => {
+    p.querySelector('#hm_tabs').innerHTML = [['deco', '屋', '꾸미기'], ['visit', '訪', '놀러 가기'], ['book', '帖', '방명록']].map(([k, g, n]) => `<button class="gwtab${tab === k ? ' on' : ''}" data-t="${k}"><i>${g}</i>${n}</button>`).join('');
+    p.querySelectorAll('#hm_tabs button').forEach(b => b.onclick = () => { tab = b.dataset.t; try { SND.ui(); } catch (e) {} tabs(); draw(); });
+  };
+  const draw = () => {
+    const h = hmMine();
+    if (tab === 'deco') {
+      body.innerHTML = `<div class="hmwrap"><div class="hmview">${hmScene(h.s, h.name, night)}</div>
+        <div class="hmside"><label class="hmname">현판 <input id="hm_nm" maxlength="8" value="${wEsc(h.name || '')}" placeholder="여덟 자"></label>
+          <div class="hmjp">精 정진 <b>${(META.jp || 0).toLocaleString()}</b> · 놀러 온 벗 <b>${h.v || 0}</b></div>
+          ${HM_KEYS.map(k => `<div class="hmpart"><b><i>${HM_PART[k].g}</i>${HM_PART[k].n}</b><div>${HM_PART[k].v.map(([v, n, c]) => { const own = hmOwn(k, v), on = h.s[k] === v;
+            return `<button class="hmv${on ? ' on' : ''}${own ? '' : ' buy'}" data-k="${k}" data-v="${v}">${n}${own ? '' : `<small>精${c}</small>`}</button>`; }).join('')}</div></div>`).join('')}
+          <div class="casthint">${acctOn() ? '고치면 곧바로 서버에 적힌다 — 벗이 놀러 오면 이대로 본다' : '로그인하면 벗이 놀러 올 수 있다'}</div></div></div>`;
+      body.querySelectorAll('.hmv').forEach(b => b.onclick = () => {
+        const k = b.dataset.k, v = b.dataset.v, pv = HM_PART[k].v.find(x => x[0] === v);
+        if (!hmOwn(k, v)) {
+          if ((META.jp || 0) < pv[2]) { toast(`정진이 모자라다 — ${pv[2]} 필요`); try { SND.err(); } catch (e) {} return; }
+          if (!confirm(`「${pv[1]}」을(를) 정진 ${pv[2]}에 들일까?`)) return;
+          META.jp -= pv[2]; h.own[k + ':' + v] = Date.now(); try { SND.coinRain(5); } catch (e) {} toast(`庵 ${pv[1]} — 들였다`);
+        }
+        h.s[k] = v; saveMeta(); try { SND.ui(); } catch (e) {} draw(); hmPush();
+      });
+      const nm = body.querySelector('#hm_nm');
+      nm.onkeydown = e => e.stopPropagation();
+      nm.onchange = () => { h.name = nm.value.trim().slice(0, 8); saveMeta(); const v = body.querySelector('.hmview'); if (v) v.innerHTML = hmScene(h.s, h.name, night); hmPush(); };   /* 칸을 떠날 때 — 통째로 다시 그리면 입력칸이 사라진다 */
+    } else if (tab === 'visit') {
+      body.innerHTML = `<div class="hmvisit"><div class="dbimp"><input id="hm_who" maxlength="20" placeholder="닉네임 또는 아이디로 찾아가기" spellcheck="false"><button class="brush-btn gold" id="hm_go">찾아간다</button></div>
+        <div class="hmnote">하루 ${HM_VISIT_MAX}집까지 — 그날 처음 들른 집마다 정진 +${HM_VISIT_JP} · 방명록은 집마다 하루 한 줄</div>
+        <div class="hmfr" id="hm_fr">${acctOn() ? '벗 목록을 불러오는 중…' : '로그인해야 놀러 갈 수 있다'}</div></div>`;
+      const go = w => { if (w) hmVisit(w); };
+      body.querySelector('#hm_go').onclick = () => go(body.querySelector('#hm_who').value.trim());
+      body.querySelector('#hm_who').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') body.querySelector('#hm_go').click(); };
+      if (acctOn()) acctAsk('/fr/list', { token: ACCT.token }, 12000).then(r => {
+        const L = body.querySelector('#hm_fr'); if (!L || tab !== 'visit') return;
+        if (!r.ok) { L.textContent = '못 불러왔다 — ' + r.why; return; }
+        const gm = (typeof GUILD === 'object' && GUILD.g && Array.isArray(GUILD.g.members)) ? GUILD.g.members.filter(m => m.id !== ACCT.id).slice(0, 30) : [];
+        const row = (id, nick, sub) => `<button class="hmfrow" data-w="${wEsc(id)}"><i>庵</i><b>${wEsc(nick)}</b><small>${sub}</small></button>`;
+        L.innerHTML = (r.list.length ? '<h4>벗</h4>' + r.list.map(f => row(f.id, f.nick, f.on ? '접속 중' : '쉬는 중')).join('') : '<div class="dashnone">적은 벗이 없다 — 벗 창에서 적거나 위에 이름을 넣는다</div>')
+          + (gm.length ? '<h4>길드원</h4>' + gm.map(m => row(m.id, m.nick || m.id, '길드')).join('') : '');
+        L.querySelectorAll('.hmfrow').forEach(b => b.onclick = () => go(b.dataset.w));
+      });
+    } else {
+      body.innerHTML = '<div class="hmbook" id="hm_bk">불러오는 중…</div>';
+      if (!acctOn()) { body.querySelector('#hm_bk').textContent = '로그인해야 방명록이 생긴다'; return; }
+      acctAsk('/hm/get', { who: ACCT.id }, 10000).then(r => {
+        const B = body.querySelector('#hm_bk'); if (!B || tab !== 'book') return;
+        if (!r.ok) { B.textContent = '못 불러왔다 — ' + r.why; return; }
+        B.innerHTML = hmBookHtml(r.gb, true);
+        B.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { const x = await acctAsk('/hm/del', { token: ACCT.token, at: +b.dataset.del }, 10000); if (x.ok) draw(); else toast(x.why); });
+      });
+    }
+  };
+  tabs(); draw();
+}
+function hmBookHtml(gb, mine) {
+  const L = (gb || []).slice().reverse();
+  return L.length ? L.map(x => `<div class="hmgb"><b>${wEsc(x.nick)}</b><span>${wEsc(x.t)}</span><small>${new Date(x.at).toLocaleDateString()}</small>${mine ? `<u data-del="${x.at}" title="지운다">✕</u>` : ''}</div>`).join('')
+    : '<div class="dashnone">아직 아무도 적지 않았다</div>';
+}
+async function hmVisit(who) {
+  const r = await acctAsk('/hm/get', { who }, 10000);
+  if (!r.ok) { toast(r.why || '찾지 못했다'); try { SND.err(); } catch (e) {} return; }
+  const night = (() => { try { return dnNight(); } catch (e) { return false; } })();
+  const hm = r.hm || {}, s = hm.s || {};
+  /* 그날 처음 들른 집 — 정진 */
+  const h = hmMine(), day = qDay(); h.vd = h.vd && h.vd.day === day ? h.vd : { day, ids: [] };
+  let pay = 0;
+  if (acctOn() && r.id !== ACCT.id && !h.vd.ids.includes(r.id) && h.vd.ids.length < HM_VISIT_MAX) { h.vd.ids.push(r.id); pay = HM_VISIT_JP; META.jp = (META.jp || 0) + pay; META.jpTotal = (META.jpTotal || 0) + pay; saveMeta(); }
+  const p = modal(`<h2>訪 ${wEsc(r.nick)}의 암자</h2><div class="hmbox">
+      <div class="hmwrap visit"><div class="hmview">${hmScene(s, hm.msg || (r.nick + '의 암자'), night)}</div>
+        <div class="hmside"><div class="hmjp">놀러 온 벗 <b>${(hm.v || 0)}</b>${pay ? ` · <em>精 +${pay}</em>` : ''}</div>
+          ${r.hm ? '' : '<div class="casthint">아직 꾸미지 않은 빈 터 — 처음 모습 그대로다</div>'}
+          <div class="hmsign"><input id="hv_t" maxlength="60" placeholder="방명록에 한 줄 (하루 한 번)"><button class="brush-btn gold" id="hv_go">적는다</button></div>
+          <div class="hmbook sm" id="hv_bk">${hmBookHtml(r.gb, false)}</div></div></div>
+      <div class="lorefoot"><button class="brush-btn" id="hv_x">돌아간다</button></div></div>`, 'hm-m');
+  p.dataset.noauto = '1';
+  p.querySelector('#hv_x').onclick = closeTop;
+  const inp = p.querySelector('#hv_t');
+  inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') p.querySelector('#hv_go').click(); };
+  p.querySelector('#hv_go').onclick = async () => {
+    const t = inp.value.trim(); if (!t) return;
+    if (!acctOn()) { toast('로그인해야 적는다'); return; }
+    const x = await acctAsk('/hm/sign', { token: ACCT.token, who: r.id, t }, 10000);
+    if (!x.ok) { toast(x.why); try { SND.err(); } catch (e) {} return; }
+    inp.value = ''; p.querySelector('#hv_bk').innerHTML = hmBookHtml(x.gb, false); try { SND.unlock(); } catch (e) {} toast('帖 방명록에 적었다');
+  };
+  try { SND.page ? SND.page() : SND.ui(); } catch (e) {}
+}
+
+/* ═══ 백귀 통행증 ═══ */
+const PASS_LV = 30, PASS_STEP = 100;
+const PASS_XP = { battle: 10, elite: 15, boss: 45, quest: 30, gchk: 20, day: 20 };
+const passMonth = () => { const d = new Date(srvNow() + 9 * 3600e3); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0'); };
+function passState() {
+  const m = passMonth(), P0 = META.pass = META.pass || {};
+  if (P0.m !== m) { META.pass = { m, xp: 0, got: {}, day: 0 }; }
+  return META.pass;
+}
+const passLv = () => Math.min(PASS_LV, Math.floor(passState().xp / PASS_STEP));
+function passPay(lv) {
+  if (lv === PASS_LV) return { dia: 1500, jp: 300, title: '백귀 통행자', frame: 'pass', g: '券', big: 1 };
+  if (lv % 10 === 0) return lv === 10 ? { dia: 500, mat: 'moon', g: '月' } : { dia: 800, jp: 150, g: '玉' };
+  if (lv % 5 === 0) return { dia: 150, mat: '*', g: '囊' };
+  return lv % 2 ? { dia: 60, g: '玉' } : { jp: 20, g: '精' };
+}
+const passPayTxt = x => [x.dia ? `玉 ${x.dia}` : '', x.jp ? `精 ${x.jp}` : '', x.mat ? (x.mat === '*' ? '원료 하나' : `${MAT_DEF[x.mat] ? MAT_DEF[x.mat].n : x.mat} 1`) : '', x.title ? `칭호 「${x.title}」 · 테두리` : ''].filter(Boolean).join(' · ');
+const passReady = () => { const S = passState(), lv = passLv(); let n = 0; for (let i = 1; i <= lv; i++) if (!S.got[i]) n++; return n; };
+function passAdd(n, why) {
+  if (!n) return; const S = passState(), before = passLv();
+  S.xp = Math.min(PASS_LV * PASS_STEP, S.xp + n); const after = passLv();
+  clearTimeout(passAdd._t); passAdd._t = setTimeout(() => saveMeta(), 600);
+  if (after > before) { toast(`券 통행증 ${after}칸 — 메뉴의 「백귀 통행증」에서 받는다`); try { SND.unlock(); } catch (e) {} }
+}
+function passOnSt(k, n) {
+  if (G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')) return;
+  if (PASS_XP[k] && k !== 'gchk' && k !== 'day') passAdd(PASS_XP[k] * (n || 1), k);
+}
+function passDaily() { const S = passState(), d = qDay(); if (S.day === d) return; S.day = d; passAdd(PASS_XP.day, 'day'); }
+function passClaim(lv) {
+  const S = passState(); if (lv > passLv() || S.got[lv]) return false;
+  const x = passPay(lv); S.got[lv] = Date.now();
+  if (x.dia) payDia(x.dia);
+  if (x.jp) { META.jp = (META.jp || 0) + x.jp; META.jpTotal = (META.jpTotal || 0) + x.jp; }
+  if (x.mat) { const k = x.mat === '*' ? pick(Object.keys(MAT_DEF)) : x.mat; if (MAT_DEF[k]) { META.mat = META.mat || {}; META.mat[k] = matHave(k) + 1; } }
+  if (x.title) { META.xTitle = META.xTitle || []; if (!META.xTitle.includes(x.title)) META.xTitle.push(x.title); }
+  if (x.frame) { META.xFrame = META.xFrame || []; if (!META.xFrame.includes(x.frame)) META.xFrame.push(x.frame); }
+  saveMeta(); try { logNote('pass', `통행증 ${lv}칸 — ${passPayTxt(x)}`); } catch (e) {}
+  return true;
+}
+function showPass() {
+  const p = modal(`<h2>券 백귀 통행증</h2><div class="passbox">
+      <div class="passhd" id="ps_hd"></div>
+      <div class="passtrack" id="ps_tr"></div>
+      <div class="passsrc">경험치 — 싸움 이기기 ${PASS_XP.battle} · 엘리트 +${PASS_XP.elite} · 보스 +${PASS_XP.boss} · 임무 ${PASS_XP.quest} · 길드 출석 ${PASS_XP.gchk} · 그날 처음 들어오기 ${PASS_XP.day} <small>(대전은 빼고)</small></div>
+      <div class="lorefoot"><button class="brush-btn gold" id="ps_all">모두 받기</button><button class="brush-btn" id="ps_x">닫기</button></div></div>`, 'pass-m');
+  p.dataset.noauto = '1';
+  p.querySelector('#ps_x').onclick = closeTop;
+  const draw = (scroll) => {
+    const S = passState(), lv = passLv(), xpIn = S.xp - lv * PASS_STEP;
+    const end = (() => { const d = new Date(srvNow() + 9 * 3600e3); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1) - 9 * 3600e3; })();
+    const left = Math.max(0, end - srvNow()), dd = Math.floor(left / 864e5), hh = Math.floor(left % 864e5 / 3600e3);
+    p.querySelector('#ps_hd').innerHTML = `<div class="passlv"><i>券</i><div><b>${+S.m.slice(5)}월의 통행증 · ${lv} / ${PASS_LV}칸</b><small>${dd}일 ${hh}시간 뒤 새 통행증 — 받지 않은 칸은 사라진다</small></div></div>
+      <div class="passbar"><s style="width:${lv >= PASS_LV ? 100 : (xpIn / PASS_STEP * 100).toFixed(1)}%"></s><em>${lv >= PASS_LV ? '다 채웠다' : `다음 칸까지 ${xpIn} / ${PASS_STEP}`}</em></div>`;
+    p.querySelector('#ps_tr').innerHTML = Array.from({ length: PASS_LV }, (_, i) => { const L = i + 1, x = passPay(L), st = S.got[L] ? 'got' : L <= lv ? 'ready' : 'lock';
+      return `<button class="passn ${st}${x.big ? ' big' : L % 10 === 0 ? ' ten' : ''}" data-l="${L}"><u>${L}</u><i>${x.g}</i><small>${passPayTxt(x)}</small></button>`; }).join('');
+    p.querySelectorAll('.passn').forEach(b => b.onclick = () => { const L = +b.dataset.l;
+      if (passClaim(L)) { try { SND.coinRain(passPay(L).big ? 14 : 5); if (passPay(L).big) { SND.victory(); stampWord('通 行', '#ffd27a'); } } catch (e) {} toast(`券 ${L}칸 — ${passPayTxt(passPay(L))}`); draw(); }
+      else if (!passState().got[L]) { try { SND.err(); } catch (e) {} toast(`${L}칸은 아직 — 경험치를 더 모은다`); } });
+    if (scroll) { const tr = p.querySelector('#ps_tr'), t = tr.querySelector('.passn.ready') || tr.querySelector('.passn.lock'); if (t) tr.scrollLeft = Math.max(0, t.offsetLeft - 60); }
+  };
+  draw(true);
+  p.querySelector('#ps_all').onclick = () => { let n = 0; for (let L = 1; L <= passLv(); L++) if (passClaim(L)) n++;
+    if (n) { toast(`券 ${n}칸을 한꺼번에 받았다`); try { SND.coinRain(10); } catch (e) {} } else toast('받을 칸이 없다'); draw(); };
+}
+
+/* ═══ 복귀 보상 ═══ */
+const BACK_GAP = 7 * 864e5, BACK_DAYS = 3, BACK_BONUS = .2;
+const BACK_PAY = { dia: 2000, jp: 300, mats: 3 };
+const backBuf = () => (META.backUntil && Date.now() < META.backUntil) ? BACK_BONUS : 0;
+function backLast() {
+  if (META.lastPlay) return META.lastPlay;
+  const q = META.quest; return q && q.day ? q.day * 864e5 - 9 * 3600e3 : 0;   /* 예전 저장 — 임무를 마지막으로 연 날 */
+}
+function backBoot() {
+  const now = Date.now(), last = backLast();
+  if (!META.backGot && last && now - last > BACK_GAP) setTimeout(() => backGive(now - last), 1800);
+  META.lastPlay = now; saveMeta();
+  setInterval(() => { META.lastPlay = Date.now(); try { passDaily(); } catch (e) {} }, 60000);
+  try { passDaily(); } catch (e) {}
+}
+function backGive(gap) {
+  if (META.backGot) return;
+  META.backGot = Date.now(); META.backUntil = Date.now() + BACK_DAYS * 864e5;
+  payDia(BACK_PAY.dia); META.jp = (META.jp || 0) + BACK_PAY.jp; META.jpTotal = (META.jpTotal || 0) + BACK_PAY.jp;
+  const mats = []; META.mat = META.mat || {};
+  for (let i = 0; i < BACK_PAY.mats; i++) { const k = pick(Object.keys(MAT_DEF)); META.mat[k] = matHave(k) + 1; mats.push(MAT_DEF[k].g + ' ' + MAT_DEF[k].n); }
+  saveMeta(); try { logNote('back', `복귀 보상 — 다이아 ${BACK_PAY.dia} · 정진 ${BACK_PAY.jp}`); } catch (e) {}
+  const days = Math.floor(gap / 864e5);
+  const show = () => {
+    if (document.querySelector('.cut') || (G.b && !G.b.over)) { setTimeout(show, 3000); return; }
+    const p = modal(`<h2>復 돌아왔구나</h2><div class="backbox">
+        <div class="backink"><i>復</i></div>
+        <p><b>${days}일</b> 만이다. 산은 그대로였고, 요괴들은 조금 더 시끄러워졌다.<br>먼 길 돌아온 퇴마사에게 — 딱 한 번뿐인 꾸러미.</p>
+        <div class="backpay"><span><i>玉</i>다이아 ${BACK_PAY.dia.toLocaleString()}</span><span><i>精</i>정진 ${BACK_PAY.jp}</span>${mats.map(m => `<span><i>囊</i>${m}</span>`).join('')}
+          <span class="wide"><i>福</i>${BACK_DAYS}일 동안 싸움의 골드 · 다이아 +${Math.round(BACK_BONUS * 100)}%</span></div>
+        <button class="brush-btn gold" id="bk_ok">받았다</button></div>`, 'back-m');
+    p.dataset.noauto = '1';
+    p.querySelector('#bk_ok').onclick = closeTop;
+    try { SND.victory(); SND.coinRain(12); screenFlash('rgba(255,215,140,.35)', 800); } catch (e) {}
+  };
+  show();
 }
 
 const CHAT_SEEN = 'baekgwi_chat_seen';
@@ -42136,6 +42557,7 @@ function boot() {
   banBoot().catch(() => {});                 /* 막힌 기기면 바로 덮는다 */
   syncAuto();
   try { optApply(); } catch (e) {}           /* 배경 멈춤 · 큰 글씨 · 시계 (판 57) */
+  try { backBoot(); } catch (e) { console.error('복귀', e); }   /* 복귀 보상 · 통행증 출석 (판 68) */
   try { perfProbe(); } catch (e) {}          /* 느린 기계면 알아서 가볍게 (판 59) */
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
