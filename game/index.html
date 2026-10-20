@@ -1805,6 +1805,84 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 길드 더 (판 65) */
+.gwcost{display:flex;flex-wrap:wrap;gap:6px}
+.gwcost span{display:flex;align-items:center;gap:5px;font-size:12.5px;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#efe4cb}
+.gwcost span i{font-style:normal;color:#ffd76a}
+.gwcost span.ok{border-color:rgba(120,220,140,.5)}.gwcost span.no{border-color:rgba(255,120,120,.55);color:#ffb0a0}
+.gwbox .brush-btn[disabled]{opacity:.45;cursor:not-allowed}
+.gwlv{text-decoration:none;font-size:12px;padding:1px 8px;border-radius:10px;margin-left:6px;vertical-align:3px;background:linear-gradient(90deg,#ffd76a,#c99a3a);color:#2a1a04;letter-spacing:0}
+.gwlv.s{font-size:10px;padding:0 6px;vertical-align:1px}
+.gwxp{position:relative;height:14px;margin-top:6px;border-radius:7px;background:rgba(0,0,0,.45);border:1px solid rgba(255,215,120,.35);overflow:hidden;max-width:420px}
+.gwxp i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#c99a3a,#ffe9a8);box-shadow:0 0 10px rgba(255,215,120,.6)}
+.gwxp span{position:relative;display:block;text-align:center;font-size:10.5px;line-height:13px;color:#fff6e0;text-shadow:0 1px 2px #000}
+.gwcoin{color:#ffe2a0}.gwcoin b{color:#ffd76a!important}
+.gwtabs{display:flex;gap:6px;flex-wrap:wrap}
+.gwtab{position:relative;display:flex;align-items:center;gap:6px;font:inherit;font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer;background:rgba(10,12,8,.7);border:1px solid rgba(255,255,255,.14);color:#d8ccb0}
+.gwtab i{font-style:normal;color:#ffd76a}
+.gwtab.on{background:linear-gradient(180deg,#5a4818,#3a2e10);border-color:#c9a24a;color:#fff3d6;box-shadow:0 0 12px rgba(255,215,120,.25)}
+.gwtab s{text-decoration:none;position:absolute;right:-4px;top:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-size:10px;line-height:16px;text-align:center;background:#c8283a;color:#fff}
+.gwm.off{background:rgba(160,190,255,.07)}.gwm em.o{background:#9fb8ff;color:#0a1028}
+.gwmb{display:flex;gap:4px}.gwmb u{color:#9fd8ff!important}
+/* 영지 지도 */
+.grwrap{display:grid;grid-template-columns:1fr 290px;gap:12px}
+.grmap{position:relative;width:100%;aspect-ratio:16/10;border-radius:14px;overflow:hidden;border:1px solid rgba(255,215,120,.35);box-shadow:inset 0 0 40px rgba(0,0,0,.6)}
+.grbg{position:absolute;inset:0;width:100%;height:100%}
+.grln{stroke:rgba(255,215,120,.25);stroke-width:.5;stroke-dasharray:1.4 1}
+.grln.on{stroke:rgba(255,215,120,.75);stroke-dasharray:none;filter:drop-shadow(0 0 1px #ffd76a)}
+.grtitle{position:absolute;left:12px;top:10px;display:flex;flex-direction:column}
+.grtitle b{font-weight:400;font-size:16px;color:#fff3d6;letter-spacing:.2em;text-shadow:0 2px 4px #000}.grtitle small{font-size:11px;color:#c8bda3}
+.grnode{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;font:inherit;padding:0}
+.grnode i{font-style:normal;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px;color:#2a1a04;
+  background:radial-gradient(circle at 40% 35%,#fff3d6,#c9a24a 70%,#6a4a14);border:2px solid #3a2a10;box-shadow:0 3px 8px rgba(0,0,0,.6)}
+.grnode.t1 i{width:52px;height:52px;background:radial-gradient(circle at 40% 35%,#ffd0c0,#c8584a 70%,#5a1a14);color:#fff3e8}
+.grnode.t2 i{width:56px;height:56px;background:radial-gradient(circle at 40% 35%,#e8d0ff,#8a4ad8 70%,#2a1050);color:#fff}
+.grnode.boss i{width:76px;height:76px;font-size:36px;background:radial-gradient(circle at 40% 35%,#ffb0a0,#a8272c 60%,#3a0a10);color:#fff3e8;box-shadow:0 0 24px rgba(255,80,80,.55),0 3px 10px #000}
+.grnode b{font-weight:400;font-size:11.5px;color:#fff3d6;text-shadow:0 1px 3px #000;white-space:nowrap}
+.grnode small{font-size:10px;color:#ffe2a0;text-shadow:0 1px 2px #000;background:rgba(0,0,0,.45);padding:0 6px;border-radius:8px}
+.grnode.open i{animation:grPulse 1.6s ease-in-out infinite}
+@keyframes grPulse{50%{box-shadow:0 0 22px rgba(255,215,120,.9),0 3px 8px #000;transform:scale(1.06)}}
+.grnode.lock{cursor:default;filter:grayscale(.85) brightness(.55)}
+.grnode.cap i{background:radial-gradient(circle at 40% 35%,#fffbe8,#ffd76a 60%,#b6821c);color:#3a2006;box-shadow:0 0 16px rgba(255,215,120,.8)}
+.grnode.cap i::after{content:'';position:absolute}
+.grhp{position:relative;display:block;width:150px;height:12px;border-radius:6px;background:rgba(0,0,0,.6);border:1px solid #a8272c;overflow:hidden}
+.grhp s{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#ff5a5a,#a8272c)}
+.grhp em{position:relative;display:block;font-style:normal;font-size:9.5px;line-height:11px;text-align:center;color:#fff}
+.grside{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:12px;background:rgba(10,12,8,.75);border:1px solid rgba(255,255,255,.1)}
+.grside h3{margin:0;font-weight:400;font-size:14px;color:#ffe9b0;letter-spacing:.1em}
+.grstat{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:#efe4cb}.grstat b{color:#ffd76a}.grstat .ok{color:#9fe0a8}
+.grtop{display:flex;flex-direction:column;gap:3px}
+.grtop>div{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#efe4cb;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.04)}
+.grtop>div.me{background:rgba(255,215,120,.12)}.grtop em{font-style:normal;color:#ffd76a;width:16px}.grtop b{font-weight:400;flex:1}.grtop u{text-decoration:none;color:#ff9a9a}
+.grask,.grres{text-align:center;max-width:460px}
+.grask .hint,.grres .hint{line-height:1.8;margin:6px 0}
+/* 상점 · 기부 · 규칙 */
+.gwshop{display:flex;flex-direction:column;gap:10px}
+.gwshh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.gwshh b{font-weight:400;font-size:16px;color:#ffe9b0;letter-spacing:.1em}.gwshh span{font-size:12px;color:#c8bda3}.gwshh span b{font-size:14px;color:#ffd76a}
+.gwshg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.gwsi{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;padding:12px;border-radius:12px;cursor:pointer;font:inherit;
+  background:linear-gradient(160deg,rgba(60,50,20,.75),rgba(14,12,8,.85));border:1px solid rgba(255,215,120,.35);color:#efe4cb}
+.gwsi:hover{border-color:#ffd76a;box-shadow:0 0 14px rgba(255,215,120,.3)}
+.gwsi i{grid-row:1/4;font-style:normal;width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:22px;color:#2a1a04;background:linear-gradient(180deg,#ffe9a8,#c99a3a)}
+.gwsi b{font-weight:400;font-size:14px;color:#fff3d6}.gwsi small{font-size:11px;color:#b3a68c}.gwsi u{text-decoration:none;font-size:13px;color:#ffd76a;margin-top:2px}
+.gwdon{display:flex;gap:8px;flex-wrap:wrap}.gwdon label{flex:1;min-width:130px}
+.gwdq{display:flex;flex-wrap:wrap;gap:5px}
+.gwdq .val,.gwapp u{font:inherit;font-size:11.5px;padding:4px 9px;border-radius:5px;cursor:pointer;background:rgba(40,36,24,.9);border:1px solid #7a6a4a;color:#e9dfc9;text-decoration:none}
+.gwbuf{display:flex;flex-direction:column;gap:4px}
+.gwbuf>div{display:flex;gap:10px;align-items:center;font-size:12.5px;color:#8a7f68;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.03)}
+.gwbuf>div em{font-style:normal;width:62px;flex:none;font-size:11px}
+.gwbuf>div.on{color:#efe4cb;background:rgba(255,215,120,.1)}.gwbuf>div.on em{color:#ffd76a}
+.gwrules{font-size:13.5px;line-height:1.7;color:#f2e9d3;padding:10px 12px;border-radius:8px;background:rgba(255,240,200,.05);border-left:3px solid #c9a24a;min-height:40px}
+.gwrules .dim{color:#8a7f68}
+.gwchk{cursor:pointer}.gwchk input{flex:none!important}
+.gwbox textarea{font:inherit;font-size:13px;background:rgba(0,0,0,.45);border:1px solid #4e4738;border-radius:3px;color:#efe4cb;padding:6px 9px;resize:vertical}
+.gwapp{display:flex;flex-direction:column;gap:4px}
+.gwapp>div{display:flex;align-items:center;gap:8px;font-size:13px;color:#efe4cb;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.04)}
+.gwapp>div small{color:#9a8d74}.gwapp>div span{margin-left:auto;display:flex;gap:5px}.gwapp u.no{color:#ffb0a0;border-color:#8a3a3a}
+.pfcard.fr-guild{border-color:#ffd76a;--fc:#ffd76a;background:linear-gradient(160deg,#3a2a08,#120c02),repeating-linear-gradient(45deg,rgba(255,215,120,.06) 0 6px,transparent 6px 12px)}
+@media (max-height:500px){.gwhero{padding:8px 12px;gap:10px}.gwhero>i{width:44px;height:52px;font-size:24px}.gwhero b{font-size:16px}.gwhero small{font-size:10.5px;margin-top:1px}.gwhero .gwact{flex-direction:row}.gwxp{margin-top:3px;height:12px}.gwtab{padding:5px 11px;font-size:12px}}
+@media (max-width:900px){.grwrap{grid-template-columns:1fr}.grnode i{width:38px;height:38px;font-size:18px}.grnode.t1 i{width:42px;height:42px}.grnode.t2 i{width:44px;height:44px}.grnode.boss i{width:58px;height:58px;font-size:28px}.grnode b{font-size:10px}.grhp{width:110px}}
+
 /* 낮과 밤 (판 64) */
 #bg .dnsky{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#03050f 0%,#08102a 38%,#16224a 72%,#26305a 100%);opacity:.93;animation:dnIn 2.6s ease-out both}
 #bg .dnsky.out,#bg .dntint.out{animation:dnOut 2.6s ease-in both}
@@ -14612,7 +14690,7 @@ function startBattle(enemyIds, kind, opts) {
   b.reserved = null;
   /* 도중에 나가면 갈림길로 되돌린다 — 대전투장과 모두의 적은 갈림길에서 든
      싸움이 아니므로 되돌릴 자리가 없다(모두의 적은 들어가기 전 체력만 되찾는다) */
-  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind) && !/^cave/.test(kind) && !/^tower/.test(kind) && kind !== 'eggboss') { run.inBattle = true; saveRun(); }
+  if (kind !== 'arena' && kind !== 'world' && kind !== 'devboss' && kind !== 'hbboss' && !mpK && !/^hack/.test(kind) && !/^cave/.test(kind) && !/^tower/.test(kind) && kind !== 'eggboss' && !G_KIND(kind)) { run.inBattle = true; saveRun(); }
   G.scene = 'battle';
   renderBattle();
   SND.ambience(true, true);
@@ -14625,6 +14703,7 @@ function startBattle(enemyIds, kind, opts) {
   try { ndBattleStart(b, b.kind); } catch (e) { console.error('자연재해', e); }   /* 자연재해의 여파 (판 62) */
   if (G.run) G.run._dnWin = false;
   try { dnBattleStart(b, b.kind); } catch (e) { console.error('낮과 밤', e); }     /* 밤의 요괴 (판 64) */
+  try { gBufBattleStart(b, b.kind); gRaidBattleStart(b, b.kind); } catch (e) { console.error('길드', e); }   /* 길드 가호 · 영지 토벌 (판 65) */
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
   syncAll();
@@ -15192,6 +15271,7 @@ async function startPlayerTurn() {
 }
 async function _startPlayerTurn(b) {
   b.turn++; b.played = 0; b.attacked = false; b.busy = true;
+  if (b.kind === 'gboss' && b.gr && b.turn > b.gr.turns) { gRaidTimeUp(b); return; }   /* 영지의 대요괴 — 차례 수가 다했다 (판 65) */
   logAdd('turn', '그대의 차례', 0);
   b.freeTurn = false; b.halved = false; b.softened = false; b.cheap = 0;
   if (b.pet) b.pet.used = false;
@@ -15208,6 +15288,7 @@ async function _startPlayerTurn(b) {
   if (devPw('qi')) b.energy = Math.max(b.energy, 10);                     /* 개발자의 권력 「기 무한」 */
   try { buffTurnStart(b); } catch (e) { console.error('버프', e); }  /* 백야의 버프 — 결계·감로·기운·천수 */
   try { ndTurnStart(b); } catch (e) {}                                  /* 자연재해의 여파 — 첫 차례 기 · 뽑기 */
+  try { gBufTurn(b); } catch (e) {}                                     /* 길드 가호 — 첫 차례 기 · 뽑기 */
 
   if (b.turn === 1 && shLv('shield')) blk(shLv('shield') * 4, true);   /* 신전 — 방패의 가호 */
   if (shLv('hand')) b.drawMod = (b.drawMod || 0) + shLv('hand');       /* 신전 — 손의 가호 */
@@ -15965,6 +16046,7 @@ async function checkOver() {
     else if (/^hack/.test(b.kind)) hackLose();      /* 해킹맵 — 밀려날 뿐 모험은 그대로 */
     else if (b.kind === 'devboss') devBossLose();   /* 백야의 시험 — 모험은 그대로, 다시 도전 */
     else if (b.kind === 'hbboss') hbBattleLose();   /* 매시 해킹 보스 — 모험은 그대로, 다시 도전 */
+    else if (G_KIND(b.kind)) gRaidLose(b);          /* 영지 토벌 — 모험은 그대로 (판 65) */
     else if (/^cave/.test(b.kind)) caveLose();      /* 백귀굴 — 밀려날 뿐 모험은 그대로 (판 57) */
     else if (b.kind === 'eggboss') eggBossLose();   /* 산신 — 굴러떨어질 뿐 */
     else if (/^tower/.test(b.kind)) towerLose();     /* 무한의 탑 — 탑이 끝난다 (판 59) */
@@ -16096,6 +16178,7 @@ function _winBattle() {
   if (/^hack/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = P().hp; SND.victory(); hackWin(b.kind); return; }
   if (b.kind === 'devboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); devBossWin(); return; }   /* 백야의 시험 */
   if (b.kind === 'hbboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); hbBattleWin(); return; }   /* 매시 해킹 보스 */
+  if (G_KIND(b.kind)) { gRaidWin(b); return; }                                                                      /* 영지 토벌 (판 65) */
   if (/^cave/.test(b.kind)) { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); caveWin(b.kind); return; }   /* 백귀굴 (판 57) */
   if (b.kind === 'eggboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); eggBossWin(); return; }   /* 산신 */
   if (/^tower/.test(b.kind)) { run._dnWin = !!b.night; run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); run.stats.battles++; try { xpOnWin(b); } catch (e) {} SND.victory(); towerWin(b.kind); return; }   /* 무한의 탑 (판 59) */
@@ -20163,8 +20246,8 @@ function showRewards(kind) {
      건드리지 않는다. 남의 판을 흔드는 일이니 더해 주기만 한다. */
   const em = (evOn('gold') || evOn('night') ? 2 : 1) * (buffV('gold') ? 2 : 1) * (run._dnWin ? DN_LOOT : 1);   /* 풍년 · 저주의 밤 · 버프 「황금비」 — 곱절 · 밤의 전리품 1.5배 */
   if (run._dnWin) setTimeout(() => toast('夜 밤의 전리품 — 골드 · 다이아 1.5배 · 고를 부적 한 장 더, 한 단 위'), 350);
-  const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act);   /* 환생할수록, 막이 오를수록 두둑하다 */
-  const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act);
+  const gm = vm * em * ASC.gold(ascLv()) * lootGold(run.act) * (1 + gBuf('gold'));   /* 환생할수록, 막이 오를수록 두둑하다 · 길드 가호 */
+  const dm = vm * em * ASC.dia(ascLv()) * lootDia(run.act) * (1 + gBuf('dia'));
   const gold = Math.round((kind === 'boss' ? ri(70, 95) : kind === 'elite' ? ri(30, 45) : ri(12, 22)) * gm);
   const dia = Math.round((kind === 'boss' ? ri(120, 200) : kind === 'elite' ? ri(50, 90) : ri(12, 28)) * dm);
   const broke = curseTag('nogold');            /* 탐욕의 저주 — 한 푼도 남지 않는다 */
@@ -27741,11 +27824,11 @@ const ACH = [
   { id: 'qst7',  g: '課', n: '임무 일곱',      t: '성실한 퇴마사', k: 'quest', need: 7,    dia: 50 },
   { id: 'qst50', g: '課', n: '임무 쉰',        t: '산의 일꾼',     k: 'quest', need: 50,   dia: 200, frame: 'jade' }
 ];
-const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥' };
+const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥', guild: '길드 깃발' };
 const achCur = a => a.f ? a.f() : stV(a.k);
 const achHas = id => !!(META.ach && META.ach[id]);
 const achTitles = () => ACH.filter(a => achHas(a.id)).map(a => a.t);
-const pfFramesOpen = () => ['ink'].concat(ACH.filter(a => a.frame && achHas(a.id)).map(a => a.frame));
+const pfFramesOpen = () => ['ink'].concat(ACH.filter(a => a.frame && achHas(a.id)).map(a => a.frame), (META.pfBuy || []).filter(f => PF_FRAMES[f]));   /* 길드 상점에서 산 것 (판 65) */
 function payDia(n) { if (!n) return; if (G.run) { G.run.dia = (G.run.dia || 0) + n; saveRun(); renderTop(); } else META.giftDia = (META.giftDia || 0) + n; }
 function achCheck() {
   META.ach = META.ach || {};
@@ -32926,6 +33009,7 @@ function liveTick() {
   try { devBossTick(); } catch (e) { console.error('백야의 시험', e); }
   try { ndTick(); } catch (e) { console.error('자연재해', e); }
   try { dnTick(); } catch (e) { console.error('낮과 밤', e); }
+  try { gLvTick(); } catch (e) {}
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -34703,7 +34787,7 @@ function mpSayShow(acct, t) {
   if ($('#chatp') && $('#chatp').classList.contains('mpmode')) chatDraw();
 }
 /* ══ 길드 (판 57) ═══════════════════════════════════════════════
-   길드를 세우거나 들어간다 (스무 명까지). 길드 안에서만 보이는 길드 채팅 · 길드원 · 길드 점수 순위.
+   길드를 세우거나 들어간다 (스무 명부터 · 레벨마다 +2 — 판 65). 길드 안에서만 보이는 길드 채팅 · 길드원 · 길드 점수 순위.
    길드 점수 — 길드원이 랭크 대전에서 이기면 +3. 서로 다른 길드원끼리 맞붙으면 「길드전」: 이긴 길드 +10 · 진 길드 -3.
    ══════════════════════════════════════════════════════════════ */
 const GUILD = { g: null, rank: 0, chat: [], last: 0, timer: 0, tab: 'home' };
@@ -34720,6 +34804,7 @@ async function showGuild() {
   if (!p.isConnected) return;
   if (!r.ok) { p.querySelector('#gw_body').innerHTML = `<div class="dashnone">서버에 닿지 못했다 — ${wEsc(r.why)}</div>`; return; }
   GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = r.chat || []; GUILD.last = GUILD.chat.length ? GUILD.chat[GUILD.chat.length - 1].id : 0;
+  GUILD.me = r.me || {}; gLvSet(r.g ? r.g.lv || 1 : 0);
   guildDraw(p);
   clearInterval(GUILD.timer);
   GUILD.timer = setInterval(async () => {
@@ -34727,87 +34812,17 @@ async function showGuild() {
     if (!GUILD.g || document.hidden) return;
     const c = await guildAsk('chat', { after: GUILD.last });
     if (c.ok && c.chat.length) { GUILD.chat = GUILD.chat.concat(c.chat).slice(-60); GUILD.last = GUILD.chat[GUILD.chat.length - 1].id; guildChatDraw(p); }
-    if (c.ok && GUILD.g) GUILD.g.pts = c.pts;
+    if (c.ok && GUILD.g) { GUILD.g.pts = c.pts; if (c.lv) gLvSet(c.lv); }
     /* 누가 들어오거나 떠났다 — 길드원 칸을 새로 */
     if (c.ok && c.chat.some(m => m.sys)) { const r = await guildAsk('me'); if (r.ok && p.isConnected) { const was = !!GUILD.g; GUILD.g = r.g; GUILD.rank = r.rank; if (!r.g && was) { toast('길드에서 나오게 되었다'); guildDraw(p); } else guildMemDraw(p); } }
     if (!c.ok && c.why && /들어 있지 않다/.test(c.why) && GUILD.g) { GUILD.g = null; toast('길드에서 나오게 되었다'); guildDraw(p); }
   }, 4000);
-}
-function guildDraw(p) {
-  const body = p.querySelector('#gw_body'), g = GUILD.g;
-  if (!g) {
-    body.innerHTML = `<div class="gwhero"><i>旗</i><div><b>아직 길드가 없다</b><small>길드를 세우거나, 이름을 알면 들어간다 · 길드원은 스무 명까지 · 길드 채팅 · 길드전</small></div></div>
-      <div class="gwgrid">
-        <div class="gwbox"><h3>旗 길드를 세운다</h3>
-          <label>이름 <input id="gw_name" maxlength="10" placeholder="2~10 글자"></label>
-          <label>표식 <input id="gw_tag" maxlength="3" placeholder="1~3 글자 (예: 白)"></label>
-          <label>깃발 글자 <input id="gw_glyph" maxlength="2" placeholder="한 글자 (예: 夜)"></label>
-          <label>한 줄 소개 <input id="gw_desc" maxlength="60" placeholder="(비워도 된다)"></label>
-          <button class="brush-btn gold" id="gw_make">세운다</button><div class="casthint" id="gw_say1"></div></div>
-        <div class="gwbox"><h3>門 길드에 들어간다</h3>
-          <label>길드 이름 <input id="gw_jn" maxlength="12" placeholder="정확한 이름"></label>
-          <button class="brush-btn" id="gw_join">들어간다</button><div class="casthint" id="gw_say2"></div>
-          <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
-      </div>`;
-    const q = s => body.querySelector(s);
-    q('#gw_make').onclick = async () => {
-      const r = await guildAsk('create', { name: q('#gw_name').value, tag: q('#gw_tag').value, glyph: q('#gw_glyph').value || '旗', desc: q('#gw_desc').value });
-      if (!r.ok) { q('#gw_say1').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
-      GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = []; guildFx(r.g, '세웠다'); guildDraw(p);
-    };
-    q('#gw_join').onclick = async () => {
-      const r = await guildAsk('join', { name: q('#gw_jn').value });
-      if (!r.ok) { q('#gw_say2').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
-      GUILD.g = r.g; GUILD.rank = r.rank; GUILD.chat = []; guildFx(r.g, '들어왔다'); guildDraw(p);
-    };
-    guildTop(q('#gw_top'), id => { q('#gw_jn').value = id; });
-    return;
-  }
-  const own = g.owner === ACCT.id;
-  body.innerHTML = `<div class="gwhero mine"><i>${wEsc(g.glyph)}</i><div><b>${wEsc(g.name)} <em>[${wEsc(g.tag)}]</em></b>
-      <small>${wEsc(g.desc || '소개가 없다')}</small><small>길드 점수 <b class="gpts">${g.pts}</b> · 순위 <b>${GUILD.rank}위</b> · 길드전 ${g.w}승 ${g.l}패 · 길드원 <span id="gw_hn">${g.members.length}</span>/20</small></div>
-      <div class="gwact">${own ? '<button class="val" id="gw_desc2">소개 고치기</button>' : ''}<button class="val no" id="gw_leave">길드를 떠난다</button></div></div>
-    <div class="gwgrid three">
-      <div class="gwbox"><h3>人 길드원 <small id="gw_mn">${g.members.length}/20</small></h3><div class="gwmem" id="gw_mem"></div></div>
-      <div class="gwbox gwchatbox"><h3>話 길드 채팅 <small>길드원에게만</small></h3><div class="gwchat" id="gw_chat"></div>
-        <div class="gwf"><button class="chemo-b" id="gw_emo" title="이모티콘">☺</button><input id="gw_in" maxlength="120" placeholder="길드에 할 말 — 엔터"><button class="val gold" id="gw_send">보내기</button></div><div class="chemo" id="gw_emobox" hidden></div></div>
-      <div class="gwbox"><h3>戰 길드전</h3><div class="casthint">길드원이 <b>랭크 대전</b>에서 다른 길드의 길드원과 맞붙으면 <b style="color:#ffd76a">길드전</b> — 이긴 길드 <b>+10</b>, 진 길드 <b>-3</b>. 그냥 이기기만 해도 <b>+3</b>.</div>
-        <button class="brush-btn gold" id="gw_war" style="margin-top:8px">對 대전 마당으로</button>
-        <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
-    </div>`;
-  const q = s => body.querySelector(s);
-  guildChatDraw(p);
-  const send = async t => { if (!t) return; const r = await guildAsk('say', { text: emojiStrip(t) }); if (!r.ok) { toast(r.why); SND.err(); return; }
-    GUILD.chat = GUILD.chat.concat(r.msg).slice(-60); GUILD.last = Math.max(GUILD.last, r.msg.id); guildChatDraw(p); };
-  q('#gw_send').onclick = () => { const v = q('#gw_in').value.trim(); q('#gw_in').value = ''; send(v); };
-  q('#gw_in').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') q('#gw_send').click(); };
-  q('#gw_in').addEventListener('input', () => { const i = q('#gw_in'); if (EMOJI_RE_C.test(i.value)) i.value = emojiStrip(i.value); EMOJI_RE_C.lastIndex = 0; });
-  q('#gw_emo').onclick = () => { const b = q('#gw_emobox'); b.hidden = !b.hidden; if (!b.hidden) { emoLoad().then(() => emoPicker(b, v => { if (STK_RE_C.test(v)) send(v); else { q('#gw_in').value = (q('#gw_in').value + ' ' + v).trim(); } })); } };
-  q('#gw_leave').onclick = async () => { if (!confirm(`「${g.name}」을 떠날까?${g.members.length === 1 ? ' — 마지막 길드원이라 길드가 사라진다' : ''}`)) return;
-    const r = await guildAsk('leave'); if (r.ok) { GUILD.g = null; toast('길드를 떠났다'); guildDraw(p); } else toast(r.why); };
-  const d2 = q('#gw_desc2'); if (d2) d2.onclick = async () => { const v = prompt('한 줄 소개 (60자)', g.desc || ''); if (v == null) return; const r = await guildAsk('desc', { desc: v }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); };
-  guildMemDraw(p);
-  q('#gw_war').onclick = () => { clearInterval(GUILD.timer); closeOverlay(); showMulti(); };
-  guildTop(q('#gw_top'));
-}
-function guildMemDraw(p) {
-  const box = p.querySelector('#gw_mem'), g = GUILD.g; if (!box || !g) return;
-  const own = g.owner === ACCT.id, n = p.querySelector('#gw_mn'), hn = p.querySelector('#gw_hn'); if (n) n.textContent = g.members.length + '/20'; if (hn) hn.textContent = g.members.length;
-  box.innerHTML = g.members.map(m => `<div class="gwm${m.own ? ' own' : ''}${m.id === ACCT.id ? ' me' : ''}"><b>${wEsc(m.nick)}</b>${m.own ? '<em>길드장</em>' : ''}<small>${m.rp} 점</small>${own && !m.own ? `<u data-kick="${wEsc(m.id)}">내보내기</u>` : ''}</div>`).join('');
-  box.querySelectorAll('[data-kick]').forEach(u => u.onclick = async () => { if (!confirm('내보낼까?')) return; const r = await guildAsk('kick', { who: u.dataset.kick }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
 }
 function guildChatDraw(p) {
   const box = p.querySelector('#gw_chat'); if (!box) return;
   box.innerHTML = GUILD.chat.length ? GUILD.chat.map(m => m.sys ? `<div class="gwc sys">${wEsc(m.t)}</div>`
     : `<div class="gwc${m.u === ACCT.id ? ' me' : ''}"><b>${wEsc(m.n)}</b><span>${stkHtml(m.t) || wEsc(m.t)}</span></div>`).join('') : '<div class="dashnone">길드원에게 먼저 말을 건네 보시오</div>';
   box.scrollTop = box.scrollHeight;
-}
-async function guildTop(host, pickName) {
-  const r = await acctAsk('/guild/top', {}, 12000);
-  if (!host.isConnected) return;
-  host.innerHTML = r.ok && r.top.length ? r.top.slice(0, 20).map((x, i) => `<div class="gwt${GUILD.g && GUILD.g.id === x.id ? ' mine' : ''}" data-n="${wEsc(x.name)}"><em>${i + 1}</em><i>${wEsc(x.glyph)}</i><b>${wEsc(x.name)}</b><small>[${wEsc(x.tag)}] · ${x.n}명 · 길드전 ${x.w}승</small><u>${x.pts}</u></div>`).join('')
-    : '<div class="dashnone">아직 길드가 없다 — 처음으로 세워 보시오</div>';
-  if (pickName) host.querySelectorAll('[data-n]').forEach(d => d.onclick = () => pickName(d.dataset.n));
 }
 function guildFx(g, what) {
   try { SND.unlock(); SND.gong(); stampWord(g.glyph + ' 旗', '#ffd76a'); screenFlash('rgba(255,215,120,.35)', 700); FX.gold(innerWidth / 2, innerHeight / 2, 40); } catch (e) {}
@@ -37264,6 +37279,350 @@ function dnInfo() {
   const s = dnState(), sec = Math.ceil(s.left / 1000), t = `${Math.floor(sec / 60)}분 ${sec % 60}초`;
   toast(s.night ? `夜 밤 — ${t} 뒤 날이 밝는다 · 밤에 연 싸움은 요괴 힘 +${dnStr((G.run && G.run.act) || 1)} · 피해 +15% · 전리품 1.5배 · 달의 조각 20%`
     : `晝 낮 — ${t} 뒤 밤이 온다 · 낮은 그대로`);
+}
+
+/* ══ 길드 더 (판 65) ═══════════════════════════════════════════════
+   길드 창을 다섯 칸으로 — 本 본진 · 領 영지 토벌 · 商 길드 상점 · 獻 기부·출석 · 規 규칙·관리
+   · 길드 레벨(1~10) — 출석 · 기부 · 영지 토벌로 경험이 쌓인다. 레벨마다 길드원 자리 +2, 길드원 모두에게 가호
+   · 영지 토벌 — 주마다 새 지도. 전초 셋 → 요새 셋 → 관문 둘 → 영지의 대요괴(길드가 함께 깎는 체력, 한 번에 6차례)
+     자리를 함락하면 길드 경험 · 길드 주화, 이긴 사람은 골드 · 다이아. 대요괴를 쓰러뜨리면 깎은 이 모두 주화 · 다이아 · 원료
+   · 길드 주화 — 서버에만 적힌다. 길드 상점에서 다이아 · 골드 · 물약 · 원료 · S급 부적 · 「길드 깃발」 테두리
+   · 규칙 — 가입 방식(누구나 / 청하면 받아 줌) · 최소 레벨 · 길드 규칙 글. 부길드장(셋까지) · 길드장 넘기기
+   · 세우는 값 — 골드 50,000 · 다이아 10,000 · 정진 1,000 (모험 중에만)
+   ══════════════════════════════════════════════════════════════════ */
+const G_COST_C = { gold: 50000, dia: 10000, jp: 1000 };
+const GBUF = [[2, 'gold', .05, '전리품 골드 +5%'], [3, 'blk', 3, '싸움을 열 때 방어도 +3'], [4, 'dia', .05, '전리품 다이아 +5%'],
+  [5, 'heal', 3, '싸움을 열 때 체력 +3'], [6, 'gold', .05, '골드 +5% 더 (모두 +10%)'], [7, 'draw', 1, '첫 차례 부적 1장 더'],
+  [8, 'dia', .05, '다이아 +5% 더 (모두 +10%)'], [9, 'blk', 3, '방어도 +3 더 (모두 +6)'], [10, 'qi', 1, '첫 차례 기 +1']];
+const gLvNow = () => (acctOn() && META.gLv && META.gLv.id === ACCT.id) ? META.gLv.lv || 0 : 0;
+const gBuf = k => { const lv = gLvNow(); return GBUF.filter(x => x[0] <= lv && x[1] === k).reduce((a, x) => a + x[2], 0); };
+function gLvSet(lv) { if (!acctOn()) return; const was = gLvNow(); META.gLv = lv ? { id: ACCT.id, lv, at: Date.now() } : null; if (was !== (lv || 0)) saveMeta(); }
+let _gLvAt = 0;
+function gLvTick() {
+  if (!acctOn() || Date.now() - _gLvAt < 10 * 60000) return; _gLvAt = Date.now();
+  guildAsk('chat', { after: 1e15 }).then(r => { if (r.ok) gLvSet(r.lv || 1); else if (/들어 있지 않다/.test(r.why || '')) gLvSet(0); }).catch(() => {});
+}
+const G_KIND = k => k === 'gnode' || k === 'gboss';
+/* 가호 — 싸움을 열 때 · 첫 차례 */
+function gBufBattleStart(b, kind) {
+  if (kind === 'pvp' || kind === 'mpbot' || !gLvNow()) return;
+  const bl = gBuf('blk'), h = gBuf('heal');
+  if (bl) b.p.block += bl;
+  if (h) { b.p.hp = Math.min(b.p.maxHp, b.p.hp + h); if (G.run) G.run.hp = b.p.hp; }
+  b._gb = { draw: gBuf('draw'), qi: gBuf('qi') };
+}
+function gBufTurn(b) {
+  if (b.turn !== 1 || !b._gb) return;
+  if (b._gb.qi) b.energy += b._gb.qi;
+  if (b._gb.draw) b.drawMod = (b.drawMod || 0) + b._gb.draw;
+}
+/* ── 창 ── */
+const G_TABS = [['home', '本', '본진'], ['raid', '領', '영지 토벌'], ['shop', '商', '길드 상점'], ['give', '獻', '기부 · 출석'], ['rule', '規', '규칙 · 관리']];
+function guildDraw(p) {
+  const body = p.querySelector('#gw_body'), g = GUILD.g;
+  if (!g) {
+    const run = G.run, C = G_COST_C, inf = infOn();
+    const okG = inf || (run && !run._pvp && run.gold >= C.gold), okD = inf || (run && !run._pvp && (run.dia || 0) >= C.dia), okJ = inf || (META.jp || 0) >= C.jp;
+    body.innerHTML = `<div class="gwhero"><i>旗</i><div><b>아직 길드가 없다</b><small>길드를 세우거나, 이름을 알면 들어간다 · 레벨이 오를수록 자리가 는다 · 길드 채팅 · 길드전 · 영지 토벌 · 길드 상점</small></div></div>
+      <div class="gwgrid">
+        <div class="gwbox"><h3>旗 길드를 세운다</h3>
+          <div class="gwcost"><span class="${okG ? 'ok' : 'no'}"><i>金</i>골드 ${C.gold.toLocaleString()}</span><span class="${okD ? 'ok' : 'no'}"><i>玉</i>다이아 ${C.dia.toLocaleString()}</span><span class="${okJ ? 'ok' : 'no'}"><i>精</i>정진 ${C.jp.toLocaleString()}</span></div>
+          <div class="casthint">세우는 값은 크다 — 모험 중의 골드 · 다이아와 쌓아 둔 정진을 함께 낸다</div>
+          <label>이름 <input id="gw_name" maxlength="10" placeholder="2~10 글자"></label>
+          <label>표식 <input id="gw_tag" maxlength="3" placeholder="1~3 글자 (예: 白)"></label>
+          <label>깃발 글자 <input id="gw_glyph" maxlength="2" placeholder="한 글자 (예: 夜)"></label>
+          <label>한 줄 소개 <input id="gw_desc" maxlength="60" placeholder="(비워도 된다)"></label>
+          <button class="brush-btn gold" id="gw_make"${okG && okD && okJ ? '' : ' disabled'}>세운다</button><div class="casthint" id="gw_say1">${okG && okD && okJ ? '' : !run || run._pvp ? '모험 중에만 세울 수 있다 (골드 · 다이아는 모험 안에 있다)' : '모자란 것이 있다'}</div></div>
+        <div class="gwbox"><h3>門 길드에 들어간다</h3>
+          <label>길드 이름 <input id="gw_jn" maxlength="12" placeholder="정확한 이름"></label>
+          <button class="brush-btn" id="gw_join">들어간다</button><div class="casthint" id="gw_say2"></div>
+          <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
+      </div>`;
+    const q = s => body.querySelector(s);
+    q('#gw_make').onclick = async () => {
+      const r0 = G.run;
+      if (!infOn() && (!r0 || r0._pvp || r0.gold < C.gold || (r0.dia || 0) < C.dia || (META.jp || 0) < C.jp)) { SND.err(); q('#gw_say1').innerHTML = '<span style="color:#ff9a9a">모자란 것이 있다</span>'; return; }
+      const r = await guildAsk('create', { name: q('#gw_name').value, tag: q('#gw_tag').value, glyph: q('#gw_glyph').value || '旗', desc: q('#gw_desc').value,
+        paid: { gold: r0 ? r0.gold : 0, dia: r0 ? r0.dia || 0 : 0, jp: META.jp || 0 } });
+      if (!r.ok) { q('#gw_say1').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
+      if (r0 && !infOn()) { r0.gold -= C.gold; r0.dia -= C.dia; META.jp -= C.jp; saveMeta(); saveRun(); renderTop(); }
+      GUILD.g = r.g; GUILD.me = r.me || {}; GUILD.rank = r.rank; GUILD.chat = []; gLvSet(r.g.lv || 1); guildFx(r.g, '세웠다'); guildDraw(p);
+    };
+    q('#gw_join').onclick = async () => {
+      const r = await guildAsk('join', { name: q('#gw_jn').value, plv: lvNow() });
+      if (!r.ok) { q('#gw_say2').innerHTML = `<span style="color:#ff9a9a">${wEsc(r.why)}</span>`; SND.err(); return; }
+      if (r.applied) { q('#gw_say2').innerHTML = `<span style="color:#ffe2a0">「${wEsc(r.name)}」에 청을 넣었다 — 길드장 · 부길드장이 받아 주면 들어간다</span>`; SND.ok && SND.ok(); return; }
+      GUILD.g = r.g; GUILD.me = r.me || {}; GUILD.rank = r.rank; GUILD.chat = []; gLvSet(r.g.lv || 1); guildFx(r.g, '들어왔다'); guildDraw(p);
+    };
+    guildTop(q('#gw_top'), id => { q('#gw_jn').value = id; });
+    return;
+  }
+  gLvSet(g.lv || 1);
+  const own = g.owner === ACCT.id, off = own || (g.officers || []).includes(ACCT.id);
+  const pct = g.lvNext ? Math.min(100, Math.round((g.xp - g.lvAt) / (g.lvNext - g.lvAt) * 100)) : 100;
+  body.innerHTML = `<div class="gwhero mine"><i>${wEsc(g.glyph)}</i><div><b>${wEsc(g.name)} <em>[${wEsc(g.tag)}]</em> <u class="gwlv">Lv ${g.lv}</u></b>
+      <small>${wEsc(g.desc || '소개가 없다')}</small>
+      <div class="gwxp"><i style="width:${pct}%"></i><span>${g.lvNext ? `경험 ${g.xp.toLocaleString()} / ${g.lvNext.toLocaleString()}` : '가장 높은 레벨'}</span></div>
+      <small>길드 점수 <b class="gpts">${g.pts}</b> · 순위 <b>${GUILD.rank}위</b> · 길드전 ${g.w}승 ${g.l}패 · 길드원 <span id="gw_hn">${g.members.length}</span>/${g.cap} · <span class="gwcoin">貨 길드 주화 <b id="gw_coin">${(GUILD.me && GUILD.me.coins) || 0}</b></span></small></div>
+      <div class="gwact">${own ? '<button class="val" id="gw_desc2">소개 고치기</button>' : ''}<button class="val no" id="gw_leave">길드를 떠난다</button></div></div>
+    <div class="gwtabs">${G_TABS.map(([k, gl, n]) => `<button class="gwtab${GUILD.tab === k ? ' on' : ''}" data-t="${k}"><i>${gl}</i>${n}${k === 'rule' && off && (g.apply || []).length ? `<s>${g.apply.length}</s>` : ''}${k === 'give' && GUILD.me && !GUILD.me.chk ? '<s>!</s>' : ''}${k === 'raid' && GUILD.raid && GUILD.raid.done && GUILD.raid.mine > 0 && !GUILD.raid.claimed ? '<s>賞</s>' : ''}</button>`).join('')}</div>
+    <div id="gw_tab"></div>`;
+  const q = s => body.querySelector(s);
+  body.querySelectorAll('.gwtab').forEach(b => b.onclick = () => { GUILD.tab = b.dataset.t; try { SND.ui(); } catch (e) {} guildDraw(p); });
+  q('#gw_leave').onclick = async () => { if (!confirm(`「${g.name}」을 떠날까?${g.members.length === 1 ? ' — 마지막 길드원이라 길드가 사라진다' : ''}`)) return;
+    const r = await guildAsk('leave'); if (r.ok) { GUILD.g = null; gLvSet(0); toast('길드를 떠났다'); guildDraw(p); } else toast(r.why); };
+  const d2 = q('#gw_desc2'); if (d2) d2.onclick = async () => { const v = prompt('한 줄 소개 (60자)', g.desc || ''); if (v == null) return; const r = await guildAsk('desc', { desc: v }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); };
+  const host = q('#gw_tab');
+  const T = GUILD.tab || 'home';
+  if (T === 'raid') return guildRaidDraw(p, host);
+  if (T === 'shop') return guildShopDraw(p, host);
+  if (T === 'give') return guildGiveDraw(p, host);
+  if (T === 'rule') return guildRuleDraw(p, host);
+  host.innerHTML = `<div class="gwgrid three">
+      <div class="gwbox"><h3>人 길드원 <small id="gw_mn">${g.members.length}/${g.cap}</small></h3><div class="gwmem" id="gw_mem"></div></div>
+      <div class="gwbox gwchatbox"><h3>話 길드 채팅 <small>길드원에게만</small></h3><div class="gwchat" id="gw_chat"></div>
+        <div class="gwf"><button class="chemo-b" id="gw_emo" title="이모티콘">☺</button><input id="gw_in" maxlength="120" placeholder="길드에 할 말 — 엔터"><button class="val gold" id="gw_send">보내기</button></div><div class="chemo" id="gw_emobox" hidden></div></div>
+      <div class="gwbox"><h3>戰 길드전</h3><div class="casthint">길드원이 <b>랭크 대전</b>에서 다른 길드의 길드원과 맞붙으면 <b style="color:#ffd76a">길드전</b> — 이긴 길드 <b>+10</b>, 진 길드 <b>-3</b>. 그냥 이기기만 해도 <b>+3</b>.</div>
+        <button class="brush-btn gold" id="gw_war" style="margin-top:8px">對 대전 마당으로</button>
+        <h3 style="margin-top:12px">榜 길드 순위</h3><div class="gwtop" id="gw_top"><div class="dashload">…</div></div></div>
+    </div>`;
+  guildChatDraw(p);
+  const send = async t => { if (!t) return; const r = await guildAsk('say', { text: emojiStrip(t) }); if (!r.ok) { toast(r.why); SND.err(); return; }
+    GUILD.chat = GUILD.chat.concat(r.msg).slice(-60); GUILD.last = Math.max(GUILD.last, r.msg.id); guildChatDraw(p); };
+  q('#gw_send').onclick = () => { const v = q('#gw_in').value.trim(); q('#gw_in').value = ''; send(v); };
+  q('#gw_in').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') q('#gw_send').click(); };
+  q('#gw_in').addEventListener('input', () => { const i = q('#gw_in'); if (EMOJI_RE_C.test(i.value)) i.value = emojiStrip(i.value); EMOJI_RE_C.lastIndex = 0; });
+  q('#gw_emo').onclick = () => { const b = q('#gw_emobox'); b.hidden = !b.hidden; if (!b.hidden) { emoLoad().then(() => emoPicker(b, v => { if (STK_RE_C.test(v)) send(v); else { q('#gw_in').value = (q('#gw_in').value + ' ' + v).trim(); } })); } };
+  guildMemDraw(p);
+  q('#gw_war').onclick = () => { clearInterval(GUILD.timer); closeOverlay(); showMulti(); };
+  guildTop(q('#gw_top'));
+}
+function guildMemDraw(p) {
+  const box = p.querySelector('#gw_mem'), g = GUILD.g; if (!box || !g) return;
+  const own = g.owner === ACCT.id, off = own || (g.officers || []).includes(ACCT.id);
+  const n = p.querySelector('#gw_mn'), hn = p.querySelector('#gw_hn'); if (n) n.textContent = g.members.length + '/' + g.cap; if (hn) hn.textContent = g.members.length;
+  const ms = g.members.slice().sort((a, b) => (b.own - a.own) || (b.off - a.off) || (b.give - a.give));
+  box.innerHTML = ms.map(m => `<div class="gwm${m.own ? ' own' : ''}${m.off ? ' off' : ''}${m.id === ACCT.id ? ' me' : ''}"><b>${wEsc(m.nick)}</b>${m.own ? '<em>길드장</em>' : m.off ? '<em class="o">부길드장</em>' : ''}<small>${m.rp} 점 · 공 ${m.give || 0}</small>
+      ${own && !m.own ? `<span class="gwmb"><u data-role="${wEsc(m.id)}" data-r="${m.off ? 'member' : 'officer'}">${m.off ? '부길드장 해제' : '부길드장으로'}</u><u data-own="${wEsc(m.id)}">길드장 넘기기</u></span>` : ''}
+      ${off && !m.own && m.id !== ACCT.id && (own || !m.off) ? `<u data-kick="${wEsc(m.id)}">내보내기</u>` : ''}</div>`).join('');
+  box.querySelectorAll('[data-kick]').forEach(u => u.onclick = async () => { if (!confirm('내보낼까?')) return; const r = await guildAsk('kick', { who: u.dataset.kick }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
+  box.querySelectorAll('[data-role]').forEach(u => u.onclick = async () => { const r = await guildAsk('role', { who: u.dataset.role, role: u.dataset.r }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
+  box.querySelectorAll('[data-own]').forEach(u => u.onclick = async () => { if (!confirm('길드장을 넘길까? (그대는 부길드장이 된다)')) return; const r = await guildAsk('owner', { who: u.dataset.own }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); });
+}
+async function guildTop(host, pickName) {
+  const r = await acctAsk('/guild/top', {}, 12000);
+  if (!host.isConnected) return;
+  host.innerHTML = r.ok && r.top.length ? r.top.slice(0, 20).map((x, i) => `<div class="gwt${GUILD.g && GUILD.g.id === x.id ? ' mine' : ''}" data-n="${wEsc(x.name)}"><em>${i + 1}</em><i>${wEsc(x.glyph)}</i><b>${wEsc(x.name)} <u class="gwlv s">Lv ${x.lv || 1}</u></b><small>[${wEsc(x.tag)}] · ${x.n}명 · 길드전 ${x.w}승${x.open === false ? ' · 청해야 받음' : ''}</small><u>${x.pts}</u></div>`).join('')
+    : '<div class="dashnone">아직 길드가 없다 — 처음으로 세워 보시오</div>';
+  if (pickName) host.querySelectorAll('[data-n]').forEach(d => d.onclick = () => pickName(d.dataset.n));
+}
+function gCoinSet(c) { if (c == null) return; GUILD.me = GUILD.me || {}; GUILD.me.coins = c; const e = $('#gw_coin'); if (e) e.textContent = c; }
+/* ── 영지 토벌 ── 아래에서 위로: 전초 → 요새 → 관문 → 대요괴 */
+const GR_POS = { o1: [18, 77], o2: [50, 80], o3: [82, 77], f1: [20, 56], f2: [50, 58], f3: [80, 56], g1: [34, 35], g2: [66, 35], B: [50, 14] };
+const GR_TIER = ['전초 — 요괴 무리', '요새 — 엘리트', '관문 — 사나운 엘리트', '영지의 대요괴'];
+const GR_GL = { o1: '哨', o2: '哨', o3: '哨', f1: '砦', f2: '砦', f3: '砦', g1: '關', g2: '關', B: '領' };
+async function guildRaidDraw(p, host) {
+  host.innerHTML = '<div class="dashload">영지를 살피는 중…</div>';
+  const r = await guildAsk('raid');
+  if (!host.isConnected) return;
+  if (!r.ok) { host.innerHTML = `<div class="dashnone">${wEsc(r.why)}</div>`; return; }
+  GUILD.raid = r.raid; const R = r.raid, g = GUILD.g;
+  const left = Math.max(0, R.ends - srvNow()), dd = Math.floor(left / 864e5), hh = Math.floor(left % 864e5 / 36e5);
+  const lines = [['o1', 'f1'], ['o1', 'f2'], ['o2', 'f1'], ['o2', 'f2'], ['o2', 'f3'], ['o3', 'f2'], ['o3', 'f3'], ['f1', 'g1'], ['f2', 'g1'], ['f2', 'g2'], ['f3', 'g2'], ['g1', 'B'], ['g2', 'B']];
+  const capd = k => k === 'B' ? !!R.done : !!R.nodes[k].cap;
+  host.innerHTML = `<div class="grwrap">
+    <div class="grmap">
+      <svg class="grbg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs><linearGradient id="grsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1028"/><stop offset=".5" stop-color="#3a2030"/><stop offset="1" stop-color="#2a1a14"/></linearGradient></defs>
+        <rect width="100" height="100" fill="url(#grsky)"/>
+        <path d="M0 40 L12 26 L22 34 L34 18 L46 30 L56 14 L66 28 L78 20 L90 32 L100 24 L100 100 L0 100Z" fill="#241622" opacity=".9"/>
+        <path d="M0 58 L14 46 L28 54 L42 44 L58 52 L72 42 L86 50 L100 44 L100 100 L0 100Z" fill="#1c1418"/>
+        <path d="M0 76 Q25 68 50 74 T100 72 L100 100 L0 100Z" fill="#161012"/>
+        <path d="M-2 92 Q30 86 52 92 T104 90" stroke="#3a5a7a" stroke-width="1.6" fill="none" opacity=".5"/>
+        ${lines.map(([a, b]) => `<line x1="${GR_POS[a][0]}" y1="${GR_POS[a][1]}" x2="${GR_POS[b][0]}" y2="${GR_POS[b][1]}" class="grln${capd(a) ? ' on' : ''}"/>`).join('')}
+      </svg>
+      <div class="grtitle"><b>領 영지 토벌</b><small>이번 주 남은 때 ${dd}일 ${hh}시간 · 월요일 0시에 새 지도</small></div>
+      ${Object.keys(GR_POS).map(k => { const n = R.nodes[k], [x, y] = GR_POS[k], c = capd(k), open = n.open && !c;
+        return `<button class="grnode t${n.tier}${c ? ' cap' : open ? ' open' : ' lock'}${k === 'B' ? ' boss' : ''}" data-k="${k}" style="left:${x}%;top:${y}%">
+          <i>${c ? wEsc(g.glyph) : GR_GL[k]}</i><b>${n.name}</b>
+          ${k === 'B' ? `<span class="grhp"><s style="width:${Math.round(R.hp / R.max * 100)}%"></s><em>${R.done ? '토벌 끝' : R.hp.toLocaleString() + ' / ' + R.max.toLocaleString()}</em></span>`
+            : `<small>${c ? '함락' : open ? `${n.w} / ${n.need}승` : '닫힘'}</small>`}</button>`; }).join('')}
+    </div>
+    <div class="grside">
+      <h3>領 이번 주 토벌</h3>
+      <div class="casthint">아래에서 위로 — <b>전초</b>(요괴 무리) 둘을 함락하면 <b>요새</b>(엘리트)가, 요새 둘이면 <b>관문</b>이, 관문 둘이면 <b>대요괴</b>가 열린다.
+        자리마다 길드원이 이긴 수를 모아 함락한다. 싸움은 지금 모험의 덱 · 유물 · 체력 그대로 — 져도 모험은 끝나지 않는다.</div>
+      <div class="grstat"><span>내가 깎은 대요괴 <b>${R.mine.toLocaleString()}</b></span>${R.done && R.mine > 0 ? (R.claimed ? '<span class="ok">상을 받았다</span>' : '<button class="brush-btn gold" id="gr_claim">賞 토벌 상 받기</button>') : ''}</div>
+      <h3>傷 많이 깎은 이</h3>
+      <div class="grtop">${R.top.length ? R.top.map((t, i) => `<div class="${t.u === ACCT.id ? 'me' : ''}"><em>${i + 1}</em><b>${wEsc(t.n)}</b><u>${t.d.toLocaleString()}</u></div>`).join('') : '<div class="dashnone">아직 아무도 대요괴에 닿지 않았다</div>'}</div>
+      <div class="casthint" style="margin-top:8px">대요괴는 한 번에 <b>${R.turns}차례</b>까지 — 깎은 만큼 길드의 체력에서 줄어든다. 쓰러뜨리면 깎은 이 모두 주화 150(많이 깎은 셋은 +80 · +50 · +30) · 다이아 · 원료 하나.</div>
+    </div></div>`;
+  host.querySelectorAll('.grnode').forEach(b => b.onclick = () => { const k = b.dataset.k, n = R.nodes[k];
+    if (capd(k)) { toast(k === 'B' ? '이번 주 대요괴는 쓰러졌다' : '이미 함락한 자리다'); return; }
+    if (!n.open) { toast('아직 길이 열리지 않았다 — 앞의 자리를 먼저 함락하시오'); SND.err(); return; }
+    guildRaidAsk(k, n, R); });
+  const cl = host.querySelector('#gr_claim'); if (cl) cl.onclick = () => guildRaidClaim(p);
+}
+function gRaidPay(k, act) {
+  const t = k === 'B' ? 3 : GR_POS[k] ? ({ o: 0, f: 1, g: 2 })[k[0]] : 0, m = [1, 1.6, 2.2, 0][t];
+  return { gold: Math.round(32 * m * lootGold(act)), dia: Math.round(20 * m * lootDia(act)) };
+}
+function guildRaidAsk(k, n, R) {
+  const run = G.run;
+  if (!run || run._pvp) { toast('모험 중에만 싸울 수 있다'); SND.err(); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  const pay = gRaidPay(k, run.act);
+  const m = modal(`<h2>${GR_GL[k]} ${n.name}</h2><div class="grask"><div class="hint">${GR_TIER[n.tier]} · 제${run.act}막의 것들</div>
+    <div class="hint">${k === 'B' ? `길드가 함께 깎는 체력 <b>${R.hp.toLocaleString()}</b> · 한 번에 ${R.turns}차례까지 · 깎은 만큼 적힌다 · 체력은 들어가기 전으로 돌아온다`
+      : `이기면 함락까지 <b>${n.w + 1} / ${n.need}</b> · 길드 경험 · 길드 주화 +12 · 金 ${pay.gold} · 玉 ${pay.dia}`}</div>
+    <div class="hint" style="color:#b3a68c">지금 모험의 덱 · 유물 · 체력 그대로 들어간다 — 져도 모험은 끝나지 않고 체력은 들어가기 전으로 돌아온다</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn red" id="gra_go">싸운다</button><button class="brush-btn ghost" id="gra_x" style="color:#e9dfc9;border-color:#8a7f68">물러난다</button></div></div>`, 'graskm');
+  m.querySelector('#gra_x').onclick = closeTop;
+  m.querySelector('#gra_go').onclick = async () => {
+    const r = await guildAsk('raid/start', { node: k });
+    if (!r.ok) { toast(r.why); SND.err(); return; }
+    clearInterval(GUILD.timer); closeOverlay();
+    const E = ENCOUNTERS[run.act] || ENCOUNTERS[1], t = n.tier;
+    const ids = k === 'B' ? [pick(E.boss)] : t === 0 ? pick(E.normal).slice() : pick(E.elite).slice();
+    _gRaidPend = { k, tier: t, hp: r.hp, turns: r.turns };
+    try { SND.drum(); stampWord(GR_GL[k] + ' ' + n.name, '#ffd27a'); } catch (e) {}
+    startBattle(ids, k === 'B' ? 'gboss' : 'gnode');
+  };
+}
+let _gRaidPend = null;
+function gRaidBattleStart(b, kind) {
+  if (!G_KIND(kind)) return;
+  const P0 = _gRaidPend || { k: 'o1', tier: 0, hp: 1000, turns: 6 }; _gRaidPend = null;
+  b.gr = { k: P0.k, turns: P0.turns || 6 };
+  if (kind === 'gboss') {
+    const e = b.enemies[0];
+    if (e) { e.hp = e.maxHp = Math.max(1, P0.hp); e.gBoss = true; e.n = '영지의 대요괴 · ' + e.n; b.gr.max = e.maxHp; }
+    setTimeout(() => toast(`領 영지의 대요괴 — ${b.gr.turns}차례 안에 깎을 수 있는 만큼 · 깎은 만큼 길드의 체력에서 줄어든다`), 700);
+  } else if (P0.tier >= 2) for (const e of b.enemies) e.s.str = (e.s.str || 0) + 2;
+}
+function gRaidDealt(b) { const e = b.enemies.find(x => x.gBoss); return e ? Math.max(0, (b.gr.max || e.maxHp) - Math.max(0, e.hp)) : 0; }
+/* 차례 수가 다했다 — 대요괴 */
+function gRaidTimeUp(b) { gRaidEnd(b, 'time'); }
+function gRaidWin(b) { gRaidEnd(b, 'win'); }
+function gRaidLose(b) { gRaidEnd(b, 'lose'); }
+async function gRaidEnd(b, why) {
+  const run = G.run; if (!b || !b.gr || b._grDone) return; b._grDone = true;
+  battleWatch(false); b.over = true;
+  const boss = b.kind === 'gboss';
+  if (why !== 'win' || boss) { if (b.startHp) run.hp = Math.max(1, b.startHp); }
+  else if (P()) run.hp = Math.max(1, P().hp);
+  run.inBattle = false; G.b = null; saveRun();
+  let x = null, lines = [];
+  if (boss) {
+    const dmg = gRaidDealt(b);
+    x = await guildAsk('raid/hit', { dmg });
+    lines.push(`대요괴를 <b>${dmg.toLocaleString()}</b> 깎았다`);
+    if (x.ok) { lines.push(x.killed ? '<b style="color:#ffd76a">대요괴가 쓰러졌다! 토벌 상을 받으시오</b>' : `남은 체력 ${x.raid.hp.toLocaleString()} / ${x.raid.max.toLocaleString()}`); lines.push('길드 주화 +10'); }
+  } else if (why === 'win') {
+    x = await guildAsk('raid/win', {});
+    const pay = gRaidPay(b.gr.k, run.act);
+    run.gold += pay.gold; run.stats.gold += pay.gold; run.dia = (run.dia || 0) + pay.dia; saveRun();
+    lines.push(`金 +${pay.gold} · 玉 +${pay.dia}`);
+    if (x.ok) { const n = x.raid.nodes[b.gr.k]; lines.push(x.late ? '그새 다른 길드원이 함락했다' : n.cap ? `<b style="color:#ffd76a">「${n.name}」 함락!</b>` : `함락까지 ${n.w} / ${n.need}`); if (!x.late) lines.push('길드 주화 +12 · 길드 경험'); }
+  } else lines.push('밀려났다 — 체력은 들어가기 전으로 돌아왔다');
+  if (x && !x.ok) lines.push('<span style="color:#ff9a9a">길드에 적지 못했다 — ' + wEsc(x.why || '') + '</span>');
+  if (x && x.ok) { gCoinSet(x.coins); if (x.g) { GUILD.g = x.g; gLvSet(x.g.lv); } if (x.raid) GUILD.raid = x.raid; }
+  try { if (why === 'lose') SND.lose(); else { SND.victory(); screenFlash('rgba(255,210,120,.35)', 600); } } catch (e) {}
+  renderTop();
+  const m = modal(`<h2>${GR_GL[b.gr.k] || '領'} ${boss ? (x && x.killed ? '대요괴 토벌' : why === 'lose' ? '대요괴에게 밀려났다' : '토벌 시간이 다했다') : why === 'win' ? '자리를 지켜 냈다' : '밀려났다'}</h2><div class="grres">
+    <div class="hint">${lines.join('<br>')}</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="grr_raid">領 영지로</button><button class="brush-btn" id="grr_map">지도로</button></div></div>`, 'grresm');
+  m.dataset.noauto = '1';
+  m.querySelector('#grr_map').onclick = () => { closeTop(); showMap(); };
+  m.querySelector('#grr_raid').onclick = () => { closeTop(); showMap(); GUILD.tab = 'raid'; setTimeout(showGuild, 150); };
+}
+async function guildRaidClaim(p) {
+  const r = await guildAsk('raid/claim');
+  if (!r.ok) { toast(r.why); SND.err(); return; }
+  gCoinSet(r.coins);
+  const run = G.run, act = (run && run.act) || 1, dia = Math.round(300 * lootDia(act)), gold = Math.round(150 * lootGold(act));
+  const ks = Object.keys(MAT_DEF), mk = pick(ks); META.mat = META.mat || {}; META.mat[mk] = matHave(mk) + 1; saveMeta();
+  if (run && !run._pvp) { run.dia = (run.dia || 0) + dia; run.gold += gold; saveRun(); renderTop(); }
+  try { SND.unlock(); SND.coinRain(12); screenFlash('rgba(255,215,120,.5)', 700); stampWord('賞', '#ffd76a'); } catch (e) {}
+  toast(`토벌 상 — 길드 주화 +${r.add} (깎은 순위 ${r.rank}위) · ${run ? `玉 +${dia} · 金 +${gold} · ` : ''}${MAT_DEF[mk].g} ${MAT_DEF[mk].n} +1`);
+  guildDraw(p);
+}
+/* ── 길드 상점 ── */
+const G_SHOP_C = [
+  { k: 'dia', g: '玉', n: '다이아 꾸러미', d: '다이아 500 (모험 중)', run: 1, go: r => { r.dia = (r.dia || 0) + 500; } },
+  { k: 'gold', g: '金', n: '골드 꾸러미', d: '골드 3,000 × 막의 값 (모험 중)', run: 1, go: r => { const g = Math.round(3000 * shopMul(r.act)); r.gold += g; toast(`金 +${g}`); } },
+  { k: 'pot', g: '藥', n: '물약 하나', d: '무작위 물약 (빈 자리가 있어야)', run: 1, chk: r => r.potions.length < r.potSlots || '물약 자리가 없다', go: r => { r.potions.push(randomPotion()); } },
+  { k: 'mat', g: '囊', n: '원료 하나', d: '슈팅스타 금 · 혼돈 · 풍년 · 극광 · 달의 조각 가운데 무작위', go: () => { const k = pick(Object.keys(MAT_DEF)); META.mat = META.mat || {}; META.mat[k] = matHave(k) + 1; toast(`${MAT_DEF[k].g} ${MAT_DEF[k].n} +1`); } },
+  { k: 'scard', g: '符', n: 'S급 부적 고르기', d: 'S급 셋 가운데 하나 (모험 중)', run: 1, go: async r => { const c = await pickFromList(sample(GRADE_POOL.special, 3).map(id => mkCard(id, false)), 'S급 부적 한 장', {}); if (c) { r.deck.push(mkCard(c.id, false)); dexAdd('cards', c.id); toast(`${cname(c)} 획득`); } } },
+  { k: 'frame', g: '旗', n: '「길드 깃발」 테두리', d: '프로필 카드 테두리 (한 번만)', chk: () => !(META.pfBuy || []).includes('guild') || '이미 가졌다', go: () => { META.pfBuy = (META.pfBuy || []).concat('guild'); toast('프로필 테두리 「길드 깃발」이 열렸다'); } }
+];
+function guildShopDraw(p, host) {
+  const shop = (GUILD.me && GUILD.me.coins) || 0, price = k => ({ dia: 60, gold: 40, pot: 25, mat: 150, scard: 300, frame: 400 })[k];
+  host.innerHTML = `<div class="gwshop"><div class="gwshh"><b>商 길드 상점</b><span>貨 길드 주화 <b id="gw_coin2">${shop}</b> — 출석 · 기부 · 영지 토벌에서 모은다 (서버에 적힌다)</span></div>
+    <div class="gwshg">${G_SHOP_C.map(it => `<button class="gwsi" data-k="${it.k}"><i>${it.g}</i><b>${it.n}</b><small>${it.d}</small><u>貨 ${price(it.k)}</u></button>`).join('')}</div></div>`;
+  host.querySelectorAll('.gwsi').forEach(b => b.onclick = async () => {
+    const it = G_SHOP_C.find(x => x.k === b.dataset.k), run = G.run;
+    if (it.run && (!run || run._pvp || G.b)) { toast('모험의 지도에서만 산다'); SND.err(); return; }
+    if (it.chk) { const c = it.chk(run); if (c !== true) { toast(c); SND.err(); return; } }
+    b.disabled = true; const r = await guildAsk('buy', { k: it.k }); b.disabled = false;
+    if (!r.ok) { toast(r.why); SND.err(); if (r.coins != null) gCoinSet(r.coins); return; }
+    gCoinSet(r.coins); const c2 = host.querySelector('#gw_coin2'); if (c2) c2.textContent = r.coins;
+    try { await it.go(run); } catch (e) { console.error('길드 상점', e); }
+    saveMeta(); if (run) { saveRun(); renderTop(); }
+    try { SND.coin && SND.coin(); SND.unlock(); } catch (e) {}
+    toast(`${it.n} — 샀다`);
+  });
+}
+/* ── 기부 · 출석 · 가호 ── */
+function guildGiveDraw(p, host) {
+  const g = GUILD.g, me = GUILD.me || {}, run = G.run, lv = g.lv || 1;
+  host.innerHTML = `<div class="gwgrid">
+    <div class="gwbox"><h3>參 출석</h3><div class="casthint">하루에 한 번 — 길드 경험 +30 · 길드 주화 +15</div>
+      <button class="brush-btn gold" id="gw_chk"${me.chk ? ' disabled' : ''}>${me.chk ? '오늘은 얼굴을 비쳤다' : '얼굴을 비친다'}</button>
+      <h3 style="margin-top:14px">獻 기부</h3><div class="casthint">골드 150 · 다이아 15마다 길드 경험 1 · 경험 4마다 주화 1 · 한 사람 하루 경험 ${me.donCap || 400}까지 (오늘 <b>${me.don || 0}</b>)</div>
+      <div class="gwdon"><label>金 골드 <input id="gw_dg" type="number" min="0" step="150" value="0"></label><label>玉 다이아 <input id="gw_dd" type="number" min="0" step="15" value="0"></label></div>
+      <div class="gwdq">${[1500, 7500, 15000].map(v => `<button class="val" data-g="${v}">金 ${v.toLocaleString()}</button>`).join('')}${[150, 750, 1500].map(v => `<button class="val" data-d="${v}">玉 ${v.toLocaleString()}</button>`).join('')}</div>
+      <button class="brush-btn" id="gw_don">기부한다</button><div class="casthint">${run && !run._pvp ? `지금 金 ${infTxt(run.gold)} · 玉 ${infTxt(run.dia || 0)}` : '골드 · 다이아는 모험 중에만 낸다'}</div></div>
+    <div class="gwbox"><h3>護 길드 가호 <small>지금 Lv ${lv}</small></h3><div class="gwbuf">${GBUF.map(([l, , , t]) => `<div class="${l <= lv ? 'on' : ''}"><em>Lv ${l}</em><span>${t}</span></div>`).join('')}
+      <div class="${lv >= 1 ? 'on' : ''}"><em>모든 레벨</em><span>레벨마다 길드원 자리 +2 (지금 ${g.cap}명)</span></div></div>
+      <div class="casthint">가호는 길드원 모두에게 — 모험의 싸움(대전 빼고)과 전리품에 붙는다</div></div></div>`;
+  const q = s => host.querySelector(s);
+  q('#gw_chk').onclick = async () => { const r = await guildAsk('checkin'); if (!r.ok) { toast(r.why); return; }
+    GUILD.g = r.g; GUILD.me = r.me; gCoinSet(r.coins); try { SND.unlock(); stampWord('參', '#ffd76a'); } catch (e) {} toast('출석 — 길드 경험 +30 · 주화 +15'); guildDraw(p); };
+  host.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { q('#gw_dg').value = (+q('#gw_dg').value || 0) + +b.dataset.g; });
+  host.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { q('#gw_dd').value = (+q('#gw_dd').value || 0) + +b.dataset.d; });
+  q('#gw_don').onclick = async () => {
+    const r0 = G.run; if (!r0 || r0._pvp) { toast('모험 중에만 낸다'); SND.err(); return; }
+    const gold = Math.max(0, Math.floor(+q('#gw_dg').value || 0)), dia = Math.max(0, Math.floor(+q('#gw_dd').value || 0));
+    if (!infOn() && (gold > r0.gold || dia > (r0.dia || 0))) { toast('가진 것보다 많다'); SND.err(); return; }
+    const r = await guildAsk('donate', { gold, dia });
+    if (!r.ok) { toast(r.why); SND.err(); return; }
+    if (!infOn()) { r0.gold -= r.spent.gold; r0.dia -= r.spent.dia; }
+    saveRun(); renderTop(); GUILD.g = r.g; GUILD.me = r.me; gCoinSet(r.coins);
+    try { SND.coinRain(8); stampWord('獻', '#ffd76a'); } catch (e) {}
+    toast(`기부 — 길드 경험 +${r.xp}${r.spent.gold < gold || r.spent.dia < dia ? ' (오늘 한도까지만 받았다)' : ''}`); guildDraw(p);
+  };
+}
+/* ── 규칙 · 관리 ── */
+function guildRuleDraw(p, host) {
+  const g = GUILD.g, ru = g.rules || {}, own = g.owner === ACCT.id, off = own || (g.officers || []).includes(ACCT.id);
+  host.innerHTML = `<div class="gwgrid">
+    <div class="gwbox"><h3>規 길드 규칙</h3>
+      <div class="gwrules">${ru.text ? wEsc(ru.text).replace(/\n/g, '<br>') : '<span class="dim">적힌 규칙이 없다</span>'}</div>
+      <div class="casthint">가입 — <b>${ru.open === false ? '청하면 받아 준다' : '누구나 들어온다'}</b> · 레벨 <b>${ru.minLv || 1}</b>부터 · 부길드장은 셋까지 · 길드장이 떠나면 부길드장이 잇는다</div>
+      ${off ? `<h3 style="margin-top:12px">筆 규칙 고치기</h3>
+        <label class="gwchk"><input type="checkbox" id="gr_open"${ru.open === false ? '' : ' checked'}> 누구나 들어온다 (끄면 청을 받아 준다)</label>
+        <label>최소 레벨 <input id="gr_min" type="number" min="1" max="99" value="${ru.minLv || 1}" style="width:70px"></label>
+        <textarea id="gr_txt" maxlength="160" rows="3" placeholder="예: 하루 한 번 출석 · 욕설 금지 · 토벌 주말 저녁 9시">${wEsc(ru.text || '')}</textarea>
+        <button class="brush-btn gold" id="gr_save">적는다</button>` : ''}</div>
+    <div class="gwbox"><h3>請 들어오기를 청한 이 <small>${(g.apply || []).length}</small></h3>
+      <div class="gwapp">${(g.apply || []).length ? g.apply.map(a => `<div><b>${wEsc(a.nick)}</b><small>Lv ${a.lv}</small>${off ? `<span><u data-acc="${wEsc(a.id)}">받는다</u><u class="no" data-rej="${wEsc(a.id)}">거절</u></span>` : ''}</div>`).join('') : '<div class="dashnone">청한 이가 없다</div>'}</div>
+      <div class="casthint">${off ? '받으면 곧바로 길드원이 된다 (자리가 남아 있어야)' : '청을 받는 것은 길드장 · 부길드장'}</div></div></div>`;
+  const q = s => host.querySelector(s);
+  const sv = q('#gr_save'); if (sv) sv.onclick = async () => { const r = await guildAsk('rules', { open: q('#gr_open').checked, minLv: +q('#gr_min').value || 1, text: q('#gr_txt').value });
+    if (r.ok) { GUILD.g = r.g; toast('규칙을 적었다'); guildDraw(p); } else toast(r.why); };
+  host.querySelectorAll('[data-acc]').forEach(u => u.onclick = async () => { const r = await guildAsk('accept', { who: u.dataset.acc }); if (r.g) GUILD.g = r.g; if (!r.ok) toast(r.why); guildDraw(p); });
+  host.querySelectorAll('[data-rej]').forEach(u => u.onclick = async () => { const r = await guildAsk('reject', { who: u.dataset.rej }); if (r.g) GUILD.g = r.g; if (!r.ok) toast(r.why); guildDraw(p); });
 }
 
 const CHAT_SEEN = 'baekgwi_chat_seen';
