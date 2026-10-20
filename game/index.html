@@ -1805,6 +1805,55 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 도움말 백과 · 접근성 (판 68) */
+.hbk{width:min(760px,92vw);display:flex;flex-direction:column;gap:10px;max-height:84vh}
+.hbkq{font:inherit;font-size:14px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.4);border:1px solid #6a5a3a;color:#efe4cb}
+.hbkq:focus{outline:none;border-color:#c9a24a}
+.hbkcat{display:flex;flex-wrap:wrap;gap:6px}
+.hbkcat button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:16px;cursor:pointer;background:rgba(20,16,10,.7);border:1px solid rgba(255,255,255,.15);color:#d8ccb0}
+.hbkcat button i{font-style:normal;color:#ffd76a;margin-right:4px}.hbkcat button small{color:#8a7f68;margin-left:3px}
+.hbkcat button.on{background:linear-gradient(180deg,#5a4818,#3a2e10);border-color:#c9a24a;color:#fff3d6}
+.hbklist{flex:1;min-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:4px}
+.hbkrow{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.hbkrow:hover{background:rgba(255,240,200,.07)}
+.hbkrow>i{font-style:normal;flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:16px;color:#2a1a04;background:var(--kc,linear-gradient(180deg,#ffe9a8,#c99a3a))}
+.hbkrow.buff>i{background:#3a7a70;color:#effffb}.hbkrow.debuff>i{background:#a8272c;color:#fff0ee}
+.hbkrow>div{flex:1;min-width:0;display:flex;flex-direction:column}
+.hbkrow b{font-weight:400;font-size:14.5px;color:#fff3d6}
+.hbkrow span{font-size:12.5px;color:#c8bda3;line-height:1.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbkrow.open span{white-space:normal}
+.hbkrow em{font-style:normal;font-size:10.5px;color:#8a7f68;flex:none;margin-top:2px}
+.hbkfoot{display:flex;justify-content:center}
+.hbksub{font-size:12px;color:#a89c82;margin-top:-4px}
+.hbkp .hbk{max-height:calc(84vh - 90px)}
+/* 색약 모드 — 붉은·푸른 대신 파랑·주황, 이로운 것 ▲ · 해로운 것 ▼ */
+body.a11y-cb .hpbar i{background:linear-gradient(#3a7ad8,#1e4a9a)}
+body.a11y-cb .unit .ebar i{background:linear-gradient(#e8902a,#a85a10)}
+body.a11y-cb .st.buff{background:rgba(40,100,220,.18);color:#123a8a;border-color:rgba(40,100,220,.6)}
+body.a11y-cb .st.debuff{background:rgba(230,140,20,.22);color:#6a3a00;border-color:rgba(230,140,20,.7)}
+body.a11y-cb .st.buff::before{content:'▲';font-size:8px;margin-right:1px}
+body.a11y-cb .st.debuff::before{content:'▼';font-size:8px;margin-right:1px}
+body.a11y-cb .intent.big{color:#c86a00}
+body.a11y-cb .unit .prev{color:#c86a00}
+body.a11y-cb .hbkrow.buff>i{background:#2a5ab8}body.a11y-cb .hbkrow.debuff>i{background:#c87a10}
+/* 글자 크기 */
+body.fs1 .card .txt,body.fs1 .hint,body.fs1 .casthint,body.fs1 #tip,body.fs1 .toast,body.fs1 .optrow small,body.fs1 .hbkrow span,body.fs1 .st{zoom:1.12}
+body.fs2 .card .txt,body.fs2 .hint,body.fs2 .casthint,body.fs2 #tip,body.fs2 .toast,body.fs2 .optrow small,body.fs2 .hbkrow span,body.fs2 .st{zoom:1.25}
+body.fs1 #topbar,body.fs1 .unit .nm{zoom:1.06}body.fs2 #topbar,body.fs2 .unit .nm{zoom:1.12}
+/* 번쩍임 줄이기 */
+body.a11y-noflash .flashlayer,body.a11y-noflash .ndflashw,body.a11y-noflash .ndbolt,body.a11y-noflash .dnturn .dnsweep{display:none!important}
+body.a11y-noflash .ndtint{animation:none;opacity:.7}
+/* 한 손 모드 — 오른손: 비기 · 팻을 오른쪽 위로 / 왼손: 거울처럼 */
+body.oh-r #skillbtn{left:auto;right:22px;bottom:196px}
+body.oh-r #petbtn{left:auto;right:22px;bottom:274px}
+body.oh-r #endturn{padding:16px 30px;font-size:18px}
+body.oh-l #endturn{right:auto;left:22px}
+@media (min-height:501px){body.oh-l #autobtn{right:auto;left:22px}}
+body.oh-l #endturn{padding:16px 30px;font-size:18px}
+body.oh-l #skillbtn{left:auto;right:20px}
+body.oh-l #petbtn{left:auto;right:20px}
+body.oh-l #energy{left:auto;right:100px;z-index:30}
+
 /* 막 체험 (판 66) */
 .trturn{position:fixed;left:50%;top:92px;transform:translateX(-50%);z-index:46;display:flex;align-items:center;gap:12px;padding:10px 22px 10px 10px;border-radius:30px;max-width:92vw;
   background:rgba(30,18,8,.92);border:1px solid rgba(255,210,140,.7);box-shadow:0 0 34px rgba(255,190,100,.4);animation:trIn 5.2s ease-in-out both;pointer-events:none}
@@ -17646,6 +17695,7 @@ function keywordsIn(d, v, u) {
       out.push(`<b>${s.n}</b> — ${s.d}`);
   }
   if (d.exhaust) out.push(`<b>소멸</b> — 사용 후 이번 전투에서 사라진다.`);
+  try { out.push(...kwExtraIn(txt.replace(/<[^>]+>/g, ''))); } catch (e) {}       /* 백과의 낱말 (판 68) */
   return out.join('<br>');
 }
 
@@ -19103,6 +19153,7 @@ function skillBanner(text, ssx) {
   setTimeout(() => n.remove(), 1000);
 }
 function screenFlash(color, ms) {
+  if (OPT.noFlash) return;                         /* 번쩍임 줄이기 (판 68) */
   const n = el('div', 'flashlayer');
   n.style.background = color;
   n.style.animation = `scrFlash ${ms || 420}ms ease-out forwards`;
@@ -29097,9 +29148,10 @@ function devSayPanel() {
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
 const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['soc', '교류', '社'], ['set', '설정', '設']];
-const MENU_NEW = { cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_NEW = { help: 1, cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
+  { k: 'help', g: '典', n: '도움말 백과', tab: 'set', al: '도움말 백과 사전 설명 낱말 상태이상 키워드 help', run: () => showHelpBook() },
   { k: 'auto',  g: '自', n: '자동 플레이', tab: 'adv', al: '오토 auto 자동', show: inRun,
     sub: () => autoOk() ? (AUTO.on ? '켜짐 — 누르면 멈춘다' : '꺼짐') : 'VIP', run: () => autoToggle(), keep: 1 },
   { k: 'quest', g: '課', n: '임무', tab: 'adv', al: '임무 퀘스트 일일 주간 미션', dot: () => questReady(), sub: () => { const q = questEnsure(); return (q.d || []).concat(q.w || []).filter(x => x.done).length + ' / 6'; }, run: () => showQuests() },
@@ -37763,6 +37815,93 @@ function trialPill(tr) {
   p.classList.toggle('last', s <= 60);
 }
 
+/* ══ 도움말 백과 · 접근성 (판 68) ═══════════════════════════════════
+   · 백과(典) — 상태이상 · 싸움 · 재화 · 모험 · 등급 · 이벤트 · 길드의 낱말을 한곳에. 찾기 · 갈래 · 누르면 펼친다
+     부적 위에 마우스를 올리거나(폰은 길게 누르면) 그 부적에 든 낱말의 뜻이 함께 뜬다 — 상태이상 + 아래 낱말들
+   · 접근성 — 색약 모드(붉은·푸른 대신 파랑·주황, 이로운 것 ▲ · 해로운 것 ▼) · 글자 크기 세 단 ·
+     번쩍임 줄이기 · 한 손 모드(폰 — 오른손 / 왼손: 차례 넘기기 · 비기 · 팻 단추를 한쪽으로)
+   ══════════════════════════════════════════════════════════════════ */
+const KW_CAT = [['st', '상태', '狀'], ['fight', '싸움', '戰'], ['money', '재화', '財'], ['run', '모험', '行'], ['grade', '등급', '級'], ['event', '이벤트', '祭'], ['social', '함께', '社']];
+const KW_EXTRA = [
+  ['방어도', '盾', 'fight', '받는 피해를 먼저 막아 준다. 내 차례가 다시 오면 사라진다 (금강이 있으면 남는다).'],
+  ['기', '氣', 'fight', '부적을 내는 데 드는 힘. 차례마다 최대치로 차오른다. 보스를 꺾을 때마다 이번 모험의 최대 기가 1 는다.'],
+  ['소멸', '滅', 'fight', '낸 뒤 이번 싸움에서 사라진다. 다음 싸움에는 돌아온다.'],
+  ['강화', '+', 'fight', '대장간이나 담금질로 수치가 오른 부적. 이름 뒤에 + 가 붙는다.'],
+  ['X 값', 'X', 'fight', '남은 기를 모두 쓴다 — 쓴 만큼 세진다.'],
+  ['속성 · 약점', '屬', 'fight', '부적과 요괴에게는 속성이 있다. 요괴의 약점 속성으로 치면 「약점!」이 뜨며 더 아프다.'],
+  ['의도', '意', 'fight', '요괴 머리 위의 그림 — 다음 차례에 무엇을 할지(공격 · 방어 · 저주 …) 미리 보여 준다.'],
+  ['각성', '覺', 'fight', '이따금 요괴가 깨어난다 — 붉은 테두리, 더 세게 친다. 운(運)이 낮을수록 잦다.'],
+  ['비기', '祕', 'fight', '기를 쓰지 않는 한 수. 하나만 장착하고 싸움마다 한 번. 보스를 꺾으면 셋 중 하나를 익힌다.'],
+  ['팻', '獸', 'fight', '데리고 다니는 요괴. 한 차례에 한 번 제 수를 쓴다. 쓰러지면 「슬픔의 원한」 — 되살리려면 엘리트를 잡는다.'],
+  ['물약', '藥', 'fight', '한 번 쓰는 것. 지닐 수 있는 자리가 정해져 있다.'],
+  ['유물', '寶', 'run', '모험 내내 붙는 힘. 엘리트 · 보스 · 보물에서 얻는다. 둘을 합쳐 더 높은 것으로 만들 수 있다(유물 조합).'],
+  ['엘리트', '鬼', 'run', '굵은 요괴. 이기면 유물과 좋은 부적. 뒷막으로 갈수록 자주 나온다.'],
+  ['야영지', '火', 'run', '쉬어 체력을 되찾거나 부적을 벼린다.'],
+  ['수상한 일', '?', 'run', '고르는 사건. 좋은 것도 나쁜 것도 있다.'],
+  ['층 · 막', '層', 'run', '한 막은 32층 + 보스. 보스를 꺾으면 다음 막으로. 25막을 넘으면 승천.'],
+  ['막 체험', '體', 'event', '관리자가 연 이벤트 — 정한 시간 동안 그 막을 맛본다. 끝나면 원래 모험으로 곧바로 돌아간다.'],
+  ['낮과 밤', '夜', 'event', '서버 시계로 5분마다 바뀐다. 밤의 싸움은 요괴가 사납고(힘 · 피해) 전리품이 1.5배, 달의 조각이 떨어진다.'],
+  ['자연재해', '天', 'event', '한 시간에 한 번 하늘이 움직인다 — 흉(해일 · 산사태 …) 또는 길(단비 · 무지개 …). 서 있는 막에 맞는 것이 온다.'],
+  ['슈팅 스타 · 혼돈 · 풍년', '星', 'event', '관리자가 퍼뜨리는 이벤트. 켜질 때마다 그 이벤트의 재료(원료)를 하나 받는다.'],
+  ['골드', '金', 'money', '이번 모험의 돈 — 상점 · 대장간. 모험이 끝나면 사라진다.'],
+  ['다이아', '玉', 'money', '상자 · 일일상점 · 비싼 것에 쓴다. 이번 모험 안에 있다.'],
+  ['정진', '精', 'money', '쓰러져도 남는 수행 재화. 수행터에서 다음 모험을 영구히 세게 한다. 암자 꾸미기에도 쓴다.'],
+  ['원료 · 돌연변이', '囊', 'money', '이벤트 재료(슈팅스타 금 · 혼돈 · 풍년 · 극광 · 달의 조각)로 S급 이상 부적에 돌연변이를 입힌다. 둘이 합성소에서 합치면 융합 원료.'],
+  ['해킹 토큰', '⌬', 'money', '매시 정각의 해킹 보스를 잡으면 받는다. 해킹상점에서 쓴다 (서버에 적힌다).'],
+  ['멀티 토큰', '幣', 'money', '대전에서 받는다. 교환소에서 쓴다.'],
+  ['길드 주화', '貨', 'money', '길드 출석 · 기부 · 영지 토벌에서 받는다. 길드 상점에서 쓴다 (서버에 적힌다).'],
+  ['길드', '旗', 'social', '스무 명부터, 레벨마다 자리 +2. 출석 · 기부 · 영지 토벌로 경험을 쌓으면 길드원 모두에게 가호. 떠나면 하루 동안 다른 길드에 못 든다.'],
+  ['영지 토벌', '領', 'social', '주마다 새 길드 지도. 전초 → 요새 → 관문 → 대요괴(길드가 함께 깎는 체력).'],
+  ['대전 · 탈주', '對', 'social', '1대1 · 2대2. 랭크 대전에서 판이 끝나기 전에 나가면 점수 -15 더 · 토큰 없음, 하루 세 번째부터 10분 동안 줄을 못 선다.'],
+  ['도배', '話', 'social', '같은 말은 30초 안에 다시 못 하고, 20초에 여섯 마디를 넘기면 30초 동안 입이 묶인다.']
+];
+function kwAll() {
+  const out = [];
+  for (const k in STATUS) { const s = STATUS[k]; if (k === 'godmode') continue; out.push({ n: s.n, g: s.g, cat: 'st', d: s.d, tone: s.kind }); }
+  for (const [n, g, cat, d] of KW_EXTRA) out.push({ n, g, cat, d });
+  for (const r of (typeof GRADE_ORDER !== 'undefined' ? GRADE_ORDER : Object.keys(GRADE))) { const G0 = GRADE[r]; if (!G0 || !G0.desc) continue; out.push({ n: G0.n, g: G0.s || '級', cat: 'grade', d: G0.desc, c: G0.c }); }
+  return out;
+}
+function showHelpBook(q0) {
+  let cat = '', q = q0 || '';
+  const p = modal(`<h2>典 도움말 백과</h2><div class="hbk"><div class="hbksub">낱말을 누르면 뜻이 펼쳐진다 · 부적 위에 올리면 그 부적의 낱말도 함께 뜬다</div>
+      <input class="hbkq" id="hb_q" placeholder="⌕ 찾기 — 약화 · 방어도 · 정진 …" value="${wEsc(q)}" autocomplete="off">
+      <div class="hbkcat" id="hb_cat"></div><div class="hbklist" id="hb_list"></div>
+      <div class="hbkfoot"><button class="brush-btn ghost" id="hb_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'hbkp');
+  p.dataset.noauto = '1';
+  const all = kwAll(), list = p.querySelector('#hb_list'), cats = p.querySelector('#hb_cat');
+  const draw = () => {
+    cats.innerHTML = `<button class="${cat ? '' : 'on'}" data-c="">모두 <small>${all.length}</small></button>` + KW_CAT.map(([k, n, g]) => `<button class="${cat === k ? 'on' : ''}" data-c="${k}"><i>${g}</i>${n} <small>${all.filter(x => x.cat === k).length}</small></button>`).join('');
+    cats.querySelectorAll('button').forEach(b => b.onclick = () => { cat = b.dataset.c; try { SND.ui(); } catch (e) {} draw(); });
+    const qq = q.trim();
+    const rows = all.filter(x => (!cat || x.cat === cat) && (!qq || x.n.indexOf(qq) >= 0 || x.d.indexOf(qq) >= 0));
+    list.innerHTML = rows.length ? rows.map(x => `<div class="hbkrow ${x.tone || ''}"${x.c ? ` style="--kc:${x.c}"` : ''}><i>${x.g}</i><div><b>${x.n}</b><span>${x.d}</span></div><em>${(KW_CAT.find(c => c[0] === x.cat) || [])[1] || ''}</em></div>`).join('')
+      : '<div class="dashnone">그런 낱말이 없다</div>';
+    list.querySelectorAll('.hbkrow').forEach(r => r.onclick = () => r.classList.toggle('open'));
+  };
+  draw();
+  const qi = p.querySelector('#hb_q');
+  qi.oninput = () => { q = qi.value; draw(); };
+  qi.onkeydown = e => e.stopPropagation();
+  p.querySelector('#hb_x').onclick = closeTop;
+  if (!('ontouchstart' in window)) setTimeout(() => qi.focus(), 50);
+}
+/* 부적 설명에 든 낱말 — 상태이상 + 위의 몇 낱말 */
+const KW_IN_CARD = ['방어도', '소멸', '강화', '기'];
+function kwExtraIn(txt) {
+  const out = [];
+  for (const [n, , , d] of KW_EXTRA) if (KW_IN_CARD.includes(n) && n !== '소멸' && n !== '기' && txt.indexOf(n) >= 0) out.push(`<b>${n}</b> — ${d}`);
+  return out;
+}
+/* ── 접근성 ── */
+function a11yApply() {
+  const B = document.body.classList;
+  B.toggle('a11y-cb', !!OPT.cb);
+  B.toggle('fs1', OPT.fs === 1); B.toggle('fs2', OPT.fs === 2);
+  B.toggle('a11y-noflash', !!OPT.noFlash);
+  B.toggle('oh-r', OPT.oneHand === 'r'); B.toggle('oh-l', OPT.oneHand === 'l');
+}
+
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -39331,7 +39470,7 @@ function showSettings() {
   p.dataset.noauto = '1';
   const root = p.querySelector('#optl'), nav = p.querySelector('#op_nav');
   let list = root;
-  const SEC_G = { '소 리': '音', '화 면': '畵', '편 의': '便', '난 이 도': '難', '자 동 플 레 이': '自', '안 내': '導', '기 록': '錄', '계 정': '名' };
+  const SEC_G = { '접 근 성': '助', '소 리': '音', '화 면': '畵', '편 의': '便', '난 이 도': '難', '자 동 플 레 이': '自', '안 내': '導', '기 록': '錄', '계 정': '名' };
   const head = t => {
     const g = SEC_G[t] || '設', sec = el('section', 'optsec', `<div class="opthead"><i>${g}</i><span>${t}</span></div>`);
     sec.dataset.t = t; root.appendChild(sec); list = sec;
@@ -39440,6 +39579,19 @@ function showSettings() {
   row('느린 기계면 알아서 가볍게', '화면이 버벅이면 배경의 떠다니는 것 · 흐르는 안개를 스스로 멈춘다 (켜 두면 처음 몇 초 재 본다)', () => OPT.autoLite !== false, v => { OPT.autoLite = v; if (!v) document.body.classList.remove('autolite'); else perfProbe(true); });
   row('부적 글씨 크게', '부적의 설명 글을 한 단 크게 — 작은 화면에서 읽기 쉽게', () => !!OPT.bigText, v => { OPT.bigText = v; optApply(); });
   row('가볍게 모드', '먹물 파편 · 흔들림 · 간지 · 큰 이름 · 3D 컷씬을 한꺼번에 끄고, 풀면 그대로 돌려놓는다 (L)', () => liteOn(), v => { if (v !== liteOn()) { liteToggle(); setTimeout(() => { closeTop(); showSettings(); }, 50); } });
+
+  head('접 근 성');
+  row('색약 모드', '붉은 · 푸른 빛 대신 파랑 · 주황으로 — 체력 막대 · 요괴 체력 · 상태(이로운 것 ▲ · 해로운 것 ▼) · 공격 예고', () => !!OPT.cb, v => { OPT.cb = v; optApply(); });
+  cycle('글자 크기', '부적 설명 · 알림 · 설명 풍선 · 창의 글씨를 키운다', ['0', '1', '2'], { '0': '보통', '1': '크게', '2': '아주 크게' },
+    () => String(OPT.fs || 0), v => { OPT.fs = +v; optApply(); });
+  row('번쩍임 줄이기', '화면이 하얗게 · 붉게 번쩍이는 연출 · 번개 · 하늘 바뀌는 빛을 끈다 (빛에 예민한 사람)', () => !!OPT.noFlash, v => { OPT.noFlash = v; optApply(); });
+  cycle('한 손 모드 (폰)', '싸움 단추를 한쪽 엄지가 닿는 곳으로 모은다 — 오른손: 비기 · 팻을 오른쪽 위로 · 왼손: 차례 넘기기까지 모두 왼쪽으로', ['', 'r', 'l'], { '': '끔', r: '오른손', l: '왼손' },
+    () => OPT.oneHand || '', v => { OPT.oneHand = v; optApply(); });
+  row('화면 흔들림', '묵직한 일격에 화면이 흔들린다 (어지러우면 끈다)', () => OPT.shake, v => { OPT.shake = v; if (v) shake(); });
+  {
+    const n = el('div', 'optrow', `<div class="lb"><b>典 도움말 백과</b><small>상태이상 · 싸움 · 재화 · 모험 · 등급 · 이벤트의 낱말 뜻을 한곳에서</small></div>`);
+    const b1 = el('button', 'val'); b1.textContent = '열기'; b1.onclick = () => showHelpBook(); n.appendChild(b1); list.appendChild(n);
+  }
 
   head('편 의');
   row('대상 자동 선택', '참격처럼 요괴를 골라야 하는 부적 · 물약 — 누르기만 하면 알맞은 요괴에게 바로 쓴다 (마무리할 수 있는 놈 → 때리려는 놈 → 가장 약한 놈). 끄면 예전처럼 요괴를 눌러 고른다', () => !!OPT.autoTgt, v => { OPT.autoTgt = v; });
@@ -39604,6 +39756,7 @@ function showSettings() {
 }
 /* 설정이 화면에 바로 드러나는 것들 (판 57) */
 function optApply() {
+  try { a11yApply(); } catch (e) {}                 /* 접근성 (판 68) */
   document.body.classList.toggle('bgstill', !!OPT.bgStill);
   document.body.classList.toggle('bigtxt', !!OPT.bigText);
   clockTick();
