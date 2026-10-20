@@ -1805,6 +1805,26 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 막 체험 (판 66) */
+.trturn{position:fixed;left:50%;top:92px;transform:translateX(-50%);z-index:46;display:flex;align-items:center;gap:12px;padding:10px 22px 10px 10px;border-radius:30px;max-width:92vw;
+  background:rgba(30,18,8,.92);border:1px solid rgba(255,210,140,.7);box-shadow:0 0 34px rgba(255,190,100,.4);animation:trIn 5.2s ease-in-out both;pointer-events:none}
+.trturn.in{animation-duration:6s}
+.trturn b{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#2a1404;background:radial-gradient(circle,#fff3d6,#ffb04a 60%,#a85a1a);box-shadow:0 0 18px rgba(255,190,100,.8)}
+.trturn.dead b{background:radial-gradient(circle,#ffd8d0,#c8584a 60%,#5a1a14);color:#fff}
+.trturn.clear b{background:radial-gradient(circle,#fffbe8,#ffd76a 60%,#b6821c)}
+.trturn span{display:flex;flex-direction:column;line-height:1.35}
+.trturn em{font-style:normal;font-size:16px;letter-spacing:.12em;color:#fff3d6}
+.trturn small{font-size:11.5px;color:#d8c8a8}
+@keyframes trIn{0%{opacity:0;transform:translate(-50%,-16px) scale(.92)}10%,85%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0}}
+.trpill{position:fixed;left:50%;top:58px;transform:translateX(-50%);z-index:42;display:flex;align-items:center;gap:8px;padding:4px 6px 4px 6px;border-radius:18px;
+  background:rgba(30,18,8,.9);border:1px solid rgba(255,210,140,.65);box-shadow:0 0 16px rgba(255,190,100,.35);font-size:13px;color:#fff3d6}
+.trpill i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#2a1404;background:radial-gradient(circle,#fff3d6,#ffb04a 60%,#a85a1a)}
+.trpill b{font-weight:400;letter-spacing:.08em}.trpill em{font-style:normal;color:#ffd27a;font-variant-numeric:tabular-nums;min-width:40px}
+.trpill u{text-decoration:none;cursor:pointer;font-size:11.5px;padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,210,140,.4);color:#ffe2b0}
+.trpill.last{border-color:#ff6a5a;animation:trLast 1s ease-in-out infinite}.trpill.last em{color:#ff8a7a}
+@keyframes trLast{50%{box-shadow:0 0 22px rgba(255,90,80,.6)}}
+.castsec.trsec{border-color:rgba(255,190,100,.45);background:linear-gradient(180deg,rgba(80,50,20,.25),transparent)}
+
 /* 길드 더 (판 65) */
 .gwcost{display:flex;flex-wrap:wrap;gap:6px}
 .gwcost span{display:flex;align-items:center;gap:5px;font-size:12.5px;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#efe4cb}
@@ -16291,6 +16311,7 @@ async function checkOver() {
     else if (b.kind === 'devboss') devBossLose();   /* 백야의 시험 — 모험은 그대로, 다시 도전 */
     else if (b.kind === 'hbboss') hbBattleLose();   /* 매시 해킹 보스 — 모험은 그대로, 다시 도전 */
     else if (G_KIND(b.kind)) gRaidLose(b);          /* 영지 토벌 — 모험은 그대로 (판 65) */
+    else if (trialOn()) trialEnd('dead');           /* 막 체험 — 쓰러져도 모험은 끝나지 않는다 (판 66) */
     else if (/^cave/.test(b.kind)) caveLose();      /* 백귀굴 — 밀려날 뿐 모험은 그대로 (판 57) */
     else if (b.kind === 'eggboss') eggBossLose();   /* 산신 — 굴러떨어질 뿐 */
     else if (/^tower/.test(b.kind)) towerLose();     /* 무한의 탑 — 탑이 끝난다 (판 59) */
@@ -16427,6 +16448,7 @@ function _winBattle() {
   if (b.kind === 'eggboss') { run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); SND.victory(); eggBossWin(); return; }   /* 산신 */
   if (/^tower/.test(b.kind)) { run._dnWin = !!b.night; run.inBattle = false; if (P()) run.hp = Math.max(1, P().hp); run.stats.battles++; try { xpOnWin(b); } catch (e) {} SND.victory(); towerWin(b.kind); return; }   /* 무한의 탑 (판 59) */
   if (b.replay) { try { xpOnWin(b); } catch (e) {} replayEnd(true); return; }                       /* 다시 하기 — 경험치만 */
+  if (trialOn() && b.kind === 'boss') { try { xpOnWin(b); } catch (e) {} SND.victory(); trialEnd('clear'); return; }   /* 막 체험 — 보스를 꺾으면 완주 (판 66) */
   run.inBattle = false;
   if (P()) run.hp = P().hp;
   run.stats.battles++;
@@ -29999,6 +30021,9 @@ async function liveFetch() {
     LIVE.hbNext = +d.hbNext || 0;
     LIVE.shadow = d.shadow && typeof d.shadow === 'object' ? d.shadow : null;      /* 그림자 침공 */
     LIVE.devboss = d.devboss && typeof d.devboss === 'object' ? d.devboss : null;   /* 백야의 시험 */
+    LIVE.nd = d.nd && typeof d.nd === 'object' && d.nd.id ? d.nd : null;              /* 자연재해 (판 62) */
+    LIVE.dn = d.dn && typeof d.dn === 'object' && +d.dn.every ? d.dn : null;           /* 낮과 밤 (판 64) */
+    LIVE.trial = d.trial && typeof d.trial === 'object' && d.trial.id ? d.trial : null; /* 막 체험 (판 66) */
     /* 폭탄 돌리기 — 참가한 사람은 1초마다 따로 물으니, 그 사이 낡은 소식으로 덮지 않는다 */
     { const nb = d.bomb && typeof d.bomb === 'object' ? d.bomb : null;
       if (!nb || !LIVE.bomb || nb.id !== LIVE.bomb.id || Date.now() - _bomb.heard > 3000) LIVE.bomb = nb; }
@@ -33254,6 +33279,7 @@ function liveTick() {
   try { ndTick(); } catch (e) { console.error('자연재해', e); }
   try { dnTick(); } catch (e) { console.error('낮과 밤', e); }
   try { gLvTick(); } catch (e) {}
+  try { trialTick(); } catch (e) { console.error('막 체험', e); }
   /* 별비와 카드 대전 — 지도·제목에서만 내린다. 싸우는 중엔 덮지 않는다 */
   const open = G.scene === 'map' || G.scene === 'title';
   starSky(k === 'star' && open);
@@ -33714,6 +33740,20 @@ function drawCast(grid) {
         <button class="brush-btn ghost" id="ct_hboff" style="color:#e9dfc9;border-color:#8a7f68">닫는다</button>
       </div>
       <div class="casthint" id="ct_hbnow"></div>
+    </div>
+
+    <div class="castsec trsec"><b>體 막 체험 — 모두를 그 막으로 옮긴다 (강제 이동)</b>
+      <div class="casthint">정한 시간 동안 모두가 그 막의 지도로 옮겨져 맛본다 — 아직 못 깬 막도, 개발자만 들어가던 제26막도.
+        들어가기 전 모험은 떠 두었다가, 시간이 다하면 그 자리에서 곧바로 되돌린다(체험에서 얻은 것 · 잃은 것 모두 없던 일). 그 막의 라운드는 더 할 수 없다.
+        쓰러져도 모험은 끝나지 않고, 보스를 꺾으면 돌아가서 다이아 ${TRIAL_PAY.clear} · 끝까지 남으면 ${TRIAL_PAY.stay}. 싸움 · 컷씬 중인 이는 끝난 뒤에 옮겨진다.</div>
+      <div class="castbtnrow">
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">막 <select id="ct_tract">${Array.from({ length: ACT_MAX }, (_, i) => `<option value="${i + 1}"${i + 1 === ACT_MAX ? ' selected' : ''}>제${i + 1}막 ${ACT_NAME[i + 1] || ''}</option>`).join('')}</select></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_trmin" type="number" min="1" max="180" value="30" style="width:60px"> 분</label>
+        <input id="ct_trtitle" maxlength="40" placeholder="이름 (예: 26막 업데이트 기념)" style="flex:1;min-width:140px">
+        <button class="brush-btn gold" id="ct_tr">체험을 연다</button>
+        <button class="brush-btn ghost" id="ct_troff" style="color:#e9dfc9;border-color:#8a7f68">거둔다 (모두 곧바로 돌아간다)</button>
+      </div>
+      <div class="casthint" id="ct_trnow"></div>
     </div>
 
     <div class="castsec ndsec"><b>天 자연재해 — 강제로 일으킨다 (백야 · 백사만)</b>
@@ -34188,6 +34228,19 @@ function drawCast(grid) {
   };
   grid.querySelector('#ct_hbtry').onclick = () => cutByName('hbblast');
   grid.querySelector('#ct_hboff').onclick = () => send({ hb: null }, '해킹 보스 닫기').then(() => liveFetch().then(hbNowLine).catch(() => {}));
+  /* 막 체험 — 강제 이동 (판 66) */
+  const trNowLine = () => { const e = grid.querySelector('#ct_trnow'); if (!e) return; const t = trialLive();
+    e.innerHTML = t ? `지금 — <b>제${t.act}막 체험</b>${t.title ? ' · ' + wEsc(t.title) : ''} · 남은 때 ${wTime(Math.max(0, t.until - srvNow()))}` : '열린 체험이 없다'; };
+  trNowLine();
+  grid.querySelector('#ct_tr').onclick = () => {
+    const act = +grid.querySelector('#ct_tract').value || ACT_MAX, min = Math.max(1, Math.min(180, Math.floor(+grid.querySelector('#ct_trmin').value || 30)));
+    const title = grid.querySelector('#ct_trtitle').value.trim().slice(0, 40);
+    const patch = hype(`제${act}막 체험`, { trial: { act, min, title } });
+    const after = () => liveFetch().then(trNowLine).catch(() => {});
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: `제${act}막 체험`, then: patch } }, `카운트다운 ${cds()}초 → 제${act}막 체험`).then(after);
+    send(patch, `제${act}막 체험 ${min}분`).then(after);
+  };
+  grid.querySelector('#ct_troff').onclick = () => send({ trial: null }, '막 체험 거두기').then(() => liveFetch().then(trNowLine).catch(() => {}));
   /* 자연재해 — 지금 일으킨다 (판 62) */
   const ndNowLine = () => { const e = grid.querySelector('#ct_ndnow'); if (!e) return; const w = LIVE.nd;
     e.innerHTML = w && w.id && srvNow() < w.until ? `지금 — <b>${w.forced ? '일으킨 재해' : '저절로 온 재해'}</b> · ${w.k && ND_BY[w.k] ? ND_BY[w.k].n : w.sign > 0 ? '길' : '흉'} · 남은 때 ${wTime(Math.max(0, w.until - srvNow()))}`
@@ -37867,6 +37920,90 @@ function guildRuleDraw(p, host) {
     if (r.ok) { GUILD.g = r.g; toast('규칙을 적었다'); guildDraw(p); } else toast(r.why); };
   host.querySelectorAll('[data-acc]').forEach(u => u.onclick = async () => { const r = await guildAsk('accept', { who: u.dataset.acc }); if (r.g) GUILD.g = r.g; if (!r.ok) toast(r.why); guildDraw(p); });
   host.querySelectorAll('[data-rej]').forEach(u => u.onclick = async () => { const r = await guildAsk('reject', { who: u.dataset.rej }); if (r.g) GUILD.g = r.g; if (!r.ok) toast(r.why); guildDraw(p); });
+}
+
+/* ══ 막 체험(體驗) — 강제 이동 이벤트 (판 66) ══════════════════════════
+   백야 · 백사가 막(예: 제26막)과 시간을 정해 퍼뜨리면, 그동안 모두가 그 막의 지도로 옮겨져 맛본다.
+   · 아직 못 깬 막이어도, 26막처럼 개발자만 들어가던 막이어도 체험 동안은 열린다
+   · 들어가기 전의 모험을 통째로 떠 둔다(모험 저장 안에 함께 — 기계를 바꿔도 남는다). 시간이 다하면 그 자리에서 곧바로 되돌린다
+     — 싸움 중이어도, 고르는 창이 떠 있어도. 체험에서 얻은 것도 잃은 것도 없던 일이 된다
+   · 끝나면 그 막의 라운드는 더 할 수 없다. 한 번 나온 체험에는 다시 끌려가지 않는다
+   · 체험 중에 쓰러져도 모험은 끝나지 않는다 — 체험이 끝날 뿐. 「나가기」로 먼저 나올 수도 있다
+   · 그 막의 보스까지 꺾으면 체험 완주 — 원래 모험으로 돌아가 다이아를 받는다 (끝까지 버티기만 해도 조금)
+   · 모험이 없으면 체험용 모험을 잠깐 만들어 들어가고, 끝나면 처음 화면으로
+   · 싸움 · 컷씬 · 대전 · 고르는 창이 떠 있으면 끝난 뒤에 옮긴다. 이미 그 막에 있는 이는 그대로
+   ══════════════════════════════════════════════════════════════════ */
+const _liveBoot = Date.now();
+const TRIAL_PAY = { clear: 500, stay: 100 };
+function trialLive() { const t = LIVE.trial; return t && t.id && srvNow() < t.until ? t : null; }
+const trialOn = () => !!(G.run && G.run._trial);
+function trialTick() {
+  const t = trialLive();
+  if (trialOn()) {
+    const tr = G.run._trial, fresh = LIVE.at >= _liveBoot;
+    const gone = srvNow() >= tr.until || (fresh && (!t || t.id !== tr.id));
+    if (gone) { trialEnd('time'); return; }
+    trialPill(tr); return;
+  }
+  trialPill(null);
+  if (!t || (META.trialSeen || '') === t.id) return;
+  if (G.b || (G.run && G.run._pvp)) return;
+  try { if (cutPlaying() || document.querySelector('.cut')) return; } catch (e) {}
+  if ($('#overlay') && $('#overlay').children.length) return;
+  if (G.run ? G.scene !== 'map' : (G.scene !== 'title' || !acctOn())) return;
+  trialStart(t);
+}
+function trialStart(t) {
+  META.trialSeen = t.id; saveMeta();
+  let fresh = false;
+  if (!G.run) { newRun(0); closeOverlay(); fresh = true; if (!G.run) return; }
+  const run = G.run;
+  if (run.act === t.act && !fresh) { toast(`體 제${t.act}막 체험이 열렸다 — 이미 그 막에 있다`); return; }
+  const back = fresh ? '' : JSON.stringify({ run, cp: G.cp || null });
+  run._trialBack = back;
+  run._trial = { id: t.id, act: t.act, until: t.until, fresh, from: fresh ? 0 : run.act, title: t.title || '' };
+  run.act = t.act; run.floor = 0; run.map = genMap(t.act); run.mapCur = -1; run.mapDone = []; run.bossPick = null; run.shop = null;
+  run.hp = run.maxHp; run.inBattle = false;
+  G.cp = null; closeOverlay(); saveRun(); showMap();
+  trialFx(t, true);
+}
+/* 되돌린다 — why: time(시간이 다했다) · dead(쓰러졌다) · leave(나갔다) · clear(보스를 꺾었다) */
+function trialEnd(why) {
+  const run = G.run; if (!run || !run._trial) return;
+  const tr = run._trial, back = run._trialBack;
+  if (G.b) { try { battleWatch(false); } catch (e) {} G.b.over = true; G.b = null; }
+  try { closeOverlay(); } catch (e) {}
+  try { const c = document.querySelector('.cut'); if (c) c.remove(); } catch (e) {}
+  if (back) {
+    try { const o = JSON.parse(back); adoptRun(o.run); G.cp = o.cp || null; }
+    catch (e) { console.error('체험 되돌리기', e); delete run._trial; delete run._trialBack; run.act = tr.from || 1; run.map = genMap(run.act); run.mapCur = -1; run.mapDone = []; }
+  } else { G.run = null; G.cp = null; }
+  const pay = why === 'clear' ? TRIAL_PAY.clear : why === 'time' ? TRIAL_PAY.stay : 0;
+  if (G.run && pay) G.run.dia = (G.run.dia || 0) + pay;
+  G.b = null;
+  if (G.run) { saveRun(); _bgKey = ''; showMap(); } else { clearSave(); showTitle(); }
+  trialPill(null);
+  const say = { time: '체험 시간이 다했다', dead: '체험 중에 쓰러졌다 — 모험은 그대로다', leave: '체험에서 나왔다', clear: `제${tr.act}막 보스를 꺾었다 — 체험 완주!` }[why] || '체험이 끝났다';
+  const n = el('div', 'trturn ' + why, `<b>體</b><span><em>${say}</em><small>${G.run ? `원래 모험(제${G.run.act}막)으로 돌아왔다` : '처음 화면으로 돌아왔다'}${pay && G.run ? ` · 玉 +${pay}` : ''} · 그 막의 라운드는 더 할 수 없다</small></span>`);
+  ($('#app') || document.body).appendChild(n); setTimeout(() => n.remove(), 5200);
+  try { if (why === 'clear') { SND.victory(); SND.unlock(); } else SND.gong(); screenFlash(why === 'clear' ? 'rgba(255,215,120,.5)' : 'rgba(180,200,255,.4)', 700); } catch (e) {}
+}
+function trialFx(t, enter) {
+  const n = el('div', 'trturn in', `<b>體</b><span><em>제${t.act}막 · ${wEsc(ACT_NAME[t.act] || '')} 체험${t.title ? ' — ' + wEsc(t.title) : ''}</em>
+    <small>${Math.round((t.until - srvNow()) / 60000)}분 동안 · 들어오기 전 모험은 그대로 떠 두었다 · 쓰러져도 모험은 끝나지 않는다 · 시간이 다하면 곧바로 돌아간다</small></span>`);
+  ($('#app') || document.body).appendChild(n); setTimeout(() => n.remove(), 6000);
+  try { SND.boss(); SND.gong(); screenFlash('rgba(255,210,140,.5)', 900); shake(true); stampWord('體 驗', '#ffd27a'); } catch (e) {}
+}
+/* 남은 때 · 나가기 */
+function trialPill(tr) {
+  let p = $('#trpill');
+  if (!tr) { if (p) p.remove(); return; }
+  if (!p) { p = el('div', 'trpill'); p.id = 'trpill'; document.body.appendChild(p);
+    p.onclick = e => { if (!e.target.closest('u')) return; if (G.b) { toast('싸움이 끝난 뒤에 나간다'); return; }
+      if (!confirm('체험에서 나갈까? 다시 들어올 수 없다')) return; trialEnd('leave'); }; }
+  const s = Math.max(0, Math.ceil((tr.until - srvNow()) / 1000));
+  p.innerHTML = `<i>體</i><b>제${tr.act}막 체험</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em><u>나가기</u>`;
+  p.classList.toggle('last', s <= 60);
 }
 
 const CHAT_SEEN = 'baekgwi_chat_seen';

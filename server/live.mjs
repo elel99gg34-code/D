@@ -56,6 +56,7 @@ function expire(now) {
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (live.ndForce && now > live.ndForce.until) { live.ndForce = null; changed = true; }
+  if (live.trial && now > live.trial.until) { live.trial = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
   if (live.shadow && live.shadow.done && now - (live.shadow.end || now) > 5 * 60000) { live.shadow = null; changed = true; }
@@ -518,7 +519,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd', 'trial'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -995,6 +996,12 @@ async function applyCast(q) {
     if (!q.shadow) { if (live.shadow && !live.shadow.done) Object.assign(live.shadow, { done: true, end: now, until: now }); }
     else { live.shadow = { id: now, at: now, until: now + Math.max(1, Math.min(60, parseInt(q.shadow.min, 10) || 10)) * 60000, n: 0, ppl: 0, top: [], done: false, end: 0 };
       shadowWho = new Map(); }
+  }
+  /* 막 체험 (판 66) — 모두를 그 막의 지도로 옮겨 정한 시간 동안 맛보게 한다. 끝나면 앱이 원래 모험으로 되돌린다 */
+  if ('trial' in q) {
+    const now = Date.now(), d = q.trial;
+    live.trial = d ? { id: 't' + now, act: Math.max(1, Math.min(26, parseInt(d.act, 10) || 26)), at: now,
+      until: now + Math.max(1, Math.min(180, parseInt(d.min, 10) || 30)) * 60000, title: str(d.title, 40) } : null;
   }
   /* 자연재해 — 백야 · 백사가 지금 일으킨다. k 를 주면 그 재해, sign(1 길 · -1 흉)만 주면 그 결에서 막에 맞는 것 */
   if ('nd' in q) {
