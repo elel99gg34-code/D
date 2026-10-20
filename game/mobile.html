@@ -1805,6 +1805,95 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 도감 수집 보상 · 요괴 이야기 · 덱 보관함 (판 68) */
+.dxrw{align-self:stretch;margin:4px 0 10px;padding:10px 14px 12px;border-radius:12px;background:linear-gradient(160deg,rgba(60,46,16,.55),rgba(14,12,8,.7));border:1px solid rgba(255,215,120,.35)}
+.dxrhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dxrhead>b{font-weight:400;font-size:14px;color:#ffe9b0;letter-spacing:.14em}
+.dxrhead>span{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+.dxrhead>span em{font-style:normal;font-size:11.5px;color:#c8bda3}.dxrhead>span em i{font-style:normal;color:#ffd76a;margin-right:3px}
+.dxrhead>strong{font-weight:400;font-size:20px;color:#ffd76a;text-shadow:0 0 12px rgba(255,215,120,.5)}
+.dxrtrack{position:relative;height:10px;margin:22px 26px 26px 6px;border-radius:5px;background:rgba(0,0,0,.5);border:1px solid rgba(255,215,120,.25)}
+.dxrtrack>s{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:linear-gradient(90deg,#8a6a2a,#ffd76a);box-shadow:0 0 10px rgba(255,215,120,.6)}
+.dxrnode{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;cursor:pointer;font:inherit}
+.dxrnode i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px;color:#8a7f68;background:#1a160e;border:2px solid #4e4532;transition:transform .15s}
+.dxrnode u{text-decoration:none;font-size:10.5px;color:#8a7f68;position:absolute;top:38px;white-space:nowrap}
+.dxrnode.ready i{color:#2a1a04;background:radial-gradient(circle at 40% 35%,#fff3d6,#ffd76a 60%,#b6821c);border-color:#fff3d6;animation:dxrPulse 1.3s ease-in-out infinite}
+.dxrnode.ready u{color:#ffd76a}
+.dxrnode.paid i{color:#ffe9b0;background:#5a4818;border-color:#c9a24a}.dxrnode.paid i::after{content:'✓';position:absolute;right:-4px;top:-4px;font-size:10px;width:14px;height:14px;border-radius:50%;background:#3a8a5a;color:#fff;display:grid;place-items:center}
+.dxrnode.paid u{color:#c9a24a}
+.dxrnode.last i{width:42px;height:42px;font-size:20px}
+.dxrnode.last.ready i{background:radial-gradient(circle at 40% 35%,#fff,#ff9a7a 50%,#a8272c);color:#fff;box-shadow:0 0 22px rgba(255,120,90,.8)}
+.dxrnode:hover i{transform:scale(1.12)}
+@keyframes dxrPulse{50%{box-shadow:0 0 18px rgba(255,215,120,.95);transform:scale(1.08)}}
+.dxrinfo{width:0;min-width:100%;font-size:12px;color:#d8ccb0;line-height:1.5;height:3em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.dxrinfo b{font-weight:400;color:#fff3d6;margin-right:6px}.dxrinfo em{font-style:normal;color:#ff9a7a}.dxrinfo small{color:#8a7f68}
+.dexpay{position:fixed;left:50%;bottom:10%;transform:translateX(-50%);z-index:46;pointer-events:none;display:flex;align-items:center;gap:14px;padding:14px 22px;border-radius:14px;
+  background:linear-gradient(160deg,#3a2a08,#120c02);border:1.5px solid #ffd76a;box-shadow:0 0 40px rgba(255,215,120,.45),0 12px 30px rgba(0,0,0,.6);animation:dexpIn .5s cubic-bezier(.2,1.4,.4,1)}
+.dexpay>i{font-style:normal;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:28px;color:#2a1a04;background:radial-gradient(circle at 40% 35%,#fff3d6,#ffd76a 60%,#b6821c)}
+.dexpay>div{display:flex;flex-direction:column}.dexpay small{font-size:11px;color:#c9a24a;letter-spacing:.2em}.dexpay b{font-weight:400;font-size:20px;color:#fff3d6;letter-spacing:.1em}.dexpay em{font-style:normal;font-size:12px;color:#ffe2a0}
+.dexpay.big{padding:20px 30px;border-color:#ff9a7a;box-shadow:0 0 70px rgba(255,140,100,.6),0 12px 30px rgba(0,0,0,.6)}
+.dexpay.big>i{width:72px;height:72px;font-size:38px;background:radial-gradient(circle at 40% 35%,#fff,#ff9a7a 50%,#a8272c);color:#fff}
+.dexpay.big b{font-size:28px}
+@keyframes dexpIn{from{opacity:0;transform:translate(-50%,-20px) scale(.8)}}
+/* 백귀록 테두리 — 두루마리와 붉은 낙관 */
+.pfcard.fr-dex{border-color:#e8c86a;--fc:#ff8a6a;background:radial-gradient(circle at 88% 14%,rgba(200,40,50,.35),transparent 22%),linear-gradient(160deg,#2a1e10,#0e0a06);
+  box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 26px rgba(255,140,100,.35),inset 0 0 0 4px rgba(232,200,106,.15),inset 0 0 0 7px rgba(20,14,6,.9),inset 0 0 0 8px rgba(232,200,106,.4)}
+.pfcard.fr-dex::before{content:'錄';position:absolute;right:14px;top:12px;width:30px;height:30px;border-radius:5px;display:grid;place-items:center;font-size:18px;color:#fff3e8;background:#a8272c;box-shadow:0 0 12px rgba(200,40,50,.6);transform:rotate(-6deg);pointer-events:none;z-index:2}
+/* 요괴 이야기 */
+.lorepop{position:fixed;right:18px;top:120px;z-index:46;display:flex;align-items:center;gap:12px;padding:10px 16px 10px 10px;border-radius:12px;cursor:pointer;max-width:min(380px,80vw);
+  background:linear-gradient(160deg,#2a2418,#100c06);border:1px solid rgba(255,215,120,.45);box-shadow:0 10px 26px rgba(0,0,0,.55);animation:lorepIn .45s ease-out}
+.lorepop.out{opacity:0;transform:translateX(30px);transition:.5s}
+.lorepop>i{font-style:normal;flex:none;width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:24px;color:#fff;background:var(--ec);box-shadow:0 0 14px var(--ec)}
+.lorepop>div{display:flex;flex-direction:column;min-width:0}.lorepop small{font-size:10.5px;color:#c9a24a;letter-spacing:.1em}.lorepop b{font-weight:400;font-size:15px;color:#fff3d6}.lorepop em{font-style:normal;font-size:11px;color:#b3a68c}
+@keyframes lorepIn{from{opacity:0;transform:translateX(40px)}}
+.lorebox,.lorebk,.dbox{width:min(680px,92vw);display:flex;flex-direction:column;gap:10px}
+.lorehd{display:flex;align-items:center;gap:14px}
+.lorehd>i{font-style:normal;width:64px;height:64px;border-radius:14px;display:grid;place-items:center;font-size:34px;color:#fff;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--ec) 60%,#fff),var(--ec) 70%);box-shadow:0 0 22px color-mix(in srgb,var(--ec) 60%,transparent)}
+.lorehd b{font-weight:400;font-size:20px;color:#fff3d6;letter-spacing:.1em;display:block}.lorehd span{font-size:12.5px;color:#c8bda3}.lorehd span em{font-style:normal}.lorehd span b{display:inline;font-size:13px;color:#ffd76a}
+.lorelist{display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow-y:auto}
+.lorep{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12)}
+.lorep>u{text-decoration:none;flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px;color:#6a6050;background:#16130c;border:1px solid #3a3426}
+.lorep b{font-weight:400;font-size:13.5px;color:#a89c82}.lorep p{margin:4px 0 0;font-size:13.5px;line-height:1.75;color:#efe4cb}.lorep p.dim{color:#7a7060;font-size:12.5px}
+.lorep.on{background:linear-gradient(160deg,rgba(255,240,200,.07),rgba(255,240,200,.02));border:1px solid rgba(255,215,120,.25);border-left:3px solid var(--ec)}
+.lorep.on>u{color:#2a1a04;background:radial-gradient(circle at 40% 35%,#fff3d6,#c9a24a 70%);border-color:#ffd76a}.lorep.on b{color:#ffe9b0}
+.lorefoot{display:flex;justify-content:center;gap:10px}
+.lorestat{font-size:13px;color:#d8ccb0}.lorestat b{color:#ffd76a}
+.lorecat{display:flex;gap:6px;flex-wrap:wrap}
+.lorecat button{font:inherit;font-size:12.5px;padding:5px 12px;border-radius:16px;cursor:pointer;background:rgba(20,16,10,.7);border:1px solid rgba(255,255,255,.15);color:#d8ccb0}
+.lorecat button.on{background:linear-gradient(180deg,#5a4818,#3a2e10);border-color:#c9a24a;color:#fff3d6}
+.loregrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;max-height:54vh;overflow-y:auto;padding:2px}
+.lorecell{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:10px;cursor:pointer;font:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#efe4cb}
+.lorecell:hover{border-color:var(--ec);box-shadow:0 0 12px color-mix(in srgb,var(--ec) 40%,transparent)}
+.lorecell>i{font-style:normal;width:40px;height:40px;border-radius:9px;display:grid;place-items:center;font-size:21px;color:#fff;background:var(--ec)}
+.lorecell b{font-weight:400;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.lorecell small{font-size:10.5px;color:#9a8d74}
+.lorecell.done{border-color:rgba(255,215,120,.5);background:linear-gradient(160deg,rgba(255,215,120,.12),rgba(255,255,255,.02))}.lorecell.done small{color:#ffd76a}
+.lorecell.new::after{content:'새';position:absolute;right:5px;top:5px;font-size:10px;padding:0 5px;border-radius:7px;background:#c8283a;color:#fff}
+.lorepip{display:flex;gap:3px}.lorepip s{width:16px;height:5px;border-radius:3px;background:#3a3426}.lorepip s.on{background:#ffd76a;box-shadow:0 0 6px rgba(255,215,120,.6)}
+/* 덱 보관함 */
+.dbtop{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.dbtop .brush-btn[disabled]{opacity:.45;cursor:not-allowed}
+.dbimp{display:flex;gap:6px;flex:1;min-width:220px}
+.dbimp input{flex:1;font:inherit;font-size:13px;padding:7px 10px;border-radius:6px;background:rgba(0,0,0,.45);border:1px solid #6a5a3a;color:#efe4cb;min-width:0}
+.dbmp{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:rgba(80,120,200,.1);border:1px solid rgba(140,170,255,.3);font-size:13px;color:#dfe6ff}
+.dbmp>i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#2f5f9a;color:#fff}.dbmp>span{flex:1}.dbmp b{font-weight:400;color:#fff}
+.dblist{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto}
+.dbrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.dbrow.on{border-color:#7fa8ff;box-shadow:0 0 12px rgba(120,160,255,.25)}
+.dbmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dbmain b{font-weight:400;font-size:15px;color:#fff3d6}.dbmain small{font-size:11px;color:#9a8d74}
+.dbmain em{font-style:normal;font-size:11px}.dbmain em.ok{color:#9fe0a8}.dbmain em.no{color:#ffb0a0}
+.dbbar{display:flex;height:6px;border-radius:3px;overflow:hidden;max-width:260px;background:#222}.dbbar s{display:block}
+.dbbtn{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:260px}
+.dbbtn .val{font-size:11.5px;padding:4px 9px}.dbbtn .val.no{color:#ffb0a0;border-color:#8a3a3a}.dbbtn .val[disabled]{opacity:.4;cursor:not-allowed}
+.dbox .val{font:inherit;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;background:rgba(40,36,24,.92);border:1px solid #7a6a4a;color:#efe4cb}
+.dbox .val:hover{border-color:#c9a24a;color:#fff3d6}
+.dbox .val.gold{background:linear-gradient(180deg,#6a5420,#3a2e10);border-color:#c9a24a;color:#fff3d6}
+.dbmp .val{background:rgba(30,50,90,.9);border-color:#6a8acc;color:#dfe6ff}
+.mpdbox{display:block;font-size:11px;color:#9fb8ff;margin-top:2px}
+.dextile.lore1::after,.dextile.lore2::after,.dextile.lore3::after{content:'';position:absolute;left:50%;bottom:3px;transform:translateX(-50%);height:3px;border-radius:2px;background:#ffd76a;box-shadow:0 0 5px #ffd76a}
+.dextile.lore1::after{width:20%}.dextile.lore2::after{width:40%}.dextile.lore3::after{width:62%}
+@media (max-width:700px),(max-height:500px){.dbrow{flex-direction:column;align-items:stretch}.dbbtn{max-width:none;justify-content:flex-start}.loregrid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+  .dexpay{bottom:6%;padding:10px 14px}.dexpay b{font-size:16px}.lorepop{top:64px}.dxrtrack{margin:20px 22px 24px 6px}}
+
 /* 도움말 백과 · 접근성 (판 68) */
 .hbk{width:min(760px,92vw);display:flex;flex-direction:column;gap:10px;max-height:84vh}
 .hbkq{font:inherit;font-size:14px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.4);border:1px solid #6a5a3a;color:#efe4cb}
@@ -10456,7 +10545,7 @@ function dexAdd(kind, id) {
   if (kind === 'enemies' && /^(mp[f_]|hk_)/.test(id)) return false;
   if (kind === 'cards' && CARDS[id] && (CARDS[id].hackOnly || CARDS[id].devOnly && CARDS[id].rar !== 'qx')) return false;   /* ?X급은 일일상점에서 흘러나오니 도감에 남긴다 */
   if (kind === 'relics' && RELICS[id] && RELICS[id].eventOnly) return false;   /* 이벤트 유물은 도감에 적지 않는다 */  /* 해킹 부적은 도감에 적지 않는다 */      /* 멀티플레이의 상대는 도감에 적지 않는다 */
-  if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); return true; }
+  if (!META.dex[kind][id]) { META.dex[kind][id] = 1; saveMeta(); try { dexMileSoon(); } catch (e) {} return true; }
   return false;
 }
 function dexCount(kind, total) { return Object.keys(META.dex[kind]).length + ' / ' + total; }
@@ -16236,6 +16325,7 @@ async function checkDeaths() {
       e.dead = true; any = true; killed++;
       fire('onKill', e);
       try { stAdd('kill'); } catch (x) {}
+      try { loreKill(e); } catch (x) {}                  /* 요괴 이야기 (판 68) */
       if (e.el) { const c0 = centerOf(e.el); killCrack(c0.x, c0.y, tint('#fff2c8')); }
       killFx(e);
       dropOnKill(e);
@@ -28142,11 +28232,11 @@ const ACH = [
   { id: 'qst7',  g: '課', n: '임무 일곱',      t: '성실한 퇴마사', k: 'quest', need: 7,    dia: 50 },
   { id: 'qst50', g: '課', n: '임무 쉰',        t: '산의 일꾼',     k: 'quest', need: 50,   dia: 200, frame: 'jade' }
 ];
-const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥', guild: '길드 깃발' };
+const PF_FRAMES = { ink: '먹', gold: '금빛', void: '?급', hack: '해킹', aurora: '극광', blood: '혈', jade: '옥', guild: '길드 깃발', dex: '백귀록' };
 const achCur = a => a.f ? a.f() : stV(a.k);
 const achHas = id => !!(META.ach && META.ach[id]);
-const achTitles = () => ACH.filter(a => achHas(a.id)).map(a => a.t);
-const pfFramesOpen = () => ['ink'].concat(ACH.filter(a => a.frame && achHas(a.id)).map(a => a.frame), (META.pfBuy || []).filter(f => PF_FRAMES[f]));   /* 길드 상점에서 산 것 (판 65) */
+const achTitles = () => ACH.filter(a => achHas(a.id)).map(a => a.t).concat(xTitles());   /* 도감 100% 「백귀록」 (판 68) */
+const pfFramesOpen = () => ['ink'].concat(ACH.filter(a => a.frame && achHas(a.id)).map(a => a.frame), (META.pfBuy || []).filter(f => PF_FRAMES[f]), xFrames());   /* 길드 상점에서 산 것 (판 65) */
 function payDia(n) { if (!n) return; if (G.run) { G.run.dia = (G.run.dia || 0) + n; saveRun(); renderTop(); } else META.giftDia = (META.giftDia || 0) + n; }
 function achCheck() {
   META.ach = META.ach || {};
@@ -29392,7 +29482,7 @@ function devSayPanel() {
    새로 생긴 자리는 한 번 열기 전까지 「새」 점이 붙는다(META.menuSeen).
    ══════════════════════════════════════════════════════════ */
 const MENU_TABS = [['adv', '모험', '行'], ['col', '수집', '藏'], ['ev', '이벤트', '祭'], ['soc', '교류', '社'], ['set', '설정', '設']];
-const MENU_NEW = { help: 1, cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
+const MENU_NEW = { lore: 1, deckbox: 1, help: 1, cutmk: 1, keys: 1, toastlog: 1, lite: 1, castq: 1, wheelmk: 1, scodebox: 1 };   /* 새로 들인 자리 — 판마다 채운다 */
 const inRun = () => !!G.run, inFight = () => !!(G.b && !G.b.over);
 const MENU_ITEMS = [
   { k: 'help', g: '典', n: '도움말 백과', tab: 'set', al: '도움말 백과 사전 설명 낱말 상태이상 키워드 help', run: () => showHelpBook() },
@@ -29413,7 +29503,9 @@ const MENU_ITEMS = [
   { k: 'box',   g: '匣', n: '상점 · 뽑기', tab: 'col', al: '상점 일일상점 뽑기 가챠 상자 할인권', show: inRun, run: () => { markUsed('box'); openBoxes(); } },
   { k: 'pouch', g: '囊', n: '원료 주머니', tab: 'col', al: '재료 원료 돌연변이 주머니', show: inRun, dot: () => pouchCount(), run: () => showPouch() },
   { k: 'fuselab', g: '鎔', n: '합성소', tab: 'col', al: '합성 융합 합성소', show: inRun, run: () => showFuseLab() },
-  { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션', run: () => showDex() },
+  { k: 'dex',   g: '典', n: '도감', tab: 'col', al: '도감 수집 컬렉션 보상', dot: () => dexPayReady(), sub: () => dexProg().pct + '%', run: () => showDex() },
+  { k: 'lore',  g: '譚', n: '요괴 이야기', tab: 'col', al: '요괴 이야기 설화 전설 로어 lore', dot: () => Object.keys(META.loreNew || {}).length, run: () => showLoreBook() },
+  { k: 'deckbox', g: '匣', n: '덱 보관함', tab: 'col', al: '덱 보관함 프리셋 공유 코드 저장 대전덱', sub: () => dboxList().length + ' / ' + DBOX_MAX, run: () => showDeckBox() },
   { k: 'ach',   g: '功', n: '업적 · 칭호', tab: 'col', al: '업적 칭호 도전과제', sub: () => ACH.filter(a => achHas(a.id)).length + ' / ' + ACH.length, run: () => showAch() },
   { k: 'secret', g: '秘', n: '숨은 것', tab: 'col', al: '이스터에그 숨은것 비밀 힌트 수수께끼', sub: () => EGG_LIST.filter(x => x.found()).length + ' / ' + EGG_LIST.length, run: () => showSecrets() },
   { k: 'gallery', g: '畵', n: '컷씬 다시보기', tab: 'col', al: '컷씬 다시보기 갤러리 영상 장면', run: () => showGallery() },
@@ -38146,6 +38238,282 @@ function a11yApply() {
   B.toggle('oh-r', OPT.oneHand === 'r'); B.toggle('oh-l', OPT.oneHand === 'l');
 }
 
+/* ══ 도감 수집 보상 · 요괴 이야기 · 덱 보관함 (판 68) ═══════════════════
+   · 도감 수집 보상 — 부적 · 유물 · 요괴를 모두 합쳐 25 · 50 · 75 · 100%. 도감 맨 위의 띠에서 받는다
+       ?X급 · ?급(제비뽑기 등급)은 분모에서 빼 두었다 — 채우면 덤. 100%에 칭호 「백귀록」 + 테두리 「백귀록」
+   · 요괴 이야기(譚) — 같은 요괴를 잡을수록 이야기가 한 조각씩 열린다. 잡졸 10 · 20 · 30 / 엘리트 3 · 6 · 10 / 보스 1 · 3 · 5
+       소문 → 퇴마록 → 사연. 조각마다 다이아, 셋째 조각엔 정진도
+   · 덱 보관함(匣) — 모험 덱을 이름 붙여 여덟 벌까지 남긴다. 공유 코드로 벗에게 건넨다(BG1-…)
+       대전의 「친선 방」과 「그림자 연습」에서는 보관한 덱을 들고 나설 수 있다 — 랭크 매치는 늘 모험 덱
+       대전에 쓰려면: 도감에 오른 부적만 · 개발자 · 해킹 · 이벤트 한정 부적은 빼고 · 8 ~ 40장
+   ══════════════════════════════════════════════════════════════════ */
+/* ── 한국말 토씨 ── */
+const _jong = w => { const c = String(w || '').charCodeAt(String(w || '').length - 1); return c >= 0xAC00 && c <= 0xD7A3 ? (c - 0xAC00) % 28 : 0; };
+const jo = (w, a, b) => w + (_jong(w) ? a : b);
+const joRo = w => { const j = _jong(w); return w + (j && j !== 8 ? '으로' : '로'); };
+
+/* ═══ 도감 수집 보상 ═══ */
+const DEXP = [
+  { p: 25,  g: '壹', n: '네 갈래의 하나', dia: 300,  jp: 60,  mat: { star: 1 } },
+  { p: 50,  g: '貳', n: '반을 채우다',   dia: 800,  jp: 150, mat: { chaos: 1, gold: 1 } },
+  { p: 75,  g: '參', n: '셋을 채우다',   dia: 1500, jp: 300, mat: { aurora: 1, moon: 2 } },
+  { p: 100, g: '錄', n: '백귀록',        dia: 3000, jp: 600, mat: { star: 1, chaos: 1, gold: 1, aurora: 1, moon: 1 }, title: '백귀록', frame: 'dex' }
+];
+const DEX_LOTTO = ['qx', 'unknown'];
+const dexCardIds = () => Object.keys(CARDS).filter(id => { const d = CARDS[id]; return !d.hackOnly && !d.devOnly && !d.b5Only && !DEX_LOTTO.includes(d.rar) && d.rar !== 'curse' && GRADE[d.rar]; });
+const dexRelicIds = () => Object.keys(RELICS).filter(id => !RELICS[id].eventOnly);
+const dexEnemyIds = () => Object.keys(ENEMIES).filter(id => !/^(hk|ev|mp[f_])/.test(id) && !ENEMIES[id].devboss && !ENEMIES[id].duel);
+function dexProg() {
+  const D = META.dex || { cards: {}, relics: {}, enemies: {} };
+  const c = dexCardIds(), r = dexRelicIds(), e = dexEnemyIds();
+  const gc = c.filter(id => D.cards[id]).length, gr = r.filter(id => D.relics[id]).length, ge = e.filter(id => D.enemies[id]).length;
+  const tot = c.length + r.length + e.length, got = gc + gr + ge;
+  return { got, tot, pct: tot ? Math.floor(got / tot * 1000) / 10 : 0, k: [['符', '부적', gc, c.length], ['寶', '유물', gr, r.length], ['鬼', '요괴', ge, e.length]] };
+}
+const dexPaid = p => !!(META.dexPay && META.dexPay[p]);
+const dexPayReady = () => { const pc = dexProg().pct; return DEXP.filter(x => pc >= x.p && !dexPaid(x.p)).length; };
+const xTitles = () => (META.xTitle || []).slice();
+const xFrames = () => (META.xFrame || []).filter(f => PF_FRAMES[f]);
+function dexClaim(x) {
+  if (dexPaid(x.p) || dexProg().pct < x.p) return false;
+  META.dexPay = META.dexPay || {}; META.dexPay[x.p] = Date.now();
+  payDia(x.dia); META.jp = (META.jp || 0) + x.jp; META.jpTotal = (META.jpTotal || 0) + x.jp;
+  const mats = [];
+  for (const k in x.mat || {}) if (MAT_DEF[k]) { META.mat = META.mat || {}; META.mat[k] = matHave(k) + x.mat[k]; mats.push(`${MAT_DEF[k].g} ${MAT_DEF[k].n} ${x.mat[k]}`); }
+  if (x.title) { META.xTitle = META.xTitle || []; if (!META.xTitle.includes(x.title)) META.xTitle.push(x.title); }
+  if (x.frame) { META.xFrame = META.xFrame || []; if (!META.xFrame.includes(x.frame)) META.xFrame.push(x.frame); }
+  saveMeta(); try { pfPush(); } catch (e) {} try { renderTop(); } catch (e) {}
+  try { logNote('dex', `도감 ${x.p}% 보상 — 다이아 ${x.dia} · 정진 ${x.jp}`); } catch (e) {}
+  const big = x.p === 100;
+  const n = el('div', 'dexpay' + (big ? ' big' : ''), `<i>${x.g}</i><div><small>典 도감 ${x.p}%</small><b>${x.n}</b>
+    <em>玉 ${x.dia.toLocaleString()} · 精 ${x.jp}${mats.length ? ' · ' + mats.join(' · ') : ''}${x.title ? ` · 칭호 「${x.title}」 · 테두리 「${PF_FRAMES[x.frame]}」` : ''}</em></div>`);
+  document.body.appendChild(n); setTimeout(() => n.remove(), big ? 6500 : 4200);
+  try { SND.coinRain(big ? 14 : 8); SND.unlock(); if (big) { SND.victory(); screenFlash('rgba(255,215,140,.45)', 900); stampWord('百 鬼 錄', '#ffd27a'); } } catch (e) {}
+  return true;
+}
+/* 새로 오른 칸 — 넘어선 문턱이 있으면 한 번 알린다 */
+let _dexT = 0;
+function dexMileSoon() {
+  clearTimeout(_dexT);
+  _dexT = setTimeout(() => {
+    const pc = dexProg().pct; META.dexNote = META.dexNote || {};
+    const x = DEXP.filter(x => pc >= x.p && !dexPaid(x.p) && !META.dexNote[x.p]).pop(); if (!x) return;
+    for (const y of DEXP) if (pc >= y.p) META.dexNote[y.p] = 1;
+    saveMeta(); toast(`典 도감 ${x.p}%를 넘었다 — 도감 맨 위에서 보상을 받는다`); try { SND.unlock(); } catch (e) {}
+  }, 900);
+}
+function dexRewardBar(p) {
+  const box = p.querySelector('#dx_rw'); if (!box) return;
+  const draw = () => {
+    const pr = dexProg();
+    box.innerHTML = `<div class="dxrhead"><b>수집 보상</b><span>${pr.k.map(([g, n, a, t]) => `<em><i>${g}</i>${n} ${a}/${t}</em>`).join('')}</span><strong>${pr.pct}%</strong></div>
+      <div class="dxrtrack"><s style="width:${Math.min(100, pr.pct)}%"></s>${DEXP.map(x => { const st = dexPaid(x.p) ? 'paid' : pr.pct >= x.p ? 'ready' : 'lock';
+        return `<button class="dxrnode ${st}${x.p === 100 ? ' last' : ''}" style="left:${x.p}%" data-p="${x.p}"><i>${x.g}</i><u>${x.p}%</u></button>`; }).join('')}</div>
+      <div class="dxrinfo" id="dx_rinfo"></div>`;
+    const info = box.querySelector('#dx_rinfo');
+    const show = x => { const st = dexPaid(x.p) ? '받았다' : pr.pct >= x.p ? '누르면 받는다' : `${x.p}%에 열린다`;
+      info.innerHTML = `<b>${x.p}% · ${x.n}</b> 玉 ${x.dia.toLocaleString()} · 精 ${x.jp} · ${Object.keys(x.mat).map(k => MAT_DEF[k] ? MAT_DEF[k].g + ' ' + MAT_DEF[k].n + ' ' + x.mat[k] : '').join(' · ')}${x.title ? ` · <em>칭호 「${x.title}」 + 테두리</em>` : ''} <small>— ${st}</small>`; };
+    show(DEXP.find(x => !dexPaid(x.p)) || DEXP[3]);
+    box.querySelectorAll('.dxrnode').forEach(b => { const x = DEXP.find(y => y.p === +b.dataset.p);
+      b.onmouseenter = () => show(x);
+      b.onclick = () => { show(x); if (dexClaim(x)) draw(); else if (!dexPaid(x.p)) { try { SND.err(); } catch (e) {} } }; });
+  };
+  draw();
+}
+
+/* ═══ 요괴 이야기 ═══ */
+const LORE_NEED = d => d.boss ? [1, 3, 5] : d.elite ? [3, 6, 10] : [10, 20, 30];
+const LORE_PAY = [{ dia: 10 }, { dia: 20 }, { dia: 40, jp: 10 }];
+const loreIds = () => dexEnemyIds().filter(id => ENEMIES[id].moves);
+const loreKills = id => (META.ek && META.ek[id]) || 0;
+const loreGot = id => { const d = ENEMIES[id]; if (!d) return 0; const k = loreKills(id); return LORE_NEED(d).filter(n => k >= n).length; };
+function loreKill(e) {
+  const b = G.b; if (!e || !e.id || !b || /^(pvp|mpbot)/.test(b.kind || '') || e.shadow || e.mpAcct) return;
+  const d = ENEMIES[e.id]; if (!d || !d.moves || /^(hk|ev|mp[f_])/.test(e.id) || d.devboss || d.duel) return;
+  META.ek = META.ek || {};
+  const before = loreGot(e.id);
+  META.ek[e.id] = loreKills(e.id) + 1;
+  const after = loreGot(e.id);
+  if (after > before) {
+    const pay = LORE_PAY[after - 1]; payDia(pay.dia); if (pay.jp) { META.jp = (META.jp || 0) + pay.jp; META.jpTotal = (META.jpTotal || 0) + pay.jp; }
+    META.loreNew = META.loreNew || {}; META.loreNew[e.id] = after;
+    saveMeta(); loreBanner(e.id, after, pay);
+  }
+}
+function loreBanner(id, k, pay) {
+  const d = ENEMIES[id], L = loreOf(id)[k - 1];
+  const n = el('div', 'lorepop', `<i style="--ec:${(ELEM[elemOf(id)] || {}).c || '#c9a24a'}">${d.g}</i><div><small>譚 요괴 이야기 · ${['첫째', '둘째', '셋째'][k - 1]} 조각</small>
+    <b>${d.n} — ${L.t}</b><em>玉 +${pay.dia}${pay.jp ? ' · 精 +' + pay.jp : ''} · 누르면 읽는다</em></div>`);
+  n.onclick = () => { n.remove(); if (G.b && !G.b.over) { toast('싸움이 끝난 뒤 ≡ → 수집 → 요괴 이야기에서 읽는다'); return; } showLore(id); };
+  document.body.appendChild(n); setTimeout(() => n.isConnected && n.classList.add('out'), 4600); setTimeout(() => n.remove(), 5200);
+  try { SND.page ? SND.page() : SND.unlock(); } catch (e) {}
+}
+/* 어디서 나오나 — 처음 나오는 막 */
+function loreAct(id) {
+  for (const a in ENCOUNTERS) { const E0 = ENCOUNTERS[a]; for (const k in E0) { const v = E0[k]; const flat = Array.isArray(v) ? v.flat ? v.flat(2) : [].concat(...v) : [];
+    if (flat.includes(id)) return +a; } }
+  return 0;
+}
+const LORE_EL = {
+  fire:  { rumor: '처마 끝이 까맣게 그을려 있었고', origin: '본디 화전을 일구던 집의 아궁이 불씨였다. 사람들이 떠난 뒤에도 꺼지지 않으려 버티다, 그만 사람을 그리워하는 불이 되었다', how: '불은 물에 약하다' },
+  water: { rumor: '마른 길에도 물웅덩이가 고여 있었고', origin: '가뭄 든 해에 비를 빌며 강에 바쳐진 이였다. 비는 끝내 왔지만, 돌아갈 길은 물이 다 덮어 버렸다', how: '물은 나무 앞에서 마른다' },
+  wood:  { rumor: '밤새 덩굴이 문고리를 칭칭 감아 두었고', origin: '마을 어귀를 지키던 당산나무의 한 가지였다. 나무가 베어지던 날, 가지 하나만 땅에 떨어져 홀로 뿌리를 내렸다', how: '나무는 불에 탄다' },
+  dark:  { rumor: '등불이 하나씩, 하나씩 꺼져 갔고', origin: '누구도 이름을 불러 주지 않은 것이었다. 잊힌 것은 어둠이 되고, 어둠은 제 이름을 불러 줄 이를 찾아 헤맨다', how: '어둠은 요정의 빛에 흩어진다' },
+  psy:   { rumor: '잠든 이들이 밤새 똑같은 꿈을 꾸었고', origin: '한 사람의 오래된 기억이었다. 주인이 세상을 떠난 뒤에도 그 생각만은 남아, 남의 머릿속을 떠돌며 집을 찾는다', how: '넋은 어둠에 짓눌린다' },
+  fae:   { rumor: '아이들이 웃음소리를 따라 숲으로 들어갔고', origin: '산신의 심부름꾼이었다. 심부름을 마치고 돌아가던 길에 사람의 잔치를 엿보다가, 그만 돌아갈 길을 잊었다', how: '요정은 악귀에 찢긴다' },
+  fiend: { rumor: '우물물이 붉게 흐려 있었고', origin: '억울하게 죽은 이의 원한이 뭉친 것이었다. 원한은 풀어 줄 이를 기다리다 지쳐, 마침내 아무나 붙잡게 되었다', how: '원귀는 사이코의 넋 앞에서 움츠린다' }
+};
+function loreTip(d) {
+  const ms = Object.values(d.moves || {});
+  if (d.boss) return '혼자 가지 마라. 덱을 다듬고, 물약을 채우고, 그다음에 가라.';
+  if (ms.some(m => m.t === 'debuff' || m.t === 'atkdeb' || m.deb)) return '저주를 받거든 서두르지 말고 먼저 털어 내라.';
+  if (ms.some(m => m.n > 1)) return '여러 번 나눠 치는 수에는 방어도를 두텁게.';
+  if (ms.some(m => m.t === 'defend')) return '웅크릴 때 몰아치지 말고, 일어설 때를 노려라.';
+  if (ms.some(m => m.t === 'buff')) return '힘을 모을 때가 가장 빈틈이다 — 그때 쳐라.';
+  return '겁먹지 마라. 첫 수를 보고 나서 움직여도 늦지 않다.';
+}
+function loreOf(id) {
+  const d = ENEMIES[id], ek = elemOf(id), E0 = ELEM[ek] || { n: '?', c: '#c9a24a' }, L = LORE_EL[ek] || LORE_EL.dark;
+  const a = loreAct(id), place = a ? (ACT_NAME[a] || `제${a}막`) : '이름 없는 고개';
+  const moves = Object.values(d.moves || {}).map(m => m.label).filter(Boolean);
+  const m0 = moves[0] || '울음';
+  const hs = [...id].reduce((s, c) => (s * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const rumor = [
+    `${place} 어귀 사람들은 해가 지면 문을 걸어 잠근다. ${jo(d.n, '이', '가')} 내려오는 밤이면 ${L.rumor}, 새벽녘엔 꼭 「${m0}」 하는 소리가 들렸다고들 한다.`,
+    `장터에서 들은 이야기 — ${place}에서 ${jo(d.n, '을', '를')} 보았다는 나무꾼이 있었다. ${L.rumor}, 나무꾼은 그 뒤로 사흘 동안 말을 잃었다.`,
+    `${place}의 주막 할멈이 말하기를, ${jo(d.n, '은', '는')} 혼자 다니는 사람을 좋아한다고 했다. 그날 밤도 ${L.rumor}, 아무도 문을 열지 않았다.`
+  ][hs % 3];
+  const rec = `옛 퇴마록의 한 장 — 「${d.n}. ${E0.n}의 결. 체력 ${d.hp[0] === d.hp[1] ? d.hp[0] : d.hp[0] + '~' + d.hp[1]}쯤. ${moves.length ? moves.map(m => `「${m}」`).join(' · ') + (_jong(moves[moves.length - 1]) ? '을' : '를') + (moves.length > 1 ? ' 번갈아 쓴다.' : ' 쓴다.') : ''} ${L.how}.」`
+    + ` 여백에 누군가 서툰 글씨로 덧붙였다 — 「${loreTip(d)}」`;
+  const end = d.boss ? `${joRo(place)} 가는 길목의 주인이 된 것은, 그보다 한참 뒤의 일이다.`
+    : d.elite ? `그래서 ${jo(d.n, '은', '는')} 혼자 다니지 않는다. 같은 사연을 지닌 것들이 그 뒤를 따른다.`
+    : '그러니 다음에 만나거든, 베기 전에 한 번쯤 그 사연을 떠올려 주어라.';
+  const origin = `${jo(d.n, '은', '는')} ${L.origin}. ${end}`;
+  return [{ t: '소문', g: '聞', s: rumor }, { t: '퇴마록', g: '錄', s: rec.replace(/\s+/g, ' ') }, { t: '사연', g: '緣', s: origin }];
+}
+function showLore(id) {
+  const d = ENEMIES[id]; if (!d) return;
+  const k = loreKills(id), got = loreGot(id), need = LORE_NEED(d), L = loreOf(id), E0 = ELEM[elemOf(id)] || { n: '?', c: '#c9a24a', g: '?' };
+  if (META.loreNew && META.loreNew[id]) { delete META.loreNew[id]; saveMeta(); }
+  const p = modal(`<h2>譚 ${d.n}</h2><div class="lorebox" style="--ec:${E0.c}">
+      <div class="lorehd"><i>${d.g}</i><div><b>${d.n}</b><span><em style="color:${E0.c}">${E0.g} ${E0.n}</em>${d.boss ? ' · 보스' : d.elite ? ' · 엘리트' : ''} · 잡은 수 <b>${k}</b></span></div></div>
+      <div class="lorelist">${L.map((x, i) => i < got
+        ? `<div class="lorep on"><u>${x.g}</u><div><b>${['첫째', '둘째', '셋째'][i]} · ${x.t}</b><p>${x.s}</p></div></div>`
+        : `<div class="lorep"><u>?</u><div><b>${['첫째', '둘째', '셋째'][i]} · ${x.t}</b><p class="dim">${d.n} ${need[i]}마리째에 열린다 — ${Math.max(0, need[i] - k)}마리 더</p></div></div>`).join('')}</div>
+      <div class="lorefoot"><button class="brush-btn ghost" id="lo_all" style="color:#e9dfc9;border-color:#8a7f68">譚 모든 이야기</button><button class="brush-btn" id="lo_x">닫기</button></div></div>`, 'lorep-m');
+  p.dataset.noauto = '1';
+  p.querySelector('#lo_x').onclick = closeTop;
+  p.querySelector('#lo_all').onclick = () => { closeTop(); showLoreBook(); };
+}
+function showLoreBook() {
+  const ids = loreIds().filter(id => META.dex.enemies[id]);
+  const all = loreIds().length, pieces = ids.reduce((s, id) => s + loreGot(id), 0);
+  const p = modal(`<h2>譚 요괴 이야기</h2><div class="lorebk">
+      <div class="hbksub">같은 요괴를 잡을수록 이야기가 한 조각씩 열린다 — 잡졸 10 · 20 · 30 / 엘리트 3 · 6 · 10 / 보스 1 · 3 · 5마리 · 조각마다 다이아</div>
+      <div class="lorestat">만난 요괴 <b>${ids.length}</b> / ${all} · 모은 조각 <b>${pieces}</b> / ${all * 3}</div>
+      <div class="lorecat" id="lb_cat"></div>
+      <div class="loregrid" id="lb_g"></div>
+      <div class="lorefoot"><button class="brush-btn" id="lb_x">닫기</button></div></div>`, 'lorebk-m');
+  p.dataset.noauto = '1';
+  let f = 'all';
+  const draw = () => {
+    p.querySelector('#lb_cat').innerHTML = [['all', '모두'], ['new', '새 조각'], ['part', '읽는 중'], ['done', '다 모음']].map(([k, n]) => `<button class="${f === k ? 'on' : ''}" data-f="${k}">${n}</button>`).join('');
+    p.querySelectorAll('#lb_cat button').forEach(b => b.onclick = () => { f = b.dataset.f; draw(); });
+    const rows = ids.filter(id => { const g = loreGot(id); return f === 'all' || (f === 'new' && META.loreNew && META.loreNew[id]) || (f === 'part' && g > 0 && g < 3) || (f === 'done' && g === 3); })
+      .sort((a, b) => loreGot(b) - loreGot(a) || loreKills(b) - loreKills(a));
+    p.querySelector('#lb_g').innerHTML = rows.length ? rows.map(id => { const d = ENEMIES[id], g = loreGot(id), E0 = ELEM[elemOf(id)] || { c: '#c9a24a' }, nx = LORE_NEED(d)[g];
+      return `<button class="lorecell${g === 3 ? ' done' : ''}${META.loreNew && META.loreNew[id] ? ' new' : ''}" data-id="${id}" style="--ec:${E0.c}"><i>${d.g}</i><b>${d.n}</b>
+        <span class="lorepip">${[0, 1, 2].map(i => `<s class="${i < g ? 'on' : ''}"></s>`).join('')}</span><small>${g === 3 ? '다 모았다' : `${loreKills(id)} / ${nx}`}</small></button>`; }).join('')
+      : '<div class="dashnone">아직 없다 — 요괴를 잡으면 이야기가 열린다</div>';
+    p.querySelectorAll('.lorecell').forEach(b => b.onclick = () => { closeTop(); showLore(b.dataset.id); });
+  };
+  draw();
+  p.querySelector('#lb_x').onclick = closeTop;
+}
+
+/* ═══ 덱 보관함 ═══ */
+const DBOX_MAX = 8, DBOX_MIN_MP = 8, DBOX_MAX_MP = 40;
+const dboxList = () => (META.decks = Array.isArray(META.decks) ? META.decks : []);
+const dboxIds = run => run.deck.map(c => c.id + (c.up ? '+' : ''));
+const dboxCards = ids => ids.map(x => { const up = x.endsWith('+'), id = up ? x.slice(0, -1) : x; return CARDS[id] ? mkCard(id, up) : null; }).filter(Boolean);
+function dboxCode(dk) {
+  const s = JSON.stringify({ n: dk.n, d: dk.d });
+  try { return 'BG1-' + btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) { return ''; }
+}
+function dboxParse(code) {
+  try {
+    const m = /BG1-([A-Za-z0-9_-]+)/.exec(String(code || '').trim()); if (!m) return null;
+    let b = m[1].replace(/-/g, '+').replace(/_/g, '/'); while (b.length % 4) b += '=';
+    const o = JSON.parse(decodeURIComponent(escape(atob(b))));
+    if (!o || !Array.isArray(o.d)) return null;
+    const d = o.d.slice(0, 80).map(String).filter(x => CARDS[x.replace(/\+$/, '')]);
+    if (!d.length) return null;
+    return { n: String(o.n || '받은 덱').slice(0, 16), d, at: Date.now() };
+  } catch (e) { return null; }
+}
+/* 대전(친선 · 연습)에 들고 갈 수 있나 — 안 되면 까닭 */
+function dboxMpWhy(dk) {
+  if (!dk) return '덱이 없다';
+  if (dk.d.length < DBOX_MIN_MP || dk.d.length > DBOX_MAX_MP) return `대전에는 ${DBOX_MIN_MP} ~ ${DBOX_MAX_MP}장`;
+  for (const x of dk.d) { const id = x.replace(/\+$/, ''), c = CARDS[id];
+    if (!c || c.hackOnly || c.devOnly || c.b5Only || c.evOnly || c.eggOnly || c.rar === 'curse') return `대전에 못 드는 부적 — ${c ? c.n : id}`;
+    if (!META.dex.cards[id] && c.rar !== 'basic') return `도감에 없는 부적 — ${c.n}`; }
+  return '';
+}
+const dboxMpPick = () => { const i = META.mpDeckI; const dk = i != null ? dboxList()[i] : null; return dk && !dboxMpWhy(dk) ? dk : null; };
+const dboxGradeBar = ids => {
+  const cnt = {}; for (const x of ids) { const c = CARDS[x.replace(/\+$/, '')]; if (c) cnt[c.rar] = (cnt[c.rar] || 0) + 1; }
+  return `<span class="dbbar">${GRADE_ORDER.concat(['qx', 'curse']).filter(g => cnt[g]).map(g => `<s style="flex:${cnt[g]};background:${(GRADE[g] || {}).c || '#777'}" title="${(GRADE[g] || {}).n || g} ${cnt[g]}"></s>`).join('')}</span>`;
+};
+function showDeckBox() {
+  const p = modal(`<h2>匣 덱 보관함</h2><div class="dbox">
+      <div class="hbksub">모험 덱을 이름 붙여 ${DBOX_MAX}벌까지 · 공유 코드로 벗에게 건넨다 · 대전의 <b>친선 방 · 그림자 연습</b>에 들고 나설 수 있다 (랭크 매치는 늘 모험 덱)</div>
+      <div class="dbtop"><button class="brush-btn gold" id="db_save"${G.run && !G.run._pvp ? '' : ' disabled'}>지금 모험 덱 남기기</button>
+        <div class="dbimp"><input id="db_code" placeholder="공유 코드 붙여넣기 — BG1-…" spellcheck="false" autocomplete="off"><button class="val" id="db_imp">받기</button></div></div>
+      <div class="dbmp" id="db_mp"></div>
+      <div class="dblist" id="db_list"></div>
+      <div class="lorefoot"><button class="brush-btn" id="db_x">닫기</button></div></div>`, 'dbox-m');
+  p.dataset.noauto = '1';
+  const draw = () => {
+    const L = dboxList(), pk = dboxMpPick();
+    p.querySelector('#db_mp').innerHTML = `<i>對</i><span>친선 · 연습 덱 — <b>${pk ? wEsc(pk.n) + ` (${pk.d.length}장)` : '모험 덱 그대로'}</b></span>${pk ? '<button class="val" id="db_mpoff">모험 덱으로</button>' : ''}`;
+    const off = p.querySelector('#db_mpoff'); if (off) off.onclick = () => { META.mpDeckI = null; saveMeta(); draw(); };
+    p.querySelector('#db_list').innerHTML = L.length ? L.map((dk, i) => { const why = dboxMpWhy(dk), on = META.mpDeckI === i && !why;
+      return `<div class="dbrow${on ? ' on' : ''}"><div class="dbmain"><b>${wEsc(dk.n)}</b><small>${dk.d.length}장 · ${new Date(dk.at || 0).toLocaleDateString()}${dk.from ? ' · 받은 덱' : ''}</small>${dboxGradeBar(dk.d)}
+          ${why ? `<em class="no">대전 ✕ — ${wEsc(why)}</em>` : '<em class="ok">대전 ○ 친선 · 연습</em>'}</div>
+        <div class="dbbtn"><button class="val" data-a="see" data-i="${i}">보기</button><button class="val" data-a="code" data-i="${i}">코드</button>
+          <button class="val" data-a="ren" data-i="${i}">이름</button><button class="val${on ? ' gold' : ''}" data-a="mp" data-i="${i}"${why ? ' disabled' : ''}>${on ? '대전 덱 ✓' : '대전 덱으로'}</button>
+          <button class="val no" data-a="del" data-i="${i}">지우기</button></div></div>`; }).join('')
+      : '<div class="dashnone">비었다 — 모험 중에 「지금 모험 덱 남기기」 또는 받은 코드를 붙여 넣는다</div>';
+    p.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i, dk = dboxList()[i]; if (!dk) return; try { SND.ui(); } catch (e) {}
+      const a = b.dataset.a;
+      if (a === 'see') showCardList(dboxCards(dk.d), `匣 ${dk.n} — ${dk.d.length}장`);
+      else if (a === 'code') { const c = dboxCode(dk); copyText(c); toast('공유 코드를 복사했다 — 채팅이나 메신저에 붙여 넣는다'); const inp = p.querySelector('#db_code'); inp.value = c; inp.select(); }
+      else if (a === 'ren') { const n = prompt('덱 이름 (16자)', dk.n); if (n && n.trim()) { dk.n = n.trim().slice(0, 16); saveMeta(); draw(); } }
+      else if (a === 'mp') { META.mpDeckI = META.mpDeckI === i ? null : i; saveMeta(); draw(); toast(META.mpDeckI === i ? `대전(친선 · 연습)에 「${dk.n}」을 들고 간다` : '대전에는 모험 덱을 들고 간다'); }
+      else if (a === 'del') { if (!confirm(`「${dk.n}」을 지울까?`)) return; dboxList().splice(i, 1); if (META.mpDeckI === i) META.mpDeckI = null; else if (META.mpDeckI > i) META.mpDeckI--; saveMeta(); draw(); }
+    });
+  };
+  draw();
+  p.querySelector('#db_save').onclick = () => {
+    if (!G.run || G.run._pvp) return; const L = dboxList();
+    if (L.length >= DBOX_MAX) { toast(`보관함이 가득 찼다 (${DBOX_MAX}벌) — 하나를 지우고 남긴다`); SND.err(); return; }
+    const n = (prompt('덱 이름 (16자)', `제${G.run.act}막 · ${G.run.deck.length}장`) || '').trim(); if (!n) return;
+    L.unshift({ n: n.slice(0, 16), d: dboxIds(G.run), at: Date.now() }); if (META.mpDeckI != null) META.mpDeckI++;
+    saveMeta(); try { SND.unlock(); } catch (e) {} toast(`匣 「${n.slice(0, 16)}」 — 보관함에 남겼다`); draw();
+  };
+  const imp = () => {
+    const dk = dboxParse(p.querySelector('#db_code').value); if (!dk) { toast('코드를 읽지 못했다 — BG1- 로 시작하는 코드'); SND.err(); return; }
+    const L = dboxList(); if (L.length >= DBOX_MAX) { toast(`보관함이 가득 찼다 (${DBOX_MAX}벌)`); SND.err(); return; }
+    dk.from = 1; L.unshift(dk); if (META.mpDeckI != null) META.mpDeckI++; saveMeta(); p.querySelector('#db_code').value = '';
+    try { SND.unlock(); } catch (e) {} toast(`匣 「${dk.n}」(${dk.d.length}장)을 받았다`); draw();
+  };
+  p.querySelector('#db_imp').onclick = imp;
+  p.querySelector('#db_code').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') imp(); };
+  p.querySelector('#db_x').onclick = closeTop;
+}
+
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
 let CHAT = { log: [], last: 0, timer: 0, busy: false };
@@ -38436,6 +38804,7 @@ function mpAutoDeck() {
    싸움은 모험의 복사본으로 치르니, 이기든 지든 물약을 쓰든 모험에는 아무것도 남지 않는다. */
 const mpHome = () => (MP.saved && MP.saved.run) || (G.run && !G.run._pvp ? G.run : null);
 function mpDeck() { const r = mpHome(); return r ? r.deck.map(c => c.id + (c.up ? '+' : '')) : mpAutoDeck(); }
+function mpDeckF() { const pk = dboxMpPick(); return pk ? pk.d.slice() : mpDeck(); }   /* 친선 방 — 덱 보관함에서 고른 덱 (판 68) */
 const mpHpOf = () => { const r = mpHome(); return r ? r.maxHp : 90; };
 const mpLvOf = () => { const r = mpHome(); return r ? (r.act || 1) : 1; };
 /* ── 묻는 박자 — 로비·줄·방·판에 있는 동안만 ────────────── */
@@ -38494,6 +38863,7 @@ function showMulti() {
         <div class="mpbox"><b>준비</b>
           <div class="mpbtns col">
             <button class="val" id="mp_deck">들고 가는 덱</button>
+            <button class="val" id="mp_dbox">匣 덱 보관함<small class="mpdbox" id="mp_dbn"></small></button>
             <button class="val gold" id="mp_shop">교환소</button>
             <button class="val" id="mp_top">랭킹</button>
             <button class="val" id="mp_guild">旗 길드</button>
@@ -38512,15 +38882,17 @@ function showMulti() {
     SND.ui(); const r = await mpAsk('queue', { mode: b.dataset.q, deck: mpDeck() });
     if (!r.ok) { toast(r.why); SND.err(); } else { MP.queueAt = Date.now(); mpPoll(); }
   });
-  const room = async mode => { SND.ui(); const r = await mpAsk('room', { act: 'create', mode, deck: mpDeck() }); if (!r.ok) { toast(r.why); SND.err(); } else { MP.room = r.room; mpPaintLobby(); } };
+  const room = async mode => { SND.ui(); const r = await mpAsk('room', { act: 'create', mode, deck: mpDeckF() }); if (!r.ok) { toast(r.why); SND.err(); } else { MP.room = r.room; mpPaintLobby(); } };
   p.querySelector('#mp_r1').onclick = () => room('1v1');
   p.querySelector('#mp_r2').onclick = () => room('2v2');
   const join = async () => { const c = p.querySelector('#mp_code').value.trim().toUpperCase();
     if (c.length !== 6) { toast('코드는 여섯 자'); SND.err(); return; }
-    const r = await mpAsk('room', { act: 'join', code: c, deck: mpDeck() }); if (!r.ok) { toast(r.why); SND.err(); } else { SND.unlock(); MP.room = r.room; mpPaintLobby(); } };
+    const r = await mpAsk('room', { act: 'join', code: c, deck: mpDeckF() }); if (!r.ok) { toast(r.why); SND.err(); } else { SND.unlock(); MP.room = r.room; mpPaintLobby(); } };
   p.querySelector('#mp_join').onclick = join;
   p.querySelector('#mp_code').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') join(); };
-  p.querySelector('#mp_deck').onclick = () => { SND.ui(); const r = mpHome(); if (r) showCardList(r.deck, '대전에 들고 가는 덱 — 모험 덱 그대로'); };
+  p.querySelector('#mp_deck').onclick = () => { SND.ui(); const r = mpHome(), pk = dboxMpPick(); if (r) showCardList(r.deck, '대전에 들고 가는 덱 — 랭크는 모험 덱 그대로' + (pk ? ` · 친선 · 연습은 「${pk.n}」` : '')); };
+  { const dbn = () => { const pk = dboxMpPick(), n = p.querySelector('#mp_dbn'); if (n) n.textContent = pk ? `친선 · 연습: ${pk.n}` : '친선 · 연습: 모험 덱'; };
+    dbn(); p.querySelector('#mp_dbox').onclick = () => { SND.ui(); showDeckBox(); const t = setInterval(() => { if (!p.isConnected) { clearInterval(t); return; } dbn(); if (!document.querySelector('.dbox')) clearInterval(t); }, 400); }; }
   mpRunPaint();
   p.querySelector('#mp_shop').onclick = () => { SND.ui(); showMpShop(); };
   p.querySelector('#mp_top').onclick = () => { SND.ui(); showMpTop(); };
@@ -38602,7 +38974,7 @@ function mpPaintLobby() {
     const act = async body => { const x = await mpAsk('room', body); if (!x.ok) { toast(x.why); SND.err(); } else { SND.ui(); if (x.room) MP.room = x.room; mpPoll(); } };
     if (q('#mp_ta')) q('#mp_ta').onclick = () => act({ act: 'team', team: 'A' });
     if (q('#mp_tb')) q('#mp_tb').onclick = () => act({ act: 'team', team: 'B' });
-    if (q('#mp_start')) q('#mp_start').onclick = () => act({ act: 'start', deck: mpDeck() });
+    if (q('#mp_start')) q('#mp_start').onclick = () => act({ act: 'start', deck: mpDeckF() });
     if (q('#mp_party')) q('#mp_party').onclick = () => act({ act: 'queue', deck: mpDeck() });
     q('#mp_leave').onclick = async () => { await mpAsk('room', { act: 'leave' }); MP.room = null; mpPaintLobby(); };
     const inv = async () => { const to = q('#mp_invid').value.trim(); if (!to) return;
@@ -38614,7 +38986,7 @@ function mpPaintLobby() {
   const iv = box.querySelector('#mp_inv');
   iv.innerHTML = (MP.inv || []).map(x => `<div class="mpinvrow">📜 <b>${wEsc(x.fromN || x.from)}</b>의 ${x.mode === '2v2' ? '2대2' : '1대1'} 방 초대 <button class="val gold" data-c="${x.code}">참가</button></div>`).join('');
   iv.querySelectorAll('button').forEach(b => b.onclick = async () => {
-    const x = await mpAsk('room', { act: 'join', code: b.dataset.c, deck: mpDeck() });
+    const x = await mpAsk('room', { act: 'join', code: b.dataset.c, deck: mpDeckF() });
     await mpAsk('inbox', { drop: b.dataset.c });
     if (!x.ok) { toast(x.why); SND.err(); } else { SND.unlock(); MP.room = x.room; mpPaintLobby(); }
   });
@@ -38637,7 +39009,7 @@ async function mpInboxCheck() {
     closeTop();
     if (G.b) { toast('싸움을 마친 뒤 멀티플레이에서 코드로 들어가시오 — ' + x.code); return; }
     if (!G.run || G.run._pvp) { toast('모험을 이어 오른 뒤 지도 윗줄 「對 대전」에서 코드로 — ' + x.code); return; }
-    const j = await mpAsk('room', { act: 'join', code: x.code, deck: mpDeck() }); await mpAsk('inbox', { drop: x.code });
+    const j = await mpAsk('room', { act: 'join', code: x.code, deck: mpDeckF() }); await mpAsk('inbox', { drop: x.code });
     if (!j.ok) { toast(j.why); SND.err(); return; }
     MP.room = j.room; showMulti();
   };
@@ -38698,10 +39070,11 @@ async function showMpTop() {
 }
 /* ══ 싸움 ═════════════════════════════════════════════════ */
 /* 모험을 그대로 본뜬다 — 덱·강화·유물·물약·비기·기. 체력만 판의 것으로 채운다 */
-function mpCloneRun(hp) {
-  const home = MP.saved && MP.saved.run;
-  if (!home) return mpMakeRun(mpAutoDeck(), hp);
+function mpCloneRun(hp, friendly) {
+  const home = MP.saved && MP.saved.run, pk = friendly ? dboxMpPick() : null;   /* 친선 · 연습 — 덱 보관함의 덱 (판 68) */
+  if (!home) { const r0 = mpMakeRun(mpAutoDeck(), hp); if (pk) r0.deck = dboxCards(pk.d); return r0; }
   const r = JSON.parse(JSON.stringify(home));
+  if (pk) r.deck = dboxCards(pk.d);
   return Object.assign(r, { _pvp: true, hp, maxHp: hp, map: null, mapCur: -1, bossPick: null });
 }
 function mpMakeRun(deckIds, hp) {
@@ -38738,7 +39111,7 @@ function mpBegin(mv) {
   mpSave();
   const me = mv.players.find(p => p.acct === mv.me), myTeam = me.team;
   const foes = mv.players.filter(p => p.team !== myTeam), ally = mv.players.find(p => p.team === myTeam && p.acct !== mv.me);
-  G.run = mpCloneRun(mv.units[mv.me].maxHp);
+  G.run = mpCloneRun(mv.units[mv.me].maxHp, !mv.ranked);
   document.body.classList.add('pvp');
   const ids = foes.map((f, i) => {
     const id = 'mpf_' + i;
@@ -39014,7 +39387,7 @@ function mpBotStart() {
   MP.lobby = false; closeOverlay();
   mpSave();
   const bh = Math.max(90, mpHpOf());
-  G.run = mpCloneRun(bh);
+  G.run = mpCloneRun(bh, true);
   f.hp = bh; ENEMIES.mp_bot.hp = [bh, bh];
   document.body.classList.add('pvp');
   startBattle(['mp_bot'], 'mpbot');
@@ -40067,6 +40440,7 @@ function showDex() {
   const p = modal(`<h2>도 감</h2>
     <div class="hint">모험을 거듭하며 만난 것들이 여기 남는다 · 부적을 누르면 자세히 볼 수 있다
       <b style="color:#e8c86a">(부적 ${dexCount('cards', totalCards)})</b></div>
+    <div class="dxrw" id="dx_rw"></div>
     <div class="dexwrap">
       ${secs}
       <div class="dexsec"><h3>유물 <i>${dexCount('relics', relicIds.length)}</i>
@@ -40088,6 +40462,7 @@ function showDex() {
       <div class="dexsec"><h3>요괴 <i>${dexCount('enemies', enemyIds.length)}</i></h3><div class="dexgrid" id="dx_e"></div></div>
     </div>
     <button class="brush-btn" id="dx_close">닫기</button>`);
+  try { dexRewardBar(p); } catch (e) { console.error('도감 보상', e); }
 
   for (const gk of DEX_G) {
     const box = p.querySelector(`.dexgrid[data-g="${gk}"]`);
@@ -40194,8 +40569,9 @@ function showDex() {
     const d = ENEMIES[id], known = !!META.dex.enemies[id];
     const moves = Object.keys(d.moves).map(k => d.moves[k].label).join(' · ');
     ge.appendChild(dexTile(known, d.g, d.n,
-      `<b>${d.n}</b> · 체력 ${d.hp[0]}~${d.hp[1]}${d.boss ? ' · 보스' : d.elite ? ' · 엘리트' : ''}<br>행동: ${moves}`,
-      d.boss ? 'e_boss' : d.elite ? 'e_elite' : ''));
+      `<b>${d.n}</b> · 체력 ${d.hp[0]}~${d.hp[1]}${d.boss ? ' · 보스' : d.elite ? ' · 엘리트' : ''}<br>행동: ${moves}` +
+      (d.moves && !/^(hk|ev|mp[f_])/.test(id) ? `<br><span style="color:#ffd76a">譚 이야기 ${loreGot(id)} / 3 · 잡은 수 ${loreKills(id)}</span> <span style="color:#8f846d">— 눌러서 읽기</span>` : ''),
+      (d.boss ? 'e_boss' : d.elite ? 'e_elite' : '') + (loreGot(id) ? ' lore' + loreGot(id) : ''), d.moves ? () => showLore(id) : null));
   }
   p.querySelector('#dx_close').onclick = closeTop;
 }
