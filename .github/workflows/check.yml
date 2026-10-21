@@ -1,5 +1,7 @@
-# 올릴 때마다 판을 검사한다 — 겹친 id · 없는 요괴 · 드러난 코드 ·
-# 문법 · 켜고 싸우는 동안의 오류 · 서버가 서는지
+# 올릴 때마다 판을 검사한다 — 겹친 id · 없는 요괴 · 드러난 코드(지문) ·
+# 문법 · 지어 낸 판 · 무게 · 켜고 싸우는 동안의 오류 · 서버가 서는지
+# 판 69 부터: 서버를 실제로 두드리는 검사 · 모든 부적·메뉴를 실제로 눌러 보는 검사 · 폰 화면 검사
+# 검사마다 결과를 이 실행의 요약 칸에 표로 남긴다. 하나가 깨져도 나머지는 끝까지 돈다.
 name: 검사
 
 on:
@@ -11,6 +13,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,5 +24,20 @@ jobs:
           npx playwright-core install --with-deps chromium
       - name: 서버 짐
         run: cd server && npm install --omit=dev --no-audit --no-fund
+      - name: 판을 짓는다
+        run: node game/build-apps.mjs
       - name: 검사
+        timeout-minutes: 10
         run: node game/check-all.mjs
+      - name: 서버 검사
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        run: node game/check-server.mjs
+      - name: 판 검사 — 모든 부적 · 메뉴를 실제로
+        if: ${{ !cancelled() }}
+        timeout-minutes: 20
+        run: node game/check-play.mjs
+      - name: 폰 화면 검사
+        if: ${{ !cancelled() }}
+        timeout-minutes: 10
+        run: node game/check-phone.mjs

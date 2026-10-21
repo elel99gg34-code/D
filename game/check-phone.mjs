@@ -14,9 +14,14 @@
    두면 눌리지 않거나 홈으로 나가 버린다.
    ══════════════════════════════════════════════════════════ */
 import { chromium } from 'playwright-core';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const FILE = process.argv[2] || '/home/user/D/app/android/www/index.html';
+/* 검사 서버(GitHub)에는 브라우저가 다른 자리에 있다 — 없으면 playwright 가 깐 것을 쓴다 (판 69) */
+const EXE = process.env.CHROME || ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome'].find(p => fs.existsSync(p));
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const FILE = process.argv[2] || [path.join(ROOT, 'app/android/www/index.html'), path.join(ROOT, 'game/mobile.html')].find(p => fs.existsSync(p));
 
 /* 시스템이 이미 자리를 떼어 둔 기계라면 판 끝이 곧 막대 위이므로
    가장자리만 살피면 되고, 끝까지 뻗는 기계라면 48px 을 비워야 한다. */
@@ -42,8 +47,9 @@ const WANT = ['#endturn', '#skillbtn', '#petbtn', '#energy', '#autobtn',
    브라우저는 늘 0 이므로, 48 인 척도 해 보고 둘 다 본다. */
 const INSET = process.argv[3] === '실제' ? 48 : 0;
 
-const b = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--mute-audio'] });
+const b = await chromium.launch(Object.assign({ args: ['--no-sandbox', '--mute-audio'] }, EXE ? { executablePath: EXE } : {}));
 let bad = 0, warn = 0;
+const rows = [];
 console.log(INSET ? '■ 화면 끝까지 뻗는 기계인 척 (safe-area 48px)'
                   : '■ 시스템이 자리를 떼어 둔 기계 (safe-area 0)');
 
@@ -127,7 +133,9 @@ for (const s of SIZES) {
   if (r.작음.length) { t.push('작음 ' + r.작음.length); warn += r.작음.length; }
   if (r.겹침.length) { t.push('겹침 ' + r.겹침.length); bad += r.겹침.length; }
   if (r.밖.length)   { t.push('밖 ' + r.밖.length);   bad += r.밖.length; }
+  if (errs.length) { t.push('오류 ' + errs.length); bad += errs.length; }
   console.log(`\n══ ${s.n} (${r.판}) ${t.length ? '✗ ' + t.join(' · ') : '○ 깨끗'} · 쏠림 ${r.쏠림}`);
+  rows.push(`| ${t.length ? '✗' : '○'} | ${s.n} ${s.w}×${s.h} | ${t.join(' · ') || '깨끗'} | ${r.쏠림} |`);
   for (const k of ['깔림', '작음', '겹침', '밖', '없음'])
     for (const line of r[k].slice(0, 6)) console.log(`   ${k}: ${line}`);
   if (errs.length) console.log('   오류:', errs.slice(0, 2).join(' | '));
@@ -135,3 +143,6 @@ for (const s of SIZES) {
 }
 console.log(`\n■ 고쳐야 할 것 ${bad} · 살필 것 ${warn}`);
 await b.close();
+if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+  `### 폰 화면 검사\n\n| | 크기 | 본 것 | 쏠림 |\n|---|---|---|---|\n${rows.join('\n')}\n\n**고쳐야 할 것 ${bad} · 살필 것 ${warn}**\n\n`);
+process.exit(bad ? 1 : 0);

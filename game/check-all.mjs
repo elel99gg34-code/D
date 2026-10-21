@@ -8,6 +8,7 @@
      · 파일에 코드(관리자 열쇠 따위)를 그대로 적은 것
      · 문법 오류로 판이 아예 안 뜨는 것
      · 켜자마자, 싸우다가 터지는 오류
+     · 지어 낸 판(dist · app)이 깨진 것 · 판이 너무 무거워지거나 늦게 뜨는 것 (판 69)
    node game/check-all.mjs          — 다 본다
    node game/check-all.mjs 빠르게   — 브라우저 없이 글만 본다
    ══════════════════════════════════════════════════════════ */
@@ -15,6 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { execFileSync, spawn } from 'child_process';
+import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -23,7 +25,8 @@ const FILE = process.env.CHECK_FILE || path.join(HERE, 'index.html');
 const QUICK = process.argv.includes('빠르게') || process.argv.includes('--quick');
 const html = fs.readFileSync(FILE, 'utf8');
 const bad = [];
-const ok = m => console.log('  ○ ' + m);
+const good = [];
+const ok = m => { good.push(m); console.log('  ○ ' + m); };
 const no = m => { bad.push(m); console.log('  ✗ ' + m); };
 
 console.log('■ 글로 보는 검사');
@@ -51,12 +54,64 @@ for (const kind of ['defCard', 'defEnemy', 'defRelic', 'defPot', 'defSkill']) {
   else ok(`${kind} ${ids.length}개 — id 겹침 없음`);
 }
 
-/* ③ 파일에 코드를 그대로 적지 않았는가 — 지문(SHA-256)만 두어야 한다 */
+/* ③ 파일에 코드를 그대로 적지 않았는가 — 지문(SHA-256)만 두어야 한다
+   코드 조각을 검사에 적어 두면 그것이 곧 새는 것이다 (판 69 전까지 여기에 조각이 적혀 있었다).
+   그래서 저장소의 모든 글 파일에서 낱말을 떠, 판이 하는 대로(앞뒤 빈칸 걷고 소문자) 지문을 내어
+   판 · 서버에 적힌 열쇠 지문과 맞춰 본다. 맞으면 그 파일에 코드가 그대로 있는 것이다. */
 {
-  const leaks = [/cdminjuvv/, /031675mj/, /0316bakgi75/, /baekya-(admin|cast|taste|guest)-[a-z0-9]{6,}/];
-  const hit = leaks.filter(re => re.test(html) || re.test(fs.readFileSync(path.join(ROOT, 'server/live.mjs'), 'utf8')));
-  if (hit.length) no('코드가 파일에 그대로 적혀 있다: ' + hit.map(String).join(' '));
-  else ok('관리자·퍼뜨리기 코드가 파일에 없다');
+  const srv = fs.readFileSync(path.join(ROOT, 'server/live.mjs'), 'utf8');
+  const fp = new Map();
+  for (const [, n, h] of html.matchAll(/const ([A-Z]+_H\d?)\s*=\s*'([0-9a-f]{64})'/g)) fp.set(h, n);
+  for (const [, n, h] of srv.matchAll(/const ([A-Z_]+_SHA)\s*=\s*'([0-9a-f]{64})'/g)) fp.set(h, fp.get(h) || n);
+  let files = [];
+  try { files = execFileSync('git', ['ls-files', '-co', '--exclude-standard'], { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n'); }
+  catch (e) { files = ['game/index.html', 'game/mobile.html', 'server/live.mjs']; }
+  files = files.filter(f => f && !/\.(png|jpe?g|webp|gif|ico|icns|keystore|jks|ogg|mp3|wav|woff2?|ttf|otf|zip|gz)$/i.test(f));
+  const hashOf = new Map(), sum = k => { let h = hashOf.get(k); if (!h) { h = createHash('sha256').update(k).digest('hex'); hashOf.set(k, h); } return h; };
+  const hits = []; let nf = 0;
+  for (const f of files) {
+    let t; try { t = fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch (e) { continue; }
+    nf++;
+    const cand = new Set();
+    for (const m of t.matchAll(/[A-Za-z0-9가-힣_\-]{4,80}/g)) cand.add(m[0]);
+    for (const m of t.matchAll(/[^\s'"`<>(){}\[\],;=]{4,80}/g)) cand.add(m[0]);
+    for (const m of t.matchAll(/(['"`])([^'"`\n]{4,80})\1/g)) cand.add(m[2]);
+    const got = new Set();
+    for (const c of cand) { const n = fp.get(sum(c.trim().toLowerCase())); if (n) got.add(n); }
+    for (const n of got) hits.push(`${f} 에 ${n} 의 코드`);
+  }
+  if (fp.size < 8) no(`열쇠 지문을 다 찾지 못했다 (${fp.size}개) — 지문 이름이 바뀌었는가`);
+  if (/baekya-(admin|cast|taste|guest)-[a-z0-9]{6,}/.test(html + srv)) hits.push('옛 코드 꼴(baekya-…)');
+  if (hits.length) no('코드가 파일에 그대로 적혀 있다: ' + hits.join(' · '));
+  else ok(`관리자·퍼뜨리기 코드가 파일에 없다 — 글 파일 ${nf}개 · 낱말 ${hashOf.size}개를 열쇠 지문 ${fp.size}개와 맞춰 봄`);
+}
+
+/* ④ 지어 낸 판 — build-apps 가 낸 것도 문법이 서는가 (손전화판 mobile.html 포함) */
+{
+  const built = ['game/mobile.html', 'dist/web/index.html', 'dist/web/mobile.html', 'app/android/www/index.html', 'app/desktop/app/index.html']
+    .map(f => path.join(ROOT, f)).filter(f => fs.existsSync(f) && f !== FILE);
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bgb-')); const broken = [];
+  for (const f of built) {
+    const src = fs.readFileSync(f, 'utf8');
+    [...src.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m, i) => {
+      const j = path.join(tmp, `b${i}.js`); fs.writeFileSync(j, m[1]);
+      try { execFileSync(process.execPath, ['--check', j], { stdio: 'pipe' }); }
+      catch (e) { broken.push(`${path.relative(ROOT, f)} 스크립트 ${i + 1}: ` + String(e.stderr || e.message).split('\n').slice(0, 2).join(' ')); }
+    });
+    if (/dist|app[\\/]/.test(path.relative(ROOT, f)) && !/window\.__EDITION=/.test(src)) broken.push(`${path.relative(ROOT, f)} 에 판 표지(__EDITION)가 없다`);
+  }
+  if (!built.length) ok('지어 낸 판 — 아직 짓지 않았다 (node game/build-apps.mjs)');
+  else if (broken.length) broken.slice(0, 6).forEach(no);
+  else ok(`지어 낸 판 ${built.length}개 — 문법 · 판 표지`);
+}
+
+/* ⑤ 무게 — 그림을 통째로 박아 넣는 따위로 판이 갑자기 무거워지지 않았는가 */
+{
+  const LIMIT = 5 * 1048576, kb = Math.round(Buffer.byteLength(html) / 1024);
+  const big = [...html.matchAll(/data:[a-z]+\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]{150000,}/g)].length;
+  if (Buffer.byteLength(html) > LIMIT) no(`판이 ${kb}KB — 한도 ${LIMIT / 1048576}MB 를 넘었다`);
+  else if (big) no(`판에 150KB 가 넘는 그림 덩이(data:…base64)가 ${big}개 — vendor/ 나 따로 둔 파일로`);
+  else ok(`판 무게 ${kb}KB — 한도 ${LIMIT / 1048576}MB 의 ${Math.round(Buffer.byteLength(html) / LIMIT * 100)}%`);
 }
 
 if (QUICK) finish();
@@ -71,7 +126,14 @@ const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
 const errs = [];
 p.on('pageerror', e => errs.push(e.message));
 await p.route('https://**', r => r.abort());          /* 바깥 서버에는 가지 않는다 */
+const t0 = Date.now();
 await p.goto('file://' + FILE);
+await p.waitForSelector('#title-scene', { timeout: 20000 }).catch(() => {});
+const bootMs = Date.now() - t0;
+/* 첫 화면까지 — 느린 기계(검사 서버)에서도 8초 안 · 켠 뒤 기억은 300MB 아래 */
+const heap = await p.evaluate(() => (performance.memory || {}).usedJSHeapSize || 0);
+bootMs < 8000 ? ok(`첫 화면까지 ${(bootMs / 1000).toFixed(1)}초`) : no(`첫 화면까지 ${(bootMs / 1000).toFixed(1)}초 — 8초를 넘었다`);
+heap < 300 * 1048576 ? ok(`켠 뒤 기억 ${Math.round(heap / 1048576)}MB`) : no(`켠 뒤 기억 ${Math.round(heap / 1048576)}MB — 너무 무겁다`);
 await p.waitForTimeout(1200);
 
 const r = await p.evaluate(async () => {
@@ -151,5 +213,9 @@ finish();
 
 function finish() {
   console.log(bad.length ? `\n■ 고칠 것 ${bad.length}개` : '\n■ 모두 통과');
+  /* GitHub 검사 화면의 요약 칸에 표로 남긴다 (판 69) */
+  if (process.env.GITHUB_STEP_SUMMARY) try {
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### 올리기 전 검사\n\n| | 항목 |\n|---|---|\n${bad.map(m => `| ✗ | ${m.replace(/\|/g, '\\|')} |`).concat(good.map(m => `| ○ | ${m.replace(/\|/g, '\\|')} |`)).join('\n')}\n\n**통과 ${good.length} · 고칠 것 ${bad.length}**\n\n`);
+  } catch (e) {}
   process.exit(bad.length ? 1 : 0);
 }

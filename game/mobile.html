@@ -42921,7 +42921,9 @@ function resumeRun() {
     if (G.run.tower && !G.run.tower.done) { towerFloor(); return; }   /* 무한의 탑에서 멈췄다 — 그 층 앞으로 */
     showMap();
   } catch (e) {
-    console.error(e);
+    /* 글이 깨진 것은 아래에서 다룬다 — 판이 엎어진 것(다른 오류)만 오류로 알린다 */
+    if (e instanceof SyntaxError) console.warn('모험 저장을 읽지 못했다 —', e.message);
+    else { console.error(e); try { errReport(e.message, e.stack); } catch (x) {} }
     /* 판 69 — 깨진 모험: 두 분 묵은 백업이 있으면 그것으로, 없으면 지우고 새로 할지 묻는다 */
     let bak = null; try { bak = JSON.parse(localStorage.getItem(RUN_BAK)); } catch (x) {}
     if (bak && bak.run) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(bak)); localStorage.removeItem(RUN_BAK); toast('모험 저장이 깨져 있었다 — 조금 전 백업으로 되살렸다'); resumeRun(); return; } catch (x) {} }
