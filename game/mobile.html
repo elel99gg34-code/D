@@ -1807,6 +1807,22 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 판 69c — 키보드 초점 · 손전화 · 알림 */
+:focus-visible{outline:2px solid #ffd76a;outline-offset:2px}
+button:focus:not(:focus-visible),.mapnode:focus:not(:focus-visible){outline:none}
+html,body{overscroll-behavior:none}
+body{-webkit-touch-callout:none}
+input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text}
+.toast{word-break:keep-all;overflow-wrap:anywhere}
+.toast .tcount{margin-left:8px;padding:0 7px;border-radius:9px;font-size:.85em;font-weight:400;background:rgba(255,215,120,.2);color:#ffd76a}
+input.numfix{animation:numFix .35s}
+@keyframes numFix{25%{transform:translateX(-3px);box-shadow:0 0 0 2px rgba(255,180,90,.6)}75%{transform:translateX(3px)}}
+.askbox textarea{font:12px/1.5 monospace;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.45);border:1px solid #6a5a3a;color:#efe4cb;resize:vertical;word-break:break-all}
+.askbox .hbksub b{color:#ffb0a0;font-weight:400}
+#t_cont{display:flex;flex-direction:column;align-items:center;gap:2px}
+#t_cont .contsum{font-size:11px;letter-spacing:.02em;opacity:.8;font-weight:400}
+@media (prefers-reduced-motion:reduce){input.numfix{animation:none}}
+
 /* 판 69 — 입력 · 확인 창 · 띠 */
 .askbox{width:min(440px,90vw);display:flex;flex-direction:column;gap:12px}
 .askbox input{font:inherit;font-size:15px;padding:9px 12px;border-radius:8px;background:rgba(0,0,0,.45);border:1px solid #6a5a3a;color:#efe4cb}
@@ -10398,8 +10414,18 @@ function bindTip(node, htmlFn) {
   node.addEventListener('mouseleave', tipHide);
 }
 function toast(msg) {
-  const t = el('div', 'toast', msg); $('#toast').appendChild(t);
-  setTimeout(() => t.remove(), 2400);
+  /* 판 69 — 같은 말이 연달아 오면 ×2 로 묶고, 넷을 넘으면 오래된 것부터 걷고, 긴 말은 오래 둔다 */
+  const box = $('#toast'), plain = String(msg).replace(/<[^>]*>/g, '');
+  const last = box.lastElementChild;
+  if (last && last.dataset.m === plain && !last.classList.contains('gone')) {
+    const n = (+last.dataset.n || 1) + 1; last.dataset.n = n;
+    let b = last.querySelector('.tcount'); if (!b) { b = el('b', 'tcount'); last.appendChild(b); } b.textContent = '×' + n;
+    clearTimeout(last._t); last._t = setTimeout(() => last.remove(), 2400);
+  } else {
+    while (box.children.length >= 4) box.firstElementChild.remove();
+    const t = el('div', 'toast', msg); t.dataset.m = plain; box.appendChild(t);
+    t._t = setTimeout(() => t.remove(), Math.min(6500, 2400 + Math.max(0, plain.length - 28) * 45));
+  }
   /* 알림 기록 — 지나간 알림을 다시 본다 (N) */
   try { TLOG.unshift({ at: Date.now(), m: String(msg).replace(/<[^>]*>/g, '').slice(0, 160) }); if (TLOG.length > 60) TLOG.length = 60; } catch (e) {}
 }
@@ -10611,6 +10637,7 @@ function noteClear(act) {
 }
 function applyVol() { try { if (SND.master) SND.master.gain.value = OPT.vol; } catch (e) {} }
 function saveMeta() {
+  if (window.__noSave) return;                  /* 기록을 지우거나 불러온 뒤 다시 켜는 사이 (판 69) */
   try { const txt = JSON.stringify(META); localStorage.setItem(META_KEY, txt); metaBackup(txt); } catch (e) { saveFail(e); }   /* 백업 · 꽉 참 (판 69) */
   /* 이름을 걸어 두었으면 잠시 뒤에 스스로 올린다 */
   if (typeof acctNudge === 'function') acctNudge();
@@ -10618,7 +10645,8 @@ function saveMeta() {
 function saveRun() {
   if (G.run && G.run._pvp) return;                 /* 멀티플레이용 몸 — 모험 저장을 덮지 않는다 */
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
-  try { const txt = JSON.stringify({ run: G.run, cp: G.cp }); localStorage.setItem(SAVE_KEY, txt); runBackup(txt); } catch (e) { saveFail(e); }
+  if (window.__noSave) return;
+  try { const txt = JSON.stringify({ run: G.run, cp: G.cp, at: Date.now() }); localStorage.setItem(SAVE_KEY, txt); runBackup(txt); } catch (e) { saveFail(e); }
   if (typeof acctNudge === 'function') acctNudge();       /* 로그인했으면 잠시 뒤 서버에도 */
 }
 /* 갈림길에 들어서기 직전의 상태를 떠 둔다. 쓰러지면 여기로 돌아온다. */
@@ -20516,6 +20544,7 @@ function modal(html, cls) {
   const l = el('div', 'panel ' + (cls || ''), html);
   try { dressPanel(l); } catch (e) {}
   l.dataset.modal = '1';
+  dlgMark(l);                                   /* 대화 상자 · 이름 (판 69) */
   o.appendChild(l);
   return l;
 }
@@ -26062,8 +26091,8 @@ function meetOpen(room, role) {
         <button data-b="s">小 — 골드 1천 · 다이아 100 <em>×12</em></button>
         <button data-b="m">中 — 골드 5천 · 다이아 500 · 정진 200 <em>×20</em></button>
         <button data-b="l">大 — 골드 2만 · 다이아 2천 · 정진 1천 <em>×32</em></button></div>
-      <div class="mtrow"><b>재화 선물</b><input id="mg_gold" type="number" min="0" placeholder="골드"><input id="mg_dia" type="number" min="0" placeholder="다이아">
-        <input id="mg_jp" type="number" min="0" placeholder="정진"><input id="mg_cards" placeholder="부적 id (쉼표)"><button id="mg_go">보낸다</button></div>
+      <div class="mtrow"><b>재화 선물</b><input id="mg_gold" type="number" inputmode="decimal" min="0" placeholder="골드"><input id="mg_dia" type="number" inputmode="decimal" min="0" placeholder="다이아">
+        <input id="mg_jp" type="number" inputmode="decimal" min="0" placeholder="정진"><input id="mg_cards" placeholder="부적 id (쉼표)"><button id="mg_go">보낸다</button></div>
       <div class="mtrow"><button id="mt_guest">客 게스트로 바로 초대</button><button id="mt_cut">찻잔 컷씬 다시</button></div>
     </div>` : ''}`;
   document.body.appendChild(n);
@@ -28738,11 +28767,11 @@ function drawMailCompose(grid) {
         <label class="mcf">내용<textarea id="mc_say" maxlength="300" rows="4" placeholder="받는 이에게 할 말 (비워도 된다)">${wEsc(D.say)}</textarea></label>
         <div class="mcsub">보상</div>
         <div class="mcpay">
-          <label><i style="color:#ffd76a">金</i>골드<input id="mc_gold" type="number" min="0" max="1000000" value="${D.gold}"></label>
-          <label><i style="color:#6fd0e8">玉</i>다이아<input id="mc_dia" type="number" min="0" max="100000" value="${D.dia}"></label>
-          <label><i style="color:#c9a8ff">精</i>정진<input id="mc_jp" type="number" min="0" max="100000" value="${D.jp}"></label>
-          ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-mat="${k}" type="number" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
-          ${CPN_KS.map(k => `<label><i style="color:${CPN[k].c}">券</i>${CPN[k].n}<input data-cpn="${k}" type="number" min="0" max="99" value="${D.cpn[k] || 0}"></label>`).join('')}
+          <label><i style="color:#ffd76a">金</i>골드<input id="mc_gold" type="number" inputmode="decimal" min="0" max="1000000" value="${D.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i>다이아<input id="mc_dia" type="number" inputmode="decimal" min="0" max="100000" value="${D.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i>정진<input id="mc_jp" type="number" inputmode="decimal" min="0" max="100000" value="${D.jp}"></label>
+          ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-mat="${k}" type="number" inputmode="decimal" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
+          ${CPN_KS.map(k => `<label><i style="color:${CPN[k].c}">券</i>${CPN[k].n}<input data-cpn="${k}" type="number" inputmode="decimal" min="0" max="99" value="${D.cpn[k] || 0}"></label>`).join('')}
           ${Object.keys(EMO_PACKS).filter(k => !EMO_PACKS[k].free).map(k => `<label><i style="color:#ffd76a">☺</i>${EMO_PACKS[k].n}<input data-emo="${k}" type="checkbox"${(D.emo || []).includes(k) ? ' checked' : ''} style="width:auto"></label>`).join('')}
         </div>
         <label class="mcf">부적 (쉼표로 · 여덟 장까지)<input id="mc_cards" placeholder="이름을 치면 고를 수 있다" value="${wEsc(D.cards)}"></label>
@@ -28942,18 +28971,18 @@ async function drawBot(grid) {
     <div class="botgrid">
       <div class="castsec"><b>때와 테두리</b>
         <div class="botrow"><label>활동 시간 ${hrs('bt_from', B.from)} ~ ${hrs('bt_to', B.to)}</label><span class="casthint">같으면 하루 내내 · 거꾸로면 밤을 넘긴다</span></div>
-        <div class="botrow"><label>간격 <input id="bt_every" type="number" min="15" max="1440" value="${B.every}">분마다</label>
-          <label>하루 <input id="bt_max" type="number" min="0" max="24" value="${B.maxDay}">번까지</label>
-          <label>접속 <input id="bt_min" type="number" min="0" max="500" value="${B.minOn}">명 이상일 때</label></div>
+        <div class="botrow"><label>간격 <input id="bt_every" type="number" inputmode="decimal" min="15" max="1440" value="${B.every}">분마다</label>
+          <label>하루 <input id="bt_max" type="number" inputmode="decimal" min="0" max="24" value="${B.maxDay}">번까지</label>
+          <label>접속 <input id="bt_min" type="number" inputmode="decimal" min="0" max="500" value="${B.minOn}">명 이상일 때</label></div>
         <div class="casthint">다른 일(이벤트·바퀴·카운트다운·모두의 적·백귀야행·한바탕·코드·계란·숨은 부적)이 걸려 있으면 기다린다.</div>
       </div>
       <div class="castsec"><b>허락하는 일</b>
         <div class="botacts">${Object.keys(BOT_ACT_N).map(k => `<label class="botact${B.acts[k] ? ' on' : ''}"><input type="checkbox" data-act="${k}"${B.acts[k] ? ' checked' : ''}><i>${BOT_ACT_N[k][0]}</i><b>${BOT_ACT_N[k][1]}</b><small>${BOT_ACT_N[k][2]}</small></label>`).join('')}</div>
       </div>
       <div class="castsec"><b>보상 한도 — 봇은 이보다 많이 주지 않는다</b>
-        <div class="botrow"><label><i style="color:#ffd76a">金</i> <input id="bt_gold" type="number" min="0" max="5000" value="${B.caps.gold}"></label>
-          <label><i style="color:#6fd0e8">玉</i> <input id="bt_dia" type="number" min="0" max="500" value="${B.caps.dia}"></label>
-          <label><i style="color:#c9a8ff">精</i> <input id="bt_jp" type="number" min="0" max="200" value="${B.caps.jp}"></label>
+        <div class="botrow"><label><i style="color:#ffd76a">金</i> <input id="bt_gold" type="number" inputmode="decimal" min="0" max="5000" value="${B.caps.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i> <input id="bt_dia" type="number" inputmode="decimal" min="0" max="500" value="${B.caps.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i> <input id="bt_jp" type="number" inputmode="decimal" min="0" max="200" value="${B.caps.jp}"></label>
           <label>券 <select id="bt_cpn">${CPN_KS.map(k => `<option value="${k}"${B.caps.cpn === k ? ' selected' : ''}>${CPN[k].n}</option>`).join('')}</select></label></div>
       </div>
       <div class="castsec"><b>정시 일정 — 날마다 그 시각에 (15분 안에 한 번)</b>
@@ -28963,11 +28992,11 @@ async function drawBot(grid) {
       <div class="castsec"><b>말 — 인사 · 공지 돌림</b>
         <label class="botchk"><input type="checkbox" id="bt_greet"${B.greet ? ' checked' : ''}> 아침 9시 · 밤 9시 인사</label>
         <textarea id="bt_msgs" rows="4" maxlength="1300" placeholder="활동 시간 안에 차례로 돌릴 공지 — 한 줄에 하나 (열 줄까지)">${wEsc(B.msgs.join('\n'))}</textarea>
-        <div class="botrow"><label><input id="bt_mev" type="number" min="30" max="1440" value="${B.msgEvery}">분마다 한 줄씩</label></div>
+        <div class="botrow"><label><input id="bt_mev" type="number" inputmode="decimal" min="30" max="1440" value="${B.msgEvery}">분마다 한 줄씩</label></div>
       </div>
       <div class="castsec"><b>선물 · 특가</b>
-        <div class="botrow"><label>월요일 주간 우편 玉 <input id="bt_week" type="number" min="0" max="500" value="${B.weekly}"></label><span class="casthint">0 이면 보내지 않는다 · 할인권 한 장이 따라간다</span></div>
-        <div class="botrow"><label>오늘의 특가 최대 <input id="bt_sale" type="number" min="0" max="30" value="${B.sale}">%</label><span class="casthint">0 이면 걸지 않는다 · 하루 한 번 일일상점 값을 내린다</span></div>
+        <div class="botrow"><label>월요일 주간 우편 玉 <input id="bt_week" type="number" inputmode="decimal" min="0" max="500" value="${B.weekly}"></label><span class="casthint">0 이면 보내지 않는다 · 할인권 한 장이 따라간다</span></div>
+        <div class="botrow"><label>오늘의 특가 최대 <input id="bt_sale" type="number" inputmode="decimal" min="0" max="30" value="${B.sale}">%</label><span class="casthint">0 이면 걸지 않는다 · 하루 한 번 일일상점 값을 내린다</span></div>
       </div>
     </div>
     <div class="castbtnrow"><button class="brush-btn gold" id="bt_save">설정을 싣는다</button>
@@ -29018,16 +29047,16 @@ function drawScode(grid) {
         <label class="mcf">귀띔 <small>모두에게 보인다 · 비워도 된다</small><input id="sd_hint" maxlength="120" value="${wEsc(D.hint)}" placeholder="이를테면 — 오늘 채팅창 첫 글자를 이어 보라"></label>
         <div class="mcsub">보상</div>
         <div class="mcpay">
-          <label><i style="color:#ffd76a">金</i>골드<input id="sd_gold" type="number" min="0" max="1000000" value="${D.gold}"></label>
-          <label><i style="color:#6fd0e8">玉</i>다이아<input id="sd_dia" type="number" min="0" max="100000" value="${D.dia}"></label>
-          <label><i style="color:#c9a8ff">精</i>정진<input id="sd_jp" type="number" min="0" max="100000" value="${D.jp}"></label>
-          ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-smat="${k}" type="number" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
+          <label><i style="color:#ffd76a">金</i>골드<input id="sd_gold" type="number" inputmode="decimal" min="0" max="1000000" value="${D.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i>다이아<input id="sd_dia" type="number" inputmode="decimal" min="0" max="100000" value="${D.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i>정진<input id="sd_jp" type="number" inputmode="decimal" min="0" max="100000" value="${D.jp}"></label>
+          ${Object.keys(MAT_DEF).map(k => `<label><i style="color:${MAT_DEF[k].c}">${MAT_DEF[k].g}</i>${MAT_DEF[k].n}<input data-smat="${k}" type="number" inputmode="decimal" min="0" max="99" value="${D.mats[k] || 0}"></label>`).join('')}
         </div>
         <label class="mcf">부적 (쉼표로 · 여덟 장까지)<input id="sd_cards" placeholder="이름을 치면 고를 수 있다" value="${wEsc(D.cards)}"></label>
         <div class="mcsub">풀려 있는 때</div>
-        <div class="scmins">${MINS.map(([m, t]) => `<button data-m="${m}" class="${+D.min === m ? 'on' : ''}">${t}</button>`).join('')}<label>직접<input id="sd_min" type="number" min="1" max="10080" value="${D.min}">분</label></div>
+        <div class="scmins">${MINS.map(([m, t]) => `<button data-m="${m}" class="${+D.min === m ? 'on' : ''}">${t}</button>`).join('')}<label>직접<input id="sd_min" type="number" inputmode="decimal" min="1" max="10080" value="${D.min}">분</label></div>
         <div class="scopts">
-          <label>먼저 온<input id="sd_max" type="number" min="0" max="100000" value="${D.max}">명 <small>0 은 끝없이</small></label>
+          <label>먼저 온<input id="sd_max" type="number" inputmode="decimal" min="0" max="100000" value="${D.max}">명 <small>0 은 끝없이</small></label>
           <label class="chk"><input type="checkbox" id="sd_show"${D.show ? ' checked' : ''}> 모두에게 코드를 보여 준다 <small>공짜 코드 — 끄면 코드는 백야만 안다</small></label>
           <label class="chk"><input type="checkbox" id="sd_hype"${D.hype ? ' checked' : ''}> 「백야가 비밀 코드를 풀었다」 말도 함께</label>
           <label class="chk"><input type="checkbox" id="sd_cd"${D.cd ? ' checked' : ''}> 카운트다운 10초 뒤에 푼다</label>
@@ -29306,12 +29335,12 @@ function showWheelMaker() {
         <div class="mcsub">때 · 함성</div>
         <div class="whset">
           <label>이름<input id="wm_title" maxlength="30" value="${wEsc(D.title)}"></label>
-          <label>돌기 전<input id="wm_lead" type="number" min="5" max="30" value="${D.lead}">초</label>
-          <label>도는 때<input id="wm_spin" type="number" min="5" max="15" value="${D.spin}">초</label>
-          <label>함성 목표<input id="wm_goal" type="number" min="0" max="100000" value="${D.goal}"></label>
-          <label><i style="color:#ffd76a">金</i><input id="wm_gold" type="number" min="0" max="100000" value="${D.gold}"></label>
-          <label><i style="color:#6fd0e8">玉</i><input id="wm_dia" type="number" min="0" max="10000" value="${D.dia}"></label>
-          <label><i style="color:#c9a8ff">精</i><input id="wm_jp" type="number" min="0" max="10000" value="${D.jp}"></label>
+          <label>돌기 전<input id="wm_lead" type="number" inputmode="decimal" min="5" max="30" value="${D.lead}">초</label>
+          <label>도는 때<input id="wm_spin" type="number" inputmode="decimal" min="5" max="15" value="${D.spin}">초</label>
+          <label>함성 목표<input id="wm_goal" type="number" inputmode="decimal" min="0" max="100000" value="${D.goal}"></label>
+          <label><i style="color:#ffd76a">金</i><input id="wm_gold" type="number" inputmode="decimal" min="0" max="100000" value="${D.gold}"></label>
+          <label><i style="color:#6fd0e8">玉</i><input id="wm_dia" type="number" inputmode="decimal" min="0" max="10000" value="${D.dia}"></label>
+          <label><i style="color:#c9a8ff">精</i><input id="wm_jp" type="number" inputmode="decimal" min="0" max="10000" value="${D.jp}"></label>
         </div>
         <div class="casthint">함성 목표를 넘기면 바퀴가 멈출 때 모두의 우편함에 위 보상이 간다 (0 이면 없음) · 한 사람이 한 바퀴에 예순 번까지 외친다</div>
       </div>
@@ -30226,6 +30255,7 @@ function liveSave() {
 /* 소식을 물으러 간다. 못 받아도 조용히 넘어간다. */
 async function liveFetch() {
   if (!LIVE_URL) return;
+  if (document.hidden && Date.now() - (LIVE.at || 0) < 5 * 60000) return;   /* 숨은 창 — 데이터 · 배터리를 아낀다 (판 69) */
   try {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 6000);
@@ -32178,8 +32208,18 @@ function acctSave() {
   try { localStorage.setItem(ACCT_KEY, JSON.stringify(ACCT)); } catch (e) {}
 }
 const acctBase = () => LIVE_URL.replace(/\/live$/, '');
-async function acctAsk(path, body, ms) {
+const _askFly = new Map();
+function acctAsk(path, body, ms) {
+  /* 판 69 — 같은 물음을 연달아 누르면(답을 기다리는 사이) 한 번만 보낸다 */
+  const k = path + '|' + (body ? JSON.stringify(body) : '');
+  if (_askFly.has(k)) return _askFly.get(k);
+  const pr = acctAsk0(path, body, ms).finally(() => _askFly.delete(k));
+  _askFly.set(k, pr); return pr;
+}
+const ASK_SAY = { 429: '너무 잦다 — 잠시 뒤에', 413: '너무 길다', 500: '서버에서 일이 꼬였다 — 잠시 뒤 다시', 502: '서버가 깨어나는 중이다 — 잠시 뒤 다시', 503: '서버가 쉬는 중이다 — 잠시 뒤 다시', 504: '서버가 늦다 — 잠시 뒤 다시' };
+async function acctAsk0(path, body, ms) {
   if (!LIVE_URL) return { ok: false, why: '서버 자리가 비어 있다' };
+  if (navigator.onLine === false) return { ok: false, why: '연결이 끊겼다 — 이어지면 다시 하시오', offline: true };   /* 기다리지 않는다 (판 69) */
   try {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), ms || 20000);
@@ -32191,7 +32231,7 @@ async function acctAsk(path, body, ms) {
     clearTimeout(t);
     const d = await r.json().catch(() => ({}));
     if (d && d.banned) { banLock(d.why); return { ok: false, banned: true, why: d.why || '이용이 정지되었습니다' }; }
-    if (!r.ok || !d.ok) return { ok: false, why: d.why || ('서버가 ' + r.status), status: r.status };
+    if (!r.ok || !d.ok) return { ok: false, why: d.why || ASK_SAY[r.status] || ('서버가 ' + r.status), status: r.status };
     if (d.undel) setTimeout(() => toast('계정 지우기 신청을 물렀다 — 다시 반갑다'), 700);   /* 판 69 */
     return d;
   } catch (e) {
@@ -33879,14 +33919,14 @@ function drawCast(grid) {
         특가 — 일일상점의 값을 정한 동안 내린다(할인권과 겹친다). 우편함 작성 탭에서도 할인권을 보낼 수 있다.</div>
       <div class="castbtnrow">
         <select id="ct_cpk">${CPN_KS.map(k => `<option value="${k}">${CPN[k].n}</option>`).join('')}</select>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">장수 <input id="ct_cpn" type="number" min="1" max="10" value="1" style="width:56px"></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_cpm" type="number" min="1" max="1440" value="10" style="width:64px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">장수 <input id="ct_cpn" type="number" inputmode="decimal" min="1" max="10" value="1" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_cpm" type="number" inputmode="decimal" min="1" max="1440" value="10" style="width:64px"> 분</label>
         <button class="brush-btn gold" id="ct_cpgo">할인권을 퍼뜨린다</button>
         <button class="brush-btn ghost" id="ct_cpoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">특가 −<input id="ct_sap" type="number" min="5" max="50" value="20" style="width:56px">%</label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_sah" type="number" min="1" max="48" value="3" style="width:56px"> 시간</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">특가 −<input id="ct_sap" type="number" inputmode="decimal" min="5" max="50" value="20" style="width:56px">%</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_sah" type="number" inputmode="decimal" min="1" max="48" value="3" style="width:56px"> 시간</label>
         <button class="brush-btn gold" id="ct_sago">특가를 건다</button>
         <button class="brush-btn ghost" id="ct_saoff" style="color:#e9dfc9;border-color:#8a7f68">내린다</button>
       </div>
@@ -33899,7 +33939,7 @@ function drawCast(grid) {
       <div class="castbtnrow">
         <button class="brush-btn gold" data-dx="qx" style="background:linear-gradient(120deg,#ffe08a,#c99a10);color:#2a1a02">?X급으로 바꾼다</button>
         <button class="brush-btn gold" data-dx="unknown" style="background:linear-gradient(120deg,#d8b8ff,#7b4bd8);color:#fff">?급으로 바꾼다</button>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_dxm" type="number" min="1" max="720" value="30" style="width:64px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_dxm" type="number" inputmode="decimal" min="1" max="720" value="30" style="width:64px"> 분</label>
         <button class="brush-btn ghost" id="ct_dxoff" style="color:#e9dfc9;border-color:#8a7f68">끈다 — 원래 덱으로</button>
       </div>
       <div class="casthint" id="ct_dxnow"></div>
@@ -33910,7 +33950,7 @@ function drawCast(grid) {
         모두 새로 진열 — 모두의 일일상점을 한 번 공짜로 다시 굴린다.</div>
       <div class="castbtnrow">
         <input id="ct_dspc" placeholder="부적 이름 (비우면 SSX 무작위)" style="min-width:200px">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">玉 <input id="ct_dspp" type="number" min="0" max="100000" value="3000" style="width:80px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">玉 <input id="ct_dspp" type="number" inputmode="decimal" min="0" max="100000" value="3000" style="width:80px"></label>
         <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_dspu" type="checkbox"> 강화</label>
         <button class="brush-btn gold" id="ct_dspgo">진열한다 (3분)</button>
         <button class="brush-btn ghost" id="ct_dspoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
@@ -33922,7 +33962,7 @@ function drawCast(grid) {
     <div class="castsec lvbsec"><b>💣 레벨업 폭탄 — 아이디를 아는 이에게</b>
       <div class="casthint">아이디나 닉네임을 적고 던지면, 받는 이의 화면에서 폭탄이 터지며 정한 만큼 레벨이 한꺼번에 오른다 (레벨마다 다이아도 따라간다). 받는 쪽은 열두 셈 안에 터진다.</div>
       <div class="castbtnrow"><input id="ct_lbto" placeholder="아이디 또는 닉네임" maxlength="20" style="min-width:160px">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_lbn" type="number" min="1" max="20" value="3" style="width:56px"> 레벨</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_lbn" type="number" inputmode="decimal" min="1" max="20" value="3" style="width:56px"> 레벨</label>
         <button class="brush-btn gold" id="ct_lbgo" style="background:linear-gradient(120deg,#ffb04a,#e2401a);color:#fff">💣 던진다</button></div>
       <div class="casthint" id="ct_lblog"></div>
     </div>
@@ -33930,9 +33970,9 @@ function drawCast(grid) {
     <div class="castsec pvpfsec"><b>對 대전 선공 보정 — 뒤에 두는 쪽의 첫 차례</b>
       <div class="casthint">먼저 두는 쪽이 유리하다 — 두 번째부터 두는 사람은 첫 차례에 아래만큼 더 받는다. 기본은 부적 1장 · 기 1.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">부적 +<input id="ct_pfd" type="number" min="0" max="3" style="width:52px"></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">기 +<input id="ct_pfq" type="number" min="0" max="3" style="width:52px"></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">방어 +<input id="ct_pfb" type="number" min="0" max="30" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">부적 +<input id="ct_pfd" type="number" inputmode="decimal" min="0" max="3" style="width:52px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">기 +<input id="ct_pfq" type="number" inputmode="decimal" min="0" max="3" style="width:52px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">방어 +<input id="ct_pfb" type="number" inputmode="decimal" min="0" max="30" style="width:56px"></label>
         <button class="brush-btn gold" id="ct_pfgo">정한다</button>
         <button class="brush-btn ghost" id="ct_pfoff" style="color:#e9dfc9;border-color:#8a7f68">기본으로</button>
       </div>
@@ -33949,9 +33989,9 @@ function drawCast(grid) {
         깨면 골드·다이아·물약·정진, 비밀 계란은 다이아 듬뿍에 유물·S급 부적(아주 드물게 ?급). 사람마다 제 지도에 제 계란.
         위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 뿌려진다.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">계란 <input id="ct_egn" type="number" min="1" max="30" value="8" style="width:56px"></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">그중 비밀 <input id="ct_egs" type="number" min="0" max="10" value="2" style="width:56px"></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_egm" type="number" min="1" max="60" value="10" style="width:56px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">계란 <input id="ct_egn" type="number" inputmode="decimal" min="1" max="30" value="8" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">그중 비밀 <input id="ct_egs" type="number" inputmode="decimal" min="0" max="10" value="2" style="width:56px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_egm" type="number" inputmode="decimal" min="1" max="60" value="10" style="width:56px"> 분</label>
         <button class="brush-btn gold" id="ct_egg">계란을 뿌린다</button>
         <button class="brush-btn ghost" id="ct_eggoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
@@ -33962,16 +34002,16 @@ function drawCast(grid) {
         백야의 공격은 그 사람의 최대 체력에 맞춰 커진다(× 세기). 반이 깎이면 「권한 해방」. 지면 모험은 그대로 · 다시 도전 가능.
         이기면 아래 보상을 한 번 받는다. 처음 이긴 사람의 이름은 모든 화면에 뜬다. 「카운트다운 뒤에 시작」도 된다.</div>
       <div class="dbgrid">
-        <label>체력 <input id="ct_dbhp" type="number" min="50" max="9999999" value="2000"></label>
+        <label>체력 <input id="ct_dbhp" type="number" inputmode="decimal" min="50" max="9999999" value="2000"></label>
         <label>세기 <select id="ct_dbpow">${[.5, .75, 1, 1.5, 2, 3, 5].map(x => `<option value="${x}"${x === 1 ? ' selected' : ''}>×${x}</option>`).join('')}</select></label>
-        <label>시간(분) <input id="ct_dbmin" type="number" min="1" max="120" value="15"></label>
+        <label>시간(분) <input id="ct_dbmin" type="number" inputmode="decimal" min="1" max="120" value="15"></label>
         <label>등장 컷씬 <input id="ct_dbcut" type="checkbox" checked style="width:auto"></label>
-        <label>玉 다이아 <input id="ct_dbdia" type="number" min="0" value="1000"></label>
-        <label>金 골드 <input id="ct_dbgold" type="number" min="0" value="0"></label>
-        <label>精 정진 <input id="ct_dbjp" type="number" min="0" value="200"></label>
-        <label>SSX 부적 <input id="ct_dbssx" type="number" min="0" max="10" value="1"></label>
-        <label>?급 부적 <input id="ct_dbunk" type="number" min="0" max="5" value="0"></label>
-        <label>유물 <input id="ct_dbrel" type="number" min="0" max="5" value="0"></label>
+        <label>玉 다이아 <input id="ct_dbdia" type="number" inputmode="decimal" min="0" value="1000"></label>
+        <label>金 골드 <input id="ct_dbgold" type="number" inputmode="decimal" min="0" value="0"></label>
+        <label>精 정진 <input id="ct_dbjp" type="number" inputmode="decimal" min="0" value="200"></label>
+        <label>SSX 부적 <input id="ct_dbssx" type="number" inputmode="decimal" min="0" max="10" value="1"></label>
+        <label>?급 부적 <input id="ct_dbunk" type="number" inputmode="decimal" min="0" max="5" value="0"></label>
+        <label>유물 <input id="ct_dbrel" type="number" inputmode="decimal" min="0" max="5" value="0"></label>
       </div>
       <div class="castbtnrow">
         <button class="brush-btn gold" id="ct_db">시험을 연다</button>
@@ -33985,7 +34025,7 @@ function drawCast(grid) {
         쓰러뜨리면 그것이 베껴 쓴 부적 하나에 <b>영(影)</b> 돌연변이 — 낼 때 그림자가 따라 반만큼 한 번 더. 벤 수는 서버가 세고, 끝나면 1·2·3위 보상.
         위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 시작한다.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_shmin" type="number" min="1" max="60" value="10" style="width:56px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_shmin" type="number" inputmode="decimal" min="1" max="60" value="10" style="width:56px"> 분</label>
         <button class="brush-btn gold" id="ct_sh">그림자를 푼다</button>
         <button class="brush-btn ghost" id="ct_shoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
@@ -33997,7 +34037,7 @@ function drawCast(grid) {
         여기서 열면 정각을 기다리지 않고 지금 모두에게 나온다 — 이미 잡은 사람도 다시 잡을 수 있다.
         「박사 날려버리기 컷씬」을 켜 두면 잡는 순간 컷씬이 흐른다. 위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 열린다.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_hbmin" type="number" min="1" max="60" value="10" style="width:56px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_hbmin" type="number" inputmode="decimal" min="1" max="60" value="10" style="width:56px"> 분</label>
         <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_hbcut" type="checkbox" checked> 박사 날려버리기 컷씬</label>
         <button class="brush-btn gold" id="ct_hb">해킹 보스를 연다</button>
         <button class="brush-btn ghost" id="ct_hbtry" style="color:#e9dfc9;border-color:#8a7f68">컷씬 미리 보기</button>
@@ -34008,7 +34048,7 @@ function drawCast(grid) {
 
     <div class="castsec mtsec"><b>工 점검 — 모든 앱 맨 위에 「점검 중」 띠 · 대전 줄서기를 쉰다 (판 69)</b>
       <div class="casthint">혼자 하는 모험은 그대로 된다. 정한 분이 지나면 저절로 풀린다.</div>
-      <div class="castbtnrow"><label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtmin" type="number" min="1" max="600" value="30" style="width:64px"> 분</label>
+      <div class="castbtnrow"><label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtmin" type="number" inputmode="decimal" min="1" max="600" value="30" style="width:64px"> 분</label>
         <input id="ct_mtmsg" maxlength="120" placeholder="할 말 (예: 서버 옮기는 중 — 30분)" style="flex:1;min-width:160px">
         <button class="brush-btn gold" id="ct_mt">점검을 건다</button><button class="brush-btn ghost" id="ct_mtoff" style="color:#e9dfc9;border-color:#8a7f68">푼다</button></div>
       <div class="casthint" id="ct_mtnow"></div>
@@ -34020,7 +34060,7 @@ function drawCast(grid) {
         쓰러져도 모험은 끝나지 않고, 보스를 꺾으면 돌아가서 다이아 ${TRIAL_PAY.clear} · 끝까지 남으면 ${TRIAL_PAY.stay}. 싸움 · 컷씬 중인 이는 끝난 뒤에 옮겨진다.</div>
       <div class="castbtnrow">
         <label class="casthint" style="display:flex;align-items:center;gap:6px">막 <select id="ct_tract">${Array.from({ length: ACT_MAX }, (_, i) => `<option value="${i + 1}"${i + 1 === ACT_MAX ? ' selected' : ''}>제${i + 1}막 ${ACT_NAME[i + 1] || ''}</option>`).join('')}</select></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_trmin" type="number" min="1" max="180" value="30" style="width:60px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_trmin" type="number" inputmode="decimal" min="1" max="180" value="30" style="width:60px"> 분</label>
         <input id="ct_trtitle" maxlength="40" placeholder="이름 (예: 26막 업데이트 기념)" style="flex:1;min-width:140px">
         <button class="brush-btn gold" id="ct_tr">체험을 연다</button>
         <button class="brush-btn ghost" id="ct_troff" style="color:#e9dfc9;border-color:#8a7f68">거둔다 (모두 곧바로 돌아간다)</button>
@@ -34049,7 +34089,7 @@ function drawCast(grid) {
       <div class="bfpick">${Object.keys(BUFF_DEF).map(k => `<label title="${wEsc(BUFF_DEF[k].d(2))}"><input type="checkbox" data-bf="${k}"${k === 'pow' ? ' checked' : ''}><i style="--bc:${BUFF_DEF[k].c}">${BUFF_DEF[k].g}</i>${BUFF_DEF[k].n}</label>`).join('')}</div>
       <div class="castbtnrow">
         <label class="casthint" style="display:flex;align-items:center;gap:6px">부적의 힘 ×<select id="ct_bfpow">${[1.5, 2, 3, 5, 10].map(x => `<option value="${x}"${x === 2 ? ' selected' : ''}>${x}</option>`).join('')}</select></label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_bfmin" type="number" min="1" max="120" value="10" style="width:56px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_bfmin" type="number" inputmode="decimal" min="1" max="120" value="10" style="width:56px"> 분</label>
         <button class="brush-btn gold" id="ct_bfall">모두 고르기</button>
         <button class="brush-btn gold" id="ct_buff">버프를 건다</button>
         <button class="brush-btn ghost" id="ct_buffoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
@@ -34075,7 +34115,7 @@ function drawCast(grid) {
         받은 사람은 「넘긴다!」로 다른 참가자에게 던진다. 45~90초 사이 언젠가(서버만 안다) 터지면 <b>들고 있던 사람은 보상 없음</b>, 나머지 참가자는 다이아(모험 밖이면 정진).
         위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 참가를 받는다.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">살아남으면 玉 <input id="ct_bpay" type="number" min="1" max="5000" value="50" style="width:70px"></label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">살아남으면 玉 <input id="ct_bpay" type="number" inputmode="decimal" min="1" max="5000" value="50" style="width:70px"></label>
         <button class="brush-btn gold" id="ct_bomb">폭탄을 연다</button>
         <button class="brush-btn ghost" id="ct_bomboff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
@@ -34087,8 +34127,8 @@ function drawCast(grid) {
         30% · 60% · 100%에 닿으면 한 마리라도 잡은 사람 모두가 보상을 받는다(100%는 「행렬의 등불」 유물). 카드 대전 동안은 멈추고, 모두의 적과는 함께 못 건다.
         위 「카운트다운 뒤에 시작」을 켜 두면 0 에서 행렬이 나타난다.</div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px">목표 <input id="ct_mgoal" type="number" min="20" max="300" value="100" style="width:70px"> 마리</label>
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtime" type="number" min="3" max="30" value="10" style="width:60px"> 분</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px">목표 <input id="ct_mgoal" type="number" inputmode="decimal" min="20" max="300" value="100" style="width:70px"> 마리</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtime" type="number" inputmode="decimal" min="3" max="30" value="10" style="width:60px"> 분</label>
         <button class="brush-btn red" id="ct_march">행렬을 부른다</button>
         <button class="brush-btn ghost" id="ct_marchoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button>
       </div>
@@ -34107,7 +34147,7 @@ function drawCast(grid) {
         style="color:#e9dfc9;border-color:#8a7f68">모두 끈다</button>
       <div class="cdset">
         <label><input type="checkbox" id="ct_cd"> ⏱ 카운트다운 뒤에 시작</label>
-        <label><input id="ct_cds" type="number" min="3" max="60" value="5"> 초</label>
+        <label><input id="ct_cds" type="number" inputmode="decimal" min="3" max="60" value="5"> 초</label>
         <button class="brush-btn ghost" id="ct_cdonly" style="color:#ff8a8a;border-color:#8a3a3a">카운트다운만</button>
         <button class="brush-btn ghost" id="ct_cdoff" style="color:#e9dfc9;border-color:#8a7f68">멈춤</button>
       </div>
@@ -34124,7 +34164,7 @@ function drawCast(grid) {
       </div>
       <div class="castbtnrow">
         <label class="casthint" style="display:flex;align-items:center;gap:6px">
-          <input id="ct_mmin" type="number" min="1" max="120" value="10" style="width:70px"> 분 동안</label>
+          <input id="ct_mmin" type="number" inputmode="decimal" min="1" max="120" value="10" style="width:70px"> 분 동안</label>
         <button class="brush-btn" id="ct_mtry">내 기계에서만 들어 보기</button>
         <button class="brush-btn ghost" id="ct_moff" style="color:#e9dfc9;border-color:#8a7f68">노래 끄기</button>
       </div>
@@ -34134,7 +34174,7 @@ function drawCast(grid) {
       <div class="casthint">정한 분 동안만 모든 사람이 자동 플레이를 쓸 수 있다(VIP 가 아니어도). 끝나면 돌던 자동은 멈추고 다시 잠긴다.
         <span id="ct_afnow"></span></div>
       <div class="castbtnrow">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_afmin" type="number" min="1" max="240" value="30" style="width:70px"> 분 동안</label>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_afmin" type="number" inputmode="decimal" min="1" max="240" value="30" style="width:70px"> 분 동안</label>
         <button class="brush-btn gold" id="ct_afgo">맛보기 뿌리기</button>
         <button class="brush-btn ghost" id="ct_afoff" style="color:#e9dfc9;border-color:#8a7f68">거두기</button></div>
     </div>
@@ -34170,13 +34210,13 @@ function drawCast(grid) {
       <div class="casthint">모든 앱의 지도 어딘가에 희미한 부적이 숨는다(사람마다 다른 자리). 이따금 반짝인다.
         먼저 찾은 사람만 받는다 — 한 아이디에 한 번. <span id="ct_hnow"></span></div>
       <div class="castrow castpay">
-        <label>찾을 사람<input id="ct_hmax" type="number" min="1" max="100" value="10"></label>
-        <label>분<input id="ct_hmin" type="number" min="1" max="30" value="3"></label>
+        <label>찾을 사람<input id="ct_hmax" type="number" inputmode="decimal" min="1" max="100" value="10"></label>
+        <label>분<input id="ct_hmin" type="number" inputmode="decimal" min="1" max="30" value="3"></label>
       </div>
       <div class="castrow castpay">
-        <label>골드<input id="ct_hgold" type="number" min="0" max="1000000" value="300"></label>
-        <label>다이아<input id="ct_hdia" type="number" min="0" max="100000" value="100"></label>
-        <label>정진<input id="ct_hjp" type="number" min="0" max="100000" value="0"></label>
+        <label>골드<input id="ct_hgold" type="number" inputmode="decimal" min="0" max="1000000" value="300"></label>
+        <label>다이아<input id="ct_hdia" type="number" inputmode="decimal" min="0" max="100000" value="100"></label>
+        <label>정진<input id="ct_hjp" type="number" inputmode="decimal" min="0" max="100000" value="0"></label>
       </div>
       <div class="casthint">보상 부적 — 눌러서 고른다 (네 장까지 · 안 골라도 된다)</div>
       <input id="ct_hcards">
@@ -34197,10 +34237,10 @@ function drawCast(grid) {
         <label class="casthint" style="display:flex;align-items:center;gap:6px"><input type="radio" name="ct_pm" value="quiz"> 퀴즈 — 맞히면 보상 (정답에 표시)</label>
       </div>
       <div class="castrow castpay">
-        <label>분<input id="ct_pmin" type="number" min="1" max="30" value="3"></label>
-        <label>골드<input id="ct_pgold" type="number" min="0" max="1000000" value="100"></label>
-        <label>다이아<input id="ct_pdia" type="number" min="0" max="100000" value="30"></label>
-        <label>정진<input id="ct_pjp" type="number" min="0" max="100000" value="0"></label>
+        <label>분<input id="ct_pmin" type="number" inputmode="decimal" min="1" max="30" value="3"></label>
+        <label>골드<input id="ct_pgold" type="number" inputmode="decimal" min="0" max="1000000" value="100"></label>
+        <label>다이아<input id="ct_pdia" type="number" inputmode="decimal" min="0" max="100000" value="30"></label>
+        <label>정진<input id="ct_pjp" type="number" inputmode="decimal" min="0" max="100000" value="0"></label>
       </div>
       <div class="castbtnrow">
         <button class="brush-btn gold" id="ct_poll">묻는다</button>
@@ -34214,12 +34254,12 @@ function drawCast(grid) {
       <div class="casthint">모두의 우편함에 한 통 — 정한 날만큼 남아 있어 그때 없던 사람도 받는다. 받은 사람은 두 번 받지 못한다(서버가 적는다).
         재화만, 부적만, 둘 다 — 무엇이든 된다.</div>
       <div class="castrow"><input id="ct_gtitle" maxlength="40" placeholder="우편 제목 (비우면 「백야의 선물」)">
-        <label class="casthint" style="display:flex;align-items:center;gap:6px;white-space:nowrap">기한 <input id="ct_gdays" type="number" min="1" max="30" value="7" style="width:56px"> 일</label></div>
+        <label class="casthint" style="display:flex;align-items:center;gap:6px;white-space:nowrap">기한 <input id="ct_gdays" type="number" inputmode="decimal" min="1" max="30" value="7" style="width:56px"> 일</label></div>
       <input id="ct_gsay" maxlength="120" placeholder="함께 적을 말 (비워도 된다)">
       <div class="castrow castpay">
-        <label>골드<input id="ct_ggold" type="number" min="0" max="1000000" value="0"></label>
-        <label>다이아<input id="ct_gdia" type="number" min="0" max="100000" value="0"></label>
-        <label>정진<input id="ct_gjp" type="number" min="0" max="100000" value="0"></label>
+        <label>골드<input id="ct_ggold" type="number" inputmode="decimal" min="0" max="1000000" value="0"></label>
+        <label>다이아<input id="ct_gdia" type="number" inputmode="decimal" min="0" max="100000" value="0"></label>
+        <label>정진<input id="ct_gjp" type="number" inputmode="decimal" min="0" max="100000" value="0"></label>
       </div>
       <div class="casthint">줄 부적 — 눌러서 고른다 (여덟 장까지 · 안 골라도 된다)</div>
       <input id="ct_gcards" placeholder="이를테면 — seal, fire, thunder">
@@ -34243,14 +34283,14 @@ function drawCast(grid) {
       <div class="castrow">
         <input id="ct_bn" maxlength="40" placeholder="이름" value="하늘을 가르는 것">
         <input id="ct_bg" maxlength="2" placeholder="글자" value="天" style="flex:0 0 70px">
-        <input id="ct_bmax" type="number" min="100" placeholder="체력" value="7000">
+        <input id="ct_bmax" type="number" inputmode="decimal" min="100" placeholder="체력" value="7000">
       </div>
       <div class="casthint">체력 가늠 — 한 사람이 한 분에 대략 50~500 을 넣는다.
         열 명이 다섯 분을 치면 7천 안팎.</div>
       <div class="castrow castpay">
-        <label>정진<input id="ct_bjp" type="number" min="0" max="100000" value="300"></label>
-        <label>골드<input id="ct_bgold" type="number" min="0" max="1000000" value="500"></label>
-        <label>다이아<input id="ct_bdia" type="number" min="0" max="100000" value="150"></label>
+        <label>정진<input id="ct_bjp" type="number" inputmode="decimal" min="0" max="100000" value="300"></label>
+        <label>골드<input id="ct_bgold" type="number" inputmode="decimal" min="0" max="1000000" value="500"></label>
+        <label>다이아<input id="ct_bdia" type="number" inputmode="decimal" min="0" max="100000" value="150"></label>
       </div>
       <div class="casthint">보상 부적 — 눌러서 고른다 (여덟 장까지 · 안 골라도 된다)</div>
       <input id="ct_bcards">
@@ -34263,7 +34303,7 @@ function drawCast(grid) {
       </div>
       <div class="castbtnrow">
         <label class="casthint" style="display:flex;align-items:center;gap:6px">서 있는 적의 때를
-          <input id="ct_bext" type="number" min="1" max="30" value="3" style="width:64px"> 분</label>
+          <input id="ct_bext" type="number" inputmode="decimal" min="1" max="30" value="3" style="width:64px"> 분</label>
         <button class="brush-btn" id="ct_bextgo">시간 연장</button>
         <span class="casthint">모두 합쳐 30분까지</span>
       </div>
@@ -34273,7 +34313,7 @@ function drawCast(grid) {
       <div class="casthint">지금 이 앱은 ${APP_VERSION} 판이다. 더 큰 수를 적으면
         모두에게 「새 판이 나왔다」고 뜬다.</div>
       <div class="castrow">
-        <input id="ct_ver" type="number" min="0" max="9999" placeholder="판 번호"
+        <input id="ct_ver" type="number" inputmode="decimal" min="0" max="9999" placeholder="판 번호"
           value="${LIVE.version || APP_VERSION}">
         <input id="ct_apk" placeholder="받는 자리 (APK 주소)" value="${(LIVE.apk || APK_URL).replace(/"/g, '&quot;')}">
       </div>
@@ -34838,7 +34878,7 @@ function drawSched(grid, send) {
       const r = el('div', 'scstep');
       r.innerHTML = `<b>${'①②③④⑤⑥⑦⑧⑨⑩⑪⑫'[i] || i + 1}</b><span>${wEsc(st.label)}</span>
         ${st.kind === 'notice' ? `<input class="sctext" maxlength="300" placeholder="할 말" value="${wEsc(st.text)}">` : ''}
-        <label><input class="scafter" type="number" min="0" max="3600" value="${st.after}">초 뒤</label>
+        <label><input class="scafter" type="number" inputmode="decimal" min="0" max="3600" value="${st.after}">초 뒤</label>
         <button class="scdel" title="빼기">×</button>`;
       const tx = r.querySelector('.sctext'); if (tx) tx.oninput = () => { st.text = tx.value; };
       r.querySelector('.scafter').oninput = e => { st.after = Math.max(0, Math.min(3600, +e.target.value || 0)); };
@@ -38156,7 +38196,7 @@ function guildGiveDraw(p, host) {
     <div class="gwbox"><h3>參 출석</h3><div class="casthint">하루에 한 번 — 길드 경험 +30 · 길드 주화 +15</div>
       <button class="brush-btn gold" id="gw_chk"${me.chk ? ' disabled' : ''}>${me.chk ? '오늘은 얼굴을 비쳤다' : '얼굴을 비친다'}</button>
       <h3 style="margin-top:14px">獻 기부</h3><div class="casthint">골드 150 · 다이아 15마다 길드 경험 1 · 경험 4마다 주화 1 · 그대는 하루 경험 <b>${me.donCap || 400}</b>까지 (오늘 <b>${me.don || 0}</b>)${(me.donCap || 400) < 400 ? ' — 새로 온 이는 100까지 · 계정 사흘 · 레벨 5부터 400' : ''}</div>
-      <div class="gwdon"><label>金 골드 <input id="gw_dg" type="number" min="0" step="150" value="0"></label><label>玉 다이아 <input id="gw_dd" type="number" min="0" step="15" value="0"></label></div>
+      <div class="gwdon"><label>金 골드 <input id="gw_dg" type="number" inputmode="decimal" min="0" step="150" value="0"></label><label>玉 다이아 <input id="gw_dd" type="number" inputmode="decimal" min="0" step="15" value="0"></label></div>
       <div class="gwdq">${[1500, 7500, 15000].map(v => `<button class="val" data-g="${v}">金 ${v.toLocaleString()}</button>`).join('')}${[150, 750, 1500].map(v => `<button class="val" data-d="${v}">玉 ${v.toLocaleString()}</button>`).join('')}</div>
       <button class="brush-btn" id="gw_don">기부한다</button><div class="casthint">${run && !run._pvp ? `지금 金 ${infTxt(run.gold)} · 玉 ${infTxt(run.dia || 0)}` : '골드 · 다이아는 모험 중에만 낸다'}</div></div>
     <div class="gwbox"><h3>護 길드 가호 <small>지금 Lv ${lv}</small></h3><div class="gwbuf">${GBUF.map(([l, , , t]) => `<div class="${l <= lv ? 'on' : ''}"><em>Lv ${l}</em><span>${t}</span></div>`).join('')}
@@ -38188,7 +38228,7 @@ function guildRuleDraw(p, host) {
       <div class="casthint">가입 — <b>${ru.open === false ? '청하면 받아 준다' : '누구나 들어온다'}</b> · 레벨 <b>${ru.minLv || 1}</b>부터 · 부길드장은 셋까지 · 길드장이 떠나면 부길드장이 잇는다</div>
       ${off ? `<h3 style="margin-top:12px">筆 규칙 고치기</h3>
         <label class="gwchk"><input type="checkbox" id="gr_open"${ru.open === false ? '' : ' checked'}> 누구나 들어온다 (끄면 청을 받아 준다)</label>
-        <label>최소 레벨 <input id="gr_min" type="number" min="1" max="99" value="${ru.minLv || 1}" style="width:70px"></label>
+        <label>최소 레벨 <input id="gr_min" type="number" inputmode="decimal" min="1" max="99" value="${ru.minLv || 1}" style="width:70px"></label>
         <textarea id="gr_txt" maxlength="160" rows="3" placeholder="예: 하루 한 번 출석 · 욕설 금지 · 토벌 주말 저녁 9시">${wEsc(ru.text || '')}</textarea>
         <button class="brush-btn gold" id="gr_save">적는다</button>` : ''}</div>
     <div class="gwbox"><h3>請 들어오기를 청한 이 <small>${(g.apply || []).length}</small></h3>
@@ -39024,6 +39064,7 @@ function askYes(msg, opt) {
     const fin = v => { if (done) return; done = true; if (p.isConnected) closeTop(); res(v); };
     p.querySelector('#ask_y').onclick = () => fin(true);
     p.querySelector('#ask_n').onclick = () => fin(false);
+    p.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); e.stopPropagation(); fin(document.activeElement && document.activeElement.id === 'ask_n' ? false : true); } });
     const mo = new MutationObserver(() => { if (!p.isConnected) { mo.disconnect(); fin(false); } });
     mo.observe($('#overlay'), { childList: true });
     setTimeout(() => { const b = p.querySelector('#ask_y'); if (b) b.focus(); }, 40);
@@ -39192,6 +39233,125 @@ setInterval(titlePaint, 2000);
 
 /* 숫자 — 천 단위 쉼표 */
 const numK = n => (+n || 0).toLocaleString('ko-KR');
+
+/* ══ 판 69c — 쓰기 편하게 · 누구나 · 가볍게 ══════════════════════════
+   · 창은 「대화 상자」로 읽히고(화면 낭독기), 알림은 저절로 읽힌다 · 글자 없는 단추에도 이름
+   · 키보드: 초점 테두리 · 창 안에서만 Tab 이 돈다 · 확인 창 Enter=예 Esc=아니
+   · 기기의 「움직임 줄이기」를 처음부터 따른다
+   · 숫자 칸은 숫자 자판 · 범위를 넘으면 맞춰 준다 · 코드 칸은 자동 대문자·맞춤법이 끼어들지 않고, 붙여 넣은 빈칸은 걷는다
+   · 폰 자판이 칸을 가리면 칸을 화면 가운데로 · 자동 플레이 동안 화면이 꺼지지 않는다
+   · 알림: 넷까지만 · 같은 말은 ×2 로 묶고 · 긴 말은 오래
+   · 지도는 마우스 휠로 가로 · 창 크기 바꿀 때 한 박자에 한 번만 다시 놓는다
+   · 기록 내보내기 · 불러오기 · 저장 용량 · 이 기기의 기록 모두 지우기
+   ══════════════════════════════════════════════════════════════════ */
+/* ── 창 열 때 — 대화 상자 이름표 ── */
+function dlgMark(l) {
+  try { l.setAttribute('role', 'dialog'); l.setAttribute('aria-modal', 'true');
+    const h = l.querySelector('h2'); if (h) l.setAttribute('aria-label', h.textContent.replace(/\s+/g, ' ').trim()); } catch (e) {}
+}
+/* ── 글자 없는 단추에 이름 — 마우스를 올리면 뜨는 말(title)을 그대로 ── */
+function a11yNames() {
+  try {
+    document.querySelectorAll('button[title]:not([aria-label])').forEach(b => b.setAttribute('aria-label', b.title));
+    const mb = $('#menubtn'); if (mb && !mb.title) { mb.title = '메뉴 (Esc)'; mb.setAttribute('aria-label', '메뉴'); }
+  } catch (e) {}
+}
+/* ── 창 안에서만 Tab 이 돈다 ── */
+addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const o = $('#overlay'), top = o && o.lastElementChild; if (!top || !top.dataset.modal) return;
+  const f = [...top.querySelectorAll('button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+  if (!f.length) return;
+  const i = f.indexOf(document.activeElement);
+  if (e.shiftKey && (i <= 0)) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && (i === -1 || i === f.length - 1)) { e.preventDefault(); f[0].focus(); }
+});
+/* ── 처음 켤 때 — 기기의 「움직임 줄이기」를 따른다 ── */
+function motionFirst() {
+  if (META.optInit) return; META.optInit = 1;
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) { OPT.noFlash = true; OPT.shake = false; toast('기기 설정에 따라 번쩍임 · 흔들림을 줄였다 (설정 → 접근성)'); } } catch (e) {}
+  saveMeta();
+}
+/* ── 입력 칸 ── */
+const isCodeIn = t => t && t.tagName === 'INPUT' && t.type !== 'password' && /code|코드|아이디|_id$|ac_id|_who|invid/i.test((t.id || '') + ' ' + (t.placeholder || ''));
+document.addEventListener('focusin', e => {
+  const t = e.target; if (!t || (t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA')) return;
+  if (isCodeIn(t)) { t.setAttribute('autocapitalize', 'off'); t.setAttribute('autocorrect', 'off'); t.setAttribute('spellcheck', 'false'); if (!t.getAttribute('autocomplete')) t.setAttribute('autocomplete', 'off'); }
+  /* 폰 자판이 올라와 칸을 가리면 — 칸을 가운데로 */
+  if ('ontouchstart' in window || innerWidth < 900) setTimeout(() => { try { if (document.activeElement === t) t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (x) {} }, 320);
+});
+document.addEventListener('paste', e => {
+  const t = e.target; if (!isCodeIn(t)) return;
+  setTimeout(() => { const v = t.value, w = v.replace(/[\s​-‍﻿]+/g, ' ').trim(); if (w !== v) { t.value = w; t.dispatchEvent(new Event('input', { bubbles: true })); } }, 0);
+});
+document.addEventListener('change', e => {
+  const t = e.target; if (!t || t.tagName !== 'INPUT' || t.type !== 'number' || t.value === '') return;
+  let v = +t.value; const mn = t.min !== '' ? +t.min : -Infinity, mx = t.max !== '' ? +t.max : Infinity;
+  if (!isFinite(v)) v = mn > -Infinity ? mn : 0;
+  const c = Math.min(mx, Math.max(mn, v));
+  if (c !== +t.value) { t.value = c; t.classList.remove('numfix'); void t.offsetWidth; t.classList.add('numfix'); }
+}, true);
+/* ── 자동 플레이 동안 화면이 꺼지지 않게 ── */
+let _autoWake = null;
+setInterval(async () => {
+  try {
+    const want = typeof AUTO === 'object' && AUTO.on && !document.hidden;
+    if (want && !_autoWake && navigator.wakeLock) { _autoWake = 'wait'; _autoWake = await navigator.wakeLock.request('screen'); _autoWake.addEventListener('release', () => { _autoWake = null; }); }
+    else if (!want && _autoWake && _autoWake !== 'wait') { const w = _autoWake; _autoWake = null; await w.release(); }
+  } catch (e) { _autoWake = null; }
+}, 3000);
+/* ── 지도 — 마우스 휠로 가로 ── */
+document.addEventListener('wheel', e => {
+  const st = e.target && e.target.closest && e.target.closest('#mapstage'); if (!st || e.ctrlKey) return;
+  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+  if (st.scrollHeight > st.clientHeight + 4) return;          /* 세로로 내릴 것이 있으면 그대로 */
+  if (st.scrollWidth <= st.clientWidth) return;
+  e.preventDefault(); st.scrollLeft += e.deltaY;
+}, { passive: false });
+
+/* ── 기록 — 내보내기 · 불러오기 · 용량 · 모두 지우기 ── */
+const SAVE_TAG = 'BGSAVE1-';
+function lsBytes() { let n = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); n += (k.length + (localStorage.getItem(k) || '').length) * 2; } } catch (e) {} return n; }
+const kbSay = n => n > 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(n / 1024)) + 'KB';
+function saveExport() {
+  try { saveMeta(); if (G.run && !G.run._pvp) saveRun(); } catch (e) {}
+  let code = '';
+  try { code = SAVE_TAG + btoa(unescape(encodeURIComponent(JSON.stringify({ m: META, r: runRaw(), at: Date.now() })))); } catch (e) { toast('내보내지 못했다'); return; }
+  const p = modal(`<h2>藏 기록 내보내기</h2><div class="askbox"><div class="hbksub">이 글 한 덩이가 이 기기의 기록(도감 · 수행 · 재화 · 이어 가던 모험) 전부다. 메모장 · 메신저 「나에게」에 붙여 두면 다른 기기 · 다시 깐 앱에서 「기록 불러오기」로 되살린다. <b>남에게 주면 그 사람이 내 기록을 갖게 된다.</b></div>
+      <textarea id="ex_t" readonly rows="5">${code}</textarea><div class="hbksub">${kbSay(code.length)} · ${new Date().toLocaleString()}</div>
+      <div class="lorefoot"><button class="brush-btn gold" id="ex_cp">복사한다</button><button class="brush-btn ghost" id="ex_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'askp');
+  p.dataset.noauto = '1';
+  const ta = p.querySelector('#ex_t'); ta.onkeydown = e => e.stopPropagation();
+  p.querySelector('#ex_cp').onclick = () => { ta.select(); copyText(code); toast('기록을 복사했다 — 안전한 곳에 붙여 두시오'); };
+  p.querySelector('#ex_x').onclick = closeTop;
+}
+function saveImport() {
+  const p = modal(`<h2>藏 기록 불러오기</h2><div class="askbox"><div class="hbksub">「기록 내보내기」로 받은 글(BGSAVE1-…)을 붙여 넣는다. 지금 이 기기의 기록은 <b>덮어써진다</b> — 덮기 전에 지금 것을 백업해 둔다.</div>
+      <textarea id="im_t" rows="5" placeholder="BGSAVE1-…" spellcheck="false"></textarea>
+      <div class="lorefoot"><button class="brush-btn red" id="im_go">불러온다</button><button class="brush-btn ghost" id="im_x" style="color:#e9dfc9;border-color:#8a7f68">그만둔다</button></div></div>`, 'askp');
+  p.dataset.noauto = '1';
+  const ta = p.querySelector('#im_t'); ta.onkeydown = e => e.stopPropagation();
+  p.querySelector('#im_x').onclick = closeTop;
+  p.querySelector('#im_go').onclick = async () => {
+    const raw = ta.value.replace(/\s+/g, ''); let d = null;
+    try { if (raw.startsWith(SAVE_TAG)) d = JSON.parse(decodeURIComponent(escape(atob(raw.slice(SAVE_TAG.length))))); } catch (e) {}
+    if (!d || !d.m || typeof d.m !== 'object' || !d.m.dex) { toast('읽을 수 없는 기록이다 — BGSAVE1- 로 시작하는 글 전부를 붙여 넣으시오'); try { SND.err(); } catch (e) {} return; }
+    const when = d.at ? new Date(d.at).toLocaleString() : '알 수 없는 때';
+    if (!(await askYes(`<b>${when}</b>에 내보낸 기록으로 덮을까?<br>도감 ${Object.keys(d.m.dex.cards || {}).length}장 · 정진 ${numK(d.m.jp || 0)}${d.r ? ' · 이어 가던 모험 있음' : ''}`, { title: '기록 덮기', g: '藏', danger: true, ok: '덮는다' }))) return;
+    try { localStorage.setItem(META_BAK, '{"at":' + Date.now() + ',"m":' + JSON.stringify(META) + '}'); } catch (e) {}
+    try { localStorage.setItem(META_KEY, JSON.stringify(d.m)); if (d.r) localStorage.setItem(SAVE_KEY, d.r); else localStorage.removeItem(SAVE_KEY); } catch (e) { toast('저장하지 못했다 — 기기의 빈 칸을 늘려 주시오'); return; }
+    window.__noSave = true; toast('기록을 불러왔다 — 다시 켠다'); setTimeout(() => location.reload(), 700);
+  };
+  setTimeout(() => ta.focus(), 40);
+}
+async function wipeLocal() {
+  if (!(await askYes(`이 기기에 남은 기록을 <b>모두</b> 지울까?<br>도감 · 수행 · 재화 · 이어 가던 모험 · 설정이 사라진다.${acctOn() ? '<br><span style="color:#9fe0a8">로그인한 계정의 서버 저장은 그대로다 — 다시 로그인하면 불러온다.</span>' : '<br><b style="color:#ff9a9a">로그인하지 않았다 — 되돌릴 길이 없다.</b> 먼저 「기록 내보내기」를 해 두시오.'}`, { title: '이 기기의 기록 지우기', g: '刪', danger: true, ok: '지운다' }))) return;
+  if (!(await askYes('정말로? 한 번 더 묻는다.', { title: '마지막 확인', g: '刪', danger: true, ok: '정말 지운다' }))) return;
+  window.__noSave = true;                          /* 다시 켜는 사이에 지운 것을 되적지 않게 */
+  try { _tabCh && _tabCh.close(); } catch (e) {}
+  try { localStorage.clear(); sessionStorage.clear(); } catch (e) {}
+  location.reload();
+}
 
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
@@ -40126,7 +40286,7 @@ function showAdmin() {
           여기서 한 것은 그대로 저장된다.<br>
           <span style="color:#8a7f68">선물하기는 아직 없다.</span>
         </p></div>
-        <div class="adrow"><b>막</b><input id="ad_act" type="number" min="1" max="${act26Open() ? ACT_MAX : LAST_ACT}" value="${run ? run.act : 1}"><button class="val" id="ad_go">건너뛴다</button></div>
+        <div class="adrow"><b>막</b><input id="ad_act" type="number" inputmode="decimal" min="1" max="${act26Open() ? ACT_MAX : LAST_ACT}" value="${run ? run.act : 1}"><button class="val" id="ad_go">건너뛴다</button></div>
         <div class="adrow"><b>골드</b><button class="val" id="ad_gold">+99999</button></div>
         <div class="adrow"><b>다이아</b><button class="val" id="ad_dia">+99999</button></div>
         <div class="adrow"><b>정진</b><button class="val" id="ad_jp">+99999</button></div>
@@ -40968,6 +41128,16 @@ function showSettings() {
   }
 
   head('기 록');
+  /* 판 69 — 내보내기 · 불러오기 · 용량 · 모두 지우기 */
+  {
+    const n = el('div', 'optrow', `<div class="lb"><b>기록 내보내기 · 불러오기</b><small>이 기기의 기록을 글 한 덩이로 — 로그인 없이도 다른 기기로 옮기거나 따로 간직한다 · 지금 쓰는 칸 ${kbSay(lsBytes())}</small></div>`);
+    const b1 = el('button', 'val'); b1.textContent = '내보내기'; b1.onclick = () => { closeTop(); saveExport(); };
+    const b2 = el('button', 'val'); b2.textContent = '불러오기'; b2.onclick = () => { closeTop(); saveImport(); };
+    n.appendChild(b1); n.appendChild(b2); list.appendChild(n);
+    const w = el('div', 'optrow', `<div class="lb"><b>이 기기의 기록 모두 지우기</b><small>도감 · 수행 · 재화 · 모험 · 설정까지 — 기기를 넘기기 전에 (서버 저장은 그대로)</small></div>`);
+    const b3 = el('button', 'val'); b3.textContent = '모두 지우기'; b3.style.color = '#ffb0a0'; b3.onclick = () => wipeLocal();
+    w.appendChild(b3); list.appendChild(w);
+  }
   {
     const n = el('div', 'optrow',
       `<div class="lb"><b>도감과 기록 지우기</b><small>모은 도감 · 최고 기록이 모두 사라진다 (진행 중인 모험은 남는다)</small></div>`);
@@ -41029,7 +41199,8 @@ function showSettings() {
     }
   }
 
-  p.querySelector('#op_reset').onclick = () => {
+  p.querySelector('#op_reset').onclick = async () => {
+    if (!(await askYes('설정을 모두 처음 값으로 되돌릴까?<br><span style="color:#9a8d74">기록 · 도감 · 재화는 그대로다</span>', { title: '기본값으로', g: '設' }))) return;   /* 판 69 */
     Object.assign(OPT, OPT_DEF);
     SPEED = 1; META.speed = 1; SND.on = true; META.sound = true;
     applyVol(); saveMeta(); SND.ui(); closeTop(); showSettings();
@@ -42711,6 +42882,8 @@ function showTitle() {
   s.querySelector('#t_tutor').onclick = () => { SND.init(); SND.ui(); showTutorial(true); };
   const c = s.querySelector('#t_cont');
   if (c) c.onclick = () => { SND.init(); SND.ui(); resumeRun(); };
+  if (c) { try { const d = JSON.parse(runRaw()), r0 = d && d.run;   /* 판 69 — 어디까지 · 언제 */
+    if (r0) { const sm = el('small', 'contsum', `제${r0.act}막 ${r0.floor || 0}층 · 체력 ${r0.hp}/${r0.maxHp}${d.at ? ' · ' + whenSay(d.at) : ''}`); c.appendChild(sm); } } catch (e) {} }
 }
 /* 첫 화면의 계정 단추 */
 function titleAcctPaint() {
@@ -42791,7 +42964,7 @@ addEventListener('keydown', e => {
   } else if (e.key === 'e' || e.key === 'E' || e.key === ' ') { e.preventDefault(); if (endWarnOk()) endTurn(); }
   else if (e.key === 'd' || e.key === 'D') showCardList(G.run.deck, '나의 덱');
 });
-addEventListener('resize', () => { if (G.b) syncHand(); if (G.scene === 'map' && _mapFit) _mapFit(); });
+{ let _rz = 0; addEventListener('resize', () => { if (_rz) return; _rz = requestAnimationFrame(() => { _rz = 0; if (G.b) syncHand(); if (G.scene === 'map' && _mapFit) _mapFit(); }); }); }   /* 한 박자에 한 번 (판 69) */
 addEventListener('pointerdown', () => SND.init(), { once: true });
 /* 키보드만 쓰는 사람도 — 첫 키를 누르면 소리가 열린다 (브라우저는 누르기 전엔 소리를 막는다) */
 addEventListener('keydown', () => SND.init(), { once: true });
@@ -42828,7 +43001,8 @@ function boot() {
   syncAuto();
   try { optApply(); } catch (e) {}           /* 배경 멈춤 · 큰 글씨 · 시계 (판 57) */
   try { backBoot(); } catch (e) { console.error('복귀', e); }   /* 복귀 보상 · 통행증 출석 (판 68) */
-  try { tabGuard(); backInit(); netPaint(); setTimeout(metaRescueSay, 2500); } catch (e) { console.error('판 69', e); }   /* 두 창 · 뒤로 가기 · 연결 · 깨진 저장 (판 69) */
+  try { tabGuard(); backInit(); netPaint(); setTimeout(metaRescueSay, 2500); } catch (e) { console.error('판 69', e); }
+  try { const tb = $('#toast'); tb.setAttribute('role', 'status'); tb.setAttribute('aria-live', 'polite'); motionFirst(); a11yNames(); setInterval(a11yNames, 3000); } catch (e) {}   /* 판 69c */   /* 두 창 · 뒤로 가기 · 연결 · 깨진 저장 (판 69) */
   try { perfProbe(); } catch (e) {}          /* 느린 기계면 알아서 가볍게 (판 59) */
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
