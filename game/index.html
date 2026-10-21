@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>백귀야행 百鬼夜行</title>
+<meta name="theme-color" content="#17130f">
+<meta name="color-scheme" content="dark">
 <style>
 /* ============================================================
    백귀야행 — 수묵 로그라이크 덱빌딩
@@ -1805,6 +1807,30 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 .dsfoot b{font-weight:400}
 .dsfoot .qx{color:#ffd84a;text-shadow:0 0 8px rgba(255,200,60,.6)}
 .gsummon .cost s{opacity:.6;margin-right:4px;font-size:.85em}
+/* 판 69 — 입력 · 확인 창 · 띠 */
+.askbox{width:min(440px,90vw);display:flex;flex-direction:column;gap:12px}
+.askbox input{font:inherit;font-size:15px;padding:9px 12px;border-radius:8px;background:rgba(0,0,0,.45);border:1px solid #6a5a3a;color:#efe4cb}
+.askbox input:focus{outline:none;border-color:#c9a24a;box-shadow:0 0 0 2px rgba(201,162,74,.25)}
+.askmsg{font-size:14px;line-height:1.75;color:#efe4cb;text-align:left}.askmsg b{color:#ffd76a;font-weight:400}
+.tabfreeze{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(8,6,4,.92);backdrop-filter:blur(3px)}
+.tabfreeze>div{display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 32px;border-radius:16px;background:linear-gradient(160deg,#2a2418,#100c06);border:1px solid rgba(255,215,120,.4);text-align:center;max-width:90vw}
+.tabfreeze i{font-style:normal;font-size:40px;color:#ffd76a}.tabfreeze b{font-weight:400;font-size:19px;color:#fff3d6}.tabfreeze span{font-size:13px;color:#c8bda3}
+.maintbar,.netbar{position:fixed;left:50%;transform:translateX(-50%);z-index:900;display:flex;align-items:center;gap:10px;padding:7px 16px;border-radius:0 0 12px 12px;font-size:12.5px;pointer-events:none;max-width:96vw;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.maintbar{top:56px;border-radius:12px;background:linear-gradient(180deg,#5a3a10,#3a2408);border:1px solid #c9a24a;color:#fff3d6}
+.maintbar i,.netbar i{font-style:normal;font-size:15px;color:#ffd76a}.maintbar b{font-weight:400;color:#ffd76a;letter-spacing:.1em}.maintbar span{color:#efe4cb}
+.netbar{bottom:0;top:auto;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#3a1414,#200808);border:1px solid #c8484a;border-bottom:0;color:#ffd0c8;transition:opacity .4s}
+.netbar.out{opacity:0}.netbar i{color:#ff8a7a}
+.acdel{color:#ffb0a0!important;border-color:#8a3a3a!important}
+.acdelnote{margin-top:8px;font-size:12px;line-height:1.6;color:#ffd0c8;padding:8px 10px;border-radius:8px;background:rgba(160,40,40,.15);border:1px solid rgba(200,80,80,.4)}.acdelnote b{color:#ffd76a;font-weight:400}
+.errhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.errhead b{font-weight:400;color:#8affd0;font-size:15px}.errhead span{flex:1;font-size:11.5px;color:#9a8d74}
+.errhead .val.no{color:#ffb0a0;border-color:#8a3a3a}
+.errlist{display:flex;flex-direction:column;gap:6px;grid-column:1/-1}
+.errrow{border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);padding:6px 10px}
+.errrow summary{cursor:pointer;display:grid;grid-template-columns:110px 1fr;column-gap:10px;align-items:baseline;list-style:none}
+.errrow summary em{font-style:normal;font-size:11.5px;color:#ff9a7a;grid-row:1/3}.errrow summary b{font-weight:400;font-size:13px;color:#efe4cb;word-break:break-all}.errrow summary small{font-size:10.5px;color:#8a7f68}
+.errrow pre{margin:6px 0 2px;white-space:pre-wrap;word-break:break-all;font-size:11px;color:#c8bda3;background:rgba(0,0,0,.35);padding:8px;border-radius:6px}
+.castsec.mtsec{border-color:rgba(255,215,120,.45);background:linear-gradient(180deg,rgba(90,70,20,.25),transparent)}
+
 /* 팻 성장 · 내 암자 · 백귀 통행증 · 복귀 보상 (판 68) */
 .petlvpop{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:46;pointer-events:none;display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:12px;
   background:linear-gradient(160deg,#1a2a24,#0a120e);border:1.5px solid #8fe6d0;box-shadow:0 0 30px rgba(140,230,200,.4),0 10px 26px rgba(0,0,0,.6);animation:dexpIn .45s cubic-bezier(.2,1.4,.4,1)}
@@ -10218,7 +10244,9 @@ const OPT_DEF = {
   rest: true                /* 한 시간마다 쉬어 가라고 일러 준다 */
 };
 let OPT = Object.assign({}, OPT_DEF);
-function loadMeta() { try { const m = JSON.parse(localStorage.getItem(META_KEY)); if (m) META = Object.assign(META, m); } catch (e) {}
+function loadMeta() { try { const raw = localStorage.getItem(META_KEY); let m = null;
+    try { m = JSON.parse(raw); } catch (e) { m = metaRescue(raw); }   /* 깨진 저장 — 떼어 두고 백업에서 (판 69) */
+    if (m && typeof m === 'object') META = Object.assign(META, m); } catch (e) {}
   SPEED = META.speed || 1;
   if (META.sound === false) SND.on = false;
   META.opt = Object.assign({}, OPT_DEF, META.opt || {});
@@ -10339,14 +10367,14 @@ function noteClear(act) {
 }
 function applyVol() { try { if (SND.master) SND.master.gain.value = OPT.vol; } catch (e) {} }
 function saveMeta() {
-  try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) {}
+  try { const txt = JSON.stringify(META); localStorage.setItem(META_KEY, txt); metaBackup(txt); } catch (e) { saveFail(e); }   /* 백업 · 꽉 참 (판 69) */
   /* 이름을 걸어 두었으면 잠시 뒤에 스스로 올린다 */
   if (typeof acctNudge === 'function') acctNudge();
 }
 function saveRun() {
   if (G.run && G.run._pvp) return;                 /* 멀티플레이용 몸 — 모험 저장을 덮지 않는다 */
   if (!G.run) { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} return; }
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ run: G.run, cp: G.cp })); } catch (e) {}
+  try { const txt = JSON.stringify({ run: G.run, cp: G.cp }); localStorage.setItem(SAVE_KEY, txt); runBackup(txt); } catch (e) { saveFail(e); }
   if (typeof acctNudge === 'function') acctNudge();       /* 로그인했으면 잠시 뒤 서버에도 */
 }
 /* 갈림길에 들어서기 직전의 상태를 떠 둔다. 쓰러지면 여기로 돌아온다. */
@@ -15512,8 +15540,7 @@ async function _startPlayerTurn(b) {
   b.freeTurn = false; b.halved = false; b.softened = false; b.cheap = 0;
   if (b.pet) b.pet.used = false;
   const p = P();
-  if (!p.s.barricade) p.block = 0;
-  if (b._petGuard && b.turn === 1 && PET()) blk(b._petGuard, true);   /* 팻 「감싸기」 (판 68) */
+  if (!p.s.barricade && b.turn > 1) p.block = 0;    /* 첫 차례에는 비우지 않는다 — 싸움 시작 때 얻은 방어도(행렬의 등불 · 팻 감싸기 …)가 사라지던 것 (판 69) */
   b.energy = b.maxEnergy + (p.s.focus || 0);
   if (b._mpSecond && b.turn === 1) {                   /* 대전 — 뒤에 두는 쪽의 첫 차례 */
     const f = b._mpSecond; b.energy += f.qi; if (f.blk) blk(f.blk, true);
@@ -16933,9 +16960,9 @@ function renderTop() {
   t.querySelector('.hpbar i').style.width = (run.hp / run.maxHp * 100) + '%';
   t.querySelector('.hpbar span').textContent = run.hp + ' / ' + run.maxHp;
   const inf = infFill();
-  t.querySelector('#goldv').textContent = inf ? '∞' : run.gold;
+  t.querySelector('#goldv').textContent = inf ? '∞' : numK(run.gold);
   try { lvPaint(); } catch (e) {}
-  t.querySelector('#diav').textContent = inf ? '∞' : run.dia || 0;
+  t.querySelector('#diav').textContent = inf ? '∞' : numK(run.dia || 0);
   t.querySelector('#floorv').textContent = run.act + '-' + run.floor;
   t.querySelector('#deckbtn').textContent = '덱 ' + run.deck.length;
   { const pe = t.querySelector('#pouchbtn em'); if (pe) { const pc = pouchCount(); if (pe.textContent !== String(pc || '')) pe.textContent = pc || ''; } }
@@ -28284,7 +28311,7 @@ async function showFriends() {
     L.querySelectorAll('.frnm').forEach(b => b.onclick = () => showProfile(b.dataset.n));
     L.querySelectorAll('.frb').forEach(b => b.onclick = async () => {
       const a = b.dataset.a;
-      if (a === 'del') { if (!confirm('이 벗을 지울까?')) return; await acctAsk('/fr/del', { token: ACCT.token, id: b.dataset.id }, 10000); load(); return; }
+      if (a === 'del') { if (!(await askYes('이 벗을 지울까?', { danger: true }))) return; await acctAsk('/fr/del', { token: ACCT.token, id: b.dataset.id }, 10000); load(); return; }
       if (a === 'home') { hmVisit(b.dataset.n); return; }                 /* 암자 (판 68) */
       if (!G.run) { toast('모험 중에만 부를 수 있다'); return; }
       closeOverlay();
@@ -30010,6 +30037,7 @@ async function liveFetch() {
     LIVE.nd = d.nd && typeof d.nd === 'object' && d.nd.id ? d.nd : null;              /* 자연재해 (판 62) */
     LIVE.dn = d.dn && typeof d.dn === 'object' && +d.dn.every ? d.dn : null;           /* 낮과 밤 (판 64) */
     LIVE.trial = d.trial && typeof d.trial === 'object' && d.trial.id ? d.trial : null; /* 막 체험 (판 66) */
+    LIVE.maint = d.maint && typeof d.maint === 'object' && d.maint.until ? d.maint : null; /* 점검 (판 69) */
     /* 폭탄 돌리기 — 참가한 사람은 1초마다 따로 물으니, 그 사이 낡은 소식으로 덮지 않는다 */
     { const nb = d.bomb && typeof d.bomb === 'object' ? d.bomb : null;
       if (!nb || !LIVE.bomb || nb.id !== LIVE.bomb.id || Date.now() - _bomb.heard > 3000) LIVE.bomb = nb; }
@@ -31919,7 +31947,8 @@ async function acctAsk(path, body, ms) {
     clearTimeout(t);
     const d = await r.json().catch(() => ({}));
     if (d && d.banned) { banLock(d.why); return { ok: false, banned: true, why: d.why || '이용이 정지되었습니다' }; }
-    if (!r.ok || !d.ok) return { ok: false, why: d.why || ('서버가 ' + r.status) };
+    if (!r.ok || !d.ok) return { ok: false, why: d.why || ('서버가 ' + r.status), status: r.status };
+    if (d.undel) setTimeout(() => toast('계정 지우기 신청을 물렀다 — 다시 반갑다'), 700);   /* 판 69 */
     return d;
   } catch (e) {
     return { ok: false, why: e.name === 'AbortError' ? '서버가 답이 없다 (잠든 듯하다)' : '가 닿지 못했다' };
@@ -31935,7 +31964,7 @@ async function acctPush() {
   if (!acctOn()) return { ok: false, why: '로그인되어 있지 않다' };
   const r = await acctAsk('/auth/push', { token: ACCT.token, save: Object.assign({}, META, { _run: runRaw() }) });
   if (r.ok) { ACCT.at = r.at; acctSave(); }
-  else if (/들어와 있지 않다|없는 이름|없는 아이디/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0 }; acctSave(); }
+  else if (/들어와 있지 않다|없는 이름|없는 아이디/.test(r.why || '')) { ACCT = { id: '', token: '', at: 0 }; acctSave(); toast('로그인이 풀렸다 — 다시 로그인하면 서버 저장이 이어진다 (이 기기의 판은 그대로)'); }   /* 조용히 풀리던 것 (판 69) */
   return r;
 }
 /* 뭔가 바뀌면 잠시 뒤에 스스로 올린다 — 누를 때마다 보내면 너무 잦다 */
@@ -32036,7 +32065,8 @@ function showRecover(after) {
       const r2 = await acctAsk('/auth/pwnew', { token: ACCT.token, pw: a }, 30000);
       p.querySelector('#rv_pw').disabled = false; p.querySelector('#rv_p').value = p.querySelector('#rv_p2').value = '';
       if (!r2.ok) { t2(r2.why, false); SND.err(); return; }
-      t2('바꿨다 — 다음부터 새 비밀번호로 들어온다', true); SND.bell();
+      if (r2.token) { ACCT.token = r2.token; acctSave(); }          /* 판 69 — 비밀번호를 바꾸면 옛 표는 풀린다 */
+      t2('바꿨다 — 다음부터 새 비밀번호로 들어온다 · 다른 기기는 다시 로그인해야 한다', true); SND.bell();
     };
     p.querySelector('#rv_ok').onclick = async () => {
       closeTop();
@@ -32057,7 +32087,9 @@ function drawAcct(n) {
          <button class="val" id="ac_push">지금 저장</button>
          <button class="val" id="ac_pull">불러오기</button>
          <button class="val ghost" id="ac_out">로그아웃</button>
+         <button class="val ghost acdel" id="ac_del">${ACCT.delUntil ? '지우기 무르기' : '계정 지우기'}</button>
        </div>
+       ${ACCT.delUntil ? `<div class="acdelnote">刪 계정 지우기를 신청했다 — <b>${new Date(ACCT.delUntil).toLocaleDateString()}</b>에 서버에서 지워진다 · 그 전에 다시 로그인하거나 「지우기 무르기」를 누르면 무른다</div>` : ''}
        <div class="acctsay" id="ac_say"></div>`
     : `<div class="lb"><b>로그인 · 회원가입</b><small>로그인해 두면 기록과 이어 가던 모험이 서버에 저장된다 — 폰을 바꾸거나 앱을 지워도 되찾는다.</small></div>
        <div class="acctform">
@@ -32079,6 +32111,8 @@ function drawAcct(n) {
 
   if (has) {
     n.querySelector('#ac_nick').onclick = () => { SND.ui(); showNickSet(false, () => drawAcct(n)); };
+    n.querySelector('#ac_del').onclick = () => { SND.ui(); if (ACCT.delUntil) acctUndelete(() => drawAcct(n)); else acctDeleteAsk(() => drawAcct(n)); };   /* 판 69 */
+    if (!n.dataset.delChk) { n.dataset.delChk = '1'; acctAsk('/auth/me', { token: ACCT.token }, 15000).then(r => { if (!r.ok) return; const d = r.delUntil || 0; if (d !== (ACCT.delUntil || 0)) { ACCT.delUntil = d; acctSave(); if (n.isConnected) drawAcct(n); } }); }
     n.querySelector('#ac_rc').onclick = () => { SND.ui(); showRcSet(); };
     n.querySelector('#ac_push').onclick = async () => {
       busy(true); tell('올리는 중…', true);
@@ -33728,6 +33762,14 @@ function drawCast(grid) {
       <div class="casthint" id="ct_hbnow"></div>
     </div>
 
+    <div class="castsec mtsec"><b>工 점검 — 모든 앱 맨 위에 「점검 중」 띠 · 대전 줄서기를 쉰다 (판 69)</b>
+      <div class="casthint">혼자 하는 모험은 그대로 된다. 정한 분이 지나면 저절로 풀린다.</div>
+      <div class="castbtnrow"><label class="casthint" style="display:flex;align-items:center;gap:6px"><input id="ct_mtmin" type="number" min="1" max="600" value="30" style="width:64px"> 분</label>
+        <input id="ct_mtmsg" maxlength="120" placeholder="할 말 (예: 서버 옮기는 중 — 30분)" style="flex:1;min-width:160px">
+        <button class="brush-btn gold" id="ct_mt">점검을 건다</button><button class="brush-btn ghost" id="ct_mtoff" style="color:#e9dfc9;border-color:#8a7f68">푼다</button></div>
+      <div class="casthint" id="ct_mtnow"></div>
+    </div>
+
     <div class="castsec trsec"><b>體 막 체험 — 모두를 그 막으로 옮긴다 (강제 이동)</b>
       <div class="casthint">정한 시간 동안 모두가 그 막의 지도로 옮겨져 맛본다 — 아직 못 깬 막도, 개발자만 들어가던 제26막도.
         들어가기 전 모험은 떠 두었다가, 시간이 다하면 그 자리에서 곧바로 되돌린다(체험에서 얻은 것 · 잃은 것 모두 없던 일). 그 막의 라운드는 더 할 수 없다.
@@ -34214,6 +34256,13 @@ function drawCast(grid) {
   };
   grid.querySelector('#ct_hbtry').onclick = () => cutByName('hbblast');
   grid.querySelector('#ct_hboff').onclick = () => send({ hb: null }, '해킹 보스 닫기').then(() => liveFetch().then(hbNowLine).catch(() => {}));
+  /* 점검 (판 69) */
+  const mtNowLine = () => { const e = grid.querySelector('#ct_mtnow'); if (!e) return;
+    e.innerHTML = maintOn() ? `지금 — <b>점검 중</b> · ${wEsc(LIVE.maint.msg || '')} · 남은 때 ${wTime(Math.max(0, LIVE.maint.until - srvNow()))}` : '점검이 걸려 있지 않다'; };
+  mtNowLine();
+  grid.querySelector('#ct_mt').onclick = () => { const min = Math.max(1, Math.min(600, Math.floor(+grid.querySelector('#ct_mtmin').value || 30)));
+    send({ maint: { min, msg: grid.querySelector('#ct_mtmsg').value.trim().slice(0, 120) } }, `점검 ${min}분`).then(() => liveFetch().then(mtNowLine).catch(() => {})); };
+  grid.querySelector('#ct_mtoff').onclick = () => send({ maint: null }, '점검 풀기').then(() => liveFetch().then(mtNowLine).catch(() => {}));
   /* 막 체험 — 강제 이동 (판 66) */
   const trNowLine = () => { const e = grid.querySelector('#ct_trnow'); if (!e) return; const t = trialLive();
     e.innerHTML = t ? `지금 — <b>제${t.act}막 체험</b>${t.title ? ' · ' + wEsc(t.title) : ''} · 남은 때 ${wTime(Math.max(0, t.until - srvNow()))}` : '열린 체험이 없다'; };
@@ -36144,11 +36193,11 @@ function showSecrets() {
             ${f ? '<span class="secok">찾았다</span>' : ''}</div>`; }).join('')}</div></div></div>`, 'secretp');
   p.dataset.noauto = '1';
   p.querySelector('#sc_back').onclick = () => { closeOverlay(); if (G.run) { saveRun(); showMap(); } else showTitle(); };
-  p.querySelectorAll('[data-h]').forEach(b => b.onclick = () => {
+  p.querySelectorAll('[data-h]').forEach(b => b.onclick = async () => {
     const a = +b.dataset.h, x = EGG_LIST.find(e => e.a === a), run = G.run;
     if (!run) { toast('모험 중에만 다이아를 낼 수 있다'); SND.err(); return; }
     if ((run.dia || 0) < x.cost) { toast(`다이아가 모자라다 (${x.cost})`); SND.err(); return; }
-    if (!confirm(`다이아 ${x.cost}을 내고 「${x.a}막」의 뚜렷한 길을 들을까?`)) return;
+    if (!(await askYes(`다이아 ${x.cost}을 내고 「${x.a}막」의 뚜렷한 길을 들을까?`))) return;
     run.dia -= x.cost; M.hint = M.hint || {}; M.hint[a] = 1; saveMeta(); saveRun(); renderTop();
     try { SND.coin(); } catch (e) {}
     showSecrets();
@@ -37652,9 +37701,9 @@ function guildDraw(p) {
     <div id="gw_tab"></div>`;
   const q = s => body.querySelector(s);
   body.querySelectorAll('.gwtab').forEach(b => b.onclick = () => { GUILD.tab = b.dataset.t; try { SND.ui(); } catch (e) {} guildDraw(p); });
-  q('#gw_leave').onclick = async () => { if (!confirm(`「${g.name}」을 떠날까?${g.members.length === 1 ? ' — 마지막 길드원이라 길드가 사라진다' : ''}`)) return;
+  q('#gw_leave').onclick = async () => { if (!(await askYes(`「${wEsc(g.name)}」을 떠날까?${g.members.length === 1 ? ' — 마지막 길드원이라 길드가 사라진다' : ''}`, { danger: true }))) return;
     const r = await guildAsk('leave'); if (r.ok) { GUILD.g = null; gLvSet(0); toast('길드를 떠났다'); guildDraw(p); } else toast(r.why); };
-  const d2 = q('#gw_desc2'); if (d2) d2.onclick = async () => { const v = prompt('한 줄 소개 (60자)', g.desc || ''); if (v == null) return; const r = await guildAsk('desc', { desc: v }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); };
+  const d2 = q('#gw_desc2'); if (d2) d2.onclick = async () => { const v = await askText('한 줄 소개', g.desc || '', 60, { g: '旗' }); if (v == null) return; const r = await guildAsk('desc', { desc: v }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); };
   const host = q('#gw_tab');
   const T = GUILD.tab || 'home';
   if (T === 'raid') return guildRaidDraw(p, host);
@@ -37688,9 +37737,9 @@ function guildMemDraw(p) {
   box.innerHTML = ms.map(m => `<div class="gwm${m.own ? ' own' : ''}${m.off ? ' off' : ''}${m.id === ACCT.id ? ' me' : ''}"><b>${wEsc(m.nick)}</b>${m.own ? '<em>길드장</em>' : m.off ? '<em class="o">부길드장</em>' : ''}<small>${m.rp} 점 · 공 ${m.give || 0}</small>
       ${own && !m.own ? `<span class="gwmb"><u data-role="${wEsc(m.id)}" data-r="${m.off ? 'member' : 'officer'}">${m.off ? '부길드장 해제' : '부길드장으로'}</u><u data-own="${wEsc(m.id)}">길드장 넘기기</u></span>` : ''}
       ${off && !m.own && m.id !== ACCT.id && (own || !m.off) ? `<u data-kick="${wEsc(m.id)}">내보내기</u>` : ''}</div>`).join('');
-  box.querySelectorAll('[data-kick]').forEach(u => u.onclick = async () => { if (!confirm('내보낼까?')) return; const r = await guildAsk('kick', { who: u.dataset.kick }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
+  box.querySelectorAll('[data-kick]').forEach(u => u.onclick = async () => { if (!(await askYes('이 길드원을 내보낼까?', { danger: true }))) return; const r = await guildAsk('kick', { who: u.dataset.kick }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
   box.querySelectorAll('[data-role]').forEach(u => u.onclick = async () => { const r = await guildAsk('role', { who: u.dataset.role, role: u.dataset.r }); if (r.ok) { GUILD.g = r.g; guildMemDraw(p); } else toast(r.why); });
-  box.querySelectorAll('[data-own]').forEach(u => u.onclick = async () => { if (!confirm('길드장을 넘길까? (그대는 부길드장이 된다)')) return; const r = await guildAsk('owner', { who: u.dataset.own }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); });
+  box.querySelectorAll('[data-own]').forEach(u => u.onclick = async () => { if (!(await askYes('길드장을 넘길까? (그대는 부길드장이 된다)'))) return; const r = await guildAsk('owner', { who: u.dataset.own }); if (r.ok) { GUILD.g = r.g; guildDraw(p); } else toast(r.why); });
 }
 async function guildTop(host, pickName) {
   const r = await acctAsk('/guild/top', {}, 12000);
@@ -37985,8 +38034,8 @@ function trialPill(tr) {
   let p = $('#trpill');
   if (!tr) { if (p) p.remove(); return; }
   if (!p) { p = el('div', 'trpill'); p.id = 'trpill'; document.body.appendChild(p);
-    p.onclick = e => { if (!e.target.closest('u')) return; if (G.b) { toast('싸움이 끝난 뒤에 나간다'); return; }
-      if (!confirm('체험에서 나갈까? 다시 들어올 수 없다')) return; trialEnd('leave'); }; }
+    p.onclick = async e => { if (!e.target.closest('u')) return; if (G.b) { toast('싸움이 끝난 뒤에 나간다'); return; }
+      if (!(await askYes('체험에서 나갈까? 다시 들어올 수 없다', { danger: true }))) return; trialEnd('leave'); }; }
   const s = Math.max(0, Math.ceil((tr.until - srvNow()) / 1000));
   p.innerHTML = `<i>體</i><b>제${tr.act}막 체험</b><em>${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}</em><u>나가기</u>`;
   p.classList.toggle('last', s <= 60);
@@ -38331,16 +38380,16 @@ function showDeckBox() {
       const a = b.dataset.a;
       if (a === 'see') showCardList(dboxCards(dk.d), `匣 ${dk.n} — ${dk.d.length}장`);
       else if (a === 'code') { const c = dboxCode(dk); copyText(c); toast('공유 코드를 복사했다 — 채팅이나 메신저에 붙여 넣는다'); const inp = p.querySelector('#db_code'); inp.value = c; inp.select(); }
-      else if (a === 'ren') { const n = prompt('덱 이름 (16자)', dk.n); if (n && n.trim()) { dk.n = n.trim().slice(0, 16); saveMeta(); draw(); } }
+      else if (a === 'ren') { askText('덱 이름', dk.n, 16, { g: '匣' }).then(n => { if (n && n.trim()) { dk.n = n.trim().slice(0, 16); saveMeta(); draw(); } }); }
       else if (a === 'mp') { META.mpDeckI = META.mpDeckI === i ? null : i; saveMeta(); draw(); toast(META.mpDeckI === i ? `대전(친선 · 연습)에 「${dk.n}」을 들고 간다` : '대전에는 모험 덱을 들고 간다'); }
-      else if (a === 'del') { if (!confirm(`「${dk.n}」을 지울까?`)) return; dboxList().splice(i, 1); if (META.mpDeckI === i) META.mpDeckI = null; else if (META.mpDeckI > i) META.mpDeckI--; saveMeta(); draw(); }
+      else if (a === 'del') { askYes(`「${wEsc(dk.n)}」을 지울까?`, { danger: true }).then(y => { if (!y) return; dboxList().splice(i, 1); if (META.mpDeckI === i) META.mpDeckI = null; else if (META.mpDeckI > i) META.mpDeckI--; saveMeta(); draw(); }); }
     });
   };
   draw();
-  p.querySelector('#db_save').onclick = () => {
+  p.querySelector('#db_save').onclick = async () => {
     if (!G.run || G.run._pvp) return; const L = dboxList();
     if (L.length >= DBOX_MAX) { toast(`보관함이 가득 찼다 (${DBOX_MAX}벌) — 하나를 지우고 남긴다`); SND.err(); return; }
-    const n = (prompt('덱 이름 (16자)', `제${G.run.act}막 · ${G.run.deck.length}장`) || '').trim(); if (!n) return;
+    const n = ((await askText('덱 이름', `제${G.run.act}막 · ${G.run.deck.length}장`, 16, { g: '匣' })) || '').trim(); if (!n) return;
     L.unshift({ n: n.slice(0, 16), d: dboxIds(G.run), at: Date.now() }); if (META.mpDeckI != null) META.mpDeckI++;
     saveMeta(); try { SND.unlock(); } catch (e) {} toast(`匣 「${n.slice(0, 16)}」 — 보관함에 남겼다`); draw();
   };
@@ -38402,7 +38451,7 @@ function petLvFx(id, lv, sks) {
 function petBattleStart(b) {
   const pt = b && b.pet; if (!pt || pt.hp <= 0) return;
   const lv = petLv(pt.id), got = [];
-  if (petSk(pt.id, 'guard')) { b._petGuard = 4 + Math.floor(lv / 2); got.push('護 감싸기'); }   /* 첫 차례에 — 차례가 열리며 방어도가 비워지므로 */
+  if (petSk(pt.id, 'guard')) { blk(4 + Math.floor(lv / 2), true); got.push('護 감싸기'); }
   if (petSk(pt.id, 'howl')) { for (const e of alive()) st(e, 'weak', 1); got.push('吼 울부짖음'); }
   if (got.length) setTimeout(() => { try { floatText(pt, got.join(' · '), 'blk'); } catch (e) {} }, 700);
 }
@@ -38511,11 +38560,11 @@ function showHome(tab0) {
           ${HM_KEYS.map(k => `<div class="hmpart"><b><i>${HM_PART[k].g}</i>${HM_PART[k].n}</b><div>${HM_PART[k].v.map(([v, n, c]) => { const own = hmOwn(k, v), on = h.s[k] === v;
             return `<button class="hmv${on ? ' on' : ''}${own ? '' : ' buy'}" data-k="${k}" data-v="${v}">${n}${own ? '' : `<small>精${c}</small>`}</button>`; }).join('')}</div></div>`).join('')}
           <div class="casthint">${acctOn() ? '고치면 곧바로 서버에 적힌다 — 벗이 놀러 오면 이대로 본다' : '로그인하면 벗이 놀러 올 수 있다'}</div></div></div>`;
-      body.querySelectorAll('.hmv').forEach(b => b.onclick = () => {
+      body.querySelectorAll('.hmv').forEach(b => b.onclick = async () => {
         const k = b.dataset.k, v = b.dataset.v, pv = HM_PART[k].v.find(x => x[0] === v);
         if (!hmOwn(k, v)) {
           if ((META.jp || 0) < pv[2]) { toast(`정진이 모자라다 — ${pv[2]} 필요`); try { SND.err(); } catch (e) {} return; }
-          if (!confirm(`「${pv[1]}」을(를) 정진 ${pv[2]}에 들일까?`)) return;
+          if (!(await askYes(`「${pv[1]}」을(를) 정진 ${pv[2]}에 들일까?`, { g: '庵' }))) return;
           META.jp -= pv[2]; h.own[k + ':' + v] = Date.now(); try { SND.coinRain(5); } catch (e) {} toast(`庵 ${pv[1]} — 들였다`);
         }
         h.s[k] = v; saveMeta(); try { SND.ui(); } catch (e) {} draw(); hmPush();
@@ -38690,6 +38739,215 @@ function backGive(gap) {
   };
   show();
 }
+
+/* ══ 판 69 — 사소하지만 꼭 있어야 할 것들 ════════════════════════════
+   · 게임 안 입력 · 확인 창 — PC판(Electron)은 prompt() 를 모른다
+   · 한글을 조합하는 중의 Enter 는 보내지 않는다 (마지막 글자가 따로 가던 것)
+   · 저장이 깨지면 깨진 글은 따로 떼어 두고 하루 묵은 백업에서 되살린다 · 모험도 백업
+   · 기기 저장 칸이 꽉 차면 알리고 서버에 올린다
+   · 같은 게임을 두 창에서 열면 — 나중 창이 이어 가고 앞 창은 멈춘다(덮어쓰기 막기)
+   · 화면이 숨으면 소리를 멈추고, 미뤄 둔 저장을 곧바로 올린다
+   · 오류가 나면 묶어서 서버에 알린다(관리자 창 「오류」) · 점검 띠 · 연결 끊김 띠
+   · 안드로이드 뒤로 가기 — 창을 닫고, 첫 화면에서는 두 번 눌러야 나간다
+   ══════════════════════════════════════════════════════════════════ */
+/* ── 게임 안 입력 · 확인 창 ── */
+function askText(title, def, max, opt) {
+  opt = opt || {};
+  return new Promise(res => {
+    let done = false;
+    const p = modal(`<h2>${opt.g || '書'} ${wEsc(title)}</h2><div class="askbox">${opt.say ? `<div class="hbksub">${opt.say}</div>` : ''}
+        <input id="ask_v" ${opt.pw ? 'type="password" autocomplete="current-password"' : 'autocomplete="off"'} maxlength="${max || 40}" value="${wEsc(def || '')}" placeholder="${wEsc(opt.ph || '')}" spellcheck="false">
+        <div class="lorefoot"><button class="brush-btn ${opt.danger ? 'red' : 'gold'}" id="ask_ok">${opt.ok || '정한다'}</button><button class="brush-btn ghost" id="ask_no" style="color:#e9dfc9;border-color:#8a7f68">그만둔다</button></div></div>`, 'askp');
+    p.dataset.noauto = '1';
+    const inp = p.querySelector('#ask_v');
+    const fin = v => { if (done) return; done = true; if (p.isConnected) closeTop(); res(v); };
+    p.querySelector('#ask_ok').onclick = () => fin(inp.value);
+    p.querySelector('#ask_no').onclick = () => fin(null);
+    inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); fin(inp.value); } else if (e.key === 'Escape') fin(null); };
+    /* Esc · 바깥으로 닫혀도 기다리는 쪽이 깨어나게 */
+    const mo = new MutationObserver(() => { if (!p.isConnected) { mo.disconnect(); fin(null); } });
+    mo.observe($('#overlay'), { childList: true });
+    setTimeout(() => { inp.focus(); inp.select(); }, 40);
+  });
+}
+function askYes(msg, opt) {
+  opt = opt || {};
+  return new Promise(res => {
+    let done = false;
+    const p = modal(`<h2>${opt.g || '問'} ${opt.title || '확인'}</h2><div class="askbox"><div class="askmsg">${msg}</div>
+        <div class="lorefoot"><button class="brush-btn ${opt.danger ? 'red' : 'gold'}" id="ask_y">${opt.ok || '그렇게 한다'}</button><button class="brush-btn ghost" id="ask_n" style="color:#e9dfc9;border-color:#8a7f68">${opt.no || '그만둔다'}</button></div></div>`, 'askp');
+    p.dataset.noauto = '1';
+    const fin = v => { if (done) return; done = true; if (p.isConnected) closeTop(); res(v); };
+    p.querySelector('#ask_y').onclick = () => fin(true);
+    p.querySelector('#ask_n').onclick = () => fin(false);
+    const mo = new MutationObserver(() => { if (!p.isConnected) { mo.disconnect(); fin(false); } });
+    mo.observe($('#overlay'), { childList: true });
+    setTimeout(() => { const b = p.querySelector('#ask_y'); if (b) b.focus(); }, 40);
+  });
+}
+
+/* ── 한글 조합 중의 Enter — 판의 어떤 칸에도 닿지 않게 (조합이 끝나면 다시 Enter 가 온다) ── */
+addEventListener('keydown', e => { if (e.key === 'Enter' && (e.isComposing || e.keyCode === 229)) e.stopPropagation(); }, true);
+
+/* ── 저장 지키기 ── */
+const META_BAK = META_KEY + '_bak', META_BAD = META_KEY + '_bad', RUN_BAK = SAVE_KEY + '_bak';
+const BAK_EVERY = 6 * 3600000, RUN_BAK_EVERY = 120000;
+let _metaRescued = '', _bakAt = 0, _runBakAt = 0, _quotaSaid = false;
+/* 깨진 글은 떼어 두고(나중에 손으로라도 살리게) 백업에서 되살린다 */
+function metaRescue(raw) {
+  try { if (raw) localStorage.setItem(META_BAD, raw.slice(0, 2000000)); } catch (e) {}
+  try { const b = JSON.parse(localStorage.getItem(META_BAK)); if (b && typeof b === 'object' && b.m) { _metaRescued = 'bak'; return b.m; } } catch (e) {}
+  _metaRescued = raw ? 'lost' : '';
+  return null;
+}
+function metaBackup(txt) {
+  const now = Date.now(); if (now - _bakAt < BAK_EVERY) return; _bakAt = now;
+  try { localStorage.setItem(META_BAK, '{"at":' + now + ',"m":' + txt + '}'); } catch (e) {}
+}
+function runBackup(txt) {
+  const now = Date.now(); if (now - _runBakAt < RUN_BAK_EVERY) return; _runBakAt = now;
+  try { localStorage.setItem(RUN_BAK, txt); } catch (e) {}
+}
+function saveFail(e) {
+  if (_quotaSaid) return;
+  if (!(e && (e.name === 'QuotaExceededError' || e.code === 22 || /quota/i.test(e.message || '')))) return;
+  _quotaSaid = true;
+  try { localStorage.removeItem(META_BAD); localStorage.removeItem(RUN_BAK); } catch (x) {}
+  setTimeout(() => { toast('기기의 저장 칸이 꽉 찼다 — 서버에 올려 둔다 (기기의 빈 칸을 늘려 주시오)'); try { if (acctOn()) acctPush(); } catch (x) {} }, 300);
+}
+function metaRescueSay() {
+  if (_metaRescued === 'bak') toast('저장이 깨져 있었다 — 가장 가까운 백업에서 되살렸다');
+  else if (_metaRescued === 'lost') toast('저장이 깨져 읽지 못했다 — 로그인하면 서버의 저장을 불러올 수 있다');
+}
+
+/* ── 두 창에서 열었을 때 — 나중 창이 이어 간다 ── */
+const TAB_ID = Math.random().toString(36).slice(2, 10);
+let _tabCh = null;
+function tabGuard() {
+  if (typeof BroadcastChannel !== 'function') return;
+  try { _tabCh = new BroadcastChannel('baekgwi-tab'); } catch (e) { return; }
+  _tabCh.onmessage = ev => { const d = ev.data || {}; if (d.id === TAB_ID) return; if (d.t === 'hello' || d.t === 'take') tabFreeze(); };
+  _tabCh.postMessage({ t: 'hello', id: TAB_ID });
+}
+function tabFreeze() {
+  if ($('#tabfreeze')) return;
+  try { if (G.run) saveRun(); saveMeta(); } catch (e) {}
+  try { autoStop(); } catch (e) {}
+  try { SND.ctx && SND.ctx.suspend(); } catch (e) {}
+  const n = el('div', 'tabfreeze', `<div><i>停</i><b>다른 창에서 이 게임을 열었다</b><span>두 창이 서로의 저장을 덮지 않게, 이 창은 멈췄다.</span>
+    <button class="brush-btn gold" id="tf_take">이 창에서 이어 하기</button></div>`);
+  n.id = 'tabfreeze'; document.body.appendChild(n);
+  n.querySelector('#tf_take').onclick = () => { try { _tabCh.postMessage({ t: 'take', id: TAB_ID }); } catch (e) {} location.reload(); };
+}
+
+/* ── 화면이 숨을 때 · 닫힐 때 ── */
+function flushNow() {
+  try { saveMeta(); if (G.run && !G.run._pvp) saveRun(); } catch (e) {}
+  try { if (_pushWait && acctOn()) { clearTimeout(_pushWait); _pushWait = null; acctPush().catch(() => {}); } } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { flushNow(); try { if (SND.ctx && SND.ctx.state === 'running') { SND.ctx.suspend(); SND._sus = 1; } } catch (e) {} }
+  else { try { if (SND._sus && SND.ctx && !$('#tabfreeze')) { SND.ctx.resume(); SND._sus = 0; } } catch (e) {} }
+});
+addEventListener('pagehide', flushNow);
+
+/* ── 오류 알림 — 한 판에 열두 가지까지, 같은 것은 한 번 ── */
+let _errN = 0; const _errSeen = new Set();
+function errReport(msg, stack) {
+  msg = String(msg || '').slice(0, 300); stack = String(stack || '').slice(0, 1200);
+  if (!msg || !LIVE_URL || _errN >= 12) return;
+  if (/^Script error\.?$|ResizeObserver loop|chrome-extension:|moz-extension:|Failed to fetch|NetworkError|Load failed|AbortError|The play\(\) request/i.test(msg + ' ' + stack)) return;
+  const k = msg + '|' + stack.split('\n').slice(0, 2).join('|');
+  if (_errSeen.has(k)) return; _errSeen.add(k); _errN++;
+  const where = (G.scene || '?') + (G.b ? '/' + (G.b.kind || '') : '') + (G.run ? '/' + G.run.act + '막' : '');
+  try { fetch(acctBase() + '/log/err', { method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true,
+    body: JSON.stringify({ dev: meId(), msg, stack, where, ver: String(APP_VERSION), plat: PLAT + '/' + EDITION }) }).catch(() => {}); } catch (e) {}
+}
+addEventListener('error', e => { if (e && (e.error || e.message)) errReport(e.message || (e.error && e.error.message), e.error && e.error.stack || ((e.filename || '') + ':' + (e.lineno || ''))); });
+addEventListener('unhandledrejection', e => { const r = e && e.reason; errReport('약속: ' + ((r && r.message) || r), r && r.stack); });
+/* 관리자 창 「오류」 */
+async function drawErrs(grid) {
+  grid.innerHTML = '<div class="casthint">불러오는 중…</div>';
+  const r = await acctAsk('/admin/errs', { code: castKey() }, 15000);
+  if (!r.ok) { grid.innerHTML = `<div class="casthint">못 불러왔다 — ${wEsc(r.why || '')}</div>`; return; }
+  const ago = t => { const m = Math.floor((Date.now() - t) / 60000); return m < 60 ? m + '분 전' : m < 1440 ? Math.floor(m / 60) + '시간 전' : Math.floor(m / 1440) + '일 전'; };
+  grid.innerHTML = `<div class="errhead"><b>오류 ${r.list.length}가지</b><span>오늘 받은 알림 ${r.today && r.today.n || 0} · 같은 오류는 묶어 센다 · 기기 이름은 앞 12자만</span>
+      <button class="val" id="er_re">새로</button><button class="val no" id="er_clear">모두 비운다</button></div>
+    <div class="errlist">${r.list.length ? r.list.map(x => `<details class="errrow"><summary><em>${x.n}회 · ${x.devs || 1}기기</em><b>${wEsc(x.msg)}</b><small>${wEsc(x.where || '')} · ${wEsc(x.plat || '')} · 판 ${wEsc(x.ver || '?')} · ${ago(x.last)}</small></summary><pre>${wEsc(x.stack || '(자취 없음)')}</pre></details>`).join('')
+      : '<div class="dashnone">오류가 없다 — 좋은 날이다</div>'}</div>`;
+  grid.querySelector('#er_re').onclick = () => drawErrs(grid);
+  grid.querySelector('#er_clear').onclick = async () => { if (!(await askYes('모은 오류를 모두 비울까?', { danger: true }))) return; await acctAsk('/admin/errs', { code: castKey(), clear: true }, 15000); drawErrs(grid); };
+}
+
+/* ── 계정 지우기 (구글 플레이 정책 — 앱 안에서 지울 수 있어야 한다) ── */
+async function acctDeleteAsk(after) {
+  if (!acctOn()) return;
+  const ok = await askYes(`계정 <b>${wEsc(ACCT.nick || ACCT.id)}</b>를 지울까?<br><br>
+    · <b>이레(7일) 뒤</b> 서버에서 계정 · 저장 · 닉네임 · 벗 · 암자 · 우편이 지워진다<br>
+    · 그 전에 <b>다시 로그인하면 지우기가 물러진다</b><br>
+    · 이 기기에 남은 판은 지워지지 않는다 (설정에서 따로 지울 수 있다)`, { title: '계정 지우기', g: '刪', danger: true, ok: '지우기를 신청한다' });
+  if (!ok) return;
+  const pw = await askText('비밀번호를 한 번 더', '', 60, { pw: true, g: '鍵', ok: '확인', danger: true, say: '본인임을 확인한다' });
+  if (pw == null || !pw) return;
+  const r = await acctAsk('/auth/delete', { token: ACCT.token, pw }, 30000);
+  if (!r.ok) { toast(r.why || '못 했다'); try { SND.err(); } catch (e) {} return; }
+  ACCT.delUntil = r.until; acctSave();
+  toast(`계정 지우기를 신청했다 — ${new Date(r.until).toLocaleDateString()}에 지워진다 (그 전에 로그인하면 무른다)`);
+  if (after) after();
+}
+async function acctUndelete(after) {
+  const r = await acctAsk('/auth/undelete', { token: ACCT.token }, 20000);
+  if (!r.ok) { toast(r.why || '못 했다'); return; }
+  ACCT.delUntil = 0; acctSave(); toast('계정 지우기를 물렀다'); if (after) after();
+}
+
+/* ── 점검 띠 · 연결 끊김 띠 ── */
+const maintOn = () => !!(LIVE.maint && LIVE.maint.until && srvNow() < LIVE.maint.until);
+function maintPaint() {
+  let n = $('#maintbar');
+  if (!maintOn()) { if (n) n.remove(); return; }
+  if (!n) { n = el('div', 'maintbar'); n.id = 'maintbar'; document.body.appendChild(n); }
+  const m = Math.max(1, Math.ceil((LIVE.maint.until - srvNow()) / 60000));
+  n.innerHTML = `<i>工</i><b>점검 중</b><span>${wEsc(LIVE.maint.msg || '서버를 손보고 있다')} · 약 ${m}분 · 대전은 잠시 쉰다 · 혼자 하는 모험은 그대로</span>`;
+}
+setInterval(maintPaint, 1000);
+function netPaint() {
+  let n = $('#netbar');
+  if (navigator.onLine !== false) { if (n) { n.classList.add('out'); setTimeout(() => n.remove(), 400); } return; }
+  if (!n) { n = el('div', 'netbar', '<i>斷</i><span>연결이 끊겼다 — 판은 이 기기에 저장된다 · 다시 이어지면 저절로 올린다</span>'); n.id = 'netbar'; document.body.appendChild(n); }
+}
+addEventListener('offline', netPaint);
+addEventListener('online', () => { netPaint(); try { liveFetch().catch(() => {}); if (acctOn()) acctNudge(); } catch (e) {} });
+
+/* ── 안드로이드 뒤로 가기(웹의 뒤로 가기도) — 창을 닫고, 첫 화면에서는 두 번 눌러야 나간다 ── */
+let _backArm = 0;
+function backInit() {
+  try { history.replaceState({ bg: 0 }, ''); history.pushState({ bg: 1 }, ''); } catch (e) { return; }
+  addEventListener('popstate', () => {
+    const o = $('#overlay'), open = o && o.lastElementChild;
+    const atTitle = G.scene === 'title' && !G.run && !open;
+    if (atTitle) {
+      if (Date.now() - _backArm < 2200) return;          /* 두 번째 — 그대로 나간다 */
+      _backArm = Date.now(); toast('한 번 더 누르면 나간다');
+      setTimeout(() => { if (Date.now() - _backArm >= 2200) try { history.pushState({ bg: 1 }, ''); } catch (e) {} }, 2300);
+      return;
+    }
+    try { history.pushState({ bg: 1 }, ''); } catch (e) {}
+    dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+  });
+}
+
+/* ── 탭 이름 — 무엇을 하는 중인지 ── */
+function titlePaint() {
+  const s = G.b && !G.b.over ? (G.b.kind === 'boss' ? '보스전' : G.b.kind === 'elite' ? '엘리트전' : /pvp|mpbot/.test(G.b.kind || '') ? '대전' : '싸움')
+    : G.scene === 'map' ? '지도' : G.scene === 'title' ? '' : '';
+  const t = G.run && s ? `${s} · 제${G.run.act}막 — 백귀야행` : '백귀야행 百鬼夜行';
+  if (document.title !== t) document.title = t;
+}
+setInterval(titlePaint, 2000);
+
+/* 숫자 — 천 단위 쉼표 */
+const numK = n => (+n || 0).toLocaleString('ko-KR');
 
 const CHAT_SEEN = 'baekgwi_chat_seen';
 const CHAT_POLL = 3000;
@@ -39009,6 +39267,7 @@ async function mpPoll() {
 /* ══ 로비 ══════════════════════════════════════════════════ */
 function showMulti() {
   if (!acctOn()) { toast('로그인해야 멀티플레이를 할 수 있다'); SND.err(); return; }
+  if (maintOn()) { toast('점검 중에는 대전이 쉰다 — ' + (LIVE.maint.msg || '조금 뒤에')); SND.err(); return; }   /* 판 69 */
   if (G.b) { toast('싸우는 중에는 갈 수 없다'); SND.err(); return; }
   if (!G.run || G.run._pvp) { toast('멀티플레이는 모험 안에서 — 오르는 중에 지도 윗줄의 「對 대전」으로'); SND.err(); return; }
   if (lvNow() < PVP_LV) {                               /* 판 57 — 대전은 레벨 2부터 */
@@ -39641,7 +39900,7 @@ function showAdmin() {
           <button class="adtab" data-t="skill">비기</button>
           <button class="adtab" data-t="pet">팻</button>
           <button class="adtab power" data-t="power">權 개발자의 권력</button>
-          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button>' + (isBaeksa() ? '' : '<button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button>') + '<button class="adtab sctab" data-t="scode">秘 비밀 코드</button>' + (cutMkOn() ? '<button class="adtab cmktab" data-t="cutmk">映 컷씬 공방</button>' : '') + '<button class="adtab bottab" data-t="bot">守 관리 봇</button><button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
+          ${caster() ? '<button class="adtab cast" data-t="cast">퍼뜨리기</button><button class="adtab cast" data-t="guest">게스트</button><button class="adtab memtab" data-t="mem">회원 · 밴</button><button class="adtab memtab" data-t="errs">오류</button>' + (isBaeksa() ? '' : '<button class="adtab dashtab" data-t="dash">管 대시보드</button><button class="adtab dashtab" data-t="log">錄 로그</button>') + '<button class="adtab sctab" data-t="scode">秘 비밀 코드</button>' + (cutMkOn() ? '<button class="adtab cmktab" data-t="cutmk">映 컷씬 공방</button>' : '') + '<button class="adtab bottab" data-t="bot">守 관리 봇</button><button class="adtab mailtab" data-t="mail">郵 우편함 작성</button>' : ''}
         </div>
         <input class="adfind" id="ad_find" placeholder="이름으로 찾기">
         <div class="trgrid" id="ad_grid"></div>
@@ -39658,6 +39917,7 @@ function showAdmin() {
     if (tab === 'guest') { find.style.display = 'none'; drawGuests(grid); return; }
     if (tab === 'power') { find.style.display = 'none'; drawPower(grid); return; }
     if (tab === 'mem') { find.style.display = 'none'; drawMembers(grid); return; }
+    if (tab === 'errs') { find.style.display = 'none'; drawErrs(grid); return; }   /* 판 69 */
     if (tab === 'dash') { find.style.display = 'none'; drawDash(grid); return; }
     if (tab === 'log') { find.style.display = 'none'; drawLog(grid); return; }
     if (tab === 'mail') { find.style.display = 'none'; drawMailCompose(grid); return; }
@@ -42243,14 +42503,24 @@ function resumeRun() {
     giftUnpack();
     if (G.run.tower && !G.run.tower.done) { towerFloor(); return; }   /* 무한의 탑에서 멈췄다 — 그 층 앞으로 */
     showMap();
-  } catch (e) { console.error(e); toast('저장된 기록을 읽을 수 없다'); }
+  } catch (e) {
+    console.error(e);
+    /* 판 69 — 깨진 모험: 두 분 묵은 백업이 있으면 그것으로, 없으면 지우고 새로 할지 묻는다 */
+    let bak = null; try { bak = JSON.parse(localStorage.getItem(RUN_BAK)); } catch (x) {}
+    if (bak && bak.run) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(bak)); localStorage.removeItem(RUN_BAK); toast('모험 저장이 깨져 있었다 — 조금 전 백업으로 되살렸다'); resumeRun(); return; } catch (x) {} }
+    askYes('저장된 모험이 깨져 읽을 수 없다.<br>지우고 처음 화면으로 돌아갈까? (도감 · 수행 · 재화는 그대로다)', { title: '깨진 저장', g: '損', danger: true, ok: '지운다' })
+      .then(y => { if (y) { clearSave(); try { showTitle(); } catch (x) {} } });
+  }
 }
 
 /* --- 키보드 --- */
 addEventListener('keydown', e => {
   /* 글을 적는 칸에서는 판의 단축키가 먹지 않는다 (채팅·관리자 찾기 칸에 a 를 치면 자동 플레이가 켜지던 것) */
   const tg = e.target;
-  if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA') && e.key !== 'Escape') return;
+  if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable) && e.key !== 'Escape') return;
+  if ($('#tabfreeze')) return;                                     /* 다른 창이 이어 가는 중 (판 69) */
+  /* Ctrl · ⌘ · Alt 를 쥔 키는 판의 단축키가 아니다 — Ctrl+A(모두 고르기)에 자동 플레이가 켜지고 Ctrl+1(탭 옮기기)에 부적이 나가던 것 (판 69) */
+  if ((e.ctrlKey || e.metaKey || e.altKey) && e.key !== 'Escape') return;
   /* C — 채팅 (한글 자판이면 ㅊ) */
   if ((e.code === 'KeyC' || e.key === 'c' || e.key === 'C' || e.key === 'ㅊ') && !e.ctrlKey && !e.metaKey && !e.altKey) {
     e.preventDefault(); chatToggle(); return;
@@ -42314,6 +42584,7 @@ function boot() {
   syncAuto();
   try { optApply(); } catch (e) {}           /* 배경 멈춤 · 큰 글씨 · 시계 (판 57) */
   try { backBoot(); } catch (e) { console.error('복귀', e); }   /* 복귀 보상 · 통행증 출석 (판 68) */
+  try { tabGuard(); backInit(); netPaint(); setTimeout(metaRescueSay, 2500); } catch (e) { console.error('판 69', e); }   /* 두 창 · 뒤로 가기 · 연결 · 깨진 저장 (판 69) */
   try { perfProbe(); } catch (e) {}          /* 느린 기계면 알아서 가볍게 (판 59) */
   if (window.__bootOk) window.__bootOk();     /* 지켜보던 조각을 내린다 */
   /* 소식은 판이 선 뒤에 묻는다. 못 받아도 판은 그대로 돈다. */
