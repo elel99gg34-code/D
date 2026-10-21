@@ -20,6 +20,8 @@
      설정  REDIS_URL   적어 둘 곳 (없어도 돈다)
    ══════════════════════════════════════════════════════════ */
 import http from 'http';
+import zlib from 'zlib';
+const SERVER_VER = '69';                /* 판 번호 — /health 에 보인다 */
 
 const PORT = process.env.PORT || 10000;
 const CODE = process.env.CAST_CODE || '';
@@ -57,6 +59,7 @@ function expire(now) {
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
   if (live.ndForce && now > live.ndForce.until) { live.ndForce = null; changed = true; }
   if (live.trial && now > live.trial.until) { live.trial = null; changed = true; }
+  if (live.maint && now > live.maint.until) { live.maint = null; changed = true; }
   if (live.devboss && now > live.devboss.until + 2 * 60000) { live.devboss = null; changed = true; }
   if (live.shadow && !live.shadow.done && now > live.shadow.until) { Object.assign(live.shadow, { done: true, end: now }); changed = true; }
   if (live.shadow && live.shadow.done && now - (live.shadow.end || now) > 5 * 60000) { live.shadow = null; changed = true; }
@@ -270,12 +273,28 @@ async function tokMake(id) {
 }
 async function tokWho(tok) {
   if (typeof tok !== 'string' || !/^[0-9a-f]{48}$/.test(tok)) return null;
-  const p = await db();
-  if (p) { const r = await p.query('select id from tokens where tok=$1', [tok]);
-           return r.rows[0] ? r.rows[0].id : null; }
-  const t = await get('t:' + tok);
-  return t ? t.id : null;
+  const p = await db(); let id = null, made = 0;
+  if (p) { const r = await p.query('select id, made from tokens where tok=$1', [tok]);
+           if (r.rows[0]) { id = r.rows[0].id; made = +r.rows[0].made || 0; } }
+  else { const t = await get('t:' + tok); if (t) { id = t.id; made = +t.made || 0; } }
+  if (!id) return null;
+  /* 판 69 — 한 해 묵은 표는 다시 들어오게 · 비밀번호를 바꾸기 전에 낸 표는 풀린다 · 지운 계정의 표는 없는 것 */
+  if (made && Date.now() - made > TOK_TTL) return null;
+  const ua = await uaGet(id);
+  if (ua.gone) return null;
+  if (ua.pwAt && made && made < ua.pwAt) return null;
+  return id;
 }
+/* 계정의 표 상태 — { pwAt 비밀번호 바꾼 때, delUntil 지우기로 한 때, gone 지운 때 } · 한 분 동안 기억 */
+const TOK_TTL = 365 * 86400000;
+const uaMem = new Map();
+async function uaGet(id) {
+  const c = uaMem.get(id); if (c && Date.now() - c.at < 60000) return c.v;
+  const v = (await get('ua:' + id)) || {};
+  if (uaMem.size > 50000) uaMem.clear();
+  uaMem.set(id, { v, at: Date.now() }); return v;
+}
+async function uaSet(id, patch) { const v = Object.assign({}, await uaGet(id), patch); await put('ua:' + id, v); uaMem.set(id, { v, at: Date.now() }); return v; }
 
 
 /* ══════════════════════════════════════════════════════════
@@ -318,6 +337,53 @@ async function devLink(id, d) {
   const b = await banLoad();
   if (b.acct[id] && !b.dev[d]) { b.dev[d] = { at: Date.now(), id }; await banKeep(); }
 }
+/* ══ 계정 지우기 (판 69) — 신청하고 이레가 지나면 장부에서 지운다. 그 사이 다시 들어오면 신청을 무른다
+     지우는 것: 계정 · 표 · 닉네임 · 프로필 · 벗 · 암자 · 방명록 · 우편 · 찾기 암호 · 기기 · 대전 기록 · 이모티콘 · 길드 자리 ══ */
+const DEL_WAIT = +process.env.DEL_WAIT_MS || 7 * 86400000;       /* 시험할 때만 줄인다 */
+async function delList() { return (await get('dellist')) || []; }
+async function acctPurge(id) {
+  const nick = await nickOf(id);
+  const p = await db();
+  if (p) { await p.query('delete from souls where id=$1', [id]); await p.query('delete from tokens where id=$1', [id]); }
+  else await put('u:' + id, null);
+  if (nick) await put('nk:' + nick.toLowerCase(), null);
+  for (const k of ['nick:', 'nkat:', 'pf:', 'fr:', 'hm:', 'hg:', 'ml:', 'mlc:', 'rc:', 'ud:', 'um:', 'mp:', 'gc:', 'gleft:', 'emo:', 'dl:'])
+    await put(k + id, null);
+  nickMem.delete(id); udMem.delete(id);
+  const gid = await get('gm:' + id);
+  if (gid) {
+    const g = await get('gd:' + gid);
+    if (g) {
+      g.members = (g.members || []).filter(x => x !== id); g.officers = (g.officers || []).filter(x => x !== id);
+      if (!g.members.length) { await put('gd:' + gid, null); await put('gname:' + String(g.name || '').toLowerCase(), null); await put('gdlist', ((await get('gdlist')) || []).filter(x => x !== gid)); }
+      else { if (g.owner === id) g.owner = g.members[0]; await put('gd:' + gid, g); }
+    }
+    await put('gm:' + id, null);
+  }
+  await uaSet(id, { gone: Date.now(), delUntil: 0 });
+  console.log('계정을 지웠다:', id);
+}
+async function delSweep() {
+  try {
+    await store(); const now = Date.now(), L = await delList(), keep0 = [];
+    for (const x of L) {
+      const ua = await uaGet(x.id);
+      if (!ua.delUntil) continue;                         /* 무른 것 */
+      if (ua.delUntil <= now) { try { await acctPurge(x.id); } catch (e) { console.error('지우기', x.id, e.message); keep0.push(x); } }
+      else keep0.push(x);
+    }
+    if (keep0.length !== L.length) await put('dellist', keep0);
+  } catch (e) { console.error('지우기 돌기', e.message); }
+}
+setInterval(delSweep, +process.env.DEL_SWEEP_MS || 30 * 60000).unref();
+setTimeout(delSweep, +process.env.DEL_SWEEP_MS || 60000).unref();
+
+/* ══ 오류 알림 (판 69) — 앱에서 터진 오류를 묶어 센다. 기기마다 한 시간에 서른 · 하루 삼천까지. 백야 · 백사만 본다 ══ */
+const ERR_KEEP = 300, errDev = new Map();
+let errs = null, errDayN = { d: '', n: 0 }, _errT = 0;
+async function errLoad() { if (!errs) errs = (await get('errs')) || {}; return errs; }
+function errSaveSoon() { if (_errT) return; _errT = setTimeout(async () => { _errT = 0; try { await put('errs', errs); } catch (e) {} }, 5000); }
+
 const umTouched = new Map();
 async function umTouch(id, made) {
   const now = Date.now();
@@ -414,6 +480,14 @@ setInterval(() => { bkRestore(); }, 10 * 60 * 1000);
 
 /* 같은 곳에서 너무 자주 두드리면 잠시 물린다 */
 const knocks = new Map();
+/* 판 69 — 한 곳에서 계정을 마구 만들지 못하게: 한 시간에 여섯 · 한 기기에서 하루 셋 (scrypt 는 무겁다) */
+const signupLog = new Map();
+function signupTooMany(ip, dev, now) {
+  const hit = (k, win, max) => { const l = (signupLog.get(k) || []).filter(t => now - t < win); if (l.length >= max) { signupLog.set(k, l); return true; } l.push(now); signupLog.set(k, l); return false; };
+  if (signupLog.size > 20000) signupLog.clear();
+  return hit('ip|' + ip, 3600000, 6) || (DEV_RE.test(dev || '') && hit('dv|' + dev, 86400000, 3));
+}
+const signingUp = new Set();                       /* 같은 아이디를 동시에 두 번 만들지 못하게 */
 function tooMany(ip) {
   const now = Date.now(), w = knocks.get(ip) || [];
   const recent = w.filter(t => now - t < 60000);
@@ -519,7 +593,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd', 'trial'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -997,6 +1071,11 @@ async function applyCast(q) {
     else { live.shadow = { id: now, at: now, until: now + Math.max(1, Math.min(60, parseInt(q.shadow.min, 10) || 10)) * 60000, n: 0, ppl: 0, top: [], done: false, end: 0 };
       shadowWho = new Map(); }
   }
+  /* 점검 (판 69) — 모든 앱 맨 위에 「점검 중」 띠 · 대전 줄서기를 막는다. min 분 뒤 저절로 풀린다 */
+  if ('maint' in q) {
+    const now = Date.now(), d = q.maint;
+    live.maint = d ? { at: now, until: now + Math.max(1, Math.min(600, parseInt(d.min, 10) || 30)) * 60000, msg: str(d.msg, 120) } : null;
+  }
   /* 막 체험 (판 66) — 모두를 그 막의 지도로 옮겨 정한 시간 동안 맛보게 한다. 끝나면 앱이 원래 모험으로 되돌린다 */
   if ('trial' in q) {
     const now = Date.now(), d = q.trial;
@@ -1445,6 +1524,7 @@ const G_REJOIN_MS = 24 * 3600000, FLEE_RP = 15, FLEE_LOCK_MS = 10 * 60000, NEW_A
 const spamLog = new Map();
 function spamWhy(key, t, now, staff) {
   if (staff) return '';
+  if (LINK_RE.test(String(t || ''))) return '주소(링크)는 적을 수 없다';   /* 판 69 — 채팅 · 길드 채팅 · 대전 채팅에 낚시 주소를 못 올린다 */
   const s = spamLog.get(key) || { last: '', lastAt: 0, at: [], mute: 0 };
   if (now < s.mute) return `말이 너무 잦았다 — ${Math.ceil((s.mute - now) / 1000)}초 뒤에 말할 수 있다`;
   const norm = String(t || '').replace(/\s+/g, '').toLowerCase();
@@ -1638,13 +1718,20 @@ const CORS = {
   'access-control-max-age': '86400'
 };
 const send = (res, code, body) => {
-  res.writeHead(code, Object.assign({
+  if (res.headersSent || res.writableEnded) return;              /* 판 69 — 두 번 답하려다 서버가 죽지 않게 */
+  const txt = JSON.stringify(body), head = Object.assign({
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
     'x-content-type-options': 'nosniff',
     'referrer-policy': 'no-referrer'
-  }, CORS));
-  res.end(JSON.stringify(body));
+  }, CORS);
+  /* 판 69 — 1KB 넘는 답은 gzip 으로 눌러 보낸다 (소식 · 채팅 · 순위 — 손전화 데이터를 아낀다) */
+  const ae = String((res.req && res.req.headers['accept-encoding']) || '');
+  if (txt.length > 1024 && /\bgzip\b/.test(ae)) {
+    try { const z = zlib.gzipSync(txt); res.writeHead(code, Object.assign(head, { 'content-encoding': 'gzip', vary: 'accept-encoding' })); return res.end(z); } catch (e) {}
+  }
+  res.writeHead(code, head);
+  res.end(txt);
 };
 /* 관리자의 열쇠 — 백야(CAST_CODE) · 백사(두 번째 관리자, 둘째 열쇠의 지문만 둔다).
    백사는 대시보드 · 로그만 빼고 백야와 같다 */
@@ -1663,7 +1750,15 @@ function same(a, b) {
   for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return d === 0;
 }
-const str = (v, n) => String(v == null ? '' : v).slice(0, n);
+/* 남이 읽는 글에서 보이지 않는 글자 · 방향 뒤집기 · 제어 문자를 걷어 낸다 — 검열을 빠져나가거나 남의 이름을 흉내 내지 못하게 (판 69) */
+const INVIS_RE = /[\u0000-\u0009\u000B-\u001F\u007F\u00AD\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g;
+const str = (v, n) => String(v == null ? '' : v).replace(INVIS_RE, '').slice(0, n);
+/* 본문은 늘 객체 — null · 배열 · 글 한 줄이 오면 읽을 수 없다고 돌려보낸다 (판 69 — null 하나로 서버가 죽던 것) */
+const jsonOr = (t, d = null) => { try { return JSON.parse(t); } catch (e) { return d; } };
+function jbody(t) { const o = JSON.parse(t); if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('객체가 아니다'); return o; }
+const ipOf = req => (String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?').slice(0, 64);
+/* 글에 주소(링크)를 적지 못한다 — 방명록 · 길드 소개 (판 69) */
+const LINK_RE = /(https?:\/\/|www\.|[a-z0-9-]+\.(com|net|kr|io|gg|me|ly|xyz|co)\b)/i;
 /* admin 레벨(백야 · 백사 · 허락받은 게스트)은 토큰이 줄지 않는다 (판 61b) — 열쇠나 게스트 인으로 가린다 */
 const INF_TOK = 999999;
 async function infOk(q) {
@@ -1675,11 +1770,19 @@ async function infOk(q) {
   return !!(me && me.state === 'ok');
 }
 
-const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://x');
+/* 판 69 — 어느 자리에서 터져도 서버는 서 있는다: 500 으로 답하고 적어 둔다 */
+const server = http.createServer((req, res) => {
+  handle(req, res).catch(e => {
+    console.error('처리 중 오류', req.method, String(req.url || '').split('?')[0], e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e);
+    try { send(res, 500, { ok: false, why: '서버에서 일이 꼬였다 — 잠시 뒤 다시' }); } catch (x) {}
+  });
+});
+async function handle(req, res) {
+  let url;
+  try { url = new URL(req.url, 'http://x'); } catch (e) { return send(res, 400, { ok: false, why: '주소를 읽을 수 없다' }); }
 
   if (req.method === 'OPTIONS') { res.writeHead(204, CORS); return res.end(); }
-  if (url.pathname === '/health') return send(res, 200, { ok: true, at: Date.now() });
+  if (url.pathname === '/health') return send(res, 200, { ok: true, at: Date.now(), up: Math.round(process.uptime()), mem: Math.round(process.memoryUsage().rss / 1048576), ver: SERVER_VER });
 
   if (url.pathname === '/live' && req.method === 'GET') {
     await store();
@@ -1717,7 +1820,7 @@ const server = http.createServer(async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store(); await pollLoad();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -1771,7 +1874,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/presence' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     if (!admRole(q.code)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
     const now = Date.now(), c = seenCount(now);
     if (kstDay(now) !== seenDay) { seenDay = kstDay(now); seenToday = new Set(); }
@@ -1783,7 +1886,7 @@ const server = http.createServer(async (req, res) => {
   if ((url.pathname === '/admin/stats' || url.pathname === '/admin/log' || url.pathname === '/log/note') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store(); await statLoad();
     const now = Date.now();
     if (url.pathname === '/log/note') {
@@ -1818,7 +1921,7 @@ const server = http.createServer(async (req, res) => {
   if ((url.pathname.startsWith('/pf/') || url.pathname.startsWith('/fr/')) && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     const whoOf = async w => { w = str(w, 20); if (!w) return ''; if (await get('u:' + w)) return w; const n = await get('nk:' + w.toLowerCase()); return n || ''; };
@@ -1860,12 +1963,42 @@ const server = http.createServer(async (req, res) => {
     return send(res, 404, { ok: false, why: '없는 자리' });
   }
 
+  /* ── 오류 알림 (판 69) — /log/err 앱이 보낸다 · /admin/errs 백야 · 백사가 본다(clear 로 비운다) ── */
+  if ((url.pathname === '/log/err' || url.pathname === '/admin/errs') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 6000) return send(res, 413, { ok: false }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store(); await errLoad();
+    const now = Date.now();
+    if (url.pathname === '/admin/errs') {
+      if (!admRole(q.code)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
+      if (q.clear) { errs = {}; await put('errs', errs); }
+      const list = Object.values(errs).sort((a, b) => b.last - a.last).slice(0, 200);
+      return send(res, 200, { ok: true, list, today: errDayN });
+    }
+    const dev = DEV_RE.test(q.dev || '') ? q.dev : ipOf(req);
+    const dk = kstDay(now); if (errDayN.d !== dk) errDayN = { d: dk, n: 0 };
+    const l = (errDev.get(dev) || []).filter(t => now - t < 3600000);
+    if (l.length >= 30 || errDayN.n >= 3000) return send(res, 429, { ok: false });
+    l.push(now); errDev.set(dev, l); if (errDev.size > 20000) errDev.clear(); errDayN.n++;
+    const msg = str(q.msg, 300), stack = str(q.stack, 1200), where = str(q.where, 60);
+    if (!msg) return send(res, 400, { ok: false });
+    const h = sha(msg + '|' + stack.split('\n').slice(0, 2).join('|')).slice(0, 16);
+    const e = errs[h] || { h, msg, stack, n: 0, devs: 0, first: now, where, ver: '', plat: '' };
+    e.n++; e.last = now; e.where = where || e.where; e.ver = str(q.ver, 24) || e.ver; e.plat = str(q.plat, 40) || e.plat;
+    e.dset = (e.dset || []); if (!e.dset.includes(dev.slice(0, 12)) && e.dset.length < 50) { e.dset.push(dev.slice(0, 12)); e.devs = e.dset.length; }
+    errs[h] = e;
+    const keys = Object.keys(errs); if (keys.length > ERR_KEEP) { keys.sort((a, b) => errs[a].last - errs[b].last).slice(0, keys.length - ERR_KEEP).forEach(k => delete errs[k]); }
+    errSaveSoon();
+    return send(res, 200, { ok: true });
+  }
+
   /* ── 암자(庵) — /hm/get 남의 암자 · /hm/set 내 암자 · /hm/sign 방명록 한 줄(집마다 하루 한 번) · /hm/del 내 방명록 지우기 (판 68)
      hm:아이디 = { s: { roof, wall, yard, lamp, deco }, msg, at, v(놀러 온 수) } · hg:아이디 = [{ id, nick, t, at }] 쉰 줄까지 ── */
   if (url.pathname.startsWith('/hm/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     const whoOf = async w => { w = str(w, 20); if (!w) return ''; if (await get('u:' + w)) return w; const n = await get('nk:' + w.toLowerCase()); return n || ''; };
@@ -1886,6 +2019,7 @@ const server = http.createServer(async (req, res) => {
       const uid = await whoOf(q.who); if (!uid) return send(res, 404, { ok: false, why: '그런 사람이 없다' });
       if (uid === id) return send(res, 400, { ok: false, why: '내 암자다' });
       const t = censor(str(q.t, 60)).trim(); if (!t) return send(res, 400, { ok: false, why: '빈 말이다' });
+      if (LINK_RE.test(t)) return send(res, 400, { ok: false, why: '주소(링크)는 적을 수 없다' });
       { const why = spamWhy('hg:' + id, t, now, false); if (why) return send(res, 429, { ok: false, why }); }
       const gb = (await get('hg:' + uid)) || [];
       if (gb.some(x => x.id === id && kstDay(x.at) === kstDay(now))) return send(res, 409, { ok: false, why: '이 집 방명록에는 오늘 이미 적었다' });
@@ -1906,7 +2040,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/mail/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 6000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -1947,7 +2081,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/wheel/cheer' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 500) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 외칠 수 있다' });
@@ -1966,7 +2100,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/scode/claim' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -2000,7 +2134,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/tower/submit' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 적힌다' });
@@ -2013,7 +2147,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/clear/final' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 적힌다' });
@@ -2035,7 +2169,7 @@ const server = http.createServer(async (req, res) => {
     if (!CODE) return send(res, 500, { ok: false, why: '서버에 열쇠가 없다' });
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     if (!admRole(q.code)) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
     await store();
     const b = await banLoad(), now = Date.now();
@@ -2114,7 +2248,7 @@ const server = http.createServer(async (req, res) => {
       if (body.length > 16000) return send(res, 413, { ok: false, why: '너무 길다' });
     }
     let q;
-    try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     const role = admRole(q.code);
     if (!role) return send(res, 403, { ok: false, why: '열쇠가 다르다' });
     /* 지금 할 것과 예약할 것 — 하나하나 들여다본다 */
@@ -2172,7 +2306,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/fuse/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now(); fusePrune(now);
     const id = await tokWho(q.token);
@@ -2233,7 +2367,7 @@ const server = http.createServer(async (req, res) => {
   if ((url.pathname === '/devboss/try' || url.pathname === '/devboss/win') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -2259,7 +2393,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/shadow/kill' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -2283,7 +2417,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/hb/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -2337,7 +2471,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET') return send(res, 200, { ok: true, bomb: view(null), now });
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     const id = await tokWho(q.token);
     if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
     { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
@@ -2362,7 +2496,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/march/hit' && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 2000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
     if (expire(now)) await keep();
@@ -2395,7 +2529,7 @@ const server = http.createServer(async (req, res) => {
       if (body.length > 2000) return send(res, 413, { ok: false, why: '너무 길다' });
     }
     let q;
-    try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const b = live.boss;
     if (!b) return send(res, 409, { ok: false, why: '칠 것이 없다' });
@@ -2441,7 +2575,7 @@ const server = http.createServer(async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store(); await chatLoad();
     const now = Date.now();
     chatPrune(now);
@@ -2498,7 +2632,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/guild/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 3000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now(), act = url.pathname.slice(7);
     if (act === 'top') {
@@ -2529,7 +2663,7 @@ const server = http.createServer(async (req, res) => {
       if (await get('gname:' + name.toLowerCase())) return send(res, 409, { ok: false, why: '이미 있는 길드 이름이다' });
       { const pd = q.paid || {}; if (!admRole(q.code) && !((+pd.gold || 0) >= G_COST.gold && (+pd.dia || 0) >= G_COST.dia && (+pd.jp || 0) >= G_COST.jp))
           return send(res, 402, { ok: false, why: `길드를 세우려면 골드 ${G_COST.gold.toLocaleString()} · 다이아 ${G_COST.dia.toLocaleString()} · 정진 ${G_COST.jp.toLocaleString()}이 든다`, cost: G_COST }); }
-      const g = { id: 'g' + now.toString(36) + Math.floor(Math.random() * 1e4).toString(36), name, tag, glyph, desc: censor(str(q.desc, 60)), owner: id, members: [id], pts: 0, w: 0, l: 0, at: now,
+      const g = { id: 'g' + now.toString(36) + Math.floor(Math.random() * 1e4).toString(36), name, tag, glyph, desc: censor(str(q.desc, 60)).replace(LINK_RE, '…'), owner: id, members: [id], pts: 0, w: 0, l: 0, at: now,
                   xp: 0, rules: { open: true, minLv: 1, text: '' }, officers: [], apply: [], contrib: {} };
       await put('gd:' + g.id, g); await put('gm:' + id, g.id); await put('gname:' + name.toLowerCase(), g.id);
       await put('gdlist', ((await get('gdlist')) || []).concat(g.id).slice(-2000));
@@ -2573,7 +2707,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (act === 'desc') {
       if (my.owner !== id) return send(res, 403, { ok: false, why: '길드장만' });
-      my.desc = censor(chatClean(str(q.desc, 60))); await put('gd:' + my.id, my);
+      my.desc = censor(chatClean(str(q.desc, 60))).replace(LINK_RE, '…'); await put('gd:' + my.id, my);
       return send(res, 200, { ok: true, g: await view(my) });
     }
     if (act === 'say') {
@@ -2598,7 +2732,7 @@ const server = http.createServer(async (req, res) => {
     const topNick = async v => { for (const t of v.top) t.n = (await nickOf(t.u)) || t.u; return v; };
     if (act === 'rules') {
       if (!isOff) return send(res, 403, { ok: false, why: '길드장 · 부길드장만' });
-      my.rules = { open: q.open !== false, minLv: Math.max(1, Math.min(99, parseInt(q.minLv, 10) || 1)), text: censor(chatClean(str(q.text, 160))) };
+      my.rules = { open: q.open !== false, minLv: Math.max(1, Math.min(99, parseInt(q.minLv, 10) || 1)), text: censor(chatClean(str(q.text, 160))).replace(new RegExp(LINK_RE.source, 'gi'), '…') };
       await put('gd:' + my.id, my); gSay(my.id, null, `길드 규칙이 바뀌었다 — ${my.rules.open ? '누구나 들어온다' : '청하면 받아 준다'} · 레벨 ${my.rules.minLv}부터`, now);
       return send(res, 200, { ok: true, g: await view(my) });
     }
@@ -2713,7 +2847,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/meet/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now(), act = url.pathname.slice(6);
     meetTick(now);
@@ -2804,7 +2938,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/mp/') && req.method === 'POST') {
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 12000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const acct = await tokWho(q.token);
     if (!acct) return send(res, 401, { ok: false, why: '로그인해야 한다' });
@@ -2992,7 +3126,7 @@ const server = http.createServer(async (req, res) => {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false, why: '너무 길다' }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     await store();
     const now = Date.now();
 
@@ -3137,7 +3271,7 @@ const server = http.createServer(async (req, res) => {
     if (tooMany(ip)) return send(res, 429, { ok: false, why: '너무 자주 묻는다' });
     let body = '';
     for await (const chunk of req) { body += chunk; if (body.length > 20000) return send(res, 413, { ok: false }); }
-    let q; try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
     try {
       if (url.pathname === '/pay/creem') {
         const id = str(q.checkout_id, 80);
@@ -3174,7 +3308,7 @@ const server = http.createServer(async (req, res) => {
       if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
       const s = await soulGet(id);
       return send(res, 200, { ok: true, id,
-        save: s && s.save ? JSON.parse(s.save) : null, at: (s && +s.saved) || 0 });
+        save: s && s.save ? jsonOr(s.save) : null, at: (s && +s.saved) || 0 });
     }
 
     if (req.method !== 'POST') return send(res, 405, { ok: false, why: 'POST 로 묻는다' });
@@ -3184,7 +3318,7 @@ const server = http.createServer(async (req, res) => {
       if (body.length > 400000) return send(res, 413, { ok: false, why: '너무 길다' });
     }
     let q;
-    try { q = JSON.parse(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
 
     /* 막힌 기기 · 막힌 아이디는 들어오지도, 걸지도 못한다 */
     {
@@ -3204,13 +3338,16 @@ const server = http.createServer(async (req, res) => {
       if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
       const s = await soulGet(id);
       return send(res, 200, { ok: true, id, nick: await nickOf(id),
-        save: s && s.save ? JSON.parse(s.save) : null, at: (s && +s.saved) || 0 });
+        save: s && s.save ? jsonOr(s.save) : null, at: (s && +s.saved) || 0 });
     }
 
     /* 이름을 새로 건다 — 닉네임도 함께 */
     if (url.pathname === '/auth/signup') {
       const id = str(q.id, 20).trim(), pw = String(q.pw || ''), nick = str(q.nick, 12).trim();
       const dev = !!admRole(q.code);
+      if (!dev && signupTooMany(ip, q.dev, Date.now())) return send(res, 429, { ok: false, why: '계정을 너무 자주 만들었다 — 나중에 다시' });
+      if (signingUp.has(id.toLowerCase())) return send(res, 409, { ok: false, why: '만드는 중이다 — 잠시 뒤에' });
+      signingUp.add(id.toLowerCase()); setTimeout(() => signingUp.delete(id.toLowerCase()), 5000);
       /* 새 아이디는 영어·숫자만 (예전에 만든 한글 아이디는 그대로 들어올 수 있다) */
       if (!/^[a-zA-Z0-9]{2,20}$/.test(id)) return send(res, 400, { ok: false, why: '아이디는 영어·숫자만, 2~20 글자' });
       if (/백야|baekya|백사|baeksa|관리자|운영|admin/i.test(id) && !dev) return send(res, 400, { ok: false, why: '그 아이디는 쓸 수 없다' });
@@ -3243,7 +3380,7 @@ const server = http.createServer(async (req, res) => {
       const id = await tokWho(q.token);
       if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
       const nat = +(await get('nkat:' + id)) || 0;
-      return send(res, 200, { ok: true, id, nick: await nickOf(id), nickNext: nat ? nat + NICK_GAP : 0 });
+      return send(res, 200, { ok: true, id, nick: await nickOf(id), nickNext: nat ? nat + NICK_GAP : 0, delUntil: (await uaGet(id)).delUntil || 0 });
     }
     /* 내 이모티콘 팩 */
     if (url.pathname === '/auth/emo') {
@@ -3257,17 +3394,22 @@ const server = http.createServer(async (req, res) => {
       const id = str(q.id, 20).trim(), pw = String(q.pw || '').slice(0, 200), now = Date.now();
       const lk = id + '|' + ip, lock = loginLocked(lk, now);   /* 아이디와 두드린 곳을 함께 — 남의 계정을 일부러 잠그지 못하게 */
       if (lock) return send(res, 429, { ok: false, why: `비밀번호를 여러 번 틀려 잠시 잠갔다 — ${lock}분 뒤에` });
+      { const li = rcLocked('lip|' + ip, now, 40); if (li) return send(res, 429, { ok: false, why: `여러 아이디로 너무 많이 틀렸다 — ${li}분 뒤에` }); }   /* 판 69 — 아이디를 바꿔 가며 두드리기 */
       const s = await soulGet(id);
       /* 이름이 없을 때도 한 번 갈아 본다 — 빠르기로 있는 이름을 알아내지 못하게 */
       const salt = (s && s.salt) || '0000';
       const hash = await scrypt(pw, salt);
-      if (!s || !same(hash, s.hash)) { loginMiss(lk, now); return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' }); }
+      if (!s || !same(hash, s.hash)) { loginMiss(lk, now); rcMiss('lip|' + ip, now); return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' }); }
       loginFail.delete(lk);
+      if ((await uaGet(id)).gone) return send(res, 403, { ok: false, why: '아이디나 비밀번호가 다르다' });
       if (q.dev) await devLink(id, q.dev);
       await umTouch(id);
+      /* 지우기를 신청해 둔 계정 — 다시 들어오면 무른다 (판 69) */
+      let undel = false;
+      if ((await uaGet(id)).delUntil) { await uaSet(id, { delUntil: 0 }); await put('dellist', (await delList()).filter(x => x.id !== id)); undel = true; alog(id, '계정 지우기를 물렀다 (다시 들어왔다)').catch(() => {}); }
       const tok = await tokMake(id);
-      return send(res, 200, { ok: true, id, nick: await nickOf(id), token: tok,
-        save: s.save ? JSON.parse(s.save) : null, at: +s.saved || 0 });
+      return send(res, 200, { ok: true, id, nick: await nickOf(id), token: tok, undel,
+        save: s.save ? jsonOr(s.save) : null, at: +s.saved || 0 });
     }
 
     /* 찾기 암호 — 로그인한 사람이 정해 둔다(4~8자). 아이디·비밀번호를 잊으면 닉네임과 이것으로 들어온다 */
@@ -3306,7 +3448,7 @@ const server = http.createServer(async (req, res) => {
       await umTouch(id);
       const tok = await tokMake(id);
       alog(id, '찾기 암호로 들어왔다').catch(() => {});
-      return send(res, 200, { ok: true, recovered: true, id, nick: await nickOf(id), token: tok, save: s0.save ? JSON.parse(s0.save) : null, at: +s0.saved || 0 });
+      return send(res, 200, { ok: true, recovered: true, id, nick: await nickOf(id), token: tok, save: s0.save ? jsonOr(s0.save) : null, at: +s0.saved || 0 });
     }
     /* 새 비밀번호 — 들어와 있는 사람이 바꾼다 (찾기로 들어온 뒤에도) */
     if (url.pathname === '/auth/pwnew') {
@@ -3317,10 +3459,34 @@ const server = http.createServer(async (req, res) => {
       const s0 = await soulGet(id); if (!s0) return send(res, 404, { ok: false, why: '없는 아이디' });
       s0.salt = crypto.randomBytes(16).toString('hex'); s0.hash = await scrypt(pw, s0.salt);
       await soulPut(s0);
+      await uaSet(id, { pwAt: Date.now() });              /* 판 69 — 다른 기기에 남은 표는 이제 듣지 않는다 */
+      const tok = await tokMake(id);
       alog(id, '비밀번호를 바꿨다').catch(() => {});
-      return send(res, 200, { ok: true });
+      return send(res, 200, { ok: true, token: tok });
     }
 
+    /* 계정 지우기 — 비밀번호를 한 번 더 · 이레 뒤에 지운다 (판 69) */
+    if (url.pathname === '/auth/delete') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      const s0 = await soulGet(id); if (!s0) return send(res, 404, { ok: false, why: '없는 아이디' });
+      const now = Date.now();
+      { const lk = 'del|' + id; const lock = loginLocked(lk, now); if (lock) return send(res, 429, { ok: false, why: `여러 번 틀려 잠시 잠갔다 — ${lock}분 뒤에` });
+        if (!same(await scrypt(String(q.pw || '').slice(0, 200), s0.salt), s0.hash)) { loginMiss(lk, now); return send(res, 403, { ok: false, why: '비밀번호가 다르다' }); } }
+      const until = now + DEL_WAIT;
+      await uaSet(id, { delUntil: until });
+      await put('dellist', (await delList()).filter(x => x.id !== id).concat({ id, at: now }).slice(-5000));
+      alog(id, '계정 지우기를 신청했다 (이레 뒤)').catch(() => {});
+      return send(res, 200, { ok: true, until });
+    }
+    if (url.pathname === '/auth/undelete') {
+      const id = await tokWho(q.token);
+      if (!id) return send(res, 401, { ok: false, why: '들어와 있지 않다' });
+      await uaSet(id, { delUntil: 0 });
+      await put('dellist', (await delList()).filter(x => x.id !== id));
+      alog(id, '계정 지우기를 물렀다').catch(() => {});
+      return send(res, 200, { ok: true });
+    }
     /* 걸어 둔다 */
     if (url.pathname === '/auth/push') {
       const id = await tokWho(q.token);
@@ -3338,6 +3504,25 @@ const server = http.createServer(async (req, res) => {
   }
 
   send(res, 404, { ok: false, why: '없는 자리' });
-});
+}
 
+/* 판 69 — 느린 연결이 자리를 붙잡지 못하게 */
+server.headersTimeout = 20000;
+server.requestTimeout = 30000;
+server.keepAliveTimeout = 65000;
 server.listen(PORT, () => console.log('한 하늘이 섰다 · 문 ' + PORT));
+/* 판 69 — 놓친 약속 · 잡지 못한 오류는 적고 계속 선다 */
+process.on('unhandledRejection', e => console.error('놓친 약속', e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e));
+process.on('uncaughtException', e => console.error('잡지 못한 오류', e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e));
+/* 판 69 — 배포로 내려갈 때(SIGTERM) 소식 · 오류 묶음을 적어 두고 문을 닫는다 */
+let _closing = false;
+async function shutdown(sig) {
+  if (_closing) return; _closing = true;
+  console.log(sig + ' — 적어 두고 내려간다');
+  const t = setTimeout(() => process.exit(0), 8000); t.unref();
+  try { await keep(); } catch (e) {}
+  try { if (errs) await put('errs', errs); } catch (e) {}
+  server.close(() => process.exit(0));
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
