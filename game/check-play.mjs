@@ -106,7 +106,7 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
   await p.reload(); await p.waitForTimeout(1500);
   const rs = await p.evaluate(() => { META.tutorDone = true; OPT.story = 'off'; OPT.cuts = false; resumeRun(); return { jp: META.jp, gold: G.run && G.run.gold, bad: !!localStorage.getItem(META_BAD) }; });
   ok(rs.jp === 4321 && rs.gold === 777 && rs.bad, '저장이 깨지면 — 깨진 글은 떼어 두고 백업에서 되살린다 (도감·재화 · 모험)');
-  const q = await p.evaluate(() => { const o = Storage.prototype.setItem; Storage.prototype.setItem = function () { const e = new Error('q'); e.name = 'QuotaExceededError'; throw e; }; saveMeta(); Storage.prototype.setItem = o; return _quotaSaid; });
+  const q = await p.evaluate(() => { const o = Storage.prototype.setItem; Storage.prototype.setItem = function () { const e = new Error('q'); e.name = 'QuotaExceededError'; throw e; }; META._qt = Date.now(); saveMeta(); Storage.prototype.setItem = o; return _quotaSaid; });
   ok(q, '저장 칸이 꽉 차면 알린다');
   /* 두 창 */
   const p2 = await p.ctx.newPage(); await p2.goto('file://' + FILE); await p2.waitForTimeout(1200);
@@ -139,6 +139,21 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
   await p.keyboard.press('Tab');
   const trap = await p.evaluate(() => document.querySelector('#overlay').lastElementChild.contains(document.activeElement));
   ok(ax.dlg && ax.live && trap, '접근성 — 대화 상자 이름표 · 알림 낭독 · 창 안에서만 Tab');
+  /* 판 70 — 손이 미끄러질 때 · 화면 · 아우라 */
+  await p.evaluate(() => closeOverlay());
+  const gb = await p.evaluate(() => { window._hit = 0; const m = modal('<h2>시험</h2><button class="brush-btn" id="gx">눌러</button>'); const x = m.querySelector('#gx'); x.onclick = () => window._hit++; const r = x.getBoundingClientRect(); return { x: r.x + 5, y: r.y + 5 }; });
+  await p.mouse.click(gb.x, gb.y); const g1 = await p.evaluate(() => _hit); await p.waitForTimeout(280); await p.mouse.click(gb.x, gb.y);
+  ok(g1 === 0 && await p.evaluate(() => _hit) === 1, '판 70 — 창이 뜬 직후의 누름은 흘리고, 그 뒤는 받는다');
+  await p.evaluate(() => { closeOverlay(); if (G.b) { G.b.over = true; G.b = null; } OPT.endWarn = false; startBattle(['boar'], 'normal'); }); await p.waitForTimeout(1600);
+  const t0 = await p.evaluate(() => G.b.turn); await p.waitForTimeout(400); await p.dblclick('#endturn');
+  await p.waitForFunction(() => G.b && !G.b.busy, null, { timeout: 15000 }).catch(() => {});
+  const t1 = await p.evaluate(() => G.b.turn), tl = await p.evaluate(() => TLOG.slice(0, 6).map(x => x.m).join('|'));
+  ok(t1 === t0 + 1 && !/엉켜|막힌 자리/.test(tl), `판 70 — 차례 끝을 두 번 눌러도 한 번만 (${t0}→${t1})`);
+  const gh = await p.evaluate(async () => { const pl = P(); pl.hp = pl.maxHp; syncPlayer(); await new Promise(r => setTimeout(r, 450)); pl.hp = Math.round(pl.maxHp / 2); syncPlayer(); await new Promise(r => setTimeout(r, 100)); const g = pl.el.querySelector('.ebar .hpg'), bar = pl.el.querySelector('.ebar i'); return !!g && parseFloat(g.style.width) > parseFloat(bar.style.width) + 20; });
+  const au = await p.evaluate(() => { auraState(); return [document.querySelectorAll('#bg .aur').length, document.body.dataset.aura]; });
+  ok(gh && au[0] === 4 && au[1] === 'fight', `판 70 — 체력 잔상 · 배경 아우라 ${au.join(' ')}`);
+  ok(await p.evaluate(() => qHit('구미호', 'ㄱㅁㅎ') && hanToKey('ㅠㅁ다ㅛㅁ') === 'baekya' && fullHalf('ＡＢ１') === 'AB1'), '판 70 — 초성 찾기 · 한글 자판 아이디 · 전각 글자');
+  await p.evaluate(() => { G.b.over = true; G.b = null; closeOverlay(); });
   ok(!p.errs.filter(e => !/QuotaExceeded|bge_/.test(e)).length, '기능 검사 동안 오류 0' + (p.errs.length ? ' — ' + [...new Set(p.errs)].slice(0, 3).join(' / ') : ''));
   await p.ctx.close();
 }
