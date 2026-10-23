@@ -3370,6 +3370,7 @@ body.bigtxt .card .txt{font-size:13px;line-height:1.5}
 .mpseason .lgbtn{font:inherit;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;color:#2a1004;border:none;background:linear-gradient(120deg,#fff0b0,#ffc94a,#ff8ad8);box-shadow:0 0 16px rgba(255,200,120,.5)}
 .lgapply{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);z-index:720;pointer-events:none;animation:rampIn .5s cubic-bezier(.2,1.4,.4,1) both}
 .lgapply.out{opacity:0;transition:.6s}
+.mapnode.devtp{cursor:pointer}.mapnode.devtp:hover{filter:brightness(1.2) drop-shadow(0 0 9px rgba(200,168,255,.9));opacity:1}
 .mapnode.replayable{cursor:pointer}.mapnode.replayable:hover{filter:brightness(1.15) drop-shadow(0 0 8px rgba(120,190,255,.7));opacity:1}
 .rpactbtn{font:inherit;font-size:11.5px;margin-left:6px;padding:2px 10px;border-radius:10px;cursor:pointer;color:#dceeff;background:rgba(40,80,140,.55);border:1px solid rgba(120,190,255,.55);pointer-events:auto}
 .rpactbtn:hover{background:rgba(60,110,180,.7)}
@@ -9944,7 +9945,6 @@ const SND = {
   /* 비기 한 소절 — 등급에 따라 결이 다르다 */
   skillSting(rar) {
     if (!this.ok()) return;
-    const S = this.bgmSet(this.music.act || 1);
     const hi5 = skHi(rar), hi = Math.min(4, hi5);
     this.duck(1400 + hi5 * 400, .22);
     if (hi5 >= 4 && this.horn) setTimeout(() => { try { this.horn(rar === 'sin' ? 131 : 98, { dur: 1.6, vol: .07 }); this.cymbal({ dur: 1.4, vol: .06 }); } catch (e) {} }, 120);
@@ -11973,7 +11973,6 @@ const MUT_STAR = 1.25;
 const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배, 25% 확률로 버그가 나 한 번 더 */
 function cval(c) {
   const v = cdef(c).v(cup(c));
-  const lv = fgLv(c);
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
   const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
@@ -12260,7 +12259,6 @@ function rewardAct(boost) {
   const a = (G.run && G.run.act) || 1;
   return a + (boost === 'boss' ? 2 : boost === 'elite' ? 1 : 0);
 }
-const ACT_SPAN = 12;
 function unlockedGrades(boost) {
   return Object.keys(rewardBand(rewardAct(boost)));
 }
@@ -16078,6 +16076,7 @@ const DEV_PW10 = [
   { k: 'god',   g: '無', n: '천하무적',   d: '받는 피해 0', tog: 1 },
   { k: 'qi',    g: '氣', n: '기 무한',    d: '차례마다 기가 10 밑으로 내려가지 않는다', tog: 1 },
   { k: 'halo',  g: '光', n: '백야의 후광', d: '싸움터의 내 몸에 흰 날개 후광', tog: 1 },
+  { k: 'tp',    g: '移', n: '순간이동',   d: '지도에서 아무 칸(라운드)이나 누르면 곧장 그 칸으로 — 길·층 상관없이', tog: 1, def: 1 },
   { k: 'hand',  g: '手', n: '손 가득',    d: '싸우는 중 — 손을 열 장까지 채운다' },
   { k: 'revive',g: '復', n: '되살림',     d: '체력 가득 · 나쁜 기운 모두 걷기' },
   { k: 'money', g: '財', n: '재화 폭포',  d: '골드 +9,999 · 다이아 +999' },
@@ -16086,6 +16085,22 @@ const DEV_PW10 = [
   { k: 'seal',  g: '封', n: '요괴 봉인',  d: '싸우는 중 — 모든 요괴 약화·취약 99, 힘·방어도 걷기' },
   { k: 'dex',   g: '典', n: '도감 채우기', d: '부적·요괴·유물 도감을 모두 채운다 (개발자·해킹·이벤트 것은 빼고)' }
 ];
+/* 켜고 끄는 권력이 지금 켜졌는가 — def 가 붙은 것은 끄기 전까지 켜져 있다 (판 71) */
+const devPwIs = x => { const v = META.devPw && META.devPw[x.k]; return x.def ? v !== false : !!v; };
+/* 개발자 순간이동 — 지도에서 아무 칸이나 누르면 그 칸으로 곧장 (판 71) */
+const devTp = () => { try { return adminOn() && !!G.run && !G.run._pvp && !(META.devPw && META.devPw.tp === false); } catch (e) { return false; } };
+function devTeleport(n, node) {
+  const run = G.run; if (!run || G.b || !devTp()) return;
+  const lock = stageLock(); if (lock) { toast(lock); try { SND.err(); } catch (e) {} return; }
+  try {
+    SND.blip(392, { dur: .5, type: 'triangle', vol: .07, to: 1568, rev: .7 }); SND.hiss({ dur: .4, vol: .05, freq: 1800, to: 6000, filter: 'bandpass', q: 1.2, rev: .6 });
+    const r = node && node.getBoundingClientRect();
+    if (r) FX.burst(r.left + r.width / 2, r.top + r.height / 2, 26, hexRgb('#c8a8ff'), 5, 46, 3.6);
+    screenFlash('rgba(200,168,255,.28)', 380);
+  } catch (e) {}
+  toast(`移 순간이동 — ${n.r + 1}층 · ${NODE_NAME[n.type] || '칸'}`);
+  enterNode(n);
+}
 function devPwFx(word, col) {
   try { SND.unlock(); SND.gong(); screenFlash(rgba(col, .4), 600); stampWord(word, col);
     FX.burst(innerWidth / 2, innerHeight / 2, 40, hexRgb(col), 6, 55, 4.4); } catch (e) {}
@@ -16094,11 +16109,12 @@ function devPwDo(k) {
   const run = G.run, b = G.b, pvp = b && (b.kind === 'pvp' || b.kind === 'mpbot');
   const def = DEV_PW10.find(x => x.k === k); if (!def) return;
   if (def.tog) {
-    META.devPw = META.devPw || {}; META.devPw[k] = !META.devPw[k]; saveMeta();
+    META.devPw = META.devPw || {}; META.devPw[k] = !devPwIs(def); saveMeta();
     if (k === 'qi' && META.devPw.qi && b && !b.over && !pvp) b.energy = Math.max(b.energy, 10);
     if (b) try { syncAll(); } catch (e) {}
     toast(`${def.n} — ${META.devPw[k] ? '켜짐' : '꺼짐'}`);
-    if (META.devPw[k]) devPwFx(def.g, k === 'god' ? '#ffd76a' : k === 'qi' ? '#5ae6e0' : '#f4f0ff');
+    if (META.devPw[k]) devPwFx(def.g, k === 'god' ? '#ffd76a' : k === 'qi' ? '#5ae6e0' : k === 'tp' ? '#c8a8ff' : '#f4f0ff');
+    if (k === 'tp' && G.scene === 'map' && !G.b) try { showMap(); } catch (e) {}
     return;
   }
   if (pvp) { toast('대전·연습 판에서는 듣지 않는다'); return; }
@@ -16167,8 +16183,8 @@ function drawPower(grid) {
     <div class="dpowrow devz"><button class="dpowbtn devz" id="dp_z1"><b>終 종결석 +1</b><small>수치 2배 · 백야의 일격 · 기 +1</small></button>
       <button class="dpowbtn devz" id="dp_z5"><b>終 종결석 +5</b><small>한 번에 다섯</small></button>
       <button class="dpowbtn devz" id="dp_zuse"><b>지금 입힌다</b><small>${devMatHave() ? '부적을 고른다' : '종결석이 없다'}</small></button></div>` : ''}
-    <div class="dpowsub pw10">열 가지 권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
-    <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && META.devPw && META.devPw[x.k] ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (META.devPw && META.devPw[x.k] ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
+    <div class="dpowsub pw10">권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
+    <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && devPwIs(x) ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (devPwIs(x) ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
     ${b5Ok() ? `<button class="dpowbig s5" id="dp_s5"><b>덱을 모두 SSSSS급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → SSSSS급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
     <div class="dpowsub s5">SSSSS급 — 다섯 겹의 S · 백사만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone s5">${S5_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>` : ''}
@@ -16190,7 +16206,7 @@ function drawPower(grid) {
 /* --- 카드 사용 --- */
 async function playCard(card, target) {
   const b = G.b, p = P();
-  if (b.busy || b.over) return;
+  if (!b || b.busy || b.over) return;
   const d = cdef(card), cost = ecost(card);
   if (cost === -2) { SND.err(); toast('사용할 수 없는 카드다'); return; }
   if (d.b5Only && !b5Ok()) { SND.err(); toast('백사만 쓸 수 있다'); return; }
@@ -18309,7 +18325,7 @@ function syncHand() {
 
 /* --- 입력: 카드 선택 / 조준 --- */
 function onCardClick(c) {
-  const b = G.b; if (b.busy || b.over) return;
+  const b = G.b; if (!b || b.busy || b.over) return;              /* 싸움이 막 끝난 순간 남은 부적을 누르면 터지던 것 (판 71) */
   const d = cdef(c), cost = ecost(c);
   if (cost === -2) { SND.err(); toast('사용할 수 없는 카드다'); return; }
   if (cost >= 0 && b.energy < cost) { SND.err(); toast('기가 부족하다'); return; }
@@ -20251,7 +20267,6 @@ function applyTrainRun() {
    영구 보너스 · SSX 부적 5종 · 한 달 한 번 무료 특대급 상자
    · 2배속 · 자동 플레이 즉시 개방
    ────────────────────────────────────────────────────────── */
-const VIP_FREE = false;                     /* 이제 값을 받는다 — 원화 */
 /* 덱에 넣어 줄 SSX 5종 */
 function vipSsxIds() {
   const pool = GRADE_POOL.ssx.slice();
@@ -20377,12 +20392,14 @@ function showMap() {
   if (_mapIntro !== introKey) { _mapIntro = introKey; inner.classList.add('mapintro'); setTimeout(() => inner.classList.remove('mapintro'), 1600); }
 
   /* ── 칸 ──────────────────────────────────────────────── */
+  const devMap = devTp();
   for (const n of m.nodes) {
     const isAvail = availSet.has(n.id);
     const isCur = run.mapCur === n.id;
+    const tp = devMap && !isAvail && !isCur;      /* 개발자 — 갈 수 없는 칸도 곧장 (판 71) */
     const b = el('div', 'mapnode ' + n.type + (isAvail ? ' avail' : '') + (done.has(n.id) ? ' done' : '') + (isCur ? ' cur' : ''),
       `<i class="mhit"></i><i class="mrim">${MRIM_BITS[n.type] || ''}</i><span class="mg">${NODE_ICON[n.type]}</span>`);
-    b.style.left = n.x + 'px'; b.style.top = n.y + 'px';
+    b.style.left = n.x + 'px'; b.style.top = n.y + 'px'; b.dataset.id = n.id;
     b.style.setProperty('--dl', (n.r * 34 + (n.id % 3) * 22) + 'ms');
     /* 지나온 칸에는 붉은 낙관 — 칸은 흐려져도 도장은 또렷하게 (칸 바깥에 따로 찍는다) */
     if (done.has(n.id) && !isCur) {
@@ -20394,8 +20411,9 @@ function showMap() {
       + (isCur ? ' · 지금 여기' : '')));
 
     bindTip(b, () => `<b>${NODE_NAME[n.type]}</b>${n.type === 'boss' ? ' · ' + ENEMIES[run.bossPick].n : ''}
-      <br>${NODE_HINT[n.type] || ''}${isAvail ? '<br><span style="color:#ffb0a0">눌러서 이 길로 간다</span>' : done.has(n.id) ? `<br><span style="color:#9fd8ff">${REPLAY_DONE[n.type] ? '이미 지나왔다' : '눌러서 다시 싸운다 — 보상 없이 경험치만'}</span>` : ''}`);
-    if (!isAvail && done.has(n.id)) { b.classList.add('replayable'); b.onclick = () => { tipHide(); replayNode(n); }; }   /* 판 57 — 다시 하기 */
+      <br>${NODE_HINT[n.type] || ''}${isAvail ? '<br><span style="color:#ffb0a0">눌러서 이 길로 간다</span>' : tp ? '<br><span style="color:#c8a8ff">移 개발자 — 눌러서 곧장 간다</span>' : done.has(n.id) ? `<br><span style="color:#9fd8ff">${REPLAY_DONE[n.type] ? '이미 지나왔다' : '눌러서 다시 싸운다 — 보상 없이 경험치만'}</span>` : ''}`);
+    if (tp) { b.classList.add('devtp'); b.onclick = () => { tipHide(); devTeleport(n, b); }; }          /* 판 71 — 개발자 순간이동 */
+    else if (!isAvail && done.has(n.id)) { b.classList.add('replayable'); b.onclick = () => { tipHide(); replayNode(n); }; }   /* 판 57 — 다시 하기 */
     if (isAvail) {
       b.onclick = () => { tipHide(); enterNode(n); };
       /* 짚으면 그 길만 도드라진다 */
@@ -20722,7 +20740,8 @@ function planClean(run) {
   if (!run) return [];
   if (!Array.isArray(run.plan)) run.plan = [];            /* 한 번도 정한 적 없는 모험 */
   const have = new Set(run.deck.map(c => c.uid)), used = new Set();
-  run.plan = run.plan.slice(0, PLAN_MAX).map(h => (Array.isArray(h) ? h : [])
+  /* 빈 자리(구멍)도 빈 덱으로 — 덱 1~5를 비워 두고 덱 6에 넣으면 구멍이 생겨, 덱 설정 창과 다음 싸움의 차례 시작이 터졌다 (판 71) */
+  run.plan = Array.from({ length: Math.min(PLAN_MAX, run.plan.length) }, (_, i) => run.plan[i]).map(h => (Array.isArray(h) ? h : [])
     .filter(u => have.has(u) && !used.has(u) && used.add(u)).slice(0, PLAN_HAND));
   while (run.plan.length && !run.plan[run.plan.length - 1].length) run.plan.pop();
   return run.plan;
@@ -20731,7 +20750,7 @@ function planClean(run) {
 function planPull(b, n) {
   const pl = b.plan || [];
   const now = pl[b.turn - 1];
-  const later = new Set(); for (let i = b.turn; i < pl.length; i++) for (const u of pl[i]) later.add(u);
+  const later = new Set(); for (let i = b.turn; i < pl.length; i++) for (const u of (pl[i] || [])) later.add(u);
   b.reserved = later.size ? later : null;
   if (!now || !now.length) return 0;
   let k = 0;
@@ -20760,9 +20779,9 @@ function showPlan() {
     <button class="brush-btn" id="pl_x">닫기</button>`, 'planm');
   p.dataset.noauto = '1';
   const byUid = u => run.deck.find(c => c.uid === u);
-  const where = u => run.plan.findIndex(h => h.includes(u));
+  const where = u => run.plan.findIndex(h => h && h.includes(u));
   const save = () => { planClean(run); try { saveRun(); } catch (e) {} };
-  const hand = () => (run.plan[cur] = run.plan[cur] || []);
+  const hand = () => { for (let i = 0; i <= cur; i++) if (!Array.isArray(run.plan[i])) run.plan[i] = []; return run.plan[cur]; };
   const draw = () => {
     const tabs = p.querySelector('#pl_tabs'); tabs.innerHTML = '';
     for (let i = 0; i < PLAN_MAX; i++) {
@@ -22994,10 +23013,6 @@ for (const f of COL_FOES) {
 function colBeat(id) { return !!(META.col && META.col.beat && META.col.beat[id]); }
 function colUnlocked(i) { return i === 0 || colBeat(COL_FOES[i - 1].id); }
 /* ── 콜로세움 화면 ─────────────────────────────────────── */
-function openColosseum() {
-  if (G.b) { SND.err(); toast('싸우는 중에는 갈 수 없다'); return; }
-  SND.ui(); showColosseum();
-}
 function showColosseum() {
   const prev = G.scene;
   G.scene = 'colosseum';
@@ -24113,20 +24128,6 @@ function showSpecialShop(refill) {
     }
     p.querySelector('#g_back').onclick = () => { closeOverlay(); saveRun(); showMap(); };
   }
-  async function doVipBuy() {
-    if (vipOn()) return;
-    META.vip.owned = true; META.vip.at = Date.now(); META.vip.freeBoxAt = 0;
-    saveMeta();
-    unlockAuto(true);
-    applyVipRun();
-    saveRun(); renderTop(); syncAuto();
-    SND.victory(); setTimeout(() => SND.gong(), 260);
-    screenFlash('rgba(255,214,120,.5)', 900);
-    FX.gold(innerWidth / 2, innerHeight / 2, 70);
-    for (let i = 1; i <= 5; i++) setTimeout(() => FX.gold(innerWidth * (.2 + i * .12), innerHeight * .45, 30), i * 130);
-    toast('VIP — 퇴마사의 격이 올랐다');
-    draw();
-  }
   function renderBonus(p, cur) {
     /* 누적 보너스 눈금 */
     const bar = p.querySelector('.gbar');
@@ -25059,7 +25060,7 @@ const CUT_ACT = {
 };
 /* 막의 모양 — 가운데 층에 깐다 */
 function cutMotif(k, bc) {
-  const W = 1600, sv = (inner, st = '') => `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible;${st}">${inner}</svg>`;
+  const sv = (inner, st = '') => `<svg viewBox="0 0 1600 900" width="1600" height="900" style="overflow:visible;${st}">${inner}</svg>`;
   const rep = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join('');
   switch (k) {
     case 'forest': return sv(rep(14, i => { const x = i * 125 - 60, h = 380 + (i * 53) % 160;
@@ -25436,7 +25437,7 @@ function cutDevDescend() {
       [3500, S => { S.refs.man.animate([{ top: '120px', opacity: 0 }, { top: '160px', opacity: 1, offset: .1 }, { top: '760px', opacity: 1 }], { duration: 2600, easing: 'cubic-bezier(.3,.6,.3,1)', fill: 'forwards' });
         cutCam(S, { x: 800, y: 560, s: 1.25, rx: 4 }, 2600); }],
       [6100, S => { cutFlash(S, 'rgba(255,240,200,.9)', 500); cutSfx('gong'); cutShake(S, 18, 500);
-        const seal = cutPut(S, cutSealSvg('#ffffff', '白夜降臨權限開放'), { x: 800, y: 752, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' });
+        cutPut(S, cutSealSvg('#ffffff', '白夜降臨權限開放'), { x: 800, y: 752, z: 0, cls: 'csealw', zi: 1, tf: 'rotateX(76deg)' });
         const at = cutAt(S.refs.man); cutEmit(S, 'gold', at.x, at.y + at.h * .4, 50, { sp: 8, life: 50, g: .02 });
         for (const n of S.refs.yk) n.animate([{ transform: n.style.transform }, { transform: n.style.transform + ' translateY(30px) scaleY(.7)' }], { duration: 600, fill: 'forwards' });
         cutSay(S, '요괴들이 고개를 숙인다.', 1800); }],
@@ -26129,7 +26130,6 @@ CUT_LIST.tea = { n: '찻잔 — 백야와의 면담', make: () => cutTea('그대
    선물은 받은 이가 서버에 한 번만 챙긴다 — 기계를 여러 대 써도 두 번 받지 않는다.
    ══════════════════════════════════════════════════════════ */
 var MEET = { cur: null, role: '', since: 0, t: 0, busy: false, inboxAt: 0, asked: {}, cutDone: {}, first: true };
-const meetDev = () => caster();
 /* 백야 쪽은 퍼뜨리기 열쇠로, 받은 이는 로그인 표로 묻는다 */
 const meetAsk = (path, body) => acctAsk('/meet/' + path, Object.assign(MEET.role === 'dev' ? { code: castKey() } : { token: ACCT.token }, body || {}), 15000);
 /* 받은 이 — 청이 왔는지 소식을 물을 때마다 본다 */
@@ -30268,7 +30268,6 @@ const LIVE_EVERY = 12000;             /* 열두 셈마다 다시 묻는다 — �
 const NOTICE_MS  = 3000;              /* 개발자의 말은 셋 셈 보였다가 사라진다 */
 /* 만든이의 이름 — 백귀야행의 줄임 */
 const DEV_NAME = '백야';
-const HYPE_SAY = DEV_NAME + '가 이벤트를 시작했습니다!';
 const hypeSay = () => admName() + '가 이벤트를 시작했습니다!';         /* 백사가 걸면 백사의 이름으로 */
 const HYPE_RE = /^(백야|백사)가 이벤트를 시작했습니다!/;
 const NOTICE_SEEN = 'baekgwi_notice_seen';  /* 이미 보인 말 — 다시 띄우지 않는다 */
@@ -30463,7 +30462,8 @@ function eggMe() {
   return META.egg;
 }
 let _eggAnnounced = 0;
-function eggTick() {
+/* 이름이 막 이스터에그의 eggTick(판 57d)과 겹쳐 그쪽에 덮여 있었다 — 계란을 뿌려도 지도에 뜨지 않던 것 (판 71) */
+function eggEvTick() {
   const on = eggOn() && G.scene === 'map' && !G.b && G.run;
   let layer = $('#egglayer');
   if (!on) { if (layer) layer.remove(); return; }
@@ -30483,6 +30483,7 @@ function eggTick() {
     e.style.setProperty('--k', (done / need).toFixed(2));
     e.title = sp.secret ? `비밀 계란 — ${need}번 두드려라` : `계란 — ${need}번 두드려라`;
     e.onpointerdown = ev => { ev.preventDefault(); ev.stopPropagation(); eggTap(e, sp); };
+    e.onclick = ev => { if (!ev.detail) eggTap(e, sp); };          /* 키보드(Enter · Space)로도 두드린다 (판 71) */
     layer.appendChild(e);
   }
   ($('#app') || document.body).appendChild(layer);
@@ -31548,7 +31549,6 @@ const fuOrb = (k, cls = '') => { const ps = fuParts(k);
   return `<div class="fuorb ${cls}${ps.length === 3 ? ' tri' : ''}" style="--fa:${MUT_COL[ps[0]]};--fb:${MUT_COL[ps[ps.length - 1]]};--fg:${fuGrad(ps)}">${ps.map(x => `<b>${MAT_DEF[x].g}</b>`).join('')}${'<i></i>'.repeat(8)}</div>`; };
 const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0) + devMatHave();
 /* 원료 주머니 — 재료 · 융합 원료 · 그 밖의 것 */
-function showMutLab() { showPouch(); }
 function showPouch() {
   const fus = Object.keys(META.matFu || {}).filter(k => fuHave(k) > 0);
   const p = modal(`<div class="pchead"><div class="pcbag"><i class="pcknot"></i><i class="pcglow"></i><b>囊</b></div>
@@ -33512,7 +33512,6 @@ const FXC = {
 const FXC_CAP = { coin: 30, bounty: 20, talis: 3 };
 let _fxcRun = 0, _fxcTimers = [];
 const fxcLive = () => { const f = LIVE.fx; return f && FXC[f.k] && srvNow() < (+f.until || 0) ? f : null; };
-const fxcOn = k => { const f = fxcLive(); return !!(f && f.k === k); };
 const fxcPvp = () => !!(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot'));
 function fxcGot(id) { return (META.fxGot && META.fxGot[id]) || 0; }
 function fxcAdd(id, n = 1) {
@@ -33668,7 +33667,7 @@ function liveTick() {
   try { hackTick(); } catch (e) { console.error('해킹', e); }
   try { autoFreeTick(); } catch (e) { console.error('맛보기', e); }
   try { marchTick(); } catch (e) { console.error('백귀야행', e); }
-  try { eggTick(); } catch (e) { console.error('계란', e); }
+  try { eggEvTick(); } catch (e) { console.error('계란', e); }
   try { bombTick(); } catch (e) { console.error('폭탄', e); }
   try { buffTick(); } catch (e) { console.error('버프', e); }
   try { fxcTick(); } catch (e) { console.error('한바탕', e); }
@@ -37757,7 +37756,6 @@ function ndPick(w, act) {
 }
 /* 따로 선 싸움 — 끝난 뒤에 온다 */
 const ND_BAT_OK = k => k === 'normal' || k === 'elite' || k === 'boss' || /^tower/.test(k);
-const ndOpen = () => { const w = LIVE.nd; return !!(w && w.id && srvNow() < w.until + 5 * 60000); };
 let _ndBusy = false;
 function ndTick() {
   const w = LIVE.nd;
@@ -39551,9 +39549,8 @@ new MutationObserver(ms => {
 document.addEventListener('dblclick', e => {
   const h = e.target && e.target.closest && e.target.closest('h2'), p = h && h.closest('#overlay > .panel');
   if (!p || p.querySelector('h2') !== h) return;            /* 창의 제목만 (창 안 갈래 제목은 아니다) */
-  const box = [p, ...p.querySelectorAll('div')].find(x => x.scrollTop > 0);
   try { getSelection().removeAllRanges(); } catch (x) {}
-  if (box) box.scrollTo({ top: 0, behavior: 'smooth' });
+  for (const box of [p, ...p.querySelectorAll('div')]) if (box.scrollTop > 0) box.scrollTo({ top: 0, behavior: 'smooth' });   /* 창도 · 안의 목록도 함께 */
 });
 
 /* ── 창 밖을 눌러 닫는 창 — 안에서 끌다가 밖에서 놓은 것은 닫지 않는다 ── */
@@ -40064,7 +40061,7 @@ function setMpBg(host) {
 var MP = { on: false, lobby: false, t: 0, since: 0, prof: null, tiers: null, shop: null, match: null, room: null, queue: null,
            inv: [], saved: null, busy: false, evq: [], evBusy: false, myNo: 0, resShown: false, topCache: null, inboxAt: 0, seenInv: {} };
 const MP_POINTS = { basic: 0, common: 1, uncommon: 2, rare: 3, zero: 4, special: 5, ssc: 7, ssx: 9, unknown: 12 };
-const MP_BUDGET = 45, MP_DECK_MIN = 12, MP_DECK_MAX = 20, MP_ENERGY = 3;
+const MP_BUDGET = 45, MP_DECK_MIN = 12, MP_ENERGY = 3;
 const MP_TIER_INFO = {
   bronze:   { n: '브론즈', g: '銅', c: '#c8844a', min: 0, next: 300 },
   silver:   { n: '실버', g: '銀', c: '#cfd6e0', min: 300, next: 700 },
@@ -41830,7 +41827,6 @@ function showDex() {
   {
     const box = p.querySelector('#dx_in');
     for (const it of INCENSE) {
-      const beat = ELEM[ELEM_BEATS[it.elem]];
       const lit = G.run && G.run.incense && G.run.incense.elem === it.elem;
       const t = dexTile(true, it.g, it.n,
         `<b style="color:${it.c}">${it.n}</b> · 향초<br>${it.d}<br>
@@ -42621,7 +42617,6 @@ function bgFx(type, n, col, seed, o) {
 function bgScene(a, PAL, SKY) {
   const [far, mid, near] = PAL;
   const sky = SKY || '#f2e9d5 0%,#e6dac0 55%,#d9caa9 100%';
-  const skyTop = (sky.match(/#[0-9a-f]{3,6}/gi) || ['#e6dac0'])[0];
   const skyLow = (sky.match(/#[0-9a-f]{3,6}/gi) || []).slice(-2)[0] || far;
   const mist = (skyLow.length === 4 ? '#' + skyLow.slice(1).split('').map(c => c + c).join('') : skyLow);
   const S = { sky, astro: '', art: '', far: '', mid: '', near: '', mist: [], fx: '', top: '', floor: .5 };
@@ -43036,7 +43031,6 @@ function setBg(act) {
     23: ['#cfdcec', '#a4b9d6', '#6e86a8'], 24: ['#a05a4a', '#743a34', '#3e1e20'],
     25: ['#4a4038', '#2e2620', '#140f0c'], 26: ['#6a4a24', '#3a2414', '#1a0e08']
   }[a] || ['#c3b79d', '#a89c82', '#7b7260'];
-  const far = PAL[0], mid = PAL[1], near = PAL[2];
   const SKY = { 3: '#e7e3ec 0%,#d7d1de 55%,#c0b9c8 100%', 4: '#cfc9dc 0%,#b3abc4 55%,#928aa6 100%',
                 5: '#e8f0fb 0%,#cfe0f2 55%,#adc4e0 100%', 6: '#c6c2ce 0%,#a49fb0 55%,#7c7789 100%',
                 7: '#8d8898 0%,#6b6578 55%,#413c50 100%', 8: '#fff8e4 0%,#f2e4c2 55%,#dcc99e 100%',
@@ -43256,11 +43250,6 @@ function setWorldBg() {
    하늘 / 먼 산 뒤 / 가운데 / 앞 — 네 자리에 나누어 그린다.
    ────────────────────────────────────────────────────────── */
 const rep = (n, f) => [...Array(n)].map((_, i) => f(i)).join('');
-/* 새 한 마리 — 배경은 세로로 늘어나므로 획을 넉넉히 벌려 둔다 */
-function bgBird(x, y, w, col, op) {
-  return `<path d="M${x - w},${y} q${w * .5},${-w * .95} ${w},0 q${w * .5},${-w * .95} ${w},0"
-    fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" opacity="${op}"/>`;
-}
 /* 구름 한 덩이 — 납작한 타원이 아니라 뭉게진 모양으로 */
 function bgCloud(x, y, w, h, col, op) {
   return `<path d="M${x - w},${y} q${w * .18},${-h * 1.5} ${w * .5},${-h * .95}

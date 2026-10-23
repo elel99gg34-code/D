@@ -93,7 +93,6 @@ for (const s of SIZES) {
         /* ① 제스처 자리에 깔리는가 — 아래 48px 띠와 겹치고,
               가운데 40% 안에 걸쳐 있으면 위험하다 */
         const inStrip = b.bottom > H - GESTURE;
-        const cx = b.left + b.width / 2;
         const midL = W * 0.30, midR = W * 0.70;
         if (inStrip && b.right > midL && b.left < midR)
           out.깔림.push(`${name} 아래 ${Math.round(H - b.bottom)}px · 가운데 걸침`);

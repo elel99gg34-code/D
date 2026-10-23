@@ -61,7 +61,8 @@ console.log('■ 서버 검사');
   ok(dup.filter(x => x.ok).length === 1, '같은 아이디를 동시에 둘 — 하나만 만든다'); s2.kill();
   const s3 = await up({ DEL_WAIT_MS: '1500', DEL_SWEEP_MS: '700' });
   const A = { id: 'cka' + sfx, pw: 'Abcd1234!x', nick: '갑' + (sfx % 1000) }, B = { id: 'ckb' + sfx, pw: 'Abcd1234!x', nick: '을' + (sfx % 1000) };
-  const a1 = await ask(s3, '/auth/signup', A), a2 = await ask(s3, '/auth/login', { id: A.id, pw: A.pw }), b1 = await ask(s3, '/auth/signup', B);
+  const a1 = await ask(s3, '/auth/signup', A), a2 = await ask(s3, '/auth/login', { id: A.id, pw: A.pw });
+  await ask(s3, '/auth/signup', B);
   /* 비밀번호 */
   const pn = await ask(s3, '/auth/pwnew', { token: a1.token, pw: 'Zyxw9876!q' });
   ok(pn.ok && /^[0-9a-f]{48}$/.test(pn.token) && (await ask(s3, '/auth/me', { token: a2.token }))._s === 401 && (await ask(s3, '/auth/me', { token: pn.token })).ok, '비밀번호를 바꾸면 다른 기기의 표가 풀리고 새 표를 준다');

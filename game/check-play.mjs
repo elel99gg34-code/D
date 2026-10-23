@@ -81,7 +81,11 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
     n += await p.evaluate(async s => { let k = 0;
       for (const m of MENU_ITEMS) { if (['yield', 'full', 'map', 'auto'].includes(m.k)) continue; let vis; try { vis = !m.show || m.show(); } catch (e) { console.error('show ' + m.k + ' ' + e.message); continue; } if (!vis) continue;
         try { if (m.sub) m.sub(); if (m.dot) m.dot(); const r = m.run(); if (r && r.catch) r.catch(e => console.error('메뉴 ' + m.k + ' ' + e.message)); } catch (e) { console.error('메뉴 ' + m.k + ' ' + e.message); }
-        await new Promise(r => setTimeout(r, 60)); try { closeOverlay(); } catch (e) {} document.querySelectorAll('.school').forEach(x => x.remove()); k++; }
+        await new Promise(r => setTimeout(r, 60));
+        /* 판 71 — 화면에 새어 나온 값 · 겹친 id */
+        { const t = document.body.innerText || ''; const mm = t.match(/\bundefined\b|\bNaN\b|\[object [A-Za-z]+\]|\$\{/); if (mm) console.error('새어 나온 값 ' + mm[0] + ' — 메뉴 ' + m.k + ' 「' + t.slice(Math.max(0, t.indexOf(mm[0]) - 20), t.indexOf(mm[0]) + 20).replace(/\s+/g, ' ') + '」');
+          const ids = {}; document.querySelectorAll('[id]').forEach(e => { ids[e.id] = (ids[e.id] || 0) + 1; }); for (const i in ids) if (ids[i] > 1) console.error('겹친 id #' + i + ' — 메뉴 ' + m.k); }
+        try { closeOverlay(); } catch (e) {} document.querySelectorAll('.school').forEach(x => x.remove()); k++; }
       return k; }, s);
   }
   await p.waitForTimeout(500);
@@ -135,7 +139,7 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
   /* 접근성 */
   await p.evaluate(() => { closeOverlay(); showDex(); }); await p.waitForTimeout(300);
   const ax = await p.evaluate(() => { const d = document.querySelector('#overlay .panel'); return { dlg: d && d.getAttribute('role') === 'dialog' && !!d.getAttribute('aria-label'), live: document.querySelector('#toast').getAttribute('aria-live') === 'polite' }; });
-  const f = await p.evaluate(() => { const bs = [...document.querySelector('#overlay').lastElementChild.querySelectorAll('button')].filter(x => x.offsetParent); bs[bs.length - 1].focus(); return bs.length; });
+  await p.evaluate(() => { const bs = [...document.querySelector('#overlay').lastElementChild.querySelectorAll('button')].filter(x => x.offsetParent); bs[bs.length - 1].focus(); return bs.length; });
   await p.keyboard.press('Tab');
   const trap = await p.evaluate(() => document.querySelector('#overlay').lastElementChild.contains(document.activeElement));
   ok(ax.dlg && ax.live && trap, '접근성 — 대화 상자 이름표 · 알림 낭독 · 창 안에서만 Tab');
@@ -153,8 +157,42 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
   const au = await p.evaluate(() => { auraState(); return [document.querySelectorAll('#bg .aur').length, document.body.dataset.aura]; });
   ok(gh && au[0] === 4 && au[1] === 'fight', `판 70 — 체력 잔상 · 배경 아우라 ${au.join(' ')}`);
   ok(await p.evaluate(() => qHit('구미호', 'ㄱㅁㅎ') && hanToKey('ㅠㅁ다ㅛㅁ') === 'baekya' && fullHalf('ＡＢ１') === 'AB1'), '판 70 — 초성 찾기 · 한글 자판 아이디 · 전각 글자');
-  await p.evaluate(() => { G.b.over = true; G.b = null; closeOverlay(); });
+  /* 판 71 — 개발자는 아무 칸이나 눌러 곧장 · 일반 사람은 그대로 · 계란 이벤트가 지도에 뜬다 · 덱 설정 빈 자리 */
+  const tp = await p.evaluate(async () => { if (G.b) { G.b.over = true; G.b = null; } closeOverlay(); const keep = META.codes; META.codes = {}; newRun(0); closeOverlay(); showMap();
+    const plain = document.querySelectorAll('.mapnode.devtp').length; META.codes = { [ADMIN_H]: 1 }; showMap();
+    const n = G.run.map.nodes.find(x => x.r === 6 && x.type === 'battle') || G.run.map.nodes.find(x => x.r === 6); document.querySelector(`.mapnode[data-id="${n.id}"]`).click();
+    await new Promise(r => setTimeout(r, 600)); const went = G.run.mapCur === n.id && G.run.floor === n.r + 1;
+    if (G.b) { G.b.over = true; G.b = null; } closeOverlay(); META.codes = keep; showMap();
+    LIVE.egg = { id: 'chk', n: 5, s: 1, until: srvNow() + 600000 }; liveTick(); await new Promise(r => setTimeout(r, 200)); const eggs = document.querySelectorAll('.mapegg').length; LIVE.egg = null; liveTick();
+    G.run.plan = []; G.run.plan[5] = [G.run.deck[0].uid]; planClean(G.run); let planOk = G.run.plan.every(Array.isArray);
+    try { startBattle(['boar'], 'normal'); await new Promise(r => setTimeout(r, 900)); planOk = planOk && !!G.b; G.b.over = true; G.b = null; } catch (e) { planOk = false; }
+    return { plain, went, eggs, planOk }; });
+  ok(tp.plain === 0 && tp.went && tp.eggs === 5 && tp.planOk, `판 71 — 개발자 순간이동 · 일반 그대로 · 계란 ${tp.eggs}개 · 덱 설정 빈 자리 ${tp.planOk ? '괜찮다' : '터진다'}`);
+  await p.evaluate(() => { if (G.b) { G.b.over = true; G.b = null; } closeOverlay(); });
   ok(!p.errs.filter(e => !/QuotaExceeded|bge_/.test(e)).length, '기능 검사 동안 오류 0' + (p.errs.length ? ' — ' + [...new Set(p.errs)].slice(0, 3).join(' / ') : ''));
+  await p.ctx.close();
+}
+/* 판 71 — 마구 누르기: 보이는 단추 · 칸 · 부적 · 키를 무작위로 (일반 · 개발자) */
+for (const dev of [false, true]) {
+  const p = await open({ width: 1280, height: 720 });
+  await p.evaluate(dev => { let x = 7; window.__rnd = () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
+    OPT.endWarn = false; META.cleared = 12; ACCT = { id: 'chk', token: 'c'.repeat(48), nick: '검사', at: Date.now() }; if (dev) META.codes = { [ADMIN_H]: 1 };
+    newRun(0); closeOverlay(); showMap();
+    window.__deny = /지운다|로그아웃|계정 지우기|모두 지우기|불러온다|기록 지우기|덮는다|결제|원화|구매|새로 고침|다시 켠다|내보내|복사|공유|그림 저장|퍼뜨|관리자|백야로|비우기|입막|밴|정말|초대|탈퇴|삭제|포기|항복|나간다|그만둔다/; }, dev);
+  const bad = [];
+  for (let i = 0; i < 300; i++) {
+    await p.evaluate(() => { const R = window.__rnd;
+      if (R() < .12) { const k = ['Escape', 'e', '1', '2', ' ', 'Enter'][Math.floor(R() * 6)]; dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })); return; }
+      const all = [...document.querySelectorAll('button, .mapnode.avail, .mapnode.devtp, .card, .unit:not(.player) .body, .cpitem, .pick, [data-i], .topbtn')].filter(e => { const s = e.getBoundingClientRect();
+        return e.isConnected && !e.disabled && s.width > 3 && s.height > 3 && s.bottom > 0 && s.top < innerHeight && !window.__deny.test((e.textContent || '') + ' ' + (e.title || '') + ' ' + e.id); });
+      const o = document.querySelector('#overlay'), top = o && o.lastElementChild, inTop = top ? all.filter(e => top.contains(e)) : [];
+      const pool = inTop.length && R() < .75 ? inTop : all; if (pool.length) pool[Math.floor(R() * pool.length)].click(); }).catch(() => {});
+    await p.waitForTimeout(70);
+    if (i % 60 === 59) await p.evaluate(() => { try { closeOverlay(); } catch (e) {} document.querySelectorAll('.cut,.school,#cmdpal,#castpal,.chatp').forEach(x => x.remove()); if (!G.run) { newRun(0); closeOverlay(); } if (G.b && G.b.over) G.b = null; if (!G.b) showMap(); }).catch(() => {});
+    if (i % 30 === 0) bad.push(...await p.evaluate(() => { const r = G.run, o = []; if (!r) return o; for (const [k, v] of [['hp', r.hp], ['gold', r.gold], ['dia', r.dia || 0]]) if (!isFinite(v) || v < 0) o.push(k + '=' + v);
+      if (r.hp > r.maxHp) o.push('hp>maxHp'); for (const c of r.deck) if (!CARDS[c.id]) o.push('없는 부적 ' + c.id); return o; }).catch(() => []));
+  }
+  ok(!p.errs.length && !bad.length, `마구 누르기 300번 — ${dev ? '개발자' : '일반'}` + (p.errs.length || bad.length ? ' — ' + [...new Set(p.errs.concat(bad))].slice(0, 3).join(' / ') : ''));
   await p.ctx.close();
 }
 /* 움직임 줄이기 */
