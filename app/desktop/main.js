@@ -68,6 +68,13 @@ function makeWindow() {
     if (!url.startsWith('file://')) { e.preventDefault(); shell.openExternal(url); }
   });
 
+  /* 판 74 — 카메라 · 마이크 · 위치 · 알림 같은 권한은 묻지도 않고 거절한다 (게임은 쓰지 않는다) */
+  const ALLOW = new Set(['fullscreen', 'clipboard-sanitized-write', 'pointerLock']);
+  win.webContents.session.setPermissionRequestHandler((wc, perm, cb) => cb(ALLOW.has(perm)));
+  win.webContents.session.setPermissionCheckHandler((wc, perm) => ALLOW.has(perm));
+  /* 창 안에 다른 웹 화면(webview)을 붙이지 못하게 */
+  win.webContents.on('will-attach-webview', e => e.preventDefault());
+
   win.loadFile(path.join(__dirname, 'app', 'index.html'));
   for (const ev of ['resize', 'move']) win.on(ev, () => writeSeat(win));
   win.on('close', () => writeSeat(win, true));

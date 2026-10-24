@@ -88,6 +88,20 @@ console.log('■ 서버 검사');
   const C = await ask(s3, '/auth/signup', { id: 'ckc' + sfx, pw: 'Abcd1234!x', nick: '병' + (sfx % 1000) });
   const lk = await ask(s3, '/chat/send', { token: C.token, text: '무료 다이아 bit.ly/x' }), sg = await ask(s3, '/hm/sign', { token: C.token, who: B.id, t: '안​녕‮' }), gb = await ask(s3, '/hm/get', { who: B.id });
   ok(!lk.ok && /링크/.test(lk.why) && sg.ok && gb.gb[0].t === '안녕', '채팅 링크 금지 · 보이지 않는 글자 걷기');
+  /* ⑦ 보안 (판 74) — 관리자 열쇠 두드리기 · 소식에 비밀 없음 · 머리말 · 걸러 담기 */
+  {
+    const cast = (code, ip) => fetch(s3.U + '/cast', { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': ip }, body: JSON.stringify({ code, notice: 'n' + Math.random() }) }).then(r => r.status);
+    const okFirst = await cast(KEY, '7.7.7.7');
+    for (let i = 0; i < 12; i++) await cast('wrong-guess-long-key-' + i, '8.8.8.8');
+    const locked = await cast(KEY, '8.8.8.8'), other = await cast(KEY, '7.7.7.7');
+    ok(okFirst === 200 && locked === 403 && other === 200, '관리자 열쇠 — 한 곳에서 열두 번 틀리면 맞는 열쇠도 30분 막힌다 · 다른 곳은 그대로');
+    const lv = await (await fetch(s3.U + '/live')).json(), hd = await fetch(s3.U + '/health');
+    ok(!('admOk' in lv) && !('luckyP' in lv) && !('luckyOwed' in lv) && !('wheelP' in lv) && !JSON.stringify(lv).includes(KEY), '소식(/live)에 열쇠 · 아는 곳 · 추첨 명단이 없다');
+    ok(hd.headers.get('x-frame-options') === 'DENY' && /frame-ancestors 'none'/.test(hd.headers.get('content-security-policy') || '') && /max-age/.test(hd.headers.get('strict-transport-security') || ''), '답 머리말 — 틀 막기 · CSP · HSTS');
+    await ask(s3, '/pf/set', { token: C.token, pf: { title: '<b>칭"호', fav: ['<x>', 'strike'], frame: '"><x' } });
+    const pf = await ask(s3, '/pf/get', { who: 'ckc' + sfx });
+    ok(pf.pf && !/[<>"']/.test(pf.pf.title) && pf.pf.fav.join() === 'strike' && pf.pf.frame === 'ink', '프로필 — 꺾쇠 · 따옴표 · 모르는 이름은 걸러 담는다');
+  }
   /* 배포 재시작 */
   s3.kill('SIGTERM'); await new Promise(r => setTimeout(r, 1500));
   ok(s3.dead && s3.code === 0 && /SIGTERM/.test(s3.out), '배포 재시작(SIGTERM) — 적어 두고 조용히 내려간다');

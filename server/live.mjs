@@ -21,6 +21,7 @@
    ══════════════════════════════════════════════════════════ */
 import http from 'http';
 import zlib from 'zlib';
+import { AsyncLocalStorage } from 'async_hooks';
 const SERVER_VER = '69';                /* 판 번호 — /health 에 보인다 */
 
 const PORT = process.env.PORT || 10000;
@@ -259,15 +260,25 @@ async function nickSet(id, nick, dev) {
   nickMem.set(id, nick);
   return '';
 }
+/* 판 74 — 잠금 장부가 넘칠 때 통째로 비우지 않는다(남의 키를 잔뜩 넣어 잠금을 풀던 길).
+   지난 것부터 걷고, 그래도 넘치면 가장 오래 손대지 않은 것부터. 걸린 것은 손댈 때마다 뒤로 옮긴다 */
+function mapTrim(m, max, ttl, now, atOf) {
+  if (m.size <= max) return;
+  for (const [k, v] of m) if (now - (atOf(v) || 0) > ttl) m.delete(k);
+  if (m.size <= max) return;
+  let drop = m.size - Math.floor(max * .9);
+  for (const k of m.keys()) { if (drop-- <= 0) break; m.delete(k); }
+}
+const lastAt = v => Array.isArray(v) ? v[v.length - 1] : v && v.at;
 /* 로그인을 거듭 틀리면 그 아이디는 잠시 잠근다 — 비밀번호를 하나씩 대 보는 것을 막는다 */
 const loginFail = new Map();
 const LOGIN_TRIES = 8, LOGIN_LOCK = 10 * 60 * 1000;
 /* 찾기 암호 두드리기 — 서른 분에 정해 둔 수까지 */
 const RC_FAIL = new Map(), RC_LOCK = 30 * 60 * 1000;
 function rcLocked(k, now, n) { const f = RC_FAIL.get(k); return f && f.n >= n && now - f.at < RC_LOCK ? Math.ceil((RC_LOCK - (now - f.at)) / 60000) : 0; }
-function rcMiss(k, now) { const f = RC_FAIL.get(k) || { n: 0, at: now }; if (now - f.at > RC_LOCK) f.n = 0; f.n++; f.at = now; RC_FAIL.set(k, f); if (RC_FAIL.size > 20000) RC_FAIL.clear(); }
+function rcMiss(k, now) { const f = RC_FAIL.get(k) || { n: 0, at: now }; if (now - f.at > RC_LOCK) f.n = 0; f.n++; f.at = now; RC_FAIL.delete(k); RC_FAIL.set(k, f); mapTrim(RC_FAIL, 50000, RC_LOCK, now, lastAt); }
 function loginLocked(id, now) { const f = loginFail.get(id); return f && f.n >= LOGIN_TRIES && now - f.at < LOGIN_LOCK ? Math.ceil((LOGIN_LOCK - (now - f.at)) / 60000) : 0; }
-function loginMiss(id, now) { const f = loginFail.get(id) || { n: 0, at: now }; if (now - f.at > LOGIN_LOCK) { f.n = 0; } f.n++; f.at = now; loginFail.set(id, f); if (loginFail.size > 20000) loginFail.clear(); }
+function loginMiss(id, now) { const f = loginFail.get(id) || { n: 0, at: now }; if (now - f.at > LOGIN_LOCK) { f.n = 0; } f.n++; f.at = now; loginFail.delete(id); loginFail.set(id, f); mapTrim(loginFail, 50000, LOGIN_LOCK, now, lastAt); }
 /* 너무 흔한 비밀번호는 새로 만들 때 받지 않는다 */
 const PW_WEAK = /^(1234567?8?9?0?|12345678|123456789|1234567890|password\d*|qwerty\w*|asdf\w*|111111+|000000+|abc123\w*|iloveyou|a123456)$/i;
 function pwWhy(pw, id) {
@@ -512,7 +523,7 @@ const knocks = new Map();
 const signupLog = new Map();
 function signupTooMany(ip, dev, now) {
   const hit = (k, win, max) => { const l = (signupLog.get(k) || []).filter(t => now - t < win); if (l.length >= max) { signupLog.set(k, l); return true; } l.push(now); signupLog.set(k, l); return false; };
-  if (signupLog.size > 20000) signupLog.clear();
+  mapTrim(signupLog, 50000, 86400000, now, lastAt);
   return hit('ip|' + ip, 3600000, 6) || (DEV_RE.test(dev || '') && hit('dv|' + dev, 86400000, 3));
 }
 const signingUp = new Set();                       /* 같은 아이디를 동시에 두 번 만들지 못하게 */
@@ -521,7 +532,7 @@ function tooMany(ip) {
   const recent = w.filter(t => now - t < 60000);
   recent.push(now);
   knocks.set(ip, recent);
-  if (knocks.size > 5000) knocks.clear();
+  mapTrim(knocks, 20000, 60000, now, lastAt);
   return recent.length > 20;
 }
 
@@ -677,7 +688,7 @@ function tradePrune(now) {
 /* 내놓은 부적 하나 — 이름 · 강화 · 벼림 · 특성만. 나머지는 버린다 */
 function tradeCard(c) {
   if (!c || typeof c !== 'object' || Array.isArray(c)) return null;
-  const id = str(c.id, 40); if (!/^[a-z0-9_]+$/.test(id)) return null;
+  const id = str(c.id, 40); if (!/^[a-zA-Z0-9_]+$/.test(id)) return null;
   const o = { id, up: c.up === true, fg: Math.max(0, Math.min(5, Math.floor(+c.fg) || 0)) };
   const m = Array.isArray(c.m) ? [...new Set(c.m.filter(k => TRADE_MUT.includes(k)))] : []; if (m.length) o.m = m;
   const fu = str(c.fu, 40), ps = fu.split('+');
@@ -1082,7 +1093,7 @@ async function applyCast(q) {
   /* 행운의 진열 — 참여한 사람 중 정한 확률로 정한 인원까지, 일일상점 재고로 (판 73) */
   if ('lucky' in q) {
     const x = q.lucky, now = Date.now();
-    const cards = x && Array.isArray(x.cards) ? [...new Set(x.cards.map(c => str(c, 40)).filter(c => /^[a-z0-9_]+$/.test(c)))].slice(0, 10) : [];
+    const cards = x && Array.isArray(x.cards) ? [...new Set(x.cards.map(c => str(c, 40)).filter(c => /^[a-zA-Z0-9_]+$/.test(c)))].slice(0, 10) : [];
     const pct = x ? Math.max(.0001, Math.min(100, +x.pct || 0)) : 0;
     if (x && cards.length && pct > 0) {
       live.lucky = { id: now, cards, up: !!x.up, qty: Math.max(1, Math.min(50, parseInt(x.qty, 10) || 1)), pct: Math.round(pct * 10000) / 10000,
@@ -1788,7 +1799,11 @@ const send = (res, code, body) => {
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
     'x-content-type-options': 'nosniff',
-    'referrer-policy': 'no-referrer'
+    'referrer-policy': 'no-referrer',
+    /* 판 74 — 답은 JSON 뿐: 남의 화면에 끼워 넣지 못하게 · 늘 https 로 */
+    'x-frame-options': 'DENY',
+    'content-security-policy': "default-src 'none'; frame-ancestors 'none'",
+    'strict-transport-security': 'max-age=31536000; includeSubDomains'
   }, CORS);
   /* 판 69 — 1KB 넘는 답은 gzip 으로 눌러 보낸다 (소식 · 채팅 · 순위 — 손전화 데이터를 아낀다) */
   const ae = String((res.req && res.req.headers['accept-encoding']) || '');
@@ -1801,12 +1816,38 @@ const send = (res, code, body) => {
 /* 관리자의 열쇠 — 백야(CAST_CODE) · 백사(두 번째 관리자, 둘째 열쇠의 지문만 둔다).
    백사는 대시보드 · 로그만 빼고 백야와 같다 */
 const BAEKSA_SHA = 'ba272ca7cd49718de0e2fe6161ab4d08be7c8c2b779ef5021b4b8fee83bd3f50';
+/* 판 74 — 관리자 열쇠 두드리기를 막는다.
+   · 한 곳(IP)에서 30분에 열두 번 틀리면 30분 동안 그곳에서는 맞는 열쇠도 받지 않는다
+   · 온 세상에서 10분에 이백 번 넘게 틀리면(누가 마구 두드린다) 최근 이레 안에 열쇠를 맞힌 곳만 받는다
+   · 한 번 물을 때 몇 번을 견주어도 틀림은 한 번으로 센다 */
+const REQ = new AsyncLocalStorage();
+const ADM_FAIL = new Map(), ADM_TRIES = 12, ADM_LOCK = 30 * 60000, ADM_STORM = 200, ADM_STORM_WIN = 10 * 60000;
+let admStorm = [];
 function admRole(c) {
   const s0 = String(c || '');
   if (!s0) return '';
-  if (CODE && same(s0, CODE)) return 'baekya';
-  if (s0.length < 80 && same(sha(s0.trim().toLowerCase()), BAEKSA_SHA)) return 'baeksa';
-  return '';
+  const st = REQ.getStore(), ip = st && st.ip, now = Date.now();
+  if (ip) {
+    const f = ADM_FAIL.get(ip);
+    if (f && f.n >= ADM_TRIES && now - f.at < ADM_LOCK) return '';
+    admStorm = admStorm.filter(t => now - t < ADM_STORM_WIN);
+    if (admStorm.length > ADM_STORM && !((live.admOk || {})[ip] > now - 7 * 86400000)) return '';
+  }
+  let role = '';
+  if (CODE && same(s0, CODE)) role = 'baekya';
+  else if (s0.length < 80 && same(sha(s0.trim().toLowerCase()), BAEKSA_SHA)) role = 'baeksa';
+  if (ip && st) {
+    if (role) { ADM_FAIL.delete(ip); if (!st.admOk) { st.admOk = 1; live.admOk = live.admOk || {}; const was = live.admOk[ip]; live.admOk[ip] = now;
+        const ks = Object.keys(live.admOk); if (ks.length > 50) ks.sort((a, b) => live.admOk[a] - live.admOk[b]).slice(0, ks.length - 50).forEach(k => delete live.admOk[k]);
+        if (!was || now - was > 3600000) keep().catch(() => {}); } }
+    else if (!st.admMiss && s0.length >= 12) {                    /* 방 코드 · 찾기 암호처럼 짧은 것은 관리자 열쇠일 수 없다 — 세지 않는다 */
+      st.admMiss = 1; admStorm.push(now);
+      const f = ADM_FAIL.get(ip) || { n: 0, at: now }; if (now - f.at > ADM_LOCK) f.n = 0; f.n++; f.at = now;
+      ADM_FAIL.delete(ip); ADM_FAIL.set(ip, f); mapTrim(ADM_FAIL, 50000, ADM_LOCK, now, lastAt);
+      if (f.n === ADM_TRIES) { console.warn('관리자 열쇠 두드리기 — 잠갔다', ip.slice(0, 24)); statAdd('admfail').catch(() => {}); }
+    }
+  }
+  return role;
 }
 /* 글자를 하나씩 끝까지 견준다 — 도중에 멈추면 길이가 새어 나간다 */
 function same(a, b) {
@@ -1837,7 +1878,7 @@ async function infOk(q) {
 
 /* 판 69 — 어느 자리에서 터져도 서버는 서 있는다: 500 으로 답하고 적어 둔다 */
 const server = http.createServer((req, res) => {
-  handle(req, res).catch(e => {
+  REQ.run({ ip: ipOf(req) }, () => handle(req, res)).catch(e => {
     console.error('처리 중 오류', req.method, String(req.url || '').split('?')[0], e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e);
     try { send(res, 500, { ok: false, why: '서버에서 일이 꼬였다 — 잠시 뒤 다시' }); } catch (x) {}
   });
@@ -1866,7 +1907,7 @@ async function handle(req, res) {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, admOk: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -2003,7 +2044,9 @@ async function handle(req, res) {
     { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
     if (url.pathname === '/pf/set') {
       const p0 = q.pf || {}, n = (v, hi) => Math.max(0, Math.min(hi, parseInt(v, 10) || 0));
-      const pf = { title: str(p0.title, 14), fav: Array.isArray(p0.fav) ? p0.fav.slice(0, 3).map(x => str(x, 40)) : [], frame: str(p0.frame, 12) || 'ink',
+      /* 판 74 — 칭호는 꺾쇠 · 따옴표를 걷고, 부적 이름 · 테두리는 정해진 글자만 */
+      const pf = { title: str(p0.title, 14).replace(/[<>"'`&\\]/g, ''), fav: Array.isArray(p0.fav) ? p0.fav.slice(0, 3).map(x => str(x, 40)).filter(x => /^[a-zA-Z0-9_]+$/.test(x)) : [],
+                   frame: /^[a-z0-9_-]{1,12}$/.test(str(p0.frame, 12)) ? str(p0.frame, 12) : 'ink',
                    best: n(p0.best, 99), wins: n(p0.wins, 99999), runs: n(p0.runs, 99999), ach: n(p0.ach, 999), achN: n(p0.achN, 999), dex: n(p0.dex, 9999), at: now };
       await put('pf:' + id, pf);
       return send(res, 200, { ok: true });
@@ -2076,7 +2119,7 @@ async function handle(req, res) {
     { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
     if (url.pathname === '/hm/set') {
       const h0 = q.hm || {}, prev = (await get('hm:' + id)) || {}, sl = {};
-      for (const k of HM_SLOTS) sl[k] = str(h0[k], 12);
+      for (const k of HM_SLOTS) { const v = str(h0[k], 12); sl[k] = /^[a-z0-9_-]*$/.test(v) ? v : ''; }   /* 판 74 — 자리 이름은 정해진 글자만 */
       await put('hm:' + id, { s: sl, msg: censor(str(h0.msg, 8)), at: now, v: prev.v || 0 });
       return send(res, 200, { ok: true });
     }
@@ -2177,7 +2220,7 @@ async function handle(req, res) {
     /* 마구 두드려 맞히기를 막는다 — 한 아이디에 1분 여덟 번 */
     const t = SC_TRY.get(id) || { n: 0, at: now };
     if (now - t.at > 60000) { t.n = 0; t.at = now; }
-    t.n++; SC_TRY.set(id, t); if (SC_TRY.size > 20000) SC_TRY.clear();
+    t.n++; SC_TRY.set(id, t); mapTrim(SC_TRY, 50000, 60000, now, lastAt);
     if (t.n > 8) return send(res, 429, { ok: false, why: '너무 자주 두드렸다 — 잠시 뒤에' });
     if (!same(scodeKey(q.code), sc.h)) return send(res, 403, { ok: false, why: '코드가 맞지 않다' });
     const mk = sc.id + ':' + id;
@@ -2827,7 +2870,7 @@ async function handle(req, res) {
     if (act === 'me') return send(res, 200, { ok: true, g: await view(my), rank: await rankOf(my), chat: (gChat.get(myGid) || []).slice(-40), me: await mine(my), cost: G_COST, shop: G_SHOP });
     if (act === 'create') {
       if (my) return send(res, 409, { ok: false, why: '이미 길드에 들어 있다' });
-      const name = censor(str(q.name, 12).trim()), tag = str(q.tag, 3).trim(), glyph = Array.from(str(q.glyph, 4).trim())[0] || '旗';
+      const name = censor(str(q.name, 12).trim()), tag = str(q.tag, 3).trim(), glyph = (g0 => g0 && !/[\x00-\x7f]/.test(g0) ? g0 : '旗')(Array.from(str(q.glyph, 4).trim())[0]);   /* 판 74 — 표식 글자는 한글 · 한자 같은 것만 (꺾쇠 · 따옴표 따위는 깃발로) */
       if (!/^[가-힣a-zA-Z0-9_ ]{2,10}$/.test(name) || name.includes('*')) return send(res, 400, { ok: false, why: '길드 이름은 2~10 글자 — 한글·영문·숫자' });
       if (!/^[가-힣一-龥a-zA-Z0-9]{1,3}$/.test(tag)) return send(res, 400, { ok: false, why: '길드 표식은 1~3 글자' });
       if (NICK_BAN.test(name) || NICK_BAN.test(tag) || censor(tag) !== tag) return send(res, 400, { ok: false, why: '쓸 수 없는 이름이다' });
@@ -3608,10 +3651,14 @@ async function handle(req, res) {
       const kN = 'rcn|' + nick.toLowerCase(), kI = 'rci|' + ip;
       const lockN = rcLocked(kN, now, 5), lockI = rcLocked(kI, now, 10);
       if (lockN || lockI) return send(res, 429, { ok: false, why: `여러 번 틀려 잠시 잠갔다 — ${Math.max(lockN, lockI)}분 뒤에` });
+      /* 판 74 — 닉네임마다 하루 열다섯 번까지 (장부에 적어 두므로 서버가 다시 서도 · 남의 키를 잔뜩 넣어도 풀리지 않는다) */
+      const rDay = new Date(now + 9 * 3600000).toISOString().slice(0, 10), rKey = 'rcf:' + nick.toLowerCase();
+      const rf = nick ? ((await get(rKey)) || {}) : {};
+      if (rf.d === rDay && rf.n >= 15) return send(res, 429, { ok: false, why: '이 닉네임은 오늘 너무 많이 틀렸다 — 내일 다시' });
       const id = nick ? await get('nk:' + nick.toLowerCase()) : '';
       const r = id ? await get('rc:' + id) : null;
       const hash = await scrypt('rc|' + code, (r && r.salt) || '0000');   /* 없어도 한 번 갈아 본다 — 빠르기로 알아내지 못하게 */
-      if (!id || !r || !same(hash, r.hash)) { rcMiss(kN, now); rcMiss(kI, now); return send(res, 403, { ok: false, why: '닉네임이나 찾기 암호가 다르다 (찾기 암호를 정해 둔 계정만 찾을 수 있다)' }); }
+      if (!id || !r || !same(hash, r.hash)) { rcMiss(kN, now); rcMiss(kI, now); if (nick) await put(rKey, { d: rDay, n: (rf.d === rDay ? rf.n || 0 : 0) + 1 }); return send(res, 403, { ok: false, why: '닉네임이나 찾기 암호가 다르다 (찾기 암호를 정해 둔 계정만 찾을 수 있다)' }); }
       { const bw = await banWhy(id, DEV_RE.test(q.dev || '') ? q.dev : ''); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
       RC_FAIL.delete(kN);
       const s0 = await soulGet(id);

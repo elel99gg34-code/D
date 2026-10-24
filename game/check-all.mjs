@@ -125,6 +125,9 @@ const b = await chromium.launch(Object.assign({ args: ['--no-sandbox', '--mute-a
 const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
 const errs = [];
 p.on('pageerror', e => errs.push(e.message));
+/* 판 74 — 보호막(CSP)에 걸린 것을 센다: 판이 스스로 막히면 어딘가 깨진 것이다 */
+const cspHits = [];
+p.on('console', m => { if (/Content Security Policy|Refused to (load|connect|execute|apply)/.test(m.text())) cspHits.push(m.text().slice(0, 140)); });
 await p.route('https://**', r => r.abort());          /* 바깥 서버에는 가지 않는다 */
 const t0 = Date.now();
 await p.goto('file://' + FILE);
@@ -192,6 +195,10 @@ if (r.probs.length) r.probs.slice(0, 20).forEach(no); else ok('조우표·요괴
 r.title ? ok('싸움 여러 판 뒤 첫 화면으로') : no('첫 화면으로 못 돌아온다');
 const realErr = errs.filter(e => !/Failed to fetch|NetworkError|net::/.test(e));
 if (realErr.length) realErr.slice(0, 8).forEach(e => no('오류: ' + e)); else ok('켜고 싸우는 동안 오류 없음');
+{ const csp = await p.evaluate(() => { const m = document.querySelector('meta[http-equiv="Content-Security-Policy"]'); return m ? m.content : ''; }).catch(() => '');
+  csp && /object-src 'none'/.test(csp) && /connect-src[^;]*onrender\.com/.test(csp) && !/connect-src[^;]*\*/.test(csp)
+    ? ok('보호막(CSP) — 게임 서버하고만 말한다 · 플러그인 · 틀 막힘') : no('보호막(CSP)이 없거나 느슨하다');
+  cspHits.length ? cspHits.slice(0, 5).forEach(t => no('보호막에 걸림: ' + t)) : ok('보호막에 걸린 것 없음'); }
 await b.close();
 
 /* ── 서버가 서고 답하는가 ── */

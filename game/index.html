@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<!-- 판 74 — 보호막(CSP): 이 판은 게임 서버하고만 말한다. 혹시 누가 판에 글을 끼워 넣어도 바깥으로 아무것도 보내지 못하고,
+     바깥의 스크립트 · 틀 · 플러그인을 불러오지 못한다 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data: blob:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; font-src 'self' file: data:; media-src 'self' file: data: blob:; connect-src 'self' https://baekgwi-live.onrender.com data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>백귀야행 百鬼夜行</title>
 <meta name="theme-color" content="#17130f">
@@ -33193,8 +33196,9 @@ const WB_REST_WIN  = 6000;    /* 한 조각을 떼어 낸 뒤 숨 고르는 때 
 const WB_REST_LOSE = 12000;   /* 쓰러져 밀려난 뒤 숨 고르는 때 */
 const WB_HIT_CAP   = 5000;    /* 서버가 한 번에 받는 몫 — 넘는 것은 다음 번에 */
 const WB_PAY = { jp: 300, gold: 500, dia: 150, cards: [] };   /* 관리자가 정하지 않았을 때 */
-const wEsc = s => String(s == null ? '' : s).replace(/[<&"]/g,
-  c => c === '<' ? '&lt;' : c === '&' ? '&amp;' : '&quot;');
+/* 판 74 — 작은따옴표 · 닫는 꺾쇠까지 (작은따옴표로 감싼 속성에 들어가도 깨지지 않게) */
+const W_ESC = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' };
+const wEsc = s => String(s == null ? '' : s).replace(/[<>&"']/g, c => W_ESC[c]);
 const wTime = ms => { const s = Math.max(0, Math.ceil(ms / 1000));
   return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const hitUrl = () => LIVE_URL.replace(/\/live$/, '') + '/hit';
@@ -38388,7 +38392,7 @@ function guildMemDraw(p) {
 async function guildTop(host, pickName) {
   const r = await acctAsk('/guild/top', {}, 12000);
   if (!host.isConnected) return;
-  host.innerHTML = r.ok && r.top.length ? r.top.slice(0, 20).map((x, i) => `<div class="gwt${GUILD.g && GUILD.g.id === x.id ? ' mine' : ''}" data-n="${wEsc(x.name)}"><em>${i + 1}</em><i>${wEsc(x.glyph)}</i><b>${wEsc(x.name)} <u class="gwlv s">Lv ${x.lv || 1}</u></b><small>[${wEsc(x.tag)}] · ${x.n}명 · 길드전 ${x.w}승${x.open === false ? ' · 청해야 받음' : ''}</small><u>${x.pts}</u></div>`).join('')
+  host.innerHTML = r.ok && Array.isArray(r.top) && r.top.length ? r.top.slice(0, 20).map((x, i) => `<div class="gwt${GUILD.g && GUILD.g.id === x.id ? ' mine' : ''}" data-n="${wEsc(x.name)}"><em>${i + 1}</em><i>${wEsc(x.glyph)}</i><b>${wEsc(x.name)} <u class="gwlv s">Lv ${x.lv || 1}</u></b><small>[${wEsc(x.tag)}] · ${x.n}명 · 길드전 ${x.w}승${x.open === false ? ' · 청해야 받음' : ''}</small><u>${x.pts}</u></div>`).join('')
     : '<div class="dashnone">아직 길드가 없다 — 처음으로 세워 보시오</div>';
   if (pickName) host.querySelectorAll('[data-n]').forEach(d => d.onclick = () => pickName(d.dataset.n));
 }
