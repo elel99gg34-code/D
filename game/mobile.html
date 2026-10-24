@@ -8673,6 +8673,14 @@ body.zenui :is(#topbar,.evpill,#chatfab,.scpill,.whpill,#tbmore,#menubtn,#toast,
 .mgorb.mg-devz{background:radial-gradient(circle at 35% 30%,#fff,#ffe9a8 45%,#8a6a2a)!important;box-shadow:0 0 20px #fff,0 0 40px rgba(255,214,120,.7)!important}
 .mgorb.mg-devz b{color:#3a2408!important;text-shadow:0 0 6px #fff!important}
 .pcsec.dev b{color:#fff;text-shadow:0 0 10px #ffd76a}
+.card.mutAd .face{box-shadow:inset 0 0 0 2px rgba(127,230,255,.9),inset 0 0 22px rgba(127,230,255,.35),0 0 16px rgba(127,230,255,.6);animation:mutAdGlow 2.6s ease-in-out infinite}
+@keyframes mutAdGlow{50%{box-shadow:inset 0 0 0 2px #e8f4ff,inset 0 0 30px rgba(127,230,255,.55),0 0 26px rgba(127,230,255,.85),0 0 46px rgba(184,168,255,.4)}}
+.cmut i.mad{color:#06202a;background:linear-gradient(135deg,#e8f4ff,#7fe6ff);box-shadow:0 0 10px #7fe6ff}
+.mgorb.mg-adm{background:radial-gradient(circle at 35% 30%,#fff,#a8f0ff 45%,#1a5a7a)!important;box-shadow:0 0 18px #7fe6ff,0 0 36px rgba(184,168,255,.6)!important}
+.mgorb.mg-adm b{color:#06202a!important;text-shadow:0 0 6px #fff!important}
+.pcitem.adm{border-color:rgba(127,230,255,.6)!important;background:linear-gradient(135deg,rgba(127,230,255,.12),rgba(184,168,255,.06))!important}
+.pcsec.adm b{color:#7fe6ff}
+@media (prefers-reduced-motion:reduce){.card.mutAd .face{animation:none}}
 .pcitem.devz{border-color:rgba(255,250,230,.6)!important;background:linear-gradient(135deg,rgba(255,250,230,.12),rgba(255,214,120,.06))!important}
 .pcdevb{display:flex;flex-direction:column;gap:4px}
 .dpowsub.devz{color:#fff;text-shadow:0 0 8px #ffd76a}
@@ -9357,7 +9365,7 @@ const $ = s => document.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 let SPEED = 1;                       /* 연출 속도 배율 (설정에서 조절) */
 /* VIP 2배속 — 켜져 있으면 모든 연출이 절반의 시간에 흐른다 */
-const turboX = () => (typeof OPT === 'object' && OPT && OPT.turbo && vipOn() ? .5 : 1);
+const turboX = () => (typeof OPT === 'object' && OPT && OPT.turbo && turboOk() ? .5 : 1);
 /* 판이 살아 움직이고 있다는 맥박 — 감시견이 이것을 보고
    「자물쇠는 걸렸는데 아무 일도 안 일어난다」를 가려낸다 */
 const wait = ms => { if (G.b) G.b.beat = Date.now();
@@ -10575,8 +10583,12 @@ const VIP_FREEBOX_MS = 30 * 24 * 3600 * 1000;          /* 한 달에 한 번 */
 function vipOn() { return !!(META.vip && META.vip.owned); }
 /* 자동 플레이 — VIP 패키지, 또는 백야가 이벤트로 뿌린 맛보기(정한 분 동안)만.
    예전의 「제8막을 넘기면 열림」은 없앴다 (그걸로 열렸던 것도 이제는 VIP 가 아니면 닫힌다) */
-/* 자동 플레이 — VIP · 맛보기 이벤트 · 관리자(개발자 창이 있으면 늘) · 어드민 핵의 자동받기 */
-function autoOk() { return vipOn() || autoFreeOn() || adminOn() || (typeof admHackOn === 'function' && admHackOn() && !!META.devAuto); }
+/* 자동 플레이 — VIP · 맛보기 이벤트 · 어드민 레벨(백야 · 백사 · 게스트) · 어드민 핵의 자동받기
+   게스트는 레벨이 ADMIN 인데도 자동이 잠겨 있었다 — 어드민 레벨이면 자동이 다 된다 (판 72) */
+function admLvOn() { return adminOn() || caster() || guestOn(); }
+function autoOk() { return vipOn() || autoFreeOn() || admLvOn() || (typeof admHackOn === 'function' && admHackOn() && !!META.devAuto); }
+/* 2배속 — VIP · 어드민 레벨 */
+function turboOk() { return vipOn() || admLvOn(); }
 function autoFreeOn() { return !!(typeof LIVE === 'object' && LIVE.autofree && srvNow() < (LIVE.autofree.until || 0)); }
 function vipFreeBoxLeft() { return Math.max(0, VIP_FREEBOX_MS - (Date.now() - (META.vip.freeBoxAt || 0))); }
 /* --- 설정 (기본값) --- */
@@ -11974,7 +11986,7 @@ const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배,
 function cval(c) {
   const v = cdef(c).v(cup(c));
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * (c.mutAd && admMatOn(c) ? 1.5 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -11990,6 +12002,7 @@ function ccost(c) {
 function ecost(c) {
   if (G.b && c.aurT && c.aurT === G.b.turn && !G.b.over) return ccost(c) === -2 ? -2 : 0;   /* 극광에 물든 부적 — 이 차례 값 0 */
   if (G.b && devInfOn() && isQ(cdef(c).rar)) return 0;   /* 개발자의 권력 — ?급은 값이 없다 */
+  if (G.b && c.mutAd && admMatOn(c) && ccost(c) > 0) return 0;   /* 관리자의 인장 — 값 0 (X 값 · 못 내는 부적은 그대로) (판 72) */
   const k = ccost(c);
   if (G.b && k > 0 && G.b.p && G.b.p.s && G.b.p.s.godmode) return 0;   /* 어드민급 「신권」 — 모든 부적 값 0 */
   if (!G.b || k <= 0) return k;
@@ -16258,7 +16271,7 @@ async function playCard(card, target) {
     }
   } catch (err) { console.error('부적 처리 오류', d.id, err); }
   if (card.mutK && !b.over) { try { await shadowEcho(ctx, d); } catch (err) { console.error('그림자 메아리', err); } }   /* 影 — 그림자가 따라 친다 */
-  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutL || card.mutFu || card.mutZ) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
+  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutL || card.mutFu || card.mutZ || card.mutAd) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
   /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
   try {
     b.curCard = null;
@@ -17565,7 +17578,7 @@ const GUIDES = [
     go: () => openFuse(), goN: '조합을 본다' },
   { id: 'auto', soft: true, g: '▶', n: '자동 플레이 — 손을 놓아도 간다',
     when: () => autoOk(),
-    say: () => `${vipOn() ? 'VIP 패키지로' : '이벤트 맛보기로'} <em>자동 플레이</em>가 열렸다.
+    say: () => `${vipOn() ? 'VIP 패키지로' : admLvOn() ? 'ADMIN 레벨로' : '이벤트 맛보기로'} <em>자동 플레이</em>가 열렸다.
       전투 화면 오른쪽 아래 「자동」 단추, 또는 메뉴에서 켠다.<br>
       설정에서 <i>지도까지</i>로 바꾸면 지도도 스스로 걷는다.`,
     warn: () => '빠르기도 설정에서 고른다 — 느긋 · 보통 · 빠름.',
@@ -17920,9 +17933,11 @@ function showForge() {
   p._esc = back;
   p.querySelector('#fg_back').onclick = () => { p._esc = null; back(); };
 }
-/* 퇴마사 단련 — 늘어나는 몫은 지금 최대 체력의 8%(적어도 8), 값은 막 물가를 따라 한 번마다 1.3배 */
+/* 퇴마사 단련 — 늘어나는 몫은 지금 최대 체력의 8%(적어도 8), 값은 막 물가를 따라 한 번마다 1.3배
+   밑값 140 → 210 — 체력이 너무 싸게 쌓였다 (판 72) */
+const HP_FORGE_BASE = 210;
 const hpForgeGain = run => Math.max(8, Math.round(run.maxHp * .08));
-const hpForgeCost = run => Math.round(140 * shopMul(run.act || 1) * Math.pow(1.3, run.hpForge || 0));
+const hpForgeCost = run => Math.round(HP_FORGE_BASE * shopMul(run.act || 1) * Math.pow(1.3, run.hpForge || 0));
 
 /* 전투 중이 아니면 언제든 열 수 있다 */
 function openShop() {
@@ -18231,7 +18246,7 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutG ? ' mutG' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutL ? ' mutL' : '') + (c.mutZ ? ' mutZ' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutG ? ' mutG' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutL ? ' mutL' : '') + (c.mutZ ? ' mutZ' : '') + (admMatSee(c) ? ' mutAd' : '') + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   const fu = c.mutFu ? c.mutFu.split('+') : null;                        /* 융합 — 반반 아우라 */
@@ -18247,7 +18262,7 @@ function cardNode(c, opts) {
       ${c.mutZ ? '<div class="mutfx mfzw"><span class="mfZ"><i></i><i></i><i></i></span></div>' : ''}${c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${c.mutL ? MUT_FXH.moon : ''}${fu ? (fu.length === 3
         ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuM">${MUT_FXH[fu[1]]}</span><span class="fuR">${MUT_FXH[fu[2]]}</span>`
         : `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span>`) + '<span class="fuB"></span>' : ''}</div>` : ''}
-      ${c.mutS || c.mutC || c.mutH || c.mutG || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu || c.mutZ ? `<div class="cmut">${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutL ? '<i class="ml" title="월광(月光) — 수치 1.2배 · 낼 때 방어도 (3 + 막) · 밤 싸움이면 두 배">月</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}${c.mutG ? '<i class="mg" title="귀기 감염(鬼) — 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1">鬼</i>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH || c.mutG || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu || c.mutZ || admMatSee(c) ? `<div class="cmut">${admMatSee(c) ? '<i class="mad" title="관리(管理) — 관리자의 인장석 · 수치 1.5배 · 값 0 · 낼 때 부적 1장 · 방어도 (어드민만 보인다)">管</i>' : ''}${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutL ? '<i class="ml" title="월광(月光) — 수치 1.2배 · 낼 때 방어도 (3 + 막) · 밤 싸움이면 두 배">月</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}${c.mutG ? '<i class="mg" title="귀기 감염(鬼) — 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1">鬼</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
       <i class="cglare"></i>
     </div>
@@ -18312,8 +18327,9 @@ function syncHand() {
     node.classList.toggle('unplayable', !playable);
     const cb = node.querySelector('.cost');       /* 개발자의 권력 — ?급 값 0 을 부적에도 보인다 */
     { const af = !!(c.aurT && c.aurT === b.turn); node.classList.toggle('aurfree', af);   /* 극광에 물든 부적 */
-      if (cb && af && cb.textContent !== '0') { cb.dataset.af = cb.textContent; cb.textContent = '0'; cb.classList.add('free'); }
-      else if (cb && !af && cb.dataset.af != null) { cb.textContent = cb.dataset.af; delete cb.dataset.af; cb.classList.toggle('free', ccost(c) === 0); } }
+      const az = af || (c.mutAd && admMatOn(c) && ccost(c) > 0);                          /* 관리자의 인장 — 값 0 을 부적에도 (판 72) */
+      if (cb && az && cb.textContent !== '0') { cb.dataset.af = cb.textContent; cb.textContent = '0'; cb.classList.add('free'); }
+      else if (cb && !az && cb.dataset.af != null) { cb.textContent = cb.dataset.af; delete cb.dataset.af; cb.classList.toggle('free', ccost(c) === 0); } }
     if (cb && isQ(cdef(c).rar)) { const inf = devInfOn(); cb.classList.toggle('free', inf || cost === 0); if (inf) cb.textContent = '0'; else if (cb.textContent === '0' && ccost(c) > 0) cb.textContent = ccost(c); }
     node.onmouseenter = () => {
       if (!b.sel) node.style.transform = `translate(${x}px,${y - 46}px) rotate(0deg) scale(1.1)`;
@@ -31450,6 +31466,25 @@ async function devMatUse() {
   META.devMat = devMatHave() - 1; c.mutZ = true; saveMeta(); saveRun();
   mutApplyFx(c, { cols: ['#ffffff', '#ffd76a'], orbs: ['終', '白', '夜'], ocols: ['#ffffff', '#ffd76a', '#e8f4ff'], glyph: '終', name: DEV_MAT.mn + ' — ' + DEV_MAT.d, strip: ['mutZ'], dev: true });
 }
+/* 관리자의 인장석(管) — 어드민 레벨(백야 · 백사 · 게스트)만 보고 쓰는 원료 (판 72).
+   어드민 레벨은 재화가 마르지 않으므로 인장석도 마르지 않는다. 아무 부적에나 입힌다.
+   수치 1.5배 · 값 0 · 낼 때 부적 1장 · 방어도 (5 + 막×2). 어드민이 아니면 빛도 효과도 보이지 않는다 · 대전에서는 듣지 않는다 */
+const ADM_MAT = { n: '관리자의 인장석', g: '管', mn: '관리(管理)', c: '#7fe6ff', rgb: '127,230,255',
+  d: '수치 1.5배 · 값 0 · 낼 때 부적 1장 · 방어도 (5 + 막×2)' };
+function admMatSee(c) { return !!(c && c.mutAd) && admLvOn(); }                 /* 부적을 그릴 때 이르게 불려도 되게 — 함수로 둔다 */
+function admMatOn(c) { return admMatSee(c) && !(G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')); }
+async function admMatUse() {
+  if (!admLvOn()) { toast('어드민만 쓸 수 있다'); return; }
+  const run = G.run;
+  if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다'); SND.err(); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  const list = ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c.mutAd);
+  if (!list.length) { toast('관리를 입힐 부적이 없다 (이미 깃든 것은 뺐다)'); SND.err(); return; }
+  const c = await pickFromList(list, `管 ${ADM_MAT.n} — 관리를 입힐 부적`, { hint: ADM_MAT.d + ownHint(run), cancel: true });
+  if (!c) return;
+  c.mutAd = true; saveRun();
+  mutApplyFx(c, { cols: ['#7fe6ff', '#e8f4ff'], orbs: ['管', '理', '印'], ocols: ['#7fe6ff', '#e8f4ff', '#b8a8ff'], glyph: '管', name: ADM_MAT.mn + ' — ' + ADM_MAT.d, strip: ['mutAd'] });
+}
 const matTotal = () => Object.keys(MAT_DEF).reduce((a, k) => a + matHave(k), 0);
 /* 극광의 밤 — 차례를 열 때 손의 부적 하나(값이 있는 것)가 극광에 물들어 이 차례 값 0 */
 function auroraTurn(b) {
@@ -31567,6 +31602,10 @@ function showPouch() {
     <div class="pcgrid"><div class="pcitem devz${devMatHave() ? '' : ' none'}" style="--mc:#ffffff;--mr:255,250,230"><div class="mgorb mg-devz small"><b>終</b>${'<i></i>'.repeat(8)}</div>
       <div class="pctxt"><b>${DEV_MAT.n} <em>×${devMatHave()}</em></b><span>終 ${DEV_MAT.mn}</span><small>${DEV_MAT.d}</small></div>
       <span class="pcdevb"><button class="brush-btn" id="pc_zget">+1 받는다</button><button class="brush-btn${devMatHave() ? ' gold' : ''}" id="pc_zuse"${devMatHave() ? '' : ' disabled'}>쓴다</button></span></div></div>` : ''}
+    ${admLvOn() ? `<div class="pcsec adm"><b>管 ADMIN만</b><span>어드민 레벨에게만 보이는 원료 — 마르지 않는다 · 등급을 가리지 않는다</span></div>
+    <div class="pcgrid"><div class="pcitem adm" style="--mc:${ADM_MAT.c};--mr:${ADM_MAT.rgb}"><div class="mgorb mg-adm small"><b>管</b>${'<i></i>'.repeat(8)}</div>
+      <div class="pctxt"><b>${ADM_MAT.n} <em>×∞</em></b><span>管 ${ADM_MAT.mn}</span><small>${ADM_MAT.d}</small></div>
+      <button class="brush-btn gold" id="pc_adm">쓴다</button></div></div>` : ''}
     <div class="pcsec"><b>그 밖의 것</b></div>
     <div class="pcgrid">
       <div class="pcitem hk${META.hkStone ? '' : ' none'}"><div class="pcico">汚</div><div class="pctxt"><b>오염 관석 <em>×${META.hkStone || 0}</em></b><small>해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더 (해킹상점)</small></div>
@@ -31581,6 +31620,7 @@ function showPouch() {
   { const zg = p.querySelector('#pc_zget'), zu = p.querySelector('#pc_zuse');
     if (zg) zg.onclick = () => { devMatGive(1); closeTop(); showPouch(); };
     if (zu) zu.onclick = () => { closeTop(); devMatUse(); }; }
+  { const ad = p.querySelector('#pc_adm'); if (ad) ad.onclick = () => { closeTop(); admMatUse(); }; }
   p.querySelector('#pc_box').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#pc_fuse').onclick = () => { closeTop(); showFuseLab(); };
   p.querySelector('#pc_x').onclick = closeTop;
@@ -31772,6 +31812,10 @@ async function matMutPlay(card) {
     try { screenFlash('rgba(255,255,255,.75)', 520); SND.holyhit && SND.holyhit(); shake(true); } catch (e) {}
     for (const e of alive()) { try { const c = e.el ? centerOf(e.el) : null; if (c) FX.burst(c.x, c.y, 30, '255,250,230', 8, 50, 5); } catch (er) {} pure(e, 10 + act * 3); }
     energy(1); matPop('終 백야의 일격 · 기 +1', '#ffffff'); syncAll(); await checkDeaths(); if (!G.b || b.over) return;
+  }
+  if (card.mutAd && admMatOn(card)) {                              /* 관리 — 부적 한 장 · 방어도 (판 72) */
+    try { screenFlash('rgba(127,230,255,.28)', 360); SND.blip(784, { dur: .3, type: 'triangle', vol: .06, to: 1568, rev: .5 }); } catch (e) {}
+    drawCards(1); blk(5 + act * 2, true); matPop(`管 관리 — 부적 1장 · 방어 +${5 + act * 2}`, '#7fe6ff'); syncAll();
   }
   for (let i = 0; i < Ls; i++) {                                   /* 유성 — 세기만큼 별똥별 */
     const t = pick(alive()); if (!t) break;
@@ -41493,9 +41537,9 @@ function showSettings() {
     () => (SPEED >= 1 ? '1' : SPEED >= .6 ? '0.62' : '0.38'),
     v => { SPEED = +v; META.speed = SPEED; });
   {
-    const n = row('2배속 (VIP)', vipOn() ? '모든 연출이 절반의 시간에 흐른다' : 'VIP 패키지를 가진 자만 켤 수 있다',
-      () => OPT.turbo && vipOn(), v => { if (!vipOn()) { SND.err(); toast('VIP 패키지가 있어야 한다'); return; } OPT.turbo = v; });
-    if (!vipOn()) n.querySelector('.val').classList.add('no');
+    const n = row(admLvOn() && !vipOn() ? '2배속 (ADMIN)' : '2배속 (VIP)', turboOk() ? '모든 연출이 절반의 시간에 흐른다' : 'VIP 패키지를 가진 자만 켤 수 있다',
+      () => OPT.turbo && turboOk(), v => { if (!turboOk()) { SND.err(); toast('VIP 패키지가 있어야 한다'); return; } OPT.turbo = v; });
+    if (!turboOk()) n.querySelector('.val').classList.add('no');
   }
   row('화면 흔들림', '묵직한 일격에 화면이 흔들린다', () => OPT.shake, v => { OPT.shake = v; if (v) shake(); });
   row('간지 연출', '차례를 여는 먹 띠 · 화면을 가르는 참격 · 연격 표시 · 눕힐 때 갈라지는 자국 · 숨이 붙었을 때 붉은 테두리',
