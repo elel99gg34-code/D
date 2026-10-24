@@ -35,6 +35,33 @@ const EV_MS = +process.env.EV_MS || 3 * 60 * 1000;   /* 시험할 때만 줄인�
 const BOSS_MS = +process.env.BOSS_MS || 5 * 60 * 1000;
 /* 끝난(거둔·달아난) 적은 이만큼 뒤에 소식에서 아예 걷는다 — 보상을 받으러 올 틈만 남긴다 */
 const BOSS_KEEP = 30 * 60 * 1000;
+/* ── 행운의 진열 (판 73) ──────────────────────────────────
+   백야가 부적(하나 또는 여럿) · 당첨 인원 · 확률 · 최소 참여 인원 · 값 · 참여 시간을 정한다.
+   그 시간 동안 「참여」한 사람을 서버가 적어 두고, 시간이 끝나면 서버가 굴린다(crypto) —
+   한 사람마다 정한 확률로, 당첨 인원까지만. 최소 인원에 못 미치면 추첨이 없다.
+   당첨된 사람의 일일상점에 그 부적이 「재고」로 들어간다(사흘 안에 산다).
+   누가 참여했는지 · 누구에게 무엇이 갔는지는 소식(/live)에 싣지 않는다 — 몇 명인지와 당첨자 닉네임만 */
+const LUCKY_MIN_MS = +process.env.LUCKY_MIN_MS || 60000;   /* 참여 시간 한 분 — 시험할 때만 줄인다 */
+function luckyStep(now) {
+  const L = live.lucky; let ch = false;
+  if (L && !L.drawn && now > L.until) {
+    const P = live.luckyP || { join: {} }, ids = Object.keys(P.join || {});
+    const hits = [];
+    if (ids.length >= (L.need || 0)) for (const id of ids) if (crypto.randomInt(0, 1000000) < Math.round(L.pct * 10000)) hits.push(id);
+    for (let i = hits.length - 1; i > 0; i--) { const j = crypto.randomInt(0, i + 1); [hits[i], hits[j]] = [hits[j], hits[i]]; }
+    const win = hits.slice(0, L.qty);
+    live.luckyOwed = live.luckyOwed || {};
+    for (const id of win) { const card = L.cards[crypto.randomInt(0, L.cards.length)];
+      (live.luckyOwed[id] = live.luckyOwed[id] || []).push({ lid: L.id, card, up: !!L.up, price: L.price, at: now }); }
+    Object.assign(L, { drawn: true, end: now, n: ids.length, w: win.length, short: ids.length < (L.need || 0), nicks: win.map(id => P.join[id]).slice(0, 20) });
+    console.log('행운의 진열 — 추첨:', ids.length, '명 중', win.length, '명');
+    ch = true;
+  }
+  if (L && L.drawn && now > L.end + 15 * 60000) { live.lucky = null; live.luckyP = null; ch = true; }
+  /* 받지 못한 당첨은 사흘 */
+  if (live.luckyOwed) for (const [id, xs] of Object.entries(live.luckyOwed)) { const keep2 = xs.filter(x => now - x.at < 3 * 86400000); if (keep2.length !== xs.length) { ch = true; if (keep2.length) live.luckyOwed[id] = keep2; else delete live.luckyOwed[id]; } }
+  return ch;
+}
 /* 때가 지난 것을 거둔다 — 읽을 때마다 한 번씩 */
 function expire(now) {
   let changed = false;
@@ -54,6 +81,7 @@ function expire(now) {
   if (live.sale && now > live.sale.until) { live.sale = null; changed = true; }
   if (live.deckx && now > live.deckx.until) { live.deckx = null; changed = true; }
   if (live.dspawn && now > live.dspawn.until) { live.dspawn = null; changed = true; }
+  if (luckyStep(now)) changed = true;                                     /* 행운의 진열 — 추첨 · 걷기 (판 73) */
   if (live.wheel && live.wheel.done && now > live.wheel.landAt + 25000) { live.wheel = null; live.wheelP = null; changed = true; }
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
@@ -593,7 +621,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'lucky', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -635,6 +663,31 @@ function fuseView(r, id, now) {
   const me = r.a === id ? 'a' : 'b', ot = me === 'a' ? 'b' : 'a';
   return { rid: r.id, state: r.state, me, my: { nick: r[me + 'Nick'], mat: r[me + 'Mat'], ready: r[me + 'Ready'] },
     other: { nick: r[ot + 'Nick'], mat: r[ot + 'Mat'], ready: r[ot + 'Ready'] }, fuseAt: r.fuseAt || 0, result: r.result || '', now };
+}
+/* ── 부적 거래 (판 73) — 둘이 지금 모험의 부적을 내놓고 바꾼다 ──
+   방: invite(청) → pick(내놓는다) → done(바꿨다 — 두 앱이 각자 덱에서 빼고 넣는다) / gone(거절 · 나감 · 받지 않음)
+   부적은 앱에 있다 — 서버는 무엇을 내놓았는지와 준비만 맞춘다.
+   내놓은 것이 바뀌면 둘 다 준비가 풀리고 차례 수(seq)가 오른다 — 「이대로 바꾼다」는 본 차례 수와 같아야 한다(바꿔치기 막기) */
+const TRADE_MAX = 5, TRADE_MUT = ['mutS', 'mutC', 'mutG', 'mutH', 'mutK', 'mutM', 'mutX', 'mutF', 'mutA', 'mutL'];
+const tradeRooms = new Map(), tradeInbox = new Map(), tradeRate = new Map();
+function tradePrune(now) {
+  for (const [k, r] of tradeRooms) if (now - r.at > (r.state === 'pick' ? 20 : 10) * 60000) { tradeRooms.delete(k); if (tradeInbox.get(r.b) === k) tradeInbox.delete(r.b); }
+  for (const [k, v] of tradeRate) if (!v.some(t => now - t < 600000)) tradeRate.delete(k);
+}
+/* 내놓은 부적 하나 — 이름 · 강화 · 벼림 · 특성만. 나머지는 버린다 */
+function tradeCard(c) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return null;
+  const id = str(c.id, 40); if (!/^[a-z0-9_]+$/.test(id)) return null;
+  const o = { id, up: c.up === true, fg: Math.max(0, Math.min(5, Math.floor(+c.fg) || 0)) };
+  const m = Array.isArray(c.m) ? [...new Set(c.m.filter(k => TRADE_MUT.includes(k)))] : []; if (m.length) o.m = m;
+  const fu = str(c.fu, 40), ps = fu.split('+');
+  if (fu && ps.length >= 2 && ps.length <= 3 && ps.every(x => FUSE_MATS.includes(x))) o.fu = fu;
+  return o;
+}
+function tradeView(r, id, now) {
+  const me = r.a === id ? 'a' : 'b', ot = me === 'a' ? 'b' : 'a';
+  const side = s => ({ id: r[s], nick: r[s + 'Nick'], cards: r[s + 'Cards'], ready: r[s + 'Ready'], busy: !!r[s + 'Busy'] });
+  return { rid: r.id, state: r.state, me, my: side(me), other: side(ot), seq: r.seq, why: r.why || '', exp: r.state === 'invite' ? r.at0 + 180000 : 0, doneAt: r.doneAt || 0, now };
 }
 /* ── 백야의 시험 — 누가 도전했고 누가 이겼는지 ── */
 let devbossWho = { tried: new Set(), won: new Set() };
@@ -1025,6 +1078,18 @@ async function applyCast(q) {
   if ('dspawn' in q) {
     const x = q.dspawn, now = Date.now();
     live.dspawn = x && x.card ? { id: now, card: str(x.card, 40), up: !!x.up, price: num(x.price, 100000), at: now, until: now + 3 * 60000, by: str(x.by, 12) } : null;
+  }
+  /* 행운의 진열 — 참여한 사람 중 정한 확률로 정한 인원까지, 일일상점 재고로 (판 73) */
+  if ('lucky' in q) {
+    const x = q.lucky, now = Date.now();
+    const cards = x && Array.isArray(x.cards) ? [...new Set(x.cards.map(c => str(c, 40)).filter(c => /^[a-z0-9_]+$/.test(c)))].slice(0, 10) : [];
+    const pct = x ? Math.max(.0001, Math.min(100, +x.pct || 0)) : 0;
+    if (x && cards.length && pct > 0) {
+      live.lucky = { id: now, cards, up: !!x.up, qty: Math.max(1, Math.min(50, parseInt(x.qty, 10) || 1)), pct: Math.round(pct * 10000) / 10000,
+        need: Math.max(0, Math.min(1000, parseInt(x.need, 10) || 0)), price: num(x.price, 100000), at: now,
+        until: now + Math.max(1, Math.min(30, parseInt(x.min, 10) || 3)) * LUCKY_MIN_MS, by: str(x.by, 12), n: 0, drawn: false };
+      live.luckyP = { lid: now, join: {} };
+    } else { live.lucky = null; live.luckyP = null; }
   }
   /* 모두의 일일상점을 한 번 새로 진열 */
   if ('dsroll' in q) live.dsroll = q.dsroll ? { id: Date.now(), by: str(q.dsroll.by, 12) } : null;
@@ -1801,7 +1866,7 @@ async function handle(req, res) {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -2302,6 +2367,33 @@ async function handle(req, res) {
   /* ── 모두가 함께 치는 적 ──────────────────────────────────
      누가 얼마나 쳤는지를 서버가 센다. 한 번에 넣을 수 있는 몫을
      막아 두어, 혼자 두드려 끝내지 못하게 한다. */
+  /* ── 행운의 진열 — 참여 · 내 당첨 · 받았다 (판 73) ── */
+  if (url.pathname.startsWith('/lucky/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(); if (expire(now)) await keep();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const L = live.lucky, P = live.luckyP;
+    if (url.pathname === '/lucky/join') {
+      if (!L || L.drawn || now > L.until || !P || P.lid !== L.id) return send(res, 409, { ok: false, why: '지금은 참여할 진열이 없다' });
+      if (!P.join[id]) { P.join[id] = (await nickOf(id)) || id; L.n = Object.keys(P.join).length; await keep(); }
+      return send(res, 200, { ok: true, lid: L.id, n: L.n, joined: true });
+    }
+    if (url.pathname === '/lucky/me') {
+      return send(res, 200, { ok: true, lid: L ? L.id : 0, joined: !!(L && P && P.lid === L.id && P.join[id]), owed: (live.luckyOwed && live.luckyOwed[id]) || [], now });
+    }
+    if (url.pathname === '/lucky/claim') {
+      const lid = +q.lid || 0, xs = (live.luckyOwed && live.luckyOwed[id]) || [];
+      const left = xs.filter(x => x.lid !== lid);
+      if (left.length !== xs.length) { if (left.length) live.luckyOwed[id] = left; else delete live.luckyOwed[id]; await keep(); alog(id, '행운의 진열 — 당첨 부적을 일일상점에 받았다').catch(() => {}); }
+      return send(res, 200, { ok: true });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
   /* ── 합성소 ── */
   if (url.pathname.startsWith('/fuse/') && req.method === 'POST') {
     let body = '';
@@ -2359,6 +2451,85 @@ async function handle(req, res) {
         console.log('합성소 — 합성:', r.aNick, '+', r.bNick, '→', r.result);
       }
       return send(res, 200, { ok: true, room: fuseView(r, id, now) });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+  /* ── 부적 거래 (판 73) ── */
+  if (url.pathname.startsWith('/trade/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 4000) return send(res, 413, { ok: false }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(); tradePrune(now);
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    if (url.pathname === '/trade/invite') {
+      let to = str(q.to, 20).trim();
+      if (!to) return send(res, 400, { ok: false, why: '누구와 바꿀지 적어라' });
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (!(await soulGet(to))) return send(res, 404, { ok: false, why: '그런 퇴마사는 없다' });
+      if (to === id) return send(res, 400, { ok: false, why: '자기 자신과는 바꿀 수 없다' });
+      /* 같은 사람에게 이미 보낸 청이 살아 있으면 그것을 돌려준다 */
+      const old = tradeRooms.get(tradeInbox.get(to) || '');
+      if (old && old.state === 'invite' && now - old.at0 < 180000) {
+        if (old.a === id) return send(res, 200, { ok: true, room: tradeView(old, id, now) });
+        return send(res, 409, { ok: false, why: '상대가 다른 거래 청을 받고 있다 — 잠시 뒤에' });
+      }
+      const rl = (tradeRate.get(id) || []).filter(t => now - t < 600000);
+      if (rl.length && now - rl[rl.length - 1] < 4000) return send(res, 429, { ok: false, why: '너무 잦다 — 잠깐 뒤에' });
+      if (rl.length >= 12) return send(res, 429, { ok: false, why: '거래 청은 열 분에 열둘까지' });
+      rl.push(now); tradeRate.set(id, rl);
+      const rid = crypto.randomBytes(6).toString('hex');
+      const r = { id: rid, a: id, b: to, aNick: (await nickOf(id)) || id, bNick: (await nickOf(to)) || to, aCards: [], bCards: [], aReady: false, bReady: false, state: 'invite', seq: 0, at: now, at0: now };
+      tradeRooms.set(rid, r); tradeInbox.set(to, rid);
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    if (url.pathname === '/trade/inbox') {
+      const rid = tradeInbox.get(id), r = rid && tradeRooms.get(rid);
+      if (!r || r.state !== 'invite' || now - r.at0 > 180000) return send(res, 200, { ok: true, room: null });
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    const r = tradeRooms.get(str(q.rid, 20));
+    if (!r || (r.a !== id && r.b !== id)) return send(res, 404, { ok: false, why: '그런 거래가 없다' });
+    const me = r.a === id ? 'a' : 'b';
+    if (url.pathname === '/trade/answer') {
+      if (me !== 'b' || r.state !== 'invite' || now - r.at0 > 180000) return send(res, 409, { ok: false, why: '이미 지난 청이다' });
+      tradeInbox.delete(id); r.at = now;
+      if (q.yes === true) { r.state = 'pick'; r.bBusy = q.busy === true; }
+      else { r.state = 'gone'; r.why = q.off === true ? 'off' : q.busy === true ? 'busy' : q.norun === true ? 'norun' : 'no'; }
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    if (url.pathname === '/trade/state') {
+      if (r.state === 'pick' && typeof q.busy === 'boolean' && r[me + 'Busy'] !== q.busy) { r[me + 'Busy'] = q.busy; r.at = now; }
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    if (url.pathname === '/trade/leave') {
+      if (r.state === 'invite' || r.state === 'pick') { r.why = me === 'a' && r.state === 'invite' ? 'cancel' : 'left'; r.state = 'gone'; r.at = now; if (tradeInbox.get(r.b) === r.id) tradeInbox.delete(r.b); }
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    if (r.state !== 'pick') return send(res, 409, { ok: false, why: '지금은 내놓을 때가 아니다', room: tradeView(r, id, now) });
+    if (url.pathname === '/trade/put') {
+      if (!Array.isArray(q.cards) || q.cards.length > TRADE_MAX) return send(res, 400, { ok: false, why: `부적은 ${TRADE_MAX}장까지` });
+      const cs = q.cards.map(tradeCard);
+      if (cs.some(c => !c)) return send(res, 400, { ok: false, why: '알 수 없는 부적' });
+      r[me + 'Cards'] = cs; r.aReady = r.bReady = false; r.seq++; r.at = now; r[me + 'Busy'] = false;
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
+    }
+    if (url.pathname === '/trade/ready') {
+      if (q.yes === true) {
+        if (q.seq !== r.seq) return send(res, 409, { ok: false, why: '방금 내놓은 것이 바뀌었다 — 다시 보아라', room: tradeView(r, id, now) });
+        if (!r.aCards.length && !r.bCards.length) return send(res, 409, { ok: false, why: '아무것도 내놓지 않았다', room: tradeView(r, id, now) });
+      }
+      r[me + 'Ready'] = q.yes === true; r.at = now;
+      if (r.aReady && r.bReady) {
+        r.state = 'done'; r.doneAt = now;
+        statAdd('trade').catch(() => {});
+        alog(r.a, `거래 — ${r.bNick} 와 ${r.aCards.length}장 ↔ ${r.bCards.length}장`).catch(() => {});
+        alog(r.b, `거래 — ${r.aNick} 와 ${r.bCards.length}장 ↔ ${r.aCards.length}장`).catch(() => {});
+        console.log('거래 —', r.aNick, r.aCards.map(c => c.id).join(','), '↔', r.bNick, r.bCards.map(c => c.id).join(','));
+      }
+      return send(res, 200, { ok: true, room: tradeView(r, id, now) });
     }
     return send(res, 404, { ok: false, why: '없는 자리' });
   }
@@ -2687,7 +2858,8 @@ async function handle(req, res) {
       gSay(g.id, null, `${(await nickOf(id)) || id} 님이 길드에 들어왔다`, now);
       return send(res, 200, { ok: true, g: await view(g), rank: await rankOf(g), me: await mine(g) });
     }
-    if (!my) return send(res, 404, { ok: false, why: '길드에 들어 있지 않다' });
+    /* 길드 없는 사람의 가호 확인(열 분마다)은 200 — 앱 콘솔에 404 가 쌓이지 않게 (판 73) */
+    if (!my) return send(res, act === 'chat' ? 200 : 404, { ok: false, none: true, why: '길드에 들어 있지 않다' });
     if (act === 'leave') {
       my.members = my.members.filter(m => m !== id); await put('gm:' + id, null); await put('gleft:' + id, { at: now, gid: my.id });
       if (!my.members.length) { await put('gd:' + my.id, null); await put('gname:' + my.name.toLowerCase(), null); await put('gdlist', ((await get('gdlist')) || []).filter(x => x !== my.id)); gChat.delete(my.id); }
