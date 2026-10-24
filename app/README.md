@@ -5,7 +5,7 @@
 
 | | EDITION | PLAT | 값은 어떻게 받나 |
 |---|---|---|---|
-| 웹 (체험판) | `demo` | `web` | **안 받는다.** 제3막까지만 |
+| 웹 (전체판) | `full` | `web` | Creem — 판 75 부터 다 열었다 (예전엔 제3막까지 체험판) |
 | 안드로이드 | `full` | `android` | Google Play 결제 |
 | 데스크톱 | `full` | `desktop` | 코드 (설정 → 코드) |
 
@@ -15,8 +15,8 @@
 
 ```
 node game/build-apps.mjs
-  dist/web/index.html      체험판 · 넓은 화면
-  dist/web/mobile.html     체험판 · 손전화
+  dist/web/index.html      전체판 · 넓은 화면
+  dist/web/mobile.html     전체판 · 손전화
   dist/android/index.html  전체판 · 손전화 겉옷 덧댐
   dist/desktop/index.html  전체판 · 넓은 화면
 ```

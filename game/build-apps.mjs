@@ -4,8 +4,8 @@
      node game/build-apps.mjs
 
    짓는 것
-     dist/web/index.html      웹 체험판 (넓은 화면)
-     dist/web/mobile.html     웹 체험판 (손전화)
+     dist/web/index.html      웹 전체판 (넓은 화면) — 판 75 부터 체험판이 아니다
+     dist/web/mobile.html     웹 전체판 (손전화)
      dist/android/index.html  안드로이드 전체판 — Capacitor 가 감쌀 것
      dist/desktop/index.html  데스크톱 전체판 — Electron 이 감쌀 것
 
@@ -51,8 +51,8 @@ function stamp(html, edition, plat) {
    윈도우에서 cp·rm 이 없어 무너진다. 여기서 다 끝낸다. */
 const APP = join(here, '..', 'app');
 const PLANS = [
-  { to: join(DIST, 'web', 'index.html'),          html: wide,   edition: 'demo', plat: 'web' },
-  { to: join(DIST, 'web', 'mobile.html'),         html: narrow, edition: 'demo', plat: 'web' },
+  { to: join(DIST, 'web', 'index.html'),          html: wide,   edition: 'full', plat: 'web' },   /* 판 75 — 웹도 다 연다 */
+  { to: join(DIST, 'web', 'mobile.html'),         html: narrow, edition: 'full', plat: 'web' },
   { to: join(APP, 'android', 'www', 'index.html'), html: narrow, edition: 'full', plat: 'android' },
   { to: join(APP, 'desktop', 'app', 'index.html'), html: wide,   edition: 'full', plat: 'desktop' }
 ];
@@ -68,7 +68,7 @@ for (const p of PLANS) {
   console.log(`${relative(join(here, '..'), p.to)} · ${p.edition} · ${p.plat} · ${(out.length / 1024).toFixed(0)}KB`);
 }
 
-/* 웹 체험판은 없는 자리로 들어와도 첫 자리로 돌려보낸다 */
+/* 웹판은 없는 자리로 들어와도 첫 자리로 돌려보낸다 */
 writeFileSync(join(DIST, 'web', '404.html'),
   '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/">');
 console.log('다 지었다');
