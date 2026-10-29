@@ -9034,6 +9034,54 @@ body.zenui :is(#topbar,.evpill,#chatfab,.scpill,.whpill,#tbmore,#menubtn,#toast,
 @media (prefers-reduced-motion:reduce){.card.mutAd .face{animation:none}}
 .pcitem.devz{border-color:rgba(255,250,230,.6)!important;background:linear-gradient(135deg,rgba(255,250,230,.12),rgba(255,214,120,.06))!important}
 .pcdevb{display:flex;flex-direction:column;gap:4px}
+/* ══ 開 개발자 원료 · 隱 히든 원료 (판 76) ══ */
+.card .cmut{flex-wrap:wrap;max-width:calc(100% - 10px)}
+.card .cmut i.xmb{color:#0c0a10;background:radial-gradient(circle at 35% 30%,#fff,var(--xc) 62%);box-shadow:0 0 9px var(--xc)}
+.card .cmut i.xmb.dev{outline:1px solid #fff;outline-offset:1px}
+.card.xmat .face{box-shadow:inset 0 0 0 2px var(--xc),inset 0 0 22px rgba(var(--xr),.4),0 0 16px rgba(var(--xr),.6);animation:xmGlow 2.4s ease-in-out infinite}
+@keyframes xmGlow{50%{box-shadow:inset 0 0 0 2px #fff,inset 0 0 30px rgba(var(--xr),.6),0 0 26px rgba(var(--xr),.9),0 0 48px rgba(var(--xr),.4)}}
+.xmfx{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;z-index:3}
+.xmfx i{position:absolute;display:block;font-style:normal}
+.xf-pow i{left:50%;top:38%;width:160%;height:160%;margin:-80% 0 0 -80%;border-radius:50%;background:repeating-conic-gradient(rgba(180,140,255,.24) 0 8deg,transparent 8deg 22deg);mix-blend-mode:screen;animation:xfSpin 9s linear infinite}
+.xf-pow i:nth-child(2){animation-direction:reverse;animation-duration:14s;opacity:.6}
+@keyframes xfSpin{to{transform:rotate(360deg)}}
+.xf-bolt i{top:0;left:calc(12% + var(--n) * 22%);width:14px;height:58%;background:#fff8c0;clip-path:polygon(40% 0,100% 0,60% 40%,90% 40%,20% 100%,40% 52%,10% 52%);filter:drop-shadow(0 0 4px #ffe14a);opacity:0;animation:xfBolt 2.8s steps(1) infinite;animation-delay:calc(var(--n) * -.7s)}
+@keyframes xfBolt{0%,86%{opacity:0}88%{opacity:1}90%{opacity:.2}92%{opacity:1}95%,100%{opacity:0}}
+.xf-undy i{bottom:-6px;left:calc(8% + var(--n) * 20%);width:5px;height:5px;border-radius:50%;background:#ffd0a0;box-shadow:0 0 6px #ff7a4a,0 0 12px #ff4a1a;animation:xfRise 2.2s ease-in infinite;animation-delay:calc(var(--n) * -.45s)}
+@keyframes xfRise{0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:1}100%{transform:translate(8px,-150px) scale(.3);opacity:0}}
+.xf-twin i{inset:6px;border:1.5px solid rgba(200,224,240,.75);border-radius:8px;opacity:0;animation:xfTwin 3s ease-in-out infinite;animation-delay:calc(var(--n) * -1s)}
+@keyframes xfTwin{0%,100%{transform:translate(0,0);opacity:0}50%{transform:translate(5px,-5px);opacity:.9}}
+.xf-code i{top:-30%;left:calc(8% + var(--n) * 23%);font:700 10px/1.05 monospace;color:#4dff88;text-shadow:0 0 6px #4dff88;writing-mode:vertical-rl;opacity:.75;animation:xfFall 3.2s linear infinite;animation-delay:calc(var(--n) * -.8s)}
+@keyframes xfFall{to{transform:translateY(280px)}}
+.xf-void i{inset:-30%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(20,20,50,.6),transparent 30%,rgba(154,164,216,.28),transparent 60%);-webkit-mask:radial-gradient(circle,transparent 38%,#000 70%);mask:radial-gradient(circle,transparent 38%,#000 70%);animation:xfSpin 6s linear infinite}
+.xf-blood i{top:-4px;left:calc(12% + var(--n) * 22%);width:5px;height:9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 40% 35%,#ff9aa0,#c0101e);box-shadow:0 0 5px rgba(255,58,74,.8);animation:xfDrip 2.6s ease-in infinite;animation-delay:calc(var(--n) * -.65s)}
+@keyframes xfDrip{0%{transform:translateY(0) scaleY(.4);opacity:0}20%{transform:translateY(0) scaleY(1);opacity:1}100%{transform:translateY(240px);opacity:0}}
+.xf-sand i{top:-30px;left:calc(10% + var(--n) * 19%);width:2px;height:2px;border-radius:50%;background:#ffe8b0;box-shadow:0 0 4px #e8c890,6px 10px 0 #e8c890,-5px 22px 0 #ffe8b0;animation:xfFall 4s linear infinite;animation-delay:calc(var(--n) * -.8s)}
+.xf-dream i{bottom:-14px;left:calc(10% + var(--n) * 22%);width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,200,240,.85);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),rgba(255,154,216,.15) 60%,transparent);animation:xfRise 3.6s ease-in-out infinite;animation-delay:calc(var(--n) * -.9s)}
+.xf-soul i{left:50%;top:45%;width:8px;height:12px;margin:-6px -4px;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;background:radial-gradient(circle at 50% 70%,#e0fff8,#40d8c8 60%,transparent);box-shadow:0 0 8px #40d8c8;animation:xfOrb 4s linear infinite;animation-delay:calc(var(--n) * -1s)}
+@keyframes xfOrb{from{transform:rotate(0) translateX(46px) rotate(0)}to{transform:rotate(360deg) translateX(46px) rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){.xmfx i,.card.xmat .face{animation:none!important}}
+.pcsec.hid b{color:#c8d0ff;text-shadow:0 0 10px #9aa4d8}
+.pcsec.devx b{color:#d8c8ff;text-shadow:0 0 10px #b48cff}
+.pcitem.xmhid{border-style:dashed!important;border-color:rgba(200,200,220,.35)!important;background:linear-gradient(135deg,rgba(60,60,90,.18),rgba(10,8,14,.9))!important;box-shadow:none!important}
+.pcitem.xmhid .pctxt span{color:#a8a4c0}.pcitem.xmhid .pctxt small{font-style:italic;color:#a8a4c0}
+.mgorb.mg-xq{--mc:#6a6a88;--mr:106,106,136;background:radial-gradient(circle at 38% 32%,#4a4a60,#1a1a28 60%,transparent 72%)!important;box-shadow:0 0 14px rgba(106,106,136,.5)!important}
+.mgorb.mg-xq b{color:#8a8aa8!important;text-shadow:none!important}
+.pcitem.xm.dev{border-color:rgba(var(--mr),.85)!important}
+.pcitem.xm .pctxt small u{display:block;margin-top:2px;text-decoration:none;color:var(--mc);opacity:.85}
+.matget.xmget.q .mgorb{filter:grayscale(1) brightness(.6)}
+.matget.xmget .mgorb{transition:filter .4s}
+.matget.xmget .xmriddle{font-style:italic;color:var(--mc);letter-spacing:.08em}
+.matget.xmget .xmcrack{position:absolute;inset:-20px;border-radius:50%;border:3px solid #fff;opacity:0;pointer-events:none}
+.matget.xmget.open .xmcrack{animation:xmCrack .9s ease-out forwards}
+@keyframes xmCrack{0%{transform:scale(.5);opacity:1}100%{transform:scale(2.4);opacity:0}}
+.dpowxm{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dpowxb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px;border-radius:10px;border:1px solid var(--mc);background:linear-gradient(135deg,color-mix(in srgb,var(--mc) 18%,transparent),rgba(20,12,36,.9));color:#fff;text-align:left;cursor:pointer;font:inherit}
+.dpowxb i{font-style:normal;font-size:22px;color:var(--mc);text-shadow:0 0 10px var(--mc)}
+.dpowxb b{font-size:13px;font-weight:600}.dpowxb small{font-size:11px;color:#c8bce0;line-height:1.35}
+.dpowxb.hid{border-style:dashed}.dpowxb:hover{filter:brightness(1.2)}
+.pcsec>b{flex:none;white-space:nowrap}
+@media (max-height:480px){.matget{gap:8px}.matget .mgorb{width:92px;height:92px}.matget .mgorb b{font-size:44px}.matget .mgtxt>b{font-size:20px}.matget .mgtxt>span{font-size:12px;line-height:1.45}.matget .mgbtns{margin-top:2px}}
 .dpowsub.devz{color:#fff;text-shadow:0 0 8px #ffd76a}
 .dpowbtn.devz{border-color:rgba(255,250,230,.7)!important;background:linear-gradient(135deg,rgba(255,250,230,.16),rgba(255,214,120,.08))!important}
 .dpowbtn.devz b{color:#fff}
@@ -12089,11 +12137,42 @@ const fuGrad = ks => ks.length === 3 ? `linear-gradient(90deg,${MUT_COL[ks[0]]} 
 function mutLv(c, k) { let L = c[MUT_KEY[k]] ? 1 : 0; if (c.mutFu && c.mutFu.split('+').indexOf(k) >= 0) L += 2; return L; }
 const cup = c => !!(c.up || c.mutC || mutLv(c, 'chaos') > 0 || c.mutZ);   /* 혼원(混元) · 종결(終結)도 강화한 것처럼 */
 const MUT_STAR = 1.25;
+/* ══ 개발자 원료(開) · 히든 원료(隱) — 열 가지 (판 76) ══
+   개발자 원료 — 개발자(백야 · 백사 · 관리자 열쇠)만 보고 쓴다. 개발자에게는 마르지 않는다(∞) · 등급을 가리지 않는다.
+     개발자가 아니면 그 부적에 빛도 수치도 덤도 없다 · 멀티 대전에서는 듣지 않는다.
+   히든 원료 — 숨은 조건을 이룬 퇴마사에게만 떨어진다. 얻기 전에는 주머니에 「???」와 수수께끼 한 줄뿐.
+     저주가 아니면 아무 부적에나. 수치는 어디서나, 낼 때의 덤은 멀티 대전 밖에서만. 개발자에게는 마르지 않는다(∞).
+   한 부적에 같은 것은 한 번 · 거래로 넘길 수 없다 */
+const XMAT = {
+  pow:   { t: 'dev', n: '권능의 핵',     g: '權', mut: 'mutP', mn: '권능(權能)', c: '#b48cff', rgb: '180,140,255', mul: 3,    d: '수치 3배' },
+  bolt:  { t: 'dev', n: '천뢰석',        g: '雷', mut: 'mutE', mn: '천벌(天罰)', c: '#ffe14a', rgb: '255,225,74',  mul: 1.5,  d: '수치 1.5배 · 낼 때 모든 적에게 천벌의 번개 (15 + 막×4) · 취약 2' },
+  undy:  { t: 'dev', n: '불멸의 정수',   g: '不', mut: 'mutI', mn: '불멸(不滅)', c: '#ff7a4a', rgb: '255,122,74',  mul: 1.5,  d: '수치 1.5배 · 낼 때 방어도 (10 + 막×3) · 체력 +5' },
+  twin:  { t: 'dev', n: '복제의 씨앗',   g: '複', mut: 'mutR', mn: '복제(複製)', c: '#c8e0f0', rgb: '200,224,240', mul: 1,    d: '낼 때 둘로 갈라져 같은 일을 한 번 더' },
+  code:  { t: 'dev', n: '소스코드 파편', g: '碼', mut: 'mutQ', mn: '코드(碼)',   c: '#4dff88', rgb: '77,255,136',  mul: 1.5,  d: '수치 1.5배 · 낼 때 기 +2 · 부적 2장' },
+  void:  { t: 'hid', n: '허공의 티끌',   g: '虛', mut: 'mutV', mn: '공허(空虛)', c: '#9aa4d8', rgb: '154,164,216', mul: 1.25, d: '수치 1.25배 · 낼 때 모든 적의 방어도를 걷어 내고 취약 1',
+           how: '체력이 최대의 10% 이하인 채로 싸움을 이기면 35%', riddle: '숨이 넘어가기 직전에 이긴 자에게' },
+  blood: { t: 'hid', n: '피의 결정',     g: '血', mut: 'mutB', mn: '혈맹(血盟)', c: '#ff3a4a', rgb: '255,58,74',   mul: 1.35, d: '수치 1.35배 · 낼 때 체력 2를 바쳐 모든 적에게 (6 + 막×2)',
+           how: '한 차례에 부적을 12장 이상 내면 40% (싸움마다 한 번)', riddle: '한 차례에 손이 쉬지 않는 자에게' },
+  sand:  { t: 'hid', n: '시간의 모래',   g: '時', mut: 'mutT', mn: '회귀(回歸)', c: '#e8c890', rgb: '232,200,144', mul: 1.2,  d: '수치 1.2배 · 낸 뒤 30% 확률로 손으로 되돌아온다',
+           how: '첫 차례에 싸움을 끝내면 — 엘리트 · 보스 60% · 일반 6%', riddle: '시작하자마자 끝내는 자에게' },
+  dream: { t: 'hid', n: '꿈의 조각',     g: '夢', mut: 'mutD', mn: '몽환(夢幻)', c: '#ff9ad8', rgb: '255,154,216', mul: 1.2,  d: '수치 1.2배 · 낼 때 적 모두 약화 1 · 취약 1 · 부적 1장',
+           how: '자정(0시대)에 엘리트나 보스를 쓰러뜨리면 50%', riddle: '모두가 잠든 시각의 싸움에서' },
+  soul:  { t: 'hid', n: '잃어버린 혼',   g: '魂', mut: 'mutO', mn: '초혼(招魂)', c: '#40d8c8', rgb: '64,216,200',  mul: 1.25, d: '수치 1.25배 · 낼 때 체력 (2 + 막) — 체력이 반 아래면 두 배',
+           how: '보스를 상처 하나 없이 쓰러뜨리면 (엘리트는 25%)', riddle: '상처 하나 없이 왕을 벤 자에게' }
+};
+const XMAT_K = Object.keys(XMAT);
+function devLvOn() { try { return adminOn(); } catch (e) { return false; } }               /* 개발자 — 개발자의 권력 탭을 여는 사람 */
+function xmatFight() { return !(typeof G !== 'undefined' && G.b && (G.b.kind === 'pvp' || G.b.kind === 'mpbot')); }
+/* 이 부적에 보이는 것 — 개발자 원료는 개발자에게만 */
+function xmatSee(c, k) { const m = XMAT[k]; return !!(c && c[m.mut]) && (m.t !== 'dev' || devLvOn()); }
+function xmatOn(c, k) { return xmatSee(c, k) && (XMAT[k].t !== 'dev' || xmatFight()); }
+function xmatAny(c) { return !!c && XMAT_K.some(k => c[XMAT[k].mut]); }
+function xmatMul(c) { let k = 1; for (const x of XMAT_K) if (c[XMAT[x].mut] && xmatOn(c, x)) k *= XMAT[x].mul; return k; }
 const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배, 25% 확률로 버그가 나 한 번 더 */
 function cval(c) {
   const v = cdef(c).v(cup(c));
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
-  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * (c.mutAd && admMatOn(c) ? 1.5 : 1) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
+  const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * (c.mutAd && admMatOn(c) ? 1.5 : 1) * xmatMul(c) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
   for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
@@ -16299,10 +16378,9 @@ function drawPower(grid) {
     <button class="dpowbig adm" id="dp_adm"><b>덱을 모두 어드민급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → 어드민급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
     <div class="dpowsub adm">어드민급 — 세계 최강 · 백야만 (도감·보상·선물에 없다) · 누르면 한 장 (싸우는 중이면 손에도)</div>
     <div class="dpowclone adm">${ADM_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
-    ${caster() ? `<div class="dpowsub devz">終 개발자 종결 원료 — 백야의 종결석 · 지금 ${devMatHave()}개 · 원료 주머니에서 아무 부적에나 입힌다</div>
-    <div class="dpowrow devz"><button class="dpowbtn devz" id="dp_z1"><b>終 종결석 +1</b><small>수치 2배 · 백야의 일격 · 기 +1</small></button>
-      <button class="dpowbtn devz" id="dp_z5"><b>終 종결석 +5</b><small>한 번에 다섯</small></button>
-      <button class="dpowbtn devz" id="dp_zuse"><b>지금 입힌다</b><small>${devMatHave() ? '부적을 고른다' : '종결석이 없다'}</small></button></div>` : ''}
+    <div class="dpowsub devz">開 개발자 원료 · 隱 히든 원료 — 개발자에게는 마르지 않는다(∞) · 누르면 부적을 골라 입힌다 · 등급을 가리지 않는다</div>
+    <div class="dpowxm">${caster() ? `<button class="dpowxb" data-xm="z" style="--mc:#ffffff"><i>終</i><b>${DEV_MAT.n} ×∞</b><small>${DEV_MAT.d}</small></button>` : ''}${XMAT_K.map(k => { const m = XMAT[k];
+      return `<button class="dpowxb${m.t === 'hid' ? ' hid' : ''}" data-xm="${k}" style="--mc:${m.c}"><i>${m.g}</i><b>${m.t === 'hid' ? '隱 ' : ''}${m.n} ×∞</b><small>${m.d}</small></button>`; }).join('')}</div>
     <div class="dpowsub pw10">권력 — 불 켜진 것은 켜고 끄는 것, 나머지는 누르면 한 번</div>
     <div class="dpow10">${DEV_PW10.map(x => `<button class="dpw${x.tog ? ' tog' : ''}${x.tog && devPwIs(x) ? ' on' : ''}" data-pw="${x.k}"><i>${x.g}</i><b>${x.n}${x.tog ? (devPwIs(x) ? ' · 켜짐' : ' · 꺼짐') : ''}</b><small>${x.d}</small></button>`).join('')}</div>
     ${b5Ok() ? `<button class="dpowbig s5" id="dp_s5"><b>덱을 모두 SSSSS급으로</b><small>${run ? `지금 덱 ${run.deck.length}장 → SSSSS급 ${Math.max(15, run.deck.length)}장 (모두 강화) · 「원래 덱으로」로 되돌린다` : '모험 중에만'}</small></button>
@@ -16312,10 +16390,7 @@ function drawPower(grid) {
     <div class="dpowclone qq">${QQ_IDS().map(id => `<button data-id="${id}" title="${CARDS[id].txt(CARDS[id].v(true), true).replace(/<[^>]+>/g, '')}"><i>${CARDS[id].g}</i><b>${CARDS[id].n}</b><small>${run ? run.deck.filter(c => c.id === id).length : 0}장</small></button>`).join('')}</div>
   </div>`;
   grid.querySelector('#dp_deck').onclick = () => { devPowerDeck(); drawPower(grid); };
-  { const z1 = grid.querySelector('#dp_z1'), z5 = grid.querySelector('#dp_z5'), zu = grid.querySelector('#dp_zuse');
-    if (z1) z1.onclick = () => { devMatGive(1); drawPower(grid); };
-    if (z5) z5.onclick = () => { devMatGive(5); drawPower(grid); };
-    if (zu) zu.onclick = () => { closeOverlay(); devMatUse(); }; }
+  grid.querySelectorAll('[data-xm]').forEach(b => b.onclick = () => { closeOverlay(); if (b.dataset.xm === 'z') devMatUse(); else xmatUse(b.dataset.xm); });
   grid.querySelector('#dp_adm').onclick = () => { devAdmDeck(); drawPower(grid); };
   { const s5 = grid.querySelector('#dp_s5'); if (s5) s5.onclick = () => { devS5Deck(); drawPower(grid); }; }
   grid.querySelector('#dp_undo').onclick = () => { devPowerUndo(); drawPower(grid); };
@@ -16366,6 +16441,7 @@ async function playCard(card, target) {
   let times = 1;
   if (d.type === 'attack' && p.s.dbl) { times = 2; st(p, 'dbl', -1); }
   if (card.mutH && times === 1 && rnd() < MUT_HACK_ECHO) { times = 2; hackEchoFx(); }
+  if (card.mutR && xmatOn(card, 'twin')) { times++; xmatTwinFx(card); }   /* 複 복제 — 둘로 갈라져 한 번 더 (판 76) */
   try { ghostOnPlay(card); } catch (x) {}                                       /* 귀기 감염 — 25% 로 모두 약화 */   /* 해킹 오염 — 버그가 나 한 번 더 */
   /* 이 고리도 통째로 싼다 — checkDeaths 하나만 터져도
      아래 finally 를 건너뛰어 자물쇠가 걸린 채 남았다 */
@@ -16378,11 +16454,12 @@ async function playCard(card, target) {
     }
   } catch (err) { console.error('부적 처리 오류', d.id, err); }
   if (card.mutK && !b.over) { try { await shadowEcho(ctx, d); } catch (err) { console.error('그림자 메아리', err); } }   /* 影 — 그림자가 따라 친다 */
-  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutL || card.mutFu || card.mutZ || card.mutAd) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
+  if ((card.mutM || card.mutX || card.mutF || card.mutA || card.mutL || card.mutFu || card.mutZ || card.mutAd || xmatAny(card)) && !b.over) { try { await matMutPlay(card); } catch (err) { console.error('재료 돌연변이', err); } }   /* 유성 · 혼원 · 풍요 */
   /* 여기서부터는 무슨 일이 나도 자물쇠를 풀고 나간다 */
   try {
     b.curCard = null;
     b.played++;
+    if (b.played >= 12 && !b._xmB) xmatBlood(b);          /* 血 — 한 차례에 열두 장 (판 76) */
     logAdd('card', cname(card), 0);
     chainFx(b.played);                       /* 한 턴에 이어 낼수록 소리가 올라간다 */
     chainBig(b.played);                      /* 셋째 장부터 큰 글씨로 */
@@ -16391,6 +16468,7 @@ async function playCard(card, target) {
       if (d.id !== 'qq_echo') b.lastPlayed = card;        /* ??급 「메아리」가 되풀이할 것 */
       (b.usedUids = b.usedUids || []).indexOf(card.uid) < 0 && b.usedUids.push(card.uid);   /* 특성(변이) — 이번 라운드에 쓴 부적 */
       if (devInfOn() && isQ(d.rar) && b.hand.length < 10) b.hand.push(card);   /* 개발자의 권력 — 몇 번이고 다시 쓴다 */
+      else if (xmatBack(card)) b.hand.push(card);                                  /* 時 회귀 — 손으로 돌아온다 (판 76) */
       else if (d.exhaust) exhaustCard(card); else b.discardPile.push(card);
     } else {
       b.discardPile.push(card);
@@ -16977,6 +17055,7 @@ function _winBattle() {
     setTimeout(() => { try { flash('氣 +1'); toast(`보스를 꺾었다 — 최대 기 ${run.maxEnergy}`); SND.unlock(); } catch (e) {} }, 400);
   }
   run._dnWin = !!b.night;                              /* 밤에 연 싸움 — 전리품이 두둑하다 (판 64) */
+  try { xmatWin(b, kind); } catch (e) { console.error('히든 원료', e); }   /* 隱 숨은 조건 (판 76) */
   G.b = null;
   showRewards(kind);
 }
@@ -17449,7 +17528,7 @@ function renderTop() {
     t.querySelector('#boxbtn').onclick = () => { markUsed('box'); openBoxes(); };
     t.querySelector('#hktop').onclick = () => { SND.ui(); showHackTokShop(); };
     t.querySelector('#pouchbtn').onclick = () => { SND.ui(); showPouch(); };
-    bindTip(t.querySelector('#pouchbtn'), () => `<b style="color:#e0c8ff">囊 원료 주머니</b><br>이벤트 재료 · 융합 원료 · 오염 관석<br><span style="color:#9a8d74">안에서 합성소(合)로 — 다른 퇴마사와 재료를 합친다</span>`);
+    bindTip(t.querySelector('#pouchbtn'), () => `<b style="color:#e0c8ff">囊 원료 주머니</b><br>이벤트 재료 · 융합 원료 · 히든 원료 · 오염 관석<br><span style="color:#9a8d74">안에서 합성소(合)로 — 다른 퇴마사와 재료를 합친다</span>`);
     bindTip(t.querySelector('#hktop'), () => `<b style="color:#5cff9a">⌬ 해킹상점</b> <b style="color:#ff2d55">한정!</b><br>
       해킹 토큰으로 오염 관석 · 해킹 상자 · 과부하 코드…<br><span style="color:#9a8d74">매시 정각 해킹 보스를 잡으면 토큰 +${HB_PAY_C}</span>`);
     /* 터에서 꺼내 온 셋 — 자주 가는 자리라 윗줄에 둔다 */
@@ -18376,11 +18455,12 @@ function cardNode(c, opts) {
   const d = cdef(c), v = cval(c), cost = ccost(c);
   const skin = skinOf(c.id);
   const n = el('div', 'card ' + d.type + (d.rar === 'special' || d.rar === 'ssc' || d.rar === 'ssx' ? ' special' : '') +
-    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutG ? ' mutG' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutL ? ' mutL' : '') + (c.mutZ ? ' mutZ' : '') + (admMatSee(c) ? ' mutAd' : '') + (skin ? ' skinned sk-' + skin : ''));
+    auraClass(d.rar) + (c.up ? ' up' : '') + (c.mutS ? ' mutS' : '') + (c.mutC ? ' mutC' : '') + (c.mutH ? ' mutH' : '') + (c.mutG ? ' mutG' : '') + (c.mutK ? ' mutK' : '') + (c.mutM ? ' mutM' : '') + (c.mutX ? ' mutX' : '') + (c.mutF ? ' mutF' : '') + (c.mutFu ? ' mutFu' : '') + (c.mutA ? ' mutA' : '') + (c.mutL ? ' mutL' : '') + (c.mutZ ? ' mutZ' : '') + (admMatSee(c) ? ' mutAd' : '') + xmatCls(c) + (skin ? ' skinned sk-' + skin : ''));
   const costTxt = cost === -1 ? 'X' : cost === -2 ? '－' : cost;
   const TL = (d.txt(v, cup(c)) + '').replace(/<[^>]+>/g, '').length;
   const fu = c.mutFu ? c.mutFu.split('+') : null;                        /* 융합 — 반반 아우라 */
   if (fu) { n.style.setProperty('--fa', MUT_COL[fu[0]]); n.style.setProperty('--fb', MUT_COL[fu[fu.length - 1]]); n.style.setProperty('--fg', fuGrad(fu)); }
+  xmatPaint(n, c);                                                     /* 개발자 · 히든 원료의 빛깔 (판 76) */
   n.innerHTML = `${fu ? '<div class="fuaura"></div>' : ''}
     <div class="face">
       ${skin ? `<div class="sklayer">${skinBits(skin)}</div>` : ''}
@@ -18389,10 +18469,10 @@ function cardNode(c, opts) {
       <div class="art"><div class="ring"></div><div class="g">${d.g}</div></div>
       ${CFX_RAR[d.rar] ? `<div class="cfx ${CFX_RAR[d.rar]}">${CFX_RAR[d.rar] === 'spark' ? '<i></i><i></i><i></i><i></i><i></i>' : ''}</div>` : ''}
       <div class="txt${TL > 56 ? ' xlong' : TL > 38 ? ' long' : ''}"><span>${d.txt(v, cup(c))}</span></div>
-      ${c.mutZ ? '<div class="mutfx mfzw"><span class="mfZ"><i></i><i></i><i></i></span></div>' : ''}${c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${c.mutL ? MUT_FXH.moon : ''}${fu ? (fu.length === 3
+      ${xmatFx(c)}${c.mutZ ? '<div class="mutfx mfzw"><span class="mfZ"><i></i><i></i><i></i></span></div>' : ''}${c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu ? `<div class="mutfx${fu && fu.length === 3 ? ' tri' : ''}">${c.mutX ? MUT_FXH.chaos : ''}${c.mutM ? MUT_FXH.star : ''}${c.mutF ? MUT_FXH.gold : ''}${c.mutA ? MUT_FXH.aurora : ''}${c.mutL ? MUT_FXH.moon : ''}${fu ? (fu.length === 3
         ? `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuM">${MUT_FXH[fu[1]]}</span><span class="fuR">${MUT_FXH[fu[2]]}</span>`
         : `<span class="fuL">${MUT_FXH[fu[0]]}</span><span class="fuR">${MUT_FXH[fu[1]]}</span>`) + '<span class="fuB"></span>' : ''}</div>` : ''}
-      ${c.mutS || c.mutC || c.mutH || c.mutG || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu || c.mutZ || admMatSee(c) ? `<div class="cmut">${admMatSee(c) ? '<i class="mad" title="관리(管理) — 관리자의 인장석 · 수치 1.5배 · 값 0 · 낼 때 부적 1장 · 방어도 (어드민만 보인다)">管</i>' : ''}${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutL ? '<i class="ml" title="월광(月光) — 수치 1.2배 · 낼 때 방어도 (3 + 막) · 밤 싸움이면 두 배">月</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}${c.mutG ? '<i class="mg" title="귀기 감염(鬼) — 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1">鬼</i>' : ''}</div>` : ''}
+      ${c.mutS || c.mutC || c.mutH || c.mutG || c.mutK || c.mutM || c.mutX || c.mutF || c.mutA || c.mutL || c.mutFu || c.mutZ || admMatSee(c) || xmatSeeAny(c) ? `<div class="cmut">${xmatBadges(c)}${admMatSee(c) ? '<i class="mad" title="관리(管理) — 관리자의 인장석 · 수치 1.5배 · 값 0 · 낼 때 부적 1장 · 방어도 (어드민만 보인다)">管</i>' : ''}${c.mutZ ? '<i class="mz" title="종결(終結) — 백야의 종결석 · 수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격 · 기 +1">終</i>' : ''}${fu ? `<i class="mfu" title="융합 — ${fu.map(k => MUT_GL[k]).join('·')} 두 배">${fu.length === 2 && fu[0] === fu[1] ? MUT_GL[fu[0]] + '²' : fu.map(k => MUT_GL[k]).join('')}</i>` : ''}${c.mutA ? '<i class="ma" title="극광(極光) — 수치 1.2배 · 낼 때 35% 확률로 기 +1">光</i>' : ''}${c.mutL ? '<i class="ml" title="월광(月光) — 수치 1.2배 · 낼 때 방어도 (3 + 막) · 밤 싸움이면 두 배">月</i>' : ''}${c.mutM ? '<i class="mm" title="유성(流星) — 수치 1.3배 · 낼 때 별똥별">流</i>' : ''}${c.mutX ? '<i class="mx" title="혼원(混元) — 강화한 것처럼 · 낼 때 무작위 기운">沌</i>' : ''}${c.mutF ? '<i class="mf" title="풍요(豐饒) — 수치 1.15배 · 낼 때 골드·체력">豐</i>' : ''}${c.mutK ? '<i class="mk" title="그림자(影) — 낼 때 그림자가 따라 반만큼 한 번 더">影</i>' : ''}${c.mutS ? '<i class="ms" title="별의 특성 — 수치 1.25배">星</i>' : ''}${c.mutC ? '<i class="mc" title="혼돈의 특성 — 강화한 것처럼">混</i>' : ''}${c.mutH ? '<i class="mh" title="해킹 오염 — 수치 1.4배 · 25% 확률로 한 번 더">汚</i>' : ''}${c.mutG ? '<i class="mg" title="귀기 감염(鬼) — 수치 1.3배 · 낼 때 25% 로 모든 적에게 약화 1">鬼</i>' : ''}</div>` : ''}
       <div class="kind">${TYPE_NAME[d.type]}${d.exhaust ? ' · 소멸' : ''}</div>
       <i class="cglare"></i>
     </div>
@@ -31626,16 +31706,9 @@ const matHave = k => (META.mat && META.mat[k]) || 0;
    수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격(10 + 막×3) · 기 +1. 합성소 · 우편 · 선물에는 없다 */
 const DEV_MAT = { n: '백야의 종결석', g: '終', mut: 'mutZ', mn: '종결(終結)', mg: '終', c: '#ffffff', rgb: '255,250,230',
   d: '수치 2배 · 강화한 것처럼 · 낼 때 모든 적에게 백야의 일격(10 + 막×3) · 기 +1' };
-const devMatHave = () => (caster() && META.devMat) || 0;
-function devMatGive(n) {
-  if (!caster()) { toast('백야만 얻을 수 있다'); return; }
-  META.devMat = (META.devMat || 0) + n; saveMeta();
-  toast(`終 백야의 종결석 +${n} — 원료 주머니(囊)에 ${META.devMat}개`);
-  try { SND.unlock(); SND.holyhit && SND.holyhit(); stampWord('終', '#ffffff'); } catch (e) {}
-}
+const devMatHave = () => caster() ? Infinity : 0;                 /* 개발자는 마르지 않는다 (판 76) */
 async function devMatUse() {
   if (!caster()) { toast('백야만 쓸 수 있다'); return; }
-  if (devMatHave() < 1) { toast('종결석이 없다 — 개발자의 권력에서 받는다'); SND.err(); return; }
   const run = G.run;
   if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (종결석은 그대로 남는다)'); SND.err(); return; }
   if (G.b) { toast('싸움이 끝난 뒤에'); return; }
@@ -31643,7 +31716,7 @@ async function devMatUse() {
   if (!list.length) { toast('종결을 입힐 부적이 없다 (이미 깃든 것은 뺐다)'); SND.err(); return; }
   const c = await pickFromList(list, `終 ${DEV_MAT.n} — 종결을 입힐 부적`, { hint: DEV_MAT.d + ownHint(run), cancel: true });
   if (!c) return;
-  META.devMat = devMatHave() - 1; c.mutZ = true; saveMeta(); saveRun();
+  c.mutZ = true; saveRun();
   mutApplyFx(c, { cols: ['#ffffff', '#ffd76a'], orbs: ['終', '白', '夜'], ocols: ['#ffffff', '#ffd76a', '#e8f4ff'], glyph: '終', name: DEV_MAT.mn + ' — ' + DEV_MAT.d, strip: ['mutZ'], dev: true });
 }
 /* 관리자의 인장석(管) — 어드민 레벨(백야 · 백사 · 게스트)만 보고 쓰는 원료 (판 72).
@@ -31725,7 +31798,7 @@ function mutApplyFx(c, o) {
   const [ca, cb] = o.cols, two = o.orbs.length > 1;
   const n = el('div', 'mfx' + (two ? ' two' : '') + (o.dev ? ' dev' : '')); n.style.setProperty('--fa', ca); n.style.setProperty('--fb', cb);
   /* 판 54 — 카메라가 돈다 · 발밑에 진 · 등 뒤에 도는 아우라 · 둘레를 도는 글자 · 빛기둥 · 위아래 먹 띠 · 떠도는 불티 */
-  const rune = (o.orbs.join('') + (o.dev ? '終白夜權限覺醒' : '變化融合覺醒符')).split('').concat(o.orbs).slice(0, 12);
+  const rune = (o.orbs.join('') + (o.rune || (o.dev ? '終白夜權限覺醒' : '變化融合覺醒符'))).split('').concat(o.orbs).slice(0, 12);
   n.innerHTML = `<div class="mfxbars"><i></i><i></i></div><div class="mfxcam">
     <div class="mfxfloor">${cutSealSvg(o.dev ? '#ffffff' : ca, rune.slice(0, 8).join(''))}</div>
     <div class="mfxrays"></div><div class="mfxaura"><i></i><i></i><i></i></div>
@@ -31753,6 +31826,149 @@ function mutApplyFx(c, o) {
   at(o.dev ? 5100 : 4500, () => n.remove());
   n.onclick = () => { if (n.classList.contains('stamp')) { T.forEach(clearTimeout); n.classList.add('out'); setTimeout(() => n.remove(), 400); } };
 }
+/* ── 개발자 원료 · 히든 원료 — 쓰기 · 얻기 · 낼 때 (판 76) ── */
+const xmatHave = k => devLvOn() ? Infinity : ((META.xmat && META.xmat[k]) || 0);
+const xmatSeen = k => devLvOn() || !!(META.xmatSeen && META.xmatSeen[k]);
+const xmatCount = () => XMAT_K.reduce((a, k) => a + ((META.xmat && META.xmat[k]) || 0), 0);
+function xmatSeeAny(c) { return XMAT_K.some(k => xmatSee(c, k)); }
+function xmatCls(c) { const ks = XMAT_K.filter(k => xmatSee(c, k)); return ks.length ? ' xmat' + ks.map(k => ' xm-' + k).join('') : ''; }
+function xmatPaint(n, c) { const k = XMAT_K.find(x => xmatSee(c, x)); if (k) { n.style.setProperty('--xc', XMAT[k].c); n.style.setProperty('--xr', XMAT[k].rgb); } }
+const XMAT_FXN = { pow: 2, bolt: 4, undy: 5, twin: 3, code: 4, void: 1, blood: 4, sand: 5, dream: 4, soul: 4 };
+const XMAT_CODE = ['01', '碼', 'if', '{}', '開', '10', '=>', '發'];
+function xmatFx(c) {
+  return XMAT_K.filter(k => xmatSee(c, k)).map(k => `<div class="xmfx xf-${k}">${Array.from({ length: XMAT_FXN[k] }, (_, i) =>
+    `<i style="--n:${i}">${k === 'code' ? XMAT_CODE[(i * 3 + 1) % XMAT_CODE.length] + XMAT_CODE[(i * 5 + 2) % XMAT_CODE.length] : ''}</i>`).join('')}</div>`).join('');
+}
+function xmatBadges(c) {
+  return XMAT_K.filter(k => xmatSee(c, k)).map(k => { const m = XMAT[k];
+    return `<i class="xmb${m.t === 'dev' ? ' dev' : ''}" style="--xc:${m.c}" title="${m.mn} — ${m.n} · ${m.d}${m.t === 'dev' ? ' (개발자만 보인다)' : ' (히든 원료)'}">${m.g}</i>`; }).join('');
+}
+/* 주머니 한 칸 — 찾기 전의 히든 원료는 「???」와 수수께끼뿐 */
+function xmatItem(k) {
+  const m = XMAT[k], n = xmatHave(k), inf = n === Infinity;
+  if (!xmatSeen(k)) return `<div class="pcitem xmhid none"><div class="mgorb mg-xq small"><b>?</b>${'<i></i>'.repeat(8)}</div>
+    <div class="pctxt"><b>??? <em>×0</em></b><span>隱 숨은 원료</span><small>「${m.riddle}」</small></div><button class="brush-btn" disabled>쓴다</button></div>`;
+  return `<div class="pcitem xm ${m.t}${n ? '' : ' none'}" style="--mc:${m.c};--mr:${m.rgb}"><div class="mgorb mg-x small"><b>${m.g}</b>${'<i></i>'.repeat(8)}</div>
+    <div class="pctxt"><b>${m.n} <em>×${inf ? '∞' : n}</em></b><span>${m.g} ${m.mn}${m.t === 'dev' ? ' · 개발자만' : ''}</span><small>${m.d}${m.how ? `<u>얻는 길 — ${m.how}</u>` : ''}</small></div>
+    <button class="brush-btn${n ? ' gold' : ''}" data-xuse="${k}"${n ? '' : ' disabled'}>쓴다</button></div>`;
+}
+/* 쓴다 — 저주가 아니면 아무 부적에나 */
+async function xmatUse(k) {
+  const m = XMAT[k]; if (!m) return;
+  if (m.t === 'dev' && !devLvOn()) { toast('개발자만 쓸 수 있다'); SND.err(); return; }
+  if (xmatHave(k) < 1) { toast(`${m.n}이(가) 없다`); SND.err(); return; }
+  const run = G.run;
+  if (!run || run._pvp) { toast('모험 중에만 쓸 수 있다 (원료는 그대로 남는다)'); SND.err(); return; }
+  if (G.b) { toast('싸움이 끝난 뒤에'); return; }
+  const list = ownDeck(run).filter(c => CARDS[c.id] && CARDS[c.id].rar !== 'curse' && !c[m.mut]);
+  if (!list.length) { toast(`${m.mn}을(를) 입힐 부적이 없다 (이미 깃든 것은 뺐다)`); SND.err(); return; }
+  const c = await pickFromList(list, `${m.g} ${m.n} — ${m.mn}을(를) 입힐 부적`, { hint: m.d + ownHint(run), cancel: true });
+  if (!c) return;
+  if (!devLvOn()) { META.xmat[k] = xmatHave(k) - 1; saveMeta(); }
+  c[m.mut] = true; saveRun();
+  const dev = m.t === 'dev';
+  mutApplyFx(c, { cols: [m.c, dev ? '#ffffff' : m.c], orbs: dev ? [m.g, '開', '發'] : ['隱', m.g], ocols: dev ? [m.c, '#ffffff', m.c] : ['#c8d0ff', m.c],
+    glyph: m.g, name: m.mn + ' — ' + m.d, strip: [m.mut], dev, rune: dev ? '開發者權限原料' : '隱秘條件覺醒' });
+}
+/* 얻었다 — 개발자는 이미 마르지 않으니 세지 않는다 */
+function xmatGot(k) {
+  if (devLvOn() || !XMAT[k] || XMAT[k].t !== 'hid') return;
+  const first = !xmatSeen(k);
+  META.xmat = META.xmat || {}; META.xmat[k] = (META.xmat[k] || 0) + 1;
+  META.xmatSeen = META.xmatSeen || {}; META.xmatSeen[k] = true; saveMeta();
+  try { stAdd('xmat'); } catch (e) {}
+  return first;
+}
+/* 받았다 — 처음이면 「?」 구슬이 깨지며 이름이 드러난다 · 여럿이면 하나씩 차례로 */
+const XM_Q = [];
+function xmatGetFx(k, first) {
+  const m = XMAT[k];
+  if (!G.b && !cutPlaying() && document.querySelector('.xmget:not(.out)')) { XM_Q.push([k, first]); return; }
+  try { SND.unlock(); SND.gong(); SND.blip(330, { dur: .8, type: 'sine', vol: .06, to: 1320, rev: .8 }); } catch (e) {}
+  if (G.b || cutPlaying()) { toast(`隱 ${m.g} ${m.n} +1 — ${first ? '히든 원료를 처음 찾았다 · ' : ''}원료 주머니(囊)에서 쓴다`); try { stampWord(m.g, m.c); } catch (e) {} return; }
+  const n = el('div', 'matget xmget' + (first ? ' q' : ''));
+  n.style.setProperty('--mc', m.c); n.style.setProperty('--mr', m.rgb);
+  n.innerHTML = `<div class="mgrays"></div><div class="mgorb mg-x"><b>${first ? '?' : m.g}</b>${'<i></i>'.repeat(8)}<span class="xmcrack"></span></div>
+    <div class="mgtxt"><b>${first ? '隱 숨은 조건을 이뤘다' : `${m.n} +1`}</b><span class="xmriddle">「${m.riddle}」</span>
+    <span>${first ? `히든 원료 <em>${m.n}</em>을(를) 처음 찾았다 · ` : ''}아무 부적에나(저주는 빼고) <em>${m.mn}</em> — ${m.d}</span>
+    <div class="mgbtns"><button class="brush-btn gold" id="xm_use">지금 쓴다</button><button class="brush-btn" id="xm_later">나중에</button></div></div>`;
+  document.body.appendChild(n);
+  if (first) setTimeout(() => { if (!n.isConnected) return;
+    n.classList.remove('q'); n.classList.add('open'); n.querySelector('.mgorb b').textContent = m.g; n.querySelector('.mgtxt>b').textContent = `${m.g} ${m.n}`;
+    try { const c = centerOf(n.querySelector('.mgorb')); FX.burst(c.x, c.y, 44, m.rgb, 8, 50, 5); shockRing(c.x, c.y, 260, m.c); SND.crit && SND.crit(); stampWord('隱', m.c); } catch (e) {} }, 1100);
+  const close = (go) => { if (n.classList.contains('out')) return; n.classList.add('out');
+    setTimeout(() => { n.remove();
+      if (go) { if (XM_Q.length) toast(`隱 남은 히든 원료 ${XM_Q.length}개는 원료 주머니(囊)에`); XM_Q.length = 0; return; }
+      const nx = XM_Q.shift(); if (nx) xmatGetFx(nx[0], nx[1]); }, 500); };
+  n.querySelector('#xm_use').onclick = () => { close(true); xmatUse(k); };     /* 쓰러 가면 남은 것은 주머니에서 본다 */
+  n.querySelector('#xm_later').onclick = () => close();
+  setTimeout(() => { if (n.isConnected) close(); }, AUTO.on ? 3600 : 14000);      /* 자동 중이면 잠깐 보이고 지나간다 */
+}
+function xmatDrop(k) { const first = xmatGot(k); if (first === undefined) return; setTimeout(() => xmatGetFx(k, first), G.b ? 0 : 900); }
+/* 싸움을 이겼다 — 숨은 조건 넷 (血 은 낼 때) */
+function xmatWin(b, kind) {
+  if (!b || !b.p || devLvOn() || (kind !== 'normal' && kind !== 'elite' && kind !== 'boss')) return;
+  const p = b.p, big = kind !== 'normal', R = Math.random, got = [];
+  if (p.hp > 0 && p.hp <= Math.max(1, Math.floor(p.maxHp * .1)) && R() < .35) got.push('void');
+  if (b.turn <= 1 && R() < (big ? .6 : .06)) got.push('sand');
+  if (big && new Date().getHours() === 0 && R() < .5) got.push('dream');
+  if (!(b.xTaken > 0) && (kind === 'boss' || (kind === 'elite' && R() < .25))) got.push('soul');
+  got.forEach(k => { const first = xmatGot(k); setTimeout(() => xmatGetFx(k, first), 1000); });
+}
+function xmatBlood(b) {
+  b._xmB = true;
+  if (devLvOn() || (b.kind !== 'normal' && b.kind !== 'elite' && b.kind !== 'boss') || Math.random() >= .4) return;
+  xmatDrop('blood');
+}
+/* 時 — 낸 뒤 30% 로 손으로 */
+function xmatBack(card) {
+  const b = G.b;
+  if (!card.mutT || !b || !xmatFight() || b.hand.length >= 10 || Math.random() >= .3) return false;
+  matPop('時 회귀 — 손으로 돌아왔다', '#e8c890');
+  try { SND.blip(660, { dur: .4, type: 'sine', vol: .05, to: 330, rev: .6 }); } catch (e) {}
+  return true;
+}
+/* 複 — 부적이 둘로 갈라진다 */
+function xmatTwinFx(card) {
+  try { const n = cardEls[card.uid]; const r = n ? n.getBoundingClientRect() : null;
+    const x = r ? r.left + r.width / 2 : innerWidth / 2, y = r ? r.top + r.height / 2 : innerHeight * .6;
+    FX.burst(x, y, 22, '200,224,240', 6, 45, 4); SND.blip(990, { dur: .25, type: 'triangle', vol: .05, to: 1980 }); } catch (e) {}
+  matPop('複 복제 — 한 번 더', '#c8e0f0');
+}
+async function xmatPlay(card, b, act) {
+  if (xmatOn(card, 'bolt')) {                                      /* 천벌 — 하늘에서 번개가 모든 적에게 */
+    try { screenFlash('rgba(255,240,150,.5)', 320); SND.thunder && SND.thunder(); shake(true); } catch (e) {}
+    for (const e of alive()) { try { const c = e.el ? centerOf(e.el) : null; if (c) { lightBeam(c.x, 'rgba(255,230,106,.75)', 70); FX.burst(c.x, c.y, 24, '255,230,106', 7, 45, 4); } } catch (er) {}
+      pure(e, 15 + act * 4); st(e, 'vuln', 2); }
+    matPop('雷 천벌 — 번개 · 취약 2', '#ffe14a'); syncAll(); await checkDeaths(); if (!G.b || b.over) return;
+  }
+  if (xmatOn(card, 'undy')) {                                      /* 불멸 — 타오르는 방패 */
+    try { const c = P().el ? centerOf(P().el) : null; if (c) FX.burst(c.x, c.y, 28, '255,122,74', 6, 50, 4); SND.blip(392, { dur: .4, type: 'sawtooth', vol: .04, to: 784 }); } catch (e) {}
+    blk(10 + act * 3, true); heal(5); matPop(`不 불멸 — 방어 +${10 + act * 3} · 체력 +5`, '#ff7a4a'); syncAll();
+  }
+  if (xmatOn(card, 'code')) {                                      /* 코드 — 기 · 부적 */
+    try { screenFlash('rgba(77,255,136,.18)', 260); SND.blip(1046, { dur: .18, type: 'square', vol: .03, to: 2093 }); } catch (e) {}
+    energy(2); drawCards(2); matPop('碼 코드 — 기 +2 · 부적 2장', '#4dff88'); syncAll();
+  }
+  if (card.mutV) {                                                 /* 공허 — 방어도를 걷어 낸다 */
+    for (const e of alive()) { e.block = 0; st(e, 'vuln', 1); try { const c = e.el ? centerOf(e.el) : null; if (c) FX.burst(c.x, c.y, 18, '154,164,216', 5, 40, 4); } catch (er) {} }
+    matPop('虛 공허 — 방어도를 걷어 냈다 · 취약 1', '#9aa4d8'); syncAll();
+  }
+  if (card.mutB) {                                                 /* 혈맹 — 체력 2를 바쳐 모든 적에게 */
+    const p = P();
+    if (p && p.hp > 2) { lose(2); for (const e of alive()) pure(e, 6 + act * 2);
+      try { screenFlash('rgba(255,40,60,.25)', 300); SND.hit && SND.hit(1); } catch (e) {}
+      matPop(`血 혈맹 — 모든 적에게 ${6 + act * 2}`, '#ff3a4a'); syncAll(); await checkDeaths(); if (!G.b || b.over) return; }
+  }
+  if (card.mutD) {                                                 /* 몽환 — 약화 · 취약 · 부적 한 장 */
+    for (const e of alive()) { st(e, 'weak', 1); st(e, 'vuln', 1); }
+    drawCards(1); matPop('夢 몽환 — 약화 · 취약 · 부적 1장', '#ff9ad8'); syncAll();
+  }
+  if (card.mutO) {                                                 /* 초혼 — 체력, 반 아래면 두 배 */
+    const p = P(); const v = (2 + act) * (p && p.hp < p.maxHp / 2 ? 2 : 1);
+    heal(v); matPop('魂 초혼 — 체력 +' + v, '#40d8c8');
+  }
+}
 /* ── 융합 원료 — 합성소에서 둘이 합친 것 (META.matFu['star+chaos'] …) ── */
 const fuHave = k => (META.matFu && META.matFu[k]) || 0;
 const fuParts = k => k.split('+');
@@ -31762,12 +31978,12 @@ const FU_ONE = { star: '수치 +60% · 별똥별 2개', chaos: '강화한 것처
 const fuDesc = k => [...new Set(fuParts(k))].map(x => `${MUT_GL[x]} ${FU_ONE[x]}`).join(' / ');
 const fuOrb = (k, cls = '') => { const ps = fuParts(k);
   return `<div class="fuorb ${cls}${ps.length === 3 ? ' tri' : ''}" style="--fa:${MUT_COL[ps[0]]};--fb:${MUT_COL[ps[ps.length - 1]]};--fg:${fuGrad(ps)}">${ps.map(x => `<b>${MAT_DEF[x].g}</b>`).join('')}${'<i></i>'.repeat(8)}</div>`; };
-const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0) + devMatHave();
+const pouchCount = () => matTotal() + Object.keys(META.matFu || {}).reduce((a, k) => a + fuHave(k), 0) + (META.hkStone || 0) + xmatCount();   /* 개발자의 ∞ 는 세지 않는다 */
 /* 원료 주머니 — 재료 · 융합 원료 · 그 밖의 것 */
 function showPouch() {
   const fus = Object.keys(META.matFu || {}).filter(k => fuHave(k) > 0);
   const p = modal(`<div class="pchead"><div class="pcbag"><i class="pcknot"></i><i class="pcglow"></i><b>囊</b></div>
-      <h2>원료 주머니</h2><div class="hint">이벤트에서 받은 재료와 합성소에서 합친 융합 원료 · <b>S급 이상</b> 부적에만 · 모험 중 싸움 밖에서</div></div>
+      <h2>원료 주머니</h2><div class="hint">이벤트에서 받은 재료와 합성소에서 합친 융합 원료는 <b>S급 이상</b> 부적에만 · 히든 원료는 아무 부적에나 · 모험 중 싸움 밖에서</div></div>
     <div class="pcsec"><b>재료</b><span>슈팅 스타 · 혼돈 · 풍년 · 극광이 켜질 때마다 하나씩 · 달의 조각은 밤에 요괴를 쓰러뜨리면 20%</span></div>
     <div class="pcgrid">${Object.keys(MAT_DEF).map(k => { const m = MAT_DEF[k], n = matHave(k);
       return `<div class="pcitem${n ? '' : ' none'}" style="--mc:${m.c};--mr:${m.rgb}"><div class="mgorb mg-${k} small"><b>${m.g}</b>${'<i></i>'.repeat(8)}</div>
@@ -31778,10 +31994,12 @@ function showPouch() {
         <div class="pctxt"><b>${fuName(k)} <em>×${fuHave(k)}</em></b><small>${fuDesc(k)}</small></div>
         <button class="brush-btn gold" data-use="${k}">쓴다</button></div>`).join('')
       : '<div class="pcempty">아직 없다 — 합성소에서 다른 퇴마사와 재료를 합쳐라</div>'}</div>
-    ${caster() ? `<div class="pcsec dev"><b>終 백야만</b><span>개발자 종결 원료 — 백야만 얻고 쓴다 · 등급을 가리지 않는다</span></div>
-    <div class="pcgrid"><div class="pcitem devz${devMatHave() ? '' : ' none'}" style="--mc:#ffffff;--mr:255,250,230"><div class="mgorb mg-devz small"><b>終</b>${'<i></i>'.repeat(8)}</div>
-      <div class="pctxt"><b>${DEV_MAT.n} <em>×${devMatHave()}</em></b><span>終 ${DEV_MAT.mn}</span><small>${DEV_MAT.d}</small></div>
-      <span class="pcdevb"><button class="brush-btn" id="pc_zget">+1 받는다</button><button class="brush-btn${devMatHave() ? ' gold' : ''}" id="pc_zuse"${devMatHave() ? '' : ' disabled'}>쓴다</button></span></div></div>` : ''}
+    <div class="pcsec hid"><b>隱 히든 원료</b><span>숨은 조건을 이룬 자에게만 떨어진다 · 아무 부적에나 (저주는 빼고)${devLvOn() ? ' · 개발자는 마르지 않는다(∞)' : ''}</span></div>
+    <div class="pcgrid">${XMAT_K.filter(k => XMAT[k].t === 'hid').map(xmatItem).join('')}</div>
+    ${devLvOn() ? `<div class="pcsec devx"><b>開 개발자 원료</b><span>개발자만 보고 쓴다 — 마르지 않는다(∞) · 등급을 가리지 않는다 · 개발자가 아니면 빛도 효과도 없다 · 대전에서는 듣지 않는다</span></div>
+    <div class="pcgrid">${caster() ? `<div class="pcitem devz" style="--mc:#ffffff;--mr:255,250,230"><div class="mgorb mg-devz small"><b>終</b>${'<i></i>'.repeat(8)}</div>
+      <div class="pctxt"><b>${DEV_MAT.n} <em>×∞</em></b><span>終 ${DEV_MAT.mn} · 백야만</span><small>${DEV_MAT.d}</small></div>
+      <button class="brush-btn gold" id="pc_zuse">쓴다</button></div>` : ''}${XMAT_K.filter(k => XMAT[k].t === 'dev').map(xmatItem).join('')}</div>` : ''}
     ${admLvOn() ? `<div class="pcsec adm"><b>管 ADMIN만</b><span>어드민 레벨에게만 보이는 원료 — 마르지 않는다 · 등급을 가리지 않는다</span></div>
     <div class="pcgrid"><div class="pcitem adm" style="--mc:${ADM_MAT.c};--mr:${ADM_MAT.rgb}"><div class="mgorb mg-adm small"><b>管</b>${'<i></i>'.repeat(8)}</div>
       <div class="pctxt"><b>${ADM_MAT.n} <em>×∞</em></b><span>管 ${ADM_MAT.mn}</span><small>${ADM_MAT.d}</small></div>
@@ -31797,9 +32015,8 @@ function showPouch() {
   p.dataset.noauto = '1';
   p.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { closeTop(); matUse(b.dataset.use); });
   p.querySelector('#pc_stone').onclick = () => { closeTop(); hkStoneUse(); };
-  { const zg = p.querySelector('#pc_zget'), zu = p.querySelector('#pc_zuse');
-    if (zg) zg.onclick = () => { devMatGive(1); closeTop(); showPouch(); };
-    if (zu) zu.onclick = () => { closeTop(); devMatUse(); }; }
+  { const zu = p.querySelector('#pc_zuse'); if (zu) zu.onclick = () => { closeTop(); devMatUse(); }; }
+  p.querySelectorAll('[data-xuse]').forEach(b => b.onclick = () => { closeTop(); xmatUse(b.dataset.xuse); });
   { const ad = p.querySelector('#pc_adm'); if (ad) ad.onclick = () => { closeTop(); admMatUse(); }; }
   p.querySelector('#pc_box').onclick = () => { closeTop(); hackBoxOpen(); };
   p.querySelector('#pc_fuse').onclick = () => { closeTop(); showFuseLab(); };
@@ -31997,6 +32214,7 @@ async function matMutPlay(card) {
     try { screenFlash('rgba(127,230,255,.28)', 360); SND.blip(784, { dur: .3, type: 'triangle', vol: .06, to: 1568, rev: .5 }); } catch (e) {}
     drawCards(1); blk(5 + act * 2, true); matPop(`管 관리 — 부적 1장 · 방어 +${5 + act * 2}`, '#7fe6ff'); syncAll();
   }
+  if (xmatAny(card)) { await xmatPlay(card, b, act); if (!G.b || b.over) return; }   /* 개발자 · 히든 원료 (판 76) */
   for (let i = 0; i < Ls; i++) {                                   /* 유성 — 세기만큼 별똥별 */
     const t = pick(alive()); if (!t) break;
     meteorFx(t); await wait(300); if (!G.b || b.over) return; pure(t, 5 + act * 2); await checkDeaths();
@@ -40123,6 +40341,7 @@ function tradeWhyNot(c) {
   if (c._evx) return '이벤트 동안 빌린 부적이다';
   if (d.devOnly || d.hackOnly || d.mpOnly || d.evOnly || d.eggOnly) return '전용 부적은 넘길 수 없다';
   if (d.type === 'curse' || d.rar === 'curse') return '저주는 넘길 수 없다';
+  if (xmatAny(c)) return '개발자 · 히든 원료가 깃든 부적은 넘길 수 없다';
   if (TRADE_NO_RAR.includes(d.rar)) return (GRADE[d.rar] ? GRADE[d.rar].n : d.rar) + '은(는) 넘길 수 없다';
   return '';
 }
