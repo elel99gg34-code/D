@@ -11609,13 +11609,13 @@ defCard({ id: 'eternalward', n: '만겁부', g: '劫', type: 'power', rar: 'ssx'
   txt: v => `매 턴 시작할 때 <i>${v.b}</i>의 방어도를 얻고, 방어도가 사라지지 않는다. 소멸.`,
   play: c => { st(P(), 'turnblock', c.v.b); st(P(), 'barricade', 1); SND.power(); flash('만겁부'); } });
 
-defCard({ id: 'namestrike', n: '이름을 지운다', g: '抹', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true,
+defCard({ id: 'namestrike', n: '이름을 지운다', g: '抹', type: 'attack', rar: 'ssx', cost: 2, tgt: 'enemy', exhaust: true, pct: true,
   v: u => ({ p: u ? 45 : 35 }),
   txt: v => `그 요괴의 <b>남은 체력의 ${v.p}%</b>를 없앤다. 소멸.`,
   play: c => { SND.voidhit(); impact('void', c.t);
     pure(c.t, Math.ceil(c.t.hp * c.v.p / 100)); } });
 
-defCard({ id: 'mumadu', n: '무마두의 숨결', g: '無', type: 'attack', rar: 'unknown', cost: 2, tgt: 'all', exhaust: true,
+defCard({ id: 'mumadu', n: '무마두의 숨결', g: '無', type: 'attack', rar: 'unknown', cost: 2, tgt: 'all', exhaust: true, pct: true,
   v: u => ({ p: u ? 40 : 32, d: u ? 40 : 30 }),
   txt: v => `<b>모든 적</b>의 남은 체력의 ${v.p}%를 없애고 <em>${v.d}</em>의 피해를 더한다.
     그 뒤 카드를 <b>3장</b> 뽑고 기를 <b>2</b> 얻는다. 소멸.`,
@@ -12169,13 +12169,17 @@ function xmatOn(c, k) { return xmatSee(c, k) && (XMAT[k].t !== 'dev' || xmatFigh
 function xmatAny(c) { return !!c && XMAT_K.some(k => c[XMAT[k].mut]); }
 function xmatMul(c) { let k = 1; for (const x of XMAT_K) if (c[XMAT[x].mut] && xmatOn(c, x)) k *= XMAT[x].mul; return k; }
 const MUT_HACK = 1.4, MUT_HACK_ECHO = .25;   /* 해킹 오염 — 수치 1.4배, 25% 확률로 버그가 나 한 번 더 */
+/* 「남은 체력의 n%」 부적(pct) — p 는 독이 아니라 몫이다. 벼림 · 원료 · 버프를 곱하면 100% 를 넘어
+   모든 적을 지우는 부적이 되었다. 더할수록 덜 오르고 PCT_CAP 에서 멈춘다 (판 77) */
+const PCT_CAP = 90;
+const pctUp = (B, k) => k <= 1 ? Math.max(1, Math.round(B * k)) : B >= PCT_CAP ? B : Math.min(PCT_CAP, Math.round(B + (PCT_CAP - B) * (1 - 1 / k)));
 function cval(c) {
-  const v = cdef(c).v(cup(c));
+  const d = cdef(c), v = d.v(cup(c));
   const asc = (typeof G !== 'undefined' && G.run) ? (G.run.asc || 0) : 0;
   const k = fgMul(c) * ASC.card(asc) * (c.mutS ? MUT_STAR : 1) * (c.mutH ? MUT_HACK : 1) * (c.mutG ? MUT_GHOST : 1) * (1 + .3 * mutLv(c, 'star')) * (1 + .15 * mutLv(c, 'gold')) * (1 + .2 * mutLv(c, 'aurora')) * (1 + .2 * mutLv(c, 'moon')) * (c.mutZ ? 2 : 1) * (c.mutAd && admMatOn(c) ? 1.5 : 1) * xmatMul(c) * buffPow();   /* 유성 +30%씩 · 풍요 +15%씩 (융합은 두 배) */   /* 벼림 × 환생 × 별의 특성 × 버프 「부적의 힘」 */
   if (k === 1) return v;
   const out = {};
-  for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? Math.max(1, Math.round(v[key] * k)) : v[key];
+  for (const key in v) out[key] = (typeof v[key] === 'number' && FORGE_KEYS[key]) ? (d.pct && key === 'p' ? pctUp(v[key], k) : Math.max(1, Math.round(v[key] * k))) : v[key];
   return out;
 }
 function ccost(c) {
@@ -12296,7 +12300,7 @@ defCard({ id: 'hk_error', n: '오류', g: '誤', type: 'curse', rar: 'curse', co
   v: () => ({}), txt: () => `박사가 심은 오류. 사용할 수 없다. 싸움이 끝나면 사라진다.`, play: () => {} });
 
 /* ── ?X급 — 실험 등급. 개발자의 권력 탭에서만 얻는다 (도감·보상·상자·상점·선물·맛보기 어디에도 없다) ── */
-defCard({ id: 'qx_void', n: '태허', g: '虛', type: 'attack', rar: 'qx', cost: 3, tgt: 'all', devOnly: true,
+defCard({ id: 'qx_void', n: '태허', g: '虛', type: 'attack', rar: 'qx', cost: 3, tgt: 'all', devOnly: true, pct: true,
   v: u => ({ p: u ? 70 : 60, s: u ? 4 : 3 }), costOf: u => u ? 2 : 3,
   txt: v => `모든 적이 <b>남은 체력의 ${v.p}%</b>를 잃는다(방어 무시). <b>힘</b> ${v.s}을 얻는다.`,
   play: c => { skillBanner('太 虛', true); for (const e of alive()) pure(e, Math.max(1, Math.floor(e.hp * c.v.p / 100))); st(P(), 'str', c.v.s); } });
@@ -12374,7 +12378,7 @@ defCard({ id: 's5_mirror', n: '오색반사', g: '鏡', type: 'skill', rar: 's5'
   txt: v => `<i>${v.b}</i>의 방어도와 <b>가시</b> ${v.th}를 얻고, 이번 턴 받는 피해가 <b>절반</b>이 된다.`,
   play: c => { blk(c.v.b, true); st(P(), 'thorns', c.v.th); G.b.halved = true; skillBanner('五 色 反 射', true);
     try { SND.block(); SND.holyhit(); } catch (e) {} syncAll(); } });
-defCard({ id: 's5_sunder', n: '오행단절', g: '斷', type: 'attack', rar: 's5', cost: 2, tgt: 'enemy', devOnly: true, b5Only: true,
+defCard({ id: 's5_sunder', n: '오행단절', g: '斷', type: 'attack', rar: 's5', cost: 2, tgt: 'enemy', devOnly: true, b5Only: true, pct: true,
   v: u => ({ p: u ? 65 : 50, d: u ? 35 : 25 }),
   txt: v => `다섯 기운을 끊는다 — 적의 <b>현재 체력의 ${v.p}%</b>를 없애고 <em>${v.d}</em>의 피해를 준다.`,
   play: async c => { const t = c.t; if (!t || t.hp <= 0) return; skillBanner('五 行 斷 絶', true);
