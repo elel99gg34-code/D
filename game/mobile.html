@@ -12928,6 +12928,7 @@ function fusionFor(ids) {
 function canFuse() { return G.run ? fusionFor(G.run.relics.map(r => r.id)) : []; }
 function doFuse(f) {
   const run = G.run;
+  if (!run || !run.relics.some(r => r.id === f.a) || !run.relics.some(r => r.id === f.b)) return false;   /* 연출 사이에 모험이 끝났거나 재료가 사라졌다 (판 77) */
   run.relics = run.relics.filter(r => r.id !== f.a && r.id !== f.b);
   const r = { id: f.to, used: false, isNew: true };
   run.relics.push(r);
@@ -13006,7 +13007,7 @@ function pipe(hook, val, ...args) {
 }
 function hasRelic(id) { return G.run && G.run.relics.some(r => r.id === id); }
 function gainRelic(id, silent) {
-  if (hasRelic(id)) return false;
+  if (!G.run || hasRelic(id)) return false;
   if (G.run.relics.length >= relicSlots()) { relicOverflow(id); return true; }
   const r = { id: id, used: false, isNew: true };
   G.run.relics.push(r);
@@ -13021,7 +13022,7 @@ function gainRelic(id, silent) {
    그 과정에서 창이 지워지지 않는다. */
 function relicOverflow(newId) { setTimeout(() => showRelicOverflow(newId), 90); }
 function showRelicOverflow(newId) {
-  const run = G.run, d = RELICS[newId];
+  const run = G.run, d = RELICS[newId]; if (!run || !d) return;
   if (run.relics.length < relicSlots()) {           /* 그 사이 자리가 났다면 그냥 준다 */
     const r = { id: newId, used: false, isNew: true };
     run.relics.push(r);
@@ -13056,7 +13057,7 @@ function showRelicOverflow(newId) {
   mk(newId, p.querySelector('#ro_new'), true);
 }
 function randomRelic(rar) {
-  const owned = new Set(G.run.relics.map(r => r.id));
+  const owned = new Set(G.run ? G.run.relics.map(r => r.id) : []);
   let pools = rar ? [rar] : ['common', 'common', 'common', 'uncommon', 'uncommon', 'rare'];
   pools = pools.filter(p => p !== 'fused');
   const cand = [];
@@ -21527,6 +21528,7 @@ function showRewards(kind) {
    ?급 회광반조는 제10막을 넘어선 사람에게만 나온다. */
 const SKILL_GATE = { basic: 1, common: 1, uncommon: 2, rare: 4, zero: 5, special: 7, ssc: 10, ssx: 13, jeol: 15, unknown: 17, sin: 21 };
 async function pickBossRelic() {
+  if (!G.run) return null;
   const owned = new Set(G.run.relics.map(r => r.id));
   const cand = RELIC_POOL.boss.filter(id => !owned.has(id));
   const three = sample(cand, 3);
@@ -22365,7 +22367,7 @@ function openFuse() {
 }
 let _fzTab = 'all';
 function showFuse() {
-  const run = G.run;
+  const run = G.run; if (!run) return;
   const have = new Set(run.relics.map(r => r.id));
   const st = f => (have.has(f.a) && have.has(f.b)) ? 'ready' : (have.has(f.a) || have.has(f.b)) ? 'half' : 'none';
   const cnt = { all: FUSIONS.length, ready: FUSIONS.filter(f => st(f) === 'ready').length, half: FUSIONS.filter(f => st(f) === 'half').length };
@@ -22407,7 +22409,9 @@ function showFuse() {
     tip(res.firstChild, f.to); row.appendChild(res);
     const btn = el('button', 'fzgo', s === 'ready' ? '<i>合</i>조합한다' : s === 'half' ? '하나 더' : '재료 부족');
     btn.disabled = s !== 'ready';
-    btn.onclick = async () => { btn.disabled = true; closeTop(); await fuseFx(f); doFuse(f); fuseFly(f); setTimeout(showFuse, 700); };
+    btn.onclick = async () => { btn.disabled = true; closeTop(); await fuseFx(f);
+      if (doFuse(f) === false) { if (G.run) toast('조합하지 못했다 — 재료가 그새 사라졌다'); return; }   /* 연출 동안 쓰러져 첫 화면으로 갔을 수 있다 */
+      fuseFly(f); setTimeout(() => { if (G.run) showFuse(); }, 700); };
     row.appendChild(btn);
     list.appendChild(row);
   });
@@ -23986,7 +23990,7 @@ async function freeBigBox(times) {
 }
 /* SSX급(합쳐진) 유물 하나를 고른다 — randomRelic 은 이 칸을 일부러 빼므로 따로 본다 */
 function randomFusedRelic() {
-  const owned = new Set(G.run.relics.map(r => r.id));
+  const owned = new Set(G.run ? G.run.relics.map(r => r.id) : []);
   const cand = (RELIC_POOL.fused || []).filter(id => !owned.has(id));
   return cand.length ? pick(cand) : null;
 }

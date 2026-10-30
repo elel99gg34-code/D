@@ -24,7 +24,8 @@ const open = async (vp = { width: 1280, height: 720 }, opt = {}) => {
   const ctx = await b.newContext(Object.assign({ viewport: vp }, opt));
   await ctx.route(u => /^https?:/.test(u.href), r => r.abort());
   const p = await ctx.newPage(); p.errs = [];
-  p.on('pageerror', e => p.errs.push(e.message));
+  /* 어디서 터졌는지도 — CI 에서 한 번만 나는 오류를 다시 찾을 수 있게 (판 77) */
+  p.on('pageerror', e => { const m = /at (\S+) \([^)]*?:(\d+):\d+\)/.exec(e.stack || ''); p.errs.push(e.message + (m ? ` @${m[1]}:${m[2]}` : '')); });
   p.on('console', m => { if (m.type() === 'error' && !/net::|Failed to load|fetch|ERR_/i.test(m.text())) p.errs.push('console: ' + m.text().slice(0, 160)); });
   p.on('dialog', d => d.dismiss());
   await p.goto('file://' + FILE); await p.waitForTimeout(1200);
