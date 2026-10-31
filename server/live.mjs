@@ -63,6 +63,21 @@ function luckyStep(now) {
   if (live.luckyOwed) for (const [id, xs] of Object.entries(live.luckyOwed)) { const keep2 = xs.filter(x => now - x.at < 3 * 86400000); if (keep2.length !== xs.length) { ch = true; if (keep2.length) live.luckyOwed[id] = keep2; else delete live.luckyOwed[id]; } }
   return ch;
 }
+/* ── 溫 온정의 밤 — 등불 나눔 (판 78) ─────────────────────────
+   백야가 퍼뜨리면 정한 시간 동안, 퇴마사가 격려 한 줄(정해 둔 말 가운데 하나)을 실은 등불을 띄우고
+   남이 띄운 등불을 받는다. 등불은 먼저 뜬 것부터 — 제 등불은 받지 않는다.
+   띄운 사람의 닉네임과 말은 소식(/live)에 남고(모두가 본다), 누가 받았는지는 띄운 사람에게만(warmThx).
+   웅덩이(warmP) · 고마움(warmThx)은 소식에 싣지 않는다. 끝나면 서른 분 동안 결과를 보이고 걷는다. */
+const WARM_MIN_MS = +process.env.WARM_MIN_MS || 60000;   /* 한 분 — 시험할 때만 줄인다 */
+const WARM_WORDS = 8, WARM_GIVE = 5, WARM_FRESH = 3, WARM_POOL = 3000;
+function warmStep(now) {
+  const W = live.warm; let ch = false;
+  if (W && !W.done && now > W.until) { W.done = true; W.end = now; ch = true; }
+  if (W && W.done && now > W.end + 30 * 60000) { live.warm = null; live.warmP = null; ch = true; }
+  if (live.warmThx) for (const [id, xs] of Object.entries(live.warmThx)) { const k2 = xs.filter(x => now - x.at < 3 * 86400000);
+    if (k2.length !== xs.length) { ch = true; if (k2.length) live.warmThx[id] = k2; else delete live.warmThx[id]; } }
+  return ch;
+}
 /* 때가 지난 것을 거둔다 — 읽을 때마다 한 번씩 */
 function expire(now) {
   let changed = false;
@@ -83,6 +98,7 @@ function expire(now) {
   if (live.deckx && now > live.deckx.until) { live.deckx = null; changed = true; }
   if (live.dspawn && now > live.dspawn.until) { live.dspawn = null; changed = true; }
   if (luckyStep(now)) changed = true;                                     /* 행운의 진열 — 추첨 · 걷기 (판 73) */
+  if (warmStep(now)) changed = true;                                      /* 온정의 밤 — 끝 · 걷기 (판 78) */
   if (live.wheel && live.wheel.done && now > live.wheel.landAt + 25000) { live.wheel = null; live.wheelP = null; changed = true; }
   if (live.mails && live.mails.some(m => now > m.until)) { live.mails = live.mails.filter(m => now <= m.until); changed = true; }
   if (live.hbForce && now > live.hbForce.until) { live.hbForce = null; changed = true; }
@@ -632,7 +648,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'lucky', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'lucky', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint', 'warm'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -1101,6 +1117,16 @@ async function applyCast(q) {
         until: now + Math.max(1, Math.min(30, parseInt(x.min, 10) || 3)) * LUCKY_MIN_MS, by: str(x.by, 12), n: 0, drawn: false };
       live.luckyP = { lid: now, join: {} };
     } else { live.lucky = null; live.luckyP = null; }
+  }
+  /* 온정의 밤 — 등불 나눔 (판 78) */
+  if ('warm' in q) {
+    const x = q.warm, now = Date.now();
+    if (x && typeof x === 'object') {
+      const g = (Array.isArray(x.goals) ? x.goals : []).map(v => Math.max(0, Math.min(100000, parseInt(v, 10) || 0))).filter(v => v > 0).sort((a, b) => a - b).slice(0, 3);
+      live.warm = { id: now, at: now, until: now + Math.max(1, Math.min(1440, parseInt(x.min, 10) || 120)) * WARM_MIN_MS, by: str(x.by, 12),
+        goals: g.length ? [...new Set(g)] : [20, 60, 150], n: 0, took: 0, lit: [] };
+      live.warmP = { wid: now, pool: [], gave: {}, took: {} };
+    } else { live.warm = null; live.warmP = null; }
   }
   /* 모두의 일일상점을 한 번 새로 진열 */
   if ('dsroll' in q) live.dsroll = q.dsroll ? { id: Date.now(), by: str(q.dsroll.by, 12) } : null;
@@ -1907,7 +1933,7 @@ async function handle(req, res) {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, admOk: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, warmP: undefined, warmThx: undefined, admOk: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -2434,6 +2460,49 @@ async function handle(req, res) {
       const left = xs.filter(x => x.lid !== lid);
       if (left.length !== xs.length) { if (left.length) live.luckyOwed[id] = left; else delete live.luckyOwed[id]; await keep(); alog(id, '행운의 진열 — 당첨 부적을 일일상점에 받았다').catch(() => {}); }
       return send(res, 200, { ok: true });
+    }
+    return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+  /* ── 온정의 밤 — 띄운다 · 받는다 · 고마움 (판 78) ── */
+  if (url.pathname.startsWith('/warm/') && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const now = Date.now(); if (expire(now)) await keep();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    { const bw = await banWhy(id, q.dev); if (bw) return send(res, 403, { ok: false, banned: true, why: bw }); }
+    const W = live.warm, P = live.warmP, open = !!(W && !W.done && now <= W.until && P && P.wid === W.id);
+    if (url.pathname === '/warm/float') {
+      if (!open) return send(res, 409, { ok: false, why: '지금은 등불을 띄우는 밤이 아니다' });
+      const w = parseInt(q.w, 10);
+      if (!(w >= 0 && w < WARM_WORDS)) return send(res, 400, { ok: false, why: '실을 말을 고르지 않았다' });
+      if ((P.gave[id] || 0) >= WARM_GIVE) return send(res, 429, { ok: false, why: `한 밤에 ${WARM_GIVE}개까지 띄운다` });
+      if (P.pool.length >= WARM_POOL) return send(res, 429, { ok: false, why: '하늘에 등불이 가득하다 — 조금 뒤에' });
+      const nick = str((await nickOf(id)) || id, 12);
+      P.gave[id] = (P.gave[id] || 0) + 1; P.pool.push({ id, nick, w, at: now });
+      W.n++; W.lit.unshift({ nick, w, at: now }); W.lit = W.lit.slice(0, 24);
+      await keep(); alog(id, '온정의 밤 — 등불을 띄웠다').catch(() => {});
+      return send(res, 200, { ok: true, n: W.n, mine: P.gave[id] });
+    }
+    if (url.pathname === '/warm/take') {
+      if (!open) return send(res, 409, { ok: false, why: '지금은 등불을 받는 밤이 아니다' });
+      const cap = q.fresh === true ? WARM_FRESH : 1;
+      if ((P.took[id] || 0) >= cap) return send(res, 429, { ok: false, why: '이 밤에 받을 몫을 다 받았다' });
+      const i = P.pool.findIndex(x => x.id !== id);                /* 먼저 뜬 것부터 — 제 등불은 빼고 */
+      if (i < 0) return send(res, 409, { ok: false, why: '아직 떠 있는 남의 등불이 없다 — 조금 뒤에 다시' });
+      const L = P.pool.splice(i, 1)[0], me = str((await nickOf(id)) || id, 12);
+      P.took[id] = (P.took[id] || 0) + 1; W.took++;
+      live.warmThx = live.warmThx || {};
+      const tx = live.warmThx[L.id] = live.warmThx[L.id] || []; tx.push({ nick: me, w: L.w, at: now }); if (tx.length > 50) tx.splice(0, tx.length - 50);
+      await keep();
+      return send(res, 200, { ok: true, from: L.nick, w: L.w, mine: P.took[id], took: W.took });
+    }
+    if (url.pathname === '/warm/me') {
+      const thx = (live.warmThx && live.warmThx[id]) || [];
+      if (thx.length) { delete live.warmThx[id]; await keep(); }    /* 한 번 건네면 걷는다 */
+      return send(res, 200, { ok: true, wid: W ? W.id : 0, gave: open ? P.gave[id] || 0 : 0, took: open ? P.took[id] || 0 : 0, thx, now });
     }
     return send(res, 404, { ok: false, why: '없는 자리' });
   }

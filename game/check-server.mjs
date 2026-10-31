@@ -7,6 +7,7 @@
      ④ 계정 지우기 — 신청 · 무르기 · 이레가 지나면 정리(시험에서는 짧게)
      ⑤ 오류 알림 — 묶어 세기 · 기기 한도 · 관리자만 본다
      ⑥ 점검 · 링크 금지 · 보이지 않는 글자 · /health · 배포 재시작(SIGTERM) 때 적고 내려간다
+     ⑦ 보안 (판 74) · ⑧ 온정의 밤 — 등불 나눔 (판 78)
    node game/check-server.mjs
    ══════════════════════════════════════════════════════════ */
 import fs from 'fs';
@@ -105,6 +106,29 @@ console.log('■ 서버 검사');
   /* 배포 재시작 */
   s3.kill('SIGTERM'); await new Promise(r => setTimeout(r, 1500));
   ok(s3.dead && s3.code === 0 && /SIGTERM/.test(s3.out), '배포 재시작(SIGTERM) — 적어 두고 조용히 내려간다');
+  s.kill();
+}
+/* ⑧ 온정의 밤 (판 78) — 띄운다 · 제 등불은 받지 않는다 · 먼저 뜬 것부터 · 몫 · 고마움은 한 번 · 소식에 웅덩이 없음 · 끝나면 닫힌다 */
+{
+  const s = await up({ WARM_MIN_MS: '2500' }), sf = Date.now() % 100000;
+  const A = await ask(s, '/auth/signup', { id: 'wa' + sf, pw: 'Abcd1234!x', nick: '등' + (sf % 1000) + '가' }), B = await ask(s, '/auth/signup', { id: 'wb' + sf, pw: 'Abcd1234!x', nick: '등' + (sf % 1000) + '나' });
+  const no = await ask(s, '/warm/float', { token: A.token, w: 1 });
+  await ask(s, '/cast', { code: KEY, warm: { min: 1, goals: [2, 5], by: '백야' } });
+  const f1 = await ask(s, '/warm/float', { token: A.token, w: 3 }), bad = await ask(s, '/warm/float', { token: A.token, w: 99 });
+  const self = await ask(s, '/warm/take', { token: A.token });
+  const t1 = await ask(s, '/warm/take', { token: B.token }), t2 = await ask(s, '/warm/take', { token: B.token });
+  const fl = []; for (let i = 0; i < 5; i++) fl.push((await ask(s, '/warm/float', { token: A.token, w: i }))._s);
+  const fr = await ask(s, '/warm/take', { token: B.token, fresh: true }), fr2 = await ask(s, '/warm/take', { token: B.token, fresh: true });
+  const lv = await (await fetch(s.U + '/live')).json();
+  const me = await ask(s, '/warm/me', { token: A.token }), me2 = await ask(s, '/warm/me', { token: A.token });
+  await new Promise(r => setTimeout(r, 2900));
+  const late = await ask(s, '/warm/float', { token: A.token, w: 0 }), lv2 = await (await fetch(s.U + '/live')).json();
+  ok(no._s === 409 && f1.ok && f1.n === 1 && bad._s === 400 && self._s === 409 && t1.ok && t1.w === 3 && /가$/.test(t1.from) && t2._s === 429,
+    '온정의 밤 — 띄운다 · 고를 말만 · 제 등불은 받지 않는다 · 받는 몫은 하나');
+  ok(fl.join() === '200,200,200,200,429' && fr.ok && fr.w === 0 && fr2._s === 200 && lv.warm && lv.warm.n === 5 && lv.warm.took === 3 && lv.warm.lit.length === 5 && !('warmP' in lv) && !('warmThx' in lv),
+    `온정의 밤 — 한 밤에 다섯 · 처음 온 이는 셋 · 먼저 뜬 것부터 · 소식에 웅덩이 · 고마움 없음 (${fl.join()})`);
+  ok(me.thx && me.thx.length === 3 && /나$/.test(me.thx[0].nick) && me.thx[0].w === 3 && me.gave === 5 && me2.thx.length === 0 && late._s === 409 && lv2.warm && lv2.warm.done,
+    '온정의 밤 — 고마움은 띄운 이에게 한 번 · 끝나면 닫히고 결과는 남는다');
   s.kill();
 }
 const line = `■ 서버 검사 — 통과 ${good.length} · 고칠 것 ${bad.length}`;

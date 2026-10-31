@@ -1846,6 +1846,81 @@ body.evdark #maphead .actsl{background:linear-gradient(90deg,transparent,rgba(23
 @media (max-width:640px),(max-height:440px){.lkpill{left:8px;top:calc(env(safe-area-inset-top,0px) + 46px);padding:3px 10px 3px 3px}.lkpill i{width:22px;height:22px;font-size:13px}.lkpill small{font-size:9.5px}
   .lkpill.inb{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 46px);left:auto;right:100px}.lkin{padding:12px 14px;gap:7px}.lkc{width:72px;padding:6px 3px}.lkc i{font-size:22px}}
 @media (prefers-reduced-motion:reduce){.lkpill,.lkc,.lkwin .lkrays{animation:none!important}}
+/* ══ 溫 온정의 밤 (판 78) ══ */
+.wmlamp{position:relative;width:54px;height:66px;flex:none;border-radius:44% 44% 36% 36%;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 58%,#fff6d0,#ffc070 40%,#e0702a 78%,#8a3a12);box-shadow:0 0 24px rgba(255,170,90,.8),0 0 60px rgba(255,120,40,.35);animation:wmSway 3.2s ease-in-out infinite}
+.wmlamp::before{content:'';position:absolute;left:30%;right:30%;top:-6px;height:8px;border-radius:3px;background:#5a2a10}
+.wmlamp::after{content:'';position:absolute;left:50%;bottom:-14px;width:2px;height:14px;margin-left:-1px;background:linear-gradient(#8a3a12,rgba(255,180,100,0))}
+.wmlamp i{position:absolute;inset:16% 20%;border-radius:40%;background:radial-gradient(circle,rgba(255,255,230,.9),transparent 70%);animation:wmFlick 1.6s ease-in-out infinite}
+.wmlamp b{position:relative;font-size:24px;color:#5a2408;text-shadow:0 0 6px #fff5d0}
+.wmlamp.big{width:90px;height:110px}.wmlamp.big b{font-size:40px}
+@keyframes wmSway{50%{transform:rotate(4deg) translateY(-4px)}}
+@keyframes wmFlick{50%{opacity:.65;transform:scale(.92)}}
+.wmpill{position:fixed;left:12px;top:calc(env(safe-area-inset-top,0px) + 98px);z-index:46;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:20px;cursor:pointer;font:inherit;
+  background:linear-gradient(135deg,rgba(60,28,10,.94),rgba(24,12,6,.94));border:1px solid rgba(255,180,106,.7);box-shadow:0 0 16px rgba(255,150,70,.35);animation:wmPill 2.6s ease-in-out infinite}
+.wmpill i{font-style:normal;width:28px;height:28px;border-radius:44% 44% 36% 36%;display:grid;place-items:center;font-size:15px;color:#5a2408;background:radial-gradient(circle at 50% 58%,#fff6d0,#ffc070 45%,#e0702a)}
+.wmpill span{display:flex;flex-direction:column;gap:1px;min-width:0;text-align:left}.wmpill b{font-weight:400;font-size:12.5px;color:#ffd9a0}.wmpill small{font-size:10.5px;color:#c8a88a;white-space:nowrap}
+.wmpill.inb{top:calc(env(safe-area-inset-top,0px) + 58px)}
+body:has(#overlay>*) :is(.wmpill,.lkpill){opacity:0;pointer-events:none}   /* 창이 열려 있으면 알약은 비킨다 */
+@keyframes wmPill{50%{box-shadow:0 0 26px rgba(255,150,70,.6)}}
+.mbox.wmbox{width:min(860px,96vw);align-items:stretch;max-height:92vh;overflow:auto}
+.wmbox>*{flex-shrink:0}
+.wmbox .mhead>i{background:radial-gradient(circle at 50% 58%,#fff6d0,#ffc070 40%,#e0702a)!important;color:#5a2408}
+.wmbar{position:relative;height:12px;margin:22px 10px 26px;border-radius:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,180,106,.35)}
+.wmbar>i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#e0702a,#ffd9a0);box-shadow:0 0 12px rgba(255,170,90,.7)}
+.wmbar u{position:absolute;top:-18px;transform:translateX(-50%);text-decoration:none;white-space:nowrap;display:flex;flex-direction:column;align-items:center;font-size:11px;color:#a8947a}
+.wmbar u b{font-weight:400}.wmbar u em{font-style:normal;margin-top:20px;font-size:10px}.wmbar u.on{color:#ffd9a0}
+.wmstat{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;font-size:13px;color:#c8b49a}.wmstat b{color:#ffd9a0;font-size:15px}
+.wmwarn{margin-top:8px;padding:8px 12px;border-radius:8px;background:rgba(224,86,106,.14);border:1px solid rgba(224,86,106,.4);color:#ffc0c8;font-size:12.5px;text-align:center}
+.wmcols{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-top:12px}
+.wmcol{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:rgba(255,170,90,.06);border:1px solid rgba(255,180,106,.25)}
+.wmcol h3,.wmh{margin:0;font-size:15px;font-weight:400;color:#ffd9a0;letter-spacing:.08em}.wmcol h3 small{font-size:11.5px;color:#a8947a;letter-spacing:0;margin-left:6px}
+.wmh{margin-top:14px}
+.wmwords{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wmwords button{padding:7px 8px;border-radius:8px;border:1px solid rgba(255,180,106,.25);background:rgba(20,10,4,.6);color:#e8d8c0;font:inherit;font-size:12px;text-align:left;cursor:pointer;line-height:1.35}
+.wmwords button.on{border-color:#ffb46a;background:rgba(255,150,70,.2);color:#fff;box-shadow:0 0 10px rgba(255,150,70,.35)}
+.wmnote{font-size:11.5px;color:#a8947a;line-height:1.5;margin:0}
+.wmgot{display:flex;flex-direction:column;gap:5px;font-size:12px}.wmgot>div{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:rgba(255,200,140,.08)}
+.wmgot b{color:#ffd9a0;font-weight:400}.wmgot span{color:#e8d8c0}.wmgot em,.wmlit em{font-style:normal;color:#8a7f68;font-size:12px}
+.wmlit{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;margin-top:8px;max-height:190px;overflow:auto}
+.wmlit>div{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,170,90,.07);font-size:12px;min-width:0}
+.wmlit i{font-style:normal;flex:none;width:22px;height:26px;border-radius:44% 44% 36% 36%;display:grid;place-items:center;font-size:11px;color:#5a2408;background:radial-gradient(circle at 50% 58%,#fff6d0,#ffc070 45%,#e0702a);box-shadow:0 0 8px rgba(255,150,70,.6)}
+.wmlit.thx i{background:radial-gradient(circle,#fff,#ffd76a 60%,#a07a20)}
+.wmlit b{color:#ffd9a0;font-weight:400;flex:none;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wmlit span{color:#d8c8b0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wmalert,.wmtake{position:fixed;inset:0;z-index:560;display:grid;place-items:center;animation:fadeIn .4s}
+.wmalert.out,.wmtake.out{opacity:0;transition:opacity .45s}
+.wmabg{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(255,150,70,.22),rgba(8,4,2,.86) 60%)}
+.wmain,.wmtin{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:min(92vw,520px);padding:22px 24px;border-radius:16px;
+  background:linear-gradient(160deg,rgba(60,28,10,.92),rgba(16,8,4,.95));border:1px solid rgba(255,180,106,.6);box-shadow:0 0 40px rgba(255,140,60,.35)}
+.wmain h3,.wmtin h3{margin:0;font-size:26px;font-weight:400;color:#fff;letter-spacing:.2em;text-shadow:0 0 14px #ffb46a}.wmtin h3{font-size:21px;letter-spacing:.04em;line-height:1.5}
+.wmain small,.wmtin small{color:#d8b896;font-size:12.5px}.wmtin small b{color:#ffd9a0;font-weight:400}
+.wmain p{margin:0;font-size:13px;color:#e8d8c0;line-height:1.7}.wmain p b{color:#ffd9a0}
+.wmtin .wmlamp.down{animation:wmDown 1.2s cubic-bezier(.2,1.2,.4,1),wmSway 3.2s ease-in-out 1.2s infinite}
+@keyframes wmDown{from{transform:translateY(-70vh) scale(.5);opacity:0}}
+.wmrw{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:13px;color:#ffd9a0}
+.wmfly{position:fixed;left:50%;bottom:8vh;z-index:540;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;transform:translateX(-50%);animation:wmFly 4.2s ease-in forwards}
+.wmfly span{font-size:15px;color:#ffe9c8;text-shadow:0 0 10px #000,0 0 14px rgba(255,150,70,.8);white-space:nowrap}
+@keyframes wmFly{0%{transform:translate(-50%,30px);opacity:0}15%{transform:translate(-50%,0);opacity:1}100%{transform:translate(-40%,-80vh) scale(.5);opacity:0}}
+.wmthx{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:530;display:flex;align-items:center;gap:10px;max-width:min(92vw,420px);padding:10px 14px;border-radius:12px;cursor:pointer;font:inherit;text-align:left;
+  background:linear-gradient(135deg,rgba(60,40,8,.96),rgba(20,12,4,.96));border:1px solid rgba(255,215,106,.7);box-shadow:0 0 20px rgba(255,200,90,.35);animation:wmThxIn .5s cubic-bezier(.2,1.3,.4,1)}
+.wmthx.out{opacity:0;transform:translateY(20px);transition:.5s}
+.wmthx>i{font-style:normal;flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:#3a2408;background:radial-gradient(circle at 35% 30%,#fff,#ffd76a 60%,#a07a20)}
+.wmthx span{display:flex;flex-direction:column;gap:2px;min-width:0}.wmthx b{font-weight:400;font-size:13px;color:#ffe9b0}.wmthx small{font-size:11.5px;color:#d8c8a0}
+@keyframes wmThxIn{from{transform:translateY(40px);opacity:0}}
+.wmbless{position:fixed;z-index:520;transform:translate(-50%,0);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;border-radius:12px;pointer-events:none;
+  background:rgba(40,18,6,.9);border:1px solid rgba(255,180,106,.7);box-shadow:0 0 18px rgba(255,150,70,.5);animation:wmBless 3.6s ease forwards;white-space:nowrap}
+.wmbless i{font-style:normal;font-size:18px;color:#ffb46a}.wmbless b{font-weight:400;font-size:12.5px;color:#ffd9a0}.wmbless span{font-size:13px;color:#fff}.wmbless em{font-style:normal;font-size:11.5px;color:#9fd8ff}
+@keyframes wmBless{0%{opacity:0;transform:translate(-50%,16px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-20px)}}
+#wmsky{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+#wmsky i{position:absolute;bottom:-40px;width:calc(18px * var(--s));height:calc(24px * var(--s));border-radius:44% 44% 36% 36%;opacity:0;
+  background:radial-gradient(circle at 50% 60%,#fff2c0,#ffb46a 45%,#e0602a 80%);box-shadow:0 0 14px rgba(255,180,100,.8),0 0 34px rgba(255,140,60,.4);animation:wmRise var(--d) linear var(--dl) infinite}
+#wmsky i em{position:absolute;top:115%;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;color:#ffe3b8;white-space:nowrap;text-shadow:0 0 6px #000}
+@keyframes wmRise{0%{transform:translate(0,0);opacity:0}8%{opacity:.9}50%{transform:translate(18px,-55vh)}90%{opacity:.6}100%{transform:translate(-10px,-115vh);opacity:0}}
+@media (max-width:640px),(max-height:440px){.wmpill{left:8px;top:calc(env(safe-area-inset-top,0px) + 80px);padding:3px 10px 3px 3px}.wmpill i{width:22px;height:22px;font-size:12px}.wmpill small{font-size:9.5px}
+  .wmpill.inb{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 80px);left:auto;right:100px}
+  .wmcols{grid-template-columns:1fr}.wmwords{grid-template-columns:1fr}.wmbar{margin:20px 6px 24px}
+  .wmain,.wmtin{padding:14px 16px;gap:7px}.wmain h3{font-size:20px}.wmtin h3{font-size:17px}.wmlamp.big{width:64px;height:78px}.wmlamp.big b{font-size:28px}}
+@media (prefers-reduced-motion:reduce){.wmlamp,.wmlamp i,.wmpill,#wmsky i,.wmfly{animation:none!important}#wmsky{display:none}}
 /* ══ 자연재해의 하늘 (판 73) ══ */
 #ndamb{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;animation:naIn 2.4s ease both}
 #ndamb.out{animation:naOut 1.5s ease forwards}
@@ -15777,6 +15852,7 @@ function startBattle(enemyIds, kind, opts) {
   try { dnBattleStart(b, b.kind); } catch (e) { console.error('낮과 밤', e); }     /* 밤의 요괴 (판 64) */
   try { gBufBattleStart(b, b.kind); gRaidBattleStart(b, b.kind); } catch (e) { console.error('길드', e); }   /* 길드 가호 · 영지 토벌 (판 65) */
   try { petBattleStart(b); } catch (e) { console.error('팻 성장', e); }   /* 감싸기 · 울부짖음 (판 68) */
+  try { warmBattleStart(b); } catch (e) { console.error('온정의 가호', e); }   /* 받은 등불 (판 78) */
   fire('battleStart');
   for (const e of b.enemies) pickIntent(e);
   syncAll();
@@ -30069,6 +30145,9 @@ function castQList() {
   /* 함께 하는 일 */
   add({ k: 'egg', g: '卵', c: '#f4e6c0', n: '비밀의 계란 — 8개(비밀 2) · 10분', cat: '함께 하는 일', al: '계란 egg', on: () => !!LIVE.egg, patch: () => hype('비밀의 계란', { egg: { n: 8, s: 2, min: 10 } }) });
   add({ k: 'eggoff', g: '止', n: '계란 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ egg: null }) });
+  add({ k: 'warm', g: '溫', c: '#ffb46a', n: '온정의 밤 — 등불 나눔 · 2시간 · 선물 20/60/150', cat: '함께 하는 일', al: '온정 등불 나눔 격려 warm',
+    on: () => !!warmOpen(), patch: () => hype('온정의 밤', { warm: { min: 120, goals: [20, 60, 150], by: admName() } }) });
+  add({ k: 'warmoff', g: '止', n: '온정의 밤 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ warm: null }) });
   add({ k: 'hunt', g: '探', c: '#c8a8ff', n: '숨은 부적 찾기 — 10명 · 5분 · 金500 玉50', cat: '함께 하는 일', al: '숨은 부적 찾기 hunt', on: () => !!LIVE.hunt,
     patch: () => hype('숨은 부적 찾기', { hunt: { max: 10, min: 5, gold: 500, dia: 50, jp: 0, cards: [] } }) });
   add({ k: 'huntoff', g: '止', n: '숨은 부적 거두기', cat: '함께 하는 일', red: 1, patch: () => ({ hunt: null }) });
@@ -30924,6 +31003,7 @@ async function liveFetch() {
     LIVE.deckx = d.deckx && typeof d.deckx === 'object' && d.deckx.id ? d.deckx : null;   /* 덱 바꾸기 */
     LIVE.dspawn = d.dspawn && typeof d.dspawn === 'object' && d.dspawn.id ? d.dspawn : null; /* 백야의 진열 */
     LIVE.lucky = d.lucky && typeof d.lucky === 'object' && d.lucky.id ? d.lucky : null;     /* 행운의 진열 (판 73) */
+    LIVE.warm = d.warm && typeof d.warm === 'object' && d.warm.id && Array.isArray(d.warm.goals) ? d.warm : null;   /* 온정의 밤 (판 78) */
     LIVE.dsroll = d.dsroll && typeof d.dsroll === 'object' && d.dsroll.id ? d.dsroll : null; /* 모두 새로 진열 */
     LIVE.pvpfix = d.pvpfix && typeof d.pvpfix === 'object' ? d.pvpfix : null;            /* 대전 선공 보정 */
     try { cpnTick(); } catch (e) {}
@@ -34332,6 +34412,7 @@ function liveTick() {
   try { deckxTick(); } catch (e) { console.error('덱 바꾸기', e); }
   try { dspawnTick(); } catch (e) { console.error('백야의 진열', e); }
   try { luckyTick(); } catch (e) { console.error('행운의 진열', e); }
+  try { warmTick(); } catch (e) { console.error('온정의 밤', e); }
   try { eggTick(); } catch (e) { console.error('숨은 것', e); }
   try { if (OPT.clock) clockTick(); } catch (e) {}
   const k = liveEvent(), left = evLeft(), rn = liveRain();
@@ -34767,6 +34848,16 @@ function drawCast(grid) {
       <div class="casthint" id="ct_lkodds"></div>
       <div class="castbtnrow"><button class="brush-btn gold" id="ct_lkgo">幸 퍼뜨린다</button><button class="brush-btn ghost" id="ct_lkoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button></div>
       <div class="casthint" id="ct_lknow"></div>
+    </div>
+    <div class="castsec lksec wmsec"><b>溫 온정의 밤 — 등불 나눔 (판 78)</b>
+      <div class="casthint">퍼지면 모두의 하늘에 등불이 오른다. 퇴마사는 정진 30을 들여 격려 한 줄(정해 둔 여덟 말)을 실은 등불을 띄우고(한 밤에 다섯), 남의 등불을 받는다(하나 · 처음 온 이는 셋).
+        받으면 정진 +40과 다음 싸움 세 번의 「온정의 가호」, 띄운 이에게는 받은 이의 이름 · 덕 +1 · 정진 +15. 띄운 등불이 정한 수에 닿을 때마다 함께한 모두에게 선물(정진 · 다이아).</div>
+      <div class="lkrow">
+        <label class="casthint">밤의 길이 <input id="ct_wmm" type="number" inputmode="numeric" min="1" max="1440" value="120">분</label>
+        <label class="casthint">선물 <input id="ct_wmg1" type="number" inputmode="numeric" min="1" max="100000" value="20"> · <input id="ct_wmg2" type="number" inputmode="numeric" min="1" max="100000" value="60"> · <input id="ct_wmg3" type="number" inputmode="numeric" min="1" max="100000" value="150">개</label>
+      </div>
+      <div class="castbtnrow"><button class="brush-btn gold" id="ct_wmgo">溫 퍼뜨린다</button><button class="brush-btn ghost" id="ct_wmoff" style="color:#e9dfc9;border-color:#8a7f68">거둔다</button></div>
+      <div class="casthint" id="ct_wmnow"></div>
     </div>
 
     <div class="castsec lvbsec"><b>💣 레벨업 폭탄 — 아이디를 아는 이에게</b>
@@ -35266,6 +35357,20 @@ function drawCast(grid) {
     send(patch, label).then(lkNow);
   };
   grid.querySelector('#ct_lkoff').onclick = () => send({ lucky: null }, '행운의 진열 거두기').then(lkNow);
+  /* 온정의 밤 (판 78) */
+  const wmNow = () => { const e = grid.querySelector('#ct_wmnow'); if (!e) return false; const x = warmLive();
+    e.innerHTML = !x ? '지금 — 온정의 밤 없음' : `${x.done ? '끝 — ' : '지금 — '}띄운 등불 <b>${x.n}</b> · 건네진 <b>${x.took}</b> · 선물 ${x.goals.join(' / ')}${x.done ? '' : ' · ' + wTime(Math.max(0, x.until - srvNow())) + ' 남음'}`; return true; };
+  wmNow(); { const t = setInterval(() => { if (!wmNow()) clearInterval(t); }, 2000); }
+  grid.querySelector('#ct_wmgo').onclick = () => {
+    const m = Math.max(1, Math.min(1440, Math.floor(+grid.querySelector('#ct_wmm').value || 120)));
+    const goals = [...new Set(['#ct_wmg1', '#ct_wmg2', '#ct_wmg3'].map(k => Math.max(1, Math.min(100000, Math.floor(+grid.querySelector(k).value || 1)))))].sort((a, b) => a - b);
+    const label = `온정의 밤 — ${m}분 · 선물 ${goals.join(' / ')}`;
+    if (!confirm(label + ' — 퍼뜨릴까?')) return;
+    const patch = hype('온정의 밤', { warm: { min: m, goals, by: admName() } });
+    if (grid.querySelector('#ct_cd').checked) return send({ count: { sec: cds(), label: '온정의 밤', then: patch } }, `카운트다운 ${cds()}초 → ${label}`).then(wmNow);
+    send(patch, label).then(wmNow);
+  };
+  grid.querySelector('#ct_wmoff').onclick = () => send({ warm: null }, '온정의 밤 거두기').then(wmNow);
   /* 레벨업 폭탄 */
   grid.querySelector('#ct_lbgo').onclick = async () => {
     const to = grid.querySelector('#ct_lbto').value.trim(), n = Math.max(1, Math.min(20, Math.floor(+grid.querySelector('#ct_lbn').value || 1)));
@@ -41136,6 +41241,196 @@ function ndAmbTick() {
     if (D.fx === 'bolt' && !OPT.noFlash) { try { screenFlash('rgba(225,238,255,.35)', 140); SND.thunder && Math.random() < .5 && SND.thunder(); } catch (e) {} }
     if (D.fx === 'quake' && bg) { bg.classList.remove('na-shake'); void bg.offsetWidth; bg.classList.add('na-shake'); }
   }
+}
+
+/* ══ 溫 온정의 밤 — 등불 나눔 (판 78) ══════════════════════════════
+   백야가 퍼뜨리면 정한 시간 동안 산 위로 등불이 오른다 — 사람과 사람을 잇는 밤.
+   · 띄운다 — 정진 30을 들여 격려 한 줄(정해 둔 여덟 말 가운데 하나)을 실은 등불을 띄운다 · 한 밤에 다섯
+   · 받는다 — 먼저 뜬 남의 등불 하나가 내려온다 · 처음 온 퇴마사(깬 막이 셋 미만)는 셋까지
+       받으면 정진 +40 · 「온정의 가호」 — 다음 싸움 세 번, 싸움을 열 때 방어도 (6 + 막×2) 와 띄운 이의 말
+   · 고마움 — 내 등불을 누가 받으면 그 이름이 내게 닿는다 · 덕(德) +1 · 정진 +15 (띄운 값의 반이 돌아온다)
+   · 모두의 등불 — 띄운 등불이 정한 수에 닿을 때마다 함께한(띄우거나 받은) 모두에게 선물
+   띄운 이의 닉네임과 말은 모두가 본다(하늘의 등불). 누가 받았는지는 띄운 이에게만. 로그인해야 함께한다.
+   말은 고른 것만 — 아무 글이나 실을 수 없으니 나쁜 말이 하늘에 뜨지 않는다. */
+const WARM_COST = 30, WARM_GIVE = 5, WARM_FRESH = 3, WARM_TAKE_JP = 40, WARM_THX_JP = 15, WARM_BLESS = 3;
+const WARM_WORDS = ['포기하지 마라 — 산 너머엔 아침이 온다', '그대의 부적은 아직 젖지 않았다', '넘어진 자리에서 다시 서면 된다', '혼자가 아니다 — 같은 밤을 걷는 이가 있다',
+  '오늘의 한 걸음이 내일의 길이 된다', '등불 하나면 된다 — 어둠은 생각보다 얇다', '그대가 지킨 것들이 그대를 지킨다', '다음 막에서 만나자'];
+const WARM_PAY = [{ jp: 40, dia: 10 }, { jp: 80, dia: 30 }, { jp: 150, dia: 60 }];
+const warmLive = () => { const x = LIVE.warm; return x && x.id && Array.isArray(x.goals) && x.goals.length ? x : null; };
+const warmOpen = () => { const x = warmLive(); return x && !x.done && srvNow() < x.until ? x : null; };
+function wmM() { const M = META.warm = META.warm || {}; M.ev = M.ev || {}; M.deok = M.deok || 0; M.thx = M.thx || []; return M; }
+function wmE(id) { const M = wmM(); return M.ev[id] = M.ev[id] || { at: Date.now(), gave: 0, took: 0, pay: 0, saw: 0, got: [] }; }
+const warmFresh = () => (META.cleared || 0) < 3;
+const warmCap = () => warmFresh() ? WARM_FRESH : 1;
+const wmWord = w => WARM_WORDS[w] || WARM_WORDS[0];
+const wmLamp = (cls = '') => `<div class="wmlamp ${cls}"><i></i><b>溫</b></div>`;
+let _wmMeAt = 0, _wmBusy = false;
+function warmTick() {
+  const x = warmLive(), open = warmOpen(), M = wmM();
+  for (const k of Object.keys(M.ev)) if (Date.now() - (M.ev[k].at || 0) > 7 * 86400000) delete M.ev[k];
+  let n = $('#wmpill');
+  if (open) {
+    const E = wmE(open.id);
+    if (!E.saw) { E.saw = Date.now(); saveMeta(); warmAlert(open); }
+    if (!n) { n = el('button', 'wmpill'); n.id = 'wmpill'; n.onclick = () => showWarm(); document.body.appendChild(n); }
+    n.classList.toggle('inb', !!G.b);
+    const next = open.goals.find(g => open.n < g);
+    const h = `<i>溫</i><span><b>온정의 밤 — 등불 ${open.n}개</b><small>${next ? `다음 선물까지 ${next - open.n}개` : '모든 선물이 열렸다'} · ${wTime(Math.max(0, open.until - srvNow()))} 남음</small></span>`;
+    if (n.innerHTML !== h) n.innerHTML = h;
+  } else if (n) n.remove();
+  warmSky(open);
+  if (x) warmGoals(x);
+  /* 고마움 — 띄운 등불이 있을 때만 묻는다 (밤 동안 서른 셈 · 끝난 뒤 사흘은 열다섯 분) */
+  const owe = Object.values(M.ev).some(e => e.gave > 0 && Date.now() - e.at < 3 * 86400000);
+  if (acctOn() && owe && Date.now() - _wmMeAt > (open ? 30000 : 15 * 60000)) { _wmMeAt = Date.now(); warmMe(); }
+}
+/* 모두의 등불 — 정한 수에 닿을 때마다 함께한 사람에게 */
+function warmGoals(x) {
+  const E = wmM().ev[x.id]; if (!E || !(E.gave || E.took)) return;
+  const paid = [];
+  x.goals.forEach((g, i) => { if (x.n >= g && !(E.pay & (1 << i))) { E.pay |= 1 << i; const p = WARM_PAY[i] || WARM_PAY[WARM_PAY.length - 1];
+    META.jp = (META.jp || 0) + p.jp; META.jpTotal = (META.jpTotal || 0) + p.jp; payDia(p.dia); paid.push(`${g}개 — 정진 ${p.jp} · 다이아 ${p.dia}`); } });
+  if (!paid.length) return;
+  saveMeta();
+  try { SND.unlock(); SND.coin && SND.coin(); sparkles(innerWidth / 2, innerHeight * .3, 30, '#ffd9a0', 200); stampWord('溫', '#ffb46a'); } catch (e) {}
+  toast(`溫 모두의 등불 ${paid.join(' / ')} — 함께한 모두에게`);
+}
+async function warmMe() {
+  const r = await acctAsk('/warm/me', { token: ACCT.token }, 8000); if (!r || !r.ok) return;
+  const x = warmLive(); if (x && r.wid === x.id) { const E = wmE(x.id); E.gave = Math.max(E.gave, r.gave || 0); E.took = Math.max(E.took, r.took || 0); }
+  const thx = (Array.isArray(r.thx) ? r.thx : []).filter(t => t && t.nick);
+  if (!thx.length) { saveMeta(); return; }
+  const M = wmM(), jp = thx.length * WARM_THX_JP;
+  M.deok += thx.length; META.jp = (META.jp || 0) + jp; META.jpTotal = (META.jpTotal || 0) + jp;
+  M.thx = thx.map(t => ({ nick: String(t.nick).slice(0, 12), w: t.w | 0, at: Date.now() })).concat(M.thx).slice(0, 30);
+  saveMeta(); warmThxFx(thx, jp);
+}
+/* 창 — 띄운다 · 받는다 · 하늘의 등불 · 나의 덕 */
+function showWarm() {
+  const x = warmLive(); if (!x) { toast('지금은 온정의 밤이 아니다'); return; }
+  const open = warmOpen(), E = wmE(x.id), M = wmM(), on = acctOn();
+  let sel = E.sel != null ? E.sel : Math.floor(Math.random() * WARM_WORDS.length);
+  const max = x.goals[x.goals.length - 1], pct = v => Math.min(100, v / max * 100).toFixed(1);
+  const p = modal(`<div class="mbox t-gold wmbox">
+    <div class="mhead"><i>溫</i><div><h2>온정의 밤 — 등불 나눔</h2><span>${wEsc(x.by || '백야')}가 산에 등불을 띄웠다 · ${open ? wTime(Math.max(0, x.until - srvNow())) + ' 남음' : '밤이 끝났다'}</span></div></div>
+    <div class="wmbar"><i style="width:${pct(x.n)}%"></i>${x.goals.map((g, i) => `<u class="${x.n >= g ? 'on' : ''}" style="left:${pct(g)}%"><b>${g}</b><em>${E.pay & (1 << i) ? '받음' : '선물'}</em></u>`).join('')}</div>
+    <div class="wmstat"><span>띄운 등불 <b>${x.n}</b></span><span>건네진 등불 <b>${x.took}</b></span><span>나의 덕(德) <b>${M.deok}</b></span></div>
+    ${on ? '' : '<div class="wmwarn">로그인하면 함께한다 — 등불을 띄우고 받으려면 계정이 있어야 한다</div>'}
+    <div class="wmcols">
+      <div class="wmcol"><h3>띄운다 <small>정진 ${WARM_COST} · 이 밤에 ${E.gave} / ${WARM_GIVE}</small></h3>
+        <div class="wmwords">${WARM_WORDS.map((w, i) => `<button data-w="${i}" class="${i === sel ? 'on' : ''}">${w}</button>`).join('')}</div>
+        <button class="brush-btn gold" id="wm_float"${!on || !open || E.gave >= WARM_GIVE ? ' disabled' : ''}>溫 등불을 띄운다</button>
+        <small class="wmnote">지금 정진 ${META.jp || 0} · 누가 받으면 그 이름이 그대에게 닿고 정진 ${WARM_THX_JP}이 돌아온다</small></div>
+      <div class="wmcol"><h3>받는다 <small>이 밤에 ${E.took} / ${warmCap()}${warmFresh() ? ' · 처음 온 퇴마사' : ''}</small></h3>
+        <p class="wmnote">먼저 뜬 남의 등불 하나가 내려온다 — 정진 +${WARM_TAKE_JP} · 다음 싸움 ${WARM_BLESS}번 「온정의 가호」(방어도와 띄운 이의 말)</p>
+        <button class="brush-btn gold" id="wm_take"${!on || !open || E.took >= warmCap() ? ' disabled' : ''}>등불을 받는다</button>
+        <div class="wmgot">${E.got.length ? E.got.map(g => `<div><b>${wEsc(g.from)}</b><span>「${wmWord(g.w)}」</span></div>`).join('') : '<em>아직 받은 등불이 없다</em>'}</div></div>
+    </div>
+    <h3 class="wmh">하늘의 등불</h3>
+    <div class="wmlit">${(x.lit || []).length ? x.lit.map(l => `<div><i>溫</i><b>${wEsc(l.nick)}</b><span>「${wmWord(l.w)}」</span></div>`).join('') : '<em>아직 아무도 띄우지 않았다 — 첫 등불이 되어 보라</em>'}</div>
+    ${M.thx.length ? `<h3 class="wmh">그대의 등불을 받은 이</h3><div class="wmlit thx">${M.thx.slice(0, 8).map(t => `<div><i>德</i><b>${wEsc(t.nick)}</b><span>「${wmWord(t.w)}」</span></div>`).join('')}</div>` : ''}
+    <div class="qfoot"><button class="brush-btn ghost" id="wm_x" style="color:#e9dfc9;border-color:#8a7f68">닫기</button></div></div>`, 'wmp');
+  p.dataset.noauto = '1';
+  p.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { sel = +b.dataset.w; E.sel = sel; p.querySelectorAll('[data-w]').forEach(z => z.classList.toggle('on', z === b)); try { SND.ui(); } catch (e) {} });
+  p.querySelector('#wm_float').onclick = () => warmFloat(sel);
+  p.querySelector('#wm_take').onclick = () => warmTake();
+  p.querySelector('#wm_x').onclick = closeTop;
+}
+async function warmFloat(w) {
+  const x = warmOpen(); if (!x) { toast('온정의 밤이 끝났다'); return; }
+  if (!acctOn()) { toast('로그인해야 등불을 띄운다'); return; }
+  const E = wmE(x.id);
+  if (E.gave >= WARM_GIVE) { toast(`한 밤에 ${WARM_GIVE}개까지 띄운다`); return; }
+  if ((META.jp || 0) < WARM_COST) { toast(`정진이 모자란다 — 등불 하나에 ${WARM_COST}`); SND.err(); return; }
+  if (_wmBusy) return; _wmBusy = true;
+  const r = await acctAsk('/warm/float', { token: ACCT.token, w }, 8000); _wmBusy = false;
+  if (!r.ok) { toast('온정의 밤 — ' + r.why); SND.err(); return; }
+  META.jp -= WARM_COST; E.gave = r.mine || E.gave + 1; x.n = Math.max(x.n, r.n || 0);
+  x.lit = [{ nick: ACCT.nick || '나', w, at: srvNow() }].concat(x.lit || []).slice(0, 24);
+  saveMeta(); try { stAdd('warm'); } catch (e) {}
+  closeTop(); warmFloatFx(w); warmTick();
+}
+async function warmTake() {
+  const x = warmOpen(); if (!x) { toast('온정의 밤이 끝났다'); return; }
+  if (!acctOn()) { toast('로그인해야 등불을 받는다'); return; }
+  const E = wmE(x.id);
+  if (E.took >= warmCap()) { toast('이 밤에 받을 몫을 다 받았다'); return; }
+  if (_wmBusy) return; _wmBusy = true;
+  const r = await acctAsk('/warm/take', { token: ACCT.token, fresh: warmFresh() }, 8000); _wmBusy = false;
+  if (!r.ok) { toast('온정의 밤 — ' + r.why); SND.err(); return; }
+  const from = String(r.from || '누군가').slice(0, 12), w = r.w | 0, M = wmM();
+  E.took = r.mine || E.took + 1; E.got.push({ from, w }); x.took = Math.max(x.took, r.took || 0);
+  META.jp = (META.jp || 0) + WARM_TAKE_JP; META.jpTotal = (META.jpTotal || 0) + WARM_TAKE_JP;
+  M.bless = { n: WARM_BLESS, from, w };
+  saveMeta(); closeTop(); warmTakeFx(from, w); warmTick();
+}
+/* 온정의 가호 — 싸움을 열 때, 받은 등불이 방패가 된다 */
+function warmBattleStart(b) {
+  const M = META.warm, B = M && M.bless;
+  if (!B || !(B.n > 0) || !b || !b.p || b.kind === 'pvp' || b.kind === 'mpbot' || b.replay) return;
+  const v = 6 + ((G.run && G.run.act) || 1) * 2;
+  b.p.block += v; B.n--; const left = B.n; if (B.n <= 0) M.bless = null; saveMeta();
+  setTimeout(() => { if (G.b !== b) return; try { syncPlayer(); } catch (e) {} warmBlessFx(B, v, left); }, 900);
+}
+/* ── 그림 ── */
+function warmAlert(x) {
+  document.querySelectorAll('.wmalert').forEach(n => n.remove());
+  const n = el('div', 'wmalert', `<div class="wmabg"></div><div class="wmain">${wmLamp('big')}
+      <small>白 ${wEsc(x.by || '백야')}가 산에 등불을 띄웠다 · ${Math.max(1, Math.round((x.until - x.at) / 60000))}분 동안</small>
+      <h3>온정의 밤</h3>
+      <p>정진을 들여 격려 한 줄을 실은 <b>등불을 띄우면</b>, 어딘가의 퇴마사가 그 등불을 받아 힘을 얻는다.<br>막 산에 오른 이에게는 등불이 셋까지 내려온다. 띄운 등불이 모이면 함께한 모두에게 선물.</p>
+      <div class="lkbtns"><button class="brush-btn gold" id="wma_go">등불을 보러 간다</button><button class="brush-btn ghost" id="wma_x" style="color:#e9dfc9;border-color:#8a7f68">나중에</button></div></div>`);
+  document.body.appendChild(n);
+  const close = () => { n.classList.add('out'); setTimeout(() => n.remove(), 450); };
+  n.querySelector('#wma_go').onclick = () => { close(); showWarm(); };
+  n.querySelector('#wma_x').onclick = close;
+  setTimeout(() => { if (n.isConnected) close(); }, AUTO.on ? 3500 : 14000);
+  try { SND.unlock(); SND.bell && SND.bell(); sparkles(innerWidth / 2, innerHeight * .4, 22, '#ffd9a0', 200); } catch (e) {}
+}
+function warmFloatFx(w) {
+  const n = el('div', 'wmfly', `${wmLamp('big')}<span>「${wmWord(w)}」</span>`);
+  document.body.appendChild(n); setTimeout(() => n.remove(), 4400);
+  try { SND.unlock(); SND.bell && SND.bell(); sparkles(innerWidth / 2, innerHeight * .78, 26, '#ffd9a0', 160); } catch (e) {}
+  toast('溫 등불을 띄웠다 — 누군가에게 닿으면 그 이름이 그대에게 온다');
+}
+function warmTakeFx(from, w) {
+  const n = el('div', 'wmtake', `<div class="wmabg"></div><div class="wmtin">${wmLamp('big down')}
+      <small><b>${wEsc(from)}</b>의 등불이 내려왔다</small><h3>「${wmWord(w)}」</h3>
+      <div class="wmrw"><span>精 정진 +${WARM_TAKE_JP}</span><span>溫 온정의 가호 — 다음 싸움 ${WARM_BLESS}번</span></div>
+      <div class="lkbtns"><button class="brush-btn gold" id="wmt_ok">고맙다</button></div></div>`);
+  document.body.appendChild(n);
+  const close = () => { if (n.classList.contains('out')) return; n.classList.add('out'); setTimeout(() => n.remove(), 500); };
+  n.querySelector('#wmt_ok').onclick = close;
+  setTimeout(close, AUTO.on ? 3500 : 15000);
+  try { SND.unlock(); SND.gong(); setTimeout(() => { try { SND.bell && SND.bell(); const cx = innerWidth / 2, cy = innerHeight * .36;
+    sparkles(cx, cy, 40, '#ffd9a0', 220); shockRing(cx, cy, 300, '#ffb46a'); stampWord('溫', '#ffb46a'); } catch (e) {} }, 1100); } catch (e) {}
+}
+function warmThxFx(thx, jp) {
+  const t = thx[0], more = thx.length - 1;
+  document.querySelectorAll('.wmthx').forEach(n => n.remove());
+  const n = el('button', 'wmthx', `<i>德</i><span><b>${wEsc(t.nick)}${more ? ` 외 ${more}명` : ''}이(가) 그대의 등불을 받았다</b><small>「${wmWord(t.w)}」 · 덕 +${thx.length} · 정진 +${jp}</small></span>`);
+  n.onclick = () => { n.remove(); if (warmLive()) showWarm(); };
+  document.body.appendChild(n);
+  setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 500); }, 8000);
+  try { SND.unlock(); SND.bell && SND.bell(); } catch (e) {}
+}
+function warmBlessFx(B, v, left) {
+  const pp = P() && P().el ? centerOf(P().el) : { x: innerWidth * .2, y: innerHeight * .45 };
+  const n = el('div', 'wmbless', `<i>溫</i><b>${wEsc(B.from)}의 등불</b><span>「${wmWord(B.w)}」</span><em>방어 +${v}${left ? ` · 남은 가호 ${left}` : ' · 가호가 다했다'}</em>`);
+  n.style.left = pp.x + 'px'; n.style.top = (pp.y - 120) + 'px';
+  document.body.appendChild(n); setTimeout(() => n.remove(), 3600);
+  try { sparkles(pp.x, pp.y, 18, '#ffd9a0', 120); SND.blip(660, { dur: .5, type: 'sine', vol: .05, to: 990, rev: .7 }); } catch (e) {}
+}
+/* 하늘의 등불 — 밤 동안 지도 · 첫 화면 뒤로 등불이 오른다 (띄운 이의 이름을 달고) */
+function warmSky(open) {
+  let n = $('#wmsky'); const bg = $('#bg');
+  const want = !!(open && bg && !G.b && OPT.particles !== false && !document.body.classList.contains('lite'));
+  if (!want) { if (n) n.remove(); return; }
+  const names = (open.lit || []).slice(0, 8).map(l => l.nick), key = open.id + ':' + names.join(',');
+  if (n && n.parentElement === bg && n.dataset.k === key) return;
+  if (n) n.remove();
+  n = el('div', '', Array.from({ length: 16 }, (_, i) => `<i style="left:${4 + (i * 61) % 92}%;--d:${14 + (i * 7) % 11}s;--dl:${(-(i * 3.7) % 20).toFixed(1)}s;--s:${(.6 + (i % 5) * .12).toFixed(2)}">${i < names.length ? `<em>${wEsc(names[i])}</em>` : ''}</i>`).join(''));
+  n.id = 'wmsky'; n.dataset.k = key; bg.appendChild(n);
 }
 
 /* ══ 幸 행운의 진열 (판 73) ════════════════════════════════════
