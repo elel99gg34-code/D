@@ -41,7 +41,8 @@ console.log('■ 판 검사');
     const out = { cards: [], pots: [], events: [], fights: [], n: 0 };
     newRun(0); closeOverlay();
     const fresh = () => { if (G.b) { G.b.over = true; battleWatch(false); G.b = null; } closeOverlay(); document.querySelectorAll('.cut').forEach(x => x.remove()); if (!G.run) { newRun(0); closeOverlay(); } G.run.hp = G.run.maxHp; };
-    const arena = async () => { fresh(); G.run.act = 6; startBattle(['boar', 'spirit'], 'normal'); await sleep(20); for (let i = 0; i < 60 && G.b.busy; i++) await sleep(15); G.b.busy = false; for (const e of G.b.enemies) { e.maxHp = e.hp = 99999; } };
+    /* 판 80 — 각성한 요괴가 부적을 가로채 되던지므로, 연습판에서 쓰러지지 않게 체력을 넉넉히 */
+    const arena = async () => { fresh(); G.run.act = 6; G.run.maxHp = G.run.hp = 9999; startBattle(['boar', 'spirit'], 'normal'); await sleep(20); for (let i = 0; i < 60 && G.b.busy; i++) await sleep(15); G.b.busy = false; for (const e of G.b.enemies) { e.maxHp = e.hp = 99999; } };
     const WAIT_PICK = new Set(['ready']);                     /* 고르는 창을 띄우고 기다리는 부적 */
     await arena();
     for (const id of Object.keys(CARDS)) {
