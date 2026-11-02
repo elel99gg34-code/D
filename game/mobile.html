@@ -24274,14 +24274,15 @@ function grantMilestones(before, after) {
    하루(한국 시각 자정)에 한 번 새로 진열한다. 다이아로만 산다.
      한 칸의 등급 — S급 6% · 0등급 8% · 1등급 22% · 2등급 30% · 나머지 3등급
                     그리고 아주 드물게 ?X급 (0.01%)
-     새로 진열 — 하루 한 번 공짜, 그다음은 玉 30
+     새로 진열 — 하루 한 번 공짜, 그다음은 玉 60
+     값 (판 79 에서 두 배로) — 3등급 160 · 2등급 300 · 1등급 600 · 0등급 1200 · S급 3000 · ?X급 8000 · 강화는 1.3배
    할인권(券)은 10 · 30 · 50% 세 가지. 백야가 퍼뜨리거나 우편·비밀 코드·바퀴로 받는다.
    한 번 살 때 한 장 — 일일상점과 상자(뽑기)의 다이아 값에 쓴다.
    관리자가 「오늘의 특가」를 걸면 일일상점 값이 더 내려간다.
    ══════════════════════════════════════════════════════════ */
-const DSHOP_N = 6, DSHOP_RR = 30;
+const DSHOP_N = 6, DSHOP_RR = 60;
 const DSHOP_ODDS = [['qx', .0001], ['special', .06], ['zero', .08], ['rare', .22], ['uncommon', .30]];
-const DSHOP_PRICE = { common: 80, uncommon: 150, rare: 300, zero: 600, special: 1500, qx: 4000 };
+const DSHOP_PRICE = { common: 160, uncommon: 300, rare: 600, zero: 1200, special: 3000, qx: 8000 };   /* 판 79 — 두 배로 */
 const CPN = { c10: { p: 10, n: '10% 할인권', c: '#9fe0ff' }, c30: { p: 30, n: '30% 할인권', c: '#ffb0d0' }, c50: { p: 50, n: '50% 할인권', c: '#ffd76a' } };
 const CPN_KS = Object.keys(CPN);
 const cpnHave = k => Math.max(0, +((META.cpn || {})[k]) || 0);
