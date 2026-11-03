@@ -1921,6 +1921,129 @@ body:has(#overlay>*) :is(.wmpill,.lkpill){opacity:0;pointer-events:none}   /* �
   .wmcols{grid-template-columns:1fr}.wmwords{grid-template-columns:1fr}.wmbar{margin:20px 6px 24px}
   .wmain,.wmtin{padding:14px 16px;gap:7px}.wmain h3{font-size:20px}.wmtin h3{font-size:17px}.wmlamp.big{width:64px;height:78px}.wmlamp.big b{font-size:28px}}
 @media (prefers-reduced-motion:reduce){.wmlamp,.wmlamp i,.wmpill,#wmsky i,.wmfly{animation:none!important}#wmsky{display:none}}
+/* ══ 컷씬 영화 층 (판 83) ══ */
+.cut .cutvig2,.cut .cutleak,.cut .cutgrain,.cut .cutlines,.cut .cutca,.cut .cutflare,.cut .cutscan,.fscine>*{position:absolute;pointer-events:none}
+.cutvig2{inset:0;z-index:6;background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.55) 100%);animation:cVig 4.6s ease-in-out infinite}
+@keyframes cVig{50%{opacity:.7}}
+.cutleak{inset:0;z-index:6;mix-blend-mode:screen;opacity:.6;overflow:hidden}
+.cutleak i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(40px);opacity:.22;animation:cLeak 14s ease-in-out infinite alternate}
+.cutleak i:nth-child(1){left:-25vmax;top:-22vmax;background:radial-gradient(circle,#ff8a3a,transparent 65%)}
+.cutleak i:nth-child(2){right:-25vmax;bottom:-25vmax;background:radial-gradient(circle,#3a8aff,transparent 65%);animation-duration:18s;animation-delay:-6s}
+.cutleak i:nth-child(3){left:30%;top:-38vmax;background:radial-gradient(circle,#ff3a9a,transparent 65%);animation-duration:22s;animation-delay:-11s;opacity:.14}
+@keyframes cLeak{to{transform:translate(8vmax,6vmax) scale(1.2);opacity:.38}}
+.cutgrain{inset:-50%;z-index:6;opacity:.08;mix-blend-mode:overlay;animation:cGrain .5s steps(4) infinite;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@keyframes cGrain{0%{transform:translate(0,0)}25%{transform:translate(-6%,4%)}50%{transform:translate(5%,-3%)}75%{transform:translate(-3%,-6%)}100%{transform:translate(4%,5%)}}
+.cutlines{inset:-20%;z-index:6;opacity:0;mix-blend-mode:screen;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.6) 0 .5deg,transparent .5deg 5.5deg);
+  -webkit-mask:radial-gradient(circle,transparent 24%,#000 62%);mask:radial-gradient(circle,transparent 24%,#000 62%)}
+.cutlines.on{animation:cLines .6s ease-out}
+@keyframes cLines{0%{opacity:.85;transform:scale(1.18) rotate(0)}100%{opacity:0;transform:scale(1) rotate(5deg)}}
+.cutca{inset:0;z-index:6;opacity:0;box-shadow:inset 10px 0 34px rgba(255,0,70,.6),inset -10px 0 34px rgba(0,220,255,.6)}
+.cutca.on{animation:cCA .5s ease-out}
+@keyframes cCA{0%{opacity:1}100%{opacity:0}}
+.cutflare{left:-10%;right:-10%;top:50%;height:3px;margin-top:-1px;z-index:6;opacity:0;mix-blend-mode:screen;
+  background:linear-gradient(90deg,transparent,var(--fc,#bfe0ff) 30%,#fff 50%,var(--fc,#bfe0ff) 70%,transparent);
+  box-shadow:0 0 30px 6px var(--fc,#9fd0ff),0 0 90px 22px color-mix(in srgb,var(--fc,#9fd0ff) 40%,transparent)}
+.cutflare.on{animation:cFlare 1s cubic-bezier(.2,.9,.3,1)}
+@keyframes cFlare{0%{opacity:0;transform:scaleX(.1)}14%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1.35)}}
+.cutscan{left:0;right:0;top:0;height:2px;z-index:8;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,230,170,.95),transparent);box-shadow:0 0 18px rgba(255,210,140,.8);
+  animation:cScan 1.4s .15s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes cScan{0%{opacity:0;top:0}10%{opacity:1}100%{opacity:0;top:100%}}
+.cutbars i:first-child{box-shadow:0 1px 0 rgba(255,215,140,.38),0 8px 26px rgba(0,0,0,.7)}
+.cutbars i:last-child{box-shadow:0 -1px 0 rgba(255,215,140,.38),0 -8px 26px rgba(0,0,0,.7)}
+.cutsub .cch{display:inline-block;opacity:0;filter:blur(6px);transform:translateY(9px) scale(1.15);animation:cchIn .55s cubic-bezier(.2,.9,.3,1) forwards;animation-delay:calc(var(--i) * 28ms)}
+@keyframes cchIn{to{opacity:1;filter:none;transform:none}}
+.cutsub.on::after{content:'';position:absolute;left:8%;right:8%;bottom:-9px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,140,.85),transparent);transform:scaleX(0);animation:cUnder 1s .15s ease forwards}
+@keyframes cUnder{to{transform:scaleX(1)}}
+.cuttitle.tpop::before{content:'';position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;margin:-60vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,240,200,.32),transparent 40%);animation:cTpop 1.2s ease-out forwards}
+.cuttitle.tpop::after{content:'';position:absolute;top:0;bottom:0;width:22%;left:-30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.3),transparent);mix-blend-mode:screen;animation:cTsweep 1.2s .1s ease-in-out forwards}
+@keyframes cTpop{from{transform:scale(.3);opacity:1}to{transform:scale(1);opacity:0}}
+@keyframes cTsweep{to{left:120%}}
+.fscine{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+body.lite :is(.cutgrain,.cutleak),body.autolite :is(.cutgrain,.cutleak){display:none}
+@media (prefers-reduced-motion:reduce){.cutgrain,.cutleak i,.cutlines,.cutca,.cutflare,.cutscan,.cutvig2,.cutsub .cch{animation:none!important}.cutsub .cch{opacity:1;filter:none;transform:none}.cutgrain,.cutscan,.cutlines,.cutca{display:none}}
+/* ══ 합성소 — 단계마다 다른 무대 (판 83) ══ */
+.fuselab .flstate{display:inline-flex;align-items:center;gap:8px;margin:8px auto 6px;padding:4px 14px 4px 4px;border-radius:16px;font-size:13px;letter-spacing:.12em;color:#efe6ff;background:rgba(255,255,255,.06);border:1px solid rgba(216,200,255,.35)}
+.fuselab .flstate i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:rgba(216,200,255,.25);color:#fff}
+.fuselab .flfx{position:fixed;inset:0;pointer-events:none;z-index:0}
+.fuselab .flfx i{position:absolute;opacity:0}
+.fuselab .flbg,.fuselab .flseal{transition:filter 1s,background 1s,opacity 1s}
+/* 一 부르기 — 별자리 관측소 */
+.fuselab.st-none .flstage::before{content:'';position:absolute;left:20%;right:20%;top:50%;height:2px;background:repeating-linear-gradient(90deg,rgba(216,200,255,.7) 0 6px,transparent 6px 14px);animation:flDash 1.4s linear infinite}
+.fuselab .flstage{position:relative}
+@keyframes flDash{to{background-position:28px 0}}
+.fuselab.st-none .flinv{padding:14px;border-radius:14px;background:linear-gradient(135deg,rgba(60,40,120,.5),rgba(10,8,30,.8));border:1px solid rgba(216,200,255,.45);box-shadow:0 0 30px rgba(140,110,255,.3)}
+.fuselab.st-none .flinv input{background:rgba(0,0,0,.4);border:1px solid rgba(216,200,255,.5);color:#fff;border-radius:8px}
+/* 二 기다림 — 신호의 파문 (청록) */
+.fuselab.st-invite .flbg{background:radial-gradient(ellipse at 30% 60%,#0e3a40,#03090c 70%)}
+.fuselab.st-invite .flseal{filter:drop-shadow(0 0 12px #6af0e0) hue-rotate(-110deg)}
+.fuselab.st-invite .fl-ring{left:calc(50% - 30vw);top:50%;width:140px;height:140px;margin:-70px;border-radius:50%;border:2px solid #6af0e0;animation:flRing 2.4s ease-out infinite}
+.fuselab.st-invite .fl-ring:nth-child(2){animation-delay:.8s}.fuselab.st-invite .fl-ring:nth-child(3){animation-delay:1.6s}
+@keyframes flRing{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(4.2)}}
+.fuselab.st-invite .flped.ot .flslot{animation:flWait 1.6s ease-in-out infinite}
+@keyframes flWait{50%{box-shadow:0 0 30px #6af0e0;transform:scale(1.05)}}
+.fuselab.st-invite .flstate{border-color:#6af0e0;color:#d8fff8}.fuselab.st-invite .flstate i{background:rgba(106,240,224,.35)}
+/* 三 재료 — 연금 화로 (주홍 · 금) */
+.fuselab.st-pick .flbg{background:radial-gradient(ellipse at 50% 70%,#4a1a06,#120402 62%,#050101)}
+.fuselab.st-pick .flseal{filter:sepia(1) saturate(4) hue-rotate(-18deg) brightness(1.05) drop-shadow(0 0 14px #ff8a3a);opacity:.7}
+.fuselab.st-pick .flstars i{background:#ffb070;box-shadow:0 0 6px #ff7a2a}
+.fuselab.st-pick .flmid{position:relative}
+.fuselab.st-pick .flmid::before{content:'';position:absolute;left:50%;top:44px;width:190px;height:96px;margin-left:-95px;border-radius:0 0 95px 95px;
+  background:linear-gradient(180deg,#3a2414,#120a04);border:2px solid #c8902a;border-top:4px solid #e8b04a;box-shadow:0 0 40px rgba(255,120,40,.5),inset 0 -20px 40px rgba(255,90,20,.35);z-index:-1}
+.fuselab.st-pick .fl-ember{left:calc(50% - 40px + var(--x,0px));bottom:30%;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#fff,#ff8a3a 50%,transparent 72%);animation:flEmber 2.2s ease-in infinite}
+.fuselab.st-pick .fl-ember:nth-of-type(4){--x:14px;animation-delay:-.5s}.fuselab.st-pick .fl-ember:nth-of-type(5){--x:40px;animation-delay:-1s}
+.fuselab.st-pick .fl-ember:nth-of-type(6){--x:62px;animation-delay:-1.5s}.fuselab.st-pick .fl-ember:nth-of-type(7){--x:80px;animation-delay:-.8s}
+@keyframes flEmber{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-220px) translateX(10px)}}
+.fuselab.st-pick .flmats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.fuselab.st-pick .flmat{clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);border-radius:0!important;padding:16px 22px!important;min-width:118px;
+  background:linear-gradient(160deg,rgba(var(--mr),.4),rgba(20,8,4,.92))!important;border:none!important;box-shadow:none!important;transition:transform .2s,filter .2s}
+.fuselab.st-pick .flmat:hover:not(:disabled){transform:translateY(-3px) scale(1.05);filter:brightness(1.25)}
+.fuselab.st-pick .flmat.on{filter:brightness(1.4) drop-shadow(0 0 10px rgba(var(--mr),1));transform:scale(1.08)}
+.fuselab.st-pick .flready{width:118px;height:118px;padding:0!important;min-width:0!important;flex:none;border-radius:50%!important;font-size:16px;background:radial-gradient(circle at 40% 35%,#e8483a,#8a1410)!important;color:#fff!important;border:3px solid #ffd76a!important;box-shadow:0 0 24px rgba(255,90,40,.6)}
+.fuselab.st-pick .flready.on{background:radial-gradient(circle at 40% 35%,#ffd76a,#a07a20)!important;color:#2a1a08!important;animation:flReady 1.2s ease-in-out infinite}
+@keyframes flReady{50%{box-shadow:0 0 44px #ffd76a}}
+.fuselab.st-pick .flstate{border-color:#ff9a4a;color:#ffe6d0}.fuselab.st-pick .flstate i{background:rgba(255,120,40,.4)}
+/* 四 합친다 — 흰 금빛 */
+.fuselab.st-fuse .flbg{background:radial-gradient(ellipse at 50% 55%,#fff6d8,#c8a050 40%,#2a1a06 80%)}
+.fuselab.st-fuse .flseal{filter:drop-shadow(0 0 22px #fff) brightness(1.6);opacity:.9}
+/* — 떠났다 — 잿빛 */
+.fuselab.st-gone .flbg{filter:grayscale(1) brightness(.6)}.fuselab.st-gone .flseal{opacity:.15}
+@media (prefers-reduced-motion:reduce){.fuselab .flfx i,.fuselab.st-none .flstage::before{animation:none!important}}
+/* 청 — 밀랍 찍힌 두루마리 (판 83) */
+.panel.fuinvp{background:radial-gradient(ellipse at 50% 45%,rgba(60,40,90,.6),rgba(6,4,10,.94) 70%)}
+.fuinvp .fuinv{position:relative;width:min(440px,90vw);padding:42px 30px 28px;text-align:center;color:#3a2410;
+  background:linear-gradient(180deg,#efe2bf,#e2d0a2 50%,#efe2bf);box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 0 40px rgba(140,100,40,.35);animation:fuUnroll .7s cubic-bezier(.2,.9,.3,1)}
+.fuinvp .fuinv::before,.fuinvp .fuinv::after{content:'';position:absolute;left:-14px;right:-14px;height:16px;border-radius:8px;background:linear-gradient(180deg,#6a3a18,#2a1408);box-shadow:0 3px 8px rgba(0,0,0,.5)}
+.fuinvp .fuinv::before{top:-8px}.fuinvp .fuinv::after{bottom:-8px}
+@keyframes fuUnroll{from{transform:scaleY(.06);opacity:.4}}
+.fuinvp .fuinv h2{color:#5a2a10!important;letter-spacing:.3em;margin:12px 0 14px!important}
+.fuinvp .fuinv .hint{color:#5a4024!important;margin-top:0!important;line-height:1.7}.fuinvp .fuinv .hint b{color:#a0300f!important}
+.fuinvp .fuinv .brush-btn.gold{color:#fff4e0!important;background:linear-gradient(180deg,#9a3a1a,#6a1e0c)!important;border-color:#c8802a!important}
+.fuinvp .fuinv .brush-btn.ghost{color:#5a3a20!important;border-color:#8a6a40!important;background:rgba(255,255,255,.25)!important}
+.fuinvp .fuwax{position:absolute;right:18px;top:18px;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#ffe0c0;
+  background:radial-gradient(circle at 35% 30%,#d8402a,#7a120a);box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 0 0 4px rgba(0,0,0,.15);transform:rotate(-12deg);animation:fuWax .5s .5s cubic-bezier(.2,1.6,.4,1) backwards}
+@keyframes fuWax{from{transform:rotate(-12deg) scale(2.4);opacity:0}}
+/* 유물 조합 — 가죽 장정 고서 · 양피지 조합표 (판 83) */
+.panel.fusep{background:radial-gradient(ellipse at 50% 30%,rgba(70,40,20,.55),rgba(10,6,4,.95) 70%)}
+.fusep .fzbox{padding:22px 24px;border-radius:6px;background:linear-gradient(135deg,#3a2414,#22140a 60%,#2e1c10);border:2px solid #8a6a32;
+  box-shadow:0 30px 80px rgba(0,0,0,.7),inset 0 0 0 6px rgba(0,0,0,.25),inset 0 0 0 7px rgba(200,160,80,.35)}
+.fusep .fzbox::before,.fusep .fzbox::after{content:'❖';position:absolute;color:#c8a050;font-size:18px;opacity:.8}
+.fusep .fzbox{position:relative}.fusep .fzbox::before{left:10px;top:6px}.fusep .fzbox::after{right:10px;bottom:6px}
+.fusep .fzsec{color:#e8c870;letter-spacing:.5em;border-bottom:1px solid rgba(200,160,80,.35)}
+.fusep .fztabs button{border-radius:0 0 8px 8px!important;background:linear-gradient(180deg,#7a2a1a,#4a1610)!important;color:#f8e0c0!important;border:none!important;padding-top:10px!important}
+.fusep .fztabs button.on{background:linear-gradient(180deg,#c8902a,#8a5a14)!important;color:#2a1608!important}
+.fusep .fzrow{background:linear-gradient(100deg,#ead9b0,#dcc591 60%,#e6d3a6)!important;border:none!important;border-radius:3px!important;color:#3a2410;
+  box-shadow:0 3px 10px rgba(0,0,0,.4);outline:1px dashed rgba(120,80,30,.4);outline-offset:-6px}
+.fusep .fzrow .fzrd b,.fusep .fzrow .fzrd{color:#3a2410!important}.fusep .fzrow .fzrd small{color:#6a4a28!important}
+.fusep .fzrow .fzmat em{color:#8a6a40}.fusep .fzrow .fzmat.have em{color:#2a7a3a;font-weight:700}
+.fusep .fzrow.ready{background:linear-gradient(100deg,#fff0c8,#f0d080 55%,#f8e0a0)!important;box-shadow:0 0 0 2px #c8902a,0 0 24px rgba(255,190,80,.6)!important;animation:fzPaper 2s ease-in-out infinite}
+@keyframes fzPaper{50%{box-shadow:0 0 0 2px #e8b04a,0 0 36px rgba(255,190,80,.85)}}
+.fusep .fzrow.none{filter:sepia(.4) brightness(.8)}
+.fusep .fzrow .fzplus,.fusep .fzrow .fzarrow u{color:#8a3a14}
+.fusep .fzgo{background:radial-gradient(circle at 40% 35%,#d8402a,#7a120a)!important;color:#ffe8d0!important;border:2px solid #ffd76a!important}
+.fusep .fzgo:disabled{background:#8a7a5a!important;color:#e8dcc0!important;border-color:#a89a7a!important}
+.fusep .mhead h2{color:#f4e2b8!important}
+.fusep .fzfoot .brush-btn{color:#f4e2b8!important;border-color:#c8a050!important;background:rgba(200,160,80,.12)!important}
 /* ══ 亂 꼬인 패 (판 82) ══ */
 .card.tangled .face{filter:grayscale(.7) brightness(.8)}
 .card.tangled::after{content:'亂';position:absolute;inset:0;display:grid;place-items:center;font-size:54px;color:rgba(170,110,240,.85);text-shadow:0 0 12px #6a2aff,0 0 2px #000;pointer-events:none;z-index:6;
@@ -25124,6 +25247,25 @@ function evtPop(text, col, at) {
    예전의 「이야기 만화」(글이 찍히는 장면들)는 game/archive/story-comic.js 로 옮겨 두었다.
    ══════════════════════════════════════════════════════════ */
 const CUT = { on: null, seen: {}, boss: {} };
+/* 판 83 — 모든 컷씬에 깔리는 영화 층: 필름 알갱이 · 빛 번짐 · 가로 렌즈 플레어 · 집중선 · 색 번짐 · 여는 빛줄 · 숨 쉬는 테두리 어둠.
+   번쩍(cutFlash)과 큰 흔들림(cutShake)이 플레어 · 집중선 · 색 번짐을 함께 부르고, 제목이 뜨면 빛이 한 번 훑는다. 자막은 한 글자씩 드러난다. */
+const CUT_CINE = '<div class="cutvig2"></div><div class="cutleak"><i></i><i></i><i></i></div><div class="cutgrain"></div><div class="cutlines"></div><div class="cutca"></div><div class="cutflare"></div><div class="cutscan"></div>';
+function cutPunch(S, lv = 1, col) {
+  const r = S && S.root; if (!r) return;
+  const fl = r.querySelector('.cutflare'); if (fl && col && !/gradient/.test(col)) fl.style.setProperty('--fc', col);
+  for (const [cls, ok] of [['flare', true], ['ca', lv >= 2], ['lines', lv >= 2]]) {
+    if (!ok) continue; const n = r.querySelector('.cut' + cls); if (!n) continue;
+    n.classList.remove('on'); void n.offsetWidth; n.classList.add('on');
+  }
+}
+function cutCineOn(S) {
+  try {
+    const mo = new MutationObserver(() => { if (!S.alive || !S.title.children.length) return;
+      S.title.classList.remove('tpop'); void S.title.offsetWidth; S.title.classList.add('tpop'); cutPunch(S, 1, '#ffe9b0');
+      clearTimeout(S.tpopT); S.tpopT = setTimeout(() => S.title.classList.remove('tpop'), 1500); });
+    mo.observe(S.title, { childList: true }); S.mo = mo;
+  } catch (e) {}
+}
 const CUT_W = 1600, CUT_H = 900;
 function cutPlaying() { return !!CUT.on; }
 function cutPlay(def) {
@@ -25133,7 +25275,7 @@ function cutPlay(def) {
   const p = new Promise(r => { done = r; });
   const root = el('div', 'cut');
   root.innerHTML = `<div class="cutview"><div class="cutshake"><div class="cutsway"><div class="cutworld"><div class="cutstage"></div></div></div></div></div>
-    <canvas class="cutfx"></canvas><div class="cutflash"></div><div class="cutdark"></div>
+    <canvas class="cutfx"></canvas>${CUT_CINE}<div class="cutflash"></div><div class="cutdark"></div>
     <div class="cutbars"><i></i><i></i></div>
     <div class="cutsub"></div><div class="cuttitle"></div>
     <button class="cutskip">건너뛰기 ▸▸</button>`;
@@ -25146,6 +25288,7 @@ function cutPlay(def) {
   };
   CUT.on = { p, S };
   document.body.classList.add('cutting');
+  cutCineOn(S);                                         /* 영화 층 — 제목이 뜰 때 (판 83) */
   /* 화면에 맞춘다 — 가로는 꽉 채우고, 세로 폰에서는 무대가 너무 잘리지 않게 줄인다(위아래는 검게) */
   const fit = () => {
     const w = innerWidth, h = innerHeight;
@@ -25203,10 +25346,12 @@ function cutShake(S, px = 10, ms = 400) {
   for (let i = 0; i <= 8; i++) { const f = 1 - i / 8; k.push({ transform: `translate(${(Math.random() * 2 - 1) * px * f}px,${(Math.random() * 2 - 1) * px * f}px)` }); }
   k[k.length - 1] = { transform: 'none' };
   S.shakeEl.animate(k, { duration: ms, easing: 'linear' });
+  if (px >= 14) cutPunch(S, 2);                         /* 큰 흔들림 — 집중선 · 색 번짐 (판 83) */
 }
 function cutFlash(S, col = '#fff', ms = 420, peak = 1) {
   S.flashEl.style.background = col;
   S.flashEl.animate([{ opacity: peak }, { opacity: 0 }], { duration: ms, easing: 'ease-out' });
+  cutPunch(S, ms >= 520 || peak >= .95 ? 2 : 1, col);  /* 번쩍 — 가로 플레어 (큰 것은 집중선 · 색 번짐까지) (판 83) */
 }
 function cutFade(S, to, ms = 600) {   /* 검게 덮거나(1) 걷는다(0) */
   const from = +getComputedStyle(S.dark).opacity || 0;
@@ -25222,7 +25367,9 @@ function cutHitstop(S, ms = 70) {
 }
 function cutSfx(name, ...a) { try { if (SND[name]) SND[name](...a); } catch (e) {} }
 function cutSay(S, text, ms = 2400) {
-  S.sub.innerHTML = text; S.sub.classList.add('on');
+  const t = String(text == null ? '' : text), plain = !/[<&]/.test(t);   /* 판 83 — 한 글자씩 흐릿함에서 또렷이 */
+  S.sub.innerHTML = plain ? [...t].map((ch, i) => `<span class="cch" style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('') : t;
+  S.sub.classList.remove('on'); void S.sub.offsetWidth; S.sub.classList.add('on');
   clearTimeout(S.subT); S.subT = setTimeout(() => S.sub.classList.remove('on'), ms);
 }
 /* 무대에 하나 놓는다 — (x,y) 는 무대 좌표, z 는 앞(+)·뒤(−) 깊이 */
@@ -27172,7 +27319,7 @@ function cutPlay3(def) {
   let done;
   const p = new Promise(r => { done = r; });
   const root = el('div', 'cut c3');
-  root.innerHTML = `<canvas class="c3cv"></canvas><div class="c3vig"></div><canvas class="cutfx"></canvas><div class="cutflash"></div><div class="cutdark"></div>
+  root.innerHTML = `<canvas class="c3cv"></canvas><div class="c3vig"></div><canvas class="cutfx"></canvas>${CUT_CINE}<div class="cutflash"></div><div class="cutdark"></div>
     <div class="cutbars"><i></i><i></i></div><div class="cutsub"></div><div class="cuttitle"></div>
     <button class="cutskip">건너뛰기 ▸▸</button>`;
   document.body.appendChild(root);
@@ -27191,6 +27338,7 @@ function cutPlay3(def) {
   };
   CUT.on = { p, S };
   document.body.classList.add('cutting');
+  cutCineOn(S);                                         /* 영화 층 (판 83) */
   const fit = () => {
     const w = innerWidth, h = innerHeight;
     R.setSize(w, h, false);
@@ -32396,10 +32544,10 @@ async function fuseInboxCheck() {
   if (!r.ok || !r.room || FUSE.asked[r.room.rid] || $('#fuseask')) return;
   const rm = r.room; FUSE.asked[rm.rid] = 1;
   try { SND.bell && SND.bell(); SND.unlock(); } catch (e) {}
-  const p = modal(`<div class="fuinv">${fuOrb('star+chaos', 'small')}<h2>合 합성소의 청</h2>
+  const p = modal(`<div class="fuinv"><div class="fuwax">合</div>${fuOrb('star+chaos', 'small')}<h2>합성소의 청</h2>
     <div class="hint"><b style="color:#ffd76a">${wEsc(rm.other.nick)}</b> 이(가) 그대를 합성소로 부른다.<br>둘이 돌연변이 재료를 하나씩 놓고 합친다 — 둘 다 융합 원료를 받는다.</div>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="brush-btn gold" id="fi_yes">간다</button><button class="brush-btn ghost" id="fi_no" style="color:#e9dfc9;border-color:#8a7f68">사양한다</button></div></div>`, 'fuinvm');
-  p.id = 'fuseask'; p.dataset.noauto = '1';
+  p.id = 'fuseask'; p.dataset.noauto = '1'; p.classList.add('fuinvp');   /* 판 83 — 밀랍 찍힌 두루마리 */
   p.querySelector('#fi_no').onclick = async () => { closePanel(p); await acctAsk('/fuse/answer', { token: ACCT.token, rid: rm.rid, yes: false }, 8000); };
   p.querySelector('#fi_yes').onclick = async () => { closePanel(p);
     const x = await acctAsk('/fuse/answer', { token: ACCT.token, rid: rm.rid, yes: true }, 8000);
@@ -32413,7 +32561,8 @@ function showFuseLab(room) {
   const stars = Array.from({ length: 50 }, () => `<i style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;animation-delay:${(-Math.random() * 4).toFixed(1)}s;animation-duration:${(2 + Math.random() * 3).toFixed(1)}s"></i>`).join('');
   const p = modal(`<div class="flbg"><div class="flstars">${stars}</div><div class="flseal">${cutSealSvg('#d8c8ff', '合成融化星混豊變')}</div></div>
     <button class="hkclose flx" id="fl_x" title="나가기">✕</button>
-    <div class="flhead"><h1>合 합 성 소</h1><div class="hint">둘이 돌연변이 재료를 하나씩 놓고 합친다 · 둘 다 같은 융합 원료를 받는다 · 두 갈래를 모두, <b>두 배로</b></div></div>
+    <div class="flfx"><i class="fl-ring"></i><i class="fl-ring"></i><i class="fl-ring"></i><i class="fl-ember"></i><i class="fl-ember"></i><i class="fl-ember"></i><i class="fl-ember"></i><i class="fl-ember"></i></div>
+    <div class="flhead"><h1>合 합 성 소</h1><div class="flstate" id="fl_state"></div><div class="hint">둘이 돌연변이 재료를 하나씩 놓고 합친다 · 둘 다 같은 융합 원료를 받는다 · 두 갈래를 모두, <b>두 배로</b></div></div>
     <div class="flstage">
       <div class="flped me"><div class="flslot" id="fl_myslot"></div><b id="fl_mynick">${wEsc(ACCT.nick || ACCT.id)}</b><em id="fl_myready"></em></div>
       <div class="flmid"><div id="fl_prev"></div><div class="flarrow" id="fl_prevtxt">재료를 놓아라</div></div>
@@ -32428,9 +32577,13 @@ function showFuseLab(room) {
   p.querySelector('#fl_x').onclick = () => { leave(); closeTop(); };
   const slot = (k, ready) => !k ? '<div class="flempty">?</div>' : k.indexOf('+') > 0 ? fuOrb(k, ready ? 'rdy' : '')
     : `<div class="mgorb mg-${k}${ready ? ' rdy' : ''}" style="--mc:${MAT_DEF[k].c};--mr:${MAT_DEF[k].rgb}"><b>${MAT_DEF[k].g}</b>${'<i></i>'.repeat(8)}</div>`;
+  const FL_ST = { none: ['一', '별을 고른다 — 함께할 이를 부른다'], invite: ['二', '신호를 띄웠다 — 답을 기다린다'], pick: ['三', '화로에 재료를 넣는다'], fuse: ['四', '하나로 합친다'], gone: ['—', '상대가 떠났다'] };
   const draw = () => {
     if (!p.isConnected) return;
     const r = FUSE.room, panel = p.querySelector('#fl_panel');
+    { const stt = r ? (FL_ST[r.state] ? r.state : 'gone') : 'none';                        /* 판 83 — 단계마다 다른 무대 */
+      for (const k of Object.keys(FL_ST)) p.classList.toggle('st-' + k, k === stt);
+      const se = p.querySelector('#fl_state'); if (se) se.innerHTML = `<i>${FL_ST[stt][0]}</i>${FL_ST[stt][1]}`; }
     p.querySelector('#fl_myslot').innerHTML = slot(r && r.my.mat, r && r.my.ready);
     p.querySelector('#fl_otslot').innerHTML = slot(r && r.other.mat, r && r.other.ready);
     p.querySelector('#fl_otnick').textContent = r ? r.other.nick : '— 부를 사람을 정하라 —';
@@ -32504,6 +32657,7 @@ function fuseShow(r, lab) {
       <div class="fsstars">${Array.from({ length: 70 }, () => { const ang = Math.random() * 360, d = 30 + Math.random() * 60;
         return `<i style="--a:${ang.toFixed(0)}deg;--d:${d.toFixed(0)}vmax;animation-delay:${(Math.random() * 1.6).toFixed(2)}s"></i>`; }).join('')}</div>
       <div class="fsflash"></div><div class="fsrings"><i></i><i></i><i></i></div>
+      <div class="fscine">${CUT_CINE}</div>
       <div class="fsres"><b>${fuName(res)}</b><span>${fuDesc(res)}</span><small>${wEsc(r.my.nick)} × ${wEsc(r.other.nick)} — 둘 다 원료 주머니에 하나씩</small>
         <div class="fsbtns"><button class="brush-btn gold" id="fs_pouch">囊 주머니를 연다</button><button class="brush-btn" id="fs_ok">닫는다</button></div></div>
       <div class="fsnames"><span>${wEsc(r.my.nick)}</span><span>${wEsc(r.other.nick)}</span></div>`;
@@ -32519,6 +32673,7 @@ function fuseShow(r, lab) {
     at(2900, () => { n.classList.add('spin2'); cam('rotateX(16deg) rotateY(-26deg) rotateZ(-300deg) scale(1.3)', 1300); try { SND.thunder && SND.thunder(); } catch (e) {} });
     at(4100, () => { n.classList.add('pillar'); cam('rotateX(6deg) rotateY(0deg) rotateZ(-360deg) scale(1.6)', 700, 'cubic-bezier(.6,0,.9,.4)'); try { SND.charge && SND.charge(); shake(true); } catch (e) {} });
     at(4800, () => { n.classList.add('boom'); cam('rotateX(0deg) rotateZ(-360deg) rotateY(0deg) scale(1)', 900, 'cubic-bezier(.2,1.4,.4,1)');
+      cutPunch({ root: n }, 2, '#ffe9b0');                                               /* 판 83 — 플레어 · 집중선 */
       try { SND.gong(); SND.crit && SND.crit(); SND.victory(); } catch (e) {} });
     /* 다 합친 뒤 — 카메라가 천천히 한 바퀴 숨 쉬듯 돈다 */
     at(5800, () => { n.classList.add('linger'); cam('rotateX(14deg) rotateY(12deg) rotateZ(-360deg) scale(1.06)', 3600, 'ease-in-out'); });
