@@ -108,10 +108,17 @@ for (const [nm, vp] of [['넓은 화면', { width: 1280, height: 720 }], ['폰 �
   await p.evaluate(() => { AUTO.on = false; }); await p.keyboard.down('Control'); await p.keyboard.press('a'); await p.keyboard.up('Control');
   ok(ime[0] === 0 && ime[1] === 1 && await p.evaluate(() => !AUTO.on), '한글 조합 중 Enter 는 막고 · Ctrl+A 는 자동 플레이를 켜지 않는다');
   /* 저장 깨짐 · 꽉 참 */
-  await p.evaluate(() => { _bakAt = 0; META.jp = 4321; saveMeta(); sessionStorage.setItem('brk', '1'); G.run.gold = 777; _runBakAt = 0; saveRun(); });
-  await p.addInitScript(() => { if (sessionStorage.getItem('brk') === '1') { sessionStorage.setItem('brk', '2'); localStorage.setItem('bge_meta_v1', '{"broken":'); localStorage.setItem('bge_save_v1', '{"run":'); } });
-  await p.reload(); await p.waitForTimeout(1500);
-  const rs = await p.evaluate(() => { META.tutorDone = true; OPT.story = 'off'; OPT.cuts = false; resumeRun(); return { jp: META.jp, gold: G.run && G.run.gold, bad: !!localStorage.getItem(META_BAD) }; });
+  /* 저장 깨짐 — 새로 고침 너머로는 직전에 쓴 저장(백업 · sessionStorage)이 시험 브라우저(file://)에서 가끔 통째로 보이지 않아
+     검사가 10번에 2~3번 흔들렸다. 같은 자리에서 깨뜨리고, 켤 때 쓰는 그대로 다시 읽는다 — loadMeta · resumeRun (판 83) */
+  const rs = await p.evaluate(() => {
+    _bakAt = 0; META.jp = 4321; saveMeta(); G.run.gold = 777; _runBakAt = 0; saveRun();
+    localStorage.removeItem(META_BAD); window.__noSave = true;
+    localStorage.setItem(META_KEY, '{"broken":'); localStorage.setItem(SAVE_KEY, '{"run":');
+    META.jp = 0; G.run = null; G.b = null;
+    loadMeta(); window.__noSave = false;
+    META.tutorDone = true; OPT.story = 'off'; OPT.cuts = false; resumeRun();
+    return { jp: META.jp, gold: G.run && G.run.gold, bad: !!localStorage.getItem(META_BAD) };
+  });
   ok(rs.jp === 4321 && rs.gold === 777 && rs.bad, '저장이 깨지면 — 깨진 글은 떼어 두고 백업에서 되살린다 (도감·재화 · 모험)');
   const q = await p.evaluate(() => { const o = Storage.prototype.setItem; Storage.prototype.setItem = function () { const e = new Error('q'); e.name = 'QuotaExceededError'; throw e; }; META._qt = Date.now(); saveMeta(); Storage.prototype.setItem = o; return _quotaSaid; });
   ok(q, '저장 칸이 꽉 차면 알린다');
