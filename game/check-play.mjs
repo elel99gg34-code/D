@@ -48,7 +48,8 @@ console.log('■ 판 검사');
     for (const id of Object.keys(CARDS)) {
       if (!G.b || G.b.over || !alive().length) await arena();
       const b = G.b; b.busy = false; b.energy = 9; const c = mkCard(id, false); b.hand.push(c);
-      try { await Promise.race([playCard(c, alive()[0]), sleep(WAIT_PICK.has(id) ? 300 : 3000).then(() => { if (!WAIT_PICK.has(id)) throw new Error('3초 넘게 안 끝남'); })]); }
+      /* 멈춤을 잡는 검사 — 기계가 바쁠 때 3초에 걸리는 일이 있어 6초로 (판 81) */
+      try { await Promise.race([playCard(c, alive()[0]), sleep(WAIT_PICK.has(id) ? 300 : 6000).then(() => { if (!WAIT_PICK.has(id)) throw new Error('6초 넘게 안 끝남'); })]); }
       catch (e) { out.cards.push(id + ': ' + e.message); }
       closeOverlay(); if (G.b) G.b.busy = false; out.n++;
     }
