@@ -648,7 +648,7 @@ function hitTooFast(who, ip) {
 }
 
 /* ── 퍼뜨린다 — 관리자가 누른 것도, 예약한 것이 때가 된 것도 이 길로 ── */
-const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'lucky', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint', 'warm'];
+const CAST_KEYS = ['notice', 'noticeAt', 'event', 'eventAt', 'version', 'apk', 'gift', 'boss', 'music', 'bossExtend', 'hunt', 'poll', 'pollClose', 'cut', 'hack', 'autofree', 'count', 'march', 'devjoin', 'egg', 'bomb', 'buff', 'hb', 'shadow', 'devboss', 'fx', 'mail', 'scode', 'wheel', 'cpn', 'bot', 'sale', 'deckx', 'dspawn', 'lucky', 'dsroll', 'pvpfix', 'nd', 'trial', 'maint', 'warm', 'w3inv'];
 const BOSS_EXT_MAX = 30 * 60 * 1000;
 const COUNT_LEAD = 13000;
 const BUFF_KEYS = ['pow', 'morph', 'ward', 'regen', 'qi', 'hand', 'crit', 'drain', 'hex', 'undying', 'gold', 'thorn'];
@@ -1117,6 +1117,21 @@ async function applyCast(q) {
         until: now + Math.max(1, Math.min(30, parseInt(x.min, 10) || 3)) * LUCKY_MIN_MS, by: str(x.by, 12), n: 0, drawn: false };
       live.luckyP = { lid: now, join: {} };
     } else { live.lucky = null; live.luckyP = null; }
+  }
+  /* 백야의 놀이터 — 초대 명단 (판 84). 아이디나 닉네임으로 넣고(add) · 빼고(del) · 비운다(clear). 명단은 소식에 싣지 않는다 */
+  if ('w3inv' in q) {
+    const x = q.w3inv && typeof q.w3inv === 'object' ? q.w3inv : {};
+    live.w3P = live.w3P && typeof live.w3P === 'object' ? live.w3P : { ids: {} }; live.w3P.ids = live.w3P.ids || {}; live.w3P.miss = '';
+    if (x.add) {
+      let to = str(x.add, 20);
+      if (!(await soulGet(to)) && (await soulGet(to.toLowerCase()))) to = to.toLowerCase();
+      if (!(await soulGet(to))) { const byNick = await get('nk:' + to.toLowerCase()); if (byNick) to = byNick; }
+      if (await soulGet(to)) live.w3P.ids[to] = { nick: str((await nickOf(to)) || to, 12), at: Date.now(), by: str(x.by, 12) };
+      else live.w3P.miss = str(x.add, 20);
+    }
+    if (x.del) delete live.w3P.ids[str(x.del, 40)];
+    if (x.clear) live.w3P.ids = {};
+    const ks = Object.keys(live.w3P.ids); if (ks.length > 500) for (const k of ks.slice(0, ks.length - 500)) delete live.w3P.ids[k];
   }
   /* 온정의 밤 — 등불 나눔 (판 78) */
   if ('warm' in q) {
@@ -1933,7 +1948,7 @@ async function handle(req, res) {
       steps: (x.steps || []).map(t => ({ after: t.after, label: t.label, done: !!t.done })) }));
     /* 숨은 부적을 누가 찾았는지는 싣지 않는다 — 몇 명인지만 */
     const hunt = live.hunt ? Object.assign({}, live.hunt, { who: undefined }) : null;
-    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, warmP: undefined, warmThx: undefined, admOk: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
+    return send(res, 200, Object.assign({}, live, { sched, now, chatAt: chatLastId(), hunt, scode: scodeView(), wheelP: undefined, luckyP: undefined, luckyOwed: undefined, warmP: undefined, warmThx: undefined, w3P: undefined, admOk: undefined, bot: undefined, botSt: undefined, botLog: undefined, hb: hbWin(now), hbNext: (Math.floor(now / HB_EVERY) + 1) * HB_EVERY, hbOpen: HB_OPEN, nd: ndWin(now), ndForce: undefined, dn: dnNow(now) }));
   }
 
   /* ── 채팅 — 읽기 ── */
@@ -2462,6 +2477,17 @@ async function handle(req, res) {
       return send(res, 200, { ok: true });
     }
     return send(res, 404, { ok: false, why: '없는 자리' });
+  }
+  /* ── 백야의 놀이터 — 나는 초대받았는가 (판 84) ── */
+  if (url.pathname === '/w3/me' && req.method === 'POST') {
+    let body = '';
+    for await (const chunk of req) { body += chunk; if (body.length > 1000) return send(res, 413, { ok: false }); }
+    let q; try { q = jbody(body); } catch (e) { return send(res, 400, { ok: false, why: '읽을 수 없다' }); }
+    await store();
+    const id = await tokWho(q.token);
+    if (!id) return send(res, 401, { ok: false, why: '로그인해야 한다' });
+    const inv = live.w3P && live.w3P.ids && live.w3P.ids[id];
+    return send(res, 200, { ok: true, allowed: !!inv, by: inv ? inv.by : '', at: inv ? inv.at : 0 });
   }
   /* ── 온정의 밤 — 띄운다 · 받는다 · 고마움 (판 78) ── */
   if (url.pathname.startsWith('/warm/') && req.method === 'POST') {

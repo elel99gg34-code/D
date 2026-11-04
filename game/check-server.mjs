@@ -7,7 +7,7 @@
      ④ 계정 지우기 — 신청 · 무르기 · 이레가 지나면 정리(시험에서는 짧게)
      ⑤ 오류 알림 — 묶어 세기 · 기기 한도 · 관리자만 본다
      ⑥ 점검 · 링크 금지 · 보이지 않는 글자 · /health · 배포 재시작(SIGTERM) 때 적고 내려간다
-     ⑦ 보안 (판 74) · ⑧ 온정의 밤 — 등불 나눔 (판 78)
+     ⑦ 보안 (판 74) · ⑧ 온정의 밤 — 등불 나눔 (판 78) · ⑨ 백야의 놀이터 — 초대 (판 84)
    node game/check-server.mjs
    ══════════════════════════════════════════════════════════ */
 import fs from 'fs';
@@ -129,6 +129,25 @@ console.log('■ 서버 검사');
     `온정의 밤 — 한 밤에 다섯 · 처음 온 이는 셋 · 먼저 뜬 것부터 · 소식에 웅덩이 · 고마움 없음 (${fl.join()})`);
   ok(me.thx && me.thx.length === 3 && /나$/.test(me.thx[0].nick) && me.thx[0].w === 3 && me.gave === 5 && me2.thx.length === 0 && late._s === 409 && lv2.warm && lv2.warm.done,
     '온정의 밤 — 고마움은 띄운 이에게 한 번 · 끝나면 닫히고 결과는 남는다');
+  s.kill();
+}
+/* ⑨ 백야의 놀이터 (판 84) — 초대는 관리자만 · 닉네임으로도 · 없는 이는 없다고 · 내보내면 닫힌다 · 명단은 소식에 없다 */
+{
+  const s = await up(), sf = Date.now() % 100000;
+  const A = await ask(s, '/auth/signup', { id: 'pa' + sf, pw: 'Abcd1234!x', nick: '놀' + (sf % 1000) + '가' }), B = await ask(s, '/auth/signup', { id: 'pb' + sf, pw: 'Abcd1234!x', nick: '놀' + (sf % 1000) + '나' });
+  const before = await ask(s, '/w3/me', { token: A.token }), anon = await ask(s, '/w3/me', { token: 'x' });
+  const nokey = await ask(s, '/cast', { code: 'wrong', w3inv: { add: 'pa' + sf } });
+  const byNick = await ask(s, '/cast', { code: KEY, w3inv: { add: '놀' + (sf % 1000) + '가', by: '백야' } });
+  const a1 = await ask(s, '/w3/me', { token: A.token }), b1 = await ask(s, '/w3/me', { token: B.token });
+  const miss = await ask(s, '/cast', { code: KEY, w3inv: { add: '없는사람' + sf } });
+  const byId = await ask(s, '/cast', { code: KEY, w3inv: { add: ('PB' + sf), by: '백야' } });
+  const lv = await (await fetch(s.U + '/live')).json();
+  const del = await ask(s, '/cast', { code: KEY, w3inv: { del: 'pa' + sf } });
+  const a2 = await ask(s, '/w3/me', { token: A.token }), b2 = await ask(s, '/w3/me', { token: B.token });
+  ok(before.ok && !before.allowed && anon._s === 401 && nokey._s === 403 && byNick.ok && byNick.live.w3P.ids['pa' + sf] && a1.allowed && a1.by === '백야' && !b1.allowed,
+    '백야의 놀이터 — 초대는 관리자만 · 닉네임으로 넣는다 · 초대받은 이만 들어간다');
+  ok(miss.live.w3P.miss === '없는사람' + sf && byId.live.w3P.miss === '' && b2.allowed && !('w3P' in lv) && del.ok && !a2.allowed && Object.keys(del.live.w3P.ids).length === 1,
+    '백야의 놀이터 — 없는 이는 없다고 · 아이디(큰 글자도) · 명단은 소식에 없다 · 내보내면 닫힌다');
   s.kill();
 }
 const line = `■ 서버 검사 — 통과 ${good.length} · 고칠 것 ${bad.length}`;
